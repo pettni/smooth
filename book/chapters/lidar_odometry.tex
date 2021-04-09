@@ -1,0 +1,40 @@
+% !TEX root = ../manuscript.tex
+
+\chapter{Advanced: lidar odometry}
+
+\section{Correspondence search}
+
+Assume that for the two clouds $Q_{k-1}$ and $Q_k$ edge and plane features $\mathcal E_{k-1}, \mathcal H_K$, $\mathcal E_{k}$, and  $\mathcal H_k$ have been extracted.
+
+Edge points in $\mathcal E_k$ should be matched with an edge in $\mathcal E_{k-1}$. 
+
+\subsection{Edge matching}
+For a point $x_e \in \mathcal E_k$ select the $n$ closest points $S$ from $\mathcal E_{k-1}$, calculate the x-y-z covariance matrix and ensure that one eigenvalue is much larger than the other two. The fitting residual errors are
+$$
+  r_e(x_e) = (x_e - x_0) - ((x_e - x_0) \cdot \hat d) \hat d = (I - \hat d \hat d^T) (x_e - x_0)  \in \mathbb{R}^3
+$$
+where $x_0$ is the centroid of $S$ (assumed to be on the edge) and $\hat d$ is the normalized direction of the edge (eigenvector corresponding to largest eigenvalue of covariance matrix).
+
+
+\subsection{Plane matching}
+
+For a point $x_h \in \mathcal H_k$ select the $n$ closest points from $\mathcal H_{k-1}$, calculate the x-y-z covariance matrix and ensure that one eigenvalue is much smaller than the other two. The fitting residual error is
+$$
+  r_h(x_h) = \left((x_h - x_0) \cdot \hat n \right) \hat n = (\hat n \hat n^T) \left( x_h - x_0 \right) \in \mathbb{R}^3
+$$
+where $x_0$ is the centroid of $S$ (assumed to be in the plane) and $\hat n$ is the normalized normal of the plane (eigenvector corresponding to smallest eigenvalue of covariance matrix).
+
+
+\section{Optimization}
+
+For each detected correspondence we consider the transformed residuals
+
+$$
+  r_e( \exp( \omega \tau ) x_e ),
+$$
+and 
+$$
+  r_h ( \exp( \omega \tau ) x_h ),
+$$
+respectively, where $\omega \in \mathfrak{se}(3)$ represents the velocity during the sweep that is to be estimated, and $\tau$ is the time that has elapsed since the start of the sweep. That is,
+$\exp(\omega \tau)$ represents the relative pose between time $t_k$ (start of the sweep), and time $t_k + \tau$ (time of point cloud collection).

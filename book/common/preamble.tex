@@ -1,0 +1,110 @@
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{booktabs}
+\usepackage{xpatch}
+
+\usepackage{graphicx}
+
+% Algorithms
+\usepackage[linesnumbered,ruled]{algorithm2e}
+
+% Page layout control
+\KOMAoption{fontsize}{12pt}
+\KOMAoption{twoside}{false}
+\KOMAoption{paper}{letter}
+\KOMAoption{DIV}{11}  % calculates margins
+
+% Fonts
+\usepackage{fontspec, unicode-math}
+% \usepackage{mathspec}
+\setmainfont{Libertinus Serif}
+\setsansfont{Libertinus Sans}
+\setmathfont[bold-style=ISO]{Libertinus Math}
+
+% References
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks,
+  linkcolor={blue!50!black},
+  citecolor={blue!50!black},
+  urlcolor={red!50!black}
+}
+
+% Tikz
+\usepackage{tikz,pgfplots}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{calc, arrows.meta, shapes.geometric, positioning, scopes, shadows, decorations.markings, external, intersections, fit, patterns, automata, backgrounds}
+
+% Dont externalize todos
+\makeatletter
+\renewcommand{\todo}[2][]{\tikzexternaldisable\@todo[#1]{#2}\tikzexternalenable}
+\makeatother
+
+% Code
+\usepackage{pdftexcmds}
+\usepackage[skins, xparse, breakable]{tcolorbox}  % add option minted..
+\tcbset{shield externalize}
+
+% \newcounter{countercode}
+% \newtcblisting[use counter=countercode, number within=chapter]{pymint}[2][]{%
+%   colback=blue!5!white,
+%   colframe=blue!95!white,
+%   colbacktitle=blue!50!white,
+%   listing engine=minted,
+%   minted language=python,
+%   fonttitle=\bfseries,
+%   listing only,
+%   breakable,
+%   #1,
+%   title={Code \thetcbcounter: #2},
+%   minted options = {
+%       linenos,
+%       breaklines=true,
+%       breakbefore=.,
+%       fontsize=\footnotesize,
+%       numbersep=2mm
+%   }
+% }
+
+\newenvironment{itemize_outcomes}{%
+  \begin{itemize}}{\end{itemize}}
+
+\tcolorboxenvironment{itemize_outcomes}{
+  enhanced,
+  fonttitle=\bfseries,
+  title=Summary,
+  left=0pt,
+  attach boxed title to top center={yshift=-2mm}
+}
+
+\newcounter{example}
+\newtcolorbox[use counter=example, number within=chapter]{example}[1][]{%
+  enhanced,
+  colback=green!5!white,
+  colframe=green!55!black,
+  colbacktitle=green!75!black,
+  fonttitle=\bfseries,
+  title={Example \thetcbcounter},
+  attach boxed title to top center={yshift=-2mm},
+  #1
+}
+
+\newtcolorbox{important}{
+  colback=red!5!white,
+  colframe=red!75!black,
+  fonttitle=\bfseries
+}
+
+\newtcolorbox
+{properties}[1][]{%
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  fonttitle=\bfseries,
+  #1
+}
+
+% Nomenclature
+\usepackage[toc,acronym,nonumberlist,subentrycounter]{glossaries}
+\makeglossaries
+% \loadglsentries[main]{common/acronyms.tex}
+% \setkomafont{descriptionlabel}{\normalfont}
+\glstocfalse

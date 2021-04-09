@@ -1,0 +1,75 @@
+%!TEX program = xelatex
+
+\documentclass{scrbook}
+
+\usepackage{todonotes}
+% \usepackage[disable]{todonotes}
+
+\usepackage[backend=biber, refsegment=chapter]{biblatex}
+\addbibresource{refs.bib}
+
+\input{common/preamble}
+\input{common/definitions}
+
+\title{Lie Theory for Robotics}
+\author{Petter Nilsson}
+
+\begin{document}
+
+\frontmatter
+
+\maketitle
+
+\tableofcontents
+
+\mainmatter
+
+\include{chapters/plan}
+
+\part{Theory}
+
+\include{chapters/introduction}
+\include{chapters/lie_groups}
+
+\include{chapters/lie_algebras}
+\include{chapters/exponential}
+
+\include{chapters/derivatives}
+\include{chapters/dynamical_systems}
+
+\include{chapters/probability_theory}
+\include{chapters/equivariance}
+
+\part{Applications}
+
+\include{chapters/controls}
+
+\include{chapters/estimation}
+
+
+\include{chapters/optimization_I}
+\include{chapters/optimization_II}
+
+\include{chapters/advanced_splines}
+
+\include{chapters/advanced_control}
+
+\include{chapters/lidar_odometry}
+
+\include{chapters/magnus_expansion}
+
+\include{chapters/advanced_marginalization}
+
+\chapter{Bonus: Geometric Algebra and the connection to \texorpdfstring{$\Sthree$}{S3}}
+
+\backmatter
+
+\printbibliography
+
+\include{common/appendix}
+
+% \printglossary[type=\acronymtype]
+% \printglossary
+
+
+\end{document}

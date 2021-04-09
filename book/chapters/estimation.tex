@@ -1,0 +1,42 @@
+% !TEX root = ../manuscript.tex
+
+\chapter{Application: State Estimation}
+
+\section{IMU Model}
+
+An imu typically consists of a gyro measuring angular velocity, an accelerometer, and a magnetometer that estimates the orientation with respect to the earth magnetic field. Consider a body moving in the world described by the IMU frame to world frame transform $P_{WI} = (\bq_{WI}, \bp_{WI}) \in \mathbb{SE}(3)$.
+
+The gyro and accelerometer measurements of the IMU are then well modeled by the following:
+\begin{subequations}
+  \begin{align}
+    \label{eq:gyro}  \tilde \bomega              & = \mathrm{d}^r (\bq_{WI})_t + \symbf b_\bomega + \eta_\bomega,                                                     \\
+    \label{eq:accelerometer} \tilde {\symbf {a}} & = \left[ (\mathrm{d}^r)^2 P_{WI} \right]_{3:6} + \bq_{WI}^{-1} \symbf g_W + \symbf b_{\symbf a} + \eta_{\symbf a}.
+  \end{align}
+\end{subequations}
+In \eqref{eq:gyro}, the first term is the actual body angular velocity, $\symbf b_\bomega$ is a gyro bias, and $\eta_\bomega$ is white noise.
+
+For the accelerometer model \eqref{eq:accelerometer}, $\left[ \mathrm{d}^2 (P_{WI})_t \right]_{3:6}$ denotes the linear acceleration in the body frame (the last three components of the second derivative), $\symbf g_W$ is the gravity in the world frame, and $\symbf b_{\symbf a}$ and $\eta_{\symbf a}$ are bias and noise as above.
+
+
+\section{Complementary Filter for Attitude Estimation}
+
+Filter in \cite{mahony_nonlinear_2008} is of form
+
+$$
+  \dot {\hat R} = (\hat R \Omega + k_P \hat R \omega) \hat R, \quad \omega = vex \left( \frac{1}{2} \left( \tilde R - \tilde R^T \right) \right), \quad \tilde R = \hat R R_y.
+$$
+
+That is, the natural dynamics are amended with a term $k_P \hat R \omega$ that induces stability of the observer. The quantitiy $\omega$ is a rotation quantity in body coordinates that corresponds to the anti-symmetric part of the empirical rotation error. It can be shown that for $R_y = R$ we have
+
+$$
+  \frac{d}{d t} \frac{1}{2} \text{Tr} \left( I - \hat R^T R \right) = -\frac{k_P}{2} |\omega|^2.
+$$
+
+**Remark**: Filter above is the *passive* form, if $R_y \Omega$ is used instead of $\hat R \Omega$ it is called *direct*.
+
+This can be amended with an integrator that estimates a bias term in the gyro estimates.
+\section{TODO}
+
+\begin{enumerate}
+  \item Convert the attitude estimation filter from $SO(3)$ to $S^3$.
+\end{enumerate}

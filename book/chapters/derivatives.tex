@@ -1,0 +1,669 @@
+% !TEX root = ../manuscript.tex
+
+\chapter{Derivatives}
+
+\begin{itemize_outcomes}
+  \item Definition of derivatives on manifolds.
+  \item Differentiation rules.
+\end{itemize_outcomes}
+
+\todo[inline]{Define derivatives w.r.t. matrix elements only, motivate that we can disregard parameterized expressions.}
+
+\begin{definition}
+  The \textbf{right derivative} of $f : \M \rightarrow \N$ at $\X \in {\cM}$ is a linear mapping $\mathrm{d}^r f_\X : T {\M}_{\X} \rightarrow T \N_{f(\X)}$ such that:
+  \begin{equation}
+    \label{eq:deriv_rght}
+    \mathrm{d}^r f_\X \coloneq \lim_{\a \rightarrow 0} \frac{f( \X \oplus_r\a) \ominus_r f(\X)}{\a} = \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\X)^{-1} \circ  f(\X \circ \exp(\a) \right)}{\a},
+  \end{equation}
+  where $\a \in T_\X \check{\M}$ is a member of the parameterized Lie algebra and the division is component-wise.
+
+  Similarly, the \textbf{left derivative} is a linear mapping $\mathrm{d}^r f_\X : T {\M}_{e} \rightarrow T \N_{e}$ such that
+  \begin{equation}
+    \label{eq:deriv_left}
+    \mathrm{d}^l f_\X \coloneq \lim_{\a \rightarrow 0} \frac{f( \X \oplus_l \a) \ominus_l  f(\X)}{\a} = \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\exp(\a) \circ \X) \circ f(\X)^{-1} \right)}{\a},
+  \end{equation}
+\end{definition}
+
+From the definition it can be seen that for small $\a$ it approximately holds that
+\begin{equation}
+  \label{eq:right_approx}
+  f(\X \oplus_r {\a}) = f(\X) \oplus_r \left( \mathrm{d}^r f_\X \a + \mathcal O(\| \a \|^2) \right),
+\end{equation}
+and for left-plus:
+\begin{equation}
+  \label{eq:left_approx}
+  f(\a \oplus_l \X) = \left( \mathrm{d}^l f_\X \a + \mathcal O(\| \a \|^2) \right) \oplus_l f(\X).
+\end{equation}
+From \eqref{eq:right_approx} and \eqref{eq:left_approx} we have that for small $\a$,
+\begin{equation}
+  f(\X) \oplus_r (\mathrm{d}^r f_\X  \a) \overset{\eqref{eq:right_approx}}= f(\X \oplus_r \a) \overset{\eqref{eq:plus_adjoint}}= f\left( \bAd_\X \a \oplus_l \X\right)  \overset{\eqref{eq:left_approx}}= ( \mathrm{d}^l f_\X \bAd_\X \a) \oplus_l f(\X).
+\end{equation}
+Consequently,
+\begin{equation}
+  \exp( \mathrm{d}^l f_\X \bAd_\X \a ) = f(\X) \circ \exp (\mathrm{d}^r f_\X \a) \circ f(\X)^{-1} = \bAd_{f(\X)} \exp (\mathrm{d}^r f_\X \a),
+\end{equation}
+and due to \eqref{eq:exp_adj_comm} it follows that left and right derivatives are related through the adjoints via
+\begin{equation}
+  \label{eq:derivative_trans}
+  \mathrm{d}^l f_\X = \bAd_{f(\X)} \; \mathrm{d}^r f_\X \; \bAd_{\X}^{-1}.
+\end{equation}
+With the interpretation of the adjoints as coordinate changes this formula can be seen as follows: the derivative of $f$ with respect to a tangent vector $^\id\a$ at $\id$ can be obtained by
+\begin{enumerate}
+  \item Convert $^{\id}\a$ to a tangent vector at $\X$: $^{\X}\a = \bAd_\X^{-1}  {^\id\a} \in T_\X \cM$,
+  \item Map the tangent vector through the derivative: ${^\X}\b = \mathrm{d}^r f_\X \; {^\X\a} \in T_{f(\X)} \cM$,
+  \item Convert the result back to a tangent vector at $\id$: ${^\id}\b = \bAd_{f(\X)}  {^\X\b} \in T_\id \cM$.
+\end{enumerate}
+
+Jacobians on Lie Groups satisfy the chain rule. Indeed, if $f(\X) = g \circ h (\X)$ for some $g : \M' \rightarrow \M''$ and $h : \M \rightarrow \M'$ we have with $\Z \coloneq h(\X)$
+\begin{equation}
+  \label{eq:chain_rule}
+  \begin{aligned}
+    \mathrm{d}^r (g \circ h)_\X = \lim_{\a \rightarrow 0} \frac{g \left( h( \X \oplus_r \a ) \right) \ominus_r g(h(\X))}{\a}  \overset{\eqref{eq:right_approx}} = \lim_{\a \rightarrow 0} \frac{g \left( h( \X ) \oplus_r \left( \mathrm{d}^r h_\X \a + \mathcal O(\|\a\|^2) \right)  \right) \ominus_r g(h(\X))}{\a} \\
+    \overset{\eqref{eq:right_approx}} = \lim_{\a \rightarrow 0} \frac{ \left( g (\Z) \oplus_r \left( \mathrm{d}^r g_\Z \;  \mathrm{d}^r h_\X \a + \mathcal O(\| \a \|^2) \right) \right) \ominus_r g(h(\X))}{\a} \overset{\eqref{eq:x_plus_a_minus_x}}= \mathrm{d}^r g_\Z \;  \mathrm{d}^r h_\X.
+  \end{aligned}
+\end{equation}
+An analogous left chain rule can be developed in the same manner via \eqref{eq:left_approx} in lieu of \eqref{eq:right_approx}.
+
+\begin{properties}[title=Important formulas for Lie group derivatives]
+  \begin{itemize}
+    \item Right derivative: $\mathrm{d}^r f_\X \coloneq \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\X)^{-1} \circ  f(\X \circ \exp(\a) \right)}{\a} \in T_\X \M$,
+    \item Left derivative: $\mathrm{d}^l f_\X \coloneq \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\exp(\a) \circ \X) \circ  f(\X)^{-1} \right)}{\a} \in T_\id \M$,
+    \item Conversion between left and right jacobians: $\mathrm{d}^l f_\X = \bAd_{f(\X)} \; \mathrm{d}^r f_\X \; \bAd_{\X}^{-1}$,
+    \item Right chain rule: $\mathrm{d}^r (g (h(\X)))_\X =  \mathrm{d}^r g_{h(\X)} \;  \mathrm{d}^r h_\X$,
+    \item Left chain rule: $\mathrm{d}^l (g (h(\X)))_\X =  \mathrm{d}^l g_{h(\X)} \;  \mathrm{d}^l h_\X$.
+  \end{itemize}
+\end{properties}
+
+\section{Global Derivative}
+
+For a mapping $f : \M \rightarrow \N$ between two manifolds the classical way to define a derivative $\mathbf{D} f_\X$ is as a mapping $T_\X \M \rightarrow T_{f(\X)} \N$ defined as
+\begin{equation}
+  \mathrm{D} f_\X \B \coloneq \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t = 0} f(\gamma(t)), \qquad \begin{cases}
+    \gamma(0) = \X, \\
+    \gamma'(0) = \B.
+  \end{cases}
+\end{equation}
+for $\B \in T_\X \M$. Note that this definition wouldn't make sense for an arbitrary matrix $\B$; for $\gamma$ to take values in $\M$ the derivative at zero must be on the form $\B = \X \hat \a$. Being in global matrix coordinates, $\mathrm{D} f_\X \B$ typically does not exhibit the structure of the tangent space at $T_{f(\X)} \N$. However, it can be mapped to the tangent space via group action, which yields an alternative way of defining the right and left derivatives.
+
+\begin{equation}
+  \label{eq:rght_deriv_traditional}
+  \begin{aligned}
+    \mathrm{d}^r f_\X \a & \coloneq \left( f(\X)^{-1} \left( \mathrm{D} f_\X \; \X \hat \a \right) \right)^{\vee} = \left( f(\X)^{-1} \left( \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t = 0} f(\gamma(t)) \right) \right)^\vee, \qquad \begin{cases} \gamma(0) = \X, \\ \gamma'(0) = \X \hat \a, \end{cases}  \\
+    \mathrm{d}^l f_\X \a & \coloneq \left( \left( \mathrm{D} f_\X \; \hat \a \X \right) f(\X)^{-1} \right)^{\vee} = \left( \left( \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t = 0} f(\gamma(t)) \right) f(\X)^{-1}  \right)^\vee, \qquad \begin{cases} \gamma(0) = \X, \\ \gamma'(0) = \hat \a \X. \end{cases}
+  \end{aligned}
+\end{equation}
+
+\todo[inline]{Show that these definitions agree with those above}
+
+
+\section{Product rule}
+
+Consider a function $f(\X) = g(\X) \circ h(\X)$, we utilize \eqref{eq:right_approx} to obtain
+\begin{equation}
+  \begin{aligned}
+    f(\X \oplus \a) & = \left( g (\X) \oplus \left(\mathrm{d}^r g_\X \a + \mathcal O(\a^2) \right) \right) \circ  \left( h (\X) \oplus \left( \mathrm{d}^r h_\X  \a + \mathcal O(\a^2) \right) \right)
+    \\
+                    & = g(\X) \circ \exp( \mathrm{d}^r g_\X \a + \mathcal O(\a^2)) \circ h(\X) \circ \exp( \mathrm{d}^r h_\X \a + \mathcal O(\a^2))
+    \\
+                    & = g(\X) \circ h(\X) \circ \left( \Ad_{h(\X)^{-1}} \exp \left( \mathrm{d}^r g_\X \a + \mathcal O(\a^2) \right)  \right) \circ \exp( \mathrm{d}^r h_\X \a+ \mathcal O(\a^2) )
+    \\
+                    & \overset{\eqref{eq:exp_adj_comm}}=  g(\X) \circ h(\X) \circ \left( \exp \bAd_{h(\X)^{-1}} \left( \mathrm{d}^r g_\X \a + \mathcal O(\a^2) \right)\right) \circ \exp( \mathrm{d}^r h_\X \a + \mathcal O(\a^2))
+    \\
+                    & \overset{\eqref{eq:bch_formula}}=  g(\X) \circ h(\X) \circ \exp \left( \bAd_{h(\X)^{-1}} \mathrm{d}^r g_\X \a + \mathrm{d}^r h_\X \a + \mathcal O(\a^2)) \right).
+  \end{aligned}
+\end{equation}
+From here we can conclude that
+\begin{equation}
+  \label{eq:product_rule}
+  \mathrm{d}^r (g \circ h)_\X = \bAd_{h(\X)^{-1}} \mathrm{d}^r g_\X + \mathrm{d}^r h_\X
+\end{equation}
+which is the product rule for Lie group derivatives.
+
+\begin{remark}
+  \label{remark:total_derivative}
+  There is no Lie group equivalent of the rule of total derivative. Consider
+  \begin{equation}
+    \begin{aligned}
+      f(g(\X \oplus \a), h(\X \oplus \a))
+       & \approx f \left( g(\X) \oplus \mathrm{d}^r g_\X \; \a , h(\X) \oplus \mathrm{d}^r h_\X \; \a \right)                                                                                      \\
+       & \approx f \left( g(\X) , h(\X) \oplus \mathrm{d} h_\X \a \right) \oplus \mathrm{d}^r f_{g} \; \mathrm{d}^r g_\X \a                                                                        \\
+       & \approx \left[ f \left( g(\X) , h(\X) \right) \oplus \mathrm{d}^r f_h \; \mathrm{d}^r h_\X \a \right] \oplus \mathrm{d}^r f_{g} \; \mathrm{d}^r g_\X \a                                   \\
+       & =  f \left( g(\X) , h(\X) \right) \circ \left[ \exp\left( \mathrm{d}^r f_h \; \mathrm{d}^r h_\X \a  \right) \circ \exp\left ( \mathrm{d}^r f_{g} \; \mathrm{d}^r g_\X \a \right) \right].
+    \end{aligned}
+  \end{equation}
+  That is, if $f(\X) = f(g(\X), h(\X))$ we typically have that
+  \begin{equation}
+    \mathrm{d}^r (f(g(\X), h(\X)))_\X  \neq  \mathrm{d}^r f_{g(\X)} \; \mathrm {d}^r g_\X + \mathrm{d}^r f_{h(\X)} \; \mathrm {d}^r h_\X.
+  \end{equation}
+  However, from \eqref{eq:bch_formula} it can be seen that if
+  \begin{equation}
+    \left[ \mathrm{d}^r f_{h(\X)} \; \mathrm{d}^r h_\X \a  ,   \mathrm{d}^r f_{g(\X)} \; \mathrm{d}^r g_\X \a  \right] = 0, \qquad \forall \a,
+  \end{equation}
+  then the rule of total derivatives applies. One important case when this holds is when $f$ takes values in $\mathbb{E}(n)$ since matrix multiplication on $\mathbb{E}(n)$ corresponds to vector addition on $\mathbb{R}^n$ and hence all brackets are zero.
+\end{remark}
+
+
+
+\section{Lie Bracket}
+
+The Lie bracket between two tangent elements can be defined as the global derivative of the adjoint operator at identity. Consider the mapping $f(\X) \coloneq \bAd_\X \b = \X \hat \b \X^{-1}$ and take a curve $\gamma(t) \in \M$ such that $\gamma(0) = \X$ and $\gamma'(0) = \hat \a$. From $\frac{\mathrm{d}}{\mathrm{d}t} \gamma(t) \gamma(t)^{-1} = 0$ it follows that $\frac{\mathrm{d}}{\mathrm{d}t} \gamma(t)^{-1} = - \gamma(t)^{-1} \gamma'(t) \gamma(t)^{-1}$, hence
+\begin{equation}
+  \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0} f(\gamma(t))  = \gamma'(0) \hat \b \gamma(0)^{-1} - \gamma(0) \hat \b \gamma(0)^{-1} \gamma'(0) \gamma(0)^{-1} = \hat \a \hat \b \X^{-1} - \X \hat \b \X^{-1} \hat \a \X^{-1} .
+\end{equation}
+\begin{properties}
+  The derivatives of $\bAd_\X$ with respect to $\X$ are
+  \begin{subequations}
+    \begin{align}
+    \label{eq:bAd_D}
+    \mathrm{D} (\bAd_\X \b)_\X \hat \a &= \hat \a \hat \b \X^{-1} - \X \hat \b \X^{-1} \hat \a X^{-1}, \\
+    \label{eq:bAd_dr}
+    \mathrm{d}^r (\bAd_\X \b)_\X \a &= \left( \mathrm{D} \left(\bAd_\X \b \right)_\X \X \hat \a \right)^\vee = \bAd_\X \left[ \a, \b \right] = \left[ \bAd_\X \a, \bAd_\X \b \right], \\
+    \label{eq:bAd_dl}
+    \mathrm{d}^l (\bAd_\X \b)_\X \a &= \left( \mathrm{D} \left(\bAd_\X \b \right)_\X \hat \a \X \right)^\vee = \left[ \a, \bAd_\X \b \right],
+    \end{align}
+  \end{subequations}
+  whereas at $\X = \id$ they simplify to
+  \begin{equation}
+    \left( \mathrm{D} (\bAd_\X \b)_{\X = \id} \hat \a \right)^\vee = \mathrm{d}^r (\bAd_\X \b)_{\X = \id} \a= \mathrm{d}^l \left(\bAd_\X \b \right)_{\X = \id}  \a = \left[ \a, \b \right].
+  \end{equation}
+\end{properties}
+The lower-case adjoint is defined as
+\begin{equation}
+  \label{eq:lowercase_adjoint}
+  \begin{aligned}
+    \ad_\a^0 \b & : = \b                                                                                                           \\
+    \ad_\a^1 \b & : = \ad_\a \b = [\a,\b]                                                                                          \\
+    \ad_\a^2 \b & : =[\a,  \ad_\a \b] = \underbrace{[\a,[\a,\b]]}_{2-\mathrm{times}}                                               \\
+                & \vdots                                                                                                           \\
+    \ad_\a^k \b & := [\a, \ad_\a^{k - 1} \b] = \underbrace{[\a, [ \a , \ldots, [\a,\b]]]}_{k \; \mathrm{times}} , \qquad k \geq 1.
+  \end{aligned}
+\end{equation}
+From this definition it can be seen that for a scalar $s$,
+\begin{equation}
+  \label{eq:ad_scaling}
+  \ad_{s \a}^k = s^k \ad_\a, \quad s \in \mathbb{R}
+\end{equation}
+If we formally define the exponential of the adjoint as
+\begin{equation}
+  \label{eq:def_expad}
+  \exp \ad_\a \coloneq \sum_{k=0}^\infty \frac{\ad^k_\a}{k!}
+\end{equation}
+we can also show that the adjoint of the exponential equals the exponential of the adjoint.
+\begin{properties}
+  \begin{equation}
+    \label{eq:adexp_expad}
+    \bAd_{\exp \a} = \exp \ad_\a.
+  \end{equation}
+\end{properties}
+\begin{proof}[Proof of \eqref{eq:adexp_expad}]
+  By expanding the left-hand side in \eqref{eq:adexp_expad} and letting $\A = \hat \a, \B = \hat \b$ we obtain
+  \begin{equation}
+    \label{eq:exp_expansion}
+    (\bAd_{\exp \a} \b)^\wedge = \Exp (\A) \B \Exp (-\A) = \sum_{k=0}^\infty \sum_{i = 0}^{k} \frac{\A^i \B (-\A)^{k-i}}{i! (k - i)!}.
+  \end{equation}
+  We next show by induction that the summands in \eqref{eq:exp_expansion} and \eqref{eq:def_expad} are equal for each value of $k$. Equality evidently holds for the base case $k=0$. Assume that it holds for $k-1$, i.e. that
+  \begin{equation}
+    \left( \frac{\ad_{\a}^{k-1} \b}{(k-1)!} \right)^\wedge = \sum_{i=0}^{k-1} \frac{\A^i \B (-\A)^{k-1-i}}{i! (k-1-i)!}.
+  \end{equation}
+  Then we have that
+  \begin{equation*}
+    \begin{aligned}
+      \left( \frac{\ad_\a^{k} \b}{k!} \right)^\wedge = \frac{1}{k} \left[ \A \frac{(\ad_\A^{k-1} \B)}{(k-1)!} - \frac{(\ad_\A^{k-1} \B)}{(k-1)!} \A \right] =
+      \frac{1}{k} \left[ \sum_{i=0}^{k-1} \frac{\A^{i+1} \B (-\A)^{k-1-i}}{i! (k-1-i)!} + \sum_{i=0}^{k-1} \frac{\A^i \B (-\A)^{k-i}}{i! (k-1-i)!} \right] \\
+      = \frac{1}{k} \left[ \sum_{i=0}^{k-1} \frac{\A^i \B (-\A)^{k-i}}{i! (k-1-i)!} +  \sum_{i=1}^{k} \frac{\A^{i} \B (-\A)^{k-i}}{(i-1)! (k-i)!} \right] = \frac{\B (-\A)^k}{k!} + \sum_{i=1}^{k-1} c_i \A^i \B (-\A)^{k-i} + \frac{\A^k \B}{k!},
+    \end{aligned}
+  \end{equation*}
+  where $c_i = \frac{1}{k} \left( \frac{1}{i!(k-1-i)!} + \frac{1}{(i-1)!(k-i)!} \right)$ and it can be verified that $c_i = \frac{1}{i!(k-i)!}$ as required.
+\end{proof}
+
+Another useful identity is the following.
+\begin{important}
+  \begin{equation}
+    \bAd_\X \left[ \a, \b \right] = \left[ \bAd_\X \a, \bAd_\X \b \right].
+  \end{equation}
+\end{important}
+\section{Derivatives of the Exponential map}
+
+The derivatives of the exponential map is a fundamental expression that often shows up when manipulating derivatives on Lie groups. From \eqref{eq:rght_deriv_traditional} we have that
+\begin{equation}
+  \mathrm{d}^r \exp_\a \b = \left( \exp(\bgamma(0))^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}t}\right|_{t = 0} \exp(\bgamma(t)) \right)^\vee, \quad \bgamma(0) = \a, \; \bgamma'(0) = \b.
+\end{equation}
+To calculate this derivative consider a curve $\bgamma(t) \in \check{\mathfrak{m}}$ and the expression
+\begin{equation}
+  \label{eq:exponential_derivative_posit}
+  \Gamma(\sigma, t) = \exp(\sigma \bgamma(t))^{-1} \frac{\partial}{\partial t}  \exp(\sigma \bgamma(t)) = \Exp \left( - \sigma \hat \bgamma(t) \right) \frac{\partial}{\partial t}  \Exp(\sigma \hat \bgamma(t)).
+\end{equation}
+Take the derivative with respect to $\sigma$:
+\begin{equation}
+  \begin{aligned}
+    \frac{\partial}{\partial \sigma} \Gamma(\sigma, t)
+     & = -\Exp \left(-\sigma \hat \bgamma(t) \right) \hat \bgamma(t) \frac{\partial}{\partial t} \Exp \left(\sigma \hat \bgamma(t) \right) + \Exp(-\sigma \hat \bgamma(t)) \frac{\partial}{ \partial t} \left[ \hat \bgamma(t) \Exp (\sigma \hat \bgamma(t)) \right]                             \\
+     & = \Exp(-\sigma \hat \bgamma(t)) \hat \bgamma'(t) \Exp(\sigma \hat \bgamma(t)) = \Ad_{\Exp (- \sigma \hat \bgamma(t))}\hat \bgamma'(t) = \left(
+    \bAd_{\exp(-\sigma \bgamma(t))} \bgamma'(t) \right)^\wedge                                                                                                                                                                                                                                   \\
+     & \overset{\eqref{eq:adexp_expad}}= \left( \exp \ad_{-\sigma \bgamma(t)}\bgamma'(t) \right)^\wedge = \left( \sum_{k=0}^\infty \frac{\ad^k_{-\sigma \bgamma(t)}}{k!}\bgamma'(t) \right)^\wedge = \left( \sum_{k=0}^\infty \sigma^k \frac{\ad^k_{-\bgamma(t)}}{k!}\bgamma'(t) \right)^\wedge.
+  \end{aligned}
+\end{equation}
+Integrating from 0 to 1 with respect to $\sigma$ and setting $t = 0$ then yields
+\begin{equation}
+  \Gamma(1, 0)^\vee = \int_0^1 \frac{\partial}{\partial \sigma} \Gamma(\sigma, 0)^\vee \mathrm{d} \sigma = \sum_{k=0}^\infty \frac{\ad^k_{-\bgamma(0)}}{(k+1)!}\bgamma'(0).
+\end{equation}
+From \eqref{eq:exponential_derivative_posit} we can see that $\Gamma(1, 0)$ is equal to the right derivative of $\exp$ at $\gamma(0)$ in the direction $\gamma'(0)$.
+
+
+\begin{properties}
+  The right- and left derivatives of the exponential map are
+  \begin{equation}
+    \label{eq:dexp_def}
+    \begin{aligned}
+      \mathrm{d}^r \exp_\a & = \frac{I - \exp (-\ad_{\a})}{\ad_{\a}} \coloneq \sum_{k=0}^\infty \frac{(-1)^k }{(k+1)!} \ad^k_{\a}, \\
+      \mathrm{d}^l \exp_\a & = \frac{\exp \ad_{a} - I}{\ad_{a}} \coloneq \sum_{k=0}^\infty \frac{1 }{(k+1)!} \ad^k_{\a}.
+    \end{aligned}
+  \end{equation}
+  Through the Bernoulli numbers $B_0 = 0, B_1 = -1/2, B_2 = 1/6, \ldots$ that are defined as
+  \begin{equation}
+    \label{eq:bernoulli_number_def}
+    \frac{t}{e^t - 1} = \sum_{n=0}^\infty \frac{B_n}{n!} t^n.
+  \end{equation}
+  we can also write the formal inverses of the derivatives of the exponential
+  \begin{equation}
+    \label{eq:dexpinv_def}
+    \begin{aligned}
+      \left(\mathrm{d}^r \exp_\a\right)^{-1} & = \frac{\ad_{\a}}{I - \exp (- \ad_{\a})} \coloneq \sum_{n=0}^\infty B_n \frac{(-1)^n}{n!} \ad_{\a}^n, \\
+      \left(\mathrm{d}^l \exp_\a\right)^{-1} & = \frac{\ad_{\a}}{\exp \ad_{\a} - I} \coloneq \sum_{n=0}^\infty B_n \frac{1}{n!} \ad_\a^n.
+    \end{aligned}
+  \end{equation}
+  Notably, at $\a = \symbf{0}$ these are all equal to the identity matrix. Since $B_1 = -1/2$ and $B_n = 0$ for odd $n > 1$ it follows that
+  \begin{equation}
+    \left(\mathrm{d}^l \exp_\a\right)^{-1} = -\ad_\a + \left(\mathrm{d}^r \exp_\a\right)^{-1}.
+  \end{equation}
+\end{properties}
+
+While the derivatives \eqref{eq:dexp_def} - \eqref{eq:dexpinv_def} could be evaluated to arbitrary precision by adding enough terms, this is not a practical solution. Fortunately closed-form expressions can be obtained for all groups of interest, although doing so is tediuous. We devote the remainder of this section to that task.
+
+We prove an identity about the Bernoulli numbers that will be useful in evaluating \eqref{eq:dexpinv_def}.
+\begin{proposition}
+  \begin{equation}
+    \label{eq:bernoulli_cot}
+    \sum_{n \geq 1} \frac{B_{2n} (-1)^n x^{2n}}{(2n)!} = \frac{x}{2} \cot \left(\frac{x}{2}\right).
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  By setting $x = iy$ and observing that $B_n = 0$ for odd $n > 1$ we get
+  \begin{equation}
+    \begin{aligned}
+      \sum_{n=0}^\infty \frac{B_{2n} (-1)^n x^{2n}}{(2n)!} = \sum_{n=0}^\infty \frac{B_{2n} (-1)^n y^{2n} (-1)^n}{(2n)!} = \sum_{n=0}^\infty \frac{B_n y^n}{n!} - B_1 y \overset{\eqref{eq:bernoulli_number_def}} = \frac{y}{e^y - 1} + \frac{y}{2}
+      = \frac{y}{2} \frac{e^y + 1 }{e^y - 1} \\
+      = \frac{ix}{2} \frac{1 + e^{-iy}}{1 - e^{-iy}} - 1 = \frac{ix}{2} \frac{e^{iy / 2} + e^{-ix/2}}{e^{ix/2} - e^{-ix/2}} = \frac{ix}{2} \frac{\cos (x / 2)}{i \sin(x / 2)} = \frac{x}{2} \cot \left( \frac{x}{2} \right).
+    \end{aligned}
+  \end{equation}
+\end{proof}
+
+We can now calculate $\left( \mathrm{d}^r \exp_\a \right)^{-1}$ for various groups.
+
+\subsection{\texorpdfstring{$\SOtwo$}{SO(2)}}
+
+Consider tangent elements $\omega_z, \bar \omega_z$. The bracket on $\SOtwo$ is zero since
+\begin{equation}
+  \left[ \omega_z, \bar \omega_z \right] = \left( \begin{bmatrix}
+      0 & -\omega_z \\ \omega_z & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & -\bar \omega_z \\ \bar \omega_z & 0
+    \end{bmatrix} - \begin{bmatrix}
+      0 & -\bar \omega_z \\ \bar \omega_z & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & - \omega_z \\ \omega_z & 0
+    \end{bmatrix}\right)^\vee = 0.
+\end{equation}
+It follows that all terms vanish except for $n = 0$.
+
+\begin{properties}[title={Lowercase adjoint and exponential derivatives on $\SOtwo$}]
+  \begin{align}
+    \ad_{\omega_z} = 0, \\
+    \mathrm{d}^r \exp_{\omega_z} =
+    \mathrm{d}^l \exp_{\omega_z} =
+    \left( \mathrm{d}^r \exp_{\omega_z} \right)^{-1} =
+    \left( \mathrm{d}^l \exp_{\omega_z} \right)^{-1} = 1.
+  \end{align}
+\end{properties}
+
+\subsection{\texorpdfstring{$\SOthree$}{SO(3)}}
+
+We know that $\ad_\bomega = \hat \bomega$ and from \eqref{eq:so3_pow3} that $\hat \bomega^3 = - \| \bomega \|^2 \hat \bomega$. Thus $\ad_\bomega^3 = -\| \bomega \|^2 \ad_\bomega$ and we get,
+\begin{equation*}
+  \begin{aligned}
+    \sum_{n=0}^\infty
+     &
+    \frac{B_n (-1)^n}{n!} \ad_\bomega^n
+    = \sum_{n=0}^\infty \frac{B_n (-1)^n}{n!} \hat \bomega^n = I_3 + \frac{\ad_\bomega}{2} + \sum_{n \geq 2} \frac{B_n (-1)^n}{n!}\ad_\bomega^n                                                                                                                                                                                                                    \\
+     & = I_3 + \frac{\ad_\bomega}{2} + \left( \frac{B_2}{2!}\ad_\bomega^2 - \frac{B_4 \| \bomega \|^2} {4!} \ad_\bomega^2 + \frac{B_6 \| \bomega \|^4}{6!} \ad_\bomega^2 - \ldots \right) = I_3 + \frac{\ad_\bomega}{2} - \frac{1}{\| \bomega \|^2} \sum_{n \geq 1} \frac{B_{2n} (-1)^n \| \bomega \|^{2n}}{(2n)!} \ad_\bomega^2                                   \\
+     & \overset{\eqref{eq:bernoulli_cot}}= I_3 + \frac{\ad_\bomega}{2} - \frac{1}{\| \bomega \|^2} \left( \frac{\| \bomega \|}{2} \cot \left( \frac{\| \bomega \|}{2} \right) - 1 \right) \ad_\bomega^2 = I_3 + \frac{\ad_\bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \ad_\bomega^2,
+  \end{aligned}
+\end{equation*}
+where the half-angle formula $\cot x = (1 + \cos x) / \sin x$ has been used. The left jacobian $\mathrm{d}^l \exp_\bomega$ was already calculated in \eqref{eq:so3_leftjac} and since $\left( \mathrm{d}^r \exp_{\bomega} \right)^{-1} = \left[ \left( \mathrm{d}^l \exp_{\bomega} \right)^{-1} \right]^T$. Due to the anti-symmetry of $\ad_\bomega$ it follows that also $\mathrm{d}^r \exp_\bomega = \left[ \mathrm{d}^l \exp_\bomega \right]^T$ must hold.
+
+\begin{properties}[title={Lowercase adjoint and exponential derivatives on $\SOthree$}]
+  \begin{align}
+    \ad_\bomega                                     & = \hat \bomega,                                                                                                                                              \\
+    \mathrm{d}^r \exp_{\bomega}                     & =        I_3 - \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2, \\
+    \mathrm{d}^l \exp_{\bomega}                     & = I_3 + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2,        \\
+    \left( \mathrm{d}^r \exp_{\bomega} \right)^{-1} & = I_3 + \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2, \\
+    \left( \mathrm{d}^l \exp_{\bomega} \right)^{-1} & = I_3 - \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2.
+  \end{align}
+\end{properties}
+
+\subsection{\texorpdfstring{$\SEtwo$}{SE(2)}}
+
+We first calculate an expression for the bracket.
+\begin{equation}
+  \begin{aligned}
+    \left[ \begin{bmatrix} v_x \\ v_y \\ \omega_z \end{bmatrix}, \begin{bmatrix} \bar v_x \\ v_y \\ \bar \omega_z \end{bmatrix} \right] = \left( \begin{bmatrix}
+      0 & -\omega_z & v_x \\ \omega_z & 0 & v_y \\ 0 & 0 & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & -\bar\omega_z & \bar v_x \\ \bar\omega_z & 0 & \bar v_y \\ 0 & 0 & 0
+    \end{bmatrix} - \begin{bmatrix}
+      0 & -\bar\omega_z & \bar v_x \\ \bar\omega_z & 0 & \bar v_y \\ 0 & 0 & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & -\omega_z & v_x \\ \omega_z & 0 & v_y \\ 0 & 0 & 0
+    \end{bmatrix} \right)^{\vee} \\
+    = \begin{bmatrix} 0 & 0 & -\omega_z \bar v_y + \bar \omega_z v_y \\
+                0 & 0 & \omega_z \bar v_x - \bar \omega_z v_x  \\
+                0 & 0 & 0
+    \end{bmatrix}^\vee
+    = \begin{bmatrix}  -\omega_z \bar v_y + \bar \omega_z v_y \\ \omega_z \bar v_x - \bar \omega_z v_x \\ 0 \end{bmatrix} = \underbrace{\begin{bmatrix}  0 & -\omega_z & v_y \\ \omega_z & 0 & -v_x \\ 0 & 0 & 0 \end{bmatrix}}_{\ad_\a} \begin{bmatrix} \bar v_x \\  \bar v_y  \\ \bar \omega_z \end{bmatrix}.
+  \end{aligned}
+\end{equation}
+A quick calculation reveals that $\ad_\a^3 = -\omega_z^2 \ad_\a$, which is exactly the relation we used for $\SOthree$ above. Consequently the inverse derivatives must have the same form as on $\SOthree$.
+
+\begin{properties}[title={Lowercase adjoint and exponential derivatives on $\SEtwo$}]
+  Let $\a =\begin{bmatrix} v_x & v_y & \omega_z \end{bmatrix}^T$. Then,
+  \begin{align}
+    \ad_\a                                     & =  \begin{bmatrix}  0 & -\omega_z & v_y \\ \omega_z & 0 & -v_x \\ 0 & 0 & 0 \end{bmatrix},                                                                                                     \\
+    \mathrm{d}^r \exp_{\a}                     & =        I_3 - \frac{1 - \cos \omega_z}{\omega_z^2} {\ad_\a} + \frac{ \omega_z - \sin \omega_z }{|\omega_z|^3} {\ad_\a}^2,         \\
+    \mathrm{d}^l \exp_{\a}                     & = I_3 + \frac{1 - \cos \omega_z}{\omega_z^2} {\ad_\a} + \frac{ \omega_z - \sin \omega_z }{|\omega_z|^3} {\ad_\a}^2,                \\
+    \left( \mathrm{d}^r \exp_{\a} \right)^{-1} & = I_3 + \frac{\ad_\a}{2} + \left( \frac{1}{\omega_z^2} - \frac{1 + \cos \omega_z }{2 |\omega_z| \sin |\omega_z|} \right) \ad_\a^2, \\
+    \left( \mathrm{d}^l \exp_{\a} \right)^{-1} & = I_3 - \frac{\ad_\a}{2} + \left( \frac{1}{\omega_z^2} - \frac{1 + \cos \omega_z }{2 |\omega_z| \sin |\omega_z|} \right) \ad_\a^2.
+  \end{align}
+\end{properties}
+
+\subsection{\texorpdfstring{$\SEthree$}{SE(3)}}
+
+First we derive an expression for $\ad_\a$ utilizing that for the hat operator on $\SOthree$,  $\hat \a \b = -\hat \b \a$
+\begin{equation}
+  \begin{aligned}
+    \left[ \begin{bmatrix}
+        \bv \\ \bomega
+      \end{bmatrix}, \begin{bmatrix}
+        \bar \bv \\ \bar \bomega
+      \end{bmatrix} \right]_\SEthree = \left(\begin{bmatrix} \hat \bomega & \bv \\ 0 & 0 \end{bmatrix}\begin{bmatrix} \hat {\bar \bomega} & \bar{\bv} \\ 0 & 0 \end{bmatrix} - \begin{bmatrix} \hat {\bar \bomega} & \bar{\bv} \\ 0 & 0 \end{bmatrix} \begin{bmatrix} \hat \bomega & \bv \\ 0 & 0 \end{bmatrix} \right)^\vee= \begin{bmatrix} \left[ \bomega, \bar \bomega \right]^\wedge_\SOthree & \hat \bomega \bar \bv - \hat {\bar \bomega} \bv \\ 0 & 0 \end{bmatrix}^\vee \\
+    = \begin{bmatrix}  \hat \bomega \bar \bv - \hat {\bar \bomega} \bv \\ \left[ \bomega, \bar \bomega \right]_\SOthree  \end{bmatrix} = \underbrace{\begin{bmatrix}
+        \hat \bomega & \hat \bv \\ 0 & \hat \bomega
+      \end{bmatrix}}_{\ad_\a} \begin{bmatrix}
+      \bar v \\ \bar \bomega
+    \end{bmatrix}.
+  \end{aligned}
+\end{equation}
+We are interested in the powers $\ad_\a^k$ in order to evaluate the exponential derivatives. For $k \geq 1$
+\begin{equation}
+  \ad_\a^k = \begin{bmatrix}
+    \hat \bomega & \hat \bv \\ 0 & \hat \bomega
+  \end{bmatrix}^k
+  = \begin{bmatrix}
+    \hat \bomega^k & \sum_{i=0}^{k-1} \hat \bomega^{i} \hat \bv \hat \bomega^{k-1-i} \\ 0 & \hat \bomega^k
+  \end{bmatrix}.
+\end{equation}
+
+Thus the left derivative of the exponential can be written
+\begin{equation*}
+  \mathrm{d}^l \exp_\a = \sum_{k = 0}^\infty \frac{\ad_\a^k}{(k+1)!} = I + \sum_{k = 1}^\infty \frac{1}{(k+1)!}  \begin{bmatrix}
+    \hat \bomega^k & \sum_{i = 0}^{k-1} \hat \bomega^i \hat \bv \hat \bomega^{k - 1 - i} \\ 0 & \hat \bomega^k
+  \end{bmatrix} = \begin{bmatrix}
+    \mathrm{d}^l \left(\exp_{\SOthree}\right)_\bomega & Q^l(\bv, \bomega)                                 \\
+    0                                                 & \mathrm{d}^l \left(\exp_{\SOthree}\right)_\bomega
+  \end{bmatrix},
+\end{equation*}
+where a closed-form expression for $Q^l(\bv, \bomega)$ can be painstakingly obtained through a series of sum manipulations. We first convert the formula to a form that is symmetric in $i$ and $k$.
+\begin{equation*}
+  \begin{aligned}
+    Q^l(\bv, \bomega) & \coloneq \sum_{k = 1}^\infty \frac{1}{(k+1)!} \sum_{i=0}^{k-1} \hat \bomega^i \hat \bv \hat \bomega^{k - 1 - i} = \sum_{k = 0}^\infty \sum_{i=0}^{k} \frac{1}{(k+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k - i} \\
+                      & = \sum_{i = 0}^\infty \sum_{k = i}^\infty \frac{1}{(k+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k - i} = \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k}.
+  \end{aligned}
+\end{equation*}
+With the same steps the right derivative can be shown to be
+\begin{equation}
+  \label{eq:se3_qr}
+  Q^r(\bv, \bomega) \coloneq \sum_{k=1}^\infty \frac{(-1)^k}{(k+1)!} \sum_{i=0}^{k-1} \hat \bomega ^i \hat \bv \hat \bomega^{k-1-i} = \ldots = - \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{(-1)^{k+i}}{(k+i+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k}
+\end{equation}
+and we can see that
+\begin{equation}
+  Q^r(\bv, \bomega) = Q^l(-\bv, -\bomega)
+\end{equation}
+which is convenient to know since calculating one of them is tedious enough.
+
+In the following calculation the sum $\sum_{k, i \geq 0}$ is first split into parts $(k=i=0)$, $(k=0, i \geq 1)$, $(k \geq 1, i = 0)$ and $(k, i \geq 1)$, and then the resulting single sums are split into two sums $i = 0, 2, \ldots$ and $i = 1, 3, \ldots$. Also using that
+\begin{equation}
+  \label{eq:hat_parity_rels}
+  \hat \bomega^{2k+1} = (-1)^{k} \| \bomega \|^{2k}\hat \bomega, \qquad \hat \bomega^{2k+2} = (-1)^{k} \| \bomega \|^{2k}\hat \bomega^2,
+\end{equation}
+which follows from \eqref{eq:so3_pow3}, we get
+\begin{equation*}
+  \begin{aligned}
+     & Q^l (\bv, \bomega) = \frac{1}{2} \hat \bv + \sum_{i = 1}^\infty \frac{\hat \bomega^i \hat \bv}{(i+2)!} + \sum_{k = 1}^\infty \frac{\hat \bv\hat \bomega^k }{(k+2)!} + \sum_{i=1}^\infty \sum_{k=1}^\infty \frac{1}{(i+k+2)!} \hat \bomega^i \hat \bv \hat \bomega^k                                                                                                                            \\
+     & = \frac{1}{2} \hat \bv + \sum_{i = 0}^\infty \frac{\hat \bomega^{i+1} \hat \bv + \hat \bv \hat \bomega^{i+1}}{(i+3)!} + \sum_{i=0}^\infty \sum_{k=0}^\infty \frac{1}{(i+k+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1}                                                                                                                                                                  \\
+     & = \frac{1}{2} \hat \bv + \sum_{i=0}^\infty \frac{\hat \bomega^{2i+1} \hat \bv + \hat \bv \hat \bomega^{2i+1}}{(2i+3 )!} + \sum_{i=0}^\infty \frac{\hat \bomega^{2i+2} \hat \bv + \hat \bv \hat \bomega^{2i+2}}{(2i+4)!} + \sum_{i=0}^\infty \sum_{k=0}^\infty \frac{1}{(i+k+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1}                                                                \\
+     & = \frac{1}{2} \hat \bv + \sum_{i=0}^\infty \frac{(-1)^{i}\| \bomega \|^{2i}}{(2i+3)!}  \left( \hat \bomega \hat \bv + \hat \bv \hat \bomega \right)  + \sum_{i=0}^\infty \frac{(-1)^{i}\| \bomega \|^{2i}}{(2i+4)!}  \left( \hat \bomega^2 \hat \bv + \hat \bv \hat \bomega^2 \right) + \sum_{i=0}^\infty \sum_{k=0}^\infty \frac{1}{(i+k+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1}.
+  \end{aligned}
+\end{equation*}
+The first two sums can now be evaluated in a fairly straightforward manner:
+\begin{subequations}
+  \begin{align}
+    \label{eq:sine_sum}
+    \sum_{i=0}^\infty \frac{(-1)^i}{(2i+3)!} \| \bomega \|^{2i}   & = - \frac{1}{\| \bomega \|^3} \sum_{i=0}^\infty \frac{(-1)^{i+1}}{(2(i+1)+1)!} \| \bomega \|^{2(i+1) + 1} = \frac{\| \bomega \| - \sin \| \bomega \|}{\| \bomega \|^3} ,         \\
+    \label{eq:cosine_sum}
+    \sum_{i=0}^\infty \frac{(-1)^{i}}{(2i+4)!} \| \bomega \|^{2i} & = \frac{1}{\| \bomega \|^4} \sum_{i=0}^\infty \frac{(-1)^{i+2}}{(2(i+2))!} \| \bomega \|^{2(i + 2)} =  \frac{\cos \| \bomega \| - 1 + \frac{\|\bomega\|^2}{2}}{\| \bomega \|^4}.
+  \end{align}
+\end{subequations}
+The double sum requries additional work. Using $\hat \bomega \hat \bv \hat \bomega = (-\bomega \cdot \bv) \hat \bomega$ from \eqref{eq:so3_pow3} yields
+\begin{equation*}
+  \begin{aligned}
+    \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1} = (-\bomega \cdot \bv) \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{k+i+1}  \overset{j = k+i}=  (-\bomega \cdot \bv) \sum_{j = 0}^\infty \sum_{k = 0}^{j} \frac{1}{(j+4)!} \hat \bomega^{j+1} \\
+    = -(\bomega \cdot \bv) \sum_{j = 0}^\infty \frac{j+1}{(j+4)!} \hat \bomega^{j+1} = -(\bomega \cdot \bv) \sum_{j=0}^\infty \left(\frac{1}{(j+3)!} - \frac{3}{(j+4)!} \right) \hat \bomega^{j+1}                                                                                                                                      \\
+    = -(\bomega \cdot \bv) \left( \sum_{j=0}^\infty \left(\frac{1}{(2j+3)!} - \frac{3}{(2j+4)!} \right) \hat \bomega^{2j+1} + \sum_{j=0}^\infty \left(\frac{1}{(2j+4)!} - \frac{3}{(2j+5)!} \right) \hat \bomega^{2j+2} \right)                                                                                                         \\
+    \overset{\eqref{eq:hat_parity_rels}}= (\bomega \cdot \bv) \left( -\sum_{j=0}^\infty \left(\frac{(-1)^j  }{(2j+3)!}\| \bomega \|^{2j} + 3\frac{(-1)^j }{(2j+4)!} \| \bomega \|^{2j}\right)  \hat \bomega + \sum_{j=0}^\infty \left(-\frac{(-1)^j  }{(2j+4)!} \| \bomega \|^{2j} + 3\frac{(-1)^j  }{(2j+5)!}\| \bomega \|^{2j} \right) \hat \bomega^2 \right).
+  \end{aligned}
+\end{equation*}
+The sums \eqref{eq:sine_sum} and \eqref{eq:cosine_sum} appear again and can be re-used. The remaining sum with denominator $(2j+5)!$ evaluates to a higher-order sine expression as follows
+\begin{equation}
+  \sum_{j=0}^\infty \frac{(-1)^j}{(2j+5)!} \| \bomega \|^{2j} = \frac{1}{\|\bomega\|^5} \sum_{j=0}^\infty \frac{(-1)^{j+2}}{((2j+2)+1)} \| \bomega \|^{2(j+2)+1} = \frac{\sin \|\bomega \| - \| \bomega \| + \frac{\|\bomega\|}{6}}{\| \bomega \|^5}.
+\end{equation}
+\begin{important}
+  After collecting the various expressions the closed-form expression for $Q^l$ can be written down
+  \begin{equation}
+    \label{eq:se3_q_expr}
+    \begin{aligned}
+      Q^l (\bv, \bomega) & = \frac{1}{2}\hat \bv + \frac{\| \bomega \| - \sin \| \bomega \|}{\| \bomega \|^3}\left(\hat \bomega \hat \bv + \hat \bv \hat \bomega - (\bomega \cdot \bv) \hat \bomega \right)                     \\
+                         & + \frac{ \cos \| \bomega \| - 1 + \frac{\|\bomega\|^2}{2} }{\| \bomega \|^4} \left(\hat \bomega^2 \hat \bv + \hat \bv \hat \bomega^2 + (\bomega \cdot \bv) (3 \hat \bomega - \hat \bomega^2) \right) \\
+                         & - 3(\bomega \cdot \bv) \left(  \frac{\|\bomega\| - \sin \|\bomega\| - \frac{\|\bomega\|^3}{6}}{\|\bomega\|^5} \right) \hat \bomega^2 .
+    \end{aligned}
+  \end{equation}
+\end{important}
+The $Q$ matrix allows us to write down a closed-form expression for $\mathrm{d}^l \exp_\a$ on $\SEthree$, and $\left( \mathrm{d}^l \exp_\a\right)^{-1}$ follows from noting that $\begin{bmatrix} A & B \\ 0 & A \end{bmatrix}^{-1} = \begin{bmatrix} A^{-1} & -A^{-1} B A^{-1} \\ 0 & A^{-1} \end{bmatrix}$ for $A$ invertible.
+
+\begin{properties}[title={Lowercase adjoint and exponential derivatives on $\SEthree$}]
+  Let $\a = \begin{bmatrix} \bv \\ \bomega \end{bmatrix}$ and $Q^l$ as in \eqref{eq:se3_q_expr}. Then
+  \begin{align}
+    \ad_{\a}                                   & =  \begin{bmatrix}  \hat \bomega & \hat \bv \\ 0 & \hat \bomega \end{bmatrix},  \\
+    \mathrm{d}^r \exp_{\a}                     & =   \begin{bmatrix} J^r_\SOthree & Q^l(-\bv, - \bomega) \\ 0 & J^r_\SOthree \end{bmatrix}, \\
+    \mathrm{d}^l \exp_{\a}                     & = \begin{bmatrix} J^l_\SOthree & Q^l(\bv, \bomega) \\ 0 & J^l_\SOthree\end{bmatrix}    \\
+    \left( \mathrm{d}^r \exp_{\a} \right)^{-1} & =  \begin{bmatrix} \left(J^r_\SOthree\right)^{-1}  &  -\left(J^r_\SOthree\right)^{-1} Q^l(-\bv, -\bomega)  \left(J^r_\SOthree\right)^{-1} \\ 0 &  \left(J^r_\SOthree\right)^{-1} \end{bmatrix},
+    \\
+    \left( \mathrm{d}^l \exp_{\a} \right)^{-1} & = \begin{bmatrix} \left(J^l_\SOthree\right)^{-1}  & -\left(J^l_\SOthree\right)^{-1} Q^l(\bv, \bomega)  \left(J^l_\SOthree\right)^{-1} \\ 0 &  \left(J^l_\SOthree\right)^{-1} \end{bmatrix} .
+  \end{align}
+  where $J^{l/r}_\SOthree = \left( \mathrm{d}^{l/r} \exp_{\SOthree} \right)_\bomega$ and $\left(J^{l/r}_\SOthree \right)^{-1} = \left( \left( \mathrm{d}^{l/r} \exp_{\SOthree} \right)_\bomega \right)^{-1}$. Note that in these formulas $\hat \bomega$ and $\hat \bv$ denote the hat operator on $\SOthree$.
+\end{properties}
+\section{Derivatives of common operations}
+
+\paragraph{Group composition}
+
+We calculate the right derivatives using \eqref{eq:deriv_rght} and the left derivatives via \eqref{eq:derivative_trans}.
+
+\begin{align}
+  \label{eq:d_composition_rght_fst}
+  \begin{split}
+    \mathrm{d}^r (\X \circ \Y)_{\X}
+    & \overset{\eqref{eq:deriv_rght}}= \lim_{\a \rightarrow 0} \frac{ \log \left( (\X \circ \Y)^{-1} \circ \X \circ \exp(\a) \circ \Y \right) }{\a} = \lim_{\a \rightarrow 0} \frac{ \log \left( \Y^{-1} \circ \exp(\a) \circ \Y \right) }{\a}                                                                                     \\
+    & \overset{\eqref{eq:exp_adj_comm}}= \lim_{\a \rightarrow 0} \frac{\log \exp \bAd_{\Y^{-1}} \a}{\a} = \bAd_{\Y^{-1}},
+  \end{split}
+  \\
+  \label{eq:d_composition_left_fst}
+  \mathrm{d}^l (\X \circ \Y)_{\X}
+   & \overset{\eqref{eq:derivative_trans}}= \bAd_{\X \circ \Y} \bAd_{\Y^{-1}} \bAd_{\X}^{-1} \overset{\eqref{eq:adjoint_properties}}= I_n,
+  \\
+  \label{eq:d_composition_rght_snd}
+  \mathrm{d}^r (\X \circ \Y)_\Y
+   & \overset{\eqref{eq:deriv_rght}}= \lim_{\a \rightarrow 0} \frac{ \log \left( (\X \circ \Y)^{-1} \circ \X \circ \Y \circ \exp(\a) \right) }{\a} = I_n,
+  \\
+  \label{eq:d_composition_left_snd}
+  \mathrm{d}^l (\X \circ \Y)_{\Y}
+   & \overset{\eqref{eq:derivative_trans}} = \bAd_{\X \circ \Y} I_n \bAd_{\Y}^{-1} \overset{\eqref{eq:adjoint_properties}}= \bAd_{\X}.
+\end{align}
+
+\paragraph{Group inverse}
+
+\begin{align}
+  \label{eq:d_inv_rght}
+  \begin{split}
+    \mathrm{d}^r (\X^{-1})_\X
+    &\overset{\eqref{eq:deriv_rght}}= \lim_{\a \rightarrow 0} \frac{ \log \left( \X \circ (\X \circ \exp(\a))^{-1} \right) }{\a} =   \lim_{\a \rightarrow 0} \frac{ \log \left( \X \circ \exp(-\a) \circ \X^{-1} \right) }{\a}
+    \\
+    &
+    \overset{\eqref{eq:exp_adj_comm}}= \frac{ \log \exp \bAd_\X -\a}{\a} = -\bAd_\X.
+  \end{split}
+  \\
+  \label{eq:d_inv_left}
+  \mathrm{d}^l (\X^{-1})_\X
+   & \overset{\eqref{eq:derivative_trans}}= -\bAd_{\X^{-1}} \bAd_\X \bAd_{\X^{-1}} = -\bAd_{\X^{-1}}.
+\end{align}
+
+\paragraph{Logarithm}
+
+From differentiating $\a = \log \exp \a$ using the chain rule we get $I = \mathrm{d}^r \log_{\exp \a} \; \mathrm{d}^r \exp_{\a}$, which implies that
+\begin{align}
+  \mathrm{d}^r \log_{\X} = \left[\mathrm{d}^r \exp_{\log \X} \right]^{-1}, \label{eq:d_log_rght} \\
+  \mathrm{d}^l \log_{\X} = \left[\mathrm{d}^l \exp_{\log \X} \right]^{-1}. \label{eq:d_log_left} \\
+\end{align}
+
+\paragraph{Plus and minus}
+
+From the chain rule and the above we can also deduce the derivatives of the plus and minus maps
+
+\begin{align}
+  \label{eq:d_rplus_fst}
+  \mathrm{d}^r (\X \oplus_r \a)_\X  & = \mathrm{d}^r (\X \circ \exp (\a) )_\X \overset{\eqref{eq:d_composition_rght_fst}}= \bAd_{\exp(\a)}^{-1},
+  \\
+  \label{eq:d_rplus_snd}
+  \mathrm{d}^r (\X \oplus_r \a)_\a  & = \mathrm{d}^r (\X \circ \exp (\a) )_\a \overset{\eqref{eq:chain_rule}}= \mathrm{d}^r (\X \circ \exp (\a) )_{\exp \a} \; \mathrm{d}^r \exp_\a \overset{\eqref{eq:d_composition_rght_snd}}= \mathrm{d}^r \exp_\a,
+  \\
+  \label{eq:d_rminus_fst}
+  \mathrm{d}^r (\Y \ominus_r \X)_\Y & = \mathrm{d}^r \left(\log \X^{-1} \circ \Y \right)_\Y \overset{\eqref{eq:chain_rule}}= \mathrm{d}^r \log_{\X^{-1} \circ \Y} \; \mathrm{d}^r (\X^{-1} \circ \Y)_{\Y} \overset{\eqref{eq:d_composition_rght_snd}}= \left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1},
+  \\
+  \label{eq:d_rminus_snd}
+  \begin{split}
+    \mathrm{d}^r (\Y \ominus_r \X)_\X & = \mathrm{d}^r \left(\log \X^{-1} \circ \Y \right)_\X \overset{\eqref{eq:chain_rule}}= \mathrm{d}^r \log_{\X^{-1} \circ \Y} \; \mathrm{d}^r (\X^{-1} \circ \Y)_{\X^{-1}} \; \mathrm{d}^r (\X^{-1})_\X \\
+    & \overset{\eqref{eq:d_log_rght}, \eqref{eq:d_composition_rght_fst}, \eqref{eq:d_inv_rght}}= \left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\Y^{-1}} (-\bAd_{\X}) \overset{\eqref{eq:ad_product}}= -\left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\Y^{-1} \circ \X} \\
+    & = -\left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\exp \Y \ominus_r \X}^{-1} \overset{\eqref{eq:derivative_trans}}= - \left[ \mathrm{d}^l \exp_{\Y \ominus_r \X} \right]^{-1}.
+  \end{split}
+\end{align}
+
+
+\section{Trace on SO3}
+
+\todo[inline]{This is a work in progress}
+
+\begin{tcolorbox}[title=Example: Left and right derivatives on SO(3)]
+
+  Right derivatives
+  \begin{equation}
+    \frac{^{RQ}\partial R Q}{^Q\partial Q} = I, \quad \frac{^{RQ}\partial R Q}{^R\partial R} = Q^T, \quad \frac{^{R^T}\partial R^T}{^R\partial R} = -I
+  \end{equation}
+
+  Left derivatives
+  \begin{equation}
+    \frac{^{e}\partial R Q}{^e\partial Q} = R, \quad \frac{^{e}\partial R Q}{^e\partial R} = I, \quad \frac{^{e}\partial R^T}{^e\partial R} = -I
+  \end{equation}
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[title=Example: trace on SO(3)]
+  Consider the mapping $\tr : SO(3) \rightarrow \mathbb{R}$, we are interested its right derivatives. Using that $\Exp(\bomega) \approx I + [\bomega]_\times$ for small $\bomega$
+  \begin{equation}
+    \begin{aligned}
+      \frac{^{\tr(R)}\partial \tr(R)}{^R\partial R} = \lim_{\bomega \rightarrow 0} \frac{\tr(R \oplus \bomega) - \tr(R)}{\bomega} =  \lim_{\bomega \rightarrow 0} \frac{\tr(R (I + [\bomega]_\times) - R) }{\bomega}                                \\
+      = \lim_{\bomega \rightarrow 0} \frac{\tr(R [\bomega]_\times )) }{\bomega} = \lim_{\bomega \rightarrow 0} \frac{\tr((R - R^T) [\bomega]_\times )) }{2 \bomega} =  \lim_{\bomega \rightarrow 0} \frac{ (R^T - R)^\vee \cdot \bomega  }{\bomega} \\
+      = (R^T - R)^\vee \in \mathbb{R}^{1 x 3}.
+    \end{aligned}
+  \end{equation}
+  Another approach yielding the same result is to study the expression for $\bomega = u E_i$ for $i=1,2,3$ and let $u \rightarrow 0$.	It can be shown that the left derivative has the same expression, which also follows from \eqref{eq:derivative_trans}:
+  \begin{equation}
+    \label{eq:dtr_dr}
+    \begin{aligned}
+      \frac{^e\partial \tr(R)}{^e \partial R} = \frac{^{\tr(R)}\partial \tr(R)}{^RR} \Ad_R^{-1} = \left(R^T - R\right)^\vee R^T  =  \left[ R \left( R^T - R \right)^\vee  \right]^T \\
+      = (R (R^T - R) R^T)^\vee = (R^T - R)^\vee.
+    \end{aligned}
+  \end{equation}
+  Furthermore, to get the derivative in another frame $Q$ we get again from \eqref{eq:derivative_trans}
+  \begin{equation}
+    \begin{aligned}
+      \frac{^e\partial \tr(R)}{^Q \partial R} =  \frac{^e\partial \tr(R)}{^e \partial R} \Ad_{Q} = (R^T - R)^\vee Q
+      = \left[ Q^T (R^T - R)^\vee \right]^T
+      = (Q^T (R^T - R) Q)^\vee.
+    \end{aligned}
+  \end{equation}
+\end{tcolorbox}
+
+
+\section{On Automatic Differentiation}
+
+\subsection{Lie derivatives via automatic differentiation}
+
+Consider a function $f : \M \rightarrow \N$ whose derivative we are interested in. Since autodiff tools are not aware of manifolds we can not directly obtain e.g. $\mathrm{d}^r f_\X$; here we discuss how to obtain on-manifold derivatives by only differentiating Euclidean functions. However, since $\mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} = \mathrm{d}^r f_\X \mathrm{d} \exp_0 = \mathrm{d}^r f_\X$ we can write
+\begin{equation}
+  \begin{aligned}
+    \mathrm{d}^r f_\X \b = \mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} \b = \left.  \left( f(\X \oplus_r \a)^{-1} \mathrm{D} (f(\X \oplus_r \a))_\a \hat \b  \right)^\vee \right|_{\a = 0} = \left( f(\X)^{-1}  \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0}  f(\X \oplus (t \b)) \right)^\vee.
+  \end{aligned}
+\end{equation}
+\todo[inline]{Re-verify this}
+Here the function $t \mapsto f(\X \oplus (t\b))$ maps a scalar to a matrix and can therefore be differentiated using regular tools, after which the expression can be evaluated to obtain $\mathrm{d}^r f_\X \b$. Naturally, if the complete derivative $\mathrm{d}^r f_\X$ is desired it can be obtained by repeating this procedure $n$ times for each basis unit vector.
+
+If $f$ maps to a Euclidean space (i.e. $\N = \mathbb{R}^k$) this further simplifies to
+\begin{equation}
+  \mathrm{d}^r f_\X b = \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0} f(\X \oplus (t \b)), \quad f : \M \rightarrow \mathbb{R}^n.
+\end{equation}
+
+
+\subsection{Ceres derivatives}
+
+\todo[inline]{This is un-finished}
+
+Consider an example where $L(\a) = G \left( \X \oplus \a \right)$. The letters are chosen so that $L : \clM \rightarrow \mathbb{R}^m$ maps the (local) tangent vector to the output space, and $G : \M \rightarrow \mathbb{R}^m$ maps the (global) group element. Since the solver does not know about the Lie group, autodifferentiation will yield $G'(\X) \in \mathbb{R}^{m \times n_G}$ where $n_G$ is the number of degrees of freedom in the parameterization of $\X$. However, to step along the manifold we need $\mathrm{d}^r G_\X$.
+
+The chain rule gives, since at $\a = 0$ we have $\mathrm{D} (\X \oplus \a)_\a \b = \X \left( \mathrm{d}^r (\X \oplus \a)_\a \b \right)^\wedge = \X (I \b)^\wedge = \X \hat \b$:
+\begin{equation}
+  \left( \mathrm{d}^r L_{\a = 0} \; \b \right)^\wedge = \mathrm{D} L_{\a = 0} \; \b = G'(\X) \; \mathrm{D} (\X \oplus \a)_{\a = 0} \; \b = G'(\X) \; \X \hat \b.
+\end{equation}
+That is, we can transfer a ``global'' derivative $G'(\X) \in \mathbb{R}^{m \times n_G}$ to the ``local'' tangent space by right-multiplying with the derivative of $\X \oplus \a$ at $\a = 0$, which is a $\mathbb{R}^{n_G \times n}$ matrix.
+
+\begin{example}
+  For the unit quaternions $\Sthree$ we must transfer to the matrix representation:
+  \begin{equation}
+    \left \langle \bq, \hat \b \right \rangle = \left( \hat \bq \hat \b \right)^\vee = (\bR(\bq) \hat \b)^\vee = ((\bR (\bq) \b)^\wedge \bR (\bq))^\vee
+  \end{equation}
+\end{example}
+
+We derive the group-tangent action $\bq \hat \b$ on $\Sthree$:
+\begin{equation}
+  \bR \hat \bomega \bu = \bR (\bomega \times \bu) = (\bR \bomega \times \bR \bu) = (\bR \bomega)^\wedge \bR \bu
+\end{equation}
+Thus
+\begin{equation}
+  \bR \hat \bomega = (\bR \bomega)^\wedge \bR
+\end{equation}

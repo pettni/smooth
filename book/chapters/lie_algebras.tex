@@ -1,0 +1,195 @@
+% !TEX root = ../manuscript.tex
+
+\chapter{Lie Algebras}
+
+\begin{itemize_outcomes}
+  \item Fundamental definitions and properties of Lie Algebras.
+  \item The Lie Bracket.
+  \item Hat and vee operators.
+  \item \textcolor{red}{Maybe: connection to Lie Derivative}.
+\end{itemize_outcomes}
+
+
+\section{Lie Algebra definition}
+
+\begin{definition}
+  A \textbf{Lie Algebra} is a vector space $\lM$ with a binary relation $\left[ \cdot, \cdot \right] : \lM \times \lM \rightarrow \lM$ called the \textbf{Lie bracket} that satisfies
+  \begin{enumerate}
+    \item Bilinearity: $[ \A, \beta \B + \gamma \C ] = \beta [\A, \B] + \gamma [\A, \C]$, and $[ \alpha \A + \beta \B, \C ] = \alpha [\A, \C] + \beta [\B, \C]$,
+    \item $[\A, \A] = 0$,
+    \item Jacobi's identity: $[\A, [\B, \C]] + [\C, [\A, \B]] + [\B, [\C, \A]] = 0$.
+  \end{enumerate}
+\end{definition}
+
+
+\section{The Lie bracket}
+
+
+\todo[inline]{Jacobis identity}
+
+\todo[inline]{Clean this up}
+
+We have the two flows $\phi^f(t,x)$ and $\phi^g(t,x)$ that are such that
+\begin{equation}
+  \begin{aligned}
+    \phi^f(0,x) = x, \quad \frac{\partial }{\partial t} \phi^f(t,x) = f(\phi^f(t,x)), \\
+    \phi^g(0,x) = x, \quad \frac{\partial }{\partial t} \phi^g(t,x) = g(\phi^g(t,x)).
+  \end{aligned}
+\end{equation}
+Consequently, we get the second derivative
+\begin{equation}
+  \begin{aligned}
+    \left[ \frac{\partial^2}{\partial t^2} \phi^f(t,x) \right]_i = \frac{\partial \left[ f(\phi^f(t,x)\right] _i}{\partial t} = \left. \frac{\mathrm{d} f_i}{\mathrm{d} x_j} \right|_{x_j = [\phi^f(t,x)]_j} \frac{\partial}{\partial t} \left[ \phi^f (t,x) \right]_j \\
+    = \left. \frac{\mathrm{d} f_i}{\mathrm{d} x_j} \right|_{x_j = [\phi^f(t,x)]_j} \left[ f(\phi^f(t,x)) \right]_j.
+  \end{aligned}\end{equation}
+Thus we get
+\begin{equation}
+  \frac{\partial^2}{\partial t^2} \phi^f(t,x) =  \left. \left(f \cdot \nabla \right) f \right|_{\phi^f(t,x)}.
+\end{equation}
+We are interested in the quantity
+\begin{equation}
+  \phi^g(-t,\cdot) \circ \phi^f(-t,\cdot) \circ \phi^g(t,\cdot) \circ \phi^f(t,\cdot)  \; [x]
+\end{equation}
+for small $t$.
+
+Note that by Taylor expansion,
+\begin{equation}
+  \begin{aligned}
+    \phi^f(t,x) & = \phi^f(0,x) + \left. \frac{\partial}{\partial t} \phi^f(t,x) \right|_{t=0} t + \left. \frac{\partial^2}{\partial t^2} \phi^f(t,x) \right|_{t=0} \frac{t^2}{2} + \mathcal O(t^3) \\
+                & = \phi^f(0,x) +  t f(\phi^f(0,x)) + \frac{t^2}{2} \left( f(\phi^f(0,x)) \cdot \nabla \right) f(\phi^f(0,x))  + \mathcal O(t^3)                                                    \\
+                & = x +  t f(x) + \frac{t^2}{2}  \left(f(x) \cdot \nabla \right) f(x)  + \mathcal O(t^3).
+  \end{aligned}
+\end{equation}
+We also have that
+\begin{equation}
+  g(x+t \alpha) = g(x) + t (\alpha \cdot \nabla) g(x) + \mathcal O(t^2).
+\end{equation}
+Then we get, after omitting the $(x)$ in $f(x)$ and $g(x)$,
+\small
+\begin{equation*}
+  \begin{aligned}
+    \phi^g & (-t,\cdot)  \circ \phi^f(-t,\cdot) \circ \phi^g(t,\cdot) \circ \phi^f(t,\cdot) \; [x] =                                                                                                                                                                                                                                                                         \\
+           & = \phi^g(-t,\cdot) \circ \phi^f(-t,\cdot) \circ \phi^g(t,\cdot) \left[ x +  f\ t + \frac{t^2}{2} \left( f\ \cdot \nabla \right) f\  + \mathcal O(t^3) \right]                                                                                                                                                                                                   \\
+           & =  \phi^g(-t,\cdot) \circ \phi^f(-t,\cdot) \left[ x +  t f + \frac{t^2}{2} \textcolor{blue}{\left( f \cdot \nabla\right) f}  + \mathcal O(t^3) \right.                                                                                                                                                                                                          \\
+           & \qquad + t \underbrace{g \left( x +  t \textcolor{red}{f} + \frac{t^2}{2} \left( f \cdot \nabla\right) f  + \mathcal O(t^3) \right)}_{g\ + t (f \cdot \nabla) g + \mathcal O(t^2)}                                                                                                                                                                              \\
+           & \qquad + \frac{t^2}{2} \nabla g \left( \textcolor{green}{x} + t f + \frac{t^2}{2} \left( f \cdot \nabla\right) f  + \mathcal O(t^3) \right)                                                                                                                                                                                                                     \\
+           & \left. \qquad \qquad \cdot g \left(\left( \textcolor{green}{x} + t f + \frac{t^2}{2} \left( f \cdot \nabla\right) f  + \mathcal O(t^3) \right) \right) + \mathcal O(t^3) \right]                                                                                                                                                                                \\
+           & = \phi^g(-t,\cdot) \circ \phi^f(-t,\cdot) \left[ x + t \left\{ f + g(x) \right\} + t^2 \left\{ \textcolor{blue}{\frac{1}{2} \left( f \cdot \nabla\right) f} + \textcolor{red}{ \left( f \cdot \nabla \right) g} + \textcolor{green}{\frac{1}{2} \left( g \cdot \nabla \right) g }  \right\} + \mathcal O(t^3) \right]                                           \\
+           & = \phi^g(-t,\cdot) \left[ x + t \left\{ f + g \right\} + t^2 \left\{ \textcolor{red}{\frac{1}{2} \left( f \cdot \nabla\right) f +  \left( f \cdot \nabla \right) g + \frac{1}{2} \left( g \cdot \nabla \right) g }  \right\} + \mathcal O(t^3) \right.                                                                                                          \\
+           & \qquad - t f \left( x + t \textcolor{blue}{\left\{ f + g \right\}} + t^2 \left\{ \frac{1}{2} \left( f \cdot \nabla\right) f +  \left( f \cdot \nabla \right) g + \frac{1}{2} \left( g \cdot \nabla \right) g   \right\} + \mathcal O(t^3) \right)                                                                                                               \\
+           & \qquad + \frac{t^2}{2} \nabla f \left( \textcolor{green}{x} + t \left\{ f + g \right\} + t^2 \left\{ \frac{1}{2} \left( f \cdot \nabla\right) f +  \left( f \cdot \nabla \right) g + \frac{1}{2} \left( g \cdot \nabla \right) g   \right\} + \mathcal O(t^3) \right)                                                                                           \\
+           & \qquad \qquad \cdot f \left( \textcolor{green}{x} + t \left\{ f + g \right\} + t^2 \left\{ \frac{1}{2} \left( f \cdot \nabla\right) f +  \left( f \cdot \nabla \right) g + \frac{1}{2} \left( g \cdot \nabla \right) g  \right\} + \mathcal O(t^3) \right)                                                                                                      \\
+           & =  \phi^g(-t,\cdot) \left[ x + t \left\{ g \right\} + t^2 \left\{ \textcolor{red}{\frac{1}{2} \left( f \cdot \nabla\right) f +  \left( f \cdot \nabla \right) g  + \frac{1}{2} \left( g \cdot \nabla \right) g } - \textcolor{blue}{\nabla f \cdot (f+g)}  + \textcolor{green}{ \frac{1}{2} \left( f \cdot \nabla\right) f } \right\} + \mathcal O(t^3) \right] \\
+           & = \phi^g(-t,\cdot) \left[ x + t \left\{ g \right\} + t^2 \left\{  \left( f \cdot \nabla \right) g  + \frac{1}{2} \left( g \cdot \nabla \right) g  - \left(g \cdot \nabla \right) f   \right\} + \mathcal O(t^3) \right]                                                                                                                                         \\
+           & = x + t \left\{ g \right\} + t^2 \left\{ \textcolor{red}{ \left( f \cdot \nabla \right) g  + \frac{1}{2} \left( g \cdot \nabla \right) g  - \left(g \cdot \nabla \right) f }  \right\} + \mathcal O(t^3)                                                                                                                                                        \\
+           & \qquad - t g \left( x + t \textcolor{blue}{\left\{ g \right\}} + t^2 \left\{  \left( f \cdot \nabla \right) g  + \frac{1}{2} \left( g \cdot \nabla \right) g  - \left(g \cdot \nabla \right) f    \right\} + \mathcal O(t^3) \right)                                                                                                                            \\
+           & \qquad + \frac{t^2}{2} \nabla g \left( \textcolor{green}{x} + t \left\{ g \right\} + t^2 \left\{  \left( f \cdot \nabla \right) g  + \frac{1}{2} \left( g \cdot \nabla \right) g  - \left(g \cdot \nabla \right) f   \right\} + \mathcal O(t^3) \right)                                                                                                         \\
+           & \qquad \qquad \cdot g \left(  \textcolor{green}{x} + t \left\{ g \right\} + t^2 \left\{  \left( f \cdot \nabla \right) g  + \frac{1}{2} \left( g \cdot \nabla \right) g  - \left(g \cdot \nabla \right) f   \right\} + \mathcal O(t^3) \right)                                                                                                                  \\
+           & = x + t \left\{g-g \right\} + t^2 \left\{ \textcolor{red}{ \left( f \cdot \nabla \right) g  + \frac{1}{2} \left( g \cdot \nabla \right) g  - \left(g \cdot \nabla \right) f }  - \textcolor{blue}{ \left( g \cdot \nabla \right) g } + \textcolor{green}{ \frac{1}{2}  \left( g \cdot \nabla \right) g  } \right\} + \mathcal O(t^3)                            \\
+           & = x + t^2 \left\{  \left( f \cdot \nabla \right) g - \left(g \cdot \nabla \right) f  \right\} + \mathcal O(t^3)                                                                                                                                                                                                                                                 \\
+           & = x + t^2 [f,g](x) + \mathcal O(t^3).
+  \end{aligned}
+\end{equation*}
+
+
+\section{Application: Derive the Laguerre polynomials}
+
+This is an exercise from \cite{howe_very_1983}.
+
+Consider the equation
+$$
+  x y'' + (1-x) y' + ny = 0,
+$$
+we will show via Lie-algebraic concepts that a solution is given by
+$$
+  y = e^x \left(\frac{d}{dx} \right)^n  e^{-x} x^n.
+$$
+
+Letting $P = d/dx$ denote derivative and $Q = x$ multiplication by $x$ the equation can be written
+$$
+  L y = (P-I)QP y = -n y.
+$$
+
+We consider the Lie algebra spanned by $P, Q, I$ with commutator relationships
+$$
+  \begin{aligned}
+    \relax [P, Q]y = PQy - QPy = y + xy' - xy' = I y, \; \implies [P, Q] = I \\
+    [P, I] = [P,Q] = 0.
+  \end{aligned}
+$$
+
+We have from the bracket relation that $(P-I)Q=I+Q(P-I)$, consequently
+$$
+  \begin{aligned}
+    \relax [Q, (P-I)^n] & = Q (P-I)^n - (P-I)^n Q                                            \\
+                        & = \left( Q (P-I)^{n-1} - (P-I)^{n-1} Q \right) (P-I) - (P-I)^{n-1} \\
+                        & = [Q, (P-I)^{n-1}] (P-I) - (P-I)^{n-1}.
+  \end{aligned}
+$$
+From $[Q, P-I]=-I$ it follows by recursion that
+$$
+  [Q, (P-I)^n] = -n (P-I)^{n-1}.
+$$
+Let $A_n = (P-I)^nQ^n$, then with the above
+$$
+  \begin{aligned}
+    A_{n+1} & = (P-I)^{n+1} Q^{n+1} = (P-I) \left( [(P-I)^n, Q] + Q (P-I)^n \right) Q^n \\
+            & = (P-I) \left\{ n (P-I)^{n-1} + Q (P-I)^n \right\} Q^n = (n+A_1) A_n.
+  \end{aligned}
+$$
+Note that we have $L = A_1 P$ and that $P A_1 = P(P-I)Q = (P-I)QP + (P-I)=A_1P + (P-I)$. It follows that
+$$
+  [A_1 P, A_1] = A_1 P A_1 - A_1^2 P= A_1 (P-I)=L - A_1.
+$$
+Using the bracket relation it follows that
+$$
+  L (A_1 + n) = (A_1+n)L + [L, A_1+n] = (A_1+n)L + (L + n) - (A_n + n).
+$$
+**Proposition**: If $v_n$ is an eigenvector of $L$ with eigenvalue $-n$, then $(A_1 +n) v_n$ is an eigenvector with eigenvalue $-(n+1)$.
+**Proof**: We use the relation above to get
+$$
+  \begin{aligned}
+    L (A_1+n) v_n = (A_1 + n) L v_n + (L+n) v_n - (A_n + n) v_n \\
+    = -n (A_1+n) v_n - (A_n + n) v_n.
+  \end{aligned}
+$$
+It follows via the relation $A_{n+1} = (A_1 + n) A_n$ shown above that if $v_0$ is an eigenvector with eigenvalue $0$, then $A_n v_0$ is an eigenvector with eigenvalue $-n$.
+
+We have solved $L  y = -n y$, a solution is for instance
+$$
+  A_n v_0 = (P-I)^n Q^n 1 = \left(e^x \frac{d}{dx} e^{-x} \right)^n x^n = e^x \left(\frac{d}{dx} \right)^n  e^{-x} x^n.
+$$
+
+\subsection{Hermite polynomials}
+
+Consider the equation
+$$
+  y'' + xy' -ny = 0.
+$$
+We show that
+$$
+  y = e^{-x^2/2} \left(\frac{d}{dx} \right)^n  e^{x^2/2}
+$$
+is a solution.
+
+Also the operators $P = d/dx$ and $Q = x + d/dx$ satisfy the same operations, in partiuclar $[P, Q] = I$. We have that
+$$
+  L y = QP y = y'' + xy',
+$$
+so we would like to solve
+$$
+  QP v = n v.
+$$
+This is easy: suppose that $QP Q^{n-1} v_0 = (n-1) Q^{n-1} v_0$ which is true for $v_0=1$ at $n=1$. Then,
+$$
+  \begin{aligned}
+    Q P Q^n v_0 & = Q P Q Q^{n-1} v_0 = Q ([P, Q] + Q P) Q^{n-1} v_0             \\
+                & = Q^n v_0 + Q^2 P Q^{n-1} v_0 = Q^n + (n-1)Q^nv_0 = n Q^n v_0.
+  \end{aligned}
+$$
+Thus it follows that the solution is $Q^n 1$, and using that
+$$
+  Q = e^{-x^2/2} \frac{d}{dx} e^{x^2/2}
+$$
+the answer is obtained.
+

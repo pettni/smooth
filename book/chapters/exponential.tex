@@ -1,0 +1,562 @@
+% !TEX root = ../manuscript.tex
+
+\chapter{The Exponential Map}
+
+\begin{itemize_outcomes}
+  \item The Exponential map and how it connects a Lie group to its Lie algebra.
+  \item The Lie group logarithm,  plus and minus operators.
+  \item The structure of the Lie algebras corresponding to common Lie groups.
+\end{itemize_outcomes}
+
+\todo[inline]{Need a nice derivation showing how lie algebra properties arise}
+
+\section{One-Parameter Groups}
+
+\textbf{Best way to prove that Lie Groups have Lie Algebras?}
+\begin{itemize}
+  \item In \cite{howe_very_1983} it is shown that for \textbf{matrix} Lie groups the set $\{ A \in \textrm{End} V : \exp tA \in G \forall t \} = \cap_{t} t \exp^{-1}(G)$ is a Lie Algebra (i.e. closed under the bracket operation).
+\end{itemize}
+
+Dual viewpoint: solutions $\Phi(x, t)$ of ODEs correspond to one-parameter groups \cite{howe_very_1983}.
+
+Connection to linear systems.
+
+\section{The Exponential Map}
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}[
+        setnode/.style = {
+            draw,
+            circle,
+            minimum width=1.2cm
+          },
+        node distance=4em
+      ]
+      \node[setnode] (group) {$\M$};
+      \node[setnode, below=of group, xshift=18mm] (algebra_param) {$\clM$};
+      \node[setnode, below=of group, xshift=-18mm] (algebra) {$\lM$};
+
+      \draw[-latex] (algebra) to node[above] {$\vee$} (algebra_param);
+      \draw[-latex] (algebra_param) to[bend left] node[above] {$\wedge$} (algebra);
+
+      \draw[-latex] (algebra) to[bend left] node[left] {$\Exp$} (group);
+      \draw[-latex] (algebra_param) to[bend right] node[right] {$\exp$} (group);
+
+      \draw[-latex] (group) to[bend left] node[left] {$\Log$} (algebra);
+      \draw[-latex] (group) to[bend right] node[right] {$\log$} (algebra_param);
+    \end{tikzpicture}
+  \end{center}
+  \caption{Illustration of how the exponential maps connect a Lie Group $\M$, its Lie Algebra $\lM$, and the Lie Algebra parameterization which is the linear space $\clM \cong \mathbb{R}^n$.}
+  \label{fig:exponentials}
+\end{figure}
+
+
+\begin{definition}
+  \label{def:exponential}
+  The \textbf{Exponential map} of a matrix $\A \in \mathbb{C}^{n \times n}$ and $t \in \mathbb{R}$ is
+  \begin{equation}
+    \Exp(\A) = \sum_{n = 0}^\infty \frac{\A^n}{n!} \in \mathbb{C}^{n \times n}.
+  \end{equation}
+\end{definition}
+
+\begin{properties}[title=Properties of the exponential map]
+  For the exponential map in Definition \ref{def:exponential} we have
+  \begin{subequations}
+    \begin{align}
+      \Exp(t \A) \Exp (s \A)                    & = \Exp((t+s) \A), \label{eq:exp_composition} \\
+      \frac{\mathrm{d}}{\mathrm{d}t} \Exp(t \A) & = \A \Exp(t \A) = \Exp(t \A) \A,             \\
+      \det (\Exp (\A))                          & = e^{\tr (\A)}. \label{eq:jacobi_identity}
+    \end{align}
+  \end{subequations}
+\end{properties}
+The first two follow directly from the definition and are analogous to the scalar exponential map. Furthermore, \eqref{eq:exp_composition} implies that $\{ \Exp(t \A) : t \in \mathbb{R} \}$ is a one-parameter subgroup of $\M$.
+
+Not however that in general $\exp(\A + \B) \neq \exp (\A) \circ \exp(\B)$ which is different from the scalar version. Equation \eqref{eq:jacobi_identity}, known as Jacobi's identity, motivates a short proof:
+\begin{proof}[Proof of \eqref{eq:jacobi_identity}]
+  It is easy to see that the eigenvalues of $\Exp(\A)$ are the exponentials of the eigenvalues of $\A$. Since the determinant equals the product of the eigenvalues it follows that
+  \begin{equation}
+    \det (\Exp \A) = \prod_{i=1}^n \lambda_i(\Exp \A) = \prod_{i=1}^n e^{\lambda_i(\A)} = e^{\sum_{i=1}^n \lambda_i(\A)} = e^{\tr(\A)}.
+  \end{equation}
+\end{proof}
+
+\subsection{Modern Definition}
+
+We contrast the algebraic Definition \ref{def:exponential} with a more modern definition usually found in texts on differential geometry.
+
+\begin{definition}
+  The \textbf{exponential} of $\A \in \lM$ is
+  \begin{equation}
+    \Exp \A \coloneq \gamma(1),
+  \end{equation}
+  where $\gamma$ is a one-parameter subgroup of $\M$ such that $\gamma'(0) = \A$.
+\end{definition}
+This definition of course works even in the case that $\M$ is not a matrix Lie group, in fact it the same definition is used in more general differential geometry. We show that it coincides with Definition \ref{def:exponential} for matrix Lie groups.
+
+\begin{proof}
+  We know that $\gamma(0) = I$, $\gamma'(0) = \A$, and $\gamma(s) \gamma(t) = \gamma(s + t)$ by virtue of $\gamma$ being a one-parameter sub-group.
+  \begin{equation}
+    \left( \gamma\left( \frac{h}{2} \right) - \gamma \left( -\frac{h}{2} \right)\right)^n = \sum_{k=0}^n (-1)^{k} \binom{n}{k} \gamma\left( \frac{h}{2} \right)^{n-k} \gamma\left(-\frac{h}{2} \right)^{k} = \sum_{k = 0}^n (-1)^{k} \binom{n}{k} \gamma\left( \left( \frac{n}{2} - k \right)  h  \right).
+  \end{equation}
+  For $h \rightarrow 0$ the left-hand side goes to $ \left( h \gamma'(0) \right)^n$, whereas the right-hand side is a finite-difference approximation of $h^n \gamma^{(n)}(0)$. It follows that $\gamma^{n}(0) = \A^n$, and hence a Taylor expansion around $0$ gives
+  \begin{equation}
+    \gamma(1) = \sum_{k \geq 0} \frac{\gamma^{(n)}(0) (1 - 0)^n}{n!} = \sum_{k \geq 0} \frac{\A^n}{n!}.
+  \end{equation}
+\end{proof}
+A consequence of the proof above is that one-parameter subgroups of Lie groups are uniquely defined by their derivative at zero, and are therefore analogous to geodesics in Riemannian geometry.
+
+
+\section{The Lie Algebra of a Lie group}
+
+\begin{definition}
+  For a matrix Lie group $\M$ the corresponding \textbf{matrix Lie algebra} $\lM$ is
+  \begin{equation}
+    \lM = \{ \A : \Exp(t \A) \in \mathbb{M} \; \forall t \in \mathbb{R} \}.
+  \end{equation}
+\end{definition}
+Just as for Lie groups, the matrix Lie algebras are typically parameterized by fewer than $n^2$ coefficients. In order to work with efficient parameterizations we therefore introduce a lower-dimensional parameterization denoted $\clM$. For this lower-dimensional representation we also define a lowercase exponential that maps from the parameterized lie algebra representation $\clM$ to the parameterized group representation $\cM$:
+\begin{equation}
+  \exp (\a) = \Exp(\a^{\wedge}).
+\end{equation}
+The relationshop between the exponential maps and the hat and vee maps is shown in Figure \ref{fig:exponentials}.
+
+\todo[inline]{Show that Lie algebra defined like this is indeed a Lie algebra(closed under bracket, jacobi, etc). Use property from previous chapter to show that as $t \rightarrow 0$ we obtain a tangent that is equal to the bracket. Group property is then enough to conclude.}
+
+\section{The Logarithm}
+
+The matrix logarithm $\Log : \mathbb{M} \rightarrow \mathfrak{m}$ is defined as the inverse of the matrix exponential, and we also define lowercase $\log : \M \rightarrow \clM$ for mappings between the parameterized representations:
+\begin{equation}
+  \begin{aligned}
+    \Log \X & = \sum_{k \geq 1} (-1)^{k+1} \frac{(\X - I)^k}{k}, \\
+    \log \X & = \left( \Log \X \right)^{\vee}.
+  \end{aligned}
+\end{equation}
+
+\todo[inline]{Show that it's the inverse of the exponential}
+
+
+\section{Exponential and Logarithm derivations}
+
+To reveal the structure of a Lie algebra it is advantageous to study one-parameter subgroups
+\begin{equation}
+  \label{eq:one_parameter_subgroup}
+  \X(t) = \Exp(t \A) \in \X \implies \X(0) = I, \; \X'(0) = \A.
+\end{equation}
+The trajectory $\X(t)$ must satisfy a certain group constraint (e.g., orthogonal, unitary), which translates into a condition on the derivative. In essence, the Lie algebra consists of \emph{tangent} elements to the Lie group. Once the structure of the Lie algebra is obtained, the form of the exponential can be found through Definition \ref{def:exponential}. We use this method to find the structure, exponential, and logartihm of the Lie algebras of several matrix Lie groups. For a non-matrix Lie group $\cM$ that is homomorphic to a matrix Lie group $\M$ (such as $\cSOtwo$ and $\SOtwo$, etc), we note that the exponentials and logarithms can be easily obtained as
+\begin{subequations}
+  \begin{align}
+    \exp_{\cM}(\bv) = \left(\exp_{\M}(\bv) \right)^{\vee}, \\
+    \log_{\cM}(\x) = \log_{\M} (\hat \x).
+  \end{align}
+\end{subequations}
+
+\subsection{\texorpdfstring{$\En$}{E(n)}}
+
+The matrices of $\En$ defined in \eqref{eq:en_group} are s.t. only the top $n$ coefficients in the right-most column can vary. Consider a trajectory
+\begin{equation}
+  \X(t) = \Exp(t \A) \in \En,
+\end{equation}
+differentiating with respect to $t$ then shows that
+\begin{equation}
+  \begin{bmatrix}
+    \symbf{0}_{n \times n} & \bv \\ \symbf{0}_{1 \times n} & 0
+  \end{bmatrix} \overset{!}{=} \left.\frac{\mathrm{d}}{\mathrm{d}t} \X(t) \right|_{t = 0} = \A.
+\end{equation}
+From here it follows that the Lie algebra $\mathfrak{e}(n)$ of $\En$ consists of matrices where the top $n$ coefficients in the right-most column are non-zero:
+\begin{equation}
+  \mathfrak{e}(n) = \left\{ \begin{bmatrix} \symbf{0}_{n \times n} & \bv \\ \symbf{0}_{1 \times n} & 0\end{bmatrix}, \bv \in \mathbb{R}^n \right\}.
+\end{equation}
+It is straightforward to calculate the exponential of a matrix element $\A \in \mathfrak{e}(n)$
+\begin{equation}
+  \Exp \begin{bmatrix}
+    \symbf{0}_{n \times n} & \bv \\ \symbf{0}_{1 \times n} & 0
+  \end{bmatrix} \coloneq \sum_{k \geq 0} \frac{1}{k!} \begin{bmatrix}
+    \symbf{0}_{n \times n} & \bv \\ \symbf{0}_{1 \times n} & 0
+  \end{bmatrix}^k
+  = \begin{bmatrix} I_n & \bv \\ \symbf{0}_{1 \times n} & 1 \end{bmatrix}.
+\end{equation}
+It follows that the exponential on $\En$, and consequently also the logarithm, is the identity mapping.
+
+\begin{important}
+  The exponential and logarithm on $\En$ are
+  \begin{subequations}
+    \begin{align}
+      \exp_{\En} \bv = \Exp_{\En} \begin{bmatrix}
+        \symbf{0}_{n \times n} & \bv \\ \symbf{0}_{1 \times n} & 0
+      \end{bmatrix} & = \begin{bmatrix} I_n & \bv \\ \symbf{0}_{1 \times n} & 1 \end{bmatrix} \in \En,                                 \\
+      \Log_{\En} \begin{bmatrix} I_n & \bp \\ \symbf{0}_{1 \times n} & 1 \end{bmatrix}                  & = \begin{bmatrix}
+        \symbf{0}_{n \times n} & \bp \\ \symbf{0}_{1 \times n} & 0
+      \end{bmatrix} \in \mathfrak{e}(n),                     \\
+      \log_{\En} \begin{bmatrix} I_n & \bp \\ \symbf{0}_{1 \times n} & 1 \end{bmatrix}                  & = \begin{bmatrix} \symbf{0}_{n \times n} & \bp \\ \symbf{0}_{1 \times n} & 1 \end{bmatrix}^\vee = \bp \in \check {\mathfrak{e}}(n).
+    \end{align}
+  \end{subequations}
+\end{important}
+
+
+\subsection{\texorpdfstring{$\SOtwo$}{SO(2)} and \texorpdfstring{$\SOthree$}{SO(3)}}
+
+For the special orthogonal groups $\mathbb{SO}(n)$ (for any dimension) the group constraint is orthogonality of the matrix: $\X^T \X = I_n$. Take a one-parameter subgroup $\X(t) \coloneq \Exp(t \A)$; it must then hold that
+\begin{equation}
+  0 \overset{!}= \left. \frac{\mathrm{d}}{\mathrm{d} t} \X(t)^T \X(t) \right|_{t=0} = \X'(0)^T \X(0) + \X(0)^T \X'(0) = \A^T + \A.
+\end{equation}
+It follows that the Lie algebra $\mathfrak{so}(n)$ corresponding to $\mathbb{SO}(n)$ consists of \textbf{skew-symmetric matrices}.
+\begin{equation}
+  \mathfrak{so}(n) = \left\{ \A \in \mathbb{R}^{n \times n} : \A^T + \A = 0 \right\}.
+\end{equation}
+
+The $2 \times 2$ skew-symmetric matrices have only one degree of freedom, let this single parameter of $\check{ \mathfrak{so}(2)}$ be denoted $\omega_z$ so that
+\begin{equation}
+  \mathfrak{so}(2) = \left\{ \begin{bmatrix} 0 & -\omega_z \\ \omega_z & 0 \end{bmatrix} \right | \omega_z \in \mathbb{R} \}.
+\end{equation}
+Take an element $\omega_z^\wedge \coloneq \begin{bmatrix} 0 & -\omega_z \\ \omega_z & 0 \end{bmatrix} \in \mathfrak{so}(2)$. The exponential of is easily calculated by noting that $(\omega_z^\wedge)^2 = -\omega_z^2 I_2$:
+\begin{equation}
+  \begin{aligned}
+    \Exp {\omega_z^\wedge} = \sum_{k \geq 0} \frac{{\omega_z^\wedge}^k}{k!}
+    = \left( 1 - \frac{\omega_z^2}{2!} + \frac{\omega_z^4}{4!} - \ldots \right) I_2 + \left( 1 - \frac{\omega^2}{3!} + \frac{\omega^4}{5!} - \ldots \right) {\omega_z^\wedge}
+    = \cos \omega_z I_2 + \omega_z \sin \omega_z \omega_z^\wedge \\
+    = \begin{bmatrix} \cos \omega_z & - \sin \omega_z \\ \sin \omega_z & \cos \omega_z \end{bmatrix}
+  \end{aligned}
+\end{equation}
+
+Then $\Exp : \mathfrak{so}(2) \rightarrow \SOtwo$ and $\exp : \check{\mathfrak{so}(2)} \rightarrow \check{\mathbb{SO}}(2)$ are as follows:
+
+\begin{important}
+  The exponential and logarithm on $\SOtwo$ are
+  \begin{subequations}
+    \begin{align}
+      \exp_\SOtwo (\omega_w)                 & = \Exp_\SOtwo \begin{bmatrix} 0 & -\omega_z \\ \omega_z & 0 \end{bmatrix}= \begin{bmatrix} \cos \omega_z & - \sin \omega_z \\ \sin \omega_z & \cos \omega_z \end{bmatrix},                   \\
+      \Log_\SOtwo \begin{bmatrix}
+        q_w & -q_z \\ q_z & q_w
+      \end{bmatrix} & = \begin{bmatrix} 0 & -\alpha \\ \alpha & 0 \end{bmatrix} \in \mathfrak{so}(2), \quad \alpha = \arctantwo(q_z, q_w), \\
+      \log_\SOtwo \begin{bmatrix}
+        q_w & -q_z \\ q_z & q_w
+      \end{bmatrix} & = \begin{bmatrix} 0 & -\alpha \\ \alpha & 0 \end{bmatrix}^{\vee} = \alpha \in \check{\mathfrak{so}}(2),
+    \end{align}
+  \end{subequations}
+  where $\arctantwo(y, x)$ is the angle between the ray passing through $(1, 0)$ and the ray $(x, y)$.
+\end{important}
+
+We proceed with $\SOthree$: skew-symmetric matrices of size $3 \times 3$ are parameterized by three parameters $\bomega  \coloneq (\omega_x, \omega_y, \omega_z)$ so that $\mathfrak{so}(3)$ consists of elements on the form
+\begin{equation}
+  \hat {\bomega} = \begin{bmatrix} 0 & -\omega_z & \omega_y \\ \omega_z & 0 & -\omega_x \\ -\omega_y & \omega_x & 0	\end{bmatrix}.
+\end{equation}
+Such a matrix has several interesting properties. First of all, for $\symbf u \in \mathbb{R}^3$ left matrix multiplication of $\hat {\bomega}$ is equivalent to taking the vector cross product: $\hat {\bomega} \symbf u = \bomega \times \symbf u$.
+As a result many properties of the cross product are inherited by the embedding $\mathbb{R}^3 \overset{\wedge}\mapsto \mathbb{R}^{3 \times 3}$.
+
+\begin{properties}[title=Properties of $\wedge$ on $\mathfrak{so}(3)$]
+  For $\a, \symbf b, \symbf c \in \mathbb{R}^3$:
+  \begin{subequations}
+    \begin{align}
+      \hat \a \hat \b \hat \a            & = - (\a \cdot \b)  \hat \a  \label{eq:so3_pow3},                                                                                     \\
+      \hat {\a} \symbf{b}                & = - \hat {\symbf b} \a,                                                                                                              \\
+      \a \cdot (\hat{\symbf b} \symbf c) & = \symbf b \cdot (\hat{\symbf c} \a),                                                                                                \\
+      A \hat {\symbf b}                  & = \tr(A) \hat{\symbf b} - (A \symbf b)^{\wedge} - \hat {\symbf{b}} A, \quad A \; \text{symmetric $3 \times 3$ matrix},               \\
+      \a \cdot \symbf b                  & = \frac{1}{2} \left \langle \hat {\a}, \hat {\symbf b} \right \rangle_F = -\frac{1}{2}\tr \left( \hat {\a}, \hat {\symbf b} \right).
+    \end{align}
+  \end{subequations}
+\end{properties}
+
+\begin{proof}[Proof of \eqref{eq:so3_pow3}]
+  Consider $\hat \a \hat \b \hat \a \c = \a \times (\b \times (\a \times \c))$. Expanding with the vector triple product gives
+  \begin{equation}
+    \hat \a \hat \b \hat \a \c = \a \times ((\b \cdot \c) \a - (\a \cdot \b) \c) = - (\a \cdot \b) \a \times \c = -(\a \cdot \b) \hat \a \c.
+  \end{equation}
+\end{proof}
+
+We can use \eqref{eq:so3_pow3} to obtain the exponential map on $\mathfrak{so}(3)$:
+\begin{equation}
+  \label{eq:so3_exp}
+  \begin{aligned}
+    \Exp \; \hat {\bomega} = \sum_{k \geq 0} \frac{(\hat {\bomega})^k}{k!} = I + \hat{\bomega} + \frac{\hat{\bomega}^2}{2!} - \| \bomega \|^2 \left( \frac{\hat {\bomega}}{3!} + \frac{\hat {\bomega}^2}{4!} \right) + \| \bomega \|^4 \left( \frac{\hat {\bomega}}{5!} + \frac{\hat {\bomega}^2}{6!} \right) + \ldots \\
+    = I + \left( 1 - \frac{\|\bomega \|^2}{3!} + \frac{\|\bomega \|^4}{5!} - \ldots \right) \hat{\bomega} + \left( \frac{1}{2!} - \frac{\|\bomega \|^2}{4!} + \frac{\|\bomega \|^4}{6!} - \ldots \right) \hat{\bomega}^2                                                                                               \\
+    = I + \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2.
+  \end{aligned}
+\end{equation}
+To obtain the logarithm the expression
+\begin{equation}
+  \bR = I_3 + \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2
+\end{equation}
+should be inverted. First note that due to $\hat \bomega$ being skew-symmetric:
+\begin{equation}
+  \label{eq:so3_log_deriv1}
+  \bR - \bR^T =  \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2 - \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} ^T - \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} (\hat {\bomega}^T)^2 = 2 \frac{\sin \|\bomega \|}{\| \bomega \|} \hat \bomega.
+\end{equation}
+Secondly,
+\begin{equation}
+  \label{eq:so3_log_deriv2}
+  \tr \left(\bR  \right) = 3 + \frac{1 - \cos \| \bomega \|}{\|\bomega \|^2} \tr(\hat \bomega^2) =3 - 2 \frac{1 - \cos \| \bomega \|}{\|\bomega \|^2} \| \bomega \|^2 = 1 + 2 \cos \| \bomega \|,
+\end{equation}
+which makes it possible to write down an expression for the logarithm.
+
+\begin{important}
+  The exponential and logarithm on $\SOthree$ are
+  \begin{subequations}
+    \begin{align}
+      \exp_\SOthree \bomega = \Exp_\SOthree \hat {\bomega} & = I + \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2, \\
+      \Log_\SOthree \bR                                    & = \frac{\alpha}{\sin \alpha} \frac{\bR - \bR^T}{2}, \quad \alpha = \arccos \left( \frac{\tr(\bR) - 1}{2} \right).
+    \end{align}
+  \end{subequations}
+\end{important}
+The lower-dimensional representation of $\SOthree$ is $\Sthree$, but as shown previously the $\wedge$ and $\vee$ mappings are not straightforward. In the next section we obtain the exponential and logarithm on $\Sthree$ through its relation to $\SUtwo$.
+
+\subsection{\texorpdfstring{$\SUn$}{SU(n)}}
+
+We proceed with $\SUn$. This family of Lie groups consists of complex unitary matrices that satisfy the group constraint $\X^* \X = I_n$, where $\X^*$ is the Hermitian transpose\footnote{The Hermitian transpose (also known as \emph{conjugate transpose}) of $\A_{ij}$ is $\A_{ij}^* = \bar {\A_{ji}}$.} of $\X$. For a one-parameter subgroup $\X(t) = \Exp(t \A)$ we first note that due to \eqref{eq:jacobi_identity} the trace of $\A$ must be zero so that $\det \Exp(t \A) = 1$. We furthermore get that
+\begin{equation}
+  0 = \left. \frac{\mathrm{d}}{\mathrm{d} t} \X(t)^* \X(t) \right|_{t=0} = \X'(0)^* \X(0) + \X(0)^* \X'(0) = \A^* + \A,
+\end{equation}
+which implies that the Lie Algebra $\mathfrak{su}(n)$ consists of \textbf{skew-Hermitian matrices with vanishing trace}.
+\begin{equation}
+  \mathfrak{su}(n) = \left\{ \A \in \mathbb{C}^{n \times n} \mid \A^* + \A = 0, \tr \A = 0 \right\}.
+\end{equation}
+
+The Lie algebra $\mathfrak{su}(2)$ is parameterized by three elements $\bomega = (\omega_x, \omega_y, \omega_z)$ that correspond to the skew-Hermitian matrix $\hat \bomega \coloneq \coloneq \frac{1}{{2}} \begin{bmatrix}
+    i \omega_z            & -\omega_x - i \omega_y \\
+    \omega_x - i \omega_y & -i \omega_z
+  \end{bmatrix}$, where the factor $1/2$ is added for reasons that will become clear below. A simple calculation reveals that $\hat \bomega^2 =  -\frac{\| \bomega \|}{4} I_2$ which can be used to evaluate the exponential.
+\begin{equation*}
+  \begin{aligned}
+    \Exp \hat \bomega
+     & = \sum_{k \geq 0} \frac{\hat \bomega^k}{k!} = \sum_{k \geq 0} \frac{1}{k!} \left(-\frac{\| \bomega \|}{2} \right)^{2 * \lfloor \frac{k}{2} \rfloor} \hat \bomega^{(k \mod 2)}                      \\
+     & = \left( 1 - \frac{(\|\bomega\|/2)^2}{2!} + \frac{(\|\bomega\|/2)^4}{4!} - \ldots \right) I + \left( 1 - \frac{(\|\bomega\|/2)^2}{3!} + \frac{(\|\bomega\|/2)^4}{5!} + \ldots \right) \hat \bomega \\
+     & = \cos (\|\bomega\| / 2) I + 2 \frac{\sin \|\bomega\| / 2}{\|\bomega\|} \hat \bomega = \begin{bmatrix}
+      \cos(\|\bomega\| / 2) + i \frac{\omega_z \sin (\|\bomega\|/2) }{\|\bomega\|} & (-\omega_x - i \omega_y) \frac{\sin \|\bomega\|/2}{\|\bomega\|}              \\
+      (\omega_x - i \omega_y) \frac{\sin \|\bomega\|/2}{\|\bomega\|}               & \cos(\|\bomega\| / 2) - i \frac{\omega_z \sin (\|\bomega\|/2) }{\|\bomega\|}
+    \end{bmatrix}.
+  \end{aligned}
+\end{equation*}
+\begin{important}
+  The upper-case exponential on $\SUtwo$ is:
+  \begin{equation}
+    \Exp\frac{1}{{2}} \begin{bmatrix}
+      i \omega_z            & -\omega_x - i \omega_y \\
+      \omega_x - i \omega_y & -i \omega_z
+    \end{bmatrix} =  \begin{bmatrix}
+      \cos(\| \bomega \| / 2) + i \frac{\omega_z \sin (\| \bomega \|/2) }{\| \bomega \|} & (-\omega_x - i \omega_y) \frac{\sin (\| \bomega \|/2)}{\| \bomega \|}              \\
+      (\omega_x - i \omega_y) \frac{\sin (\| \bomega \|/2)}{\| \bomega \|}               & \cos(\| \bomega \| / 2) - i \frac{\omega_z \sin (\| \bomega \|/2) }{\| \bomega \|}
+    \end{bmatrix}.
+  \end{equation}
+\end{important}
+
+Since the mappings $\wedge: \Sthree \rightarrow \SUtwo$ and $\vee: \SUtwo \rightarrow \Sthree$ are straightforward, we can also write down the exponentail and logarithm on $\Sthree$. Since $\Sthree$ is not itself a matrix Lie group, the uppercase exponential and logarithm do not have a meaning.
+\begin{important}
+  The exponential and logarithm on $\Sthree$ are
+  \begin{subequations}
+    \label{eq:su2_exp_log}
+    \begin{align}
+      \label{eq:su2_exp}\exp (\omega_x, \omega_y, \omega_z) & = \left(
+      \cos (\| \bomega \|/2), \frac{\omega_x}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_y}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_z}{\| \bomega \|} \sin ( \| \bomega \|/2 ) \right), \\
+      \label{eq:su2_log} \log (q_w, q_x, q_y, q_z)          & = \left( 2 \frac{ \arctantwo \left(\sqrt{q_x^2 + q_y^2 + q_z^2}, q_w \right) }{ \sqrt{q_x^2 + q_y^2 + q_z^2} } \right) \times (q_x, q_y, q_z).
+    \end{align}
+  \end{subequations}
+\end{important}
+From \eqref{eq:su2_exp_log} the reason to divide the expression for $\hat \bomega$ by a factor 2  becomes apparent---$\| \bomega \|$ represents the rotation angle in radians. We provide a quick proof for the logarithm expression.
+\begin{proof}[Proof of \eqref{eq:su2_log}]
+  Let $(q_w, q_x, q_y, q_z) = \exp(\omega_x, \omega_y, \omega_z)$. From \eqref{eq:su2_exp} we have that
+  \begin{equation}
+    \sqrt{q_x^2 + q_y^2 + q_z^2} = \sqrt{ \left( \frac{\omega_x}{\| \bomega \| } \sin ( \| \bomega \| / 2) \right)^2 + \left( \frac{\omega_x}{\| \bomega \| } \sin ( \| \bomega \| / 2) \right)^2 + \left( \frac{\omega_x}{\| \bomega \| } \sin ( \| \bomega \| / 2) \right)^2 } = \sin (\| \bomega \| / 2).
+  \end{equation}
+  It also follows from the same equation that
+  \begin{equation}
+    \begin{aligned}
+      \bomega & = \frac{\|\bomega\|}{\sin(\| \bomega \| / 2)}(q_x, q_y, q_z)
+      = \frac{\arctantwo(\sin \| \bomega \| , \cos \| \bomega \| )}{\sqrt{q_x^2 + q_y^2 + q_z^2}}                       \\
+              & = \frac{2 \arctantwo(\sin (\| \bomega \| / 2), \cos (\| \bomega \| / 2))}{\sqrt{q_x^2 + q_y^2 + q_z^2}}
+      = \frac{2 \arctantwo\left( \sqrt{q_x^2 + q_y^2 + q_z^2}, q_w \right)}{\sqrt{q_x^2 + q_y^2 + q_z^2}}.
+    \end{aligned}
+  \end{equation}
+\end{proof}
+
+
+\section{\texorpdfstring{$\SEtwo$}{SE(3)} and \texorpdfstring{$\SEthree$}{SE(3)}}
+
+For the semi-simple groups $\SEtwo$ and $\SEthree$ we derive an identity that will be useful to construct the exponential maps.
+\begin{lemma}
+  \label{lem:help_exp}
+  Consider two matrices $\A , \B \in \mathbb{R}^{n \times n}$ such that $\B^2 = \B\A = 0$. Then we have that
+  \begin{equation}
+    \Exp \left( \A + \B \right) = \Exp(\A) + \sum\limits_{k = 0}^\infty \frac{\A^{k}}{(k+1)!} \B.
+  \end{equation}
+\end{lemma}
+\begin{proof}
+  When we expand $(\A+\B)^k$ all terms that contain a $\B$ before an $\A$, or multiple $\B$ in a row, vanish. As a result,
+  \begin{equation}
+    \Exp \left( \A + \B \right) = I_n + \sum\limits_{k=1}^\infty \frac{(\A+\B)^k}{k!} = I_n + \sum\limits_{k=1}^\infty \frac{\A^k + \A^{k-1}\B }{k!} = \Exp(\A) + \sum\limits_{k=1}^\infty \frac{\A^{k-1}}{k!} \B.
+  \end{equation}
+\end{proof}
+
+We can now easily derive the exponential maps for $\mathfrak{se}(2)$ and $\mathfrak{se}(3)$. For both groups we have the following structure:
+\begin{equation}
+  \A = \begin{bmatrix} \hat \bomega & \symbf{0} \\ \symbf 0 & 0 \end{bmatrix}, \quad \B = \begin{bmatrix} \symbf{0} & \bp \\ \symbf{0} & 0 \end{bmatrix}.
+\end{equation}
+Thus, it suffices to compute $S(\omega) \coloneq \sum_{k = 0}^\infty \frac{\hat \bomega}{(k+1)!}$ to obtain the exponential map for the semi-simple groups.
+
+For $\mathfrak{se}(2)$, disregarding the trivial case $\bomega = 0$, we obtain
+\begin{equation}
+  \begin{aligned}
+    S(\omega_z)
+     & = \sum_{k = 0}^\infty \frac{\hat \omega_z^k}{(k+1)!} = \left( \hat \omega_z \right)^{-1} \left( \Exp \hat \omega_z - I \right) \\
+     & = \frac{1}{\omega_z^2} \begin{bmatrix}
+      0 & \omega_z \\ -\omega_z & 0
+    \end{bmatrix} \begin{bmatrix}
+      \cos \omega_z - 1 & -\sin \omega_z \\ \sin \omega_z & \cos \omega_z - 1
+    \end{bmatrix} =  \frac{1}{\omega_z}\begin{bmatrix}
+      \sin \omega_z     & \cos \omega_z - 1 \\
+      1 - \cos \omega_z & \sin \omega_z
+    \end{bmatrix}.
+  \end{aligned}
+\end{equation}
+This gives everything required to write down the exponential and logarithmic maps for $\SEtwo$.
+\begin{important}
+  The uppercase exponential and logarithm maps are $\Exp : \mathfrak{se}(2) \rightarrow \SEtwo$ and $\Log : \SEtwo \rightarrow \mathfrak{se}(2)$:
+  \begin{subequations}
+    \begin{align}
+      \exp_\SEtwo \left( \omega_z, \bv \right) & = \Exp_{\SEtwo} \begin{bmatrix}
+        \hat \omega_z & \bv \\ \symbf{0}_{1 \times 2} & 0
+      \end{bmatrix} =  \begin{bmatrix}
+        \Exp_{\SOtwo} (\hat \omega_z) & S(\omega_z)\bv \\ \symbf{0}_{1 \times 2} & 1
+      \end{bmatrix},                  \\
+      \Log_{\SEtwo} \begin{bmatrix} \bR & \bp \\ \symbf{0}_{1 \times 2} & 1 \end{bmatrix} & = \begin{bmatrix}
+        \hat \alpha & \left( S(\omega_z) \right)^{-1} \bp \\ \symbf{0}_{1 \times 2} & 0
+      \end{bmatrix},                                                              \\
+      \log_\SEtwo \begin{bmatrix} \bR & \bp \\ \symbf{0}_{1 \times 2} & 1 \end{bmatrix}   & = \left( \alpha,  \left( S(\omega_z) \right)^{-1} \bp\right) \in \check{\mathfrak{se}}(2),
+    \end{align}
+  \end{subequations}
+  where $\alpha = \log_\SOtwo \bR$.
+\end{important}
+
+Continuing with $\SEthree$ we utilize \eqref{eq:so3_pow3} to calculate
+\begin{equation}
+  \sum\limits_{k=0}^\infty \frac{\hat{\bomega}^{k}} {(k+1)!} = I_3 - \frac{1}{\| \symbf\omega \|^2} \hat {\symbf{\symbf}} \sum\limits_{k=2}^\infty \frac{\hat{\bomega}^k}{k!} = I_3  - \frac{1}{\| \symbf\omega \|^2} \hat {\bomega} \left( \Exp_\SOthree(\hat {\bomega}) - I_3 - \hat{\bomega} \right).
+\end{equation}
+From \eqref{eq:so3_exp} we then have that
+\begin{equation}
+  \label{eq:so3_leftjac}
+  \begin{aligned}
+    \mathrm{d}^l \left( \exp_{\SOthree} \right)_\bomega
+     & \coloneq \sum\limits_{k=0}^\infty \frac{\hat{\bomega}^{k}} {(k+1)!} = I_3  - \frac{1}{\| \bomega \|^2} \hat {\bomega} \left( \left( I_3 + \frac{ \sin \| \bomega \|}{\| \bomega \|} \hat{\bomega} + \frac{ (1 - \cos \| \bomega \|)}{\| \bomega \|^2} \hat{\bomega}^2 \right) - I_3 - \hat{\bomega} \right)
+    \\
+     & = I_3 - \frac{ (\sin \| \bomega \| -\| \bomega \|)  }{\| \bomega\|^3} \hat {\bomega}^2 + \frac{\| \bomega \|^2  (1 - \cos \| \bomega \| ) }{\| \bomega \|^4} \hat {\bomega}
+    \\
+     & = I_3 + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2 + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} .
+  \end{aligned}
+\end{equation}
+Applying Lemma \ref{lem:help_exp} then gives the exponential.
+\begin{important}
+  The matrix exponential on $\mathfrak{se}(3)$ is
+  \begin{subequations}
+    \begin{align}
+      \exp_\SEthree (\bomega, \bv) = \Exp_\SEthree \begin{bmatrix}
+        \hat{\bomega} & \symbf{v} \\ \symbf{0}_{1 \times 3} & 0
+      \end{bmatrix} & = \begin{bmatrix}
+        \Exp_{\SOthree}(\hat{\bomega}) & \mathrm{d}^l \left( \exp_{\SOthree} \right)_\bomega \symbf v \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix},                                                                                        \\
+      \Log_\SEthree \begin{bmatrix}
+        \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix}                                & = \begin{bmatrix}
+        \hat{\symbf \alpha} & \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp \\ \symbf{0}_{1 \times 3} & 0
+      \end{bmatrix},                                                                                        \\
+      \log_\SEthree \begin{bmatrix}
+        \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix}                                & = \left(\symbf \alpha, \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp  \right),
+    \end{align}
+  \end{subequations}
+  where $\symbf \alpha = \log_\SOthree R$.
+\end{important}
+
+
+\section{Baker–Campbell–Hausdorff formula}
+
+\todo[inline]{Prove BCH formula and provide context}
+
+\begin{equation}
+  \label{eq:bch_formula}
+  \log \left(\exp \a \circ \exp \b \right) = \a + \b + \frac{1}{2} \left[ \a, \b \right] + \frac{1}{12} \left[ \a, \left[ \a, \b \right]\right] - \frac{1}{12} \left[ \b, \left[ \a, \b \right]\right] + \ldots
+\end{equation}
+
+\section{Plus and Minus Operators}
+
+Algorithms for optimization and numerical integration require taking small additative steps, but Lie groups are not closed under normal addition and subtraction. We can however define generalized addition and subtraction operators $\oplus, \ominus$ for Lie groups that behave similarly to how $+$ and $-$ operate on regular vector spaces.
+
+
+\begin{important}%
+  The plus operations add an increment $\a \in \clM$ in the parameterized tangent space to an element $\X \in \M$ of the group, whereas the minus operators give the difference between two group elements as a vector in the parameterized tangent space.
+  \begin{align}
+    \label{eq:right-plus}
+    \tag{right-plus} \X \oplus_r {{\a}}
+     & = \X \circ \exp \left( {{\a}} \right) \in \cM,                     \\
+    \label{eq:right-minus}
+    \tag{right-minus}\Y \ominus_r \X
+     & =  \log \left( \X^{-1} \circ \Y \right) \in T_{\X} \cM \cong \clM, \\
+    \label{eq:left-plus}
+    \tag{left-plus} \a \oplus_l \X
+     & = \exp \left( {{\a}} \right) \circ \X \in \cM,                     \\
+    \label{eq:left-minus}
+    \tag{left-minus}\Y \ominus_l \X
+     & =  \log \left( \Y \circ \X^{-1} \right) \in T_\id \cM \cong \clM .
+  \end{align}
+\end{important}
+The plus operators are differentiated by the order: the right-plus has the tangent element at $\X$ while left-plus has the reverse order, meaning that the tangent element belongs to the tangent space at $\id$.
+
+Note that the derivates are defined in a way so that
+\begin{subequations}
+  \begin{align}
+    \X \oplus_r (\Y \ominus_r \X ) & = \X \circ \exp \log (\X^{-1} \Y) = \Y,                                     \\
+    (\X \oplus_r \a) \ominus_r \X  & = \log (\X^{-1} \circ \X \circ \exp \a) = \a,   \label{eq:x_plus_a_minus_x} \\
+    (\Y \ominus_l \X ) \oplus_l \X & = \exp \log (\Y \circ \X^{-1}) \circ \X = \Y,                               \\
+    (\a \oplus_l \X) \ominus_l \X  & = \log (\exp \a \circ \X \circ \X^{-1}) = \a.
+  \end{align}
+\end{subequations}
+
+
+\section{Homomorphy of Lie Groups implies Homomorphy of Lie Algebras}
+
+This is important since it implies that $SO(3)$ and $S^3$ can be treated analogously. A proof is in \cite[Corr. 20]{howe_very_1983}.
+
+\section{The Adjoint}
+
+We define the \textbf{adjoint} $\Ad_\X : \lM \rightarrow \lM$ of a matrix $\A \in \lM$ as
+\begin{equation}
+  \Ad_{\X} \A \coloneq \X \A \X^{-1}.
+\end{equation}
+From the definition of the exponential map in \eqref{def:exponential} it can be seen that $\Exp( \Ad_\X \A) \in \M$ if and only if $\Exp (\A) \in \M$, which implies that the lie algebra $\lM$ is closed under action of the adjoint.
+
+The adjoint of a tangent matrix element $\a \in \clM$ is similary defined as a linear mapping $\bAd_\X : \clM \rightarrow \clM$:
+\begin{equation}
+  \bAd_\X \a \coloneq (\Ad_{\X} \hat \a)^\vee = (\X \hat \a \X^{-1})^\vee.
+\end{equation}
+For a given $\X$ this is a linear map, so $\bAd_\X$ is an $n \times n$ matrix. The adjoint represents a coordinate change from the tangent space $T_\X \cM$ to the tangent space $\T_\id \cM = \clM$ at the origin.
+
+\begin{remark}
+  Since the definition of $\Ad$ involves matrix multiplication it does not make sense for groups like $\check{\SOtwo}$ and $\Sthree$ that are not matrix Lie groups. We can however still define the bold-face adjoint $\bAd$ on $\cM$ as
+  \begin{equation}
+    \bAd_{\x} \coloneq \bAd_{\hat \x},
+  \end{equation}
+  where $\wedge : \cM \rightarrow \M$ is a Lie group homomorphism that maps $\cM$ into a matrix Lie group.
+\end{remark}
+
+\begin{properties}[title=Properties of the adjoint]
+  The adjoints satisfy the following properties:
+  \begin{subequations}
+    \label{eq:adjoint_properties}
+    \begin{align}
+      \bAd_\X^{-1}          & = \bAd_{\X^{-1}},                                                    \\
+      \bAd_\X \bAd_\Y       & = \bAd_{\X \circ \Y},              \label{eq:ad_product}             \\
+      \exp \; \bAd_\X \; \a & =  \X \circ \exp \a \circ \X^{-1},           \label{eq:exp_adj_comm} \\
+      \X \oplus_r \a        & = (\bAd_\X \a) \oplus_l \X.  \label{eq:plus_adjoint}
+    \end{align}
+  \end{subequations}
+\end{properties}
+
+The first two properties follow directly from the definition. Equation \eqref{eq:exp_adj_comm} follows from
+\begin{equation}
+  \begin{aligned}
+    \exp \bAd_\X \a = \Exp \; \Ad_X \; \hat \a =  \sum_{k \geq 0} \frac{\left( \X \hat \a \X^{-1} \right)^k}{k} = \X \left( \sum_{k \geq 0} \frac{ \hat \a ^k}{k} \right) \X^{-1} =  \X \exp (\a) \X^{-1}.
+  \end{aligned}
+\end{equation}
+We can then also show \eqref{eq:plus_adjoint}
+\begin{equation}
+  \X \oplus_r \a \overset{\eqref{eq:right-plus}}= \X \circ \exp (\a) = (\X \circ \exp (\a) \circ \X^{-1}) \circ \X \overset{\eqref{eq:exp_adj_comm}}= \exp (\bAd_\X \a) \circ \X \overset{\eqref{eq:left-plus}}= (\bAd_\X \a) \oplus_l \X.
+\end{equation}
+
+\todo[inline]{Examples calculating the adjoint for a couple of groups}
