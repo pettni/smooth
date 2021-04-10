@@ -1,0 +1,7 @@
+{
+  "editor.defaultFormatter": "xaver.clang-format",
+  "files.associations": {
+    "condition_variable": "cpp",
+    "tuple": "cpp"
+  }
+}

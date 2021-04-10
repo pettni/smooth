@@ -96,7 +96,7 @@ if(BUILD_TESTING)
   find_package(GTest REQUIRED)
 
   add_executable(${PROJECT_NAME}_tests
-    test/test.cpp
+    test/test_so3.cpp
   )
 
   target_link_libraries(${PROJECT_NAME}_tests smooth GTest::Main)
