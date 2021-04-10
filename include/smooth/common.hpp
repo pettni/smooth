@@ -1,6 +1,8 @@
 #ifndef SMOOTH__COMMON_HPP_
 #define SMOOTH__COMMON_HPP_
 
+#include "concepts.hpp"
+
 namespace smooth
 {
 

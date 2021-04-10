@@ -70,8 +70,9 @@ requires(const T & t)
   {t.Ad()}->std::same_as<typename T::TangentMap>;
 } &&
 requires(const typename T::Tangent & t) {
-  {T::exp(t)}->std::same_as<change_template_args_t<T, typename T::Scalar,
-    DefaultStorage<typename T::Scalar, T::size>>>;
+  {T::exp(t)}->std::same_as<change_template_args_t<
+      T, typename T::Scalar, DefaultStorage<typename T::Scalar, T::size>
+    >>;
   {T::ad(t)}->std::same_as<typename T::TangentMap>;
   {T::hat(t)}->std::same_as<typename T::Algebra>;
 };
