@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "smooth/so3.hpp"
+#include "smooth/map.hpp"
 
 
 TEST(SO3, Copy)
