@@ -2,6 +2,8 @@
 #define SMOOTH__TRAITS_HPP_
 
 #include <cstddef>
+#include <utility>
+
 
 namespace smooth
 {
