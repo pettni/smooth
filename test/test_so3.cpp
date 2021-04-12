@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <unsupported/Eigen/MatrixFunctions>  // for matrix exponential
+
 #include "smooth/so3.hpp"
 #include "smooth/storage.hpp"
 
@@ -216,17 +218,26 @@ TEST(SO3, Copying)
   }
 }
 
-TEST(SO3, CompositionInverse)
+TEST(SO3, Composition)
+{
+  std::default_random_engine rng(5);
+  for (auto i = 0u; i != 10; ++i) {
+    const auto g1 = smooth::SO3d::Random(rng), g2 = smooth::SO3d::Random(rng);
+    ASSERT_TRUE((g1 * g2).matrix().isApprox(g1.matrix() * g2.matrix()));
+  }
+}
+
+TEST(SO3, Inverse)
 {
   const auto g_id = smooth::SO3d::Identity();
   ASSERT_TRUE((g_id * g_id).isApprox(g_id));
-
   std::default_random_engine rng(5);
   for (auto i = 0u; i != 10; ++i) {
     const auto g = smooth::SO3d::Random(rng);
     const auto ginv = g.inverse();
     const auto g_ginv = g * ginv;
     ASSERT_TRUE(g_ginv.isApprox(g_id));
+    ASSERT_TRUE(g.matrix().inverse().isApprox(g.inverse().matrix()));
   }
 }
 
@@ -246,8 +257,72 @@ TEST(SO3, LogAndExp)
     auto log = g.log();
     auto g_copy = smooth::SO3d::exp(log);
     auto log_copy = g_copy.log();
+
+    // check that exp o log = Id
     ASSERT_TRUE(g.isApprox(g_copy));
     ASSERT_TRUE(log.isApprox(log_copy));
+
+    // check that log = vee o Log o hat
+    // matrix log is non-unique, so we compare the results through exp
+    const auto log1 = smooth::SO3d::vee(g.matrix().log());
+    ASSERT_TRUE(smooth::SO3d::exp(log1).isApprox(g));
+
+    // check that exp = vee o Exp o hat
+    const auto G = smooth::SO3d::hat(log).exp().eval();
+    ASSERT_TRUE(G.isApprox(g.matrix()));
+  }
+}
+
+TEST(SO3, Ad)
+{
+  std::default_random_engine rng(5);
+  for (auto i = 0u; i != 10; ++i) {
+    auto g = smooth::SO3d::Random(rng);
+    const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
+
+    // check that Ad a = (G \hat a G^{-1})^\vee
+    const auto b1 = (g.Ad() * a).eval();
+    const auto b2 = smooth::SO3d::vee(g.matrix() * smooth::SO3d::hat(a) * g.inverse().matrix());
+    ASSERT_TRUE(b1.isApprox(b2));
+  }
+}
+
+TEST(SO3, ad)
+{
+  std::default_random_engine rng(5);
+  for (auto i = 0u; i != 10; ++i) {
+    const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
+    const smooth::SO3d::Tangent b = smooth::SO3d::Tangent::NullaryExpr(
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
+    const auto A = smooth::SO3d::hat(a), B = smooth::SO3d::hat(b);
+
+    // check that ad_a b = [a, b] = ( hat(a) * hat(b) - hat(b) * hat(a) )^\vee
+    const auto c1 = (smooth::SO3d::ad(a) * b).eval();
+    const auto c2 = smooth::SO3d::vee(A * B - B * A);
+    ASSERT_TRUE(c1.isApprox(c2));
+  }
+}
+
+TEST(SO3, HatAndVee)
+{
+  std::default_random_engine rng(5);
+
+  for (auto i = 0u; i != 10; ++i) {
+    const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
+
+    const auto hat = smooth::SO3d::hat(a);
+    const auto vee = smooth::SO3d::vee(hat);
+    const auto hat2 = smooth::SO3d::hat(vee);
+
+    ASSERT_TRUE(a.isApprox(vee));
+    ASSERT_TRUE(hat2.isApprox(hat));
   }
 }
 
