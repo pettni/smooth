@@ -23,7 +23,9 @@ template<
 >
 class LieGroupBase<_Derived<_Scalar, _Storage>, size>
 {
-  using Derived = _Derived<_Scalar, _Storage>;
+  using Scalar = _Scalar;
+  using Storage = _Storage;
+  using Derived = _Derived<Scalar, Storage>;
 
 public:
   /**
@@ -53,15 +55,14 @@ public:
    * @brief Compare two Lie group elements
    */
   template<typename OS>
-  requires ConstStorageLike<OS, _Scalar, size>
+  requires StorageLike<OS, Scalar, size>
   bool isApprox(
-    const _Derived<_Scalar, OS> & o,
-    const _Scalar & prec = Eigen::NumTraits<_Scalar>::dummy_precision()) const
+    const _Derived<Scalar, OS> & o,
+    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
     using Tangent = std::decay_t<decltype(o.log())>;
 
-    return (static_cast<const Derived &>(*this).inverse() * o).log().isApprox(
-      Tangent::Zero(), prec);
+    return (static_cast<const Derived &>(*this).inverse() * o).log().isApprox(Tangent::Zero(), eps);
   }
 
   /**
@@ -81,7 +82,7 @@ public:
   /**
    * @brief Access group storage
    */
-  _Storage & coeffs()
+  Storage & coeffs()
   {
     return static_cast<Derived &>(*this).s_;
   }
@@ -89,19 +90,9 @@ public:
   /**
    * @brief Const access group storage
    */
-  const _Storage & coeffs() const
+  const Storage & coeffs() const
   {
     return static_cast<const Derived &>(*this).s_;
-  }
-
-  /**
-   * @brief Access raw data pointer
-   *
-   * Only available for non-const ordered storage
-   */
-  _Scalar * data() requires StorageLike<_Storage, _Scalar, size>&& is_ordered_v<_Storage>
-  {
-    return static_cast<Derived &>(*this).coeffs().data();
   }
 
   /**
@@ -109,9 +100,19 @@ public:
    *
    * Only available for ordered storage
    */
-  const _Scalar * data() const requires is_ordered_v<_Storage>
+  const Scalar * data() const requires OrderedStorageLike<Storage, Scalar, size>
   {
     return static_cast<const Derived &>(*this).coeffs().data();
+  }
+
+  /**
+   * @brief Access raw data pointer
+   *
+   * Only available for ordered modifiable storage
+   */
+  Scalar * data() requires OrderedModifiableStorageLike<Storage, Scalar, size>
+  {
+    return static_cast<Derived &>(*this).coeffs().data();
   }
 
   /**

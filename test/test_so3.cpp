@@ -3,6 +3,8 @@
 #include "smooth/so3.hpp"
 #include "smooth/storage.hpp"
 
+#include "reverse_storage.hpp"
+
 
 template<smooth::LieGroupLike T>
 void test()
@@ -13,12 +15,23 @@ TEST(SO3, Static)
   static_assert(smooth::SO3d::size == 4);
   static_assert(smooth::SO3d::dof == 3);
   static_assert(smooth::SO3d::dim == 3);
+}
 
-  static_assert(smooth::is_ordered<smooth::DefaultStorage<double, 4>>::value);
-  static_assert(smooth::is_ordered<Eigen::Map<smooth::DefaultStorage<double, 4>>>::value);
-  static_assert(
-    smooth::is_ordered<const Eigen::Map<const smooth::DefaultStorage<double,
-    4>>>::value);
+TEST(SO3, Specific)
+{
+  // test unordered unit quaternion
+  std::default_random_engine rng(5);
+  smooth::SO3d g = smooth::SO3d::Random(rng);
+  smooth::SO3<double, smooth::ReverseStorage<double, 4>> g_rev(g);
+
+  const auto q = g_rev.unit_quaternion();
+
+  for (auto i = 0u; i != 4; ++i)
+  {
+    ASSERT_DOUBLE_EQ(q.coeffs()[i], g_rev.coeffs().a[3 - i]);
+  }
+
+  ASSERT_TRUE(q.isApprox(g.unit_quaternion()));
 }
 
 TEST(SO3, LieGroupLike)
@@ -26,6 +39,7 @@ TEST(SO3, LieGroupLike)
   test<smooth::SO3d>();
   test<smooth::Map<smooth::SO3d>>();
   test<smooth::ConstMap<smooth::SO3d>>();
+  test<smooth::SO3<double, smooth::ReverseStorage<double, smooth::SO3d::size>>>();
 }
 
 TEST(SO3, Constructors)
@@ -67,6 +81,30 @@ TEST(SO3, Constructors)
     g2 = g1;
     smooth::SO3d g3(std::move(g1));
     ASSERT_TRUE(g3.isApprox(g2));
+  }
+}
+
+TEST(SO3, ReverseStorage)
+{
+  using SO3d_rev = smooth::SO3<double, smooth::ReverseStorage<double, 4>>;
+  std::default_random_engine rng(5);
+
+  SO3d_rev g;
+  g.setRandom(rng);
+  smooth::SO3d g_copy = g;
+  SO3d_rev g_copy2 = g;
+
+  ASSERT_TRUE(g.isApprox(g_copy));
+  for (auto i = 0u; i != smooth::SO3d::size; ++i) {
+    ASSERT_DOUBLE_EQ(g.coeffs().a[i], g_copy.coeffs()[smooth::SO3d::size - 1 - i]);
+    ASSERT_DOUBLE_EQ(g.coeffs().a[i], g_copy2.coeffs().a[i]);
+  }
+
+  std::array<double, smooth::SO3d::size> a;
+  smooth::Map<smooth::SO3d> m(a.data());
+  m = g_copy2;
+  for (auto i = 0u; i != smooth::SO3d::size; ++i) {
+    ASSERT_DOUBLE_EQ(a[i], g_copy2.coeffs().a[smooth::SO3d::size - 1 - i]);
   }
 }
 
@@ -151,11 +189,17 @@ TEST(SO3, Copying)
   g1.setRandom(rng);
   m1 = g1;
   ASSERT_TRUE(m1.isApprox(g1));
+  for (auto i = 0u; i != smooth::SO3d::size; ++i) {
+    ASSERT_DOUBLE_EQ(m1.coeffs()[i], a1[i]);
+  }
 
   // map to map
   m1.setRandom(rng);
   m2 = m1;
   ASSERT_TRUE(m2.isApprox(m1));
+  for (auto i = 0u; i != smooth::SO3d::size; ++i) {
+    ASSERT_DOUBLE_EQ(m1.coeffs()[i], a2[i]);
+  }
 
   // map to group
   m1.setRandom(rng);
