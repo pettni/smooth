@@ -9,12 +9,12 @@
 namespace smooth
 {
 
-template<typename Derived, uint32_t size>
-class LieGroupBase;
-
 /**
  * @brief CRTP base for lie groups with common functionality and syntactic sugar
  */
+template<typename Derived, uint32_t size>
+class LieGroupBase;
+
 template<
   template<typename, typename> typename _Derived,
   typename _Scalar,
@@ -58,7 +58,10 @@ public:
     const _Derived<_Scalar, OS> & o,
     const _Scalar & prec = Eigen::NumTraits<_Scalar>::dummy_precision()) const
   {
-    return (static_cast<const Derived &>(*this).inverse() * o).log().norm() < 1e-5;
+    using Tangent = std::decay_t<decltype(o.log())>;
+
+    return (static_cast<const Derived &>(*this).inverse() * o).log().isApprox(
+      Tangent::Zero(), prec);
   }
 
   /**
@@ -68,14 +71,10 @@ public:
   _Derived<NewScalar, DefaultStorage<NewScalar, size>> cast() const
   {
     _Derived<NewScalar, DefaultStorage<NewScalar, size>> ret;
-    if constexpr (is_ordered<_Storage>::value) {
-      ret.coeffs() = static_cast<const Derived &>(*this).s_.template cast<NewScalar>();
-    } else {
-      static_for<size>(
-        [&](auto i) {
-          ret.coeffs()[i] = static_cast<NewScalar>(static_cast<const Derived &>(*this).coeffs()[i]);
-        });
-    }
+    static_for<size>(
+      [&](auto i) {
+        ret.coeffs()[i] = static_cast<NewScalar>(static_cast<const Derived &>(*this).coeffs()[i]);
+      });
     return ret;
   }
 
@@ -97,20 +96,22 @@ public:
 
   /**
    * @brief Access raw data pointer
-  */
-  _Scalar * data()
-  requires StorageLike<_Storage, _Scalar, size> && is_ordered_v<_Storage>
+   *
+   * Only available for ordered storage
+   */
+  _Scalar * data() requires StorageLike<_Storage, _Scalar, size>&& is_ordered_v<_Storage>
   {
-    return static_cast<Derived &>(*this).s_.data();
+    return static_cast<Derived &>(*this).coeffs().data();
   }
 
   /**
-   * @brief Access raw data pointer
+   * @brief Access raw const data pointer
+   *
+   * Only available for ordered storage
    */
-  const _Scalar * data() const
-  requires is_ordered_v<_Storage>
+  const _Scalar * data() const requires is_ordered_v<_Storage>
   {
-    return static_cast<const Derived &>(*this).s_.data();
+    return static_cast<const Derived &>(*this).coeffs().data();
   }
 
 protected:

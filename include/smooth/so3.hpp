@@ -34,10 +34,12 @@ private:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
 public:
+  // REQUIRED CONSTANTS
   static constexpr uint32_t size = 4;
   static constexpr uint32_t dof = 3;
   static constexpr uint32_t dim = 3;
 
+  // REQUIRED TYPES
   using Storage = _Storage;
   using Scalar = _Scalar;
 
@@ -47,7 +49,7 @@ public:
   using Algebra = Eigen::Matrix<Scalar, dim, dim>;
   using Vector = Eigen::Matrix<Scalar, dim, 1>;
 
-  // CONSTRUCTOR BOILERPLATE
+  // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
   SO3() = default;
   SO3(const SO3 & o) = default;
@@ -102,16 +104,14 @@ public:
   SO3(const Eigen::QuaternionBase<Derived> & qin)
   requires std::is_same_v<typename Derived::Scalar, Scalar>
   {
-    if constexpr (is_ordered_v<Storage>) {
-      unit_quaternion() = qin.normalized();
-    } else {
-      auto qin_norm = qin.normalized().eval();
-      s_[0] = qin_norm.x(); s_[1] = qin_norm.y(); s_[2] = qin_norm.z(); s_[3] = qin_norm.w();
-    }
+    const Eigen::Quaternion<typename Derived::Scalar> qin_norm = qin.normalized();
+    s_[0] = qin_norm.x(); s_[1] = qin_norm.y(); s_[2] = qin_norm.z(); s_[3] = qin_norm.w();
   }
 
   /**
    * @brief Access as Eigen quaternion by Map
+   *
+   * Requires ordered storage
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> unit_quaternion()
   requires is_ordered_v<Storage>
@@ -120,7 +120,9 @@ public:
   }
 
   /**
-   * @brief Access as const Eigen quaternion by Map
+   * @brief Access as Eigen quaternion by const Map
+   *
+   * Requires ordered storage
    */
   Eigen::Map<const Eigen::Quaternion<Scalar>> unit_quaternion() const
   requires is_ordered_v<Storage>
@@ -130,9 +132,11 @@ public:
 
   /**
    * @brief Access as Eigen quaternion by copy
+   *
+   * Only for non-ordered storage (for ordered storage use map versions)
    */
   Eigen::Quaternion<Scalar> unit_quaternion() const
-  requires (!is_ordered_v<Storage>)
+  requires(!is_ordered_v<Storage>)
   {
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
   }
