@@ -35,11 +35,13 @@ private:
 
 public:
   // REQUIRED CONSTANTS
+
   static constexpr uint32_t size = 4;
   static constexpr uint32_t dof = 3;
   static constexpr uint32_t dim = 3;
 
   // REQUIRED TYPES
+
   using Storage = _Storage;
   using Scalar = _Scalar;
 
@@ -95,7 +97,7 @@ public:
     return *this;
   }
 
-  // SO3 SPECIFIC API
+  // SO3-SPECIFIC API
 
   /**
    * @brief Construct from quaternion
@@ -181,7 +183,6 @@ public:
    * @brief Group composition
    */
   template<typename OS>
-  requires ConstStorageLike<OS, Scalar, 4>
   Group operator*(const SO3<Scalar, OS> & r) const
   {
     return Group(unit_quaternion() * r.unit_quaternion());
@@ -225,7 +226,8 @@ public:
   /**
    * @brief Group exponential
    */
-  static Group exp(const Tangent & t)
+  template<typename TangentDerived>
+  static Group exp(const Eigen::MatrixBase<TangentDerived> & t)
   {
     using std::cos, std::sin;
 
@@ -248,7 +250,8 @@ public:
   /**
    * @brief Algebra adjoint
    */
-  static TangentMap ad(const Tangent & t)
+  template<typename TangentDerived>
+  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & t)
   {
     return hat(t);
   }
@@ -256,7 +259,8 @@ public:
   /**
    * @brief Algebra hat
    */
-  static Algebra hat(const Tangent & t)
+  template<typename TangentDerived>
+  static Algebra hat(const Eigen::MatrixBase<TangentDerived> & t)
   {
     return (Algebra() <<
            Scalar(0), -t.z(), t.y(),
@@ -268,7 +272,8 @@ public:
   /**
    * @brief Right jacobian of the exponential map
    */
-  static TangentMap dr_exp(const Tangent & t)
+  template<typename TangentDerived>
+  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & t)
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = t.squaredNorm();
@@ -288,7 +293,8 @@ public:
   /**
    * @brief Inverse of the right jacobian of the exponential map
    */
-  static TangentMap dr_expinv(const Tangent & t)
+  template<typename TangentDerived>
+  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & t)
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = t.squaredNorm();
