@@ -4,6 +4,7 @@
 #include <Eigen/Core>
 
 #include <concepts>
+#include <random>
 
 #include "common.hpp"
 #include "traits.hpp"
@@ -80,31 +81,24 @@ concept LieGroupLike = requires {
   typename T::Tangent;
   typename T::Vector;
   typename T::TangentMap;
-  typename T::Algebra;
   typename T::Group;
   typename T::MatrixGroup;
-  {T::size}->std::same_as<const uint32_t &>;
-  {T::dim}->std::same_as<const uint32_t &>;
-  {T::dof}->std::same_as<const uint32_t &>;
+  {T::size}->std::same_as<const uint32_t &>;      // size of representation
+  {T::dim}->std::same_as<const uint32_t &>;       // side of square matrix group
+  {T::dof}->std::same_as<const uint32_t &>;       // degrees of freedom (tangent space dimension)
+  {T::act_dim}->std::same_as<const uint32_t &>;   // dimension of vector space on which group acts
 } &&
 std::is_base_of_v<Eigen::MatrixBase<typename T::Tangent>, typename T::Tangent>&&
 std::is_base_of_v<Eigen::MatrixBase<typename T::Vector>, typename T::Vector>&&
 std::is_base_of_v<Eigen::MatrixBase<typename T::TangentMap>, typename T::TangentMap>&&
-std::is_base_of_v<Eigen::MatrixBase<typename T::Algebra>, typename T::Algebra>&&
 std::is_same_v<typename T::Tangent::Scalar, typename T::Scalar>&&
-std::is_same_v<
-  typename T::Group,
-  change_template_args_t<T, typename T::Scalar, DefaultStorage<typename T::Scalar, T::size>>
->&&
-std::is_base_of_v<Eigen::MatrixBase<typename T::Algebra>, typename T::MatrixGroup>&&
+std::is_base_of_v<Eigen::MatrixBase<typename T::MatrixGroup>, typename T::MatrixGroup>&&
 (T::Tangent::RowsAtCompileTime == T::dof) &&
 (T::Tangent::ColsAtCompileTime == 1) &&
-(T::Vector::RowsAtCompileTime == T::dim) &&
+(T::Vector::RowsAtCompileTime == T::act_dim) &&
 (T::Vector::ColsAtCompileTime == 1) &&
 (T::TangentMap::RowsAtCompileTime == T::dof) &&
 (T::TangentMap::ColsAtCompileTime == T::dof) &&
-(T::Algebra::RowsAtCompileTime == T::dim) &&
-(T::Algebra::ColsAtCompileTime == T::dim) &&
 (T::MatrixGroup::RowsAtCompileTime == T::dim) &&
 (T::MatrixGroup::ColsAtCompileTime == T::dim) &&
 // Modifiable interface
@@ -145,18 +139,14 @@ requires(const T & t, const T & u, const typename T::Vector & x)
   {t.log()}->std::same_as<typename T::Tangent>;
   {t.matrix()}->std::same_as<typename T::MatrixGroup>;
   {t.Ad()}->std::same_as<typename T::TangentMap>;
-  {t.template cast<double>()}->std::same_as<change_template_args_t<typename T::Group, double,
-    DefaultStorage<double, T::size>>>;
-  {t.template cast<float>()}->std::same_as<change_template_args_t<typename T::Group, float,
-    DefaultStorage<float, T::size>>>;
+  {t.template cast<double>()};
+  {t.template cast<float>()};
 } &&
 // Tangent interface
 requires(const typename T::Tangent & t) {
-  {T::exp(t)}->std::same_as<change_template_args_t<
-      T, typename T::Scalar, DefaultStorage<typename T::Scalar, T::size>
-    >>;
+  {T::exp(t)}->std::same_as<typename T::Group>;
   {T::ad(t)}->std::same_as<typename T::TangentMap>;
-  {T::hat(t)}->std::same_as<typename T::Algebra>;
+  {T::hat(t)}->std::same_as<typename T::MatrixGroup>;
 };
 
 } // namespace smooth

@@ -45,6 +45,7 @@ public:
   static constexpr uint32_t size = 4;
   static constexpr uint32_t dof = 3;
   static constexpr uint32_t dim = 3;
+  static constexpr uint32_t act_dim = 3;
 
   // REQUIRED TYPES
 
@@ -56,7 +57,7 @@ public:
   using Tangent = Eigen::Matrix<Scalar, dof, 1>;
   using TangentMap = Eigen::Matrix<Scalar, dof, dof>;
   using Algebra = Eigen::Matrix<Scalar, dim, dim>;
-  using Vector = Eigen::Matrix<Scalar, dim, 1>;
+  using Vector = Eigen::Matrix<Scalar, act_dim, 1>;
 
   // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
@@ -285,7 +286,7 @@ public:
    * @brief Algebra hat
    */
   template<typename TangentDerived>
-  static Algebra hat(const Eigen::MatrixBase<TangentDerived> & t)
+  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & t)
   {
     return (Algebra() <<
            Scalar(0), -t.z(), t.y(),
