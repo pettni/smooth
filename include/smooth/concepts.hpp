@@ -77,11 +77,12 @@ template<typename T>
 concept LieGroupLike = requires {
   typename T::Storage;
   typename T::Scalar;
-  typename T::Group;
   typename T::Tangent;
   typename T::Vector;
   typename T::TangentMap;
   typename T::Algebra;
+  typename T::Group;
+  typename T::MatrixGroup;
   {T::size}->std::same_as<const uint32_t &>;
   {T::dim}->std::same_as<const uint32_t &>;
   {T::dof}->std::same_as<const uint32_t &>;
@@ -95,6 +96,7 @@ std::is_same_v<
   typename T::Group,
   change_template_args_t<T, typename T::Scalar, DefaultStorage<typename T::Scalar, T::size>>
 >&&
+std::is_base_of_v<Eigen::MatrixBase<typename T::Algebra>, typename T::MatrixGroup>&&
 (T::Tangent::RowsAtCompileTime == T::dof) &&
 (T::Tangent::ColsAtCompileTime == 1) &&
 (T::Vector::RowsAtCompileTime == T::dim) &&
@@ -103,6 +105,8 @@ std::is_same_v<
 (T::TangentMap::ColsAtCompileTime == T::dof) &&
 (T::Algebra::RowsAtCompileTime == T::dim) &&
 (T::Algebra::ColsAtCompileTime == T::dim) &&
+(T::MatrixGroup::RowsAtCompileTime == T::dim) &&
+(T::MatrixGroup::ColsAtCompileTime == T::dim) &&
 // Modifiable interface
 (
   !ModifiableStorageLike<typename T::Storage, typename T::Scalar, T::size>||
@@ -139,6 +143,7 @@ requires(const T & t, const T & u, const typename T::Vector & x)
   {t * x}->std::same_as<typename T::Vector>;
   {t * u}->std::same_as<typename T::Group>;
   {t.log()}->std::same_as<typename T::Tangent>;
+  {t.matrix()}->std::same_as<typename T::MatrixGroup>;
   {t.Ad()}->std::same_as<typename T::TangentMap>;
   {t.template cast<double>()}->std::same_as<change_template_args_t<typename T::Group, double,
     DefaultStorage<double, T::size>>>;

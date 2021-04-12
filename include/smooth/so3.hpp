@@ -52,6 +52,7 @@ public:
   using Scalar = _Scalar;
 
   using Group = SO3<Scalar, DefaultStorage<Scalar, size>>;
+  using MatrixGroup = Eigen::Matrix<Scalar, dim, dim>;
   using Tangent = Eigen::Matrix<Scalar, dof, 1>;
   using TangentMap = Eigen::Matrix<Scalar, dof, dof>;
   using Algebra = Eigen::Matrix<Scalar, dim, dim>;
@@ -185,6 +186,14 @@ public:
   }
 
   /**
+   * @brief Matrix lie group element
+   */
+  MatrixGroup matrix() const
+  {
+    return unit_quaternion().toRotationMatrix();
+  }
+
+  /**
    * @brief Group action
    */
   template<typename Derived>
@@ -216,16 +225,14 @@ public:
    */
   Tangent log() const
   {
-    using std::atan2;
-    const Scalar xyz_n = Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>>(s_.data()).norm();
-
+    using std::atan2, std::sqrt;
+    const Scalar xyz_n = sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2]);
     if (xyz_n < eps<Scalar>) {
       // TODO: small angle approx
       return Tangent::Zero();
     }
-
-    const Scalar p = Scalar(2) * atan2(xyz_n, unit_quaternion().w()) / xyz_n;
-    return p * Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>>(s_.data());
+    const Scalar p = Scalar(2) * atan2(xyz_n, s_[3]) / xyz_n;
+    return p * Tangent(s_[0], s_[1], s_[2]);
   }
 
   /**
@@ -284,6 +291,15 @@ public:
            t.z(), Scalar(0), -t.x(),
            -t.y(), t.x(), Scalar(0)
     ).finished();
+  }
+
+  /**
+   * @brief Algebra vee
+   */
+  template<typename AlgebraDerived>
+  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & a)
+  {
+    return Tangent(a(2, 1) - a(1, 2), a(0, 2) - a(2, 0), a(1, 0) - a(0, 1)) / Scalar(2);
   }
 
   /**
