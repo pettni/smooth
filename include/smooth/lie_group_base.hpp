@@ -62,7 +62,7 @@ public:
   {
     using Tangent = std::decay_t<decltype(o.log())>;
 
-    return (static_cast<const Derived &>(*this).inverse() * o).log().isApprox(Tangent::Zero(), 10 * eps);
+    return (static_cast<const Derived &>(*this).inverse() * o).log().isApprox(Tangent::Zero(), eps);
   }
 
   /**
