@@ -49,7 +49,7 @@ TYPED_TEST(LieGroupInterface, Constructors)
   TypeParam g;
   g.setRandom(rng);
 
-  // data
+  // forward scalars to storage
   std::array<typename TypeParam::Scalar, TypeParam::size> args;
   args.fill(0.5);
   auto g_init = helper<TypeParam>(args, std::make_index_sequence<TypeParam::size>{});
@@ -113,8 +113,6 @@ TYPED_TEST(LieGroupInterface, ReverseStorage)
   }
 }
 
-
-
 TYPED_TEST(LieGroupInterface, Action)
 {
   std::default_random_engine rng(5);
@@ -131,7 +129,6 @@ TYPED_TEST(LieGroupInterface, Action)
     ASSERT_TRUE(vec_copy.isApprox(vec));
   }
 }
-
 
 TYPED_TEST(LieGroupInterface, DataAccess)
 {
@@ -174,13 +171,12 @@ TYPED_TEST(LieGroupInterface, Cast)
 {
   std::default_random_engine rng(5);
 
-  TypeParam g;
-  g.setRandom(rng);
+  TypeParam g = TypeParam::Random(rng);
 
-  auto g_float = g.template cast<float>();
+  const auto g_float = g.template cast<float>();
   ASSERT_TRUE(g_float.matrix().isApprox(g.matrix().template cast<float>()));
 
-  auto g_double = g.template cast<double>();
+  const auto g_double = g.template cast<double>();
   ASSERT_TRUE(g_double.matrix().isApprox(g.matrix().template cast<double>()));
 }
 
@@ -253,19 +249,19 @@ TYPED_TEST(LieGroupInterface, Inverse)
 TYPED_TEST(LieGroupInterface, LogAndExp)
 {
   // identity <-> zero
-  auto g_id = TypeParam::Identity();
-  auto exp_0 = TypeParam::exp(TypeParam::Tangent::Zero());
+  const auto g_id = TypeParam::Identity();
+  const auto exp_0 = TypeParam::exp(TypeParam::Tangent::Zero());
   ASSERT_TRUE(g_id.isApprox(exp_0));
-  auto log_id = g_id.log();
+  const auto log_id = g_id.log();
   ASSERT_TRUE(log_id.isApprox(TypeParam::Tangent::Zero()));
 
   // test some random ones
   std::default_random_engine rng(5);
   for (auto i = 0u; i != 10; ++i) {
-    auto g = TypeParam::Random(rng);
-    auto log = g.log();
-    auto g_copy = TypeParam::exp(log);
-    auto log_copy = g_copy.log();
+    const auto g = TypeParam::Random(rng);
+    const auto log = g.log();
+    const auto g_copy = TypeParam::exp(log);
+    const auto log_copy = g_copy.log();
 
     // check that exp o log = Id
     ASSERT_TRUE(g.isApprox(g_copy));
@@ -286,7 +282,7 @@ TYPED_TEST(LieGroupInterface, Ad)
 {
   std::default_random_engine rng(5);
   for (auto i = 0u; i != 10; ++i) {
-    auto g = TypeParam::Random(rng);
+    const auto g = TypeParam::Random(rng);
     const typename TypeParam::Tangent a = TypeParam::Tangent::NullaryExpr(
       [&rng](int) {return smooth::u_distr<double>(rng);}
     );
@@ -399,7 +395,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
 
   // check infinitesimal step for log (right)
   for (auto i = 0u; i != 10; ++i) {
-    auto g = TypeParam::Random(rng);
+    const auto g = TypeParam::Random(rng);
     const typename TypeParam::Tangent dg = 1e-4 * TypeParam::Tangent::NullaryExpr(
       [&rng](int) {return smooth::u_distr<double>(rng);}
     );
@@ -412,7 +408,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
 
   // check infinitesimal step for log (left)
   for (auto i = 0u; i != 10; ++i) {
-    auto g = TypeParam::Random(rng);
+    const auto g = TypeParam::Random(rng);
     const typename TypeParam::Tangent dg = 1e-4 * TypeParam::Tangent::NullaryExpr(
       [&rng](int) {return smooth::u_distr<double>(rng);}
     );
