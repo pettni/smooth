@@ -4,13 +4,10 @@ project(smooth VERSION 0.0.1)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
 option(BUILD_TESTING "Build the tests." ON)
 option(CODE_COVERAGE "Code coverage for tests." ON)
 
-
 find_package(Eigen3 REQUIRED)
-
 
 # ---------------------------------------------------------------------------------------
 # TARGETS
@@ -26,7 +23,6 @@ target_link_libraries(smooth
 INTERFACE
   Eigen3::Eigen
 )
-
 
 # ---------------------------------------------------------------------------------------
 # INSTALLATION
@@ -47,7 +43,6 @@ install(
   LIBRARY DESTINATION   ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION   ${CMAKE_INSTALL_LIBDIR}
 )
-
 
 # ---------------------------------------------------------------------------------------
 # CMAKE CONFIGURATION
@@ -85,7 +80,6 @@ install(
   DESTINATION  ${export_dest_dir}
 )
 
-
 # ---------------------------------------------------------------------------------------
 # CODE COVERAGE
 # ---------------------------------------------------------------------------------------
@@ -114,6 +108,7 @@ if(BUILD_TESTING)
     add_custom_target(testcov
       COMMAND lcov -c --include ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/\\* -d ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles -o ${PROJECT_NAME}_testcov.info
       COMMAND genhtml ${PROJECT_NAME}_testcov.info -o out
+      COMMAND echo "Open file://${CMAKE_CURRENT_BINARY_DIR}/out/index.html in a browser to view results"
     )
   endif()
 

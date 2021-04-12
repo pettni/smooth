@@ -19,7 +19,7 @@ namespace smooth
  * Memory layout: qx qy qz qw  (same as Eigen quaternion)
  */
 template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 4>>
-requires ConstStorageLike<_Storage, _Scalar, 4>
+requires StorageLike<_Storage, _Scalar, 4>
 class SO3 : public LieGroupBase<SO3<_Scalar, _Storage>, 4>
 {
 private:
@@ -70,10 +70,10 @@ public:
    * @brief Copy constructor from other storage types
    */
   template<typename OS>
-  requires ConstStorageLike<OS, Scalar, size>
+  requires StorageLike<OS, Scalar, size>
   SO3(const SO3<Scalar, OS> & o)
   {
-    static_for<size>([&](auto i) {s_[i] = o.s_[i];});
+    static_for<size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
 
   /**
@@ -105,7 +105,7 @@ public:
    * @brief Copy assignment from other SO3
    */
   template<typename OS>
-  requires ConstStorageLike<OS, Scalar, size>
+  requires StorageLike<OS, Scalar, size>
   SO3 & operator=(const SO3<Scalar, OS> & o)
   {
     static_for<size>([&](auto i) {s_[i] = o.s_[i];});
@@ -131,7 +131,7 @@ public:
    * Only available for ordered storage
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> unit_quaternion()
-  requires is_ordered_v<Storage>
+  requires OrderedModifiableStorageLike<Storage, Scalar, size>
   {
     return Eigen::Map<Eigen::Quaternion<Scalar>>(s_.data());
   }
@@ -142,7 +142,7 @@ public:
    * Only available for ordered storage
    */
   Eigen::Map<const Eigen::Quaternion<Scalar>> unit_quaternion() const
-  requires is_ordered_v<Storage>
+  requires OrderedStorageLike<Storage, Scalar, size>
   {
     return Eigen::Map<const Eigen::Quaternion<Scalar>>(s_.data());
   }
@@ -153,7 +153,7 @@ public:
    * Only for non-ordered storage (for ordered storage use map versions)
    */
   Eigen::Quaternion<Scalar> unit_quaternion() const
-  requires(!is_ordered_v<Storage>)
+  requires UnorderedStorageLike<Storage, Scalar, size>
   {
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
   }
@@ -163,7 +163,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires StorageLike<Storage, Scalar, 4>
+  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, 4>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
   }
@@ -173,7 +173,7 @@ public:
    */
   template<typename RNG>
   void setRandom(RNG & rng)
-  requires StorageLike<Storage, Scalar, 4>&& std::is_floating_point_v<Scalar>
+  requires ModifiableStorageLike<Storage, Scalar, 4>&& std::is_floating_point_v<Scalar>
   {
     const Scalar u1 = filler<Scalar>(rng, 0);
     const Scalar u2 = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
