@@ -3,6 +3,9 @@
 
 #include <cstddef>
 
+namespace smooth
+{
+
 /**
  * @brief Compile-time for loop
  */
@@ -37,5 +40,6 @@ struct change_template_args<T<S ...>, NewS ...>
 template<typename T, typename ... NewS>
 using change_template_args_t = typename change_template_args<T, NewS...>::type;
 
+}  // namespace smooth
 
 #endif  // SMOOTH__TRAITS_HPP_

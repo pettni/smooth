@@ -91,6 +91,7 @@ if(BUILD_TESTING)
   find_package(GTest REQUIRED)
 
   add_executable(${PROJECT_NAME}_tests
+    test/test_liegroup.cpp
     test/test_so3.cpp
   )
 
