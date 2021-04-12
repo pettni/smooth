@@ -114,6 +114,33 @@ public:
     return static_cast<const Derived &>(*this).coeffs().data();
   }
 
+  /**
+   * @brief Overload operator+
+   */
+  template<typename TangentDerived>
+  Derived operator+(const Eigen::MatrixBase<TangentDerived> & t) const
+  {
+    return static_cast<const Derived &>(*this) * Derived::exp(t);
+  }
+
+  /**
+   * @brief Left jacobian of the exponential
+   */
+  template<typename TangentDerived>
+  static auto dl_exp(const Eigen::MatrixBase<TangentDerived> & t)
+  {
+    return (Derived::exp(t).Ad() * Derived::dr_exp(t)).eval();
+  }
+
+  /**
+   * @brief Inverse of left jacobian of the exponential
+   */
+  template<typename TangentDerived>
+  static auto dl_expinv(const Eigen::MatrixBase<TangentDerived> & t)
+  {
+    return (-Derived::ad(t) +  Derived::dr_expinv(t)).eval();
+  }
+
 protected:
   // protect constructor to prevent direct instantiation
   LieGroupBase() = default;

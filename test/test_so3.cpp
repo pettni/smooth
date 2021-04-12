@@ -148,8 +148,8 @@ TEST(SO3, LogAndExp)
 TEST(SO3, Jacobians)
 {
   // test zero vector
-  auto dr_exp_0 = smooth::SO3d::dr_exp(smooth::SO3d::Tangent::Zero());
-  auto dr_exp_inv_0 = smooth::SO3d::dr_exp(smooth::SO3d::Tangent::Zero());
+  const auto dr_exp_0 = smooth::SO3d::dr_exp(smooth::SO3d::Tangent::Zero());
+  const auto dr_exp_inv_0 = smooth::SO3d::dr_exp(smooth::SO3d::Tangent::Zero());
 
   ASSERT_TRUE(dr_exp_0.isApprox(smooth::SO3d::TangentMap::Identity()));
   ASSERT_TRUE(dr_exp_inv_0.isApprox(smooth::SO3d::TangentMap::Identity()));
@@ -171,7 +171,7 @@ TEST(SO3, Jacobians)
     ASSERT_TRUE(M2.isApprox(smooth::SO3d::TangentMap::Identity()));
   }
 
-  // check infnitesimal step for exp
+  // check infinitesimal step for exp (right)
   for (auto i = 0; i != 10; ++i) {
     const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
       [&rng] (int) {return smooth::u_distr<double>(rng);}
@@ -189,7 +189,25 @@ TEST(SO3, Jacobians)
     ASSERT_TRUE(g_approx.isApprox(g_exact, 1e-8));
   }
 
-  // check infinitesimal step for log
+  // check infinitesimal step for exp (left)
+  for (auto i = 0; i != 10; ++i) {
+    const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
+      [&rng] (int) {return smooth::u_distr<double>(rng);}
+    ).eval();
+
+    const smooth::SO3d::Tangent da = 1e-4 * smooth::SO3d::Tangent::NullaryExpr(
+      [&rng] (int) {return smooth::u_distr<double>(rng);}
+    ).eval();
+
+    const auto dl_exp = smooth::SO3d::dl_exp(a);
+
+    const auto g_exact = smooth::SO3d::exp(da + a);
+    const auto g_approx = smooth::SO3d::exp(dl_exp * da) * smooth::SO3d::exp(a);
+
+    ASSERT_TRUE(g_approx.isApprox(g_exact, 1e-8));
+  }
+
+  // check infinitesimal step for log (right)
   for (auto i = 0u; i != 10; ++i) {
     auto g = smooth::SO3d::Random(rng);
     const smooth::SO3d::Tangent dg = 1e-4 * smooth::SO3d::Tangent::NullaryExpr(
@@ -198,6 +216,19 @@ TEST(SO3, Jacobians)
 
     const auto a_exact = (g * smooth::SO3d::exp(dg)).log();
     const auto a_approx = g.log() + smooth::SO3d::dr_expinv(g.log()) * dg;
+
+    ASSERT_TRUE(a_exact.isApprox(a_approx, 1e-8));
+  }
+
+  // check infinitesimal step for log (left)
+  for (auto i = 0u; i != 10; ++i) {
+    auto g = smooth::SO3d::Random(rng);
+    const smooth::SO3d::Tangent dg = 1e-4 * smooth::SO3d::Tangent::NullaryExpr(
+      [&rng] (int) {return smooth::u_distr<double>(rng);}
+    ).eval();
+
+    const auto a_exact = (smooth::SO3d::exp(dg) * g).log();
+    const auto a_approx = smooth::SO3d::dl_expinv(g.log()) * dg + g.log();
 
     ASSERT_TRUE(a_exact.isApprox(a_approx, 1e-8));
   }
