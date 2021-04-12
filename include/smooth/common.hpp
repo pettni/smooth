@@ -9,6 +9,9 @@
 namespace smooth
 {
 
+/**
+ * @brief Default storage is a fixed-size eigen vector
+ */
 template<typename Scalar, int Size>
 using DefaultStorage = Eigen::Matrix<Scalar, Size, 1>;
 

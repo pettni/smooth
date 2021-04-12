@@ -20,6 +20,7 @@ Lie theory for robotics: manual and library
 
 # Next steps
 
-- [ ] reorganize dynamics for library
-- [ ] set up lib structure
+- [ ] reorganize dynamics in book
+- [x] set up lib structure
+- [x] support different storage types
 
