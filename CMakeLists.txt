@@ -6,6 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 option(BUILD_TESTING "Build the tests." ON)
+option(CODE_COVERAGE "Code coverage for tests." ON)
 
 
 find_package(Eigen3 REQUIRED)
@@ -86,7 +87,7 @@ install(
 
 
 # ---------------------------------------------------------------------------------------
-# TESTING
+# CODE COVERAGE
 # ---------------------------------------------------------------------------------------
 
 if(BUILD_TESTING)
@@ -99,7 +100,23 @@ if(BUILD_TESTING)
     test/test_so3.cpp
   )
 
+  if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(${PROJECT_NAME}_tests PRIVATE
+      -O0
+      -g
+      --coverage
+      -fno-inline
+      -fno-inline-small-functions
+      -fno-default-inline
+    )
+    target_link_libraries(${PROJECT_NAME}_tests --coverage)
+
+    add_custom_target(testcov
+      COMMAND lcov -c --include ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/\\* -d ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles -o ${PROJECT_NAME}_testcov.info
+      COMMAND genhtml ${PROJECT_NAME}_testcov.info -o out
+    )
+  endif()
+
   target_link_libraries(${PROJECT_NAME}_tests smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
 endif()
-

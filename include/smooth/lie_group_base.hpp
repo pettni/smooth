@@ -97,7 +97,7 @@ public:
   /**
    * @brief Access raw data pointer
    *
-   * Only available for ordered storage
+   * Only available for non-const ordered storage
    */
   _Scalar * data() requires StorageLike<_Storage, _Scalar, size>&& is_ordered_v<_Storage>
   {

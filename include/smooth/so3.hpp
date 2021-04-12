@@ -24,6 +24,7 @@ class SO3 : public LieGroupBase<SO3<_Scalar, _Storage>, 4>
 {
 private:
   _Storage s_;
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   template<typename OtherScalar, typename OS>
   requires std::is_same_v<_Scalar, OtherScalar>
@@ -31,7 +32,12 @@ private:
 
   friend class LieGroupBase<SO3<_Scalar, _Storage>, 4>;
 
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  // Helper for coefficient constructor
+  template<typename ... Scalars, uint32_t ... idx>
+  SO3(std::integer_sequence<uint32_t, idx...>, Scalars && ... args)
+  {
+    ((s_[idx] = std::forward<Scalars>(args)), ...);
+  }
 
 public:
   // REQUIRED CONSTANTS
@@ -69,6 +75,15 @@ public:
   {
     static_for<size>([&](auto i) {s_[i] = o.s_[i];});
   }
+
+  /**
+   * @brief Construct from coefficients
+   */
+  template<typename ... Scalars>
+  explicit SO3(Scalars && ... args)
+  requires std::conjunction_v<std::is_same<Scalar, Scalars>...>
+  : SO3(std::make_integer_sequence<uint32_t, size>{}, std::forward<Scalars>(args)...)
+  {}
 
   /**
    * @brief Forwarding constructor to storage for map types
@@ -113,7 +128,7 @@ public:
   /**
    * @brief Access as Eigen quaternion by Map
    *
-   * Requires ordered storage
+   * Only available for ordered storage
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> unit_quaternion()
   requires is_ordered_v<Storage>
@@ -124,7 +139,7 @@ public:
   /**
    * @brief Access as Eigen quaternion by const Map
    *
-   * Requires ordered storage
+   * Only available for ordered storage
    */
   Eigen::Map<const Eigen::Quaternion<Scalar>> unit_quaternion() const
   requires is_ordered_v<Storage>
@@ -166,7 +181,7 @@ public:
     const Scalar a = sqrt(1. - u1), b = sqrt(u1);
 
     // x y z w
-    s_[0] = a * cos(u2);  s_[1] = a * sin(u3); s_[2] = b * cos(u3); s_[3] = a * sin(u2);
+    s_[0] = a * cos(u2);  s_[1] = b * sin(u3); s_[2] = b * cos(u3); s_[3] = a * sin(u2);
   }
 
   /**
@@ -241,10 +256,12 @@ public:
     }
 
     const Scalar sth_over_th = sin(th / 2) / th;
-    return Group(
-      Eigen::Quaternion<Scalar>(
-        cth, t.x() * sth_over_th, t.y() * sth_over_th, t.z() * sth_over_th
-    ));
+    Group ret;
+    ret.s_[0] = t.x() * sth_over_th;
+    ret.s_[1] = t.y() * sth_over_th;
+    ret.s_[2] = t.z() * sth_over_th;
+    ret.s_[3] = cth;
+    return ret;
   }
 
   /**

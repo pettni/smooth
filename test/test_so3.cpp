@@ -16,7 +16,9 @@ TEST(SO3, Static)
 
   static_assert(smooth::is_ordered<smooth::DefaultStorage<double, 4>>::value);
   static_assert(smooth::is_ordered<Eigen::Map<smooth::DefaultStorage<double, 4>>>::value);
-  static_assert(smooth::is_ordered<const Eigen::Map<const smooth::DefaultStorage<double, 4>>>::value);
+  static_assert(
+    smooth::is_ordered<const Eigen::Map<const smooth::DefaultStorage<double,
+    4>>>::value);
 }
 
 TEST(SO3, LieGroupLike)
@@ -33,6 +35,12 @@ TEST(SO3, Constructors)
   // un-initialized
   smooth::SO3d so3;
   so3.setRandom(rng);
+
+  // data
+  smooth::SO3d so3_init(0.5, 0.5, 0.5, 0.5);
+  for (auto i = 0u; i != smooth::SO3d::size; ++i) {
+    ASSERT_DOUBLE_EQ(so3_init.coeffs()[i], 0.5);
+  }
 
   // map
   std::array<double, smooth::SO3d::size> a1;
@@ -59,6 +67,60 @@ TEST(SO3, Constructors)
     g2 = g1;
     smooth::SO3d g3(std::move(g1));
     ASSERT_TRUE(g3.isApprox(g2));
+  }
+}
+
+TEST(SO3, Action)
+{
+  std::default_random_engine rng(5);
+
+  for (auto i = 0u; i != 10; ++i) {
+    auto g = smooth::SO3d::Random(rng);
+    const smooth::SO3d::Vector vec = smooth::SO3d::Vector::NullaryExpr(
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
+
+    smooth::SO3d::Vector vec_p = g * vec;
+    smooth::SO3d::Vector vec_copy = g.inverse() * vec_p;
+
+    ASSERT_TRUE(vec_copy.isApprox(vec));
+  }
+}
+
+TEST(SO3, DataAccess)
+{
+  std::default_random_engine rng(5);
+
+  smooth::SO3d g1 = smooth::SO3d::Random(rng);
+  const smooth::SO3d g2 = smooth::SO3d::Random(rng);
+
+  smooth::Map<smooth::SO3d> m1(g1.data());
+  smooth::ConstMap<smooth::SO3d> m2(g2.data());
+
+  ASSERT_TRUE(m1.isApprox(g1));
+  ASSERT_TRUE(m2.isApprox(g2));
+
+  smooth::Map<smooth::SO3d> m1p(m1.data()); smooth::ConstMap<smooth::SO3d> m2p(m2.data());
+
+  ASSERT_TRUE(m1p.isApprox(g1));
+  ASSERT_TRUE(m2p.isApprox(g2));
+}
+
+TEST(SO3, Operators)
+{
+  std::default_random_engine rng(5);
+
+  for (auto i = 0u; i != 10; ++i) {
+    smooth::SO3d g = smooth::SO3d::Random(rng);
+
+    const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
+
+    smooth::SO3d gp = g + a;
+    smooth::SO3d gp_t = g * smooth::SO3d::exp(a);
+
+    ASSERT_TRUE(gp.isApprox(gp_t));
   }
 }
 
@@ -149,7 +211,7 @@ TEST(SO3, Jacobians)
 {
   // test zero vector
   const auto dr_exp_0 = smooth::SO3d::dr_exp(smooth::SO3d::Tangent::Zero());
-  const auto dr_exp_inv_0 = smooth::SO3d::dr_exp(smooth::SO3d::Tangent::Zero());
+  const auto dr_exp_inv_0 = smooth::SO3d::dr_expinv(smooth::SO3d::Tangent::Zero());
 
   ASSERT_TRUE(dr_exp_0.isApprox(smooth::SO3d::TangentMap::Identity()));
   ASSERT_TRUE(dr_exp_inv_0.isApprox(smooth::SO3d::TangentMap::Identity()));
@@ -159,8 +221,8 @@ TEST(SO3, Jacobians)
   // check that they are each others inverses
   for (auto i = 0u; i != 10; ++i) {
     const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
-      [&rng] (int) {return smooth::u_distr<double>(rng);}
-    ).eval();
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
     const auto dr_exp_a = smooth::SO3d::dr_exp(a);
     const auto dr_expinv_a = smooth::SO3d::dr_expinv(a);
 
@@ -174,12 +236,12 @@ TEST(SO3, Jacobians)
   // check infinitesimal step for exp (right)
   for (auto i = 0; i != 10; ++i) {
     const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
-      [&rng] (int) {return smooth::u_distr<double>(rng);}
-    ).eval();
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
 
     const smooth::SO3d::Tangent da = 1e-4 * smooth::SO3d::Tangent::NullaryExpr(
-      [&rng] (int) {return smooth::u_distr<double>(rng);}
-    ).eval();
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
 
     const auto dr_exp = smooth::SO3d::dr_exp(a);
 
@@ -192,12 +254,12 @@ TEST(SO3, Jacobians)
   // check infinitesimal step for exp (left)
   for (auto i = 0; i != 10; ++i) {
     const smooth::SO3d::Tangent a = smooth::SO3d::Tangent::NullaryExpr(
-      [&rng] (int) {return smooth::u_distr<double>(rng);}
-    ).eval();
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
 
     const smooth::SO3d::Tangent da = 1e-4 * smooth::SO3d::Tangent::NullaryExpr(
-      [&rng] (int) {return smooth::u_distr<double>(rng);}
-    ).eval();
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
 
     const auto dl_exp = smooth::SO3d::dl_exp(a);
 
@@ -211,8 +273,8 @@ TEST(SO3, Jacobians)
   for (auto i = 0u; i != 10; ++i) {
     auto g = smooth::SO3d::Random(rng);
     const smooth::SO3d::Tangent dg = 1e-4 * smooth::SO3d::Tangent::NullaryExpr(
-      [&rng] (int) {return smooth::u_distr<double>(rng);}
-    ).eval();
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
 
     const auto a_exact = (g * smooth::SO3d::exp(dg)).log();
     const auto a_approx = g.log() + smooth::SO3d::dr_expinv(g.log()) * dg;
@@ -224,8 +286,8 @@ TEST(SO3, Jacobians)
   for (auto i = 0u; i != 10; ++i) {
     auto g = smooth::SO3d::Random(rng);
     const smooth::SO3d::Tangent dg = 1e-4 * smooth::SO3d::Tangent::NullaryExpr(
-      [&rng] (int) {return smooth::u_distr<double>(rng);}
-    ).eval();
+      [&rng](int) {return smooth::u_distr<double>(rng);}
+    );
 
     const auto a_exact = (smooth::SO3d::exp(dg) * g).log();
     const auto a_approx = smooth::SO3d::dl_expinv(g.log()) * dg + g.log();
