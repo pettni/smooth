@@ -82,7 +82,7 @@ public:
    */
   template<typename ... Scalars>
   explicit SO3(Scalars && ... args)
-  requires std::conjunction_v<std::is_same<Scalar, Scalars>...>
+  requires std::conjunction_v<std::is_same<Scalar, std::decay_t<Scalars>>...>
   : SO3(std::make_integer_sequence<uint32_t, size>{}, std::forward<Scalars>(args)...)
   {}
 
