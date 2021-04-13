@@ -161,16 +161,13 @@ private:
   /**
    * @brief Normalize quaternion and set qw >= 0
    */
-  void normalize() {
+  void normalize()
+  {
     Scalar mul = Scalar(1) / LieGroupBase<SO3<Scalar, Storage>, size>::coeffs_ordered().norm();
-
     if (s_[3] < 0) {
       mul *= Scalar(-1);
     }
-
-    static_for<size>([&] (auto i) {
-      s_[i] *= mul;
-    });
+    static_for<size>([&](auto i) {s_[i] *= mul;});
   }
 
   // REQUIRED GROUP API

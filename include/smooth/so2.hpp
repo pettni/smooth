@@ -113,7 +113,8 @@ public:
   /**
    * @brief Construct from angle
    */
-  static SO2 rot(const Scalar & angle) {
+  static SO2 rot(const Scalar & angle)
+  {
     return exp(Tangent(angle));
   }
 
