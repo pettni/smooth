@@ -2,6 +2,7 @@
 
 #include <unsupported/Eigen/MatrixFunctions>  // for matrix exponential
 
+#include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/storage.hpp"
 #include "smooth/traits.hpp"
@@ -14,9 +15,14 @@ template<smooth::LieGroupLike G>
 class LieGroupInterface : public ::testing::Test
 {};
 
-typedef ::testing::Types<smooth::SO3d> Implementations;
+using GroupsToTest = ::testing::Types<
+  smooth::SO2f,
+  smooth::SO2d,
+  smooth::SO3f,
+  smooth::SO3d
+>;
 
-TYPED_TEST_SUITE(LieGroupInterface, Implementations);
+TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 
 template<smooth::LieGroupLike T>
 void test()
@@ -174,10 +180,10 @@ TYPED_TEST(LieGroupInterface, Cast)
   TypeParam g = TypeParam::Random(rng);
 
   const auto g_float = g.template cast<float>();
-  ASSERT_TRUE(g_float.matrix().isApprox(g.matrix().template cast<float>()));
+  ASSERT_TRUE(g_float.coeffs_ordered().isApprox(g.coeffs_ordered().template cast<float>()));
 
   const auto g_double = g.template cast<double>();
-  ASSERT_TRUE(g_double.matrix().isApprox(g.matrix().template cast<double>()));
+  ASSERT_TRUE(g_double.coeffs_ordered().isApprox(g.coeffs_ordered().template cast<double>()));
 }
 
 TYPED_TEST(LieGroupInterface, Copying)
@@ -263,7 +269,7 @@ TYPED_TEST(LieGroupInterface, LogAndExp)
     const auto g_copy = TypeParam::exp(log);
     const auto log_copy = g_copy.log();
 
-    // check that exp o log = Id
+    // check that exp o log = Id, log o exp = Id
     ASSERT_TRUE(g.isApprox(g_copy));
     ASSERT_TRUE(log.isApprox(log_copy));
 
@@ -372,7 +378,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
     const auto g_exact = TypeParam::exp(a + da);
     const auto g_approx = TypeParam::exp(a) * TypeParam::exp(dr_exp * da);
 
-    ASSERT_TRUE(g_approx.isApprox(g_exact, 1e-8));
+    ASSERT_TRUE(g_approx.isApprox(g_exact, 1e-6));
   }
 
   // check infinitesimal step for exp (left)
@@ -390,7 +396,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
     const auto g_exact = TypeParam::exp(da + a);
     const auto g_approx = TypeParam::exp(dl_exp * da) * TypeParam::exp(a);
 
-    ASSERT_TRUE(g_approx.isApprox(g_exact, 1e-8));
+    ASSERT_TRUE(g_approx.isApprox(g_exact, 1e-6));
   }
 
   // check infinitesimal step for log (right)
@@ -403,7 +409,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
     const auto a_exact = (g * TypeParam::exp(dg)).log();
     const auto a_approx = g.log() + TypeParam::dr_expinv(g.log()) * dg;
 
-    ASSERT_TRUE(a_exact.isApprox(a_approx, 1e-8));
+    ASSERT_TRUE(a_exact.isApprox(a_approx, 1e-6));
   }
 
   // check infinitesimal step for log (left)
@@ -416,6 +422,6 @@ TYPED_TEST(LieGroupInterface, Jacobians)
     const auto a_exact = (TypeParam::exp(dg) * g).log();
     const auto a_approx = TypeParam::dl_expinv(g.log()) * dg + g.log();
 
-    ASSERT_TRUE(a_exact.isApprox(a_approx, 1e-8));
+    ASSERT_TRUE(a_exact.isApprox(a_approx, 1e-6));
   }
 }

@@ -79,7 +79,7 @@ public:
   }
 
   /**
-   * @brief Construct from coefficients
+   * @brief Construct from coefficients (does not normalize)
    */
   template<typename ... Scalars>
   explicit SO3(Scalars && ... args)
@@ -117,6 +117,7 @@ public:
 
   // SO3-SPECIFIC API
 
+public:
   /**
    * @brief Construct from quaternion
    */
@@ -124,8 +125,8 @@ public:
   SO3(const Eigen::QuaternionBase<Derived> & qin)
   requires std::is_same_v<typename Derived::Scalar, Scalar>
   {
-    const Eigen::Quaternion<typename Derived::Scalar> qin_norm = qin.normalized();
-    s_[0] = qin_norm.x(); s_[1] = qin_norm.y(); s_[2] = qin_norm.z(); s_[3] = qin_norm.w();
+    s_[0] = qin.x(); s_[1] = qin.y(); s_[2] = qin.z(); s_[3] = qin.w();
+    normalize();
   }
 
   /**
@@ -161,8 +162,25 @@ public:
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
   }
 
+private:
+  /**
+   * @brief Normalize quaternion and set qw >= 0
+   */
+  void normalize() {
+    Scalar mul = Scalar(1) / LieGroupBase<SO3<Scalar, Storage>, size>::coeffs_ordered().norm();
+
+    if (s_[3] < 0) {
+      mul *= Scalar(-1);
+    }
+
+    static_for<size>([&] (auto i) {
+      s_[i] *= mul;
+    });
+  }
+
   // REQUIRED GROUP API
 
+public:
   /**
    * @brief Set to identity element
    */
@@ -185,6 +203,7 @@ public:
 
     // x y z w
     s_[0] = a * cos(u2);  s_[1] = b * sin(u3); s_[2] = b * cos(u3); s_[3] = a * sin(u2);
+    normalize();
   }
 
   /**
@@ -249,6 +268,8 @@ public:
 
   /**
    * @brief Group exponential
+   *
+   * Valid arguments are (-pi, pi]
    */
   template<typename TangentDerived>
   static Group exp(const Eigen::MatrixBase<TangentDerived> & t)

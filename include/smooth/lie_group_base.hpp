@@ -62,7 +62,9 @@ public:
   {
     using Tangent = std::decay_t<decltype(o.log())>;
 
-    return (static_cast<const Derived &>(*this).inverse() * o).log().isApprox(Tangent::Zero(), eps);
+    return static_cast<const Derived &>(*this).coeffs_ordered().isApprox(
+      o.coeffs_ordered(), eps
+    );
   }
 
   /**
@@ -93,6 +95,28 @@ public:
   const Storage & coeffs() const
   {
     return static_cast<const Derived &>(*this).s_;
+  }
+
+  /**
+   * @brief Return ordered coeffieicents (ordered version)
+   */
+  Eigen::Map<const DefaultStorage<Scalar, size>> coeffs_ordered() const
+  requires OrderedStorageLike<Storage, Scalar, size>
+  {
+    return Eigen::Map<const DefaultStorage<Scalar, size>>(data());
+  }
+
+  /**
+   * @brief Return ordered coefficients (unordered version)
+   */
+  DefaultStorage<Scalar, size> coeffs_ordered() const
+  requires UnorderedStorageLike<Storage, Scalar, size>
+  {
+    DefaultStorage<Scalar, size> ret;
+    static_for<size>([&] (auto i) {
+      ret[i] = coeffs()[i];
+    });
+    return ret;
   }
 
   /**
