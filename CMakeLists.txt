@@ -92,7 +92,16 @@ if(BUILD_TESTING)
 
   add_executable(${PROJECT_NAME}_tests
     test/test_liegroup.cpp
+    test/test_so2.cpp
     test/test_so3.cpp
+  )
+
+  target_compile_options(${PROJECT_NAME}_tests
+    PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+    -Werror
   )
 
   if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

@@ -32,11 +32,13 @@ private:
 
   friend class LieGroupBase<SO3<_Scalar, _Storage>, 4>;
 
-  // Helper for coefficient constructor
-  template<typename ... Scalars, uint32_t ... idx>
-  SO3(std::integer_sequence<uint32_t, idx...>, Scalars && ... args)
+  /**
+   * @brief Construct from coefficients (does not normalize)
+   */
+  template<typename Scalar>
+  explicit SO3(const Scalar & qx, const Scalar & qy, const Scalar & qz, const Scalar & qw)
   {
-    ((s_[idx] = std::forward<Scalars>(args)), ...);
+    s_[0] = qx; s_[1] = qy; s_[2] = qz, s_[3] = qw;
   }
 
 public:
@@ -77,16 +79,6 @@ public:
   {
     static_for<size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
-
-  /**
-   * @brief Construct from coefficients (does not normalize)
-   */
-  template<typename ... Scalars>
-  explicit SO3(Scalars && ... args)
-  requires std::conjunction_v<std::is_same<Scalar, std::decay_t<Scalars>>...>&&
-  (sizeof...(Scalars) == size)
-  : SO3(std::make_integer_sequence<uint32_t, size>{}, std::forward<Scalars>(args)...)
-  {}
 
   /**
    * @brief Forwarding constructor to storage for map types
@@ -131,6 +123,9 @@ public:
 
   /**
    * @brief Access as Eigen quaternion by Map
+   *
+   * Warning: if the quaternion is modified through this function
+   * the user must ensure the new value is a unit quaternion.
    *
    * Only available for ordered storage
    */
@@ -184,7 +179,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, 4>
+  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, size>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
   }
@@ -194,16 +189,19 @@ public:
    */
   template<typename RNG>
   void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage, Scalar, 4>&& std::is_floating_point_v<Scalar>
+  requires ModifiableStorageLike<Storage, Scalar, size>&& std::is_floating_point_v<Scalar>
   {
     const Scalar u1 = filler<Scalar>(rng, 0);
     const Scalar u2 = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
     const Scalar u3 = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
-    const Scalar a = sqrt(1. - u1), b = sqrt(u1);
+    Scalar a = sqrt(1. - u1), b = sqrt(u1);
 
-    // x y z w
-    s_[0] = a * cos(u2);  s_[1] = b * sin(u3); s_[2] = b * cos(u3); s_[3] = a * sin(u2);
-    normalize();
+    const Scalar su2 = sin(u2);
+    if (su2 < 0) {
+      a *= -1;
+      b *= -1;
+    }
+    s_[0] = a * cos(u2);  s_[1] = b * sin(u3); s_[2] = b * cos(u3); s_[3] = a * su2;
   }
 
   /**
@@ -286,12 +284,7 @@ public:
     }
 
     const Scalar sth_over_th = sin(th / 2) / th;
-    Group ret;
-    ret.s_[0] = t.x() * sth_over_th;
-    ret.s_[1] = t.y() * sth_over_th;
-    ret.s_[2] = t.z() * sth_over_th;
-    ret.s_[3] = cth;
-    return ret;
+    return Group(t.x() * sth_over_th, t.y() * sth_over_th, t.z() * sth_over_th, cth);
   }
 
   /**

@@ -32,11 +32,13 @@ private:
 
   friend class LieGroupBase<SO2<_Scalar, _Storage>, 2>;
 
-  // Helper for coefficient constructor
-  template<typename ... Scalars, uint32_t ... idx>
-  SO2(std::integer_sequence<uint32_t, idx...>, Scalars && ... args)
+  /**
+   * @brief Construct from coefficients (does not normalize)
+   */
+  template<typename Scalar>
+  explicit SO2(const Scalar & qz, const Scalar & qw)
   {
-    ((s_[idx] = std::forward<Scalars>(args)), ...);
+    s_[0] = qz; s_[1] = qw;
   }
 
 public:
@@ -79,16 +81,6 @@ public:
   }
 
   /**
-   * @brief Construct from coefficients (does not normalize)
-   */
-  template<typename ... Scalars>
-  explicit SO2(Scalars && ... args)
-  requires std::conjunction_v<std::is_same<Scalar, std::decay_t<Scalars>>...>&&
-  (sizeof...(Scalars) == size)
-  : SO2(std::make_integer_sequence<uint32_t, size>{}, std::forward<Scalars>(args)...)
-  {}
-
-  /**
    * @brief Forwarding constructor to storage for map types
    */
   template<typename T>
@@ -117,14 +109,41 @@ public:
 
   // SO2-SPECIFIC API
 
+public:
+  /**
+   * @brief Construct from angle
+   */
+  static SO2 rot(const Scalar & angle) {
+    return exp(Tangent(angle));
+  }
+
+  /**
+   * @brief Rotation angle in interval (-pi, pi]
+   */
+  Scalar angle() const
+  {
+    return log()(0);
+  }
+
+private:
+  /**
+   * @brief Normalize parameters
+   */
+  void normalize()
+  {
+    const Scalar mul = Scalar(1) / (s_[0] * s_[0] + s_[1] * s_[1]);
+    s_[0] *= mul;
+    s_[1] *= mul;
+  }
+
   // REQUIRED GROUP API
 
+public:
   /**
    * @brief Set to identity element
    */
   void setIdentity() requires ModifiableStorageLike<Storage, Scalar, size>
   {
-    // qz, qw
     s_[0] = Scalar(0); s_[1] = Scalar(1);
   }
 
@@ -135,7 +154,6 @@ public:
   void setRandom(RNG & rng)
   requires ModifiableStorageLike<Storage, Scalar, size>&& std::is_floating_point_v<Scalar>
   {
-    // qz qw
     const Scalar u = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
     s_[0] = sin(u); s_[1] = cos(u);
   }
@@ -164,7 +182,6 @@ public:
   template<typename OS>
   Group operator*(const SO2<Scalar, OS> & r) const
   {
-    // qz qw
     return Group(s_[0] * r.s_[1] + s_[1] * r.s_[0], s_[1] * r.s_[1] - s_[0] * r.s_[0]);
   }
 
@@ -173,7 +190,6 @@ public:
    */
   Group inverse() const
   {
-    // qz, qw
     return Group(-s_[0], s_[1]);
   }
 
@@ -203,8 +219,6 @@ public:
   static Group exp(const Eigen::MatrixBase<TangentDerived> & t)
   {
     using std::cos, std::sin;
-
-    // qz qw
     return Group(sin(t.x()), cos(t.x()));
   }
 
@@ -212,7 +226,7 @@ public:
    * @brief Algebra adjoint
    */
   template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> &)
   {
     return TangentMap::Zero();
   }
@@ -242,7 +256,7 @@ public:
    * @brief Right jacobian of the exponential map
    */
   template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> &)
   {
     return TangentMap::Identity();
   }
@@ -251,7 +265,7 @@ public:
    * @brief Inverse of the right jacobian of the exponential map
    */
   template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> &)
   {
     return TangentMap::Identity();
   }
