@@ -96,7 +96,7 @@ public:
   }
 
   /**
-   * @brief Return ordered coeffieicents (ordered version)
+   * @brief Return ordered coeffieicents (version for ordered storage)
    */
   Eigen::Map<const DefaultStorage<Scalar, size>> coeffs_ordered() const
   requires OrderedStorageLike<Storage, Scalar, size>
@@ -105,15 +105,13 @@ public:
   }
 
   /**
-   * @brief Return ordered coefficients (unordered version)
+   * @brief Return ordered coefficients (version for unordered storage)
    */
   DefaultStorage<Scalar, size> coeffs_ordered() const
   requires UnorderedStorageLike<Storage, Scalar, size>
   {
     DefaultStorage<Scalar, size> ret;
-    static_for<size>([&] (auto i) {
-      ret[i] = coeffs()[i];
-    });
+    static_for<size>([&](auto i) {ret[i] = coeffs()[i];});
     return ret;
   }
 
@@ -138,12 +136,48 @@ public:
   }
 
   /**
-   * @brief Overload operator+
+   * @brief Overload operator*= for inplace composition
+   */
+  template<typename OS>
+  requires StorageLike<OS, Scalar, size>
+  Derived &operator*=(const _Derived<Scalar, OS> & o)
+  {
+    static_cast<Derived &>(*this) = static_cast<const Derived &>(*this) * o;
+    return static_cast<Derived &>(*this);
+  }
+
+  /**
+   * @brief Overload operator+ for right-plus
+   *
+   * g + a := g1 * exp(a)
    */
   template<typename TangentDerived>
-  Derived operator+(const Eigen::MatrixBase<TangentDerived> & t) const
+  auto operator+(const Eigen::MatrixBase<TangentDerived> & t) const
   {
     return static_cast<const Derived &>(*this) * Derived::exp(t);
+  }
+
+  /**
+   * @brief Overload operator+= for inplace right-plus
+   *
+   * g + a := g1 * exp(a)
+   */
+  template<typename TangentDerived>
+  Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
+  {
+    return static_cast<Derived &>(*this) *= Derived::exp(t);
+  }
+
+  /**
+   * @brief Overload operator- for right-minus
+   *
+   * g1 - g2 := (g2.inverse() * g1).log()
+   */
+  template<typename OS>
+  requires StorageLike<OS, Scalar, size>
+  auto operator-(const _Derived<Scalar, OS> & o) const
+  {
+    return (o.inverse() * static_cast<const Derived &>(*this)).log();
   }
 
   /**
@@ -161,7 +195,7 @@ public:
   template<typename TangentDerived>
   static auto dl_expinv(const Eigen::MatrixBase<TangentDerived> & t)
   {
-    return (-Derived::ad(t) +  Derived::dr_expinv(t)).eval();
+    return (-Derived::ad(t) + Derived::dr_expinv(t)).eval();
   }
 
 protected:

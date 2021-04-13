@@ -154,8 +154,18 @@ TYPED_TEST(LieGroupInterface, Operators)
 
     TypeParam gp = g + a;
     TypeParam gp_t = g * TypeParam::exp(a);
-
     ASSERT_TRUE(gp.isApprox(gp_t));
+
+    const auto a_t = (gp - g).eval();
+    ASSERT_TRUE(a_t.isApprox(a));
+
+    TypeParam g_copy1 = g;
+    g_copy1 += a;
+    ASSERT_TRUE(g_copy1.isApprox(gp_t));
+
+    TypeParam g_copy2 = g;
+    g_copy2 *= TypeParam::exp(a);
+    ASSERT_TRUE(g_copy2.isApprox(gp_t));
   }
 }
 
