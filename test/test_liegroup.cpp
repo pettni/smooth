@@ -41,12 +41,6 @@ TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
   test<G_rev>();
 }
 
-template<smooth::LieGroupLike G, typename Tuple, std::size_t ... Idx>
-auto helper(const Tuple & tuple, std::index_sequence<Idx...>)
-{
-  return G(std::get<Idx>(tuple) ...);
-}
-
 TYPED_TEST(LieGroupInterface, Constructors)
 {
   std::default_random_engine rng(5);
@@ -54,14 +48,6 @@ TYPED_TEST(LieGroupInterface, Constructors)
   // un-initialized
   TypeParam g;
   g.setRandom(rng);
-
-  // forward scalars to storage
-  std::array<typename TypeParam::Scalar, TypeParam::size> args;
-  args.fill(0.5);
-  auto g_init = helper<TypeParam>(args, std::make_index_sequence<TypeParam::size>{});
-  for (auto i = 0u; i != TypeParam::size; ++i) {
-    ASSERT_DOUBLE_EQ(g_init.coeffs()[i], 0.5);
-  }
 
   // map
   std::array<typename TypeParam::Scalar, TypeParam::size> a1;

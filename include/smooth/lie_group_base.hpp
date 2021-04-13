@@ -60,8 +60,6 @@ public:
     const _Derived<Scalar, OS> & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
-    using Tangent = std::decay_t<decltype(o.log())>;
-
     return static_cast<const Derived &>(*this).coeffs_ordered().isApprox(
       o.coeffs_ordered(), eps
     );

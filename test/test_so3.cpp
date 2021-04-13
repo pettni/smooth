@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
 
-#include <unsupported/Eigen/MatrixFunctions>  // for matrix exponential
-
 #include "smooth/so3.hpp"
 
 #include "reverse_storage.hpp"
@@ -9,10 +7,6 @@
 
 TEST(SO3Interface, Quaternion)
 {
-  static_assert(smooth::SO3d::size == 4);
-  static_assert(smooth::SO3d::dof == 3);
-  static_assert(smooth::SO3d::dim == 3);
-
   // test unordered unit quaternion
   std::default_random_engine rng(5);
   smooth::SO3d g = smooth::SO3d::Random(rng);
