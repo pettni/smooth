@@ -3,6 +3,7 @@
 #include <unsupported/Eigen/MatrixFunctions>  // for matrix exponential
 
 #include "smooth/so2.hpp"
+#include "smooth/se2.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/storage.hpp"
 #include "smooth/traits.hpp"
@@ -16,10 +17,12 @@ class LieGroupInterface : public ::testing::Test
 {};
 
 using GroupsToTest = ::testing::Types<
-  smooth::SO2f,
-  smooth::SO2d,
-  smooth::SO3f,
-  smooth::SO3d
+  // smooth::SO2f,
+  // smooth::SO2d,
+  // smooth::SO3f,
+  // smooth::SO3d,
+  // smooth::SE2f,
+  smooth::SE2d
 >;
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
@@ -266,6 +269,8 @@ TYPED_TEST(LieGroupInterface, LogAndExp)
     const auto log_copy = g_copy.log();
 
     // check that exp o log = Id, log o exp = Id
+    std::cout << g.coeffs_ordered() << std::endl;
+    std::cout << g_copy.coeffs_ordered() << std::endl;
     ASSERT_TRUE(g.isApprox(g_copy));
     ASSERT_TRUE(log.isApprox(log_copy));
 

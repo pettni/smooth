@@ -1,4 +1,4 @@
-% !TEX root = ../manuscript.tex
+% !TEX root = ../root.tex
 
 \chapter{Advanced: Splines on Lie Groups}
 
@@ -38,15 +38,15 @@ A B-spline interpolation of order $k$ is a function $\x(t) = \sum_{i=0}^N B_{i, 
 The following are some well-known properties of B-splines:
 \begin{itemize}
   \item $B_{i, k}(t)$ has finite support and is zero outside the interval $[t_{i}, t_{i+k+1})$,
-  \item Inside this interval it is a polynomial of degree $k$,
+  \item Inside this interval it is a piecewise polynomial of degree $k$,
   \item It is centered in the middle of that interval, it therefore makes sense to select $k$ odd and $v(i) = i + (k + 1) / 2$ so that $x_{v(i)}$ coincides with the maximum of $B_{i, k}(t)$ (c.f. Figure \ref{fig:bspline_nonzero}),
-  \item $\sum_i B_{i, k}(t) = 1$ for all $t$ inside the interval,
+  \item $\sum_i B_{i, k}(t) = 1$ for all $t$,
 \end{itemize}
 
 We are interested in an expression for the coefficients of the polynomial $B_{i, k}(t)$. We pose that for \textbf{a fixed interval} $t \in [t_{i^*}, t_{i^*+1})$ we have scalar cofficients $\alpha^i_{i,k}$ such that
 \begin{equation}
   \label{eq:basis_expression}
-  B_{i, k}(t) = \sum_{l=0}^k \alpha^{l}_{i, k} \; u^l, \quad u = \frac{t - t_{i^*}}{t_{i^*+1} - t_{i^*}}
+  B_{i, k}(t) = \sum_{l=0}^k \alpha^{l}_{i, k} \; u^l(t), \quad u(t) = \frac{t - t_{i^*}}{t_{i^*+1} - t_{i^*}}
 \end{equation}
 where $i \in \{ i^* - k, i^* - k + 1, \ldots, i^* \}$ are the indices for which $B_{i, k}(t)$ is non-zero on $[t_{i^*}, t_{i^*+1})$ (c.f. Figure \ref{fig:bspline_nonzero}). If we also introduce
 \begin{equation}
@@ -89,7 +89,7 @@ we can write the value of a spline $x(t)$ for $t \in [t_{i^*}, t_{i^*+1}]$ as
           ymax=1.1,
           cycle list name=color list]
         \pgfplotsinvokeforeach {0, 1, 2, 3, 4, 5, 6} {
-          \addplot+[no marks, thick, smooth, domain=#1:#1+4] ({\x}, {bspline3(\x-#1)}) node[pos=0.5, above] {$B_#1(t)$};
+          \addplot+[no marks, thick, smooth, domain=#1:#1+4] ({\x}, {bspline3(\x-#1)}) node[pos=0.5, above] {$B_{#1,3}(t)$};
         }
       \end{axis}
     \end{tikzpicture}

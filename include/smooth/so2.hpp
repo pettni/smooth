@@ -16,7 +16,10 @@ namespace smooth
 /**
  * @brief SO2 Lie Group
  *
- * Memory layout: qz qw
+ * Memory layout
+ * =============
+ * Group:    qz qw
+ * Tangent:  wz
  */
 template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 2>>
 requires StorageLike<_Storage, _Scalar, 2>
@@ -171,7 +174,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == dim)
+  requires(Derived::SizeAtCompileTime == act_dim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return matrix() * x;

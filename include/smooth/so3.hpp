@@ -16,7 +16,10 @@ namespace smooth
 /**
  * @brief SO3 Lie Group
  *
- * Memory layout: qx qy qz qw  (same as Eigen quaternion)
+ * Memory layout
+ * =============
+ * Group:    qx qy qz qw  (same as Eigen quaternion)
+ * Tangent:  wx wy wz
  */
 template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 4>>
 requires StorageLike<_Storage, _Scalar, 4>
@@ -213,7 +216,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == dim)
+  requires(Derived::SizeAtCompileTime == act_dim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return unit_quaternion() * x;
