@@ -11,17 +11,16 @@
 #include "reverse_storage.hpp"
 
 
-
 template<smooth::LieGroupLike G>
 class LieGroupInterface : public ::testing::Test
 {};
 
 using GroupsToTest = ::testing::Types<
-  // smooth::SO2f,
-  // smooth::SO2d,
-  // smooth::SO3f,
-  // smooth::SO3d,
-  // smooth::SE2f,
+  smooth::SO2f,
+  smooth::SO2d,
+  smooth::SO3f,
+  smooth::SO3d,
+  smooth::SE2f,
   smooth::SE2d
 >;
 
@@ -269,8 +268,6 @@ TYPED_TEST(LieGroupInterface, LogAndExp)
     const auto log_copy = g_copy.log();
 
     // check that exp o log = Id, log o exp = Id
-    std::cout << g.coeffs_ordered() << std::endl;
-    std::cout << g_copy.coeffs_ordered() << std::endl;
     ASSERT_TRUE(g.isApprox(g_copy));
     ASSERT_TRUE(log.isApprox(log_copy));
 

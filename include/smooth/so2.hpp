@@ -20,6 +20,12 @@ namespace smooth
  * =============
  * Group:    qz qw
  * Tangent:  wz
+ *
+ * Constraints
+ * ===========
+ * Group:   qz * qz + qw * qw = 1
+ * Tangent: -pi < wz <= pi
+
  */
 template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 2>>
 requires StorageLike<_Storage, _Scalar, 2>
@@ -113,6 +119,19 @@ public:
   // SO2-SPECIFIC API
 
 public:
+  /**
+   * @brief Construct from coefficients
+   *
+   * @param qz sine of angle
+   * @param qw cosine of angle
+   */
+  SO2(const Scalar & qz, const Scalar & qw)
+  {
+    s_[0] = qz;
+    s_[1] = qw;
+    normalize();
+  }
+
   /**
    * @brief Construct from angle
    */

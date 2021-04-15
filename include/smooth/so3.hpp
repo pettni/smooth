@@ -20,6 +20,11 @@ namespace smooth
  * =============
  * Group:    qx qy qz qw  (same as Eigen quaternion)
  * Tangent:  wx wy wz
+ *
+ * Constraints
+ * ===========
+ * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
+ * Tangent: -pi < wx, wy, wz <= pi
  */
 template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 4>>
 requires StorageLike<_Storage, _Scalar, 4>
@@ -132,7 +137,7 @@ public:
    *
    * Only available for ordered storage
    */
-  Eigen::Map<Eigen::Quaternion<Scalar>> unit_quaternion()
+  Eigen::Map<Eigen::Quaternion<Scalar>> quat()
   requires OrderedModifiableStorageLike<Storage, Scalar, size>
   {
     return Eigen::Map<Eigen::Quaternion<Scalar>>(s_.data());
@@ -143,7 +148,7 @@ public:
    *
    * Only available for ordered storage
    */
-  Eigen::Map<const Eigen::Quaternion<Scalar>> unit_quaternion() const
+  Eigen::Map<const Eigen::Quaternion<Scalar>> quat() const
   requires OrderedStorageLike<Storage, Scalar, size>
   {
     return Eigen::Map<const Eigen::Quaternion<Scalar>>(s_.data());
@@ -154,7 +159,7 @@ public:
    *
    * Only for non-ordered storage (for ordered storage use map versions)
    */
-  Eigen::Quaternion<Scalar> unit_quaternion() const
+  Eigen::Quaternion<Scalar> quat() const
   requires UnorderedStorageLike<Storage, Scalar, size>
   {
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
@@ -209,7 +214,7 @@ public:
    */
   MatrixGroup matrix() const
   {
-    return unit_quaternion().toRotationMatrix();
+    return quat().toRotationMatrix();
   }
 
   /**
@@ -219,7 +224,7 @@ public:
   requires(Derived::SizeAtCompileTime == act_dim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
-    return unit_quaternion() * x;
+    return quat() * x;
   }
 
   /**
@@ -228,7 +233,7 @@ public:
   template<typename OS>
   Group operator*(const SO3<Scalar, OS> & r) const
   {
-    return Group(unit_quaternion() * r.unit_quaternion());
+    return Group(quat() * r.quat());
   }
 
   /**
@@ -236,7 +241,7 @@ public:
    */
   Group inverse() const
   {
-    return Group(unit_quaternion().inverse());
+    return Group(quat().inverse());
   }
 
   /**
@@ -259,7 +264,7 @@ public:
    */
   TangentMap Ad() const
   {
-    return unit_quaternion().toRotationMatrix();
+    return quat().toRotationMatrix();
   }
 
   // REQUIRED TANGENT API
@@ -326,12 +331,13 @@ public:
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = t.squaredNorm();
-    if (th2 < eps<Scalar>) {
+    const Scalar th = sqrt(th2);
+
+    if (th < eps<Scalar>) {
       // TODO: small angle approximation
       return TangentMap::Identity();
     }
 
-    const Scalar th = sqrt(th2);
     const TangentMap ad = SO3<Scalar>::ad(t);
 
     return TangentMap::Identity() -
@@ -347,13 +353,13 @@ public:
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = t.squaredNorm();
+    const Scalar th = sqrt(th2);
     const TangentMap ad = SO3<Scalar>::ad(t);
-    if (th2 < eps<Scalar>) {
+
+    if (th < eps<Scalar>) {
       // TODO: small angle approximation
       return TangentMap::Identity() + ad / 2;
     }
-
-    const Scalar th = sqrt(th2);
 
     return TangentMap::Identity() +
            ad / 2 +

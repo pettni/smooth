@@ -21,6 +21,11 @@ namespace smooth
  * =============
  * Group:    x y qz qw
  * Tangent:  vx vy wz
+ *
+ * Constraints
+ * ===========
+ * Group:   qz * qz + qw * qw = 1
+ * Tangent: -pi < wz <= pi
  */
 template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 4>>
 requires StorageLike<_Storage, _Scalar, 4>
@@ -35,13 +40,6 @@ private:
   friend class SE2;
 
   friend class LieGroupBase<SE2<_Scalar, _Storage>, 4>;
-
-  // Helper for coefficient constructor
-  template<typename ... Scalars, uint32_t ... idx>
-  SE2(std::integer_sequence<uint32_t, idx...>, Scalars && ... args)
-  {
-    ((s_[idx] = std::forward<Scalars>(args)), ...);
-  }
 
 public:
   // REQUIRED CONSTANTS
@@ -81,16 +79,6 @@ public:
   {
     static_for<size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
-
-  /**
-   * @brief Construct from coefficients
-   */
-  template<typename ... Scalars>
-  explicit SE2(Scalars && ... args)
-  requires std::conjunction_v<std::is_same<Scalar, std::decay_t<Scalars>>...>&&
-  (sizeof...(Scalars) == size)
-  : SE2(std::make_integer_sequence<uint32_t, size>{}, std::forward<Scalars>(args)...)
-  {}
 
   /**
    * @brief Forwarding constructor to storage for map types
@@ -256,21 +244,21 @@ public:
    */
   Tangent log() const
   {
-    using std::tan;
-    const Scalar th = so2().log().x();
-    const Scalar th_over_2 = th / Scalar(2);
+    using std::abs, std::tan;
+    const Scalar th = so2().log()(0);
 
     Eigen::Matrix<Scalar, 2, 2> Sinv;
 
-    if (th < eps<Scalar>) {
+    if (abs(th) < eps<Scalar>) {
       // TODO: small angle
       Sinv.setIdentity();
     } else {
+      const Scalar th_over_2 = th / Scalar(2);
       const Scalar x_2_cot_th_2 = th_over_2 / std::tan(th_over_2);
       Sinv(0, 0) = x_2_cot_th_2;
-      Sinv(1, 1) = x_2_cot_th_2;
       Sinv(0, 1) = th_over_2;
       Sinv(1, 0) = -th_over_2;
+      Sinv(1, 1) = x_2_cot_th_2;
     }
 
     Tangent ret;
@@ -302,12 +290,12 @@ public:
   template<typename TangentDerived>
   static Group exp(const Eigen::MatrixBase<TangentDerived> & t)
   {
-    using std::cos, std::sin;
+    using std::abs, std::cos, std::sin;
 
     const Scalar th = t.z();
 
     Eigen::Matrix<Scalar, 2, 2> S;
-    if (th < eps<Scalar>) {
+    if (abs(th) < eps<Scalar>) {
       S.setIdentity();
       // TODO small angle
     } else {
@@ -370,10 +358,10 @@ public:
   template<typename TangentDerived>
   static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & t)
   {
-    using std::sqrt, std::sin, std::cos;
+    using std::abs, std::sqrt, std::sin, std::cos;
     const Scalar th = t.z();
     const Scalar th2 = th * th;
-    if (th < eps<Scalar>) {
+    if (abs(th) < eps<Scalar>) {
       // TODO: small angle approximation
       return TangentMap::Identity();
     }
@@ -389,11 +377,11 @@ public:
   template<typename TangentDerived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & t)
   {
-    using std::sqrt, std::sin, std::cos;
+    using std::abs, std::sqrt, std::sin, std::cos;
     const Scalar th = t.z();
     const Scalar th2 = th * th;
     const TangentMap ad = SE2<Scalar>::ad(t);
-    if (th < eps<Scalar>) {
+    if (abs(th) < eps<Scalar>) {
       // TODO: small angle approximation
       return TangentMap::Identity() + ad / 2;
     }
