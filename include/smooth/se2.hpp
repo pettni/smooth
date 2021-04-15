@@ -1,7 +1,6 @@
 #ifndef SMOOTH__SE2_HPP_
 #define SMOOTH__SE2_HPP_
 
-#include <Eigen/Geometry>
 #include <random>
 
 #include "common.hpp"
