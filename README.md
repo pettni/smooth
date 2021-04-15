@@ -4,39 +4,40 @@ Lie theory for robotics: manual and library
 
 # Roadmap
 
-## Book
+## Book todos
 
-- Comprehensive theory and algorithms
-- Code snippets that are CI-tested
+- [ ] reorganize dynamics
 - Splines:
-  - Fitting of bsplines
-  - Fitting of cubic splines: with and without given velocity
+  - [ ] Fitting of bsplines
+  - [ ] Fitting of cubic splines: with and without given velocity
 
-## Library
+## Library todos
 
-- cpp20 concepts and crtp
-- storage options: std::array, raw ptr, ros msg
+- [x] cpp20 concepts and crtp
+- [x] set up lib structure
+- [x] support different storage types
 - compatability
-  - [ ] boost odeint
-  - [ ] eigen map ros msgs
-  - [ ] autodiff
-  - [ ] ceres
+  - [ ] boost odeint: read about algebras
+  - [ ] autodiff: tangent derivative of any manifold function
+  - [ ] ceres: local parameterization of any group
+  - [ ] map ros msgs as storage type
 - groups
   - [ ] en (inherits from Eigen vec)
   - [x] so2
   - [x] so3
-  - [ ] se2
-  - [ ] se3
+  - [x] se2
+  - [x] se3
   - [ ] bundle
 - algos:
   - splines:
     - [ ] evaluate bsplines
     - [ ] fit bsplines
-    - [ ] fir cubic splines with and without given velocity
+    - [ ] for cubic splines with and without given velocity
+- debt:
+ - [ ] change SE2/3 constructors to take translation first
+ - [ ] do small angle approximations
 
-# Next steps
+### Design choices
 
-- [ ] reorganize dynamics in book
-- [x] set up lib structure
-- [x] support different storage types
-
+ - Return auto to avoid evaluating Eigen temp expressions?
+ - Get rid of unordered storage support?
