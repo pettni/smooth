@@ -5,6 +5,7 @@
 #include "smooth/so2.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/so3.hpp"
+#include "smooth/se3.hpp"
 #include "smooth/storage.hpp"
 #include "smooth/traits.hpp"
 
@@ -16,12 +17,10 @@ class LieGroupInterface : public ::testing::Test
 {};
 
 using GroupsToTest = ::testing::Types<
-  smooth::SO2f,
-  smooth::SO2d,
-  smooth::SO3f,
-  smooth::SO3d,
-  smooth::SE2f,
-  smooth::SE2d
+  smooth::SO2f, smooth::SO2d,
+  smooth::SO3f, smooth::SO3d,
+  smooth::SE2f, smooth::SE2d,
+  smooth::SE3f, smooth::SE3d
 >;
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
