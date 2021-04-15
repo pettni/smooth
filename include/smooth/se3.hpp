@@ -2,18 +2,15 @@
 #define SMOOTH__SE3_HPP_
 
 #include <Eigen/Geometry>
-
 #include <random>
 
-#include "concepts.hpp"
 #include "common.hpp"
+#include "concepts.hpp"
 #include "lie_group_base.hpp"
 #include "so3.hpp"
 
-
 namespace smooth
 {
-
 /**
  * @brief SE3 Lie Group
  *
@@ -28,16 +25,15 @@ namespace smooth
  * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
  */
 template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 7>>
-requires StorageLike<_Storage, _Scalar, 7>
-class SE3 : public LieGroupBase<SE3<_Scalar, _Storage>, 7>
+requires StorageLike<_Storage, _Scalar, 7> class SE3
+  : public LieGroupBase<SE3<_Scalar, _Storage>, 7>
 {
 private:
   _Storage s_;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   template<typename OtherScalar, typename OS>
-  requires std::is_same_v<_Scalar, OtherScalar>
-  friend class SE3;
+  requires std::is_same_v<_Scalar, OtherScalar> friend class SE3;
 
   friend class LieGroupBase<SE3<_Scalar, _Storage>, 7>;
 
@@ -74,8 +70,7 @@ public:
    * @brief Copy constructor from other storage types
    */
   template<typename OS>
-  requires StorageLike<OS, Scalar, size>
-  SE3(const SE3<Scalar, OS> & o)
+  requires StorageLike<OS, Scalar, size> SE3(const SE3<Scalar, OS> & o)
   {
     static_for<size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
@@ -84,24 +79,23 @@ public:
    * @brief Forwarding constructor to storage for map types
    */
   template<typename T>
-  requires std::is_constructible_v<Storage, T *>
-  explicit SE3(T * ptr)
-  : s_(ptr) {}
+  requires std::is_constructible_v<Storage, T *> explicit SE3(T * ptr)
+  : s_(ptr)
+  {}
 
   /**
    * @brief Forwarding constructor to storage for const map types
    */
   template<typename T>
-  requires std::is_constructible_v<Storage, const T *>
-  explicit SE3(const T * ptr)
-  : s_(ptr) {}
+  requires std::is_constructible_v<Storage, const T *> explicit SE3(const T * ptr)
+  : s_(ptr)
+  {}
 
   /**
    * @brief Copy assignment from other SE3
    */
   template<typename OS>
-  requires StorageLike<OS, Scalar, size>
-  SE3 & operator=(const SE3<Scalar, OS> & o)
+  requires StorageLike<OS, Scalar, size> SE3 & operator=(const SE3<Scalar, OS> & o)
   {
     static_for<size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
@@ -127,8 +121,7 @@ public:
   /**
    * @brief Access const SO3 part
    */
-  ConstMap<SO3<Scalar>> so3() const
-  requires OrderedStorageLike<Storage, Scalar, size>
+  ConstMap<SO3<Scalar>> so3() const requires OrderedStorageLike<Storage, Scalar, size>
   {
     return ConstMap<SO3<Scalar>>(s_.data() + 3);
   }
@@ -136,8 +129,7 @@ public:
   /**
    * @brief Access SO2 part
    */
-  Map<SO3<Scalar>> so3()
-  requires OrderedModifiableStorageLike<Storage, Scalar, size>
+  Map<SO3<Scalar>> so3() requires OrderedModifiableStorageLike<Storage, Scalar, size>
   {
     return Map<SO3<Scalar>>(s_.data() + 3);
   }
@@ -145,8 +137,7 @@ public:
   /**
    * @brief Access SO2 part by copy
    */
-  SO3<Scalar> so3() const
-  requires UnorderedStorageLike<Storage, Scalar, size>
+  SO3<Scalar> so3() const requires UnorderedStorageLike<Storage, Scalar, size>
   {
     return SO3<Scalar>(Eigen::Quaternion<Scalar>(s_[6], s_[3], s_[4], s_[5]));
   }
@@ -179,7 +170,6 @@ public:
   }
 
 private:
-
   template<typename Derived>
   static Eigen::Matrix<Scalar, 3, 3> calculate_q(const Eigen::MatrixBase<Derived> & a)
   {
@@ -212,10 +202,9 @@ private:
     return Q;
   }
 
-
   // REQUIRED GROUP API
-public:
 
+public:
   /**
    * @brief Set to identity element
    */
@@ -229,8 +218,8 @@ public:
    * @brief Set to a random element
    */
   template<typename RNG>
-  void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage, Scalar, 7>&& std::is_floating_point_v<Scalar>
+  void setRandom(RNG & rng) requires ModifiableStorageLike<Storage, Scalar,
+    7>&& std::is_floating_point_v<Scalar>
   {
     const Scalar x = filler<Scalar>(rng, 0);
     const Scalar y = filler<Scalar>(rng, 0);
@@ -240,11 +229,9 @@ public:
     so3.setRandom(rng);
 
     // x y qz qw
-    s_[0] = x;  s_[1] = y; s_[2] = z;
-    s_[3] = so3.coeffs()[0];
-    s_[4] = so3.coeffs()[1];
-    s_[5] = so3.coeffs()[2];
-    s_[6] = so3.coeffs()[3];
+    s_[0] = x; s_[1] = y; s_[2] = z;
+    s_[3] = so3.coeffs()[0]; s_[4] = so3.coeffs()[1];
+    s_[5] = so3.coeffs()[2]; s_[6] = so3.coeffs()[3];
   }
 
   /**
@@ -281,10 +268,7 @@ public:
   /**
    * @brief Group inverse
    */
-  Group inverse() const
-  {
-    return Group(so3().inverse(), -(so3().inverse() * translation()));
-  }
+  Group inverse() const {return Group(so3().inverse(), -(so3().inverse() * translation()));}
 
   /**
    * @brief Group logarithm
@@ -304,7 +288,8 @@ public:
   {
     TangentMap ret;
     ret.template topLeftCorner<3, 3>() = so3().matrix();
-    ret.template topRightCorner<3, 3>() = SO3<Scalar>::hat(translation()) * ret.template topLeftCorner<3, 3>();
+    ret.template topRightCorner<3, 3>() =
+      SO3<Scalar>::hat(translation()) * ret.template topLeftCorner<3, 3>();
     ret.template bottomRightCorner<3, 3>() = ret.template topLeftCorner<3, 3>();
     ret.template bottomLeftCorner<3, 3>().setZero();
     return ret;
@@ -320,8 +305,7 @@ public:
   {
     return Group(
       SO3<Scalar>::exp(t.template tail<3>()),
-      SO3<Scalar>::dl_exp(t.template tail<3>()) * t.template head<3>()
-    );
+      SO3<Scalar>::dl_exp(t.template tail<3>()) * t.template head<3>());
   }
 
   /**
@@ -385,7 +369,8 @@ public:
   {
     TangentMap ret;
     ret.template topLeftCorner<3, 3>() = SO3<Scalar>::dr_expinv(t.template tail<3>());
-    ret.template topRightCorner<3, 3>() = -ret.template topLeftCorner<3, 3>() * calculate_q(-t) * ret.template topLeftCorner<3, 3>();
+    ret.template topRightCorner<3, 3>() =
+      -ret.template topLeftCorner<3, 3>() * calculate_q(-t) * ret.template topLeftCorner<3, 3>();
     ret.template bottomRightCorner<3, 3>() = ret.template topLeftCorner<3, 3>();
     ret.template bottomLeftCorner<3, 3>().setZero();
     return ret;
