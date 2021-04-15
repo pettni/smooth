@@ -93,8 +93,9 @@ if(BUILD_TESTING)
   add_executable(${PROJECT_NAME}_tests
     test/test_liegroup.cpp
     test/test_so2.cpp
-    test/test_se2.cpp
     test/test_so3.cpp
+    test/test_se2.cpp
+    test/test_se3.cpp
   )
 
   target_compile_options(${PROJECT_NAME}_tests
