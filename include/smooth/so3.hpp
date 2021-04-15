@@ -2,13 +2,11 @@
 #define SMOOTH__SO3_HPP_
 
 #include <Eigen/Geometry>
-
 #include <random>
 
-#include "concepts.hpp"
 #include "common.hpp"
+#include "concepts.hpp"
 #include "lie_group_base.hpp"
-
 
 namespace smooth
 {
