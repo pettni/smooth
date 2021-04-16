@@ -50,22 +50,21 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr uint32_t size = 4;
-  static constexpr uint32_t dof = 3;
-  static constexpr uint32_t dim = 3;
-  static constexpr uint32_t act_dim = 3;
+  static constexpr uint32_t lie_size = 4;
+  static constexpr uint32_t lie_dof = 3;
+  static constexpr uint32_t lie_dim = 3;
+  static constexpr uint32_t lie_actdim = 3;
 
   // REQUIRED TYPES
 
   using Storage = _Storage;
   using Scalar = _Scalar;
 
-  using Group = SO3<Scalar, DefaultStorage<Scalar, size>>;
-  using MatrixGroup = Eigen::Matrix<Scalar, dim, dim>;
-  using Tangent = Eigen::Matrix<Scalar, dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, dof, dof>;
-  using Algebra = Eigen::Matrix<Scalar, dim, dim>;
-  using Vector = Eigen::Matrix<Scalar, act_dim, 1>;
+  using Group = SO3<Scalar, DefaultStorage<Scalar, lie_size>>;
+  using Tangent = Eigen::Matrix<Scalar, lie_dof, 1>;
+  using TangentMap = Eigen::Matrix<Scalar, lie_dof, lie_dof>;
+  using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
+  using MatrixGroup = Eigen::Matrix<Scalar, lie_dim, lie_dim>;
 
   // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
@@ -80,10 +79,10 @@ public:
    * @brief Copy constructor from other storage types
    */
   template<typename OS>
-  requires StorageLike<OS, Scalar, size>
+  requires StorageLike<OS, Scalar, lie_size>
   SO3(const SO3<Scalar, OS> & o)
   {
-    static_for<size>([&](auto i) {s_[i] = o.coeffs()[i];});
+    static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
 
   /**
@@ -106,10 +105,10 @@ public:
    * @brief Copy assignment from other SO3
    */
   template<typename OS>
-  requires StorageLike<OS, Scalar, size>
+  requires StorageLike<OS, Scalar, lie_size>
   SO3 & operator=(const SO3<Scalar, OS> & o)
   {
-    static_for<size>([&](auto i) {s_[i] = o.s_[i];});
+    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
   }
 
@@ -136,7 +135,7 @@ public:
    * Only available for ordered storage
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> quat()
-  requires OrderedModifiableStorageLike<Storage, Scalar, size>
+  requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
   {
     return Eigen::Map<Eigen::Quaternion<Scalar>>(s_.data());
   }
@@ -147,7 +146,7 @@ public:
    * Only available for ordered storage
    */
   Eigen::Map<const Eigen::Quaternion<Scalar>> quat() const
-  requires OrderedStorageLike<Storage, Scalar, size>
+  requires OrderedStorageLike<Storage, Scalar, lie_size>
   {
     return Eigen::Map<const Eigen::Quaternion<Scalar>>(s_.data());
   }
@@ -158,7 +157,7 @@ public:
    * Only for non-ordered storage (for ordered storage use map versions)
    */
   Eigen::Quaternion<Scalar> quat() const
-  requires UnorderedStorageLike<Storage, Scalar, size>
+  requires UnorderedStorageLike<Storage, Scalar, lie_size>
   {
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
   }
@@ -169,11 +168,11 @@ private:
    */
   void normalize()
   {
-    Scalar mul = Scalar(1) / LieGroupBase<SO3<Scalar, Storage>, size>::coeffs_ordered().norm();
+    Scalar mul = Scalar(1) / LieGroupBase<SO3<Scalar, Storage>, lie_size>::coeffs_ordered().norm();
     if (s_[3] < 0) {
       mul *= Scalar(-1);
     }
-    static_for<size>([&](auto i) {s_[i] *= mul;});
+    static_for<lie_size>([&](auto i) {s_[i] *= mul;});
   }
 
   // REQUIRED GROUP API
@@ -182,7 +181,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, size>
+  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, lie_size>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
   }
@@ -192,7 +191,7 @@ public:
    */
   template<typename RNG>
   void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage, Scalar, size>&& std::is_floating_point_v<Scalar>
+  requires ModifiableStorageLike<Storage, Scalar, lie_size>&& std::is_floating_point_v<Scalar>
   {
     const Scalar u1 = filler<Scalar>(rng, 0);
     const Scalar u2 = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
@@ -210,7 +209,7 @@ public:
   /**
    * @brief Matrix lie group element
    */
-  MatrixGroup matrix() const
+  MatrixGroup matrix_group() const
   {
     return quat().toRotationMatrix();
   }
@@ -219,7 +218,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == act_dim)
+  requires(Derived::SizeAtCompileTime == lie_actdim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return quat() * x;
@@ -305,7 +304,7 @@ public:
   template<typename TangentDerived>
   static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & t)
   {
-    return (Algebra() <<
+    return (MatrixGroup() <<
            Scalar(0), -t.z(), t.y(),
            t.z(), Scalar(0), -t.x(),
            -t.y(), t.x(), Scalar(0)

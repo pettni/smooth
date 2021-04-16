@@ -92,6 +92,7 @@ if(BUILD_TESTING)
 
   add_executable(${PROJECT_NAME}_tests
     test/test_liegroup.cpp
+    test/test_bundle.cpp
     test/test_so2.cpp
     test/test_so3.cpp
     test/test_se2.cpp
@@ -103,7 +104,7 @@ if(BUILD_TESTING)
     -Wall
     -Wextra
     -Wpedantic
-    -Werror
+    # -Werror
   )
 
   if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

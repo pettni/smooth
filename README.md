@@ -22,7 +22,7 @@ Lie theory for robotics: manual and library
   - [ ] ceres: local parameterization of any group
   - [ ] map ros msgs as storage type
 - groups
-  - [ ] en (inherits from Eigen vec)
+  - [ ] en (plugin to MatrixBase)
   - [x] so2
   - [x] so3
   - [x] se2
@@ -41,3 +41,26 @@ Lie theory for robotics: manual and library
 
  - Return auto to avoid evaluating Eigen temp expressions?
  - Get rid of unordered storage support?
+ - En
+   - Inherit from matrix
+     - Pro: faster because of template expressions
+     - Con: can not use LieGroupBase
+   - Inject API into matrixbase
+     - Pro: less code
+     - Pro: fluid syntax
+     - Pro: faster because of template expressions
+     - Con: must include plugin before any eigen header
+     - ~~Con: must re-name methods~~
+     - Con: must remove storage concept
+     - Con: can not use LieGroupBase
+     - Con: operator* ambiguous
+     - Con: imposes constraints on include order
+   - Same approach as rest of lib
+     - Pro: more consistent
+     - Pro: stronger typed
+     - Con: maybe not as fast
+     - Con: more code
+     - Con: must use translation() or similar in syntax
+   - No En type, do if constexpr in Bundle
+     - Pro: minimal code
+     - Con: bundle becomes more complicated
