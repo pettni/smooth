@@ -7,6 +7,7 @@
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
 #include "so2.hpp"
+#include "so3.hpp"
 
 namespace smooth
 {
@@ -41,22 +42,21 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr uint32_t size = 4;
-  static constexpr uint32_t dof = 3;
-  static constexpr uint32_t dim = 3;
-  static constexpr uint32_t act_dim = 2;
+  static constexpr uint32_t lie_size = 4;
+  static constexpr uint32_t lie_dof = 3;
+  static constexpr uint32_t lie_dim = 3;
+  static constexpr uint32_t lie_actdim = 2;
 
   // REQUIRED TYPES
 
   using Storage = _Storage;
   using Scalar = _Scalar;
 
-  using Group = SE2<Scalar, DefaultStorage<Scalar, size>>;
-  using MatrixGroup = Eigen::Matrix<Scalar, dim, dim>;
-  using Tangent = Eigen::Matrix<Scalar, dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, dof, dof>;
-  using Algebra = Eigen::Matrix<Scalar, dim, dim>;
-  using Vector = Eigen::Matrix<Scalar, act_dim, 1>;
+  using Group = SE2<Scalar, DefaultStorage<Scalar, lie_size>>;
+  using Tangent = Eigen::Matrix<Scalar, lie_dof, 1>;
+  using TangentMap = Eigen::Matrix<Scalar, lie_dof, lie_dof>;
+  using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
+  using MatrixGroup = Eigen::Matrix<Scalar, lie_dim, lie_dim>;
 
   // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
@@ -71,10 +71,10 @@ public:
    * @brief Copy constructor from other storage types
    */
   template<typename OS>
-  requires StorageLike<OS, Scalar, size>
+  requires StorageLike<OS, Scalar, lie_size>
   SE2(const SE2<Scalar, OS> & o)
   {
-    static_for<size>([&](auto i) {s_[i] = o.coeffs()[i];});
+    static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
 
   /**
@@ -97,10 +97,10 @@ public:
    * @brief Copy assignment from other SE2
    */
   template<typename OS>
-  requires StorageLike<OS, Scalar, size>
+  requires StorageLike<OS, Scalar, lie_size>
   SE2 & operator=(const SE2<Scalar, OS> & o)
   {
-    static_for<size>([&](auto i) {s_[i] = o.s_[i];});
+    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
   }
 
@@ -122,7 +122,7 @@ public:
    * @brief Access const SO2 part
    */
   ConstMap<SO2<Scalar>> so2() const
-  requires OrderedStorageLike<Storage, Scalar, size>
+  requires OrderedStorageLike<Storage, Scalar, lie_size>
   {
     return ConstMap<SO2<Scalar>>(s_.data() + 2);
   }
@@ -131,7 +131,7 @@ public:
    * @brief Access SO2 part
    */
   Map<SO2<Scalar>> so2()
-  requires OrderedModifiableStorageLike<Storage, Scalar, size>
+  requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
   {
     return Map<SO2<Scalar>>(s_.data() + 2);
   }
@@ -140,7 +140,7 @@ public:
    * @brief Access SO2 part by copy
    */
   SO2<Scalar> so2() const
-  requires UnorderedStorageLike<Storage, Scalar, size>
+  requires UnorderedStorageLike<Storage, Scalar, lie_size>
   {
     return SO2<Scalar>(s_[2], s_[3]);
   }
@@ -149,7 +149,7 @@ public:
    * @brief Access const E2 part
    */
   Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>> translation() const
-  requires OrderedStorageLike<Storage, Scalar, size>
+  requires OrderedStorageLike<Storage, Scalar, lie_size>
   {
     return Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>>(s_.data());
   }
@@ -158,7 +158,7 @@ public:
    * @brief Access E2 part
    */
   Eigen::Map<Eigen::Matrix<Scalar, 2, 1>> translation()
-  requires OrderedModifiableStorageLike<Storage, Scalar, size>
+  requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
   {
     return Eigen::Map<Eigen::Matrix<Scalar, 2, 1>>(s_.data());
   }
@@ -167,7 +167,7 @@ public:
    * @brief Access E2 part by copy
    */
   Eigen::Matrix<Scalar, 2, 1> translation() const
-  requires UnorderedStorageLike<Storage, Scalar, size>
+  requires UnorderedStorageLike<Storage, Scalar, lie_size>
   {
     return Eigen::Matrix<Scalar, 2, 1>(s_[0], s_[1]);
   }
@@ -177,7 +177,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, 4>
+  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, lie_size>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
   }
@@ -187,7 +187,7 @@ public:
    */
   template<typename RNG>
   void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage, Scalar, 4>&& std::is_floating_point_v<Scalar>
+  requires ModifiableStorageLike<Storage, Scalar, lie_size>&& std::is_floating_point_v<Scalar>
   {
     const Scalar x = filler<Scalar>(rng, 0);
     const Scalar y = filler<Scalar>(rng, 0);
@@ -200,11 +200,11 @@ public:
   /**
    * @brief Matrix lie group element
    */
-  MatrixGroup matrix() const
+  MatrixGroup matrix_group() const
   {
     MatrixGroup ret;
     ret.setIdentity();
-    ret.template topLeftCorner<2, 2>() = so2().matrix();
+    ret.template topLeftCorner<2, 2>() = so2().matrix_group();
     ret.template topRightCorner<2, 1>() = translation();
     return ret;
   }
@@ -213,7 +213,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == act_dim)
+  requires(Derived::SizeAtCompileTime == lie_actdim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return so2() * x + translation();
@@ -270,7 +270,7 @@ public:
   TangentMap Ad() const
   {
     TangentMap ret;
-    ret.template topLeftCorner<2, 2>() = so2().matrix();
+    ret.template topLeftCorner<2, 2>() = so2().matrix_group();
     ret(0, 2) = translation().y();
     ret(1, 2) = -translation().x();
     ret(2, 0) = Scalar(0);
@@ -330,7 +330,7 @@ public:
   template<typename TangentDerived>
   static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & t)
   {
-    Algebra ret;
+    MatrixGroup ret;
     ret.setZero();
     ret.template topLeftCorner<2, 2>() = SO2<Scalar>::hat(t.template tail<1>());
     ret.template topRightCorner<2, 1>() = t.template head<2>();

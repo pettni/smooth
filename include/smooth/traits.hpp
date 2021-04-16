@@ -15,7 +15,7 @@ template<std::size_t i, std::size_t iend, typename F>
 inline static constexpr void static_for_impl(F && f)
 {
   if constexpr (i < iend) {
-    f(i);
+    f(std::integral_constant<std::size_t, i>());
     static_for_impl<i + 1, iend>(std::forward<F>(f));
   }
 }

@@ -74,79 +74,71 @@ template<typename S, typename Scalar, std::size_t N>
 concept UnorderedStorageLike = StorageLike<S, Scalar, N>&& !OrderedStorageLike<S, Scalar, N>;
 
 
-template<typename T>
-concept LieGroupLike = requires {
-  typename T::Storage;
-  typename T::Scalar;
-  typename T::Tangent;
-  typename T::Vector;
-  typename T::TangentMap;
-  typename T::Group;
-  typename T::MatrixGroup;
-  {T::size}->std::same_as<const uint32_t &>;      // size of representation
-  {T::dim}->std::same_as<const uint32_t &>;       // side of square matrix group
-  {T::dof}->std::same_as<const uint32_t &>;       // degrees of freedom (tangent space dimension)
-  {T::act_dim}->std::same_as<const uint32_t &>;   // dimension of vector space on which group acts
+template<typename G>
+concept LieGroupLike =
+// typedefs
+requires {
+  typename G::Scalar;
+  typename G::Group;
+  typename G::Tangent;
+  typename G::TangentMap;
+  typename G::Vector;
+  typename G::MatrixGroup;
 } &&
-std::is_base_of_v<Eigen::MatrixBase<typename T::Tangent>, typename T::Tangent>&&
-std::is_base_of_v<Eigen::MatrixBase<typename T::Vector>, typename T::Vector>&&
-std::is_base_of_v<Eigen::MatrixBase<typename T::TangentMap>, typename T::TangentMap>&&
-std::is_same_v<typename T::Tangent::Scalar, typename T::Scalar>&&
-std::is_base_of_v<Eigen::MatrixBase<typename T::MatrixGroup>, typename T::MatrixGroup>&&
-(T::Tangent::RowsAtCompileTime == T::dof) &&
-(T::Tangent::ColsAtCompileTime == 1) &&
-(T::Vector::RowsAtCompileTime == T::act_dim) &&
-(T::Vector::ColsAtCompileTime == 1) &&
-(T::TangentMap::RowsAtCompileTime == T::dof) &&
-(T::TangentMap::ColsAtCompileTime == T::dof) &&
-(T::MatrixGroup::RowsAtCompileTime == T::dim) &&
-(T::MatrixGroup::ColsAtCompileTime == T::dim) &&
-// Modifiable interface
-(
-  !ModifiableStorageLike<typename T::Storage, typename T::Scalar, T::size>||
-  requires(T & t, std::default_random_engine & rng)
-  {
-    // group non-const interface
-    {t.setIdentity()}->std::same_as<void>;
-    {t.setRandom(rng)}->std::same_as<void>;
-    {t.coeffs()}->std::same_as<typename T::Storage &>;
-  }
-) &&
-// Ordered interface
-(
-  !OrderedStorageLike<typename T::Storage, typename T::Scalar, T::size>||
-  requires(const T & t)
-  {
-    {t.data()}->std::same_as<const typename T::Scalar *>;
-  }
-) &&
-// Ordered modifiable interface
-(
-  !OrderedModifiableStorageLike<typename T::Storage, typename T::Scalar, T::size>||
-  requires(T & t)
-  {
-    {t.data()}->std::same_as<typename T::Scalar *>;
-  }
-) &&
-// Const interface
-requires(const T & t, const T & u, const typename T::Vector & x)
+// static constants
+requires {
+  {G::lie_size}->std::same_as<const uint32_t &>;      // size of representation
+  {G::lie_dim}->std::same_as<const uint32_t &>;       // side of square matrix group
+  {G::lie_dof}->std::same_as<const uint32_t &>;       // degrees of freedom (tangent space dimension)
+  {G::lie_actdim}->std::same_as<const uint32_t &>;   // dimension of vector space on which group acts
+} &&
+std::is_same_v<typename G::Tangent::Scalar, typename G::Scalar>&&
+std::is_base_of_v<Eigen::MatrixBase<typename G::Tangent>, typename G::Tangent>&&
+std::is_same_v<typename G::TangentMap::Scalar, typename G::Scalar>&&
+std::is_base_of_v<Eigen::MatrixBase<typename G::TangentMap>, typename G::TangentMap>&&
+std::is_same_v<typename G::Vector::Scalar, typename G::Scalar>&&
+std::is_base_of_v<Eigen::MatrixBase<typename G::Vector>, typename G::Vector>&&
+std::is_same_v<typename G::MatrixGroup::Scalar, typename G::Scalar>&&
+std::is_base_of_v<Eigen::MatrixBase<typename G::MatrixGroup>, typename G::MatrixGroup>&&
+(G::Tangent::RowsAtCompileTime == G::lie_dof) &&
+(G::Tangent::ColsAtCompileTime == 1) &&
+(G::TangentMap::RowsAtCompileTime == G::lie_dof) &&
+(G::TangentMap::ColsAtCompileTime == G::lie_dof) &&
+(G::Vector::RowsAtCompileTime == G::lie_actdim) &&
+(G::Vector::ColsAtCompileTime == 1) &&
+(G::MatrixGroup::RowsAtCompileTime == G::lie_dim) &&
+(G::MatrixGroup::ColsAtCompileTime == G::lie_dim) &&
+// member methods
+requires(const G & g1, const G & g2, const typename G::Vector & v)
 {
-  // group const interface
-  {t.coeffs()}->std::same_as<const typename T::Storage &>;
-  {t.inverse()}->std::same_as<typename T::Group>;
-  {t * x}->std::same_as<typename T::Vector>;
-  {t * u}->std::same_as<typename T::Group>;
-  {t.log()}->std::same_as<typename T::Tangent>;
-  {t.matrix()}->std::same_as<typename T::MatrixGroup>;
-  {t.Ad()}->std::same_as<typename T::TangentMap>;
-  {t.template cast<double>()};
-  {t.template cast<float>()};
+  {g1.template cast<double>()};
+  {g1.template cast<float>()};
+  {g1.inverse()}->std::same_as<typename G::Group>;
+  {g1 * v}->std::same_as<typename G::Vector>;
+  {g1 * g2}->std::same_as<typename G::Group>;
+  {g1.log()}->std::same_as<typename G::Tangent>;
+  {g1.matrix_group()}->std::same_as<typename G::MatrixGroup>;
+  {g1.Ad()}->std::same_as<typename G::TangentMap>;
 } &&
-// Tangent interface
-requires(const typename T::Tangent & t) {
-  {T::exp(t)}->std::same_as<typename T::Group>;
-  {T::ad(t)}->std::same_as<typename T::TangentMap>;
-  {T::hat(t)}->std::same_as<typename T::MatrixGroup>;
+// static methods
+requires (const typename G::Tangent & a, std::default_random_engine & rng)
+{
+  {G::Identity()} -> std::same_as<typename G::Group>;
+  {G::Random(rng)} -> std::same_as<typename G::Group>;
+  {G::exp(a)}->std::same_as<typename G::Group>;
+  {G::ad(a)}->std::same_as<typename G::TangentMap>;
+  {G::hat(a)}->std::same_as<typename G::MatrixGroup>;
+};
+
+template<typename G>
+concept ModifiableLieGroupLike = LieGroupLike<G>&&
+// std::is_constructible_v<G> &&
+// member methods
+requires(G & t, std::default_random_engine & rng)
+{
+  {t.setIdentity()}->std::same_as<void>;
+  {t.setRandom(rng)}->std::same_as<void>;
+  {t.data()}->std::same_as<typename G::Scalar *>;
 };
 
 } // namespace smooth

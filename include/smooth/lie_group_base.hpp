@@ -31,9 +31,9 @@ public:
   /**
    * @brief Construct the group identity element
    */
-  static Derived Identity()
+  static _Derived<Scalar, DefaultStorage<Scalar, size>> Identity()
   {
-    Derived ret;
+    _Derived<Scalar, DefaultStorage<Scalar, size>> ret;
     ret.setIdentity();
     return ret;
   }
@@ -44,9 +44,9 @@ public:
    * @param rng a random number generator
    */
   template<typename RNG>
-  static Derived Random(RNG & rng)
+  static _Derived<Scalar, DefaultStorage<Scalar, size>> Random(RNG & rng)
   {
-    Derived ret;
+    _Derived<Scalar, DefaultStorage<Scalar, size>> ret;
     ret.setRandom(rng);
     return ret;
   }
