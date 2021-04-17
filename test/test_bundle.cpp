@@ -23,7 +23,7 @@ TEST(Bundle, iseq)
 
 TEST(Bundle, Static)
 {
-  using bundle_t = Bundle<double, DefaultStorage<double, 17>, SE2, SE3, SO2, SO3>;
+  using bundle_t = Bundle<double, SE2, SE3, SO2, SO3>;
 
   static_assert(bundle_t::lie_size == 17);
   static_assert(bundle_t::lie_dof == 13);
@@ -43,12 +43,14 @@ using E3 = Eigen::Matrix<Scalar, 3, 1>;
 TEST(Bundle, Construct)
 {
   std::default_random_engine rng(5);
-  using mybundle = Bundle<double, DefaultStorage<double, 9>, SO2, SO3, E3>;
+  using mybundle = Bundle<double, SO2, SO3, E3>;
   mybundle b;
   b.setIdentity();
   b.setRandom(rng);
 
   b.part<2>() = Eigen::Vector3d(1, 2, 3);
+}
 
-  std::cout << b.matrix_group() << std::endl;
+TEST(Bundle, BundleOfBundle)
+{
 }

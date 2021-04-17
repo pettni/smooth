@@ -26,7 +26,6 @@ using GroupsToTest = ::testing::Types<
   smooth::SE2f, smooth::SE3f,
   smooth::Bundle<
     double,
-    smooth::DefaultStorage<double, 23>,
     smooth::SO2, smooth::SO3, smooth::SE2, smooth::SE3,
     E2, E4
   >
@@ -87,34 +86,6 @@ TYPED_TEST(LieGroupInterface, Constructors)
     ASSERT_TRUE(g3.isApprox(g2));
   }
 }
-
-// TYPED_TEST(LieGroupInterface, ReverseStorage)
-// {
-//   using G_rev = smooth::change_template_args_t<
-//     TypeParam,
-//     typename TypeParam::Scalar,
-//     smooth::ReverseStorage<typename TypeParam::Scalar, TypeParam::lie_size>
-//   >;
-//   std::default_random_engine rng(5);
-
-//   G_rev g;
-//   g.setRandom(rng);
-//   TypeParam g_copy = g;
-//   G_rev g_copy2 = g;
-
-//   ASSERT_TRUE(g.isApprox(g_copy));
-//   for (auto i = 0u; i != TypeParam::lie_size; ++i) {
-//     ASSERT_DOUBLE_EQ(g.coeffs().a[i], g_copy.coeffs()[TypeParam::lie_size - 1 - i]);
-//     ASSERT_DOUBLE_EQ(g.coeffs().a[i], g_copy2.coeffs().a[i]);
-//   }
-
-//   std::array<typename TypeParam::Scalar, TypeParam::lie_size> a;
-//   smooth::Map<TypeParam> m(a.data());
-//   m = g_copy2;
-//   for (auto i = 0u; i != TypeParam::lie_size; ++i) {
-//     ASSERT_DOUBLE_EQ(a[i], g_copy2.coeffs().a[TypeParam::lie_size - 1 - i]);
-//   }
-// }
 
 TYPED_TEST(LieGroupInterface, Action)
 {

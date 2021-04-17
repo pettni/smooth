@@ -38,7 +38,7 @@ requires(
   iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value) &&
   std::is_same_v<typename _Storage::Scalar, _Scalar>
 )
-class Bundle
+class BundleBase
 {
 private:
   _Storage s_;
@@ -46,7 +46,7 @@ private:
 
   template<typename OtherScalar, MappableStorageLike OS, template<typename> typename ... Gs>
   requires std::is_same_v<_Scalar, OtherScalar>
-  friend class Bundle;
+  friend class BundleBase;
 
   using lie_sizes = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>;
   using lie_dofs = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dof ...>;
@@ -67,7 +67,7 @@ public:
   using Scalar = _Scalar;
   using Storage = _Storage;
 
-  using Group = Bundle<Scalar, DefaultStorage<Scalar, lie_size>, _Gs...>;
+  using Group = BundleBase<Scalar, DefaultStorage<Scalar, lie_size>, _Gs...>;
   using Tangent = Eigen::Matrix<Scalar, lie_dof, 1>;
   using TangentMap = Eigen::Matrix<Scalar, lie_dof, lie_dof>;
   using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
@@ -80,18 +80,18 @@ public:
 
   // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
-  Bundle() = default;
-  Bundle(const Bundle & o) = default;
-  Bundle(Bundle && o) = default;
-  Bundle & operator=(const Bundle & o) = default;
-  Bundle & operator=(Bundle && o) = default;
-  ~Bundle() = default;
+  BundleBase() = default;
+  BundleBase(const BundleBase & o) = default;
+  BundleBase(BundleBase && o) = default;
+  BundleBase & operator=(const BundleBase & o) = default;
+  BundleBase & operator=(BundleBase && o) = default;
+  ~BundleBase() = default;
 
   /**
    * @brief Copy constructor from other storage types
    */
   template<StorageLike OS>
-  Bundle(const Bundle<Scalar, OS, _Gs...> & o)
+  BundleBase(const BundleBase<Scalar, OS, _Gs...> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
   }
@@ -99,22 +99,22 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  explicit Bundle(Scalar * ptr)
+  explicit BundleBase(Scalar * ptr)
   requires std::is_constructible_v<Storage, Scalar *>
   : s_(ptr) {}
 
   /**
    * @brief Forwarding constructor to storage for const map types
    */
-  explicit Bundle(const Scalar * ptr)
+  explicit BundleBase(const Scalar * ptr)
   requires std::is_constructible_v<Storage, const Scalar *>
   : s_(ptr) {}
 
   /**
-   * @brief Copy assignment from other Bundle
+   * @brief Copy assignment from other BundleBase
    */
   template<StorageLike OS>
-  Bundle & operator=(const Bundle<Scalar, OS, _Gs...> & o)
+  BundleBase & operator=(const BundleBase<Scalar, OS, _Gs...> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
@@ -125,7 +125,7 @@ public:
   /**
    * @brief TODO: Construct from components
    */
-  // Bundle(const _Gs<_Scalar> ... &)
+  // BundleBase(const _Gs<_Scalar> ... &)
   // {
 
   // }
@@ -166,11 +166,10 @@ public:
     return ret;
   }
 
-
   template<typename NewScalar>
-  Bundle<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> cast() const
+  BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> cast() const
   {
-    Bundle<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> ret;
+    BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> ret;
     static_for<sizeof...(_Gs)>(
       [&](auto i) {
         ret.template part<i>() = part<i>().template cast<NewScalar>();
@@ -232,7 +231,7 @@ public:
    * @brief Overload operator*= for inplace composition
    */
   template<StorageLike OS>
-  Bundle & operator*=(const Bundle<Scalar, OS, _Gs...> & o)
+  BundleBase & operator*=(const BundleBase<Scalar, OS, _Gs...> & o)
   {
     *this = *this * o;
     return *this;
@@ -255,7 +254,7 @@ public:
    * g + a := g1 * exp(a)
    */
   template<typename TangentDerived>
-  Bundle & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
+  BundleBase & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
   {
     return *this *= exp(t);
   }
@@ -266,7 +265,7 @@ public:
    * g1 - g2 := (g2.inverse() * g1).log()
    */
   template<StorageLike OS>
-  auto operator-(const Bundle<Scalar, OS, _Gs...> & o) const
+  auto operator-(const BundleBase<Scalar, OS, _Gs...> & o) const
   {
     return (o.inverse() * *this).log();
   }
@@ -365,7 +364,7 @@ public:
    * @brief Group composition
    */
   template<typename OS, template<typename> typename ... _OGs>
-  Group operator*(const Bundle<Scalar, OS, _OGs...> & r) const
+  Group operator*(const BundleBase<Scalar, OS, _OGs...> & r) const
   {
     Group ret;
     static_for<sizeof...(_Gs)>(
@@ -577,12 +576,19 @@ public:
 
 
 template<typename Scalar, typename Storage, template<typename> typename ... Gs>
-struct map_trait<Bundle<Scalar, Storage, Gs...>>
+struct map_trait<BundleBase<Scalar, Storage, Gs...>>
 {
-  using G = Bundle<Scalar, Storage, Gs...>;
-  using type = Bundle<Scalar, MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
-  using const_type = Bundle<Scalar, const MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
+  using G = BundleBase<Scalar, Storage, Gs...>;
+  using type = BundleBase<Scalar, MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
+  using const_type = BundleBase<Scalar, const MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
 };
+
+template<typename _Scalar, template<typename> typename ... _Gs>
+using Bundle = BundleBase<
+  _Scalar,
+  DefaultStorage<_Scalar, iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value>,
+  _Gs...
+>;
 
 }  // namespace smooth
 
