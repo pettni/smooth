@@ -80,6 +80,7 @@ public:
    */
   template<StorageLike OS>
   SO3(const SO3<Scalar, OS> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
@@ -105,6 +106,7 @@ public:
    */
   template<StorageLike OS>
   SO3 & operator=(const SO3<Scalar, OS> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
@@ -118,7 +120,7 @@ public:
    */
   template<typename Derived>
   SO3(const Eigen::QuaternionBase<Derived> & qin)
-  requires std::is_same_v<typename Derived::Scalar, Scalar>
+  requires ModifiableStorageLike<Storage> && std::is_same_v<typename Derived::Scalar, Scalar>
   {
     s_[0] = qin.x(); s_[1] = qin.y(); s_[2] = qin.z(); s_[3] = qin.w();
     normalize();

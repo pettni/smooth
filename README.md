@@ -42,7 +42,7 @@ Lie theory for robotics: manual and library
  - [ ] inject boilerplate with macro and remove lie_group_base
  - [ ] do small angle approximations
  - [x] en: make bundle support vectors with usual semantics and leave it there
- - [ ] bundle: typedef bundle with default storage
+ - [x] bundle: typedef bundle with default storage
 
 
 ### Design choices
