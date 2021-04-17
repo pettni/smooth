@@ -161,6 +161,7 @@ private:
    * @brief Normalize quaternion and set qw >= 0
    */
   void normalize()
+  requires ModifiableStorageLike<Storage>
   {
     Scalar mul = Scalar(1) /
       std::sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2] + s_[3] * s_[3]);
@@ -215,7 +216,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == lie_actdim)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_actdim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return quat() * x;
@@ -268,8 +269,9 @@ public:
    *
    * Valid arguments are (-pi, pi]
    */
-  template<typename TangentDerived>
-  static Group exp(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static Group exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::cos, std::sin;
 
@@ -289,8 +291,9 @@ public:
   /**
    * @brief Algebra adjoint
    */
-  template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     return hat(a);
   }
@@ -298,8 +301,9 @@ public:
   /**
    * @brief Algebra hat
    */
-  template<typename TangentDerived>
-  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     return (MatrixGroup() <<
            Scalar(0), -a.z(), a.y(),
@@ -311,8 +315,9 @@ public:
   /**
    * @brief Algebra vee
    */
-  template<typename AlgebraDerived>
-  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & A)
+  template<typename Derived>
+  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
+  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
     return Tangent(A(2, 1) - A(1, 2), A(0, 2) - A(2, 0), A(1, 0) - A(0, 1)) / Scalar(2);
   }
@@ -320,8 +325,9 @@ public:
   /**
    * @brief Right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = a.squaredNorm();
@@ -342,8 +348,9 @@ public:
   /**
    * @brief Inverse of the right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = a.squaredNorm();
