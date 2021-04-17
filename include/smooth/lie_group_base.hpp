@@ -54,15 +54,20 @@ public:
   /**
    * @brief Compare two Lie group elements
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, size>
+  template<LieGroupLike OG>
+  requires(std::is_same_v<_Scalar, typename OG::Scalar>)
   bool isApprox(
-    const _Derived<Scalar, OS> & o,
+    const OG & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
-    return static_cast<const Derived &>(*this).coeffs_ordered().isApprox(
-      o.coeffs_ordered(), eps
-    );
+    double n1_sq{0}, n2_sq{0}, n12_sq{0};
+    static_for<size>(
+      [&](auto i) {
+        n1_sq += coeffs()[i] * coeffs()[i];
+        n2_sq += o.coeffs()[i] * o.coeffs()[i];
+        n12_sq += (coeffs()[i] - o.coeffs()[i]) * (coeffs()[i] - o.coeffs()[i]);
+      });
+    return std::sqrt(n12_sq) <= eps * std::min(std::sqrt(n1_sq), std::sqrt(n2_sq));
   }
 
   /**
@@ -96,51 +101,27 @@ public:
   }
 
   /**
-   * @brief Return ordered coeffieicents (version for ordered storage)
-   */
-  Eigen::Map<const DefaultStorage<Scalar, size>> coeffs_ordered() const
-  requires OrderedStorageLike<Storage, Scalar, size>
-  {
-    return Eigen::Map<const DefaultStorage<Scalar, size>>(data());
-  }
-
-  /**
-   * @brief Return ordered coefficients (version for unordered storage)
-   */
-  DefaultStorage<Scalar, size> coeffs_ordered() const
-  requires UnorderedStorageLike<Storage, Scalar, size>
-  {
-    DefaultStorage<Scalar, size> ret;
-    static_for<size>([&](auto i) {ret[i] = coeffs()[i];});
-    return ret;
-  }
-
-  /**
-   * @brief Access raw const data pointer
-   *
-   * Only available for ordered storage
-   */
-  const Scalar * data() const requires OrderedStorageLike<Storage, Scalar, size>
-  {
-    return static_cast<const Derived &>(*this).coeffs().data();
-  }
-
-  /**
    * @brief Access raw data pointer
-   *
-   * Only available for ordered modifiable storage
    */
-  Scalar * data() requires OrderedModifiableStorageLike<Storage, Scalar, size>
+  Scalar * data() requires ModifiableStorageLike<Storage>
   {
     return static_cast<Derived &>(*this).coeffs().data();
   }
 
   /**
+   * @brief Access raw const data pointer
+   */
+  const Scalar * data() const requires MappableStorageLike<Storage>
+  {
+    return static_cast<const Derived &>(*this).coeffs().data();
+  }
+
+  /**
    * @brief Overload operator*= for inplace composition
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, size>
-  Derived &operator*=(const _Derived<Scalar, OS> & o)
+  template<StorageLike OS>
+  Derived & operator*=(const _Derived<Scalar, OS> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_cast<Derived &>(*this) = static_cast<const Derived &>(*this) * o;
     return static_cast<Derived &>(*this);
@@ -173,8 +154,7 @@ public:
    *
    * g1 - g2 := (g2.inverse() * g1).log()
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, size>
+  template<StorageLike OS>
   auto operator-(const _Derived<Scalar, OS> & o) const
   {
     return (o.inverse() * static_cast<const Derived &>(*this)).log();

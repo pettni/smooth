@@ -22,25 +22,34 @@ Lie theory for robotics: manual and library
   - [ ] ceres: local parameterization of any group
   - [ ] map ros msgs as storage type
 - groups
-  - [ ] en (plugin to MatrixBase)
   - [x] so2
   - [x] so3
   - [x] se2
   - [x] se3
-  - [ ] bundle
+  - [x] bundle
 - algos:
   - splines:
     - [ ] evaluate bsplines
     - [ ] fit bsplines
     - [ ] for cubic splines with and without given velocity
 - debt:
- - [ ] change SE2/3 constructors to take translation first
+ - [x] get rid of modifiable unordered storage and coeffs_ordered
+    - just don't expose map in if not supported by storage
+ - [x] write own storages -- the eigen ones are ugly
+ - [x] change SE2/3 constructors to take translation first
+ - [ ] remove scalar in bundle arg list
+ - [ ] trait to change n:th template arg
+ - [ ] inject boilerplate with macro and remove lie_group_base
  - [ ] do small angle approximations
+ - [x] en: make bundle support vectors with usual semantics and leave it there
+ - [ ] bundle: typedef bundle with default storage
+
 
 ### Design choices
 
  - Return auto to avoid evaluating Eigen temp expressions?
  - Get rid of unordered storage support?
+ - Use CRTP or nah?
  - En
    - Inherit from matrix
      - Pro: faster because of template expressions
@@ -58,9 +67,10 @@ Lie theory for robotics: manual and library
    - Same approach as rest of lib
      - Pro: more consistent
      - Pro: stronger typed
+     - Pro: may be able to make something clever for semi-simple group products
      - Con: maybe not as fast
      - Con: more code
      - Con: must use translation() or similar in syntax
-   - No En type, do if constexpr in Bundle
+   - [x] No En type, do if constexpr in Bundle
      - Pro: minimal code
      - Con: bundle becomes more complicated

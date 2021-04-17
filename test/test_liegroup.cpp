@@ -3,29 +3,32 @@
 #include <unsupported/Eigen/MatrixFunctions>  // for matrix exponential, must be after en
 
 #include "smooth/so2.hpp"
-#include "smooth/se2.hpp"
 #include "smooth/so3.hpp"
+#include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/bundle.hpp"
 #include "smooth/storage.hpp"
 #include "smooth/traits.hpp"
-
-#include "reverse_storage.hpp"
 
 
 template<smooth::LieGroupLike G>
 class LieGroupInterface : public ::testing::Test
 {};
 
+template<typename Scalar>
+using E2 = Eigen::Matrix<Scalar, 2, 1>;
+
+template<typename Scalar>
+using E4 = Eigen::Matrix<Scalar, 4, 1>;
+
 using GroupsToTest = ::testing::Types<
-  smooth::SO2f, smooth::SO2d,
-  smooth::SO3f, smooth::SO3d,
-  smooth::SE2f, smooth::SE2d,
-  smooth::SE3f, smooth::SE3d,
+  smooth::SO2f, smooth::SO3f,
+  smooth::SE2f, smooth::SE3f,
   smooth::Bundle<
     double,
-    smooth::DefaultStorage<double, 17>,
-    smooth::SO2, smooth::SO3, smooth::SE2, smooth::SE3
+    smooth::DefaultStorage<double, 23>,
+    smooth::SO2, smooth::SO3, smooth::SE2, smooth::SE3,
+    E2, E4
   >
 >;
 
@@ -200,6 +203,9 @@ TYPED_TEST(LieGroupInterface, Copying)
   g1.setRandom(rng);
   g2 = g1;
   ASSERT_TRUE(g2.isApprox(g1));
+  for (auto i = 0u; i != TypeParam::lie_size; ++i) {
+    ASSERT_DOUBLE_EQ(g1.coeffs()[i], g2.coeffs()[i]);
+  }
 
   // group to map
   g1.setRandom(rng);
@@ -221,6 +227,9 @@ TYPED_TEST(LieGroupInterface, Copying)
   m1.setRandom(rng);
   g1 = m1;
   ASSERT_TRUE(g1.isApprox(m1));
+  for (auto i = 0u; i != TypeParam::lie_size; ++i) {
+    ASSERT_DOUBLE_EQ(g1.coeffs()[i], a1[i]);
+  }
 
   // move group to group
   {

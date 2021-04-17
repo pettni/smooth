@@ -23,15 +23,15 @@ namespace smooth
  * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
  * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
  */
-template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 7>>
-requires StorageLike<_Storage, _Scalar, 7> class SE3
-  : public LieGroupBase<SE3<_Scalar, _Storage>, 7>
+template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 7>>
+requires(_Storage::SizeAtCompileTime == 7 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
+class SE3 : public LieGroupBase<SE3<_Scalar, _Storage>, 7>
 {
 private:
   _Storage s_;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  template<typename OtherScalar, typename OS>
+  template<typename OtherScalar, StorageLike OS>
   requires std::is_same_v<_Scalar, OtherScalar> friend class SE3;
 
   friend class LieGroupBase<SE3<_Scalar, _Storage>, 7>;
@@ -67,8 +67,8 @@ public:
   /**
    * @brief Copy constructor from other storage types
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size> SE3(const SE3<Scalar, OS> & o)
+  template<StorageLike OS>
+  SE3(const SE3<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
@@ -76,24 +76,22 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  template<typename T>
-  requires std::is_constructible_v<Storage, T *> explicit SE3(T * ptr)
+  explicit SE3(Scalar * ptr) requires std::is_constructible_v<Storage, Scalar *>
   : s_(ptr)
   {}
 
   /**
    * @brief Forwarding constructor to storage for const map types
    */
-  template<typename T>
-  requires std::is_constructible_v<Storage, const T *> explicit SE3(const T * ptr)
+  explicit SE3(const Scalar * ptr) requires std::is_constructible_v<Storage, const Scalar *>
   : s_(ptr)
   {}
 
   /**
    * @brief Copy assignment from other SE3
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size> SE3 & operator=(const SE3<Scalar, OS> & o)
+  template<StorageLike OS>
+  SE3 & operator=(const SE3<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
@@ -119,7 +117,7 @@ public:
   /**
    * @brief Access const SO3 part
    */
-  ConstMap<SO3<Scalar>> so3() const requires OrderedStorageLike<Storage, Scalar, lie_size>
+  ConstMap<SO3<Scalar>> so3() const requires MappableStorageLike<Storage>
   {
     return ConstMap<SO3<Scalar>>(s_.data() + 3);
   }
@@ -127,7 +125,7 @@ public:
   /**
    * @brief Access SO2 part
    */
-  Map<SO3<Scalar>> so3() requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
+  Map<SO3<Scalar>> so3() requires ModifiableStorageLike<Storage>
   {
     return Map<SO3<Scalar>>(s_.data() + 3);
   }
@@ -135,7 +133,7 @@ public:
   /**
    * @brief Access SO2 part by copy
    */
-  SO3<Scalar> so3() const requires UnorderedStorageLike<Storage, Scalar, lie_size>
+  SO3<Scalar> so3() const requires (!MappableStorageLike<Storage>)
   {
     return SO3<Scalar>(Eigen::Quaternion<Scalar>(s_[6], s_[3], s_[4], s_[5]));
   }
@@ -144,7 +142,7 @@ public:
    * @brief Access const E3 part
    */
   Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>> translation() const
-  requires OrderedStorageLike<Storage, Scalar, lie_size>
+  requires MappableStorageLike<Storage>
   {
     return Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>>(s_.data());
   }
@@ -153,7 +151,7 @@ public:
    * @brief Access E3 part
    */
   Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> translation()
-  requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
+  requires ModifiableStorageLike<Storage>
   {
     return Eigen::Map<Eigen::Matrix<Scalar, 3, 1>>(s_.data());
   }
@@ -162,7 +160,7 @@ public:
    * @brief Access E3 part by copy
    */
   Eigen::Matrix<Scalar, 3, 1> translation() const
-  requires UnorderedStorageLike<Storage, Scalar, lie_size>
+  requires (!MappableStorageLike<Storage>)
   {
     return Eigen::Matrix<Scalar, 3, 1>(s_[0], s_[1], s_[2]);
   }
@@ -206,7 +204,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, lie_size>
+  void setIdentity() requires ModifiableStorageLike<Storage>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(0);
     s_[4] = Scalar(0); s_[5] = Scalar(0); s_[6] = Scalar(1);
@@ -216,8 +214,7 @@ public:
    * @brief Set to a random element
    */
   template<typename RNG>
-  void setRandom(RNG & rng) requires ModifiableStorageLike<Storage, Scalar,
-    lie_size>&& std::is_floating_point_v<Scalar>
+  void setRandom(RNG & rng) requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
   {
     const Scalar x = filler<Scalar>(rng, 0);
     const Scalar y = filler<Scalar>(rng, 0);

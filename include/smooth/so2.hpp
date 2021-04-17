@@ -23,15 +23,15 @@ namespace smooth
  * Group:   qz * qz + qw * qw = 1
  * Tangent: -pi < wz <= pi
  */
-template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 2>>
-requires StorageLike<_Storage, _Scalar, 2>
+template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 2>>
+requires(_Storage::SizeAtCompileTime == 2 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
 class SO2 : public LieGroupBase<SO2<_Scalar, _Storage>, 2>
 {
 private:
   _Storage s_;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  template<typename OtherScalar, typename OS>
+  template<typename OtherScalar, StorageLike OS>
   requires std::is_same_v<_Scalar, OtherScalar>
   friend class SO2;
 
@@ -77,8 +77,7 @@ public:
   /**
    * @brief Copy constructor from other storage types
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   SO2(const SO2<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
@@ -87,24 +86,19 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  template<typename T>
-  requires std::is_constructible_v<Storage, T *>
-  explicit SO2(T * ptr)
+  explicit SO2(Scalar * ptr) requires std::is_constructible_v<Storage, Scalar *>
   : s_(ptr) {}
 
   /**
    * @brief Forwarding constructor to storage for const map types
    */
-  template<typename T>
-  requires std::is_constructible_v<Storage, const T *>
-  explicit SO2(const T * ptr)
+  explicit SO2(const Scalar * ptr) requires std::is_constructible_v<Storage, const Scalar *>
   : s_(ptr) {}
 
   /**
    * @brief Copy assignment from other SO2
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   SO2 & operator=(const SO2<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
@@ -160,7 +154,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, lie_size>
+  void setIdentity() requires ModifiableStorageLike<Storage>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(1);
   }
@@ -170,7 +164,7 @@ public:
    */
   template<typename RNG>
   void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage, Scalar, lie_size>&& std::is_floating_point_v<Scalar>
+  requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
   {
     const Scalar u = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
     s_[0] = sin(u); s_[1] = cos(u);
@@ -197,7 +191,7 @@ public:
   /**
    * @brief Group composition
    */
-  template<typename OS>
+  template<StorageLike OS>
   Group operator*(const SO2<Scalar, OS> & r) const
   {
     return Group(s_[0] * r.s_[1] + s_[1] * r.s_[0], s_[1] * r.s_[1] - s_[0] * r.s_[0]);

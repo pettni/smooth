@@ -20,64 +20,42 @@ namespace smooth
  * @tparam Scalar scalar type
  * @tparam N number of scalars in storage
  */
-template<typename S, typename Scalar, std::size_t N>
+template<typename S>
 concept StorageLike = requires {
   typename S::Scalar;
   {S::SizeAtCompileTime}->std::convertible_to<uint32_t>;
 } &&
-std::is_same_v<Scalar, typename S::Scalar>&&
-N == S::SizeAtCompileTime &&
 requires(const S & s, int i) {
   {s[i]}->std::convertible_to<typename S::Scalar>;
 };
 
-/**
- * @brief Storage that can be modified (non-const)
- */
-template<typename S, typename Scalar, std::size_t N>
-concept ModifiableStorageLike = StorageLike<S, Scalar, N>&&
-  requires(S & s, int i) {
-  {s[i]}->std::convertible_to<typename S::Scalar &>;
-};
-
-/**
- * @brief Storage that guarantees that content is contiguous in memory
- * and is ordered in the same way as in DefaultStorage
- */
-template<typename S, typename Scalar, std::size_t N>
-concept OrderedStorageLike = StorageLike<S, Scalar, N>&&
+// Storage that can be mapped
+template<typename S>
+concept MappableStorageLike = StorageLike<S>&&
   requires(const S & s) {
   {s.data()}->std::same_as<const typename S::Scalar *>;
 };
 
-/**
- * @brief Modifiable storage that also guarantees that content is contiguous in memory
- * and is ordered in the same way as in DefaultStorage
- */
-template<typename S, typename Scalar, std::size_t N>
-concept OrderedModifiableStorageLike =
-  ModifiableStorageLike<S, Scalar, N>&& OrderedStorageLike<S, Scalar, N>&&
-  requires(S & s) {
+// Storage that can be both mapped and modified
+template<typename S>
+concept ModifiableStorageLike =
+  MappableStorageLike<S>&&
+  requires(S & s, int i) {
   {s.data()}->std::same_as<typename S::Scalar *>;
+  {s[i]}->std::convertible_to<typename S::Scalar &>;
 };
 
 /**
  * @brief Storage that is not modifiable
  */
-template<typename S, typename Scalar, std::size_t N>
-concept ConstStorageLike = StorageLike<S, Scalar, N>&& !ModifiableStorageLike<S, Scalar, N>;
-
-/**
- * @brief Storage that is not ordered
- */
-template<typename S, typename Scalar, std::size_t N>
-concept UnorderedStorageLike = StorageLike<S, Scalar, N>&& !OrderedStorageLike<S, Scalar, N>;
+template<typename S>
+concept ConstStorageLike = StorageLike<S>&& !ModifiableStorageLike<S>;
 
 
 template<typename G>
 concept LieGroupLike =
 // typedefs
-requires {
+  requires {
   typename G::Scalar;
   typename G::Group;
   typename G::Tangent;
@@ -121,10 +99,10 @@ requires(const G & g1, const G & g2, const typename G::Vector & v)
   {g1.Ad()}->std::same_as<typename G::TangentMap>;
 } &&
 // static methods
-requires (const typename G::Tangent & a, std::default_random_engine & rng)
+requires(const typename G::Tangent & a, std::default_random_engine & rng)
 {
-  {G::Identity()} -> std::same_as<typename G::Group>;
-  {G::Random(rng)} -> std::same_as<typename G::Group>;
+  {G::Identity()}->std::same_as<typename G::Group>;
+  {G::Random(rng)}->std::same_as<typename G::Group>;
   {G::exp(a)}->std::same_as<typename G::Group>;
   {G::ad(a)}->std::same_as<typename G::TangentMap>;
   {G::hat(a)}->std::same_as<typename G::MatrixGroup>;
@@ -134,12 +112,27 @@ template<typename G>
 concept ModifiableLieGroupLike = LieGroupLike<G>&&
 // std::is_constructible_v<G> &&
 // member methods
-requires(G & t, std::default_random_engine & rng)
+  requires(G & t, std::default_random_engine & rng)
 {
   {t.setIdentity()}->std::same_as<void>;
   {t.setRandom(rng)}->std::same_as<void>;
   {t.data()}->std::same_as<typename G::Scalar *>;
 };
+
+
+template<typename T>
+struct is_eigen_vec : public std::false_type {};
+
+template<typename Scalar, int rows>
+struct is_eigen_vec<Eigen::Matrix<Scalar, rows, 1>> : public std::true_type {};
+
+
+template<typename G>
+concept EnLike =
+requires {
+  typename G::Scalar;
+} &&
+(is_eigen_vec<G>::value);
 
 } // namespace smooth
 
