@@ -53,6 +53,11 @@ TEST(Bundle, Construct)
   ASSERT_TRUE(b.part<0>().isApprox(so2));
   ASSERT_TRUE(b.part<1>().isApprox(so3));
   ASSERT_TRUE(b.part<2>().isApprox(e3));
+
+  Eigen::Matrix4d m;
+  m.setIdentity();
+  m.topRightCorner<3, 1>() = e3;
+  ASSERT_TRUE(m.isApprox(b.matrix_group().bottomRightCorner<4, 4>()));
 }
 
 template<typename Scalar>

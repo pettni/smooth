@@ -69,6 +69,7 @@ public:
    */
   template<StorageLike OS>
   SE3(const SE3<Scalar, OS> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
@@ -92,6 +93,7 @@ public:
    */
   template<StorageLike OS>
   SE3 & operator=(const SE3<Scalar, OS> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
@@ -104,6 +106,7 @@ public:
    */
   template<typename Derived>
   SE3(const SO3<Scalar> & so3, const Eigen::MatrixBase<Derived> & translation)
+  requires ModifiableStorageLike<Storage>
   {
     s_[0] = translation(0);
     s_[1] = translation(1);
@@ -245,7 +248,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == lie_actdim)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_actdim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return so3() * x + translation();
@@ -295,23 +298,25 @@ public:
   /**
    * @brief Group exponential
    */
-  template<typename TangentDerived>
-  static Group exp(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  static Group exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     return Group(
-      SO3<Scalar>::exp(t.template tail<3>()),
-      SO3<Scalar>::dl_exp(t.template tail<3>()) * t.template head<3>());
+      SO3<Scalar>::exp(a.template tail<3>()),
+      SO3<Scalar>::dl_exp(a.template tail<3>()) * a.template head<3>());
   }
 
   /**
    * @brief Algebra adjoint
    */
-  template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     TangentMap ret;
-    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::hat(t.template tail<3>());
-    ret.template topRightCorner<3, 3>() = SO3<Scalar>::hat(t.template head<3>());
+    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::hat(a.template tail<3>());
+    ret.template topRightCorner<3, 3>() = SO3<Scalar>::hat(a.template head<3>());
     ret.template bottomRightCorner<3, 3>() = ret.template topLeftCorner<3, 3>();
     ret.template bottomLeftCorner<3, 3>().setZero();
     return ret;
@@ -320,37 +325,40 @@ public:
   /**
    * @brief Algebra hat
    */
-  template<typename TangentDerived>
-  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     MatrixGroup ret;
     ret.setZero();
-    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::hat(t.template tail<3>());
-    ret.template topRightCorner<3, 1>() = t.template head<3>();
+    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::hat(a.template tail<3>());
+    ret.template topRightCorner<3, 1>() = a.template head<3>();
     return ret;
   }
 
   /**
    * @brief Algebra vee
    */
-  template<typename AlgebraDerived>
-  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & a)
+  template<typename Derived>
+  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
+  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
-    Tangent t;
-    t.template tail<3>() = SO3<Scalar>::vee(a.template topLeftCorner<3, 3>());
-    t.template head<3>() = a.template topRightCorner<3, 1>();
-    return t;
+    Tangent a;
+    a.template tail<3>() = SO3<Scalar>::vee(A.template topLeftCorner<3, 3>());
+    a.template head<3>() = A.template topRightCorner<3, 1>();
+    return a;
   }
 
   /**
    * @brief Right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     TangentMap ret;
-    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::dr_exp(t.template tail<3>());
-    ret.template topRightCorner<3, 3>() = calculate_q(-t);
+    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::dr_exp(a.template tail<3>());
+    ret.template topRightCorner<3, 3>() = calculate_q(-a);
     ret.template bottomRightCorner<3, 3>() = ret.template topLeftCorner<3, 3>();
     ret.template bottomLeftCorner<3, 3>().setZero();
     return ret;
@@ -359,13 +367,14 @@ public:
   /**
    * @brief Inverse of the right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     TangentMap ret;
-    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::dr_expinv(t.template tail<3>());
+    ret.template topLeftCorner<3, 3>() = SO3<Scalar>::dr_expinv(a.template tail<3>());
     ret.template topRightCorner<3, 3>() =
-      -ret.template topLeftCorner<3, 3>() * calculate_q(-t) * ret.template topLeftCorner<3, 3>();
+      -ret.template topLeftCorner<3, 3>() * calculate_q(-a) * ret.template topLeftCorner<3, 3>();
     ret.template bottomRightCorner<3, 3>() = ret.template topLeftCorner<3, 3>();
     ret.template bottomLeftCorner<3, 3>().setZero();
     return ret;

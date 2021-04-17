@@ -72,6 +72,7 @@ public:
    */
   template<StorageLike OS>
   SE2(const SE2<Scalar, OS> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
@@ -96,6 +97,7 @@ public:
   template<typename OS>
   requires StorageLike<OS>
   SE2 & operator=(const SE2<Scalar, OS> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
@@ -108,6 +110,7 @@ public:
    */
   template<typename Derived>
   SE2(const SO2<Scalar> & so2, const Eigen::MatrixBase<Derived> & translation)
+  requires ModifiableStorageLike<Storage>
   {
     s_[0] = translation(0);
     s_[1] = translation(1);
@@ -210,7 +213,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == lie_actdim)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_actdim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return so2() * x + translation();
@@ -281,8 +284,9 @@ public:
   /**
    * @brief Group exponential
    */
-  template<typename TangentDerived>
-  static Group exp(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static Group exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::abs, std::cos, std::sin;
 
@@ -310,8 +314,9 @@ public:
   /**
    * @brief Algebra adjoint
    */
-  template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     TangentMap ret;
     ret.setZero();
@@ -324,8 +329,9 @@ public:
   /**
    * @brief Algebra hat
    */
-  template<typename TangentDerived>
-  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     MatrixGroup ret;
     ret.setZero();
@@ -337,8 +343,9 @@ public:
   /**
    * @brief Algebra vee
    */
-  template<typename AlgebraDerived>
-  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & A)
+  template<typename Derived>
+  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
+  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
     Tangent t;
     t.template tail<1>() = SO2<Scalar>::vee(A.template topLeftCorner<2, 2>());
@@ -349,8 +356,9 @@ public:
   /**
    * @brief Right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::abs, std::sqrt, std::sin, std::cos;
     const Scalar th = a.z();
@@ -368,8 +376,9 @@ public:
   /**
    * @brief Inverse of the right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::abs, std::sqrt, std::sin, std::cos;
     const Scalar th = a.z();

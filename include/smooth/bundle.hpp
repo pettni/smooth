@@ -92,6 +92,7 @@ public:
    */
   template<StorageLike OS>
   BundleBase(const BundleBase<Scalar, OS, _Gs...> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
   }
@@ -115,6 +116,7 @@ public:
    */
   template<StorageLike OS>
   BundleBase & operator=(const BundleBase<Scalar, OS, _Gs...> & o)
+  requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
@@ -127,12 +129,13 @@ public:
    */
   template<typename ... S>
   explicit BundleBase(S && ... args)
-  requires (sizeof...(S) == sizeof...(_Gs))
-  && std::conjunction_v<std::is_assignable<_Gs<_Scalar>, S> ...>
+  requires ModifiableStorageLike<Storage>&&
+  (sizeof...(S) == sizeof...(_Gs)) &&
+  std::conjunction_v<std::is_assignable<_Gs<_Scalar>, S>...>
   {
     static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        part<i>() = std::get<i>(std::forward_as_tuple(args...));
+        part<i>() = std::get<i>(std::forward_as_tuple(args ...));
       });
   }
 
@@ -172,20 +175,6 @@ public:
     return ret;
   }
 
-  template<typename NewScalar>
-  BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> cast() const
-  {
-    BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> ret;
-    static_for<sizeof...(_Gs)>(
-      [&](auto i) {
-        ret.template part<i>() = part<i>().template cast<NewScalar>();
-      });
-    return ret;
-  }
-
-  /**
-   * @brief Compare two Lie group elements
-   */
   template<typename Other>
   bool isApprox(
     const Other & o,
@@ -201,41 +190,37 @@ public:
     return ret;
   }
 
-  /**
-   * @brief Access group storage
-   */
+  template<typename NewScalar>
+  BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> cast() const
+  {
+    BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> ret;
+    static_for<sizeof...(_Gs)>(
+      [&](auto i) {
+        ret.template part<i>() = part<i>().template cast<NewScalar>();
+      });
+    return ret;
+  }
+
   Storage & coeffs()
   {
     return s_;
   }
 
-  /**
-   * @brief Const access group storage
-   */
   const Storage & coeffs() const
   {
     return s_;
   }
 
-  /**
-   * @brief Access raw const data pointer
-   */
-  const Scalar * data() const requires MappableStorageLike<Storage>
-  {
-    return coeffs().data();
-  }
-
-  /**
-   * @brief Access raw data pointer
-   */
   Scalar * data() requires ModifiableStorageLike<Storage>
   {
     return coeffs().data();
   }
 
-  /**
-   * @brief Overload operator*= for inplace composition
-   */
+  const Scalar * data() const requires MappableStorageLike<Storage>
+  {
+    return coeffs().data();
+  }
+
   template<StorageLike OS>
   BundleBase & operator*=(const BundleBase<Scalar, OS, _Gs...> & o)
   {
@@ -243,53 +228,32 @@ public:
     return *this;
   }
 
-  /**
-   * @brief Overload operator+ for right-plus
-   *
-   * g + a := g1 * exp(a)
-   */
-  template<typename TangentDerived>
-  auto operator+(const Eigen::MatrixBase<TangentDerived> & t) const
+  template<typename Derived>
+  auto operator+(const Eigen::MatrixBase<Derived> & t) const
   {
     return *this * exp(t);
   }
 
-  /**
-   * @brief Overload operator+= for inplace right-plus
-   *
-   * g + a := g1 * exp(a)
-   */
-  template<typename TangentDerived>
-  BundleBase & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  BundleBase & operator+=(const Eigen::MatrixBase<Derived> & t)
   {
     return *this *= exp(t);
   }
 
-  /**
-   * @brief Overload operator- for right-minus
-   *
-   * g1 - g2 := (g2.inverse() * g1).log()
-   */
   template<StorageLike OS>
   auto operator-(const BundleBase<Scalar, OS, _Gs...> & o) const
   {
     return (o.inverse() * *this).log();
   }
 
-  /**
-   * @brief Left jacobian of the exponential
-   */
-  template<typename TangentDerived>
-  static auto dl_exp(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  static auto dl_exp(const Eigen::MatrixBase<Derived> & t)
   {
     return (exp(t).Ad() * dr_exp(t)).eval();
   }
 
-  /**
-   * @brief Inverse of left jacobian of the exponential
-   */
-  template<typename TangentDerived>
-  static auto dl_expinv(const Eigen::MatrixBase<TangentDerived> & t)
+  template<typename Derived>
+  static auto dl_expinv(const Eigen::MatrixBase<Derived> & t)
   {
     return (-ad(t) + dr_expinv(t)).eval();
   }
@@ -445,8 +409,9 @@ public:
   /**
    * @brief Group exponential
    */
-  template<typename TangentDerived>
-  static Group exp(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static Group exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     Group ret;
     static_for<sizeof...(_Gs)>(
@@ -465,8 +430,9 @@ public:
   /**
    * @brief Algebra adjoint
    */
-  template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     TangentMap ret;
     ret.setZero();
@@ -487,8 +453,9 @@ public:
   /**
    * @brief Algebra hat
    */
-  template<typename TangentDerived>
-  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     MatrixGroup ret;
     ret.setZero();
@@ -513,8 +480,9 @@ public:
   /**
    * @brief Algebra vee
    */
-  template<typename AlgebraDerived>
-  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & A)
+  template<typename Derived>
+  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
+  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
     Tangent ret;
     static_for<sizeof...(_Gs)>(
@@ -538,8 +506,9 @@ public:
   /**
    * @brief Right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     TangentMap ret;
     ret.setZero();
@@ -560,8 +529,9 @@ public:
   /**
    * @brief Inverse of the right jacobian of the exponential map
    */
-  template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
+  template<typename Derived>
+  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     TangentMap ret;
     ret.setZero();
@@ -586,13 +556,15 @@ struct map_trait<BundleBase<Scalar, Storage, Gs...>>
 {
   using G = BundleBase<Scalar, Storage, Gs...>;
   using type = BundleBase<Scalar, MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
-  using const_type = BundleBase<Scalar, const MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
+  using const_type = BundleBase<Scalar, const MappedStorage<typename G::Scalar, G::lie_size>,
+      Gs ...>;
 };
 
 template<typename _Scalar, template<typename> typename ... _Gs>
 using Bundle = BundleBase<
   _Scalar,
-  DefaultStorage<_Scalar, iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value>,
+  DefaultStorage<_Scalar,
+  iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value>,
   _Gs...
 >;
 
