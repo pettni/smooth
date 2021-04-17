@@ -36,11 +36,19 @@ TEST(Bundle, Static)
   static_assert(std::is_same_v<bundle_t::PartType<3>, SO3d>);
 }
 
+template<typename Scalar>
+using E3 = Eigen::Matrix<Scalar, 3, 1>;
+
+
 TEST(Bundle, Construct)
 {
   std::default_random_engine rng(5);
-  using mybundle = Bundle<double, DefaultStorage<double, 6>, SO2, SO3>;
+  using mybundle = Bundle<double, DefaultStorage<double, 9>, SO2, SO3, E3>;
   mybundle b;
   b.setIdentity();
   b.setRandom(rng);
+
+  b.part<2>() = Eigen::Vector3d(1, 2, 3);
+
+  std::cout << b.matrix_group() << std::endl;
 }

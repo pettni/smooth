@@ -24,15 +24,15 @@ namespace smooth
  * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
  * Tangent: -pi < wx, wy, wz <= pi
  */
-template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 4>>
-requires StorageLike<_Storage, _Scalar, 4>
+template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 4>>
+requires(_Storage::SizeAtCompileTime == 4 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
 class SO3 : public LieGroupBase<SO3<_Scalar, _Storage>, 4>
 {
 private:
   _Storage s_;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  template<typename OtherScalar, typename OS>
+  template<typename OtherScalar, StorageLike OS>
   requires std::is_same_v<_Scalar, OtherScalar>
   friend class SO3;
 
@@ -78,8 +78,7 @@ public:
   /**
    * @brief Copy constructor from other storage types
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   SO3(const SO3<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
@@ -104,8 +103,7 @@ public:
   /**
    * @brief Copy assignment from other SO3
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   SO3 & operator=(const SO3<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
@@ -131,33 +129,27 @@ public:
    *
    * Warning: if the quaternion is modified through this function
    * the user must ensure the new value is a unit quaternion.
-   *
-   * Only available for ordered storage
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> quat()
-  requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
+  requires ModifiableStorageLike<Storage>
   {
     return Eigen::Map<Eigen::Quaternion<Scalar>>(s_.data());
   }
 
   /**
    * @brief Access as Eigen quaternion by const Map
-   *
-   * Only available for ordered storage
    */
   Eigen::Map<const Eigen::Quaternion<Scalar>> quat() const
-  requires OrderedStorageLike<Storage, Scalar, lie_size>
+  requires MappableStorageLike<Storage>
   {
     return Eigen::Map<const Eigen::Quaternion<Scalar>>(s_.data());
   }
 
   /**
-   * @brief Access as Eigen quaternion by copy
-   *
-   * Only for non-ordered storage (for ordered storage use map versions)
+   * @brief Return a quaternion by copy for constant storage
    */
   Eigen::Quaternion<Scalar> quat() const
-  requires UnorderedStorageLike<Storage, Scalar, lie_size>
+  requires(!MappableStorageLike<Storage>)
   {
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
   }
@@ -168,11 +160,14 @@ private:
    */
   void normalize()
   {
-    Scalar mul = Scalar(1) / LieGroupBase<SO3<Scalar, Storage>, lie_size>::coeffs_ordered().norm();
+    Scalar mul = Scalar(1) /
+      std::sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2] + s_[3] * s_[3]);
     if (s_[3] < 0) {
       mul *= Scalar(-1);
     }
-    static_for<lie_size>([&](auto i) {s_[i] *= mul;});
+    if (std::abs(mul - Scalar(1)) > eps<Scalar>) {
+      static_for<lie_size>([&](auto i) {s_[i] *= mul;});
+    }
   }
 
   // REQUIRED GROUP API
@@ -181,7 +176,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, lie_size>
+  void setIdentity() requires ModifiableStorageLike<Storage>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
   }
@@ -191,7 +186,7 @@ public:
    */
   template<typename RNG>
   void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage, Scalar, lie_size>&& std::is_floating_point_v<Scalar>
+  requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
   {
     const Scalar u1 = filler<Scalar>(rng, 0);
     const Scalar u2 = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
@@ -227,7 +222,7 @@ public:
   /**
    * @brief Group composition
    */
-  template<typename OS>
+  template<StorageLike OS>
   Group operator*(const SO3<Scalar, OS> & r) const
   {
     return Group(quat() * r.quat());
@@ -272,42 +267,42 @@ public:
    * Valid arguments are (-pi, pi]
    */
   template<typename TangentDerived>
-  static Group exp(const Eigen::MatrixBase<TangentDerived> & t)
+  static Group exp(const Eigen::MatrixBase<TangentDerived> & a)
   {
     using std::cos, std::sin;
 
-    const Scalar th = t.norm();
+    const Scalar th = a.norm();
     const Scalar cth = cos(th / 2);
 
     if (th < eps<Scalar>) {
       // small-angle approximation sin(th) / th = 1 - th^2/2
       const Scalar app = 1 - th * th;
-      return Eigen::Quaternion<Scalar>(cth, t.x() * app, t.y() * app, t.z() * app);
+      return Eigen::Quaternion<Scalar>(cth, a.x() * app, a.y() * app, a.z() * app);
     }
 
     const Scalar sth_over_th = sin(th / 2) / th;
-    return Group(t.x() * sth_over_th, t.y() * sth_over_th, t.z() * sth_over_th, cth);
+    return Group(a.x() * sth_over_th, a.y() * sth_over_th, a.z() * sth_over_th, cth);
   }
 
   /**
    * @brief Algebra adjoint
    */
   template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
   {
-    return hat(t);
+    return hat(a);
   }
 
   /**
    * @brief Algebra hat
    */
   template<typename TangentDerived>
-  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & t)
+  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & a)
   {
     return (MatrixGroup() <<
-           Scalar(0), -t.z(), t.y(),
-           t.z(), Scalar(0), -t.x(),
-           -t.y(), t.x(), Scalar(0)
+           Scalar(0), -a.z(), a.y(),
+           a.z(), Scalar(0), -a.x(),
+           -a.y(), a.x(), Scalar(0)
     ).finished();
   }
 
@@ -315,19 +310,19 @@ public:
    * @brief Algebra vee
    */
   template<typename AlgebraDerived>
-  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & a)
+  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & A)
   {
-    return Tangent(a(2, 1) - a(1, 2), a(0, 2) - a(2, 0), a(1, 0) - a(0, 1)) / Scalar(2);
+    return Tangent(A(2, 1) - A(1, 2), A(0, 2) - A(2, 0), A(1, 0) - A(0, 1)) / Scalar(2);
   }
 
   /**
    * @brief Right jacobian of the exponential map
    */
   template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
   {
     using std::sqrt, std::sin, std::cos;
-    const Scalar th2 = t.squaredNorm();
+    const Scalar th2 = a.squaredNorm();
     const Scalar th = sqrt(th2);
 
     if (th < eps<Scalar>) {
@@ -335,7 +330,7 @@ public:
       return TangentMap::Identity();
     }
 
-    const TangentMap ad = SO3<Scalar>::ad(t);
+    const TangentMap ad = SO3<Scalar>::ad(a);
 
     return TangentMap::Identity() -
            (Scalar(1) - cos(th)) / th2 * ad +
@@ -346,12 +341,12 @@ public:
    * @brief Inverse of the right jacobian of the exponential map
    */
   template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
   {
     using std::sqrt, std::sin, std::cos;
-    const Scalar th2 = t.squaredNorm();
+    const Scalar th2 = a.squaredNorm();
     const Scalar th = sqrt(th2);
-    const TangentMap ad = SO3<Scalar>::ad(t);
+    const TangentMap ad = SO3<Scalar>::ad(a);
 
     if (th < eps<Scalar>) {
       // TODO: small angle approximation

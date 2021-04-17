@@ -25,15 +25,15 @@ namespace smooth
  * Group:   qz * qz + qw * qw = 1
  * Tangent: -pi < wz <= pi
  */
-template<typename _Scalar, typename _Storage = DefaultStorage<_Scalar, 4>>
-requires StorageLike<_Storage, _Scalar, 4>
+template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 4>>
+requires(_Storage::SizeAtCompileTime == 4 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
 class SE2 : public LieGroupBase<SE2<_Scalar, _Storage>, 4>
 {
 private:
   _Storage s_;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  template<typename OtherScalar, typename OS>
+  template<typename OtherScalar, StorageLike OS>
   requires std::is_same_v<_Scalar, OtherScalar>
   friend class SE2;
 
@@ -70,8 +70,7 @@ public:
   /**
    * @brief Copy constructor from other storage types
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   SE2(const SE2<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
@@ -80,24 +79,22 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  template<typename T>
-  requires std::is_constructible_v<Storage, T *>
-  explicit SE2(T * ptr)
+  explicit SE2(Scalar * ptr)
+  requires std::is_constructible_v<Storage, Scalar *>
   : s_(ptr) {}
 
   /**
    * @brief Forwarding constructor to storage for const map types
    */
-  template<typename T>
-  requires std::is_constructible_v<Storage, const T *>
-  explicit SE2(const T * ptr)
+  explicit SE2(const Scalar * ptr)
+  requires std::is_constructible_v<Storage, const Scalar *>
   : s_(ptr) {}
 
   /**
    * @brief Copy assignment from other SE2
    */
   template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  requires StorageLike<OS>
   SE2 & operator=(const SE2<Scalar, OS> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
@@ -114,15 +111,15 @@ public:
   {
     s_[0] = translation(0);
     s_[1] = translation(1);
-    s_[2] = so2.coeffs_ordered()[0];
-    s_[3] = so2.coeffs_ordered()[1];
+    s_[2] = so2.coeffs()[0];
+    s_[3] = so2.coeffs()[1];
   }
 
   /**
    * @brief Access const SO2 part
    */
   ConstMap<SO2<Scalar>> so2() const
-  requires OrderedStorageLike<Storage, Scalar, lie_size>
+  requires ModifiableStorageLike<Storage>
   {
     return ConstMap<SO2<Scalar>>(s_.data() + 2);
   }
@@ -131,7 +128,7 @@ public:
    * @brief Access SO2 part
    */
   Map<SO2<Scalar>> so2()
-  requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
+  requires ModifiableStorageLike<Storage>
   {
     return Map<SO2<Scalar>>(s_.data() + 2);
   }
@@ -140,7 +137,7 @@ public:
    * @brief Access SO2 part by copy
    */
   SO2<Scalar> so2() const
-  requires UnorderedStorageLike<Storage, Scalar, lie_size>
+  requires ConstStorageLike<Storage>
   {
     return SO2<Scalar>(s_[2], s_[3]);
   }
@@ -149,7 +146,7 @@ public:
    * @brief Access const E2 part
    */
   Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>> translation() const
-  requires OrderedStorageLike<Storage, Scalar, lie_size>
+  requires ModifiableStorageLike<Storage>
   {
     return Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>>(s_.data());
   }
@@ -158,7 +155,7 @@ public:
    * @brief Access E2 part
    */
   Eigen::Map<Eigen::Matrix<Scalar, 2, 1>> translation()
-  requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
+  requires ModifiableStorageLike<Storage>
   {
     return Eigen::Map<Eigen::Matrix<Scalar, 2, 1>>(s_.data());
   }
@@ -167,7 +164,7 @@ public:
    * @brief Access E2 part by copy
    */
   Eigen::Matrix<Scalar, 2, 1> translation() const
-  requires UnorderedStorageLike<Storage, Scalar, lie_size>
+  requires ConstStorageLike<Storage>
   {
     return Eigen::Matrix<Scalar, 2, 1>(s_[0], s_[1]);
   }
@@ -177,7 +174,7 @@ public:
   /**
    * @brief Set to identity element
    */
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, lie_size>
+  void setIdentity() requires ModifiableStorageLike<Storage>
   {
     s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
   }
@@ -187,7 +184,7 @@ public:
    */
   template<typename RNG>
   void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage, Scalar, lie_size>&& std::is_floating_point_v<Scalar>
+  requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
   {
     const Scalar x = filler<Scalar>(rng, 0);
     const Scalar y = filler<Scalar>(rng, 0);
@@ -285,11 +282,11 @@ public:
    * @brief Group exponential
    */
   template<typename TangentDerived>
-  static Group exp(const Eigen::MatrixBase<TangentDerived> & t)
+  static Group exp(const Eigen::MatrixBase<TangentDerived> & a)
   {
     using std::abs, std::cos, std::sin;
 
-    const Scalar th = t.z();
+    const Scalar th = a.z();
 
     Eigen::Matrix<Scalar, 2, 2> S;
     if (abs(th) < eps<Scalar>) {
@@ -305,8 +302,8 @@ public:
     }
 
     return Group(
-      SO2<Scalar>::exp(t.template tail<1>()),
-      S * t.template head<2>()
+      SO2<Scalar>::exp(a.template tail<1>()),
+      S * a.template head<2>()
     );
   }
 
@@ -314,13 +311,13 @@ public:
    * @brief Algebra adjoint
    */
   template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
   {
     TangentMap ret;
     ret.setZero();
-    ret.template topLeftCorner<2, 2>() = SO2<Scalar>::hat(t.template tail<1>());
-    ret(0, 2) = t.y();
-    ret(1, 2) = -t.x();
+    ret.template topLeftCorner<2, 2>() = SO2<Scalar>::hat(a.template tail<1>());
+    ret(0, 2) = a.y();
+    ret(1, 2) = -a.x();
     return ret;
   }
 
@@ -328,12 +325,12 @@ public:
    * @brief Algebra hat
    */
   template<typename TangentDerived>
-  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & t)
+  static MatrixGroup hat(const Eigen::MatrixBase<TangentDerived> & a)
   {
     MatrixGroup ret;
     ret.setZero();
-    ret.template topLeftCorner<2, 2>() = SO2<Scalar>::hat(t.template tail<1>());
-    ret.template topRightCorner<2, 1>() = t.template head<2>();
+    ret.template topLeftCorner<2, 2>() = SO2<Scalar>::hat(a.template tail<1>());
+    ret.template topRightCorner<2, 1>() = a.template head<2>();
     return ret;
   }
 
@@ -341,11 +338,11 @@ public:
    * @brief Algebra vee
    */
   template<typename AlgebraDerived>
-  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & a)
+  static Tangent vee(const Eigen::MatrixBase<AlgebraDerived> & A)
   {
     Tangent t;
-    t.template tail<1>() = SO2<Scalar>::vee(a.template topLeftCorner<2, 2>());
-    t.template head<2>() = a.template topRightCorner<2, 1>();
+    t.template tail<1>() = SO2<Scalar>::vee(A.template topLeftCorner<2, 2>());
+    t.template head<2>() = A.template topRightCorner<2, 1>();
     return t;
   }
 
@@ -353,16 +350,16 @@ public:
    * @brief Right jacobian of the exponential map
    */
   template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
   {
     using std::abs, std::sqrt, std::sin, std::cos;
-    const Scalar th = t.z();
+    const Scalar th = a.z();
     const Scalar th2 = th * th;
     if (abs(th) < eps<Scalar>) {
       // TODO: small angle approximation
       return TangentMap::Identity();
     }
-    const TangentMap ad = SE2<Scalar>::ad(t);
+    const TangentMap ad = SE2<Scalar>::ad(a);
     return TangentMap::Identity() -
            (Scalar(1) - cos(th)) / th2 * ad +
            (th - sin(th)) / (th2 * th) * ad * ad;
@@ -372,12 +369,12 @@ public:
    * @brief Inverse of the right jacobian of the exponential map
    */
   template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & t)
+  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
   {
     using std::abs, std::sqrt, std::sin, std::cos;
-    const Scalar th = t.z();
+    const Scalar th = a.z();
     const Scalar th2 = th * th;
-    const TangentMap ad = SE2<Scalar>::ad(t);
+    const TangentMap ad = SE2<Scalar>::ad(a);
     if (abs(th) < eps<Scalar>) {
       // TODO: small angle approximation
       return TangentMap::Identity() + ad / 2;

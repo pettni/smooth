@@ -3,122 +3,66 @@
 
 #include "concepts.hpp"
 #include "common.hpp"
-#include "lie_group_base.hpp"
+#include "storage.hpp"
+
 
 namespace smooth
 {
 
-template<typename>
-struct iseq_sum {};
+template<typename T>
+struct lie_info;
 
-template<std::size_t ... _Idx>
-struct iseq_sum<std::index_sequence<_Idx...>>
+template<LieGroupLike G>
+struct lie_info<G>
 {
-  static constexpr std::size_t value = (_Idx + ... + 0);
+  static constexpr uint32_t lie_size = G::lie_size;
+  static constexpr uint32_t lie_dof = G::lie_dof;
+  static constexpr uint32_t lie_dim = G::lie_dim;
+  static constexpr uint32_t lie_actdim = G::lie_actdim;
+};
+
+template<EnLike G>
+struct lie_info<G>
+{
+  static constexpr uint32_t lie_size = G::SizeAtCompileTime;
+  static constexpr uint32_t lie_dof = G::SizeAtCompileTime;
+  static constexpr uint32_t lie_dim = G::SizeAtCompileTime + 1;
+  static constexpr uint32_t lie_actdim = G::SizeAtCompileTime;
 };
 
 
-template<std::size_t, typename>
-struct iseq_el {};
-
-template<std::size_t _Beg, std::size_t ... _Idx>
-struct iseq_el<0, std::index_sequence<_Beg, _Idx...>>
-{
-  static constexpr std::size_t value = _Beg;
-};
-template<std::size_t _I, std::size_t _Beg, std::size_t ... _Idx>
-struct iseq_el<_I, std::index_sequence<_Beg, _Idx...>>
-  : public iseq_el<_I - 1, std::index_sequence<_Idx...>>
-{};
-
-template<std::size_t _I, typename _Seq>
-static constexpr std::size_t iseq_el_v = iseq_el<_I, _Seq>::value;
-
-
-template<typename>
-struct iseq_len {};
-
-template<std::size_t ... _Idx>
-struct iseq_len<std::index_sequence<_Idx...>>
-{
-  static constexpr std::size_t value = sizeof...(_Idx);
-};
-
-/**
- * @brief prefix-sum an intseq
- */
-template<typename _Collected, typename _Remaining, std::size_t Sum>
-struct iseq_psum_impl;
-
-template<std::size_t... _Cur, std::size_t _Sum>
-struct iseq_psum_impl<std::index_sequence<_Cur...>, std::index_sequence<>, _Sum>
-{
-  using type = std::index_sequence<_Cur...>;
-};
-
-template<std::size_t _First, std::size_t _Sum, std::size_t... _Cur, std::size_t... _Rem>
-struct iseq_psum_impl<std::index_sequence<_Cur...>, std::index_sequence<_First, _Rem...>, _Sum>
-  : public iseq_psum_impl<std::index_sequence<_Cur..., _Sum>, std::index_sequence<_Rem...>,
-    _Sum + _First>
-{};
-
-template<typename _Seq>
-using iseq_psum = iseq_psum_impl<std::index_sequence<>, _Seq, 0>;
-
-
-template<LieGroupLike ... _Gs>
-struct bundle_traits
-{
-  using lie_sizes = std::index_sequence<_Gs::lie_size ...>;
-  using lie_dofs = std::index_sequence<_Gs::lie_dof ...>;
-  using lie_dims = std::index_sequence<_Gs::lie_dim ...>;
-  using lie_actdims = std::index_sequence<_Gs::lie_actdim ...>;
-
-  static constexpr std::size_t lie_size = iseq_sum<lie_sizes>::value;
-  static constexpr std::size_t lie_dof = iseq_sum<lie_dofs>::value;
-  static constexpr std::size_t lie_dim = iseq_sum<lie_dims>::value;
-  static constexpr std::size_t lie_actdim = iseq_sum<lie_actdims>::value;
-
-  using lie_sizes_psum = typename iseq_psum<lie_sizes>::type;
-  using lie_dofs_psum = typename iseq_psum<lie_dofs>::type;
-  using lie_dims_psum = typename iseq_psum<lie_dims>::type;
-  using lie_actdims_psum = typename iseq_psum<lie_actdims>::type;
-};
-
-
-template<
-  typename _Scalar,
-  typename _Storage,
-  template<typename> typename ... _Gs
->
-requires StorageLike<_Storage, _Scalar, bundle_traits<_Gs<_Scalar>...>::lie_size>
-struct Bundle
+template<typename _Scalar, MappableStorageLike _Storage, template<typename> typename ... _Gs>
+requires(
+  ((LieGroupLike<_Gs<_Scalar>>|| EnLike<_Gs<_Scalar>>) && ... && true) &&
+  (_Storage::SizeAtCompileTime ==
+  iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value) &&
+  std::is_same_v<typename _Storage::Scalar, _Scalar>
+)
+class Bundle
 {
 private:
   _Storage s_;
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-  template<typename OtherScalar, typename OS, template<typename> typename ... Gs>
+  template<typename OtherScalar, MappableStorageLike OS, template<typename> typename ... Gs>
   requires std::is_same_v<_Scalar, OtherScalar>
   friend class Bundle;
 
-  friend class LieGroupBase<Bundle<_Scalar, _Storage, _Gs...>,
-      bundle_traits<_Gs<_Scalar>...>::lie_size>;
+  using lie_sizes = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>;
+  using lie_dofs = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dof ...>;
+  using lie_dims = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dim ...>;
+  using lie_actdims = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_actdim ...>;
 
-  using lie_sizes = bundle_traits<_Gs<_Scalar>...>::lie_sizes;
-  using lie_dofs = bundle_traits<_Gs<_Scalar>...>::lie_dofs;
-  using lie_dims = bundle_traits<_Gs<_Scalar>...>::lie_dims;
-  using lie_actdims = bundle_traits<_Gs<_Scalar>...>::lie_actdims;
-  using lie_sizes_psum = bundle_traits<_Gs<_Scalar>...>::lie_sizes_psum;
-  using lie_dofs_psum = bundle_traits<_Gs<_Scalar>...>::lie_dofs_psum;
-  using lie_dims_psum = bundle_traits<_Gs<_Scalar>...>::lie_dims_psum;
-  using lie_actdims_psum = bundle_traits<_Gs<_Scalar>...>::lie_actdims_psum;
+  using lie_sizes_psum = typename iseq_psum<lie_sizes>::type;
+  using lie_dofs_psum = typename iseq_psum<lie_dofs>::type;
+  using lie_dims_psum = typename iseq_psum<lie_dims>::type;
+  using lie_actdims_psum = typename iseq_psum<lie_actdims>::type;
 
 public:
-  static constexpr uint32_t lie_size = bundle_traits<_Gs<_Scalar>...>::lie_size;
-  static constexpr uint32_t lie_dof = bundle_traits<_Gs<_Scalar>...>::lie_dof;
-  static constexpr uint32_t lie_dim = bundle_traits<_Gs<_Scalar>...>::lie_dim;
-  static constexpr uint32_t lie_actdim = bundle_traits<_Gs<_Scalar>...>::lie_actdim;
+  static constexpr uint32_t lie_size = iseq_sum<lie_sizes>::value;
+  static constexpr uint32_t lie_dof = iseq_sum<lie_dofs>::value;
+  static constexpr uint32_t lie_dim = iseq_sum<lie_dims>::value;
+  static constexpr uint32_t lie_actdim = iseq_sum<lie_actdims>::value;
 
   using Scalar = _Scalar;
   using Storage = _Storage;
@@ -129,7 +73,7 @@ public:
   using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
   using MatrixGroup = Eigen::Matrix<Scalar, lie_dim, lie_dim>;
 
-  // Bundle
+  // BUNDLE-SPECIFIC TYPES
 
   template<std::size_t Idx>
   using PartType = std::tuple_element_t<Idx, std::tuple<_Gs<_Scalar>...>>;
@@ -146,11 +90,10 @@ public:
   /**
    * @brief Copy constructor from other storage types
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   Bundle(const Bundle<Scalar, OS, _Gs...> & o)
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
+    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
   }
 
   /**
@@ -170,8 +113,7 @@ public:
   /**
    * @brief Copy assignment from other Bundle
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   Bundle & operator=(const Bundle<Scalar, OS, _Gs...> & o)
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
@@ -188,27 +130,12 @@ public:
 
   // }
 
-  // Put these here for now since base doesn't support
-  static Group Identity()
-  {
-    Group ret;
-    ret.setIdentity();
-    return ret;
-  }
-
-  template<typename RNG>
-  static Group Random(RNG & rng)
-  {
-    Group ret;
-    ret.setRandom(rng);
-    return ret;
-  }
-
   /**
    * @brief Access parts via map
    */
   template<std::size_t I>
   Map<PartType<I>> part()
+  requires ModifiableStorageLike<Storage>
   {
     return Map<PartType<I>>(s_.data() + iseq_el_v<I, lie_sizes_psum>);
   }
@@ -224,24 +151,21 @@ public:
 
   // LIE GROUP BASE API
 
-  void setIdentity() requires ModifiableStorageLike<Storage, Scalar, lie_size>
+  static Group Identity()
   {
-    static_for<sizeof...(_Gs)>(
-      [&](auto i) {
-        static constexpr std::size_t lie_beg = iseq_el_v<i, lie_sizes_psum>;
-        Map<PartType<i>>(s_.data() + lie_beg).setIdentity();
-      });
+    Group ret;
+    ret.setIdentity();
+    return ret;
   }
 
   template<typename RNG>
-  void setRandom(RNG & rng) requires ModifiableStorageLike<Storage, Scalar, lie_size>
+  static Group Random(RNG & rng)
   {
-    static_for<sizeof...(_Gs)>(
-      [&](auto i) {
-        static constexpr std::size_t lie_beg = iseq_el_v<i, lie_sizes_psum>;
-        Map<PartType<i>>(s_.data() + lie_beg).setRandom(rng);
-      });
+    Group ret;
+    ret.setRandom(rng);
+    return ret;
   }
+
 
   template<typename NewScalar>
   Bundle<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> cast() const
@@ -290,20 +214,16 @@ public:
 
   /**
    * @brief Access raw const data pointer
-   *
-   * Only available for ordered storage
    */
-  const Scalar * data() const requires OrderedStorageLike<Storage, Scalar, lie_size>
+  const Scalar * data() const requires MappableStorageLike<Storage>
   {
     return coeffs().data();
   }
 
   /**
    * @brief Access raw data pointer
-   *
-   * Only available for ordered modifiable storage
    */
-  Scalar * data() requires OrderedModifiableStorageLike<Storage, Scalar, lie_size>
+  Scalar * data() requires ModifiableStorageLike<Storage>
   {
     return coeffs().data();
   }
@@ -311,9 +231,8 @@ public:
   /**
    * @brief Overload operator*= for inplace composition
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
-  Bundle &operator*=(const Bundle<Scalar, OS, _Gs...> & o)
+  template<StorageLike OS>
+  Bundle & operator*=(const Bundle<Scalar, OS, _Gs...> & o)
   {
     *this = *this * o;
     return *this;
@@ -346,8 +265,7 @@ public:
    *
    * g1 - g2 := (g2.inverse() * g1).log()
    */
-  template<typename OS>
-  requires StorageLike<OS, Scalar, lie_size>
+  template<StorageLike OS>
   auto operator-(const Bundle<Scalar, OS, _Gs...> & o) const
   {
     return (o.inverse() * *this).log();
@@ -373,6 +291,31 @@ public:
 
   // REQUIRED API
 
+  void setIdentity() requires ModifiableStorageLike<Storage>
+  {
+    static_for<sizeof...(_Gs)>(
+      [&](auto i) {
+        if constexpr (EnLike<PartType<i>>) {
+          part<i>().setZero();
+        } else {
+          part<i>().setIdentity();
+        }
+      });
+  }
+
+  template<typename RNG>
+  void setRandom(RNG & rng) requires ModifiableStorageLike<Storage>
+  {
+    static_for<sizeof...(_Gs)>(
+      [&](auto i) {
+        if constexpr (EnLike<PartType<i>>) {
+          part<i>() = PartType<i>::NullaryExpr([&rng](int) {return u_distr<Scalar>(rng);});
+        } else {
+          part<i>().setRandom(rng);
+        }
+      });
+  }
+
   /**
    * @brief Matrix lie group element
    */
@@ -382,11 +325,15 @@ public:
     ret.setZero();
     static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t lie_beg = iseq_el_v<i, lie_sizes_psum>;
         static constexpr std::size_t dim_beg = iseq_el_v<i, lie_dims_psum>;
         static constexpr std::size_t dim_len = iseq_el_v<i, lie_dims>;
-        ret.template block<dim_len, dim_len>(dim_beg, dim_beg) =
-        ConstMap<PartType<i>>(s_.data() + lie_beg).matrix_group();
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template block<dim_len, dim_len>(dim_beg, dim_beg).setIdentity();
+          ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
+          .template topRightCorner<PartType<i>::SizeAtCompileTime, 1>() = part<i>();
+        } else {
+          ret.template block<dim_len, dim_len>(dim_beg, dim_beg) = part<i>().matrix_group();
+        }
       });
     return ret;
   }
@@ -403,8 +350,13 @@ public:
       [&](auto i) {
         static constexpr std::size_t actdim_beg = iseq_el_v<i, lie_actdims_psum>;
         static constexpr std::size_t actdim_len = iseq_el_v<i, lie_actdims>;
-        ret.template segment<actdim_len>(actdim_beg) =
-        part<i>() * x.template segment<actdim_len>(actdim_beg);
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template segment<actdim_len>(actdim_beg) =
+          part<i>() + x.template segment<actdim_len>(actdim_beg);
+        } else {
+          ret.template segment<actdim_len>(actdim_beg) =
+          part<i>() * x.template segment<actdim_len>(actdim_beg);
+        }
       });
     return ret;
   }
@@ -418,7 +370,11 @@ public:
     Group ret;
     static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        ret.template part<i>() = part<i>() * r.template part<i>();
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template part<i>() = part<i>() + r.template part<i>();
+        } else {
+          ret.template part<i>() = part<i>() * r.template part<i>();
+        }
       });
     return ret;
   }
@@ -431,7 +387,11 @@ public:
     Group ret;
     static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        ret.template part<i>() = part<i>().inverse();
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template part<i>() = -part<i>();
+        } else {
+          ret.template part<i>() = part<i>().inverse();
+        }
       });
     return ret;
   }
@@ -446,10 +406,13 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        ret.template segment<dof_len>(dof_beg) = part<i>().log();
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template segment<dof_len>(dof_beg) = part<i>();
+        } else {
+          ret.template segment<dof_len>(dof_beg) = part<i>().log();
+        }
       });
     return ret;
-
   }
 
   /**
@@ -463,7 +426,11 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg) = part<i>().Ad();
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
+        } else {
+          ret.template block<dof_len, dof_len>(dof_beg, dof_beg) = part<i>().Ad();
+        }
       });
     return ret;
   }
@@ -481,7 +448,11 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        ret.template part<i>() = PartType<i>::exp(a.template segment<dof_len>(dof_beg));
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template part<i>() = a.template segment<dof_len>(dof_beg);
+        } else {
+          ret.template part<i>() = PartType<i>::exp(a.template segment<dof_len>(dof_beg));
+        }
       });
     return ret;
   }
@@ -498,8 +469,12 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg)
-          = PartType<i>::ad(a.template segment<dof_len>(dof_beg));
+        if constexpr (EnLike<PartType<i>>) {
+          // ad is zero
+        } else {
+          ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
+          PartType<i>::ad(a.template segment<dof_len>(dof_beg));
+        }
       });
     return ret;
   }
@@ -518,8 +493,14 @@ public:
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
         static constexpr std::size_t dim_beg = iseq_el_v<i, lie_dims_psum>;
         static constexpr std::size_t dim_len = iseq_el_v<i, lie_dims>;
-        ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
-          = PartType<i>::hat(a.template segment<dof_len>(dof_beg));
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
+          .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>() =
+          a.template segment<dof_len>(dof_beg);
+        } else {
+          ret.template block<dim_len, dim_len>(dim_beg, dim_beg) =
+          PartType<i>::hat(a.template segment<dof_len>(dof_beg));
+        }
       });
     return ret;
   }
@@ -537,10 +518,16 @@ public:
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
         static constexpr std::size_t dim_beg = iseq_el_v<i, lie_dims_psum>;
         static constexpr std::size_t dim_len = iseq_el_v<i, lie_dims>;
-        ret.template segment<dof_len>(dof_beg) = PartType<i>::vee(A.template block<dim_len, dim_len>(dim_beg, dim_beg));
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template segment<dof_len>(dof_beg) =
+          A.template block<dim_len, dim_len>(dim_beg, dim_beg)
+          .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>();
+        } else {
+          ret.template segment<dof_len>(dof_beg) =
+          PartType<i>::vee(A.template block<dim_len, dim_len>(dim_beg, dim_beg));
+        }
       });
     return ret;
-
   }
 
   /**
@@ -555,8 +542,12 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg)
-          = PartType<i>::dr_exp(a.template segment<dof_len>(dof_beg));
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
+        } else {
+          ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
+          PartType<i>::dr_exp(a.template segment<dof_len>(dof_beg));
+        }
       });
     return ret;
   }
@@ -573,8 +564,12 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg)
-          = PartType<i>::dr_expinv(a.template segment<dof_len>(dof_beg));
+        if constexpr (EnLike<PartType<i>>) {
+          ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
+        } else {
+          ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
+          PartType<i>::dr_expinv(a.template segment<dof_len>(dof_beg));
+        }
       });
     return ret;
   }
@@ -585,8 +580,8 @@ template<typename Scalar, typename Storage, template<typename> typename ... Gs>
 struct map_trait<Bundle<Scalar, Storage, Gs...>>
 {
   using G = Bundle<Scalar, Storage, Gs...>;
-  using type = Bundle<Scalar, Eigen::Map<DefaultStorage<typename G::Scalar, G::lie_size>>, Gs ...>;
-  using const_type = Bundle<Scalar, Eigen::Map<const DefaultStorage<typename G::Scalar, G::lie_size>>, Gs...>;
+  using type = Bundle<Scalar, MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
+  using const_type = Bundle<Scalar, const MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
 };
 
 }  // namespace smooth
