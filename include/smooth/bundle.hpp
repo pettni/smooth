@@ -123,12 +123,18 @@ public:
   // BUNDLE-SPECIFIC API
 
   /**
-   * @brief TODO: Construct from components
+   * @brief Construct from components
    */
-  // BundleBase(const _Gs<_Scalar> ... &)
-  // {
-
-  // }
+  template<typename ... S>
+  explicit BundleBase(S && ... args)
+  requires (sizeof...(S) == sizeof...(_Gs))
+  && std::conjunction_v<std::is_assignable<_Gs<_Scalar>, S> ...>
+  {
+    static_for<sizeof...(_Gs)>(
+      [&](auto i) {
+        part<i>() = std::get<i>(std::forward_as_tuple(args...));
+      });
+  }
 
   /**
    * @brief Access parts via map
