@@ -247,7 +247,7 @@ public:
 
     Eigen::Matrix<Scalar, 2, 2> Sinv;
 
-    if (abs(th) < eps<Scalar>) {
+    if (abs(th) < Scalar(eps)) {
       // TODO: small angle
       Sinv.setIdentity();
     } else {
@@ -294,7 +294,7 @@ public:
     const Scalar th = a.z();
 
     Eigen::Matrix<Scalar, 2, 2> S;
-    if (abs(th) < eps<Scalar>) {
+    if (abs(th) < Scalar(eps)) {
       S.setIdentity();
       // TODO small angle
     } else {
@@ -364,7 +364,7 @@ public:
     using std::abs, std::sqrt, std::sin, std::cos;
     const Scalar th = a.z();
     const Scalar th2 = th * th;
-    if (abs(th) < eps<Scalar>) {
+    if (abs(th) < Scalar(eps)) {
       // TODO: small angle approximation
       return TangentMap::Identity();
     }
@@ -385,7 +385,7 @@ public:
     const Scalar th = a.z();
     const Scalar th2 = th * th;
     const TangentMap ad = SE2<Scalar>::ad(a);
-    if (abs(th) < eps<Scalar>) {
+    if (abs(th) < Scalar(eps)) {
       // TODO: small angle approximation
       return TangentMap::Identity() + ad / 2;
     }

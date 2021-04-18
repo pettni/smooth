@@ -20,7 +20,7 @@ Lie theory for robotics: manual and library
 - compatability
   - [x] boost odeint: read about algebras
   - [ ] autodiff: tangent derivative of any manifold function
-  - [ ] ceres: local parameterization of any group
+  - [x] ceres: local parameterization of any group
   - [/] map ros msgs as storage type
 - groups
   - [x] so2

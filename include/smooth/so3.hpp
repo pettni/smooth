@@ -154,12 +154,14 @@ private:
   void normalize()
   requires ModifiableStorageLike<Storage>
   {
+    using std::abs, std::sqrt;
+
     Scalar mul = Scalar(1) /
-      std::sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2] + s_[3] * s_[3]);
-    if (s_[3] < 0) {
+      sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2] + s_[3] * s_[3]);
+    if (s_[3] < Scalar(0)) {
       mul *= Scalar(-1);
     }
-    if (std::abs(mul - Scalar(1)) > eps<Scalar>) {
+    if (abs(mul - Scalar(1)) > Scalar(eps)) {
       static_for<lie_size>([&](auto i) {s_[i] *= mul;});
     }
   }
@@ -237,7 +239,7 @@ public:
   {
     using std::atan2, std::sqrt;
     const Scalar xyz_n = sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2]);
-    if (xyz_n < eps<Scalar>) {
+    if (xyz_n < Scalar(eps)) {
       // TODO: small angle approx
       return Tangent::Zero();
     }
@@ -264,18 +266,23 @@ public:
   static Group exp(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
-    using std::cos, std::sin;
+    using std::sqrt, std::cos, std::sin;
 
-    const Scalar th = a.norm();
-    const Scalar cth = cos(th / 2);
+    const Scalar th2 = a.squaredNorm();
 
-    if (th < eps<Scalar>) {
-      // small-angle approximation sin(th) / th = 1 - th^2/2
-      const Scalar app = 1 - th * th;
-      return Eigen::Quaternion<Scalar>(cth, a.x() * app, a.y() * app, a.z() * app);
+    Scalar cth, sth_over_th;
+    if (th2 >= Scalar(eps2)) {
+      // exact formula
+      const Scalar th = sqrt(th2);
+      cth = cos(th / Scalar(2));
+      sth_over_th = sin(th / Scalar(2)) / th;
+    } else {
+      // small-angle approximations:
+      //   cos(th / 2) = 1 - th2 / 8
+      //   sin(th / 2) / th = 1 - th^2 / 48
+      cth = Scalar(1) - th2 / Scalar(8);
+      sth_over_th = Scalar(0.5) - th2 / Scalar(48);
     }
-
-    const Scalar sth_over_th = sin(th / 2) / th;
     return Group(a.x() * sth_over_th, a.y() * sth_over_th, a.z() * sth_over_th, cth);
   }
 
@@ -324,7 +331,7 @@ public:
     const Scalar th2 = a.squaredNorm();
     const Scalar th = sqrt(th2);
 
-    if (th < eps<Scalar>) {
+    if (th < Scalar(eps)) {
       // TODO: small angle approximation
       return TangentMap::Identity();
     }
@@ -348,13 +355,13 @@ public:
     const Scalar th = sqrt(th2);
     const TangentMap ad = SO3<Scalar>::ad(a);
 
-    if (th < eps<Scalar>) {
+    if (th < Scalar(eps)) {
       // TODO: small angle approximation
-      return TangentMap::Identity() + ad / 2;
+      return TangentMap::Identity() + ad / Scalar(2);
     }
 
     return TangentMap::Identity() +
-           ad / 2 +
+           ad / Scalar(2) +
            ( (Scalar(1) / th2) - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th))) * ad * ad;
   }
 };
