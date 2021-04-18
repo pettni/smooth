@@ -6,7 +6,8 @@ Lie theory for robotics: manual and library
 
 ## Book todos
 
-- [ ] reorganize dynamics
+- [x] ceres derivatives
+- [ ] reorganize dynamics: bring in system linearization and Magnus expansion
 - Splines:
   - [ ] Fitting of bsplines
   - [ ] Fitting of cubic splines: with and without given velocity
@@ -31,7 +32,7 @@ Lie theory for robotics: manual and library
   - splines:
     - [ ] evaluate bsplines
     - [ ] fit bsplines
-    - [ ] for cubic splines with and without given velocity
+    - [ ] fit cubic splines with and without given velocity
 - debt:
  - [x] get rid of modifiable unordered storage and coeffs_ordered
     - just don't expose map in if not supported by storage
