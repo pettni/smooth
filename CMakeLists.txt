@@ -127,4 +127,14 @@ if(BUILD_TESTING)
 
   target_link_libraries(${PROJECT_NAME}_tests smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
+
+  find_package(Boost QUIET)
+  if(Boost_FOUD)
+    add_executable(${PROJECT_NAME}_test_odeint test/test_odeint.cpp)
+    target_link_libraries(${PROJECT_NAME}_test_odeint smooth GTest::Main)
+    gtest_discover_tests(${PROJECT_NAME}_test_odeint)
+  else()
+    message(WARNING "Boost not found, disabling odeint test")
+  endif()
+
 endif()
