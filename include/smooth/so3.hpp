@@ -88,18 +88,9 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  template<typename T>
-  requires std::is_constructible_v<Storage, T *>
-  explicit SO3(T * ptr)
-  : s_(ptr) {}
-
-  /**
-   * @brief Forwarding constructor to storage for const map types
-   */
-  template<typename T>
-  requires std::is_constructible_v<Storage, const T *>
-  explicit SO3(const T * ptr)
-  : s_(ptr) {}
+  template<typename S>
+  explicit SO3(S && s) requires std::is_constructible_v<Storage, S>
+  : s_(std::forward<S>(s)) {}
 
   /**
    * @brief Copy assignment from other SO3
@@ -120,7 +111,7 @@ public:
    */
   template<typename Derived>
   SO3(const Eigen::QuaternionBase<Derived> & qin)
-  requires ModifiableStorageLike<Storage> && std::is_same_v<typename Derived::Scalar, Scalar>
+  requires ModifiableStorageLike<Storage>&& std::is_same_v<typename Derived::Scalar, Scalar>
   {
     s_[0] = qin.x(); s_[1] = qin.y(); s_[2] = qin.z(); s_[3] = qin.w();
     normalize();

@@ -77,23 +77,16 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  explicit SE3(Scalar * ptr) requires std::is_constructible_v<Storage, Scalar *>
-  : s_(ptr)
-  {}
-
-  /**
-   * @brief Forwarding constructor to storage for const map types
-   */
-  explicit SE3(const Scalar * ptr) requires std::is_constructible_v<Storage, const Scalar *>
-  : s_(ptr)
-  {}
+  template<typename S>
+  explicit SE3(S && s) requires std::is_constructible_v<Storage, S>
+  : s_(std::forward<S>(s)) {}
 
   /**
    * @brief Copy assignment from other SE3
    */
   template<StorageLike OS>
   SE3 & operator=(const SE3<Scalar, OS> & o)
-  requires ModifiableStorageLike<Storage>
+  // requires ModifiableStorageLike<Storage>
   {
     static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;

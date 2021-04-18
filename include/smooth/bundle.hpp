@@ -100,16 +100,9 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  explicit BundleBase(Scalar * ptr)
-  requires std::is_constructible_v<Storage, Scalar *>
-  : s_(ptr) {}
-
-  /**
-   * @brief Forwarding constructor to storage for const map types
-   */
-  explicit BundleBase(const Scalar * ptr)
-  requires std::is_constructible_v<Storage, const Scalar *>
-  : s_(ptr) {}
+  template<typename S>
+  explicit BundleBase(S && s) requires std::is_constructible_v<Storage, S>
+  : s_(std::forward<S>(s)) {}
 
   /**
    * @brief Copy assignment from other BundleBase

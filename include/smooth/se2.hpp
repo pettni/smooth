@@ -80,9 +80,10 @@ public:
   /**
    * @brief Forwarding constructor to storage for map types
    */
-  explicit SE2(Scalar * ptr)
-  requires std::is_constructible_v<Storage, Scalar *>
-  : s_(ptr) {}
+  template<typename S>
+  explicit SE2(S && s)
+  requires std::is_constructible_v<Storage, S>
+  : s_(std::forward<S>(s)) {}
 
   /**
    * @brief Forwarding constructor to storage for const map types
