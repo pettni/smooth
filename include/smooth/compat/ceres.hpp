@@ -1,0 +1,6 @@
+#ifndef SMOOTH__COMPAT__CERES_HPP_
+#define SMOOTH__COMPAT__CERES_HPP_
+
+
+
+#endif  // SMOOTH__COMPAT__CERES_HPP_

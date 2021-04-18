@@ -1,3 +1,6 @@
+#ifndef SMOOTH__COMPAT__ODEINT_HPP_
+#define SMOOTH__COMPAT__ODEINT_HPP_
+
 #include <boost/numeric/odeint/algebra/operations_dispatcher.hpp>
 
 #include "smooth/concepts.hpp"
@@ -97,12 +100,12 @@ struct lie_operations
 
 }  // namespace smooth
 
-
 // Specialize internal boost trait to use the above operations for Lie
-// group types. Note that boost::numeric::odeint::vector_space_algebra
-// must be specified for the steppers.
+// group types.
 template<::smooth::LieGroupLike G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
   using operations_type = ::smooth::lie_operations;
 };
+
+#endif  // SMOOTH__COMPAT__ODEINT_HPP_
