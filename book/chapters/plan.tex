@@ -17,34 +17,8 @@
 \end{enumerate}
 
 
-\section{Coding: What to build into a library}
+\section{Literature}
 
-Library structure:
-\begin{itemize}
-  \item Tangent vectors are eigen types
-  \item En inherits from Eigen type
-  \item LieGroupBase via CRTP
-  \item Bundle group
-  \item ROS: implement Eigen::Map for ROS messages
-\end{itemize}
-
-Algorithms:
-\begin{itemize}
-  \item B-Splines
-  \item \texttt{boost::odeint} Numerical integration
-  \item Ceres helpers (parameterization)
-  \item System linearization
-\end{itemize}
-
-
-\section{Planned conent}
-
-\textbf{Objective}: Practical knowledge of Lie groups and Lie algebras for
-for robotics engineering. Learn tools Sophus/Manif \& Ceres
-
-\textbf{Prerequisites}: Linear algebra, basic controls, statistics, and optimization, comfortable with C++ programming
-
-\textbf{Literature}:
 \begin{itemize}
   \item BOOKS:
         \begin{itemize}
@@ -74,16 +48,4 @@ for robotics engineering. Learn tools Sophus/Manif \& Ceres
           \item IMU estimation: \cite{hua_implementation_2014, mahony_nonlinear_2008}
           \item Banana distribution: \cite{wheeler_relative_2018}
         \end{itemize}
-\end{itemize}
-
-\textbf{Conventions:}
-\begin{itemize}
-  \item Follow either Sophus or Manif for 1-1 mapping with programming assignments
-\end{itemize}
-
-\textbf{Emphasis throughout the text:}
-\begin{itemize}
-  \item Matrix representation for analysis, compact representation for computation
-  \item Similarity to Rn via exponential map
-  \item Point out what properties that are inherited from group structure, from manifold structure, and from both
 \end{itemize}

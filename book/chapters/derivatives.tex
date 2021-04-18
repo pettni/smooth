@@ -623,47 +623,46 @@ From the chain rule and the above we can also deduce the derivatives of the plus
 
 \section{On Automatic Differentiation}
 
-\subsection{Lie derivatives via automatic differentiation}
-
-Consider a function $f : \M \rightarrow \N$ whose derivative we are interested in. Since autodiff tools are not aware of manifolds we can not directly obtain e.g. $\mathrm{d}^r f_\X$; here we discuss how to obtain on-manifold derivatives by only differentiating Euclidean functions. However, since $\mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} = \mathrm{d}^r f_\X \mathrm{d} \exp_0 = \mathrm{d}^r f_\X$ we can write
+Consider a function $f : \M \rightarrow \N$ whose derivative we are interested in. Since autodiff tools are not aware of manifolds we can not directly obtain e.g. $\mathrm{d}^r f_\X$; here we discuss how to obtain on-manifold derivatives by only differentiating Euclidean functions. Since $\mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} = \mathrm{d}^r f_\X \mathrm{d} \exp_0 = \mathrm{d}^r f_\X$ we can write
 \begin{equation}
   \begin{aligned}
     \mathrm{d}^r f_\X \b = \mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} \b = \left.  \left( f(\X \oplus_r \a)^{-1} \mathrm{D} (f(\X \oplus_r \a))_\a \hat \b  \right)^\vee \right|_{\a = 0} = \left( f(\X)^{-1}  \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0}  f(\X \oplus (t \b)) \right)^\vee.
   \end{aligned}
 \end{equation}
-\todo[inline]{Re-verify this}
 Here the function $t \mapsto f(\X \oplus (t\b))$ maps a scalar to a matrix and can therefore be differentiated using regular tools, after which the expression can be evaluated to obtain $\mathrm{d}^r f_\X \b$. Naturally, if the complete derivative $\mathrm{d}^r f_\X$ is desired it can be obtained by repeating this procedure $n$ times for each basis unit vector.
 
 If $f$ maps to a Euclidean space (i.e. $\N = \mathbb{R}^k$) this further simplifies to
 \begin{equation}
-  \mathrm{d}^r f_\X b = \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0} f(\X \oplus (t \b)), \quad f : \M \rightarrow \mathbb{R}^n.
+  \mathrm{d}^r f_\X b = \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0} f(\X \oplus (t \b)), \quad f : \M \rightarrow \mathbb{R}^n,
 \end{equation}
-
-
-\subsection{Ceres derivatives}
-
-\todo[inline]{This is un-finished}
-
-Consider an example where $L(\a) = G \left( \X \oplus \a \right)$. The letters are chosen so that $L : \clM \rightarrow \mathbb{R}^m$ maps the (local) tangent vector to the output space, and $G : \M \rightarrow \mathbb{R}^m$ maps the (global) group element. Since the solver does not know about the Lie group, autodifferentiation will yield $G'(\X) \in \mathbb{R}^{m \times n_G}$ where $n_G$ is the number of degrees of freedom in the parameterization of $\X$. However, to step along the manifold we need $\mathrm{d}^r G_\X$.
-
-The chain rule gives, since at $\a = 0$ we have $\mathrm{D} (\X \oplus \a)_\a \b = \X \left( \mathrm{d}^r (\X \oplus \a)_\a \b \right)^\wedge = \X (I \b)^\wedge = \X \hat \b$:
+which with some abuse of notation can be written as
 \begin{equation}
-  \left( \mathrm{d}^r L_{\a = 0} \; \b \right)^\wedge = \mathrm{D} L_{\a = 0} \; \b = G'(\X) \; \mathrm{D} (\X \oplus \a)_{\a = 0} \; \b = G'(\X) \; \X \hat \b.
+  \label{eq:rn_autodiff}
+  \mathrm{d}^r f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b).
 \end{equation}
-That is, we can transfer a ``global'' derivative $G'(\X) \in \mathbb{R}^{m \times n_G}$ to the ``local'' tangent space by right-multiplying with the derivative of $\X \oplus \a$ at $\a = 0$, which is a $\mathbb{R}^{n_G \times n}$ matrix.
 
-\begin{example}
-  For the unit quaternions $\Sthree$ we must transfer to the matrix representation:
-  \begin{equation}
-    \left \langle \bq, \hat \b \right \rangle = \left( \hat \bq \hat \b \right)^\vee = (\bR(\bq) \hat \b)^\vee = ((\bR (\bq) \b)^\wedge \bR (\bq))^\vee
-  \end{equation}
-\end{example}
 
-We derive the group-tangent action $\bq \hat \b$ on $\Sthree$:
+\subsection{Ceres Solver Local Parameterizations}
+
+A special case of when numerical derivatives are used is in the nonlinear optimizer Ceres. Being unaware of Lie groups, Ceres considers cost functions that are functions of some parameters, $f(\x)$, and uses automatic differentiation of $f : \mathbb{R}^p \rightarrow \mathbb{R}^k$ with respect to $\x \in \mathbb{R}^p$ to figure out in what direction to move in order to minimize $f$. However, if $\x$ represents the coordinates of a manifold chart, i.e. $\hat \x = \X$ for $\X \in \M$, it is not desirable to directly apply an update in the direction of the gradient since this may lead the resulting point no longer being on the manifold.
+
+Being unaware of the manifold structure, automatic differentiation can only evaluate $\frac{\mathrm{d}}{\mathrm{d}\x} f(\hat \x)$, where we are using the hat and vee maps to denote conversions between elements of a Lie group $\M$ and its parameterization $\cM$ as was done in Chapter \ref{chapter:lie_groups}. Ceres provides an interface for specifying cusom \emph{local parameterizations} that enable on-manifold optimization. In the following we specify how a local parameterization for Lie Group optimization can be constructed.
+
+According to \eqref{eq:rn_autodiff} we can write a tangent space derivative for a Euclidean-valued function
 \begin{equation}
-  \bR \hat \bomega \bu = \bR (\bomega \times \bu) = (\bR \bomega \times \bR \bu) = (\bR \bomega)^\wedge \bR \bu
+  \mathrm{d}^r f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b) = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f \left( \left( \left( \hat \x \oplus \b \right)^\vee \right)^\wedge \right) = \left. \frac{\mathrm{d}}{\mathrm{d} \y} \right|_{\y = \x} f(\hat \y) \; \times \; \left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee.
 \end{equation}
-Thus
-\begin{equation}
-  \bR \hat \bomega = (\bR \bomega)^\wedge \bR
-\end{equation}
+
+Thus, if $\left. \frac{\mathrm{d}}{\mathrm{d} \y} \right|_{\y = \x} f(\hat \y)$ is obtained through automatic differentiation it needs to be right-multiplied by a state-dependent matrix in order to obtain the tangent-space derivative. In Ceres parlance these matrices are called
+\begin{itemize}
+  \item Local derivative: $\mathrm{d}^r f_\X$, a $k \times n$ matrix,
+  \item Global derivative: $\left. \frac{\mathrm{d}}{\mathrm{d} \y} \right|_{\y = \x} f(\hat \y)$, a $k \times p$ matrix,
+  \item Jacobian: $\left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee$, a $p \times n$ matrix
+\end{itemize}
+and it holds that (local derivative) = (global derivative) $\times$ (jacobian). The local parameterization for a Lie group can be specified as follows:
+\begin{itemize}
+  \item Plus operation: $\x \boxplus \b \coloneq \left( \hat \x \oplus \b \right)^\vee$,
+  \item Local dimension: $n = \| T \M \|$ tangent space dimension,
+  \item Global dimension: $p = \| \cM \|$ group parameterization dimension,
+  \item Jacobian: $\left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee$.
+\end{itemize}
