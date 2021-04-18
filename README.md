@@ -17,7 +17,7 @@ Lie theory for robotics: manual and library
 - [x] set up lib structure
 - [x] support different storage types
 - compatability
-  - [ ] boost odeint: read about algebras
+  - [x] boost odeint: read about algebras
   - [ ] autodiff: tangent derivative of any manifold function
   - [ ] ceres: local parameterization of any group
   - [ ] map ros msgs as storage type
