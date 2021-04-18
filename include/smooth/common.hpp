@@ -5,12 +5,11 @@
 
 #include <random>
 
-
 namespace smooth
 {
 
-template<typename Scalar>
-static constexpr Scalar eps = Scalar(1e-9);
+static constexpr double eps = 1e-9;
+static constexpr double eps2 = eps * eps;
 
 // Uniform real distribution does not have an internal state,
 // so we keep one as a global variable

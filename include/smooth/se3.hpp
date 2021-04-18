@@ -175,7 +175,7 @@ private:
 
     Eigen::Matrix<Scalar, 3, 3> Q = Scalar(0.5) * V;
 
-    if (th < eps<Scalar>) {
+    if (th < Scalar(eps)) {
       // small angle approx
       Q += Scalar(1) / Scalar(6) * (W * V + V * W);
     } else {
