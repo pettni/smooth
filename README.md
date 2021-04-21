@@ -29,6 +29,7 @@ Lie theory for robotics: manual and library
   - [x] se3
   - [x] bundle
 - algos:
+  - imu preintegration
   - splines:
     - [ ] evaluate bsplines
     - [ ] fit bsplines

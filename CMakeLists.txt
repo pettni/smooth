@@ -156,4 +156,8 @@ if(BUILD_TESTING)
   else()
     message(WARNING "geometry_msgs not found, disabling ros test")
   endif()
+
+  add_executable(test_bspline test/test_bspline.cpp)
+  target_link_libraries(test_bspline PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_bspline)
 endif()
