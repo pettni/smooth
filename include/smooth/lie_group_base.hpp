@@ -185,4 +185,13 @@ protected:
 
 }  // namespace smooth
 
+template<typename Stream, typename Derived, uint32_t lie_size>
+Stream & operator<<(Stream & s, const smooth::LieGroupBase<Derived, lie_size> & g)
+{
+  for (auto i = 0u; i != lie_size; ++i) {
+    s << g.coeffs()[i] << " ";
+  }
+  return s;
+}
+
 #endif  // SMOOTH__LIE_GROUP_BASE_HPP_

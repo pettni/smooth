@@ -2,6 +2,7 @@
 #define SMOOTH__COMPAT__CERES_HPP_
 
 #include <ceres/autodiff_local_parameterization.h>
+
 #include "smooth/concepts.hpp"
 #include "smooth/storage.hpp"
 
@@ -12,7 +13,8 @@ template<LieGroupLike G>
 struct ParameterizationFunctor
 {
   template<typename Scalar>
-  bool operator()(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const {
+  bool operator()(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const
+  {
     using GScalar = decltype(G().template cast<Scalar>());
 
     smooth::ConstMap<GScalar> mx(x);
@@ -25,7 +27,8 @@ struct ParameterizationFunctor
 };
 
 template<LieGroupLike G>
-class LieGroupParameterization : public ceres::AutoDiffLocalParameterization<ParameterizationFunctor<G>, G::lie_size, G::lie_dof>
+class LieGroupParameterization
+  : public ceres::AutoDiffLocalParameterization<ParameterizationFunctor<G>, G::lie_size, G::lie_dof>
 {};
 
 }  // namespace smooth
