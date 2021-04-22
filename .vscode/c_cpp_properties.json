@@ -4,6 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "${default}",
+                "${workspaceFolder}/build/_deps/matplotplusplus-src/source/",
                 "/usr/include/eigen3"
             ],
             "defines": [],

@@ -563,4 +563,13 @@ using Bundle = BundleBase<
 
 }  // namespace smooth
 
+template<typename Stream, typename Scalar, smooth::StorageLike Storage, template<typename> typename ... Gs>
+Stream & operator<<(Stream & s, const smooth::BundleBase<Scalar, Storage, Gs ...> & g)
+{
+  for (auto i = 0u; i != Storage::SizeAtCompileTime; ++i) {
+    s << g.coeffs()[i] << " ";
+  }
+  return s;
+}
+
 #endif  // SMOOTH__BUNDLE_HPP_

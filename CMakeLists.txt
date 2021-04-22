@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TESTING "Build the tests." ON)
+option(BUILD_EXAMPLES "Build the examples." ON)
 option(CODE_COVERAGE "Code coverage for tests." ON)
 
 find_package(Eigen3 REQUIRED)
@@ -80,6 +81,10 @@ install(
   DESTINATION  ${export_dest_dir}
 )
 
+if(BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
+
 # ---------------------------------------------------------------------------------------
 # CODE COVERAGE
 # ---------------------------------------------------------------------------------------
@@ -89,6 +94,8 @@ if(BUILD_TESTING)
 
   include(GoogleTest)
   find_package(GTest REQUIRED)
+
+  # CORE TESTS
 
   add_executable(${PROJECT_NAME}_tests
     test/test_liegroup.cpp
@@ -100,11 +107,7 @@ if(BUILD_TESTING)
   )
 
   target_compile_options(${PROJECT_NAME}_tests
-    PRIVATE
-    -Wall
-    -Wextra
-    -Wpedantic
-    # -Werror
+    PRIVATE -Wall -Wextra -Wpedantic -Werror
   )
 
   if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
@@ -128,36 +131,41 @@ if(BUILD_TESTING)
   target_link_libraries(${PROJECT_NAME}_tests smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
 
+  # MODULE TESTS
+
   find_package(Boost QUIET)
   if(Boost_FOUND)
-    add_executable(${PROJECT_NAME}_test_odeint test/test_odeint.cpp)
-    target_link_libraries(${PROJECT_NAME}_test_odeint smooth Boost::headers GTest::Main)
-    gtest_discover_tests(${PROJECT_NAME}_test_odeint)
+    add_executable(test_odeint test/test_odeint.cpp)
+    target_link_libraries(test_odeint smooth Boost::headers GTest::Main)
+    gtest_discover_tests(test_odeint)
   else()
     message(WARNING "Boost not found, disabling odeint test")
   endif()
 
   find_package(Ceres QUIET)
   if(Ceres_FOUND)
-    add_executable(${PROJECT_NAME}_test_ceres test/test_ceres.cpp)
-    target_link_libraries(${PROJECT_NAME}_test_ceres smooth ${CERES_LIBRARIES} GTest::Main)
-    gtest_discover_tests(${PROJECT_NAME}_test_ceres)
+    add_executable(test_ceres test/test_ceres.cpp)
+    target_link_libraries(test_ceres smooth ${CERES_LIBRARIES} GTest::Main)
+    gtest_discover_tests(test_ceres)
   else()
     message(WARNING "ceres not found, disabling odeint test")
   endif()
 
   find_package(geometry_msgs QUIET)
   if(geometry_msgs_FOUND)
-    add_executable(${PROJECT_NAME}_test_ros test/test_ros.cpp)
-    target_include_directories(${PROJECT_NAME}_test_ros PRIVATE
+    add_executable(test_ros test/test_ros.cpp)
+    target_include_directories(test_ros PRIVATE
      ${geometry_msgs_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME}_test_ros smooth GTest::Main)
-    gtest_discover_tests(${PROJECT_NAME}_test_ros)
+    target_link_libraries(test_ros smooth GTest::Main)
+    gtest_discover_tests(test_ros)
   else()
     message(WARNING "geometry_msgs not found, disabling ros test")
   endif()
 
+  # ALGO TESTS
+
   add_executable(test_bspline test/test_bspline.cpp)
   target_link_libraries(test_bspline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_bspline)
+
 endif()
