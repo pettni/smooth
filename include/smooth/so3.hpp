@@ -187,13 +187,17 @@ public:
   Tangent log() const
   {
     using std::atan2, std::sqrt;
-    const Scalar xyz_n = sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2]);
-    if (xyz_n < Scalar(eps)) {
-      // TODO: small angle approx
-      return Tangent::Zero();
+    const Scalar xyz2 = s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2];
+
+    Scalar phi;
+    if (xyz2 < Scalar(eps2)) {
+      // https://www.wolframalpha.com/input/?i=series+atan%28y%2Fx%29+%2F+y+at+y%3D0
+      phi = Scalar(1) / s_[3] - xyz2 / (Scalar(3) * s_[3] * s_[3] * s_[3]);
+    } else {
+      Scalar xyz = sqrt(xyz2);
+      phi = Scalar(2) * atan2(xyz, s_[3]) / xyz;
     }
-    const Scalar p = Scalar(2) * atan2(xyz_n, s_[3]) / xyz_n;
-    return p * Tangent(s_[0], s_[1], s_[2]);
+    return phi * Tangent(s_[0], s_[1], s_[2]);
   }
 
   /**
@@ -219,20 +223,19 @@ public:
 
     const Scalar th2 = a.squaredNorm();
 
-    Scalar cth, sth_over_th;
-    if (th2 >= Scalar(eps2)) {
-      // exact formula
-      const Scalar th = sqrt(th2);
-      cth = cos(th / Scalar(2));
-      sth_over_th = sin(th / Scalar(2)) / th;
+    Scalar A, B;
+    if (th2 < Scalar(eps2)) {
+      // https://www.wolframalpha.com/input/?i=series+sin%28x%2F2%29%2Fx+at+x%3D0
+      A = Scalar(1) / Scalar(2) - th2 / Scalar(48);
+      // https://www.wolframalpha.com/input/?i=series+cos%28x%2F2%29+at+x%3D0
+      B = Scalar(1) - th2 / Scalar(8);
     } else {
-      // small-angle approximations:
-      //   cos(th / 2) = 1 - th2 / 8
-      //   sin(th / 2) / th = 1 - th^2 / 48
-      cth = Scalar(1) - th2 / Scalar(8);
-      sth_over_th = Scalar(0.5) - th2 / Scalar(48);
+      const Scalar th = sqrt(th2);
+      A = sin(th / Scalar(2)) / th;
+      B = cos(th / Scalar(2));
     }
-    return Group(a.x() * sth_over_th, a.y() * sth_over_th, a.z() * sth_over_th, cth);
+
+    return Group(A * a.x(), A * a.y(), A * a.z(), B);
   }
 
   /**
@@ -278,18 +281,21 @@ public:
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = a.squaredNorm();
-    const Scalar th = sqrt(th2);
 
-    if (th < Scalar(eps)) {
-      // TODO: small angle approximation
-      return TangentMap::Identity();
+    Scalar A, B;
+    if (th2 < Scalar(eps2)) {
+      // https://www.wolframalpha.com/input/?i=series+%281-cos+x%29+%2F+x%5E2+at+x%3D0
+      A = Scalar(1) / Scalar(2) - th2 / Scalar(24);
+      // https://www.wolframalpha.com/input/?i=series+%28x+-+sin%28x%29%29+%2F+x%5E3+at+x%3D0
+      B = Scalar(1) / Scalar(6) - th2 / Scalar(120);
+    } else {
+      const Scalar th = sqrt(th2);
+      A = (Scalar(1) - cos(th)) / th2;
+      B = (th - sin(th)) / (th2 * th);
     }
 
     const TangentMap ad = SO3<Scalar>::ad(a);
-
-    return TangentMap::Identity() -
-           (Scalar(1) - cos(th)) / th2 * ad +
-           (th - sin(th)) / (th2 * th) * ad * ad;
+    return TangentMap::Identity() - A * ad + B * ad * ad;
   }
 
   /**
@@ -301,17 +307,18 @@ public:
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = a.squaredNorm();
-    const Scalar th = sqrt(th2);
-    const TangentMap ad = SO3<Scalar>::ad(a);
 
-    if (th < Scalar(eps)) {
-      // TODO: small angle approximation
-      return TangentMap::Identity() + ad / Scalar(2);
+    Scalar A;
+    if (th2 < Scalar(eps2)) {
+      // https://www.wolframalpha.com/input/?i=series+1%2Fx%5E2-%281%2Bcos+x%29%2F%282*x*sin+x%29+at+x%3D0
+      A = Scalar(1) / Scalar(12) + th2 / Scalar(720);
+    } else {
+      const Scalar th = sqrt(th2);
+      A = Scalar(1) / th2 - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th));
     }
 
-    return TangentMap::Identity() +
-           ad / Scalar(2) +
-           ( (Scalar(1) / th2) - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th))) * ad * ad;
+    const TangentMap ad = SO3<Scalar>::ad(a);
+    return TangentMap::Identity() + ad / Scalar(2) + A * ad * ad;
   }
 };
 
