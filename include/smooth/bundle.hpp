@@ -170,9 +170,9 @@ public:
    * @brief Access parts via const map
    */
   template<std::size_t I>
-  ConstMap<PartType<I>> part() const
+  Map<const PartType<I>> part() const
   {
-    return ConstMap<PartType<I>>(s_.data() + meta::iseq_el_v<I, lie_sizes_psum>);
+    return Map<const PartType<I>>(s_.data() + meta::iseq_el_v<I, lie_sizes_psum>);
   }
 
   // REQUIRED API

@@ -17,7 +17,7 @@ struct ParameterizationFunctor
   {
     using GScalar = decltype(G().template cast<Scalar>());
 
-    smooth::ConstMap<GScalar> mx(x);
+    smooth::Map<const GScalar> mx(x);
     Eigen::Map<const typename GScalar::Tangent> mdelta(delta);
     smooth::Map<GScalar> mx_plus_delta(x_plus_delta);
 

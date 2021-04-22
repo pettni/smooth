@@ -3,6 +3,22 @@
 #include "smooth/compat/ros.hpp"
 
 
+template<smooth::LieGroupLike G>
+void test(G)
+{}
+
+TEST(Ros, LieGroupLike)
+{
+  geometry_msgs::msg::Quaternion msg3;
+  geometry_msgs::msg::Pose msg4;
+  geometry_msgs::msg::Transform msg5;
+
+  test(smooth::Map<geometry_msgs::msg::Quaternion>(msg3));
+  test(smooth::Map<geometry_msgs::msg::Pose>(msg4));
+  test(smooth::Map<geometry_msgs::msg::Transform>(msg5));
+}
+
+
 TEST(Ros, Pose)
 {
   geometry_msgs::msg::Pose p;
@@ -27,7 +43,7 @@ TEST(Ros, Pose)
 
   const geometry_msgs::msg::Pose & p_ref = p;
 
-  smooth::ConstMap<geometry_msgs::msg::Pose> m_const(p_ref);
+  smooth::Map<const geometry_msgs::msg::Pose> m_const(p_ref);
   ASSERT_TRUE(m_const.isApprox(g));
 
   ASSERT_DOUBLE_EQ(p.position.x, m.translation().x());

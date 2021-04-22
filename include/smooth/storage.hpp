@@ -118,13 +118,13 @@ using change_storage_t = typename change_storage<G, NewScalar>::type;
 
 
 template<typename T>
-struct map_trait;
+struct map_dispatcher;
 
 /**
  * @brief Use base group with MappedStorage as map for lie groups
  */
 template<LieGroupLike G>
-struct map_trait<G>
+struct map_dispatcher<G>
 {
   using type = change_storage_t<G, MappedStorage<typename G::Scalar, G::lie_size>>;
 };
@@ -133,7 +133,7 @@ struct map_trait<G>
  * @brief Use base group with MappedStorage as map for lie groups
  */
 template<LieGroupLike G>
-struct map_trait<const G>
+struct map_dispatcher<const G>
 {
   using type = change_storage_t<G, const MappedStorage<typename G::Scalar, G::lie_size>>;
 };
@@ -142,7 +142,7 @@ struct map_trait<const G>
  * @brief Use regular Eigen map as map for En
  */
 template<EnLike G>
-struct map_trait<G>
+struct map_dispatcher<G>
 {
   using type = Eigen::Map<G>;
 };
@@ -151,7 +151,7 @@ struct map_trait<G>
  * @brief Use regular Eigen map as map for En
  */
 template<EnLike G>
-struct map_trait<const G>
+struct map_dispatcher<const G>
 {
   using type = Eigen::Map<const G>;
 };
@@ -160,13 +160,7 @@ struct map_trait<const G>
  * @brief Generic map type
  */
 template<typename G>
-using Map = typename map_trait<G>::type;
-
-/**
- * @brief Generic const map type
- */
-template<typename G>
-using ConstMap = typename map_trait<const G>::type;
+using Map = typename map_dispatcher<G>::type;
 
 }  // namespace smooth
 
