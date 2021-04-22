@@ -19,7 +19,7 @@
   - [x] boost odeint: read about algebras
   - [ ] autodiff: tangent derivative of any manifold function
   - [x] ceres: local parameterization of any group
-  - [/] map ros msgs as storage type
+  - [x] map ros msgs as storage type
 - groups
   - [x] so2
   - [x] so3
