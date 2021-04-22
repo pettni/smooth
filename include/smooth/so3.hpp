@@ -7,6 +7,7 @@
 #include "common.hpp"
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
+#include "macro.hpp"
 
 namespace smooth
 {
@@ -30,22 +31,6 @@ class SO3 : public LieGroupBase<SO3<_Scalar, _Storage>, 4>
 {
 private:
   _Storage s_;
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  template<typename OtherScalar, StorageLike OS>
-  requires std::is_same_v<_Scalar, OtherScalar>
-  friend class SO3;
-
-  friend class LieGroupBase<SO3<_Scalar, _Storage>, 4>;
-
-  /**
-   * @brief Construct from coefficients (does not normalize)
-   */
-  template<typename Scalar>
-  explicit SO3(const Scalar & qx, const Scalar & qy, const Scalar & qz, const Scalar & qw)
-  {
-    s_[0] = qx; s_[1] = qy; s_[2] = qz, s_[3] = qw;
-  }
 
 public:
   // REQUIRED CONSTANTS
@@ -55,57 +40,12 @@ public:
   static constexpr uint32_t lie_dim = 3;
   static constexpr uint32_t lie_actdim = 3;
 
-  // REQUIRED TYPES
+  // CONSTRUCTORS AND OPERATORS
 
-  using Storage = _Storage;
-  using Scalar = _Scalar;
-
-  using Group = SO3<Scalar, DefaultStorage<Scalar, lie_size>>;
-  using Tangent = Eigen::Matrix<Scalar, lie_dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, lie_dof, lie_dof>;
-  using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
-  using MatrixGroup = Eigen::Matrix<Scalar, lie_dim, lie_dim>;
-
-  // CONSTRUCTOR AND OPERATOR BOILERPLATE
-
-  SO3() = default;
-  SO3(const SO3 & o) = default;
-  SO3(SO3 && o) = default;
-  SO3 & operator=(const SO3 & o) = default;
-  SO3 & operator=(SO3 && o) = default;
-  ~SO3() = default;
-
-  /**
-   * @brief Copy constructor from other storage types
-   */
-  template<StorageLike OS>
-  SO3(const SO3<Scalar, OS> & o)
-  requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
-  }
-
-  /**
-   * @brief Forwarding constructor to storage for map types
-   */
-  template<typename S>
-  explicit SO3(S && s) requires std::is_constructible_v<Storage, S>
-  : s_(std::forward<S>(s)) {}
-
-  /**
-   * @brief Copy assignment from other SO3
-   */
-  template<StorageLike OS>
-  SO3 & operator=(const SO3<Scalar, OS> & o)
-  requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
-    return *this;
-  }
+  SMOOTH_GROUP_BOILERPLATE(SO3)
 
   // SO3-SPECIFIC API
 
-public:
   /**
    * @brief Construct from quaternion
    */
@@ -148,6 +88,15 @@ public:
   }
 
 private:
+  /**
+   * @brief Construct from coefficients (does not normalize)
+   */
+  template<typename Scalar>
+  explicit SO3(const Scalar & qx, const Scalar & qy, const Scalar & qz, const Scalar & qw)
+  {
+    s_[0] = qx; s_[1] = qy; s_[2] = qz, s_[3] = qw;
+  }
+
   /**
    * @brief Normalize quaternion and set qw >= 0
    */

@@ -7,7 +7,7 @@
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
 #include "so2.hpp"
-#include "so3.hpp"
+#include "macro.hpp"
 
 namespace smooth
 {
@@ -31,13 +31,6 @@ class SE2 : public LieGroupBase<SE2<_Scalar, _Storage>, 4>
 {
 private:
   _Storage s_;
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  template<typename OtherScalar, StorageLike OS>
-  requires std::is_same_v<_Scalar, OtherScalar>
-  friend class SE2;
-
-  friend class LieGroupBase<SE2<_Scalar, _Storage>, 4>;
 
 public:
   // REQUIRED CONSTANTS
@@ -47,62 +40,9 @@ public:
   static constexpr uint32_t lie_dim = 3;
   static constexpr uint32_t lie_actdim = 2;
 
-  // REQUIRED TYPES
+  // CONSTRUCTORS AND OPERATORS
 
-  using Storage = _Storage;
-  using Scalar = _Scalar;
-
-  using Group = SE2<Scalar, DefaultStorage<Scalar, lie_size>>;
-  using Tangent = Eigen::Matrix<Scalar, lie_dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, lie_dof, lie_dof>;
-  using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
-  using MatrixGroup = Eigen::Matrix<Scalar, lie_dim, lie_dim>;
-
-  // CONSTRUCTOR AND OPERATOR BOILERPLATE
-
-  SE2() = default;
-  SE2(const SE2 & o) = default;
-  SE2(SE2 && o) = default;
-  SE2 & operator=(const SE2 & o) = default;
-  SE2 & operator=(SE2 && o) = default;
-  ~SE2() = default;
-
-  /**
-   * @brief Copy constructor from other storage types
-   */
-  template<StorageLike OS>
-  SE2(const SE2<Scalar, OS> & o)
-  requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
-  }
-
-  /**
-   * @brief Forwarding constructor to storage for map types
-   */
-  template<typename S>
-  explicit SE2(S && s)
-  requires std::is_constructible_v<Storage, S>
-  : s_(std::forward<S>(s)) {}
-
-  /**
-   * @brief Forwarding constructor to storage for const map types
-   */
-  explicit SE2(const Scalar * ptr)
-  requires std::is_constructible_v<Storage, const Scalar *>
-  : s_(ptr) {}
-
-  /**
-   * @brief Copy assignment from other SE2
-   */
-  template<typename OS>
-  requires StorageLike<OS>
-  SE2 & operator=(const SE2<Scalar, OS> & o)
-  requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
-    return *this;
-  }
+  SMOOTH_GROUP_BOILERPLATE(SE2)
 
   // SE2-SPECIFIC API
 

@@ -4,6 +4,7 @@
 #include "concepts.hpp"
 #include "common.hpp"
 #include "lie_group_base.hpp"
+#include "macro.hpp"
 #include "meta.hpp"
 #include "storage.hpp"
 
@@ -11,6 +12,30 @@
 namespace smooth
 {
 
+// The bundle supports Eigen vector types to represent En, these typedefs
+template<typename Scalar>
+using E1 = Eigen::Matrix<Scalar, 1, 1>;
+template<typename Scalar>
+using E2 = Eigen::Matrix<Scalar, 2, 1>;
+template<typename Scalar>
+using E3 = Eigen::Matrix<Scalar, 3, 1>;
+template<typename Scalar>
+using E4 = Eigen::Matrix<Scalar, 4, 1>;
+template<typename Scalar>
+using E5 = Eigen::Matrix<Scalar, 5, 1>;
+template<typename Scalar>
+using E6 = Eigen::Matrix<Scalar, 6, 1>;
+template<typename Scalar>
+using E7 = Eigen::Matrix<Scalar, 7, 1>;
+template<typename Scalar>
+using E8 = Eigen::Matrix<Scalar, 8, 1>;
+template<typename Scalar>
+using E9 = Eigen::Matrix<Scalar, 9, 1>;
+template<typename Scalar>
+using E10 = Eigen::Matrix<Scalar, 10, 1>;
+
+
+// Helper trait to extract relevant properties for lie and en types
 template<typename T>
 struct lie_info;
 
@@ -33,19 +58,11 @@ struct lie_info<G>
 };
 
 
-// The bundle supports Eigen vector types to represent En, these typedefs
-template<typename Scalar> using E1 = Eigen::Matrix<Scalar, 1, 1>;
-template<typename Scalar> using E2 = Eigen::Matrix<Scalar, 2, 1>;
-template<typename Scalar> using E3 = Eigen::Matrix<Scalar, 3, 1>;
-template<typename Scalar> using E4 = Eigen::Matrix<Scalar, 4, 1>;
-template<typename Scalar> using E5 = Eigen::Matrix<Scalar, 5, 1>;
-template<typename Scalar> using E6 = Eigen::Matrix<Scalar, 6, 1>;
-template<typename Scalar> using E7 = Eigen::Matrix<Scalar, 7, 1>;
-template<typename Scalar> using E8 = Eigen::Matrix<Scalar, 8, 1>;
-template<typename Scalar> using E9 = Eigen::Matrix<Scalar, 9, 1>;
-template<typename Scalar> using E10 = Eigen::Matrix<Scalar, 10, 1>;
-
-
+/**
+ * @brief Bundle of multiple Lie types that can be treated as a single Lie group
+ *
+ * Bundle members can also be Eigen vectors by including En in the template argument list.
+ */
 template<typename _Scalar, MappableStorageLike _Storage, template<typename> typename ... _Gs>
 requires(
   ((LieGroupLike<_Gs<_Scalar>>|| EnLike<_Gs<_Scalar>>) && ... && true) &&
@@ -54,23 +71,13 @@ requires(
   std::is_same_v<typename _Storage::Scalar, _Scalar>
 )
 class BundleBase
-: public LieGroupBase<
+  : public LieGroupBase<
     BundleBase<_Scalar, _Storage, _Gs...>,
     meta::iseq_sum_v<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>
   >
 {
 private:
   _Storage s_;
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  template<typename OtherScalar, MappableStorageLike OS, template<typename> typename ... Gs>
-  requires std::is_same_v<_Scalar, OtherScalar>
-  friend class BundleBase;
-
-  friend class LieGroupBase<
-    BundleBase<_Scalar, _Storage, _Gs...>,
-    meta::iseq_sum_v<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>
-  >;
 
   using lie_sizes = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>;
   using lie_dofs = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dof ...>;
@@ -83,63 +90,21 @@ private:
   using lie_actdims_psum = meta::iseq_psum_t<lie_actdims>;
 
 public:
+  // REQUIRED CONSTANTS
+
   static constexpr uint32_t lie_size = meta::iseq_sum_v<lie_sizes>;
   static constexpr uint32_t lie_dof = meta::iseq_sum_v<lie_dofs>;
   static constexpr uint32_t lie_dim = meta::iseq_sum_v<lie_dims>;
   static constexpr uint32_t lie_actdim = meta::iseq_sum_v<lie_actdims>;
 
-  using Scalar = _Scalar;
-  using Storage = _Storage;
+  // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
-  using Group = BundleBase<Scalar, DefaultStorage<Scalar, lie_size>, _Gs...>;
-  using Tangent = Eigen::Matrix<Scalar, lie_dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, lie_dof, lie_dof>;
-  using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
-  using MatrixGroup = Eigen::Matrix<Scalar, lie_dim, lie_dim>;
+  SMOOTH_BUNDLE_BOILERPLATE(BundleBase)
 
-  // BUNDLE-SPECIFIC TYPES
+  // BUNDLE-SPECIFIC API
 
   template<std::size_t Idx>
   using PartType = std::tuple_element_t<Idx, std::tuple<_Gs<_Scalar>...>>;
-
-  // CONSTRUCTOR AND OPERATOR BOILERPLATE
-
-  BundleBase() = default;
-  BundleBase(const BundleBase & o) = default;
-  BundleBase(BundleBase && o) = default;
-  BundleBase & operator=(const BundleBase & o) = default;
-  BundleBase & operator=(BundleBase && o) = default;
-  ~BundleBase() = default;
-
-  /**
-   * @brief Copy constructor from other storage types
-   */
-  template<StorageLike OS>
-  BundleBase(const BundleBase<Scalar, OS, _Gs...> & o)
-  requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
-  }
-
-  /**
-   * @brief Forwarding constructor to storage for map types
-   */
-  template<typename S>
-  explicit BundleBase(S && s) requires std::is_constructible_v<Storage, S>
-  : s_(std::forward<S>(s)) {}
-
-  /**
-   * @brief Copy assignment from other BundleBase
-   */
-  template<StorageLike OS>
-  BundleBase & operator=(const BundleBase<Scalar, OS, _Gs...> & o)
-  requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
-    return *this;
-  }
-
-  // BUNDLE-SPECIFIC API
 
   /**
    * @brief Construct from components

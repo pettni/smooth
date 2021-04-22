@@ -6,6 +6,7 @@
 #include "common.hpp"
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
+#include "macro.hpp"
 #include "so3.hpp"
 
 namespace smooth
@@ -29,12 +30,6 @@ class SE3 : public LieGroupBase<SE3<_Scalar, _Storage>, 7>
 {
 private:
   _Storage s_;
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
-  template<typename OtherScalar, StorageLike OS>
-  requires std::is_same_v<_Scalar, OtherScalar> friend class SE3;
-
-  friend class LieGroupBase<SE3<_Scalar, _Storage>, 7>;
 
 public:
   // REQUIRED CONSTANTS
@@ -44,53 +39,9 @@ public:
   static constexpr uint32_t lie_dim = 4;
   static constexpr uint32_t lie_actdim = 3;
 
-  // REQUIRED TYPES
+  // CONSTRUCTORS AND OPERATORS
 
-  using Storage = _Storage;
-  using Scalar = _Scalar;
-
-  using Group = SE3<Scalar, DefaultStorage<Scalar, lie_size>>;
-  using MatrixGroup = Eigen::Matrix<Scalar, lie_dim, lie_dim>;
-  using Tangent = Eigen::Matrix<Scalar, lie_dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, lie_dof, lie_dof>;
-  using Vector = Eigen::Matrix<Scalar, lie_actdim, 1>;
-
-  // CONSTRUCTOR AND OPERATOR BOILERPLATE
-
-  SE3() = default;
-  SE3(const SE3 & o) = default;
-  SE3(SE3 && o) = default;
-  SE3 & operator=(const SE3 & o) = default;
-  SE3 & operator=(SE3 && o) = default;
-  ~SE3() = default;
-
-  /**
-   * @brief Copy constructor from other storage types
-   */
-  template<StorageLike OS>
-  SE3(const SE3<Scalar, OS> & o)
-  requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
-  }
-
-  /**
-   * @brief Forwarding constructor to storage for map types
-   */
-  template<typename S>
-  explicit SE3(S && s) requires std::is_constructible_v<Storage, S>
-  : s_(std::forward<S>(s)) {}
-
-  /**
-   * @brief Copy assignment from other SE3
-   */
-  template<StorageLike OS>
-  SE3 & operator=(const SE3<Scalar, OS> & o)
-  // requires ModifiableStorageLike<Storage>
-  {
-    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
-    return *this;
-  }
+  SMOOTH_GROUP_BOILERPLATE(SE3)
 
   // SE3-SPECIFIC API
 
