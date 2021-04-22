@@ -50,13 +50,11 @@ public:
    * @brief Construct from SO2 and translation
    */
   template<typename Derived>
-  SE2(const SO2<Scalar> & so2, const Eigen::MatrixBase<Derived> & translation)
+  SE2(const Eigen::MatrixBase<Derived> & translation, const SO2<Scalar> & so2)
   requires ModifiableStorageLike<Storage>
   {
-    s_[0] = translation(0);
-    s_[1] = translation(1);
-    s_[2] = so2.coeffs()[0];
-    s_[3] = so2.coeffs()[1];
+    this->translation() = translation;
+    this->so2() = so2;
   }
 
   /**
@@ -120,7 +118,8 @@ public:
    */
   void setIdentity() requires ModifiableStorageLike<Storage>
   {
-    s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
+    translation().setZero();
+    so2().setIdentity();
   }
 
   /**
@@ -130,12 +129,9 @@ public:
   void setRandom(RNG & rng)
   requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
   {
-    const Scalar x = filler<Scalar>(rng, 0);
-    const Scalar y = filler<Scalar>(rng, 0);
-    const Scalar u = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
-
-    // x y qz qw
-    s_[0] = x;  s_[1] = y; s_[2] = sin(u); s_[3] = cos(u);
+    s_[0] = filler<Scalar>(rng, 0);
+    s_[1] = filler<Scalar>(rng, 0);
+    so2().setRandom(rng);
   }
 
   /**
@@ -166,7 +162,7 @@ public:
   template<typename OS>
   Group operator*(const SE2<Scalar, OS> & r) const
   {
-    return Group(so2() * r.so2(), so2() * r.translation() + translation());
+    return Group(so2() * r.translation() + translation(), so2() * r.so2());
   }
 
   /**
@@ -174,7 +170,7 @@ public:
    */
   Group inverse() const
   {
-    return Group(so2().inverse(), -(so2().inverse() * translation()));
+    return Group(-(so2().inverse() * translation()), so2().inverse());
   }
 
   /**
@@ -254,8 +250,8 @@ public:
     S(1, 0) = -B;
 
     return Group(
-      SO2<Scalar>::exp(a.template tail<1>()),
-      S * a.template head<2>()
+      S * a.template head<2>(),
+      SO2<Scalar>::exp(a.template tail<1>())
     );
   }
 

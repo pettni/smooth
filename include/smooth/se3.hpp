@@ -49,16 +49,11 @@ public:
    * @brief Construct from SO3 and translation
    */
   template<typename Derived>
-  SE3(const SO3<Scalar> & so3, const Eigen::MatrixBase<Derived> & translation)
+  SE3(const Eigen::MatrixBase<Derived> & translation, const SO3<Scalar> & so3)
   requires ModifiableStorageLike<Storage>
   {
-    s_[0] = translation(0);
-    s_[1] = translation(1);
-    s_[2] = translation(2);
-    s_[3] = so3.coeffs()[0];
-    s_[4] = so3.coeffs()[1];
-    s_[5] = so3.coeffs()[2];
-    s_[6] = so3.coeffs()[3];
+    this->translation() = translation;
+    this->so3() = so3;
   }
 
   /**
@@ -155,8 +150,8 @@ public:
    */
   void setIdentity() requires ModifiableStorageLike<Storage>
   {
-    s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(0);
-    s_[4] = Scalar(0); s_[5] = Scalar(0); s_[6] = Scalar(1);
+    translation().setZero();
+    so3().setIdentity();
   }
 
   /**
@@ -165,17 +160,10 @@ public:
   template<typename RNG>
   void setRandom(RNG & rng) requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
   {
-    const Scalar x = filler<Scalar>(rng, 0);
-    const Scalar y = filler<Scalar>(rng, 0);
-    const Scalar z = filler<Scalar>(rng, 0);
-
-    SO3<Scalar> so3;
-    so3.setRandom(rng);
-
-    // x y qz qw
-    s_[0] = x; s_[1] = y; s_[2] = z;
-    s_[3] = so3.coeffs()[0]; s_[4] = so3.coeffs()[1];
-    s_[5] = so3.coeffs()[2]; s_[6] = so3.coeffs()[3];
+    s_[0] = filler<Scalar>(rng, 0);
+    s_[1] = filler<Scalar>(rng, 0);
+    s_[2] = filler<Scalar>(rng, 0);
+    so3().setRandom(rng);
   }
 
   /**
@@ -206,13 +194,15 @@ public:
   template<typename OS>
   Group operator*(const SE3<Scalar, OS> & r) const
   {
-    return Group(so3() * r.so3(), so3() * r.translation() + translation());
+    return Group( so3() * r.translation() + translation(), so3() * r.so3());
   }
 
   /**
    * @brief Group inverse
    */
-  Group inverse() const {return Group(so3().inverse(), -(so3().inverse() * translation()));}
+  Group inverse() const {
+    return Group(-(so3().inverse() * translation()), so3().inverse());
+  }
 
   /**
    * @brief Group logarithm
@@ -249,8 +239,9 @@ public:
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     return Group(
-      SO3<Scalar>::exp(a.template tail<3>()),
-      SO3<Scalar>::dl_exp(a.template tail<3>()) * a.template head<3>());
+      SO3<Scalar>::dl_exp(a.template tail<3>()) * a.template head<3>(),
+      SO3<Scalar>::exp(a.template tail<3>())
+    );
   }
 
   /**
