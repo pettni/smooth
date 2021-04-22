@@ -99,13 +99,11 @@ template<LieGroupLike G>
 struct map_trait<G>
 {
   using type = meta::change_template_arg_t<
-      meta::change_template_arg_t<G, 0, typename G::Scalar>,
-      1, MappedStorage<typename G::Scalar, G::lie_size>
+      G, 1, MappedStorage<typename G::Scalar, G::lie_size>
   >;
 
   using const_type = meta::change_template_arg_t<
-    meta::change_template_arg_t<G, 0, typename G::Scalar>,
-    1, const MappedStorage<typename G::Scalar, G::lie_size>
+    G, 1, const MappedStorage<typename G::Scalar, G::lie_size>
   >;
 };
 

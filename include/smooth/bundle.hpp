@@ -3,6 +3,7 @@
 
 #include "concepts.hpp"
 #include "common.hpp"
+#include "lie_group_base.hpp"
 #include "meta.hpp"
 #include "storage.hpp"
 
@@ -53,6 +54,10 @@ requires(
   std::is_same_v<typename _Storage::Scalar, _Scalar>
 )
 class BundleBase
+: public LieGroupBase<
+    BundleBase<_Scalar, _Storage, _Gs...>,
+    meta::iseq_sum_v<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>
+  >
 {
 private:
   _Storage s_;
@@ -61,6 +66,11 @@ private:
   template<typename OtherScalar, MappableStorageLike OS, template<typename> typename ... Gs>
   requires std::is_same_v<_Scalar, OtherScalar>
   friend class BundleBase;
+
+  friend class LieGroupBase<
+    BundleBase<_Scalar, _Storage, _Gs...>,
+    meta::iseq_sum_v<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>
+  >;
 
   using lie_sizes = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>;
   using lie_dofs = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dof ...>;
@@ -163,106 +173,6 @@ public:
   ConstMap<PartType<I>> part() const
   {
     return ConstMap<PartType<I>>(s_.data() + meta::iseq_el_v<I, lie_sizes_psum>);
-  }
-
-  // LIE GROUP BASE API
-
-  static Group Identity()
-  {
-    Group ret;
-    ret.setIdentity();
-    return ret;
-  }
-
-  template<typename RNG>
-  static Group Random(RNG & rng)
-  {
-    Group ret;
-    ret.setRandom(rng);
-    return ret;
-  }
-
-  template<typename Other>
-  bool isApprox(
-    const Other & o,
-    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
-  {
-    bool ret = true;
-    meta::static_for<sizeof...(_Gs)>(
-      [&](auto i) {
-        if (ret) {
-          ret &= part<i>().isApprox(o.template part<i>(), eps);
-        }
-      });
-    return ret;
-  }
-
-  template<typename NewScalar>
-  BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> cast() const
-  {
-    BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> ret;
-    meta::static_for<sizeof...(_Gs)>(
-      [&](auto i) {
-        ret.template part<i>() = part<i>().template cast<NewScalar>();
-      });
-    return ret;
-  }
-
-  Storage & coeffs()
-  {
-    return s_;
-  }
-
-  const Storage & coeffs() const
-  {
-    return s_;
-  }
-
-  Scalar * data() requires ModifiableStorageLike<Storage>
-  {
-    return coeffs().data();
-  }
-
-  const Scalar * data() const requires MappableStorageLike<Storage>
-  {
-    return coeffs().data();
-  }
-
-  template<StorageLike OS>
-  BundleBase & operator*=(const BundleBase<Scalar, OS, _Gs...> & o)
-  {
-    *this = *this * o;
-    return *this;
-  }
-
-  template<typename Derived>
-  auto operator+(const Eigen::MatrixBase<Derived> & t) const
-  {
-    return *this * exp(t);
-  }
-
-  template<typename Derived>
-  BundleBase & operator+=(const Eigen::MatrixBase<Derived> & t)
-  {
-    return *this *= exp(t);
-  }
-
-  template<StorageLike OS>
-  auto operator-(const BundleBase<Scalar, OS, _Gs...> & o) const
-  {
-    return (o.inverse() * *this).log();
-  }
-
-  template<typename Derived>
-  static auto dl_exp(const Eigen::MatrixBase<Derived> & t)
-  {
-    return (exp(t).Ad() * dr_exp(t)).eval();
-  }
-
-  template<typename Derived>
-  static auto dl_expinv(const Eigen::MatrixBase<Derived> & t)
-  {
-    return (-ad(t) + dr_expinv(t)).eval();
   }
 
   // REQUIRED API

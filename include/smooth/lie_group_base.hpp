@@ -17,24 +17,29 @@ template<typename Derived, uint32_t size>
 class LieGroupBase;
 
 template<
-  template<typename, typename> typename _Derived,
+  template<typename, typename, template<typename> typename ... _Ts> typename _Derived,
   typename _Scalar,
   typename _Storage,
+  template<typename> typename ... _Ts,
   uint32_t size
 >
-class LieGroupBase<_Derived<_Scalar, _Storage>, size>
+class LieGroupBase<_Derived<_Scalar, _Storage, _Ts...>, size>
 {
   using Scalar = _Scalar;
   using Storage = _Storage;
-  using Derived = _Derived<Scalar, Storage>;
+  using Derived = _Derived<Scalar, Storage, _Ts...>;
+  using DerivedRet = _Derived<Scalar, DefaultStorage<Scalar, size>, _Ts...>;
+
+  template<typename NewScalar>
+  using GroupCast = _Derived<NewScalar, DefaultStorage<NewScalar, size>, _Ts...>;
 
 public:
   /**
    * @brief Construct the group identity element
    */
-  static _Derived<Scalar, DefaultStorage<Scalar, size>> Identity()
+  static DerivedRet Identity()
   {
-    _Derived<Scalar, DefaultStorage<Scalar, size>> ret;
+    DerivedRet ret;
     ret.setIdentity();
     return ret;
   }
@@ -45,9 +50,9 @@ public:
    * @param rng a random number generator
    */
   template<typename RNG>
-  static _Derived<Scalar, DefaultStorage<Scalar, size>> Random(RNG & rng)
+  static DerivedRet Random(RNG & rng)
   {
-    _Derived<Scalar, DefaultStorage<Scalar, size>> ret;
+    DerivedRet ret;
     ret.setRandom(rng);
     return ret;
   }
@@ -75,9 +80,9 @@ public:
    * @brief Cast to different datatype
    */
   template<typename NewScalar>
-  _Derived<NewScalar, DefaultStorage<NewScalar, size>> cast() const
+  GroupCast<NewScalar> cast() const
   {
-    _Derived<NewScalar, DefaultStorage<NewScalar, size>> ret;
+    GroupCast<NewScalar> ret;
     meta::static_for<size>(
       [&](auto i) {
         ret.coeffs()[i] = static_cast<NewScalar>(static_cast<const Derived &>(*this).coeffs()[i]);
@@ -121,7 +126,7 @@ public:
    * @brief Overload operator*= for inplace composition
    */
   template<StorageLike OS>
-  Derived & operator*=(const _Derived<Scalar, OS> & o)
+  Derived & operator*=(const _Derived<Scalar, OS, _Ts...> & o)
   requires ModifiableStorageLike<Storage>
   {
     static_cast<Derived &>(*this) = static_cast<const Derived &>(*this) * o;
@@ -156,7 +161,7 @@ public:
    * g1 - g2 := (g2.inverse() * g1).log()
    */
   template<StorageLike OS>
-  auto operator-(const _Derived<Scalar, OS> & o) const
+  auto operator-(const _Derived<Scalar, OS, _Ts...> & o) const
   {
     return (o.inverse() * static_cast<const Derived &>(*this)).log();
   }

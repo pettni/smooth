@@ -37,9 +37,9 @@
     - just don't expose map in if not supported by storage
  - [x] write own storages -- the eigen ones are ugly
  - [x] change SE2/3 constructors to take translation first
- - [ ] Avoid duplication of boilerplate
-   - [ ] trait to change n:th template arg to use lie_group_base for bundle
-   - [ ] inject boilerplate with macro and remove lie_group_base
- - [ ] do small angle approximations
+ - [x] Avoid duplication of boilerplate
+   - [x] trait to change n:th template arg to use lie_group_base for bundle
+   - [ ] macro to define constructor boilerplate for each group
+ - [ ] revisit small angle approximations
  - [x] en: make bundle support vectors with usual semantics and leave it there
  - [x] bundle: typedef bundle with default storage
