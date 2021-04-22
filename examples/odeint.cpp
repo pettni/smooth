@@ -8,6 +8,7 @@
 
 #include "plot_tools.hpp"
 
+
 using matplot::plot;
 using std::views::transform;
 
@@ -21,23 +22,26 @@ using deriv_t = typename state_t::Tangent;
 
 int main(int argc, char const * argv[])
 {
-  const smooth::SO3d target = smooth::SO3d::Identity();
+  // equilibrium point
+  const smooth::SO3d Xt = smooth::SO3d::Identity();
+
+  // "control" proportional and derivative gains
+  constexpr double kp = 1;
+  constexpr double kd = 1;
 
   /**
-   * Lie group ode
+   * ODE on <SO3, E3>
    *
    * d^r X_t = v(t)
-   * d^r v_t = -kp * log(X0.inverse() * X(t)) - kd * v(t)
+   * d^r v_t = -kp * log(Xt.inverse() * X(t)) - kd * v(t)
    */
-  auto ode = [&target](const state_t & state, deriv_t & deriv, double t)
+  auto ode = [&](const state_t & state, deriv_t & deriv, double t)
     {
-      constexpr double kp = 1;
-      constexpr double kd = 1;
       deriv.template head<3>() = state.part<1>();
-      deriv.template tail<3>() = -kp * (target.inverse() * state.part<0>()).log() - kd * state.part<1>();
+      deriv.template tail<3>() = -kp * (Xt.inverse() * state.part<0>()).log() - kd * state.part<1>();
     };
 
-  std::default_random_engine rng(5);
+  std::default_random_engine rng(10);
   state_t state = state_t::Random(rng);
 
   std::vector<double> tvec;
@@ -54,11 +58,24 @@ int main(int argc, char const * argv[])
 
   matplot::figure();
   matplot::hold(matplot::on);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.template part<0>().coeffs()[0];})), "r")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.template part<0>().coeffs()[1];})), "g")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.template part<0>().coeffs()[2];})), "b")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.template part<0>().coeffs()[3];})), "k")->line_width(2);
-  matplot::title("Quaternion");
+  // plot a sphere
+  auto phi = matplot::linspace(0, 2 * M_PI, 200);
+  for (double h = -0.9; h < 0.95; h += 0.2) {
+    auto xsph = r2v(phi | transform([&] (double p) {return std::sqrt(1. - h * h) * std::cos(p);}));
+    auto ysph = r2v(phi | transform([&] (double p) {return std::sqrt(1. - h * h) * std::sin(p);}));
+    auto zsph = r2v(phi | transform([&] (double p) {return h;}));
+    matplot::plot3(xsph, ysph, zsph)->line_width(0.25).color("gray");
+    matplot::plot3(ysph, zsph, xsph)->line_width(0.25).color("gray");
+    matplot::plot3(zsph, xsph, ysph)->line_width(0.25).color("gray");
+  }
+  // plot the trajectory
+  auto xyz = gvec | transform([](auto s) {return s.template part<0>() * Eigen::Vector3d::UnitZ();});
+  matplot::plot3(
+    r2v(xyz | transform([](auto s) {return s.x();})),
+    r2v(xyz | transform([](auto s) {return s.y();})),
+    r2v(xyz | transform([](auto s) {return s.z();}))
+  )->line_width(4).color("blue");
+  matplot::title("Attitude");
 
   matplot::figure();
   matplot::hold(matplot::on);

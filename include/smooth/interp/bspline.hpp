@@ -110,29 +110,6 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> cum_card_coeffmat()
 
 
 /**
- * @brief Return knot indices of the control points
- *
- * Return value represents range i_{-K}, ..., i_1 where i_0 is the
- * left point of the spline interval where t falls.
- *
- * Negative knot indices correspond to exterior knots, the smallest
- * possible knot index is -K
- *
- * @param t time where spline is to be evaluated
- * @param t0 start time of spline
- * @param dt spline knot distance
- * @return std::pair<std::size_t, std::size_t>
- */
-template<std::size_t K>
-std::pair<int64_t, int64_t> bspline_range(double t, double t0, double dt)
-{
-  auto idx_ival = static_cast<int64_t>((t - t0) / dt);
-
-  return std::make_pair(idx_ival - K, idx_ival + 1);
-}
-
-
-/**
  * @brief Evaluate a cardinal bspline of order K and calculate derivatives
  *
  *   g = g_0 * \Prod_{i=1}^{K} exp ( Btilde_i(u) * log( g_{i-1}^{-1}  * g_i ) )
@@ -274,7 +251,8 @@ public:
   G eval(
     double t,
     std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
-    std::optional<Eigen::Ref<typename G::Tangent>> acc = {}) const
+    std::optional<Eigen::Ref<typename G::Tangent>> acc = {}
+  ) const
   {
     // index of relevant interval
     int64_t istar = static_cast<int64_t>((t - t0_) / dt_);
