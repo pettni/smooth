@@ -41,7 +41,7 @@ int main(int argc, char const * argv[])
       deriv.template tail<3>() = -kp * (Xt.inverse() * state.part<0>()).log() - kd * state.part<1>();
     };
 
-  std::default_random_engine rng(10);
+  std::default_random_engine rng(0);
   state_t state = state_t::Random(rng);
 
   std::vector<double> tvec;
