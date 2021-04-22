@@ -81,7 +81,7 @@ public:
   SO2(const SO2<Scalar, OS> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
 
   /**
@@ -98,7 +98,7 @@ public:
   SO2 & operator=(const SO2<Scalar, OS> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
   }
 

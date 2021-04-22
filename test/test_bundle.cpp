@@ -9,35 +9,21 @@
 
 using namespace smooth;
 
-TEST(Bundle, iseq)
-{
-  using iseq_test = std::index_sequence<2, 4, 5, 1, 3>;
-  using test_psum = iseq_psum<iseq_test>::type;
-
-  static_assert(iseq_len<iseq_test>::value == 5);
-  static_assert(iseq_el<2, iseq_test>::value == 5);
-  static_assert(iseq_el<4, iseq_test>::value == 3);
-
-  static_assert(std::is_same_v<test_psum, std::index_sequence<0, 2, 6, 11, 12>>);
-}
-
 TEST(Bundle, Static)
 {
-  using bundle_t = Bundle<double, SE2, SE3, SO2, SO3>;
+  using bundle_t = Bundle<double, SE2, SE3, E2, SO2, SO3>;
 
-  static_assert(bundle_t::lie_size == 17);
-  static_assert(bundle_t::lie_dof == 13);
-  static_assert(bundle_t::lie_dim == 12);
-  static_assert(bundle_t::lie_actdim == 10);
+  static_assert(bundle_t::lie_size == 19);
+  static_assert(bundle_t::lie_dof == 15);
+  static_assert(bundle_t::lie_dim == 15);
+  static_assert(bundle_t::lie_actdim == 12);
 
   static_assert(std::is_same_v<bundle_t::PartType<0>, SE2d>);
   static_assert(std::is_same_v<bundle_t::PartType<1>, SE3d>);
-  static_assert(std::is_same_v<bundle_t::PartType<2>, SO2d>);
-  static_assert(std::is_same_v<bundle_t::PartType<3>, SO3d>);
+  static_assert(std::is_same_v<bundle_t::PartType<2>, Eigen::Vector2d>);
+  static_assert(std::is_same_v<bundle_t::PartType<3>, SO2d>);
+  static_assert(std::is_same_v<bundle_t::PartType<4>, SO3d>);
 }
-
-template<typename Scalar>
-using E3 = Eigen::Matrix<Scalar, 3, 1>;
 
 TEST(Bundle, Construct)
 {

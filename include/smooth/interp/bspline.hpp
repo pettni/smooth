@@ -2,6 +2,7 @@
 #include <ranges>
 
 #include "smooth/concepts.hpp"
+#include "smooth/meta.hpp"
 
 namespace smooth
 {
@@ -10,70 +11,21 @@ namespace detail
 {
 
 /**
- * @brief Elementary structure for compile-time matrix algebra
+ * @brief Calculate cardinal bspline coefficient matrix at compile-time
+ * @tparam Scalar
+ * @tparam K degree of bspline
  */
-template<typename Scalar, std::size_t Rows, std::size_t Cols>
-struct StaticMatrix : std::array<std::array<Scalar, Cols>, Rows>
-{
-  using std::array<std::array<Scalar, Cols>, Rows>::operator[];
-
-  constexpr StaticMatrix()
-  : std::array<std::array<Scalar, Cols>, Rows>{}
-  {
-    for (auto i = 0u; i != Rows; ++i) {
-      operator[](i).fill(Scalar(0));
-    }
-  }
-
-  constexpr StaticMatrix<Scalar, Rows, Cols> operator+(StaticMatrix<Scalar, Rows, Cols> o) const
-  {
-    StaticMatrix<Scalar, Rows, Cols> ret;
-    for (auto i = 0u; i < Rows; ++i) {
-      for (auto j = 0u; j < Cols; ++j) {
-        ret[i][j] = operator[](i)[j] + o[i][j];
-      }
-    }
-    return ret;
-  }
-
-  constexpr StaticMatrix<Scalar, Rows, Cols> transpose() const
-  {
-    StaticMatrix<Scalar, Rows, Cols> ret;
-    for (auto i = 0u; i < Rows; ++i) {
-      for (auto j = 0u; j < Cols; ++j) {
-        ret[j][i] = operator[](i)[j];
-      }
-    }
-    return ret;
-  }
-
-  template<std::size_t ColsNew>
-  constexpr StaticMatrix<Scalar, Rows, ColsNew>
-  operator*(StaticMatrix<Scalar, Cols, ColsNew> o) const
-  {
-    StaticMatrix<Scalar, Rows, ColsNew> ret;
-    for (auto i = 0u; i < Rows; ++i) {
-      for (auto j = 0u; j < ColsNew; ++j) {
-        for (auto k = 0u; k < Cols; ++k) {
-          ret[i][j] += operator[](i)[k] * o[k][j];
-        }
-      }
-    }
-    return ret;
-  }
-};
-
 template<typename Scalar, std::size_t K>
-constexpr StaticMatrix<Scalar, K + 1, K + 1> card_coeffmat()
+constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> card_coeffmat()
 {
-  StaticMatrix<Scalar, K + 1, K + 1> ret;
+  ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> ret;
   if constexpr (K == 0) {
     ret[0][0] = 1;
     return ret;
   } else {
     constexpr auto coeff_mat_km1 = card_coeffmat<Scalar, K - 1>();
-    StaticMatrix<Scalar, K + 1, K> low, high;
-    StaticMatrix<Scalar, K, K + 1> left, right;
+    ::smooth::meta::StaticMatrix<Scalar, K + 1, K> low, high;
+    ::smooth::meta::StaticMatrix<Scalar, K, K + 1> left, right;
 
     for (std::size_t i = 0; i != K; ++i) {
       for (std::size_t j = 0; j != K; ++j) {
@@ -94,8 +46,13 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> card_coeffmat()
   }
 }
 
+/**
+ * @brief Calculate cardinal cumulative bspline coefficient matrix at compile-time
+ * @tparam Scalar
+ * @tparam K degree of bspline
+ */
 template<typename Scalar, std::size_t K>
-constexpr StaticMatrix<Scalar, K + 1, K + 1> cum_card_coeffmat()
+constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> cum_card_coeffmat()
 {
   auto ret = card_coeffmat<Scalar, K>();
   for (std::size_t i = 0; i != K + 1; ++i) {

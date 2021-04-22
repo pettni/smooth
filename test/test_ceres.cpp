@@ -12,12 +12,9 @@ template<smooth::LieGroupLike G>
 class CeresLocalParam : public ::testing::Test
 {};
 
-template<typename Scalar>
-using E4 = Eigen::Matrix<Scalar, 4, 1>;
-
 using GroupsToTest = ::testing::Types<
   smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
-  smooth::Bundle<double, smooth::SO3, E4, smooth::SE2>
+  smooth::Bundle<double, smooth::SO3, smooth::E4, smooth::SE2>
 >;
 
 TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest);

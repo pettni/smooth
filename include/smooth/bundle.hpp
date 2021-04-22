@@ -3,6 +3,7 @@
 
 #include "concepts.hpp"
 #include "common.hpp"
+#include "meta.hpp"
 #include "storage.hpp"
 
 
@@ -31,11 +32,24 @@ struct lie_info<G>
 };
 
 
+// The bundle supports Eigen vector types to represent En, these typedefs
+template<typename Scalar> using E1 = Eigen::Matrix<Scalar, 1, 1>;
+template<typename Scalar> using E2 = Eigen::Matrix<Scalar, 2, 1>;
+template<typename Scalar> using E3 = Eigen::Matrix<Scalar, 3, 1>;
+template<typename Scalar> using E4 = Eigen::Matrix<Scalar, 4, 1>;
+template<typename Scalar> using E5 = Eigen::Matrix<Scalar, 5, 1>;
+template<typename Scalar> using E6 = Eigen::Matrix<Scalar, 6, 1>;
+template<typename Scalar> using E7 = Eigen::Matrix<Scalar, 7, 1>;
+template<typename Scalar> using E8 = Eigen::Matrix<Scalar, 8, 1>;
+template<typename Scalar> using E9 = Eigen::Matrix<Scalar, 9, 1>;
+template<typename Scalar> using E10 = Eigen::Matrix<Scalar, 10, 1>;
+
+
 template<typename _Scalar, MappableStorageLike _Storage, template<typename> typename ... _Gs>
 requires(
   ((LieGroupLike<_Gs<_Scalar>>|| EnLike<_Gs<_Scalar>>) && ... && true) &&
   (_Storage::SizeAtCompileTime ==
-  iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value) &&
+  meta::iseq_sum_v<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>) &&
   std::is_same_v<typename _Storage::Scalar, _Scalar>
 )
 class BundleBase
@@ -53,16 +67,16 @@ private:
   using lie_dims = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dim ...>;
   using lie_actdims = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_actdim ...>;
 
-  using lie_sizes_psum = typename iseq_psum<lie_sizes>::type;
-  using lie_dofs_psum = typename iseq_psum<lie_dofs>::type;
-  using lie_dims_psum = typename iseq_psum<lie_dims>::type;
-  using lie_actdims_psum = typename iseq_psum<lie_actdims>::type;
+  using lie_sizes_psum = meta::iseq_psum_t<lie_sizes>;
+  using lie_dofs_psum = meta::iseq_psum_t<lie_dofs>;
+  using lie_dims_psum = meta::iseq_psum_t<lie_dims>;
+  using lie_actdims_psum = meta::iseq_psum_t<lie_actdims>;
 
 public:
-  static constexpr uint32_t lie_size = iseq_sum<lie_sizes>::value;
-  static constexpr uint32_t lie_dof = iseq_sum<lie_dofs>::value;
-  static constexpr uint32_t lie_dim = iseq_sum<lie_dims>::value;
-  static constexpr uint32_t lie_actdim = iseq_sum<lie_actdims>::value;
+  static constexpr uint32_t lie_size = meta::iseq_sum_v<lie_sizes>;
+  static constexpr uint32_t lie_dof = meta::iseq_sum_v<lie_dofs>;
+  static constexpr uint32_t lie_dim = meta::iseq_sum_v<lie_dims>;
+  static constexpr uint32_t lie_actdim = meta::iseq_sum_v<lie_actdims>;
 
   using Scalar = _Scalar;
   using Storage = _Storage;
@@ -94,7 +108,7 @@ public:
   BundleBase(const BundleBase<Scalar, OS, _Gs...> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
   }
 
   /**
@@ -111,7 +125,7 @@ public:
   BundleBase & operator=(const BundleBase<Scalar, OS, _Gs...> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
   }
 
@@ -126,7 +140,7 @@ public:
   (sizeof...(S) == sizeof...(_Gs)) &&
   std::conjunction_v<std::is_assignable<_Gs<_Scalar>, S>...>
   {
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         part<i>() = std::get<i>(std::forward_as_tuple(args ...));
       });
@@ -139,7 +153,7 @@ public:
   Map<PartType<I>> part()
   requires ModifiableStorageLike<Storage>
   {
-    return Map<PartType<I>>(s_.data() + iseq_el_v<I, lie_sizes_psum>);
+    return Map<PartType<I>>(s_.data() + meta::iseq_el_v<I, lie_sizes_psum>);
   }
 
   /**
@@ -148,7 +162,7 @@ public:
   template<std::size_t I>
   ConstMap<PartType<I>> part() const
   {
-    return ConstMap<PartType<I>>(s_.data() + iseq_el_v<I, lie_sizes_psum>);
+    return ConstMap<PartType<I>>(s_.data() + meta::iseq_el_v<I, lie_sizes_psum>);
   }
 
   // LIE GROUP BASE API
@@ -174,7 +188,7 @@ public:
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
     bool ret = true;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         if (ret) {
           ret &= part<i>().isApprox(o.template part<i>(), eps);
@@ -187,7 +201,7 @@ public:
   BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> cast() const
   {
     BundleBase<NewScalar, DefaultStorage<NewScalar, lie_size>, _Gs...> ret;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         ret.template part<i>() = part<i>().template cast<NewScalar>();
       });
@@ -255,7 +269,7 @@ public:
 
   void setIdentity() requires ModifiableStorageLike<Storage>
   {
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         if constexpr (EnLike<PartType<i>>) {
           part<i>().setZero();
@@ -268,7 +282,7 @@ public:
   template<typename RNG>
   void setRandom(RNG & rng) requires ModifiableStorageLike<Storage>
   {
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         if constexpr (EnLike<PartType<i>>) {
           part<i>() = PartType<i>::NullaryExpr([&rng](int) {return u_distr<Scalar>(rng);});
@@ -285,10 +299,10 @@ public:
   {
     MatrixGroup ret;
     ret.setZero();
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dim_beg = iseq_el_v<i, lie_dims_psum>;
-        static constexpr std::size_t dim_len = iseq_el_v<i, lie_dims>;
+        static constexpr std::size_t dim_beg = meta::iseq_el_v<i, lie_dims_psum>;
+        static constexpr std::size_t dim_len = meta::iseq_el_v<i, lie_dims>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg).setIdentity();
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
@@ -308,10 +322,10 @@ public:
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     Vector ret;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t actdim_beg = iseq_el_v<i, lie_actdims_psum>;
-        static constexpr std::size_t actdim_len = iseq_el_v<i, lie_actdims>;
+        static constexpr std::size_t actdim_beg = meta::iseq_el_v<i, lie_actdims_psum>;
+        static constexpr std::size_t actdim_len = meta::iseq_el_v<i, lie_actdims>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template segment<actdim_len>(actdim_beg) =
           part<i>() + x.template segment<actdim_len>(actdim_beg);
@@ -330,7 +344,7 @@ public:
   Group operator*(const BundleBase<Scalar, OS, _OGs...> & r) const
   {
     Group ret;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         if constexpr (EnLike<PartType<i>>) {
           ret.template part<i>() = part<i>() + r.template part<i>();
@@ -347,7 +361,7 @@ public:
   Group inverse() const
   {
     Group ret;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         if constexpr (EnLike<PartType<i>>) {
           ret.template part<i>() = -part<i>();
@@ -364,10 +378,10 @@ public:
   Tangent log() const
   {
     Tangent ret;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template segment<dof_len>(dof_beg) = part<i>();
         } else {
@@ -384,10 +398,10 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
@@ -407,10 +421,10 @@ public:
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     Group ret;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template part<i>() = a.template segment<dof_len>(dof_beg);
         } else {
@@ -429,10 +443,10 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         if constexpr (EnLike<PartType<i>>) {
           // ad is zero
         } else {
@@ -452,12 +466,12 @@ public:
   {
     MatrixGroup ret;
     ret.setZero();
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        static constexpr std::size_t dim_beg = iseq_el_v<i, lie_dims_psum>;
-        static constexpr std::size_t dim_len = iseq_el_v<i, lie_dims>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dim_beg = meta::iseq_el_v<i, lie_dims_psum>;
+        static constexpr std::size_t dim_len = meta::iseq_el_v<i, lie_dims>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
           .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>() =
@@ -478,12 +492,12 @@ public:
   requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
     Tangent ret;
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
-        static constexpr std::size_t dim_beg = iseq_el_v<i, lie_dims_psum>;
-        static constexpr std::size_t dim_len = iseq_el_v<i, lie_dims>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dim_beg = meta::iseq_el_v<i, lie_dims_psum>;
+        static constexpr std::size_t dim_len = meta::iseq_el_v<i, lie_dims>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template segment<dof_len>(dof_beg) =
           A.template block<dim_len, dim_len>(dim_beg, dim_beg)
@@ -505,10 +519,10 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
@@ -528,10 +542,10 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        static constexpr std::size_t dof_beg = iseq_el_v<i, lie_dofs_psum>;
-        static constexpr std::size_t dof_len = iseq_el_v<i, lie_dofs>;
+        static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
+        static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         if constexpr (EnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
@@ -557,7 +571,7 @@ template<typename _Scalar, template<typename> typename ... _Gs>
 using Bundle = BundleBase<
   _Scalar,
   DefaultStorage<_Scalar,
-  iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value>,
+  meta::iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value>,
   _Gs...
 >;
 

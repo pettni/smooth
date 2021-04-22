@@ -82,7 +82,7 @@ public:
   SO3(const SO3<Scalar, OS> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
 
   /**
@@ -99,7 +99,7 @@ public:
   SO3 & operator=(const SO3<Scalar, OS> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
   }
 
@@ -162,7 +162,7 @@ private:
       mul *= Scalar(-1);
     }
     if (abs(mul - Scalar(1)) > Scalar(eps)) {
-      static_for<lie_size>([&](auto i) {s_[i] *= mul;});
+      meta::static_for<lie_size>([&](auto i) {s_[i] *= mul;});
     }
   }
 

@@ -37,12 +37,9 @@ template<smooth::LieGroupLike G>
 class BSpline : public ::testing::Test
 {};
 
-template<typename Scalar>
-using E4 = Eigen::Matrix<Scalar, 4, 1>;
-
 using GroupsToTest = ::testing::Types<
   smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
-  smooth::Bundle<double, smooth::SO3, E4, smooth::SE2>
+  smooth::Bundle<double, smooth::SO3, smooth::E4, smooth::SE2>
 >;
 
 TYPED_TEST_SUITE(BSpline, GroupsToTest);
@@ -52,7 +49,7 @@ TYPED_TEST(BSpline, Constant)
 {
   std::default_random_engine rng(5);
 
-  smooth::static_for<6>(
+  smooth::meta::static_for<6>(
     [&rng](auto k) {
       static constexpr uint32_t K = k + 1;
 
