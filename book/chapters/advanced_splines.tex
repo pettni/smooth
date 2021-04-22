@@ -114,11 +114,11 @@ The cumulative formulation lends itself well to a Lie group translation when $\x
 
 \subsection{Spline evaluation}
 
-Since $\tilde B_{i, k}(t) = 1$ for $t < t_{i^*}$ and $\tilde B_{i, k}(t) = 0$ for $t \geq t_{i^* + k + 1}$ we can simplify \eqref{eq:full_lie_spline} into
+Since for $t \in [t_{i^*}, t_{i^*+1})$ it holds that $\tilde B_{i, k}(t) = 1$ for $i \leq i^* - k$ and $\tilde B_{i, k}(t) = 0$ for $i \geq i^* + 1$ we can simplify \eqref{eq:full_lie_spline} into
 \begin{important}
   \begin{equation}
     \label{eq:simple_lie_spline}
-    \x(t) = \x_{i^*} \circ \prod_{j=i^*+1}^{i^* + k} \exp \left[ \tilde B_{j, k} (t) \bv_j \right], \qquad \bv_j \coloneq \x_j \ominus_r \x_{j-1} = \log \left( \x_{j-1}^{-1} \circ \x_j \right).
+    \x(t) = \x_{i^* - k} \circ \prod_{j=i^* - k + 1}^{i^*} \exp \left[ \tilde B_{j, k} (t) \bv_j \right], \qquad \bv_j \coloneq \x_j \ominus_r \x_{j-1} = \log \left( \x_{j-1}^{-1} \circ \x_j \right).
   \end{equation}
 \end{important}
 Given the $N_{j, k}$:s we can evaluate $\tilde B_{j, k}(t)$ as
@@ -150,9 +150,9 @@ This gives us a recursive procedure to calculate the derivative of a form \eqref
   \begin{equation}
     \label{eq:bspline_dx_dt}
     \begin{aligned}
-      \symbf w_{i^*}    & = \symbf 0,                                                                                                                         \\
+      \symbf w_{i^* - k}    & = \symbf 0,                                                                                                                         \\
       \symbf w_{j}      & = \bAd_{\exp \left( - \tilde B_{j, k}(t) \bv_j \right)} \symbf w_{j-1} + \tilde B_{j, k}'(t) \bv_j, \quad j = i^*+1, \ldots, i^*+k, \\
-      \mathrm{d}^r \x_t & = \symbf w_{i^* + k}.
+      \mathrm{d}^r \x_t & = \symbf w_{i^*}.
     \end{aligned}
   \end{equation}
 \end{important}
