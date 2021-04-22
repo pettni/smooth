@@ -23,6 +23,20 @@ TEST(Bundle, Static)
   static_assert(std::is_same_v<bundle_t::PartType<2>, Eigen::Vector2d>);
   static_assert(std::is_same_v<bundle_t::PartType<3>, SO2d>);
   static_assert(std::is_same_v<bundle_t::PartType<4>, SO3d>);
+
+  static_assert(
+    std::is_same_v<
+      change_storage<bundle_t, MappedStorage<double, 19>>::type,
+      BundleBase<double, MappedStorage<double, 19>, SE2, SE3, E2, SO2, SO3>
+    >
+  );
+
+  static_assert(
+    std::is_same_v<
+      change_storage<bundle_t, const MappedStorage<double, 19>>::type,
+      BundleBase<double, const MappedStorage<double, 19>, SE2, SE3, E2, SO2, SO3>
+    >
+  );
 }
 
 TEST(Bundle, Construct)

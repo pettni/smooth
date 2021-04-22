@@ -41,7 +41,12 @@ template<>
 struct map_trait<::geometry_msgs::msg::Pose>
 {
   using type = smooth::SE3<double, PoseStorage>;
-  using const_type = smooth::SE3<double, const PoseStorage>;
+};
+
+template<>
+struct map_trait<const ::geometry_msgs::msg::Pose>
+{
+  using type = smooth::SE3<double, const PoseStorage>;
 };
 
 }   // namespace smooth
