@@ -122,10 +122,10 @@ public:
   /**
    * @brief Access const SO2 part
    */
-  ConstMap<SO2<Scalar>> so2() const
+  Map<const SO2<Scalar>> so2() const
   requires ModifiableStorageLike<Storage>
   {
-    return ConstMap<SO2<Scalar>>(s_.data() + 2);
+    return Map<const SO2<Scalar>>(s_.data() + 2);
   }
 
   /**

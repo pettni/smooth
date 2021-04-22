@@ -113,9 +113,9 @@ public:
   /**
    * @brief Access const SO3 part
    */
-  ConstMap<SO3<Scalar>> so3() const requires MappableStorageLike<Storage>
+  Map<const SO3<Scalar>> so3() const requires MappableStorageLike<Storage>
   {
-    return ConstMap<SO3<Scalar>>(s_.data() + 3);
+    return Map<const SO3<Scalar>>(s_.data() + 3);
   }
 
   /**

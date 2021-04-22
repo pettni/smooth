@@ -47,7 +47,7 @@ TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
   test_modifiable<TypeParam>();
   test<smooth::Map<TypeParam>>();
   test_modifiable<smooth::Map<TypeParam>>();
-  test<smooth::ConstMap<TypeParam>>();
+  test<smooth::Map<const TypeParam>>();
 }
 
 TYPED_TEST(LieGroupInterface, Constructors)
@@ -61,7 +61,7 @@ TYPED_TEST(LieGroupInterface, Constructors)
   // map
   std::array<typename TypeParam::Scalar, TypeParam::lie_size> a1;
   smooth::Map<TypeParam> m1(a1.data());
-  smooth::ConstMap<TypeParam> m2(a1.data());
+  smooth::Map<const TypeParam> m2(a1.data());
   m1.setRandom(rng);
   ASSERT_TRUE(m1.isApprox(m2));
 
@@ -111,12 +111,12 @@ TYPED_TEST(LieGroupInterface, DataAccess)
   const TypeParam g2 = TypeParam::Random(rng);
 
   smooth::Map<TypeParam> m1(g1.data());
-  smooth::ConstMap<TypeParam> m2(g2.data());
+  smooth::Map<const TypeParam> m2(g2.data());
 
   ASSERT_TRUE(m1.isApprox(g1));
   ASSERT_TRUE(m2.isApprox(g2));
 
-  smooth::Map<TypeParam> m1p(m1.data()); smooth::ConstMap<TypeParam> m2p(m2.data());
+  smooth::Map<TypeParam> m1p(m1.data()); smooth::Map<const TypeParam> m2p(m2.data());
 
   ASSERT_TRUE(m1p.isApprox(g1));
   ASSERT_TRUE(m2p.isApprox(g2));
