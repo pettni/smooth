@@ -14,3 +14,6 @@ endif()
 
 add_executable(bspline bspline.cpp)
 target_link_libraries(bspline smooth matplot)
+
+add_executable(odeint odeint.cpp)
+target_link_libraries(odeint smooth matplot)

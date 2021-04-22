@@ -1,6 +1,4 @@
-# lie
-
-Lie theory for robotics: manual and library
+# smooth: A C++20 Lie Theory Library and Book for Robotics
 
 # Roadmap
 
@@ -31,7 +29,7 @@ Lie theory for robotics: manual and library
 - algos:
   - imu preintegration
   - splines:
-    - [ ] evaluate bsplines
+    - [x] evaluate bsplines
     - [ ] fit bsplines
     - [ ] fit cubic splines with and without given velocity
 - debt:

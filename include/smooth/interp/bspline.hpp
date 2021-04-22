@@ -182,7 +182,9 @@ G bspline_eval(
   constexpr auto Ms = detail::cum_card_coeffmat<double, K>().transpose();
 
   Eigen::Matrix<Scalar, K + 1, K + 1> M =
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(Ms[0].data()).template cast<Scalar>();
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(
+    Ms[0].data()
+    ).template cast<Scalar>();
 
   if (vel.has_value() || acc.has_value()) {
     vel.value().setZero();
@@ -225,8 +227,8 @@ public:
   /**
    * @brief Construct a cardinal bspline defined on [0, 1) with constant value
    */
-  BSpline() :
-  t0_(0), dt_(1), ctrl_pts_(K+1, G::Identity())
+  BSpline()
+  : t0_(0), dt_(1), ctrl_pts_(K + 1, G::Identity())
   {}
 
   /**
@@ -256,8 +258,7 @@ public:
   template<std::ranges::range R>
   BSpline(double t0, double dt, R && ctrl_pts)
   requires std::is_same_v<std::ranges::range_value_t<R>, G>
-  :
-  t0_(t0), dt_(dt), ctrl_pts_(std::forward<R>(ctrl_pts))
+  : t0_(t0), dt_(dt), ctrl_pts_(std::forward<R>(ctrl_pts))
   {}
 
   double t_min() const
@@ -281,27 +282,21 @@ public:
     double u;
     // clamp to end of range if necessary
     if (istar < 0) {
-      istar = 0;
-      u = 0;
+      istar = 0; u = 0;
     } else if (istar + K + 1 > ctrl_pts_.size()) {
-      istar = ctrl_pts_.size() - K - 1;
-      u = 1;
+      istar = ctrl_pts_.size() - K - 1; u = 1;
     } else {
       u = (t - t0_ - istar * dt_) / dt_;
     }
 
     G g = bspline_eval<G, K>(
-      ctrl_pts_ | std::views::drop(istar) | std::views::take(K+1),
+      ctrl_pts_ | std::views::drop(istar) | std::views::take(K + 1),
       u, vel, acc
     );
 
-    if (vel.has_value()) {
-      vel.value() *= dt_;
-    }
+    if (vel.has_value()) {vel.value() *= dt_;}
 
-    if (acc.has_value()) {
-      acc.value() *= dt_ * dt_;
-    }
+    if (acc.has_value()) {acc.value() *= dt_ * dt_;}
 
     return g;
   }

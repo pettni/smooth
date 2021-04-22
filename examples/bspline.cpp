@@ -2,15 +2,23 @@
 #include "smooth/so3.hpp"
 
 #include "matplot/matplot.h"
+#include "plot_tools.hpp"
+
+using std::views::transform;
+using matplot::plot;
 
 
 int main(int argc, char const * argv[])
 {
-  std::default_random_engine rng(5);
+  std::default_random_engine rng(10);
   std::uniform_real_distribution<double> d;
 
+  double dt = 2;  // knot distance
+
   std::vector<smooth::SO3d> ctrl_pts;
+  std::vector<double> tstamps;
   ctrl_pts.push_back(smooth::SO3d::Identity());
+  tstamps.push_back(0);
 
   for (auto i = 0u; i != 20; ++i) {
     ctrl_pts.push_back(
@@ -18,9 +26,15 @@ int main(int argc, char const * argv[])
         [&d, &rng](int) {return d(rng) - 0.2;}
       )
     );
+    tstamps.push_back(tstamps.back() + dt);
   }
 
-  smooth::BSpline<smooth::SO3d, 7> spline(0, 2, std::move(ctrl_pts));
+  // spline characteristics
+  constexpr std::size_t K = 5;
+  double t0 = tstamps.front() + dt * (K - 1) / 2;
+
+  // create spline
+  smooth::BSpline<smooth::SO3d, K> spline(t0, dt, ctrl_pts);
 
   auto tvec = matplot::linspace(spline.t_min(), spline.t_max(), 300);
   std::vector<smooth::SO3d> gvec;
@@ -34,17 +48,32 @@ int main(int argc, char const * argv[])
     avec.push_back(acc);
   }
 
-  // convert a range into a std vector
-  auto r2v = [] < std::ranges::range R > (R r) {
-    return std::vector<std::ranges::range_value_t<R>>(r.begin(), r.end());
-  };
+  matplot::figure();
+  matplot::hold(matplot::on);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[0];})), "r")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[1];})), "g")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[2];})), "b")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[3];})), "k")->line_width(2);
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[0];})), "or");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[1];})), "og");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[2];})), "ob");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[3];})), "ok");
+  matplot::title("Quaternion");
 
   matplot::figure();
   matplot::hold(matplot::on);
-  matplot::plot(tvec, r2v(gvec | std::views::transform([](auto s) {return s.coeffs()[0];})))->line_width(2);
-  matplot::plot(tvec, r2v(gvec | std::views::transform([](auto s) {return s.coeffs()[1];})))->line_width(2);
-  matplot::plot(tvec, r2v(gvec | std::views::transform([](auto s) {return s.coeffs()[2];})))->line_width(2);
-  matplot::plot(tvec, r2v(gvec | std::views::transform([](auto s) {return s.coeffs()[3];})))->line_width(2);
+  plot(tvec, r2v(vvec | transform([](auto s) {return s[0];})), "r")->line_width(2);
+  plot(tvec, r2v(vvec | transform([](auto s) {return s[1];})), "g")->line_width(2);
+  plot(tvec, r2v(vvec | transform([](auto s) {return s[2];})), "b")->line_width(2);
+  matplot::title("Velocity");
+
+  matplot::figure();
+  matplot::hold(matplot::on);
+  plot(tvec, r2v(avec | transform([](auto s) {return s[0];})), "r")->line_width(2);
+  plot(tvec, r2v(avec | transform([](auto s) {return s[1];})), "g")->line_width(2);
+  plot(tvec, r2v(avec | transform([](auto s) {return s[2];})), "b")->line_width(2);
+  matplot::title("Acceleration");
+
   matplot::show();
 
   return 0;
