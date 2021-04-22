@@ -74,7 +74,7 @@ public:
   SE2(const SE2<Scalar, OS> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.coeffs()[i];});
   }
 
   /**
@@ -100,7 +100,7 @@ public:
   SE2 & operator=(const SE2<Scalar, OS> & o)
   requires ModifiableStorageLike<Storage>
   {
-    static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
+    meta::static_for<lie_size>([&](auto i) {s_[i] = o.s_[i];});
     return *this;
   }
 

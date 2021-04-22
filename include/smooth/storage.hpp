@@ -6,7 +6,7 @@
 #include <cstdint>
 
 #include "concepts.hpp"
-#include "traits.hpp"
+#include "meta.hpp"
 
 
 namespace smooth
@@ -98,12 +98,14 @@ struct map_trait;
 template<LieGroupLike G>
 struct map_trait<G>
 {
-  using type = change_template_args_t<
-    G, typename G::Scalar, MappedStorage<typename G::Scalar, G::lie_size>
+  using type = meta::change_template_arg_t<
+      meta::change_template_arg_t<G, 0, typename G::Scalar>,
+      1, MappedStorage<typename G::Scalar, G::lie_size>
   >;
 
-  using const_type = change_template_args_t<
-    G, typename G::Scalar, const MappedStorage<typename G::Scalar, G::lie_size>
+  using const_type = meta::change_template_arg_t<
+    meta::change_template_arg_t<G, 0, typename G::Scalar>,
+    1, const MappedStorage<typename G::Scalar, G::lie_size>
   >;
 };
 

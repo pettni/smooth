@@ -3,6 +3,7 @@
 
 #include <cstdint>
 
+#include "meta.hpp"
 #include "storage.hpp"
 
 
@@ -61,7 +62,7 @@ public:
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
     double n1_sq{0}, n2_sq{0}, n12_sq{0};
-    static_for<size>(
+    meta::static_for<size>(
       [&](auto i) {
         n1_sq += coeffs()[i] * coeffs()[i];
         n2_sq += o.coeffs()[i] * o.coeffs()[i];
@@ -77,7 +78,7 @@ public:
   _Derived<NewScalar, DefaultStorage<NewScalar, size>> cast() const
   {
     _Derived<NewScalar, DefaultStorage<NewScalar, size>> ret;
-    static_for<size>(
+    meta::static_for<size>(
       [&](auto i) {
         ret.coeffs()[i] = static_cast<NewScalar>(static_cast<const Derived &>(*this).coeffs()[i]);
       });

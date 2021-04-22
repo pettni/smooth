@@ -7,7 +7,6 @@
 #include <random>
 
 #include "common.hpp"
-#include "traits.hpp"
 
 
 namespace smooth

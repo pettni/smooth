@@ -8,7 +8,6 @@
 #include "smooth/se3.hpp"
 #include "smooth/bundle.hpp"
 #include "smooth/storage.hpp"
-#include "smooth/traits.hpp"
 
 
 template<smooth::LieGroupLike G>
