@@ -80,7 +80,7 @@ public:
   /**
    * @brief Access SO2 part by copy
    */
-  SO3<Scalar> so3() const requires (!MappableStorageLike<Storage>)
+  SO3<Scalar> so3() const requires(!MappableStorageLike<Storage>)
   {
     return SO3<Scalar>(Eigen::Quaternion<Scalar>(s_[6], s_[3], s_[4], s_[5]));
   }
@@ -107,7 +107,7 @@ public:
    * @brief Access E3 part by copy
    */
   Eigen::Matrix<Scalar, 3, 1> translation() const
-  requires (!MappableStorageLike<Storage>)
+  requires(!MappableStorageLike<Storage>)
   {
     return Eigen::Matrix<Scalar, 3, 1>(s_[0], s_[1], s_[2]);
   }
@@ -118,31 +118,33 @@ private:
   {
     using std::abs, std::sqrt, std::cos, std::sin;
 
-    const Scalar th_sq = a.template tail<3>().squaredNorm();
-    const Scalar th = sqrt(th_sq);
+    const Scalar th2 = a.template tail<3>().squaredNorm();
 
-    Eigen::Matrix<Scalar, 3, 3> V = SO3<Scalar>::hat(a.template head<3>());
-    Eigen::Matrix<Scalar, 3, 3> W = SO3<Scalar>::hat(a.template tail<3>());
-
-    Eigen::Matrix<Scalar, 3, 3> Q = Scalar(0.5) * V;
-
-    if (th < Scalar(eps)) {
-      // small angle approx
-      Q += Scalar(1) / Scalar(6) * (W * V + V * W);
+    Scalar A, B, C;
+    if (th2 < Scalar(eps2)) {
+      // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x%29+%2F+x%5E3+at+x%3D0
+      A = Scalar(1) / Scalar(6) - th2 / Scalar(120);
+      // https://www.wolframalpha.com/input/?i=series+%28cos+x+-+1+%2B+x%5E2%2F2%29+%2F+x%5E4+at+x%3D0
+      B = Scalar(1) / Scalar(24) - th2 / Scalar(720);
+      // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x+-+x%5E3%2F6%29+%2F+x%5E5+at+x%3D0
+      C = -Scalar(1) / Scalar(120) + th2 / Scalar(5040);
     } else {
-      // pre-calc some quantities that are used multiple times
-      const Scalar th_4 = th_sq * th_sq;
-      const Scalar vdw = a.template tail<3>().dot(a.template head<3>());
-      const Eigen::Matrix<Scalar, 3, 3> WV = W * V, VW = V * W, WW = W * W;
-      const Scalar cTh = cos(th);
-      const Scalar sTh = sin(th);
-
-      Q += (th - sTh) / (th * th_sq) * (WV + VW - vdw * W);
-      Q += (cTh - Scalar(1) + th_sq / Scalar(2)) / th_4 *
-        (W * WV + VW * W + vdw * (Scalar(3) * W - WW));
-      Q -= Scalar(3) * vdw * (th - sTh - th * th_sq / Scalar(6)) / (th_4 * th) * WW;
+      const Scalar th = sqrt(th2), th_4 = th2 * th2, cTh = cos(th), sTh = sin(th);
+      A = (th - sTh) / (th * th2);
+      B = (cTh - Scalar(1) + th2 / Scalar(2)) / th_4;
+      C = (th - sTh - th * th2 / Scalar(6)) / (th_4 * th);
     }
-    return Q;
+
+    const Eigen::Matrix<Scalar, 3, 3> V = SO3<Scalar>::hat(a.template head<3>());
+    const Eigen::Matrix<Scalar, 3, 3> W = SO3<Scalar>::hat(a.template tail<3>());
+
+    const Scalar vdw = a.template tail<3>().dot(a.template head<3>());
+    const Eigen::Matrix<Scalar, 3, 3> WV = W * V, VW = V * W, WW = W * W;
+
+    return Scalar(0.5) * V +
+           A * (WV + VW - vdw * W) +
+           B * (W * WV + VW * W + vdw * (Scalar(3) * W - WW)) -
+           C * Scalar(3) * vdw * WW;
   }
 
   // REQUIRED GROUP API

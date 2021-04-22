@@ -40,6 +40,6 @@
  - [x] Avoid duplication of boilerplate
    - [x] trait to change n:th template arg to use lie_group_base for bundle
    - [x] macro to define constructor boilerplate for each group
- - [ ] revisit small angle approximations
+ - [x] revisit small angle approximations
  - [x] en: make bundle support vectors with usual semantics and leave it there
  - [x] bundle: typedef bundle with default storage
