@@ -10,6 +10,14 @@
     "regex": "cpp",
     "utility": "cpp",
     "valarray": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "chrono": "cpp",
+    "compare": "cpp",
+    "functional": "cpp",
+    "istream": "cpp",
+    "ostream": "cpp",
+    "ratio": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp"
   },
 }

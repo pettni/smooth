@@ -314,6 +314,7 @@ struct StaticMatrix : std::array<std::array<Scalar, Cols>, Rows>
     return ret;
   }
 };
+
 }  // namespace smooth::meta
 
 #endif  // SMOOTH__META_HPP_

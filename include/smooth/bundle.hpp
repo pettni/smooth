@@ -467,16 +467,6 @@ public:
   }
 };
 
-
-template<typename Scalar, typename Storage, template<typename> typename ... Gs>
-struct map_trait<BundleBase<Scalar, Storage, Gs...>>
-{
-  using G = BundleBase<Scalar, Storage, Gs...>;
-  using type = BundleBase<Scalar, MappedStorage<typename G::Scalar, G::lie_size>, Gs ...>;
-  using const_type = BundleBase<Scalar, const MappedStorage<typename G::Scalar, G::lie_size>,
-      Gs ...>;
-};
-
 template<typename _Scalar, template<typename> typename ... _Gs>
 using Bundle = BundleBase<
   _Scalar,
@@ -486,14 +476,5 @@ using Bundle = BundleBase<
 >;
 
 }  // namespace smooth
-
-template<typename Stream, typename Scalar, smooth::StorageLike Storage, template<typename> typename ... Gs>
-Stream & operator<<(Stream & s, const smooth::BundleBase<Scalar, Storage, Gs ...> & g)
-{
-  for (auto i = 0u; i != Storage::SizeAtCompileTime; ++i) {
-    s << g.coeffs()[i] << " ";
-  }
-  return s;
-}
 
 #endif  // SMOOTH__BUNDLE_HPP_

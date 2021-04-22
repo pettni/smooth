@@ -53,12 +53,17 @@ public:
 
   MappedStorage(const Scalar * a_in)
   : a(a_in) {}
+
   // copy must copy underlying data
-  MappedStorage(const MappedStorage & o) {memcpy(const_cast<Scalar *>(a), o.a, N * sizeof(_Scalar));}
+  MappedStorage(const MappedStorage & o)
+  {
+    memcpy(const_cast<Scalar *>(a), o.a, N * sizeof(_Scalar));
+  }
   MappedStorage & operator=(const MappedStorage & o)
   {
     memcpy(const_cast<Scalar *>(a), o.a, N * sizeof(_Scalar)); return *this;
   }
+
   // for moving we move pointer
   MappedStorage(MappedStorage &&) = default;
   MappedStorage & operator=(MappedStorage &&) = default;
@@ -89,6 +94,29 @@ private:
 };
 
 
+/**
+ * @brief Change storage type of a Lie Group type
+ */
+template<LieGroupLike G, typename NewStorage>
+struct change_storage;
+
+template<
+  template<typename, typename, template<typename> typename ...> typename _G,
+  typename _Scalar,
+  typename _NewStorage,
+  template<typename, std::size_t> typename _Storage,
+  std::size_t lie_size,
+  template<typename> typename ... _Ts
+>
+struct change_storage<_G<_Scalar, _Storage<_Scalar, lie_size>, _Ts...>, _NewStorage>
+{
+  using type = _G<_Scalar, _NewStorage, _Ts...>;
+};
+
+template<LieGroupLike G, typename NewScalar>
+using change_storage_t = typename change_storage<G, NewScalar>::type;
+
+
 template<typename T>
 struct map_trait;
 
@@ -98,13 +126,16 @@ struct map_trait;
 template<LieGroupLike G>
 struct map_trait<G>
 {
-  using type = meta::change_template_arg_t<
-      G, 1, MappedStorage<typename G::Scalar, G::lie_size>
-  >;
+  using type = change_storage_t<G, MappedStorage<typename G::Scalar, G::lie_size>>;
+};
 
-  using const_type = meta::change_template_arg_t<
-    G, 1, const MappedStorage<typename G::Scalar, G::lie_size>
-  >;
+/**
+ * @brief Use base group with MappedStorage as map for lie groups
+ */
+template<LieGroupLike G>
+struct map_trait<const G>
+{
+  using type = change_storage_t<G, const MappedStorage<typename G::Scalar, G::lie_size>>;
 };
 
 /**
@@ -114,7 +145,15 @@ template<EnLike G>
 struct map_trait<G>
 {
   using type = Eigen::Map<G>;
-  using const_type = Eigen::Map<const G>;
+};
+
+/**
+ * @brief Use regular Eigen map as map for En
+ */
+template<EnLike G>
+struct map_trait<const G>
+{
+  using type = Eigen::Map<const G>;
 };
 
 /**
@@ -127,7 +166,7 @@ using Map = typename map_trait<G>::type;
  * @brief Generic const map type
  */
 template<typename G>
-using ConstMap = typename map_trait<G>::const_type;
+using ConstMap = typename map_trait<const G>::type;
 
 }  // namespace smooth
 
