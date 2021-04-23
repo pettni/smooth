@@ -94,8 +94,9 @@ G bspline_eval(
 
   if (std::ranges::size(ctrl_points) != K + 1) {
     throw std::runtime_error(
-            "bspline: control point range must be size K+1=" + std::to_string(
-              K + 1) + ", got " + std::to_string(std::ranges::size(ctrl_points)));
+            "bspline: control point range must be size K+1=" +
+            std::to_string(K + 1) + ", got " + std::to_string(std::ranges::size(ctrl_points))
+    );
   }
 
   uvec(0) = Scalar(1);
@@ -189,10 +190,17 @@ public:
    * which aligns control points with the maximum of the corresponding
    * basis function.
    */
+  BSpline(double t0, double dt, std::vector<G> && ctrl_pts)
+  : t0_(t0), dt_(dt), ctrl_pts_(std::move(ctrl_pts))
+  {}
+
+  /**
+   * @brief As above but for any range
+   */
   template<std::ranges::range R>
-  BSpline(double t0, double dt, R && ctrl_pts)
+  BSpline(double t0, double dt, const R & ctrl_pts)
   requires std::is_same_v<std::ranges::range_value_t<R>, G>
-  : t0_(t0), dt_(dt), ctrl_pts_(std::forward<R>(ctrl_pts))
+  : t0_(t0), dt_(dt), ctrl_pts_(std::ranges::begin(ctrl_pts), std::ranges::end(ctrl_pts))
   {}
 
   double t_min() const
@@ -229,17 +237,16 @@ public:
       u, vel, acc
     );
 
-    if (vel.has_value()) {vel.value() *= dt_;}
+    if (vel.has_value()) {vel.value() /= dt_;}
 
-    if (acc.has_value()) {acc.value() *= dt_ * dt_;}
+    if (acc.has_value()) {acc.value() /= (dt_ * dt_);}
 
     return g;
   }
 
 private:
-  std::vector<G> ctrl_pts_;
   double t0_, dt_;
+  std::vector<G> ctrl_pts_;
 };
-
 
 } // namespace smooth

@@ -67,25 +67,51 @@ TYPED_TEST(BSpline, Constant)
         ASSERT_TRUE(vel.norm() <= 1e-8);
         ASSERT_TRUE(acc.norm() <= 1e-8);
       }
+
+      ctrl_pts.push_back(ctrl_pts.back());
+      ASSERT_THROW((smooth::bspline_eval<TypeParam, K>(ctrl_pts, 1)), std::runtime_error);
     });
 }
 
 
-TEST(Smooth, BSpline)
+TEST(BSpline, Constructors)
 {
   std::default_random_engine rng(5);
 
-  std::vector<smooth::SO3d> c;
-  c.push_back(smooth::SO3d::Random(rng));
-  c.push_back(smooth::SO3d::Random(rng));
-  c.push_back(smooth::SO3d::Random(rng));
-  c.push_back(smooth::SO3d::Random(rng));
+  std::vector<smooth::SO3d> c1;
+  for (auto i = 0u; i != 50; ++i) {
+    c1.push_back(smooth::SO3d::Random(rng));
+  }
 
   typename smooth::SO3d::Tangent vel, acc;
 
-  auto G = smooth::bspline_eval<smooth::SO3d, 3>(c, 0.5, vel, acc);
+  smooth::BSpline<smooth::SO3d, 5> spl0;
+  smooth::BSpline<smooth::SO3d, 5> spl1(0, 1, c1);
+  smooth::BSpline<smooth::SO3d, 5> spl2(0, 1, std::move(c1));
 
-  std::cout << G << std::endl;
-  std::cout << vel << std::endl;
-  std::cout << acc << std::endl;
+  ASSERT_TRUE(spl0.eval(0.5).isApprox(smooth::SO3d::Identity()));
+
+  for (double t = 0; t != spl1.t_max(); t += 0.5) {
+    ASSERT_TRUE(spl1.eval(t).isApprox(spl2.eval(t)));
+  }
+}
+
+
+TEST(BSpline, Outside)
+{
+  std::default_random_engine rng(5);
+
+  std::vector<smooth::SO3d> c1;
+  for (auto i = 0u; i != 50; ++i) {
+    c1.push_back(smooth::SO3d::Random(rng));
+  }
+
+  smooth::BSpline<smooth::SO3d, 5> spl(0, 1, c1);
+
+  ASSERT_TRUE(spl.eval(-2).isApprox(spl.eval(0)));
+  ASSERT_TRUE(spl.eval(-1).isApprox(spl.eval(0)));
+  ASSERT_FALSE(spl.eval(45).isApprox(spl.eval(44)));
+  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(46)));
+  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(47)));
+  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(48)));
 }

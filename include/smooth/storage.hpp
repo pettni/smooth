@@ -1,12 +1,9 @@
 #ifndef SMOOTH__STORAGE_HPP_
 #define SMOOTH__STORAGE_HPP_
 
-#include <Eigen/Core>
-
 #include <cstdint>
 
 #include "concepts.hpp"
-#include "meta.hpp"
 
 
 namespace smooth

@@ -1,6 +1,7 @@
 #ifndef SMOOTH__MACRO_HPP_
 #define SMOOTH__MACRO_HPP_
 
+
 namespace smooth{
 
 // Boilerplate that is common for all groups and the bundle

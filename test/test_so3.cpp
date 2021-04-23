@@ -15,6 +15,10 @@ TEST(SO3, Quaternion)
 
   const smooth::SO3d g_q_const(qq);
   ASSERT_TRUE(g_q_const.quat().isApprox(qq));
+
+  auto euler = qq.toRotationMatrix().eulerAngles(2, 1, 0);
+  ASSERT_TRUE(euler.isApprox(g_q.eulerAngles()));
+  ASSERT_TRUE(euler.isApprox(g_q_const.eulerAngles()));
 }
 
 TEST(SO3, ReverseStorage)

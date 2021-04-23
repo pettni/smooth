@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_TESTING "Build the tests." ON)
 option(BUILD_EXAMPLES "Build the examples." ON)
-option(CODE_COVERAGE "Code coverage for tests." ON)
+option(CODE_COVERAGE "Code coverage for tests." OFF)
 
 find_package(Eigen3 REQUIRED)
 
@@ -105,30 +105,8 @@ if(BUILD_TESTING)
     test/test_se2.cpp
     test/test_se3.cpp
   )
-
-  target_compile_options(${PROJECT_NAME}_tests
-    PRIVATE -Wall -Wextra -Wpedantic -Werror
-  )
-
-  if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(${PROJECT_NAME}_tests PRIVATE
-      -O0
-      -g
-      --coverage
-      -fno-inline
-      -fno-inline-small-functions
-      -fno-default-inline
-    )
-    target_link_libraries(${PROJECT_NAME}_tests --coverage)
-
-    add_custom_target(testcov
-      COMMAND lcov -c --include ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/\\* -d ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles -o ${PROJECT_NAME}_testcov.info
-      COMMAND genhtml ${PROJECT_NAME}_testcov.info -o out
-      COMMAND echo "Open file://${CMAKE_CURRENT_BINARY_DIR}/out/index.html in a browser to view results"
-    )
-  endif()
-
-  target_link_libraries(${PROJECT_NAME}_tests smooth GTest::Main)
+  target_compile_options(${PROJECT_NAME}_tests PRIVATE -Wall -Wextra -Wpedantic -Werror)
+  target_link_libraries(${PROJECT_NAME}_tests PRIVATE smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
 
   # MODULE TESTS
@@ -136,7 +114,8 @@ if(BUILD_TESTING)
   find_package(Boost QUIET)
   if(Boost_FOUND)
     add_executable(test_odeint test/test_odeint.cpp)
-    target_link_libraries(test_odeint smooth Boost::headers GTest::Main)
+    target_compile_options(test_odeint PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_link_libraries(test_odeint PRIVATE smooth Boost::headers GTest::Main)
     gtest_discover_tests(test_odeint)
   else()
     message(WARNING "Boost not found, disabling odeint test")
@@ -145,7 +124,8 @@ if(BUILD_TESTING)
   find_package(Ceres QUIET)
   if(Ceres_FOUND)
     add_executable(test_ceres test/test_ceres.cpp)
-    target_link_libraries(test_ceres smooth ${CERES_LIBRARIES} GTest::Main)
+    target_compile_options(test_ceres PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_link_libraries(test_ceres PRIVATE smooth ${CERES_LIBRARIES} GTest::Main)
     gtest_discover_tests(test_ceres)
   else()
     message(WARNING "ceres not found, disabling odeint test")
@@ -154,9 +134,9 @@ if(BUILD_TESTING)
   find_package(geometry_msgs QUIET)
   if(geometry_msgs_FOUND)
     add_executable(test_ros test/test_ros.cpp)
-    target_include_directories(test_ros PRIVATE
-     ${geometry_msgs_INCLUDE_DIRS})
-    target_link_libraries(test_ros smooth GTest::Main)
+    target_compile_options(test_ros PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_include_directories(test_ros PRIVATE ${geometry_msgs_INCLUDE_DIRS})
+    target_link_libraries(test_ros PRIVATE smooth GTest::Main)
     gtest_discover_tests(test_ros)
   else()
     message(WARNING "geometry_msgs not found, disabling ros test")
@@ -165,7 +145,28 @@ if(BUILD_TESTING)
   # ALGO TESTS
 
   add_executable(test_bspline test/test_bspline.cpp)
+  target_compile_options(test_bspline PRIVATE -Wall -Wextra -Wpedantic -Werror)
   target_link_libraries(test_bspline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_bspline)
 
+  # TEST COVERAGE
+
+  if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(${PROJECT_NAME}_tests PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(${PROJECT_NAME}_tests PRIVATE --coverage)
+    target_compile_options(test_odeint PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(test_odeint PRIVATE --coverage)
+    target_compile_options(test_ceres PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(test_ceres PRIVATE --coverage)
+    target_compile_options(test_ros PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(test_ros PRIVATE --coverage)
+    target_compile_options(test_bspline PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(test_bspline PRIVATE --coverage)
+
+    add_custom_target(testcov
+      COMMAND lcov -c --include ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/\\* -d ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles -o ${PROJECT_NAME}_testcov.info
+      COMMAND genhtml ${PROJECT_NAME}_testcov.info -o out
+      COMMAND echo "Open file://${CMAKE_CURRENT_BINARY_DIR}/out/index.html in a browser to view results"
+    )
+  endif()
 endif()

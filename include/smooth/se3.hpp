@@ -1,16 +1,16 @@
 #ifndef SMOOTH__SE3_HPP_
 #define SMOOTH__SE3_HPP_
 
-#include <random>
-
 #include "common.hpp"
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
 #include "macro.hpp"
 #include "so3.hpp"
 
+
 namespace smooth
 {
+
 /**
  * @brief SE3 Lie Group
  *
@@ -108,6 +108,9 @@ public:
   }
 
 private:
+  /**
+   * @brief Compute matrix required in dr_exp and dr_expinv
+   */
   template<typename Derived>
   static Eigen::Matrix<Scalar, 3, 3> calculate_q(const Eigen::MatrixBase<Derived> & a)
   {
@@ -280,10 +283,10 @@ public:
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
   requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
-    Tangent a;
-    a.template tail<3>() = SO3<Scalar>::vee(A.template topLeftCorner<3, 3>());
-    a.template head<3>() = A.template topRightCorner<3, 1>();
-    return a;
+    Tangent ret;
+    ret.template tail<3>() = SO3<Scalar>::vee(A.template topLeftCorner<3, 3>());
+    ret.template head<3>() = A.template topRightCorner<3, 1>();
+    return ret;
   }
 
   /**

@@ -1,13 +1,12 @@
 #ifndef SMOOTH__SE2_HPP_
 #define SMOOTH__SE2_HPP_
 
-#include <random>
-
 #include "common.hpp"
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
-#include "so2.hpp"
 #include "macro.hpp"
+#include "so2.hpp"
+
 
 namespace smooth
 {
@@ -178,7 +177,7 @@ public:
    */
   Tangent log() const
   {
-    using std::abs, std::tan;
+    using std::tan;
     const Scalar th = so2().log()(0);
     const Scalar th2 = th * th;
 
@@ -227,7 +226,7 @@ public:
   static Group exp(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
-    using std::abs, std::cos, std::sin;
+    using std::cos, std::sin;
 
     const Scalar th = a.z();
     const Scalar th2 = th * th;
@@ -291,10 +290,10 @@ public:
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
   requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
-    Tangent t;
-    t.template tail<1>() = SO2<Scalar>::vee(A.template topLeftCorner<2, 2>());
-    t.template head<2>() = A.template topRightCorner<2, 1>();
-    return t;
+    Tangent ret;
+    ret.template tail<1>() = SO2<Scalar>::vee(A.template topLeftCorner<2, 2>());
+    ret.template head<2>() = A.template topRightCorner<2, 1>();
+    return ret;
   }
 
   /**
@@ -304,7 +303,7 @@ public:
   static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
-    using std::abs, std::sqrt, std::sin, std::cos;
+    using std::sin, std::cos;
     const Scalar th2 = a.z() * a.z();
 
     Scalar A, B;
@@ -329,7 +328,7 @@ public:
   static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
-    using std::abs, std::sqrt, std::sin, std::cos;
+    using std::sin, std::cos;
     const Scalar th = a.z();
     const Scalar th2 = th * th;
     const TangentMap ad = SE2<Scalar>::ad(a);

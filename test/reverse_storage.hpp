@@ -4,6 +4,7 @@
 #include <array>
 #include <cstdint>
 
+
 namespace smooth
 {
 
