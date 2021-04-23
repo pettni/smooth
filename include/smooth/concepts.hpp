@@ -6,8 +6,6 @@
 #include <concepts>
 #include <random>
 
-#include "common.hpp"
-
 
 namespace smooth
 {

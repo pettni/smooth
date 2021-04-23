@@ -50,15 +50,13 @@ int main(int argc, char const * argv[])
 
   matplot::figure();
   matplot::hold(matplot::on);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[0];})), "r")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[1];})), "g")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[2];})), "b")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.coeffs()[3];})), "k")->line_width(2);
-  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[0];})), "or");
-  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[1];})), "og");
-  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[2];})), "ob");
-  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.coeffs()[3];})), "ok");
-  matplot::title("Quaternion");
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.eulerAngles()[2];})), "r")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.eulerAngles()[1];})), "g")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.eulerAngles()[0];})), "b")->line_width(2);
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.eulerAngles()[2];})), "or");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.eulerAngles()[1];})), "og");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.eulerAngles()[0];})), "ob");
+  matplot::title("Angles");
 
   matplot::figure();
   matplot::hold(matplot::on);

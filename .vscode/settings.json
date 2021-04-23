@@ -18,6 +18,8 @@
     "ostream": "cpp",
     "ratio": "cpp",
     "tuple": "cpp",
-    "type_traits": "cpp"
+    "type_traits": "cpp",
+    "*.tcc": "cpp",
+    "numeric": "cpp"
   },
 }

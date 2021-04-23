@@ -1,9 +1,10 @@
 #ifndef SMOOTH__COMMON_HPP_
 #define SMOOTH__COMMON_HPP_
 
+#include <random>
+
 #include "concepts.hpp"
 
-#include <random>
 
 namespace smooth
 {

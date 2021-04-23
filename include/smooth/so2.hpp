@@ -8,6 +8,7 @@
 #include "lie_group_base.hpp"
 #include "macro.hpp"
 
+
 namespace smooth
 {
 
@@ -54,9 +55,10 @@ public:
   SO2(const Scalar & qz, const Scalar & qw)
   requires ModifiableStorageLike<Storage>
   {
-    s_[0] = qz;
-    s_[1] = qw;
-    normalize();
+    using std::sqrt;
+    const Scalar n = sqrt(qz * qz + qw * qw);
+    s_[0] = qz / n;
+    s_[1] = qw / n;
   }
 
   /**
@@ -74,27 +76,6 @@ public:
   Scalar angle() const
   {
     return log()(0);
-  }
-
-private:
-  /**
-   * @brief Construct from coefficients (does not normalize)
-   */
-  template<typename Scalar>
-  explicit SO2(const Scalar & qz, const Scalar & qw)
-  {
-    s_[0] = qz; s_[1] = qw;
-  }
-
-  /**
-   * @brief Normalize parameters
-   */
-  void normalize()
-  requires ModifiableStorageLike<Storage>
-  {
-    const Scalar mul = Scalar(1) / (s_[0] * s_[0] + s_[1] * s_[1]);
-    s_[0] *= mul;
-    s_[1] *= mul;
   }
 
   // REQUIRED GROUP API

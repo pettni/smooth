@@ -2,12 +2,12 @@
 #define SMOOTH__SO3_HPP_
 
 #include <Eigen/Geometry>
-#include <random>
 
 #include "common.hpp"
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
 #include "macro.hpp"
+
 
 namespace smooth
 {
@@ -48,13 +48,13 @@ public:
 
   /**
    * @brief Construct from quaternion
+   * @param q unit quaternion
    */
   template<typename Derived>
-  SO3(const Eigen::QuaternionBase<Derived> & qin)
+  SO3(const Eigen::QuaternionBase<Derived> & q)
   requires ModifiableStorageLike<Storage>&& std::is_same_v<typename Derived::Scalar, Scalar>
   {
-    s_[0] = qin.x(); s_[1] = qin.y(); s_[2] = qin.z(); s_[3] = qin.w();
-    normalize();
+    quat() = q.normalized();
   }
 
   /**
@@ -87,32 +87,20 @@ public:
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
   }
 
-private:
   /**
-   * @brief Construct from coefficients (does not normalize)
+   * @brief Return euler angles
+   * @param i1, i2, i3 euler angle axis convention (0=x, 1=y, 2=z).
+   *        Default values correspond to ZYX rotation.
+   *
+   * Returned angles a1, a2, a3 are s.t. rotation is described by
+   * Rot_i1(a1) * Rot_i2(a2) * Rot_i3(a3)
    */
-  template<typename Scalar>
-  explicit SO3(const Scalar & qx, const Scalar & qy, const Scalar & qz, const Scalar & qw)
+  Eigen::Matrix<Scalar, 3, 1> eulerAngles(
+    Eigen::Index i1 = 2,
+    Eigen::Index i2 = 1,
+    Eigen::Index i3 = 0) const
   {
-    s_[0] = qx; s_[1] = qy; s_[2] = qz, s_[3] = qw;
-  }
-
-  /**
-   * @brief Normalize quaternion and set qw >= 0
-   */
-  void normalize()
-  requires ModifiableStorageLike<Storage>
-  {
-    using std::abs, std::sqrt;
-
-    Scalar mul = Scalar(1) /
-      sqrt(s_[0] * s_[0] + s_[1] * s_[1] + s_[2] * s_[2] + s_[3] * s_[3]);
-    if (s_[3] < Scalar(0)) {
-      mul *= Scalar(-1);
-    }
-    if (abs(mul - Scalar(1)) > Scalar(eps)) {
-      meta::static_for<lie_size>([&](auto i) {s_[i] *= mul;});
-    }
+    return quat().toRotationMatrix().eulerAngles(i1, i2, i3);
   }
 
   // REQUIRED GROUP API
@@ -123,7 +111,7 @@ public:
    */
   void setIdentity() requires ModifiableStorageLike<Storage>
   {
-    s_[0] = Scalar(0); s_[1] = Scalar(0); s_[2] = Scalar(0); s_[3] = Scalar(1);
+    quat().setIdentity();
   }
 
   /**
@@ -235,7 +223,7 @@ public:
       B = cos(th / Scalar(2));
     }
 
-    return Group(A * a.x(), A * a.y(), A * a.z(), B);
+    return Group(Eigen::Quaternion<Scalar>(B, A * a.x(), A * a.y(), A * a.z()));
   }
 
   /**

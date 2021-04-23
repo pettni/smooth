@@ -8,6 +8,7 @@
 #include "smooth/storage.hpp"
 #include "smooth/compat/ceres.hpp"
 
+
 template<smooth::LieGroupLike G>
 class CeresLocalParam : public ::testing::Test
 {};
@@ -39,6 +40,13 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
     TypeParam g = TypeParam::Random(rng);
     Eigen::Matrix<double, n, 1> b = 1e-4 * Eigen::Matrix<double, n, 1>::Random();
 
+    TypeParam gp = g + b;
+    TypeParam gp_ceres;
+
+    // compute plus
+    lgp.Plus(g.data(), b.data(), gp_ceres.data());
+    ASSERT_TRUE(gp.isApprox(gp_ceres));
+
     // compute jacobian from local parameterization
     Eigen::Matrix<double, p, n, (n > 1) ? Eigen::RowMajor : Eigen::ColMajor> jac;
     lgp.ComputeJacobian(g.data(), jac.data());
@@ -46,9 +54,6 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
     // expect vee(hat(g) + b) \approx g + jac * b
     // where  hat(g) maps from parameters to the group
     // and    vee does the opposite
-    TypeParam gp = g + b;
-    ParamsT deriv = jac * b;
-
     ParamsT param = Eigen::Map<const ParamsT>(g.data());
     ParamsT param_plus = Eigen::Map<const ParamsT>(gp.data());
 
