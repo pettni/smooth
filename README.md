@@ -1,4 +1,4 @@
-# smooth: A C++20 Lie Theory Library and Book for Robotics
+# smooth: Lie Theory C++20 Library and Book for Robotics
 
 # Roadmap
 
@@ -43,5 +43,5 @@
  - [x] revisit small angle approximations
  - [x] en: make bundle support vectors with usual semantics and leave it there
  - [x] bundle: typedef bundle with default storage
- - [ ] get rid of large random header (use eigen seed)
- - [ ] make tests pass float in release mode
+ - [x] get rid of large random header (use eigen seed)
+ - [x] make tests pass float in release mode

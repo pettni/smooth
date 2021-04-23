@@ -115,23 +115,18 @@ public:
   }
 
   /**
-   * @brief Set to a random element
+   * @brief Set to a random quaternion with positive w component
    */
-  template<typename RNG>
-  void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
+  void setRandom()
+  requires ModifiableStorageLike<Storage>
   {
-    const Scalar u1 = filler<Scalar>(rng, 0);
-    const Scalar u2 = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
-    const Scalar u3 = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
-    Scalar a = sqrt(1. - u1), b = sqrt(u1);
+    quat() = Eigen::Quaternion<Scalar>::UnitRandom();
 
-    const Scalar su2 = sin(u2);
-    if (su2 < 0) {
-      a *= -1;
-      b *= -1;
+    if (s_[3] < 0) {
+      for (auto i = 0u; i != 4; ++i) {
+        s_[i] *= -1;
+      }
     }
-    s_[0] = a * cos(u2);  s_[1] = b * sin(u3); s_[2] = b * cos(u3); s_[3] = a * su2;
   }
 
   /**

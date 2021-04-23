@@ -5,9 +5,7 @@
 
 TEST(SE3Interface, Accessors)
 {
-  std::default_random_engine rng(5);
-
-  const auto so3 = smooth::SO3d::Random(rng);
+  const auto so3 = smooth::SO3d::Random();
   Eigen::Vector3d tr(1, 2, 3);
 
   const auto g_const = smooth::SE3d(tr, so3);

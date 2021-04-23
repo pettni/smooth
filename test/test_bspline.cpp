@@ -44,17 +44,16 @@ using GroupsToTest = ::testing::Types<
 
 TYPED_TEST_SUITE(BSpline, GroupsToTest);
 
-
 TYPED_TEST(BSpline, Constant)
 {
-  std::default_random_engine rng(5);
+  std::srand(5);
 
   smooth::meta::static_for<6>(
-    [&rng](auto k) {
+    [](auto k) {
       static constexpr uint32_t K = k + 1;
 
       std::vector<TypeParam> ctrl_pts;
-      ctrl_pts.push_back(TypeParam::Random(rng));
+      ctrl_pts.push_back(TypeParam::Random());
       for (auto i = 0u; i != K; ++i) {
         ctrl_pts.push_back(ctrl_pts.back());
       }
@@ -73,14 +72,13 @@ TYPED_TEST(BSpline, Constant)
     });
 }
 
-
 TEST(BSpline, Constructors)
 {
-  std::default_random_engine rng(5);
+  std::srand(5);
 
   std::vector<smooth::SO3d> c1;
   for (auto i = 0u; i != 50; ++i) {
-    c1.push_back(smooth::SO3d::Random(rng));
+    c1.push_back(smooth::SO3d::Random());
   }
 
   typename smooth::SO3d::Tangent vel, acc;
@@ -96,14 +94,13 @@ TEST(BSpline, Constructors)
   }
 }
 
-
 TEST(BSpline, Outside)
 {
-  std::default_random_engine rng(5);
+  std::srand(5);
 
   std::vector<smooth::SO3d> c1;
   for (auto i = 0u; i != 50; ++i) {
-    c1.push_back(smooth::SO3d::Random(rng));
+    c1.push_back(smooth::SO3d::Random());
   }
 
   smooth::BSpline<smooth::SO3d, 5> spl(0, 1, c1);

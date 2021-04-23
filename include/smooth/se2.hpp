@@ -124,13 +124,11 @@ public:
   /**
    * @brief Set to a random element
    */
-  template<typename RNG>
-  void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
+  void setRandom()
+  requires ModifiableStorageLike<Storage>
   {
-    s_[0] = filler<Scalar>(rng, 0);
-    s_[1] = filler<Scalar>(rng, 0);
-    so2().setRandom(rng);
+    translation().setRandom();
+    so2().setRandom();
   }
 
   /**

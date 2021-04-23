@@ -1,29 +1,3 @@
 {
-  "editor.defaultFormatter": "xaver.clang-format",
-  "files.associations": {
-    "*.ipp": "cpp",
-    "array": "cpp",
-    "bitset": "cpp",
-    "string_view": "cpp",
-    "initializer_list": "cpp",
-    "ranges": "cpp",
-    "regex": "cpp",
-    "utility": "cpp",
-    "valarray": "cpp",
-    "random": "cpp",
-    "chrono": "cpp",
-    "compare": "cpp",
-    "functional": "cpp",
-    "istream": "cpp",
-    "ostream": "cpp",
-    "ratio": "cpp",
-    "tuple": "cpp",
-    "type_traits": "cpp",
-    "*.tcc": "cpp",
-    "numeric": "cpp",
-    "cstdint": "cpp",
-    "cstddef": "cpp",
-    "string": "cpp",
-    "cstdlib": "cpp"
-  },
+  "editor.defaultFormatter": "xaver.clang-format"
 }

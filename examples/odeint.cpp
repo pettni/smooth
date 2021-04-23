@@ -22,6 +22,8 @@ using deriv_t = typename state_t::Tangent;
 
 int main(int argc, char const * argv[])
 {
+  std::srand(5);
+
   // equilibrium point
   const smooth::SO3d Xt = smooth::SO3d::Identity();
 
@@ -41,8 +43,7 @@ int main(int argc, char const * argv[])
       deriv.template tail<3>() = -kp * (Xt.inverse() * state.part<0>()).log() - kd * state.part<1>();
     };
 
-  std::default_random_engine rng(0);
-  state_t state = state_t::Random(rng);
+  state_t state = state_t::Random();
 
   std::vector<double> tvec;
   std::vector<state_t> gvec;

@@ -30,13 +30,11 @@ TEST(Ros, Pose)
   p.orientation.x = 0;
   p.orientation.y = 0;
 
-  std::default_random_engine rng(5);
-
   smooth::Map<geometry_msgs::msg::Pose> m(p);
   ASSERT_TRUE(m.translation().isApprox(Eigen::Vector3d(3, 5, 4)));
 
   smooth::SE3d g;
-  g.setRandom(rng);
+  g.setRandom();
   m = g;
 
   ASSERT_TRUE(m.isApprox(g));

@@ -47,13 +47,12 @@ public:
   /**
    * @brief Construct a random element
    *
-   * @param rng a random number generator
+   * Set the seed with std::srand(unsigned)
    */
-  template<typename RNG>
-  static DerivedRet Random(RNG & rng)
+  static DerivedRet Random()
   {
     DerivedRet ret;
-    ret.setRandom(rng);
+    ret.setRandom();
     return ret;
   }
 
