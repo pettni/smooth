@@ -257,7 +257,11 @@ public:
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
   requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
-    return Tangent(A(2, 1) - A(1, 2), A(0, 2) - A(2, 0), A(1, 0) - A(0, 1)) / Scalar(2);
+    return (Tangent() <<
+      A.coeff(2, 1) - A.coeff(1, 2),
+      A.coeff(0, 2) - A.coeff(2, 0),
+      A.coeff(1, 0) - A.coeff(0, 1)
+    ).finished() / Scalar(2);
   }
 
   /**

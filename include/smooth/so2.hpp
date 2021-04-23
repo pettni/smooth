@@ -1,8 +1,6 @@
 #ifndef SMOOTH__SO2_HPP_
 #define SMOOTH__SO2_HPP_
 
-#include <random>
-
 #include "common.hpp"
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
@@ -195,7 +193,7 @@ public:
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
   requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
-    return Tangent(A(1, 0) - A(0, 1)) / Scalar(2);
+    return (Tangent() << A.coeff(1, 0) - A.coeff(0, 1)).finished() / Scalar(2);
   }
 
   /**

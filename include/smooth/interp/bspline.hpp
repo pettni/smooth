@@ -1,8 +1,11 @@
-#include <iostream>
+#ifndef INTERP__BSPLINE_HPP_
+#define INTERP__BSPLINE_HPP_
+
 #include <ranges>
 
 #include "smooth/concepts.hpp"
 #include "smooth/meta.hpp"
+
 
 namespace smooth
 {
@@ -250,3 +253,5 @@ private:
 };
 
 } // namespace smooth
+
+#endif  // INTERP__BSPLINE_HPP_

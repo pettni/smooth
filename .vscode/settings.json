@@ -20,6 +20,10 @@
     "tuple": "cpp",
     "type_traits": "cpp",
     "*.tcc": "cpp",
-    "numeric": "cpp"
+    "numeric": "cpp",
+    "cstdint": "cpp",
+    "cstddef": "cpp",
+    "string": "cpp",
+    "cstdlib": "cpp"
   },
 }
