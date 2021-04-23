@@ -43,3 +43,5 @@
  - [x] revisit small angle approximations
  - [x] en: make bundle support vectors with usual semantics and leave it there
  - [x] bundle: typedef bundle with default storage
+ - [ ] get rid of large random header (use eigen seed)
+ - [ ] make tests pass float in release mode

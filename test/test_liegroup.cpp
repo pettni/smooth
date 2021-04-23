@@ -257,7 +257,7 @@ TYPED_TEST(LieGroupInterface, LogAndExp)
 
     // check that log = vee o Log o hat
     // matrix log is non-unique, so we compare the results through exp
-    const auto log1 = TypeParam::vee(g.matrix_group().log());
+    const auto log1 = TypeParam::vee(g.matrix_group().log().eval());
     ASSERT_TRUE(TypeParam::exp(log1).isApprox(g));
 
     // check that exp = vee o Exp o hat
@@ -406,4 +406,12 @@ TYPED_TEST(LieGroupInterface, Jacobians)
 
     ASSERT_TRUE(a_exact.isApprox(a_approx, 1e-6));
   }
+}
+
+TYPED_TEST(LieGroupInterface, Stream)
+{
+  std::stringstream ss;
+  const auto g = TypeParam::Identity();
+  ss << g << std::endl;
+  ASSERT_GE(ss.str().size(), 0);
 }
