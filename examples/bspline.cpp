@@ -10,8 +10,7 @@ using matplot::plot;
 
 int main(int argc, char const * argv[])
 {
-  std::default_random_engine rng(10);
-  std::uniform_real_distribution<double> d;
+  std::srand(5);
 
   double dt = 2;  // knot distance
 
@@ -21,11 +20,7 @@ int main(int argc, char const * argv[])
   tstamps.push_back(0);
 
   for (auto i = 0u; i != 20; ++i) {
-    ctrl_pts.push_back(
-      ctrl_pts.back() + 0.3 * Eigen::Vector3d::NullaryExpr(
-        [&d, &rng](int) {return d(rng) - 0.2;}
-      )
-    );
+    ctrl_pts.push_back(ctrl_pts.back() + 0.3 * Eigen::Vector3d::Random());
     tstamps.push_back(tstamps.back() + dt);
   }
 

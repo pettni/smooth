@@ -90,11 +90,11 @@ public:
   /**
    * @brief Set to a random element
    */
-  template<typename RNG>
-  void setRandom(RNG & rng)
-  requires ModifiableStorageLike<Storage>&& std::is_floating_point_v<Scalar>
+  void setRandom()
+  requires ModifiableStorageLike<Storage>
   {
-    const Scalar u = Scalar(2 * M_PI) * filler<Scalar>(rng, 0);
+    using std::sin, std::cos;
+    const Scalar u = Eigen::internal::template random_impl<Scalar>::run(0, 2 * M_PI);
     s_[0] = sin(u); s_[1] = cos(u);
   }
 

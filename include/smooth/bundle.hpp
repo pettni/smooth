@@ -154,15 +154,14 @@ public:
       });
   }
 
-  template<typename RNG>
-  void setRandom(RNG & rng) requires ModifiableStorageLike<Storage>
+  void setRandom() requires ModifiableStorageLike<Storage>
   {
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         if constexpr (EnLike<PartType<i>>) {
-          part<i>() = PartType<i>::NullaryExpr([&rng](int) {return u_distr<Scalar>(rng);});
+          part<i>().setRandom();
         } else {
-          part<i>().setRandom(rng);
+          part<i>().setRandom();
         }
       });
   }

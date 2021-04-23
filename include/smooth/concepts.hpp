@@ -4,7 +4,6 @@
 #include <Eigen/Core>
 
 #include <concepts>
-#include <random>
 
 
 namespace smooth
@@ -96,10 +95,10 @@ requires(const G & g1, const G & g2, const typename G::Vector & v)
   {g1.Ad()}->std::same_as<typename G::TangentMap>;
 } &&
 // static methods
-requires(const typename G::Tangent & a, std::default_random_engine & rng)
+requires(const typename G::Tangent & a)
 {
   {G::Identity()}->std::same_as<typename G::Group>;
-  {G::Random(rng)}->std::same_as<typename G::Group>;
+  {G::Random()}->std::same_as<typename G::Group>;
   {G::exp(a)}->std::same_as<typename G::Group>;
   {G::ad(a)}->std::same_as<typename G::TangentMap>;
   {G::hat(a)}->std::same_as<typename G::MatrixGroup>;
@@ -109,11 +108,11 @@ template<typename G>
 concept ModifiableLieGroupLike = LieGroupLike<G>&&
 // std::is_constructible_v<G> &&
 // member methods
-  requires(G & t, std::default_random_engine & rng)
+requires(G & g)
 {
-  {t.setIdentity()}->std::same_as<void>;
-  {t.setRandom(rng)}->std::same_as<void>;
-  {t.data()}->std::same_as<typename G::Scalar *>;
+  {g.setIdentity()}->std::same_as<void>;
+  {g.setRandom()}->std::same_as<void>;
+  {g.data()}->std::same_as<typename G::Scalar *>;
 };
 
 

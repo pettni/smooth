@@ -23,14 +23,12 @@ TEST(SO3, Quaternion)
 
 TEST(SO3, ReverseStorage)
 {
-  std::default_random_engine rng(5);
-
   std::array<double, 4> a;
 
   smooth::SO3<double, smooth::ReverseStorage<double, 4>> g_rev(a.data());
   smooth::Map<smooth::SO3d> m(a.data());
 
-  m.setRandom(rng);
+  m.setRandom();
   for (auto i = 0u; i != 4; ++i)
   {
     ASSERT_DOUBLE_EQ(m.coeffs()[i], g_rev.coeffs()[3-i]);
@@ -42,9 +40,7 @@ TEST(SO3, Map2Map)
   std::array<double, 4> a1, a2;
   smooth::Map<smooth::SO3d> m1(a1.data()), m2(a2.data());
 
-  std::default_random_engine rng(5);
-
-  m1.setRandom(rng);
+  m1.setRandom();
   m2 = m1;
 
   ASSERT_TRUE(m1.isApprox(m2));

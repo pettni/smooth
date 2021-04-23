@@ -33,11 +33,10 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
   ASSERT_EQ(lgp.LocalSize(), n);
   ASSERT_EQ(lgp.GlobalSize(), p);
 
-  std::default_random_engine rng(5);
 
   for (std::size_t i = 0; i != 10; ++i) {
     // random group element and tangent vector
-    TypeParam g = TypeParam::Random(rng);
+    TypeParam g = TypeParam::Random();
     Eigen::Matrix<double, n, 1> b = 1e-4 * Eigen::Matrix<double, n, 1>::Random();
 
     TypeParam gp = g + b;
