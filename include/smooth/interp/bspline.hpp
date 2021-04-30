@@ -1,6 +1,7 @@
 #ifndef INTERP__BSPLINE_HPP_
 #define INTERP__BSPLINE_HPP_
 
+#include <iostream>
 #include <ranges>
 
 #include "smooth/concepts.hpp"
@@ -84,6 +85,7 @@ constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> cum_card_coeffmat()
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
+ * @param[out] der derivatives of g w.r.t. the K+1 control points
  */
 template<std::size_t K, LieGroupLike G, std::ranges::range Range>
 requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>)
@@ -92,18 +94,19 @@ G bspline_eval(
   const Range & diff_points,
   typename G::Scalar u,
   std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
-  std::optional<Eigen::Ref<typename G::Tangent>> acc = {}
+  std::optional<Eigen::Ref<typename G::Tangent>> acc = {},
+  std::optional<Eigen::Ref<Eigen::Matrix<typename G::Scalar, G::lie_dof, G::lie_dof * (K + 1)>>> der = {}
 )
 {
-  using Scalar = typename G::Scalar;
-  Eigen::Matrix<Scalar, 1, K + 1> uvec, duvec, d2uvec;
-
   if (std::ranges::size(diff_points) != K) {
     throw std::runtime_error(
             "bspline: diff_points range must be size K=" +
             std::to_string(K) + ", got " + std::to_string(std::ranges::size(diff_points))
     );
   }
+
+  using Scalar = typename G::Scalar;
+  Eigen::Matrix<Scalar, 1, K + 1> uvec, duvec, d2uvec;
 
   uvec(0) = Scalar(1);
   duvec(0) = Scalar(0);
@@ -154,6 +157,30 @@ G bspline_eval(
     ++j;
   }
 
+  if (der.has_value()) {
+    G z2inv = G::Identity();
+
+    der.value().setZero();
+
+    // TODO: loop over diff_points instead of over differentiation variable to reduce calculations
+    for (int j = K; j >= 0; --j) {
+      if (j != K) {
+        const Scalar Btilde_jp = uvec.dot(M.row(j + 1));
+        const typename G::Tangent & vjp = *(std::ranges::begin(diff_points) + j);
+        const typename G::Tangent sjp = Btilde_jp * vjp;
+
+        der.value().template block<G::lie_dof, G::lie_dof>(0, j * G::lie_dof) -=
+          Btilde_jp * z2inv.Ad() * G::dr_exp(sjp) * G::dl_expinv(vjp);
+        z2inv *= G::exp(-sjp);
+      }
+      const Scalar Btilde_j = uvec.dot(M.row(j));
+      const typename G::Tangent & vj = *(std::ranges::begin(diff_points) + j - 1);
+
+      der.value().template block<G::lie_dof, G::lie_dof>(0, j * G::lie_dof) +=
+        Btilde_j * z2inv.Ad() * G::dr_exp(Btilde_j * vj) * G::dr_expinv(vj);
+    }
+  }
+
   return g;
 }
 
@@ -172,6 +199,7 @@ G bspline_eval(
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
+ * @param[out] der derivatives w.r.t. the K+1 control points
  */
 template<std::size_t K, LieGroupLike G, std::ranges::range Range>
 requires(std::is_same_v<std::ranges::range_value_t<Range>, G>)
@@ -179,13 +207,14 @@ G bspline_eval(
   const Range & ctrl_points,
   typename G::Scalar u,
   std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
-  std::optional<Eigen::Ref<typename G::Tangent>> acc = {}
+  std::optional<Eigen::Ref<typename G::Tangent>> acc = {},
+  std::optional<Eigen::Ref<Eigen::Matrix<typename G::Scalar, G::lie_dof, G::lie_dof * (K + 1)>>> der = {}
 )
 {
-  if (std::ranges::size(ctrl_points) != K+1) {
+  if (std::ranges::size(ctrl_points) != K + 1) {
     throw std::runtime_error(
             "bspline: ctrl_points range must be size K+1=" +
-            std::to_string(K+1) + ", got " + std::to_string(std::ranges::size(ctrl_points))
+            std::to_string(K + 1) + ", got " + std::to_string(std::ranges::size(ctrl_points))
     );
   }
 
@@ -198,7 +227,7 @@ G bspline_eval(
     ++b1; ++b2;
   }
 
-  return bspline_eval<K, G>(*std::begin(ctrl_points), diff_pts, u, vel, acc);
+  return bspline_eval<K, G>(*std::begin(ctrl_points), diff_pts, u, vel, acc, der);
 }
 
 

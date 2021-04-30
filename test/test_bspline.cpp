@@ -112,3 +112,54 @@ TEST(BSpline, Outside)
   ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(47)));
   ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(48)));
 }
+
+TEST(BSpline, DerivE1)
+{
+  std::srand(5);
+  std::vector<smooth::Bundle<double, smooth::E1>> c1;
+  for (auto i = 0u; i != 4; ++i) {
+    c1.push_back(smooth::Bundle<double, smooth::E1>::Random());
+  }
+
+  double u = 0.5;
+
+  Eigen::Matrix<double, 1, 4> jac;
+  auto g0 = smooth::bspline_eval<3, smooth::Bundle<double, smooth::E1>>(c1, u, {}, {}, jac);
+
+  Eigen::Matrix<double, 4, 1> eps = 1e-4 * Eigen::Matrix<double, 4, 1>::Random();
+  for (auto i = 0u; i != 4; ++i) {
+    c1[i].part<0>()(0) += eps(i);
+  }
+
+  // expect gp \approx g0 + jac * eps
+  auto gp = smooth::bspline_eval<3, smooth::Bundle<double, smooth::E1>>(c1, u);
+  auto gp_exact = g0 + (jac * eps);
+
+  std::cout << jac << std::endl;
+  ASSERT_TRUE(gp.isApprox(gp_exact, 1e-6));
+}
+
+TEST(BSpline, DerivSO3)
+{
+  std::srand(5);
+  std::vector<smooth::SO3d> c1;
+  for (auto i = 0u; i != 4; ++i) {
+    c1.push_back(smooth::SO3d::Random());
+  }
+
+  for (double u = 0.1; u < 1; u += 0.2) {
+    Eigen::Matrix<double, 3, 12> jac;
+    auto g0 = smooth::bspline_eval<3, smooth::SO3d>(c1, u, {}, {}, jac);
+
+    Eigen::Matrix<double, 12, 1> eps = 1e-4 * Eigen::Matrix<double, 12, 1>::Random();
+    for (auto i = 0u; i != 4; ++i) {
+      c1[i] += eps.segment<3>(i * 3);
+    }
+
+    // expect gp \approx g0 + jac * eps
+    auto gp = smooth::bspline_eval<3, smooth::SO3d>(c1, u);
+    auto gp_exact = g0 + (jac * eps);
+
+    ASSERT_TRUE(gp.isApprox(gp_exact, 1e-6));
+  }
+}
