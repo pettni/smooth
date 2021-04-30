@@ -15,19 +15,19 @@ namespace smooth::meta
 /**
  * @brief Compile-time for loop
  */
-template<std::size_t i, std::size_t iend, typename F>
-inline static constexpr void static_for_impl(F && f)
+template<std::size_t _Ibegin, std::size_t _Iend, typename _F>
+inline static constexpr void static_for(_F && f)
 {
-  if constexpr (i < iend) {
-    f(std::integral_constant<std::size_t, i>());
-    static_for_impl<i + 1, iend>(std::forward<F>(f));
+  if constexpr (_Ibegin < _Iend) {
+    f(std::integral_constant<std::size_t, _Ibegin>());
+    static_for<_Ibegin + 1, _Iend>(std::forward<_F>(f));
   }
 }
 
-template<std::size_t iend, typename F>
-inline static constexpr void static_for(F && f)
+template<std::size_t _Iend, typename _F>
+inline static constexpr void static_for(_F && f)
 {
-  static_for_impl<0, iend>(std::forward<F>(f));
+  static_for<0, _Iend>(std::forward<_F>(f));
 }
 
 
@@ -38,75 +38,75 @@ inline static constexpr void static_for(F && f)
 /**
  * @brief Add constant value X to an integer sequence
  */
-template<std::size_t X, typename Iseq>
+template<std::size_t _X, typename _Seq>
 struct iseq_add;
 
-template<std::size_t X, std::size_t ... Idx>
-struct iseq_add<X, std::index_sequence<Idx...>>
+template<std::size_t _X, std::size_t ... Idx>
+struct iseq_add<_X, std::index_sequence<Idx...>>
 {
-  using type = std::index_sequence<X + Idx ...>;
+  using type = std::index_sequence<_X + Idx ...>;
 };
 
-template<std::size_t X, typename Iseq>
-using iseq_add_t = typename iseq_add<X, Iseq>::type;
+template<std::size_t _X, typename _Seq>
+using iseq_add_t = typename iseq_add<_X, _Seq>::type;
 
 
 /**
  * @brief Sum an index sequence
  */
-template<typename>
+template<typename _Seq>
 struct iseq_sum {};
 
-template<std::size_t ... _Idx>
-struct iseq_sum<std::index_sequence<_Idx...>>
+template<std::size_t ... _Is>
+struct iseq_sum<std::index_sequence<_Is...>>
 {
-  static constexpr std::size_t value = (_Idx + ... + 0);
+  static constexpr std::size_t value = (_Is + ... + 0);
 };
 
-template<typename Iseq>
-static constexpr std::size_t iseq_sum_v = iseq_sum<Iseq>::value;
+template<typename _Seq>
+static constexpr std::size_t iseq_sum_v = iseq_sum<_Seq>::value;
 
 
 /**
  * @brief Get the N:th element of an index sequence
  */
-template<std::size_t N, typename>
+template<std::size_t _N, typename _Seq>
 struct iseq_el {};
 
-template<std::size_t _Beg, std::size_t ... _Idx>
-struct iseq_el<0, std::index_sequence<_Beg, _Idx...>>
+template<std::size_t _Beg, std::size_t ... _Is>
+struct iseq_el<0, std::index_sequence<_Beg, _Is...>>
 {
   static constexpr std::size_t value = _Beg;
 };
-template<std::size_t _I, std::size_t _Beg, std::size_t ... _Idx>
-struct iseq_el<_I, std::index_sequence<_Beg, _Idx...>>
-  : public iseq_el<_I - 1, std::index_sequence<_Idx...>>
+template<std::size_t _N, std::size_t _Beg, std::size_t ... _Is>
+struct iseq_el<_N, std::index_sequence<_Beg, _Is...>>
+  : public iseq_el<_N - 1, std::index_sequence<_Is...>>
 {};
 
-template<std::size_t _I, typename _Seq>
-static constexpr std::size_t iseq_el_v = iseq_el<_I, _Seq>::value;
+template<std::size_t _N, typename _Seq>
+static constexpr std::size_t iseq_el_v = iseq_el<_N, _Seq>::value;
 
 
 /**
  * @brief Get the length of an index sequence
  */
-template<typename>
+template<typename _Seq>
 struct iseq_len {};
 
-template<std::size_t ... _Idx>
-struct iseq_len<std::index_sequence<_Idx...>>
+template<std::size_t ... _Is>
+struct iseq_len<std::index_sequence<_Is...>>
 {
-  static constexpr std::size_t value = sizeof...(_Idx);
+  static constexpr std::size_t value = sizeof...(_Is);
 };
 
-template<typename Iseq>
-static constexpr std::size_t iseq_len_v = iseq_len<Iseq>::value;
+template<typename _Seq>
+static constexpr std::size_t iseq_len_v = iseq_len<_Seq>::value;
 
 
 /**
  * @brief prefix-sum an index sequence
  */
-template<typename _Collected, typename _Remaining, std::size_t Sum>
+template<typename _Collected, typename _Remaining, std::size_t _Sum>
 struct iseq_psum_impl;
 
 template<std::size_t... _Cur, std::size_t _Sum>
@@ -117,8 +117,7 @@ struct iseq_psum_impl<std::index_sequence<_Cur...>, std::index_sequence<>, _Sum>
 
 template<std::size_t _First, std::size_t _Sum, std::size_t... _Cur, std::size_t... _Rem>
 struct iseq_psum_impl<std::index_sequence<_Cur...>, std::index_sequence<_First, _Rem...>, _Sum>
-  : public iseq_psum_impl<std::index_sequence<_Cur..., _Sum>, std::index_sequence<_Rem...>,
-    _Sum + _First>
+  : public iseq_psum_impl<std::index_sequence<_Cur..., _Sum>, std::index_sequence<_Rem...>, _Sum + _First>
 {};
 
 template<typename _Seq>
@@ -135,69 +134,69 @@ using iseq_psum_t = typename iseq_psum_impl<std::index_sequence<>, _Seq, 0>::typ
 /**
  * @brief Type that holds pack of types
  */
-template<typename ... Ts>
+template<typename ... _Ts>
 struct typepack
 {
-  template<std::size_t Idx>
-  using part = std::tuple_element_t<Idx, std::tuple<Ts...>>;
+  template<std::size_t _I>
+  using part = std::tuple_element_t<_I, std::tuple<_Ts...>>;
 
-  using tuple = std::tuple<Ts...>;
+  using tuple = std::tuple<_Ts...>;
 
   template<template<typename ...> typename T>
-  using apply = T<Ts...>;
+  using apply = T<_Ts...>;
 
-  static constexpr std::size_t size = sizeof...(Ts);
+  static constexpr std::size_t size = sizeof...(_Ts);
 };
 
 /**
  * @brief Select a subset of a typepack using an index sequence
  */
-template<typename Iseq, typename Tpack>
+template<typename _Seq, typename _TPack>
 struct typepack_select;
 
-template<std::size_t ... Idx, typename ... Ts>
-struct typepack_select<std::index_sequence<Idx...>, typepack<Ts...>>
+template<std::size_t ... _I, typename ... _Ts>
+struct typepack_select<std::index_sequence<_I...>, typepack<_Ts...>>
 {
-  using type = typepack<typename typepack<Ts...>::template part<Idx>...>;
+  using type = typepack<typename typepack<_Ts...>::template part<_I>...>;
 };
 
-template<typename ISeq, typename TPack>
-using typepack_select_t = typename typepack_select<ISeq, TPack>::type;
+template<typename _Seq, typename _TPack>
+using typepack_select_t = typename typepack_select<_Seq, _TPack>::type;
 
 /**
  * @brief Take first N elements of typepack
  */
-template<std::size_t N, typename TPack>
+template<std::size_t _N, typename _TPack>
 struct typepack_take
 {
-  using type = typepack_select<std::make_index_sequence<N>, TPack>::type;
+  using type = typepack_select<std::make_index_sequence<_N>, _TPack>::type;
 };
 
-template<std::size_t N, typename TPack>
-using typepack_take_t = typename typepack_take<N, TPack>::type;
+template<std::size_t _N, typename _TPack>
+using typepack_take_t = typename typepack_take<_N, _TPack>::type;
 
 /**
- * @brief Drop first N elements of typepack
+ * @brief Drop first _N elements of typepack
  */
-template<std::size_t N, typename TPack>
+template<std::size_t _N, typename _TPack>
 struct typepack_drop
 {
-  using type = typepack_select_t<iseq_add_t<N, std::make_index_sequence<TPack::size - N>>, TPack>;
+  using type = typepack_select_t<iseq_add_t<_N, std::make_index_sequence<_TPack::size - _N>>, _TPack>;
 };
 
-template<std::size_t N, typename TPack>
-using typepack_drop_t = typename typepack_drop<N, TPack>::type;
+template<std::size_t _N, typename _TPack>
+using typepack_drop_t = typename typepack_drop<_N, _TPack>::type;
 
 /**
  * @brief Concatenate multiple typepacks
  */
-template<typename ... TPacks>
+template<typename ... _TPacks>
 struct typepack_cat;
 
-template<typename TPack>
-struct typepack_cat<TPack>
+template<typename _TPack>
+struct typepack_cat<_TPack>
 {
-  using type = TPack;
+  using type = _TPack;
 };
 
 template<typename ... Ts1, typename ... Ts2>
@@ -206,14 +205,14 @@ struct typepack_cat<typepack<Ts1...>, typepack<Ts2...>>
   using type = typepack<Ts1..., Ts2...>;
 };
 
-template<typename TPack1, typename TPack2, typename ... TPacks>
-struct typepack_cat<TPack1, TPack2, TPacks...>
+template<typename _TPack1, typename _TPack2, typename ... _TPacks>
+struct typepack_cat<_TPack1, _TPack2, _TPacks...>
 {
-  using type = typepack_cat<typename typepack_cat<TPack1, TPack2>::type, TPacks...>::type;
+  using type = typepack_cat<typename typepack_cat<_TPack1, _TPack2>::type, _TPacks...>::type;
 };
 
-template<typename ... TPacks>
-using typepack_cat_t = typename typepack_cat<TPacks...>::type;
+template<typename ... _TPacks>
+using typepack_cat_t = typename typepack_cat<_TPacks...>::type;
 
 
 ///////////////////////////
@@ -221,28 +220,24 @@ using typepack_cat_t = typename typepack_cat<TPacks...>::type;
 ///////////////////////////
 
 /**
- * @brief Change the N:th template argument in T<Ts...> to NewT
- *
- * @tparam T
- * @tparam Idx
- * @tparam New
+ * @brief Change the _N:th template argument in T<Ts...> to NewT
  */
-template<typename T, std::size_t N, typename NewT>
+template<typename _T, std::size_t _N, typename _NewT>
 struct change_template_arg;
 
-template<template<typename ...> typename T, std::size_t N, typename New, typename ... Ts>
-struct change_template_arg<T<Ts...>, N, New>
+template<template<typename ...> typename _T, std::size_t _N, typename _NewT, typename ... _Ts>
+struct change_template_arg<_T<_Ts...>, _N, _NewT>
 {
   using type = typename
     typepack_cat_t<
-    typepack_take_t<N, typepack<Ts...>>,
-    typepack<New>,
-    typepack_drop_t<N + 1, typepack<Ts...>>
-    >::apply<T>;
+    typepack_take_t<_N, typepack<_Ts...>>,
+    typepack<_NewT>,
+    typepack_drop_t<_N + 1, typepack<_Ts...>>
+    >::apply<_T>;
 };
 
-template<typename T, std::size_t N, typename NewT>
-using change_template_arg_t = typename change_template_arg<T, N, NewT>::type;
+template<typename _T, std::size_t _N, typename _NewT>
+using change_template_arg_t = typename change_template_arg<_T, _N, _NewT>::type;
 
 
 /////////////////////////////////
@@ -252,30 +247,33 @@ using change_template_arg_t = typename change_template_arg<T, N, NewT>::type;
 /**
  * @brief Elementary structure for compile-time matrix algebra
  */
-template<typename Scalar, std::size_t Rows, std::size_t Cols>
-struct StaticMatrix : std::array<std::array<Scalar, Cols>, Rows>
+template<typename _Scalar, std::size_t _Rows, std::size_t _Cols>
+struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
 {
-  using std::array<std::array<Scalar, Cols>, Rows>::operator[];
+  std::size_t Rows = _Rows;
+  std::size_t Cols = _Cols;
+
+  using std::array<std::array<_Scalar, _Cols>, _Rows>::operator[];
 
   /**
    * @brief Construct a matrix filled with zeros
    */
   constexpr StaticMatrix()
-  : std::array<std::array<Scalar, Cols>, Rows>{}
+  : std::array<std::array<_Scalar, _Cols>, _Rows>{}
   {
-    for (auto i = 0u; i != Rows; ++i) {
-      operator[](i).fill(Scalar(0));
+    for (auto i = 0u; i != _Rows; ++i) {
+      operator[](i).fill(_Scalar(0));
     }
   }
 
   /**
    * @brief Add two matrices
    */
-  constexpr StaticMatrix<Scalar, Rows, Cols> operator+(StaticMatrix<Scalar, Rows, Cols> o) const
+  constexpr StaticMatrix<_Scalar, _Rows, _Cols> operator+(StaticMatrix<_Scalar, _Rows, _Cols> o) const
   {
-    StaticMatrix<Scalar, Rows, Cols> ret;
-    for (auto i = 0u; i < Rows; ++i) {
-      for (auto j = 0u; j < Cols; ++j) {
+    StaticMatrix<_Scalar, _Rows, _Cols> ret;
+    for (auto i = 0u; i < _Rows; ++i) {
+      for (auto j = 0u; j < _Cols; ++j) {
         ret[i][j] = operator[](i)[j] + o[i][j];
       }
     }
@@ -285,11 +283,11 @@ struct StaticMatrix : std::array<std::array<Scalar, Cols>, Rows>
   /**
    * @brief Return transpose of a matrix
    */
-  constexpr StaticMatrix<Scalar, Rows, Cols> transpose() const
+  constexpr StaticMatrix<_Scalar, _Rows, _Cols> transpose() const
   {
-    StaticMatrix<Scalar, Rows, Cols> ret;
-    for (auto i = 0u; i < Rows; ++i) {
-      for (auto j = 0u; j < Cols; ++j) {
+    StaticMatrix<_Scalar, _Rows, _Cols> ret;
+    for (auto i = 0u; i < _Rows; ++i) {
+      for (auto j = 0u; j < _Cols; ++j) {
         ret[j][i] = operator[](i)[j];
       }
     }
@@ -299,14 +297,14 @@ struct StaticMatrix : std::array<std::array<Scalar, Cols>, Rows>
   /**
    * @brief Multiply two matrices
    */
-  template<std::size_t ColsNew>
-  constexpr StaticMatrix<Scalar, Rows, ColsNew>
-  operator*(StaticMatrix<Scalar, Cols, ColsNew> o) const
+  template<std::size_t _ColsNew>
+  constexpr StaticMatrix<_Scalar, _Rows, _ColsNew>
+  operator*(StaticMatrix<_Scalar, _Cols, _ColsNew> o) const
   {
-    StaticMatrix<Scalar, Rows, ColsNew> ret;
-    for (auto i = 0u; i < Rows; ++i) {
-      for (auto j = 0u; j < ColsNew; ++j) {
-        for (auto k = 0u; k < Cols; ++k) {
+    StaticMatrix<_Scalar, _Rows, _ColsNew> ret;
+    for (auto i = 0u; i < _Rows; ++i) {
+      for (auto j = 0u; j < _ColsNew; ++j) {
+        for (auto k = 0u; k < _Cols; ++k) {
           ret[i][j] += operator[](i)[k] * o[k][j];
         }
       }

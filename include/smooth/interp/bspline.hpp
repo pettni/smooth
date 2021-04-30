@@ -72,21 +72,24 @@ constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> cum_card_coeffmat()
 /**
  * @brief Evaluate a cardinal bspline of order K and calculate derivatives
  *
- *   g = g_0 * \Prod_{i=1}^{K} exp ( Btilde_i(u) * log( g_{i-1}^{-1}  * g_i ) )
+ *   g = g_0 * \Prod_{i=1}^{K} exp ( Btilde_i(u) * v_i )
  *
  * Where Btilde are cumulative Bspline basis functins.
  *
  * @tparam G lie group type
  * @tparam K bspline order
  * @tparam It iterator type
- * @param[in] ctrl_points range of control points (must be of size K + 1)
+ * @param g_0 initial value
+ * @param[in] diff_points range of differences v_i (must be of size K)
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
  */
-template<LieGroupLike G, std::size_t K = 3, std::ranges::range Range>
+template<std::size_t K, LieGroupLike G, std::ranges::range Range>
+requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>)
 G bspline_eval(
-  Range ctrl_points,
+  const G & g_0,
+  const Range & diff_points,
   typename G::Scalar u,
   std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
   std::optional<Eigen::Ref<typename G::Tangent>> acc = {}
@@ -95,10 +98,10 @@ G bspline_eval(
   using Scalar = typename G::Scalar;
   Eigen::Matrix<Scalar, 1, K + 1> uvec, duvec, d2uvec;
 
-  if (std::ranges::size(ctrl_points) != K + 1) {
+  if (std::ranges::size(diff_points) != K) {
     throw std::runtime_error(
-            "bspline: control point range must be size K+1=" +
-            std::to_string(K + 1) + ", got " + std::to_string(std::ranges::size(ctrl_points))
+            "bspline: diff_points range must be size K=" +
+            std::to_string(K) + ", got " + std::to_string(std::ranges::size(diff_points))
     );
   }
 
@@ -131,11 +134,9 @@ G bspline_eval(
     }
   }
 
-  G g = *std::ranges::begin(ctrl_points);
-  G gjm1 = g;  // keep track of previous g
-  for (std::size_t j = 1; const auto & gj : ctrl_points | std::views::drop(1)) {
+  G g = g_0;
+  for (std::size_t j = 1; const auto & v : diff_points) {
     const Scalar Btilde = uvec.dot(M.row(j));
-    const typename G::Tangent v = (gjm1.inverse() * gj).log();
     g *= G::exp(Btilde * v);
 
     if (vel.has_value() || acc.has_value()) {
@@ -150,7 +151,6 @@ G bspline_eval(
         acc.value() += dBtilde * G::ad(vel.value()) * v + d2Btilde * v;
       }
     }
-    gjm1 = gj;
     ++j;
   }
 
@@ -158,7 +158,51 @@ G bspline_eval(
 }
 
 
-template<LieGroupLike G, std::size_t K = 3>
+/**
+ * @brief Evaluate a cardinal bspline of order K and calculate derivatives
+ *
+ *   g = g_0 * \Prod_{i=1}^{K} exp ( Btilde_i(u) * log( g_{i-1}^{-1}  * g_i ) )
+ *
+ * Where Btilde are cumulative Bspline basis functins.
+ *
+ * @tparam G lie group type
+ * @tparam K bspline order
+ * @tparam It iterator type
+ * @param[in] ctrl_points range of control points (must be of size K + 1)
+ * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
+ * @param[out] vel calculate first order derivative w.r.t. u
+ * @param[out] acc calculate second order derivative w.r.t. u
+ */
+template<std::size_t K, LieGroupLike G, std::ranges::range Range>
+requires(std::is_same_v<std::ranges::range_value_t<Range>, G>)
+G bspline_eval(
+  const Range & ctrl_points,
+  typename G::Scalar u,
+  std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
+  std::optional<Eigen::Ref<typename G::Tangent>> acc = {}
+)
+{
+  if (std::ranges::size(ctrl_points) != K+1) {
+    throw std::runtime_error(
+            "bspline: ctrl_points range must be size K+1=" +
+            std::to_string(K+1) + ", got " + std::to_string(std::ranges::size(ctrl_points))
+    );
+  }
+
+  auto b1 = std::begin(ctrl_points);
+  auto b2 = std::begin(ctrl_points) + 1;
+
+  std::array<typename G::Tangent, K> diff_pts;
+  for (auto i = 0u; i != K; ++i) {
+    diff_pts[i] = ((*b1).inverse() * (*b2)).log();
+    ++b1; ++b2;
+  }
+
+  return bspline_eval<K, G>(*std::begin(ctrl_points), diff_pts, u, vel, acc);
+}
+
+
+template<std::size_t K, LieGroupLike G>
 class BSpline
 {
 public:
@@ -235,7 +279,7 @@ public:
       u = (t - t0_ - istar * dt_) / dt_;
     }
 
-    G g = bspline_eval<G, K>(
+    G g = bspline_eval<K, G>(
       ctrl_pts_ | std::views::drop(istar) | std::views::take(K + 1),
       u, vel, acc
     );

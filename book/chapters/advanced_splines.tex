@@ -177,8 +177,8 @@ With $\lambda(t) \rightarrow - \tilde B_{j, k}(t), \bu_1 \rightarrow \bv_j, \bu_
 \begin{important}
   \begin{equation}
     \begin{aligned}
-      \symbf q_{i^*} & = \symbf 0,                                                                                                                                                                        \\
-      \symbf q_j     & = \tilde B_{j, k}'(t) \left[ \symbf w_j, \bv_j \right]  + \bAd_{\Exp(-\tilde B_{j, k}(t) \bv_j )} \bq_{j-1} + \tilde B^{(2)}_{j, k}(t) \bv_j, \qquad j = i^* + 1, \ldots, i^* + k, \\
+      \symbf q_{i^* - k} & = \symbf 0,                                                                                                                                                                        \\
+      \symbf q_j     & = \tilde B_{j, k}'(t) \left[ \symbf w_j, \bv_j \right]  + \bAd_{\exp(-\tilde B_{j, k}(t) \bv_j )} \bq_{j-1} + \tilde B^{(2)}_{j, k}(t) \bv_j, \qquad j = i^* + 1, \ldots, i^* + k, \\
       \frac{\mathrm{d}}{\mathrm{d}t} \mathrm{d}^r \x_t
                      & = \bq_{i^* + k}.
     \end{aligned}
@@ -189,33 +189,37 @@ With $\lambda(t) \rightarrow - \tilde B_{j, k}(t), \bu_1 \rightarrow \bv_j, \bu_
 
 Finally it can be useful to express the derivative of $\x(t)$ with respect to the control point values $\x_j$. Recall that
 \begin{equation}
-  \x(t) = \x_{i^*} \circ \prod_{j = i^* + 1}^{i^* + k} \exp \left[ \tilde B_{j, k}(t) \bv_j \right] = \x_{i^*} \circ \prod_{j = i^* + 1}^{i^* + k} \exp \left[ \tilde B_{j, k}(t) (\x_j \ominus_r \x_{j-1}) \right],
+  \x(t) = \x_{i^* - k} \circ \prod_{j = i^* - k + 1}^{i^*} \exp \left[ \tilde B_{j, k}(t) \bv_j \right],
 \end{equation}
 so it is again just a matter of differentiating.
 
-Let $\symbf r_j \coloneq \mathrm{d}^r \x(t)_{\x_j}$ and $\symbf s_j = \tilde B_{j, k}(t) \bv_j$, we then have
-\begin{equation}
+Let $\symbf s_j = \tilde B_{j, k}(t) \bv_j$, we then have that $\x(t) = x_{i^* - k} \circ \prod_{j=i^* - k + 1}^{i^*} \exp(s_j)$.  Derivatives with respect to the terms are
+\begin{subequations}
+  \label{eq:dr_sj}
+  \begin{align}
+    \label{eq:dr_sj_xj}
+    \mathrm{d}^r (\symbf s_j)_{x_j}     & \overset{\eqref{eq:d_rminus_fst}} = \tilde B_{j, k}(t) \left[ \mathrm{d}^r \exp_{\bv_j} \right]^{-1} \; \; \implies \; \; \mathrm{d}^r \left(\exp (\symbf s_j) \right)_{\x_j} = \tilde B_{j, k}(t) \left[\mathrm{d}^r \exp_{\symbf s_j} \right]  \left[ \mathrm{d}^r \exp_{\bv_j} \right]^{-1},         \\
+    \label{eq:dr_sj_xjm}
+    \mathrm{d}^r (\symbf s_j)_{x_{j-1}} & \overset{\eqref{eq:d_rminus_snd}} = - \tilde B_{j, k}(t) \left[ \mathrm{d}^l \exp_{\bv_j} \right]^{-1} \; \; \implies \; \; \mathrm{d}^r \left( \exp(\symbf s_j) \right)_{\x_{j-1}} = - \tilde B_{j, k}(t)  \left[ \mathrm{d}^r \exp_{\symbf s_j} \right]\left[ \mathrm{d}^l \exp_{\bv_j} \right]^{-1}.
+  \end{align}
+\end{subequations}
+Thus the derivatives $\symbf r_j \coloneq \mathrm{d}^r \x(t)_{\x_j}$ of $\x$ become (where the $\bar \z$'s are constant w.r.t. the differentiation variable)
+\begin{equation*}
   \begin{aligned}
-    \mathrm{d}^r (\symbf s_j)_{x_j}     & \overset{\eqref{eq:d_rminus_fst}} = \tilde B_{j, k}(t) \left[ \mathrm{d}^r \exp_{\bv_j} \right]^{-1}, \quad \mathrm{d}^r \left(\exp (\symbf s_j) \right)_{\x_j} = \tilde B_{j, k}(t) \left[\mathrm{d}^r \exp_{\symbf s_j} \right]  \left[ \mathrm{d}^r \exp_{\bv_j} \right]^{-1},         \\
-    \mathrm{d}^r (\symbf s_j)_{x_{j-1}} & \overset{\eqref{eq:d_rminus_snd}} = - \tilde B_{j, k}(t) \left[ \mathrm{d}^l \exp_{\bv_j} \right]^{-1}, \quad \mathrm{d}^r \left( \exp(\symbf s_j) \right)_{\x_{j-1}} = - \tilde B_{j, k}(t)  \left[ \mathrm{d}^r \exp_{\symbf s_j} \right]\left[ \mathrm{d}^l \exp_{\bv_j} \right]^{-1}.
-  \end{aligned}
-\end{equation}
-
-
-\begin{equation}
-  \begin{aligned}
-    \symbf r_{i^* + k}
-     & = \mathrm{d}^r \left( \bar \z \circ \exp \left[ \symbf s_{i^* + k} \right] \right)
-    \overset{\eqref{eq:product_rule}}= \mathrm{d}^r \exp_{\symbf s_{i^*+k}} \mathrm{d}^r (\symbf s_{i^*+k})_{\x_{i^* + k}} =  \tilde B_{i^* + k, k} \mathrm{d}^r \exp_{\symbf s_{i^*+k}} \left[ \mathrm{d}^r \exp_{\bv_{i^*+k}} \right]^{-1},                                                                      \\
+    \symbf r_{i^*}
+     & = \mathrm{d}^r \left( \bar \z \circ \exp \left[ \symbf s_{i^*} \right] \right)_{\x_{i^*}}
+    \overset{\eqref{eq:product_rule}}= \mathrm{d}^r \exp\left( \symbf s_{i^*} \right)_{\x_{i^*}} \overset{\eqref{eq:dr_sj_xj}}=  \tilde B_{i^*, k} \mathrm{d}^r \exp_{\symbf s_{i^*}} \left[ \mathrm{d}^r \exp_{\bv_{i^*}} \right]^{-1},                                                                      \\
     \symbf r_{j}
      & = \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \circ \bar \z_2 \right)_{\x_j}
-    = \bAd_{\bar z_2^{-1}} \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \right)_{\x_j}                                                                                                                                                             \\
-     & = \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\bar \z_1 \circ \exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                     \\
-     & = \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                                     \\
-     & = \bAd_{\bar z_2^{-1}} \left( \tilde B_{j, k}(t) \bAd_{\exp(-s_{j+1})} \left[ \mathrm{d}^r \exp_{\symbf s_j} \right] \left[ \mathrm{d}^r \exp_{\symbf v_j} \right]^{-1} - \tilde B_{j+1, k}(t) \left[ \mathrm{d}^r \exp_{\symbf s_{j+1}} \right] \left[ \mathrm{d}^l \exp_{\bv_{j+1}} \right]^{-1} \right).
+    \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \right)_{\x_j}                                                                                                                                                             \\
+     & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\bar \z_1 \circ \exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                     \\
+     & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                                     \\
+     & \overset{\eqref{eq:dr_sj}}= \bAd_{\bar z_2^{-1}} \left( \tilde B_{j, k}(t) \bAd_{\exp(-s_{j+1})} \left[ \mathrm{d}^r \exp_{\symbf s_j} \right] \left[ \mathrm{d}^r \exp_{\symbf v_j} \right]^{-1} - \tilde B_{j+1, k}(t) \left[ \mathrm{d}^r \exp_{\symbf s_{j+1}} \right] \left[ \mathrm{d}^l \exp_{\bv_{j+1}} \right]^{-1} \right).
   \end{aligned}
-\end{equation}
-\textcolor{red}{These derivatives have not been verified and can possibly be simplified further.}
+\end{equation*}
+
+\todo[inline]{Can this be simplified?}
+\todo[inline]{Write down recursive scheme}
 
 \section{General Coefficient Recursion}
 

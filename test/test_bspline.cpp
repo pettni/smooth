@@ -60,7 +60,7 @@ TYPED_TEST(BSpline, Constant)
 
       for (double u = 0.; u < 1; u += 0.05) {
         typename TypeParam::Tangent vel, acc;
-        auto g = smooth::bspline_eval<TypeParam, K>(ctrl_pts, u, vel, acc);
+        auto g = smooth::bspline_eval<K, TypeParam>(ctrl_pts, u, vel, acc);
 
         ASSERT_TRUE(g.isApprox(ctrl_pts.front()));
         ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -68,7 +68,7 @@ TYPED_TEST(BSpline, Constant)
       }
 
       ctrl_pts.push_back(ctrl_pts.back());
-      ASSERT_THROW((smooth::bspline_eval<TypeParam, K>(ctrl_pts, 1)), std::runtime_error);
+      ASSERT_THROW((smooth::bspline_eval<K, TypeParam>(ctrl_pts, 1)), std::runtime_error);
     });
 }
 
@@ -83,9 +83,9 @@ TEST(BSpline, Constructors)
 
   typename smooth::SO3d::Tangent vel, acc;
 
-  smooth::BSpline<smooth::SO3d, 5> spl0;
-  smooth::BSpline<smooth::SO3d, 5> spl1(0, 1, c1);
-  smooth::BSpline<smooth::SO3d, 5> spl2(0, 1, std::move(c1));
+  smooth::BSpline<5, smooth::SO3d> spl0;
+  smooth::BSpline<5, smooth::SO3d> spl1(0, 1, c1);
+  smooth::BSpline<5, smooth::SO3d> spl2(0, 1, std::move(c1));
 
   ASSERT_TRUE(spl0.eval(0.5).isApprox(smooth::SO3d::Identity()));
 
@@ -103,7 +103,7 @@ TEST(BSpline, Outside)
     c1.push_back(smooth::SO3d::Random());
   }
 
-  smooth::BSpline<smooth::SO3d, 5> spl(0, 1, c1);
+  smooth::BSpline<5, smooth::SO3d> spl(0, 1, c1);
 
   ASSERT_TRUE(spl.eval(-2).isApprox(spl.eval(0)));
   ASSERT_TRUE(spl.eval(-1).isApprox(spl.eval(0)));
