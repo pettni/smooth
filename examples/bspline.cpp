@@ -16,7 +16,7 @@ int main(int argc, char const * argv[])
 
   std::vector<smooth::SO3d> ctrl_pts;
   std::vector<double> tstamps;
-  ctrl_pts.push_back(smooth::SO3d::Identity());
+  ctrl_pts.push_back(smooth::SO3d::Random());
   tstamps.push_back(0);
 
   for (auto i = 0u; i != 20; ++i) {
@@ -29,7 +29,7 @@ int main(int argc, char const * argv[])
   double t0 = tstamps.front() + dt * (K - 1) / 2;
 
   // create spline
-  smooth::BSpline<smooth::SO3d, K> spline(t0, dt, ctrl_pts);
+  smooth::BSpline<K, smooth::SO3d> spline(t0, dt, ctrl_pts);
 
   auto tvec = matplot::linspace(spline.t_min(), spline.t_max(), 300);
   std::vector<smooth::SO3d> gvec;
@@ -45,12 +45,14 @@ int main(int argc, char const * argv[])
 
   matplot::figure();
   matplot::hold(matplot::on);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.eulerAngles()[2];})), "r")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.eulerAngles()[1];})), "g")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.eulerAngles()[0];})), "b")->line_width(2);
-  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.eulerAngles()[2];})), "or");
-  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.eulerAngles()[1];})), "og");
-  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.eulerAngles()[0];})), "ob");
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().x();})), "b")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().y();})), "r")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().z();})), "g")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().w();})), "b")->line_width(2);
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.quat().x();})), "ob");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.quat().y();})), "or");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.quat().z();})), "og");
+  plot(tstamps, r2v(ctrl_pts | transform([](auto s) {return s.quat().w();})), "ob");
   matplot::title("Angles");
 
   matplot::figure();
