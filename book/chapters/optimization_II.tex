@@ -1,4 +1,4 @@
-% !TEX root = ../manuscript.tex
+% !TEX root = ../root.tex
 
 \chapter{Optimization II: Pose-Graph Optimization}
 
@@ -11,12 +11,12 @@
   \item $\hat y_j \in \mathbb{R}^{d_j}$
   \item $h_j$ measurement function s.t. $y_j \sim \mathcal N (h_j(X_j), \Sigma_j)$ for a (often small) subset of variables $X_j \subset X$.
 \end{enumerate}
-  
+
 
 Given a collection of measurements $\hat y_j$ we are interested in finding the \textbf{maximum-likelihood estimate} of the variables $X$. In the Gaussian setting this becomes
 $$
 \begin{aligned}
-  X^* = \underset{X}{\textrm{argmax}} \prod_{j} p_j(\hat y_j \mid X_j) = \underset{X}{\textrm{argmax}} \prod_j \frac{1}{\sqrt{ (2 \pi)^{d_j} |\Sigma_j|}} \exp \left( - \frac{(\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j))}{2} \right) \\ 
+  X^* = \underset{X}{\textrm{argmax}} \prod_{j} p_j(\hat y_j \mid X_j) = \underset{X}{\textrm{argmax}} \prod_j \frac{1}{\sqrt{ (2 \pi)^{d_j} |\Sigma_j|}} \exp \left( - \frac{(\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j))}{2} \right) \\
 = \underset{X}{\textrm{argmax}} \prod_j \exp \left( - \frac{(\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j))}{2} \right)
 \end{aligned}
 $$

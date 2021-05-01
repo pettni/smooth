@@ -1,9 +1,130 @@
-% !TEX root = ../manuscript.tex
+% !TEX root = ../root.tex
 
 \chapter{Optimization I: Gradient Descent on Manifolds}
 
-\section{Problem Definition}
+\section{Levenberg-Marquardt}
 
-\section{Tangent-Space Gradient Descent}
+Resources
+\begin{itemize}
+  \item Original MINPACK manual: \url{https://www.netlib.org/minpack/}
+\end{itemize}
 
-\section{Trust-Region Methods}
+LM Implementations
+\begin{itemize}
+  \item Original MINPACK in fortran
+  \item cminpack (ported from fortran) \url{https://devernay.github.io/cminpack/}
+  \item Eigen unsupported (ported from cminpack)
+  \item scipy (calls cminpack)
+  \item Ceres
+  \item GTSAM
+\end{itemize}
+
+
+Consider a Lie group optimization problem
+\begin{equation}
+  \min_\x \frac{1}{2} \left\| f(\x) \right\|^2, \quad f : \M \rightarrow \mathbb{R}^m.
+\end{equation}
+We are interested in devising an iterative algorithm for minimizing this function.
+
+Given a poimt $\x$ we can solve a local optimization problem to find step $\a \in T \M _\x$ that leads to an improved estimate $\x \oplus_r \a$. The optimization problem can be re-formulated in terms of $\a$ as
+\begin{equation}
+  \argmin_{\a} \left\| f(\x \oplus_r \a) \right\|^2.
+\end{equation}
+Since the problem is nonlinear we resort to linearization. To avoid stepping outside the region where the linearization is accurate we also limit the stepsize and obtain the new problem
+\begin{equation}
+  \label{eq:lm_minimize_trust}
+  \argmin_{\a : \| D \a \| \leq \Delta}\left\| f(\x) + \mathrm{d}^r f_\x \a \right \|^2,
+\end{equation}
+where $D$ is a diagonal scaling matrix and $\Delta$ is a maximal step size.
+
+To simplify notation let $J \coloneq \mathrm{d}^r f_\x$ and $r = f(\x)$ which simplifies the objective function to $\| J \a + r \|^2$. We next show that this constrained problem can be transformed into an unconstrained problem.
+\begin{theorem}
+  \label{thm:lm}
+  A vector $\a^*$ is a global minimizer of
+  \begin{equation}
+    \argmin_{\| D \a \| \leq \Delta} \frac{1}{2} \| J \a + r \|^2.
+  \end{equation}
+  if and only if there exists $\lambda \geq 0$ such that
+  \begin{subequations}
+    \begin{align}
+      J^T J + \lambda D^T D \succeq 0,                              \\
+      (J^T J + \lambda D^T D) \a = -J^T r,  \label{eq:lm_normaleqs} \\
+      \lambda \left( \left\| D \a \right\| - \Delta \right)=0.
+    \end{align}
+  \end{subequations}
+\end{theorem}
+We provide an argument based on duality to support this fact, see e.g. \cite[Theorem 4.1]{nocedal_numerical_2006} for a more rigorous proof.
+\begin{proof}
+  Let the lagrangian of the problem be
+  \begin{equation}
+    L(\a, \lambda) = \frac{1}{2} \| J \a + r \|^2 + \frac{\lambda}{2} \left( \left\| D \a \right\| - \Delta^2 \right),
+  \end{equation}
+  so that the optimization problem \eqref{eq:lm_minimize_trust} equivalently can be written $\inf_{\a} \sup_{\lambda \geq 0} L(\a, \lambda)$, since the value of the inner problem is $+\infty$ when the constraint $\| D \a \| \leq \Delta$ is not satisfied.
+
+  Assuming that strong duality holds, the dual problem $\sup_{\lambda \geq 0} \inf_{\a} L(\a, \lambda)$ has the same optimal value. The inner problem can be re-written as
+  \begin{equation}
+    \inf_{\a} L(\a, \lambda) = \frac{1}{2} \a^T ( J^T J + \lambda D^T D ) \a + r^T J \a - \lambda \frac{\Delta^2}{2}.
+  \end{equation}
+  This inner problem has value $-\infty$ unless $J^T J + \lambda D^T D \succeq 0$, so the outer supremum restricts $\lambda$ to values that imply positive semi-that imply positive semi-definiteness. In this case the finite optimal value is attained for $\left(J^T J + \lambda D^T D \right) \a = -J^T r$ which reduces the dual problem to
+  \begin{equation}
+    \sup_{\lambda \geq 0} -\frac{1}{2} \a^T \left( J^T J + \lambda D^T D \right) \a - \lambda \frac{\Delta^2}{2}.
+  \end{equation}
+  Also this problem has a closed-form solution: either the optimal solution is attained at the boundary, i.e. $\lambda = 0$, or it is attained at zero derivative w.r.t. $\lambda$ which necessitates $\a^T D^T D \a + \Delta^2 = 0$. These two latter conditions imply that the complemnetarity condition $\lambda (\| D \a \| - \Delta) = 0$ holds.
+\end{proof}
+
+Equation \eqref{eq:lm_normaleqs} represents the normal equations for the least-squares problem
+\begin{equation}
+  \argmin_{\a} \frac{1}{2} \a^T \left( J^T J + \lambda D^T D \right) \a + r^T J \a.
+\end{equation}
+Equivalently, it can be written on the standard form
+\begin{equation}
+  \label{eq:lm_lsq}
+  \argmin_{\a} \left\| \begin{bmatrix}
+    J \\ \sqrt{\lambda} D
+  \end{bmatrix} \a + \begin{bmatrix}
+    r \\ 0
+  \end{bmatrix} \right\|^2.
+\end{equation}
+For numerical stability it is preferable to solve a least-squares problem instead of directly solving the normal equations.
+
+The diagonal scaling matrix $D = \Diag (d_1, \ldots, d_n)$ is typically chosen so that a component $d_i$ is inversely proportional to the magnutide of the gradient in that direction, which has the effect of allowing larger steps in directions with low gradient. Common choices include $D = \sqrt{\Diag \left(\diag(J^T J) \right)}$ and $d_i = \left\| \left[ \mathrm{d}^r f_\x \right]_{\cdot, i} \right\|$---the norm of the $i$:th column of the jacobian.
+
+A complete Levenberg-Marquardt procedure is shown in Algorithm \ref{algo:lm}. The parameter $\lambda$ that approximately satisfies the conditions in Theorem \ref{thm:lm} can be obtained algorithmically \cite{nocedal_numerical_2006,watson_levenberg-marquardt_1978}, with implementations available in e.g. MINPACK's \texttt{lmpar}\footnote{\url{https://www.netlib.org/minpack}}.
+
+\begin{algorithm}
+  \DontPrintSemicolon
+  \KwData{Iteration variables: point $\x^k$, trust region $\Delta^k$, scaling parameters $d_i^k$}
+  \KwResult{Updated iteration variables $\x^{k+1}$, $\Delta^{k+1}$, $d_i^{k+1}$}
+
+  $r = f(\x) - \y$\;
+  $J = \mathrm{d}^r f_\x$\;
+  $\lambda = \mathtt{lmpar}(J, r, D^k, \Delta^{k})$ \tcp*[r]{calculate LM parameter}
+  $\a_\mathrm{LM} = \argmin_{\a} \left\| \begin{bmatrix} J \\ \sqrt{\lambda} D^k \end{bmatrix} \a - \begin{bmatrix} r \\ 0 \end{bmatrix} \right\|^2$ \tcp*[r]{solve for increment step}
+  $p = \frac{ \| r \|^2 - \| f(\x \oplus_r \a_\mathrm{LM}) - \y \|^2 }{\| r \|^2 - \| r + J \a_\mathrm{LM} \|^2}$ \tcp*[r]{actual to predicted reduction ratio}
+  \lIf(\tcp*[f]{decrease trust region}){$p < 0.25$}{ $\Delta^{k+1} = \Delta^k / 2$}
+  \ElseIf(){($0.25 \leq p \leq 0.75 \; \land \; \lambda = 0) \lor \lambda \geq 0.75$}{
+    $\Delta^{k+1} = 2 \| D^k \a_\mathrm{LM} \|$ \tcp*[r]{increase trust region}
+  }
+  $d_i^{k+1} = \max \left(d_i^k, \left\| \left[ \mathrm{d}^r f_{\x^{k+1}} \right]_{\cdot, i} \right\| \right)$ \tcp*[r]{update scaling}
+  \lIf(\tcp*[f]{reject step}){$p \leq 0.0001$}{$\x^{k+1} = \x^k$}
+  \lElse(\tcp*[f]{accept step}){ $\x^{k+1} = \x^k \oplus_r \a_\mathrm{LM}$}
+
+  \caption{Single LM step}
+  \label{algo:lm}
+\end{algorithm}
+
+The crucial parts of the algorithm are line 3 and 4; the best way to implement these operations depends on the size and sparsity structure of $J$.
+
+Calculation of the actual to predicted reduction ratio can with be rewritten as
+\begin{equation}
+  \rho = \frac{1 - \left( \frac{ \| f(\x \oplus \a_\mathrm{LM}) - \y \|}{\|r\|} \right)^2 }{\left( \frac{\| J \a \|}{\| r \|} \right)^2 + 2 \left( \frac{\sqrt{\lambda} \| D \a \|}{\| r \|} \right)^2}
+\end{equation}
+where we have used that $\| r \|^2 - \| r + J \a \|^2 = -2 \a^T J r - \a^T J^T J \a = \| J \a \|^2 + 2 \lambda \| D \a \|^2$ which is a consequence of \eqref{eq:lm_normaleqs}. This formulation has the benefit of avoiding subtraction of numbers of large magnitude which may cause floating point roundoff errors.
+
+\begin{remark}
+  Ceres just uses $\lambda = 1 / \Delta$.
+
+  Dense strategy: mimic MINPACK with column QR decomposition
+
+  Sparse strategy: as ceres use $\lambda = 1 / \Delta$ and use a sparse eigen solver for the step.
+\end{remark}
