@@ -1,51 +1,114 @@
-# smooth: Lie Theory C++20 Library and Book for Robotics
+# smooth: Lie Theory for Robotics (C++20 library and book)
 
-Do you need to do any of the following on a Lie group manifold?
+<img src="/media/ode.png" width="300">  <img src="/media/bspline.png" width="300">
 
- * [x] Algebraic manipulation and analytic derivatives on common Lie groups
- * [x] Numerical integration
+Do you want to do any of the following on a Lie group (or learn the theory)?
+
+ * [x] Algebraic manipulation and analytic tangent space derivatives (example code below)
+ * [x] Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
  * [ ] Automatic differentiation
  * [ ] Optimization
- * [x] Interpolation with splines
- * [ ] Design controllers
- * [ ] Design estimators
+ * [x] Interpolation (right figure shows an interpolating B-spline of order 5 on SO(3), see `examples/bspline.cpp`)
+ * [ ] Design controllers and estimators
 
 Then this project may be of interest. **Currently in development**, the goal is to
 facilitate the use of Lie theory for robotics practitioners.
 
-The following common lie groups are available:
-  - SO(2)
-  - SO(3)
-  - SE(2)
-  - SE(3)
-  - A Bundle type to treat Lie group products `G = G_1 \times \ldots \times G_n` as a single Lie group
+The following common lie groups are implemented:
+ * SO(2) with complex number (S(1)) memory representation
+ * SO(3) with quaternion (S(3)) memory representation
+ * SE(2)
+ * SE(3)
+ * A Bundle type to treat Lie group products G = G\_1 x ... x G\_n as a single Lie group. The Bundle type also supports R(n) components as Eigen vectors
 
-The end goal is a book that describes theory and algorithms, and a library with implementations, with a strong mapping between the two so that the book serves as a manual of the library.
+These additional groups may or may not be implemented in the future:
+  - The "IMU group" SE\_2(3)
+  - Orthogonal matrices of any dimension: SO(n)
+  - Unitary matrices of any dimension: SU(n)
+  - A "dynamic collection" type that exposes the Lie group interface for an `std::ranges::range` container
 
-Utility headers for interfacing with adjacent software are also included
+The guiding principles for `smooth` are **brevity, reliability and compatability**. The end goal is a **book** that describes theory and algorithms, and a **library** with high-quality implementations, and with a strong mapping between the two so that the book serves as a manual of the library.
 
- * [x] Zero-copy memory mapping of [ROS/ROS2](https://www.ros.org/) message types
- * [x] Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization
- * [x] Numerical integration using [`boost::odeint`](https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html)
+*Since the project is currently under development, expect poor structure in the book, and API changes in the library.*
 
-*Since the project is currently under development, expect poor structure and explanations in the book, and API changes in the library.*
 
-## Background
+## Group algebra examples
 
-Lie groups such as SO(3), SE(2) and SE(3) are very useful abstractions in robotics,
-but it is my impression that knowledge of Lie theory remains sparse in the robotics
-community. In particular there is a shortage of material that presents concepts in
-a way that accessible to most roboticists, and with a focus on appications rather than
-theorem proving.
+ ```
+ using G = smooth::SO3d;    // or SO2d, SE2d, SE3d, Bundle<double, SO3, E3> etc...
+ using Tangent = typename G::Tangent;
+
+ // construct a random group element and a random tangent element
+ G g = G::Random();
+ Tangent a = Tangent::Random();
+
+ // lie group exponential
+ auto exp_a = G::exp(a);
+
+ // lie group logarithm
+ auto g_log = g.log();
+
+ // lie algebra hat and vee maps
+ auto a_hat = G::hat(a);
+ auto a_hat_vee = G::vee(a_hat);
+
+ // group adjoint
+ auto Ad_g = g.Ad();
+
+ // lie algebra adjoint
+ auto ad_a = G::ad(a);
+
+ // derivatives of the exponential map
+ auto dr_exp_v = G::dr_exp(a);   // right derivative
+ auto dl_exp_v = G::dl_exp(a);   // left derivative
+ auto dr_expinv_v = G::dr_expinv(a);   // inverse of right derivative
+ auto dl_expinv_v = G::dl_expinv(a);   // inverse of left derivative
+
+ // group action
+ typename G::Vector v = G::Vector::Random();
+ auto v_trans = g * v;
+
+ // memory mapping like Eigen::Map
+ std::array<double, G::lie_size> mem;
+ smooth::Map<const G> m_g(mem.data());
+ ```
+
+
+## Algorithms
+
+Available:
+
+* [x] B-spline evaluation
+
+Planned:
+
+* [ ] B-spline fitting
+* [ ] Trust-region optimization
+* [ ] IMU pre-integration
+* [ ] Trajectory-tracking PD controller
+* [ ] Model-predictive control
+
+
+## Compatability
+
+Utility headers for interfacing with adjacent software are provided in `smooth/compat`
+
+* [x] Zero-copy memory mapping of [ROS/ROS2](https://www.ros.org/) message types
+* [x] Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization
+* [x] Numerical integration using [`boost::odeint`](https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html)
+
+Interoperability is also planned with
+* [ ] Automatic differentiation (including in tangent space) using [autodiff](https://autodiff.github.io/)
+
 
 ## Related projects
 
-Two similar projects that have served as inspiration for `smooth` are [manif](https://github.com/artivis/manif/), which also has an accompagnying paper, and [Sophus](https://github.com/strasdat/Sophus/). `smooth` makes some different design decisions, jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which greatly facilitates control and estimation tasks, and is written using modern C++20 which enables cleaner and shorter code as well as saner compiler error messages.
+Two similar projects that have served as inspiration for `smooth` are [`manif`](https://github.com/artivis/manif/), which also has an accompagnying paper, and [`Sophus`](https://github.com/strasdat/Sophus/). Certain design decisions are different in `smooth`: jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which greatly facilitates control and estimation tasks, and is written in C++20 which enables cleaner code as well as saner compiler error messages.
 
 
-# Roadmap
+# Next steps
 
-## Notes todos
+## Book
 
 - [x] ceres derivatives
 - [ ] Levenberg-Marquardt trust-region optimization
@@ -55,38 +118,9 @@ Two similar projects that have served as inspiration for `smooth` are [manif](ht
   - [ ] Fitting of bsplines
   - [ ] Fitting of cubic splines: with and without given velocity
 
-## Library todos
+## Library
 
-- [x] cpp20 concepts and crtp
-- [x] set up lib structure
-- [x] support different storage types
-- compatability
-  - [x] boost odeint: read about algebras
-  - [ ] autodiff: tangent derivative of any manifold function
-  - [x] ceres: local parameterization of any group
-  - [x] map ros msgs as storage type
-- groups
-  - [x] so2
-  - [x] so3
-  - [x] se2
-  - [x] se3
-  - [x] bundle
-- algos:
-  - imu preintegration
-  - splines:
-    - [x] evaluate bsplines
-    - [ ] fit bsplines: need ceres or own LM optimizer...
-    - [ ] fit cubic splines with and without given velocity
-- debt:
- - [x] get rid of modifiable unordered storage and coeffs_ordered
-    - just don't expose map in if not supported by storage
- - [x] write own storages -- the eigen ones are ugly
- - [x] change SE2/3 constructors to take translation first
- - [x] Avoid duplication of boilerplate
-   - [x] trait to change n:th template arg to use lie_group_base for bundle
-   - [x] macro to define constructor boilerplate for each group
- - [x] revisit small angle approximations
- - [x] en: make bundle support vectors with usual semantics and leave it there
- - [x] bundle: typedef bundle with default storage
- - [x] get rid of large random header (use eigen seed)
- - [x] make tests pass float in release mode
+- [ ] Levenberg-Marquardt
+- [ ] Set up Gitlab CI
+- [ ] autodiff compatability header and tests
+- [ ] B-splines fitting using LM
