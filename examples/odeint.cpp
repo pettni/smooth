@@ -43,7 +43,9 @@ int main(int argc, char const * argv[])
       deriv.template tail<3>() = -kp * (Xt.inverse() * state.part<0>()).log() - kd * state.part<1>();
     };
 
-  state_t state = state_t::Random();
+  state_t state;
+  state.part<0>() = smooth::SO3d(Eigen::Quaterniond(0, 0.8, 0, 0.1));
+  state.part<1>() = Eigen::Vector3d(0, 0, 2);
 
   std::vector<double> tvec;
   std::vector<state_t> gvec;
