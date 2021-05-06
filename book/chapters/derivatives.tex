@@ -1,4 +1,4 @@
-% !TEX root = ../manuscript.tex
+% !TEX root = ../root.tex
 
 \chapter{Derivatives}
 
@@ -95,7 +95,6 @@ for $\B \in T_\X \M$. Note that this definition wouldn't make sense for an arbit
 
 \todo[inline]{Show that these definitions agree with those above}
 
-
 \section{Product rule}
 
 Consider a function $f(\X) = g(\X) \circ h(\X)$, we utilize \eqref{eq:right_approx} to obtain
@@ -142,8 +141,6 @@ which is the product rule for Lie group derivatives.
   then the rule of total derivatives applies. One important case when this holds is when $f$ takes values in $\mathbb{E}(n)$ since matrix multiplication on $\mathbb{E}(n)$ corresponds to vector addition on $\mathbb{R}^n$ and hence all brackets are zero.
 \end{remark}
 
-
-
 \section{Lie Bracket}
 
 The Lie bracket between two tangent elements can be defined as the global derivative of the adjoint operator at identity. Consider the mapping $f(\X) \coloneq \bAd_\X \b = \X \hat \b \X^{-1}$ and take a curve $\gamma(t) \in \M$ such that $\gamma(0) = \X$ and $\gamma'(0) = \hat \a$. From $\frac{\mathrm{d}}{\mathrm{d}t} \gamma(t) \gamma(t)^{-1} = 0$ it follows that $\frac{\mathrm{d}}{\mathrm{d}t} \gamma(t)^{-1} = - \gamma(t)^{-1} \gamma'(t) \gamma(t)^{-1}$, hence
@@ -173,7 +170,7 @@ The lower-case adjoint is defined as
   \begin{aligned}
     \ad_\a^0 \b & : = \b                                                                                                           \\
     \ad_\a^1 \b & : = \ad_\a \b = [\a,\b]                                                                                          \\
-    \ad_\a^2 \b & : =[\a,  \ad_\a \b] = \underbrace{[\a,[\a,\b]]}_{2-\mathrm{times}}                                               \\
+    \ad_\a^2 \b & : = [\a,  \ad_\a \b] = \underbrace{[\a,[\a,\b]]}_{2-\mathrm{times}}                                              \\
                 & \vdots                                                                                                           \\
     \ad_\a^k \b & := [\a, \ad_\a^{k - 1} \b] = \underbrace{[\a, [ \a , \ldots, [\a,\b]]]}_{k \; \mathrm{times}} , \qquad k \geq 1.
   \end{aligned}
@@ -248,7 +245,6 @@ Integrating from 0 to 1 with respect to $\sigma$ and setting $t = 0$ then yields
   \Gamma(1, 0)^\vee = \int_0^1 \frac{\partial}{\partial \sigma} \Gamma(\sigma, 0)^\vee \mathrm{d} \sigma = \sum_{k=0}^\infty \frac{\ad^k_{-\bgamma(0)}}{(k+1)!}\bgamma'(0).
 \end{equation}
 From \eqref{eq:exponential_derivative_posit} we can see that $\Gamma(1, 0)$ is equal to the right derivative of $\exp$ at $\gamma(0)$ in the direction $\gamma'(0)$.
-
 
 \begin{properties}
   The right- and left derivatives of the exponential map are
@@ -574,8 +570,7 @@ From the chain rule and the above we can also deduce the derivatives of the plus
   \end{split}
 \end{align}
 
-
-\section{Trace on SO3}
+\section{Trace on $\SOthree$}
 
 \todo[inline]{This is a work in progress}
 
@@ -620,7 +615,6 @@ From the chain rule and the above we can also deduce the derivatives of the plus
   \end{equation}
 \end{tcolorbox}
 
-
 \section{On Automatic Differentiation}
 
 Consider a function $f : \M \rightarrow \N$ whose derivative we are interested in. Since autodiff tools are not aware of manifolds we can not directly obtain e.g. $\mathrm{d}^r f_\X$; here we discuss how to obtain on-manifold derivatives by only differentiating Euclidean functions. Since $\mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} = \mathrm{d}^r f_\X \mathrm{d} \exp_0 = \mathrm{d}^r f_\X$ we can write
@@ -640,7 +634,6 @@ which with some abuse of notation can be written as
   \label{eq:rn_autodiff}
   \mathrm{d}^r f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b).
 \end{equation}
-
 
 \subsection{Ceres Solver Local Parameterizations}
 
@@ -666,3 +659,8 @@ and it holds that (local derivative) = (global derivative) $\times$ (jacobian). 
   \item Global dimension: $p = \| \cM \|$ group parameterization dimension,
   \item Jacobian: $\left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee$.
 \end{itemize}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../root"
+%%% End:

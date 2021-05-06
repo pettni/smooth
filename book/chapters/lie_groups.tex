@@ -8,6 +8,7 @@
   \item Matrix Lie groups that appear in robotics.
 \end{itemize_outcomes}
 
+
 \section{Fundamentals}
 
 A Lie group is an object that is both a group and a smooth manifold. As will be illustrated in these notes, inheritence of these two sets of properties places Lie groups at a unique point where theory meets practice.
@@ -384,14 +385,14 @@ compare e.g. $\SEtwo \cong \SOtwo \ltimes \Etwo$ and the direct product $\SOtwo 
 The different Lie groups introduced above are the following:
 
 \begin{tabular}{lll}
-  \toprule                                                                                                   \\
-          & Matrix representation $\M$                       & Parameter representation $\cM$                \\
-  \midrule                                                                                                   \\
-  $E(n)$  & $n+1 \times n+1$ as in \eqref{eq:en_group}       & $\mathbb{R}^n$                                \\
+  \toprule                                                                                                    \\
+           & Matrix representation $\M$                       & Parameter representation $\cM$                \\
+  \midrule                                                                                                    \\
+  $E(n)$   & $n+1 \times n+1$ as in \eqref{eq:en_group}       & $\mathbb{R}^n$                                \\
   $\SOtwo$ & $2 \times 2$ orthogonal, determinant 1           & $(q_w, q_z) \in \check {\SOtwo}$              \\
-  $SU(2)$ & $2 \times 2$ unitary                             & $(q_w, q_x, q_y, q_z) \in \Sthree$            \\
-  $SO(3)$ & $3 \times 3$ orthogonal, determinant 1           & $(q_w, q_x, q_y, q_z) \in \Sthree$            \\
-  $SE(2)$ & $SO(2) \ltimes E(2)$ as in \eqref{eq:se2_matrix} & $\check {\mathbb{SO}}(2) \times \mathbb{R}^2$ \\
-  $SE(3)$ & $SE(3) \ltimes E(3)$ as in \eqref{eq:se3_matrix} & $\Sthree \times \mathbb{R}^3$                 \\
+  $SU(2)$  & $2 \times 2$ unitary                             & $(q_w, q_x, q_y, q_z) \in \Sthree$            \\
+  $SO(3)$  & $3 \times 3$ orthogonal, determinant 1           & $(q_w, q_x, q_y, q_z) \in \Sthree$            \\
+  $SE(2)$  & $SO(2) \ltimes E(2)$ as in \eqref{eq:se2_matrix} & $\check {\mathbb{SO}}(2) \times \mathbb{R}^2$ \\
+  $SE(3)$  & $SE(3) \ltimes E(3)$ as in \eqref{eq:se3_matrix} & $\Sthree \times \mathbb{R}^3$                 \\
   \bottomrule
 \end{tabular}

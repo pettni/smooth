@@ -57,15 +57,15 @@ We provide an argument based on duality to support this fact, see e.g. \cite[The
 \begin{proof}
   Let the lagrangian of the problem be
   \begin{equation}
-    L(\a, \lambda) = \frac{1}{2} \| J \a + r \|^2 + \frac{\lambda}{2} \left( \left\| D \a \right\| - \Delta^2 \right),
+    L(\a, \lambda) = \frac{1}{2} \| J \a + r \|^2 + \frac{\lambda}{2} \left( \left\| D \a \right\|^2 - \Delta^2 \right),
   \end{equation}
   so that the optimization problem \eqref{eq:lm_minimize_trust} equivalently can be written $\inf_{\a} \sup_{\lambda \geq 0} L(\a, \lambda)$, since the value of the inner problem is $+\infty$ when the constraint $\| D \a \| \leq \Delta$ is not satisfied.
 
-  Assuming that strong duality holds, the dual problem $\sup_{\lambda \geq 0} \inf_{\a} L(\a, \lambda)$ has the same optimal value. The inner problem can be re-written as
+  Assuming that strong duality holds, the dual problem $\sup_{\lambda \geq 0} \inf_{\a} L(\a, \lambda)$ has the same optimal value. The inner infimum of the dual problem can be re-written as
   \begin{equation}
     \inf_{\a} L(\a, \lambda) = \frac{1}{2} \a^T ( J^T J + \lambda D^T D ) \a + r^T J \a - \lambda \frac{\Delta^2}{2}.
   \end{equation}
-  This inner problem has value $-\infty$ unless $J^T J + \lambda D^T D \succeq 0$, so the outer supremum restricts $\lambda$ to values that imply positive semi-that imply positive semi-definiteness. In this case the finite optimal value is attained for $\left(J^T J + \lambda D^T D \right) \a = -J^T r$ which reduces the dual problem to
+  This inner problem has value $-\infty$ unless $J^T J + \lambda D^T D \succeq 0$, so the outer supremum restricts $\lambda$ to values that imply positive semi-definiteness. In this case the finite optimal value is attained for $\a$ such that $\left(J^T J + \lambda D^T D \right) \a = -J^T r$ which reduces the dual problem to
   \begin{equation}
     \sup_{\lambda \geq 0} -\frac{1}{2} \a^T \left( J^T J + \lambda D^T D \right) \a - \lambda \frac{\Delta^2}{2}.
   \end{equation}
@@ -115,7 +115,7 @@ A complete Levenberg-Marquardt procedure is shown in Algorithm \ref{algo:lm}. Th
 
 The crucial parts of the algorithm are line 3 and 4; the best way to implement these operations depends on the size and sparsity structure of $J$.
 
-Calculation of the actual to predicted reduction ratio can with be rewritten as
+Calculation of the actual to predicted reduction ratio can be rewritten as
 \begin{equation}
   \rho = \frac{1 - \left( \frac{ \| f(\x \oplus \a_\mathrm{LM}) - \y \|}{\|r\|} \right)^2 }{\left( \frac{\| J \a \|}{\| r \|} \right)^2 + 2 \left( \frac{\sqrt{\lambda} \| D \a \|}{\| r \|} \right)^2}
 \end{equation}
