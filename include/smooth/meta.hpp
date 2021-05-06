@@ -1,6 +1,7 @@
 #ifndef SMOOTH__META_HPP_
 #define SMOOTH__META_HPP_
 
+#include <array>
 #include <cstddef>
 #include <utility>
 
@@ -169,7 +170,7 @@ using typepack_select_t = typename typepack_select<_Seq, _TPack>::type;
 template<std::size_t _N, typename _TPack>
 struct typepack_take
 {
-  using type = typepack_select<std::make_index_sequence<_N>, _TPack>::type;
+  using type = typename typepack_select<std::make_index_sequence<_N>, _TPack>::type;
 };
 
 template<std::size_t _N, typename _TPack>
@@ -208,7 +209,7 @@ struct typepack_cat<typepack<Ts1...>, typepack<Ts2...>>
 template<typename _TPack1, typename _TPack2, typename ... _TPacks>
 struct typepack_cat<_TPack1, _TPack2, _TPacks...>
 {
-  using type = typepack_cat<typename typepack_cat<_TPack1, _TPack2>::type, _TPacks...>::type;
+  using type = typename typepack_cat<typename typepack_cat<_TPack1, _TPack2>::type, _TPacks...>::type;
 };
 
 template<typename ... _TPacks>
@@ -233,7 +234,7 @@ struct change_template_arg<_T<_Ts...>, _N, _NewT>
     typepack_take_t<_N, typepack<_Ts...>>,
     typepack<_NewT>,
     typepack_drop_t<_N + 1, typepack<_Ts...>>
-    >::apply<_T>;
+    >::template apply<_T>;
 };
 
 template<typename _T, std::size_t _N, typename _NewT>
