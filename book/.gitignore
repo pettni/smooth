@@ -16,3 +16,4 @@
 *.toc
 *.xdv
 
+.auctex-auto

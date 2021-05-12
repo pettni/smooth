@@ -141,3 +141,72 @@ Therefore, if
     c k_p (1 - \epsilon) - \frac{c^2 k_d^2}{4}  \geq 0
   \end{aligned}
 \end{equation}
+
+
+\subsection{Sensitivity Analysis}
+
+Consider again an ODE
+\begin{equation}
+  \label{eq:ode_sensitivity}
+  \begin{aligned}
+  \mathrm{d}^r \x_t & = f(t, \x), \\
+  \x(0) & = \x_{0}.
+\end{aligned}
+\end{equation}
+For a given initial condition $\x_{0}$ the solution at time $t \geq 0$ can be denoted $\Phi(t; \x_{0})$ where the \emph{flow} operator $\Phi$ is s.t.
+\begin{equation}
+  \begin{aligned}
+    \Phi(0; \x_{0}) &= \x_{0}, \\
+    \frac{\mathrm{d}}{\mathrm{d}t} \Phi(t; \x_{0}) &= f\left(t, \Phi(t; \x_{0}) \right).
+  \end{aligned}
+\end{equation}
+
+\begin{remark}
+  Parameters and initial conditions are equivalent. A parameter-dependent system
+  \begin{equation}
+    \begin{aligned}
+      \mathrm{d}^r \x_t & = f(t, \x; p_{0}), \\
+      \x(t_{0}) & = \x_{0},
+    \end{aligned}
+  \end{equation}
+  is equivalent to the parameter-free system on $\M \times \mathbb{R}^{n}$
+  \begin{equation}
+    \begin{aligned}
+      \mathrm{d}^r (\x, p)_t & =  \left(g(t, \x, p), 0\right), \qquad g(t, \x, p) \coloneq f(t, \x; p), \\
+      (\x, p)(t_{0}) & = (\x_0, p_{0}),
+    \end{aligned}
+  \end{equation}
+  where $g(t, \x, p) = f(t, \x; p)$. Conversely, the system
+  \begin{equation}
+    \begin{aligned}
+      \mathrm{d}^{r} \x_{t} & = f(t, \x), \\
+      \x(t_{0}) & = \x_{0},
+    \end{aligned}
+  \end{equation}
+  with a non-trivial initial condition is (locally) equivalent to the parameter-dependent system
+  \begin{equation}
+    \begin{aligned}
+      \mathrm{d}^{r} \a_{t} & = g(t, \a; t_{0}, \x_{0}), \qquad g(t, \a; t_{0}, \x_{0}) \coloneq \left[ \mathrm{d}^{r} \exp_{\a} \right]^{-1} \; f(t_{0} + t, \x_{0} \oplus_{r} \a), \\
+      \a(0) & = 0,
+    \end{aligned}
+  \end{equation}
+  with trivial initial conditions, in the sense that $\Phi^{\x}(t_{0} + t; t_{0}, \x_{0}) = \x_{0} \oplus_{r} \Phi^{\a}(t; t_{0}, \x_{0})$.
+\end{remark}
+Due to the equivalence between parameters and initial conditions, it is sufficient to develop sensitivity for one type; we choose initial conditions as in \eqref{eq:ode_sensitivity}.
+
+Assuming that the order of differentiation can be interchanged it holds that
+\begin{equation}
+  \frac{\mathrm{d}}{\mathrm{d}t} \mathrm{d}^r \Phi(t; \x_0)_{\x_0} = \mathrm{d}^{r} \left( \frac{\mathrm{d}}{\mathrm{d}t} \Phi(t; \x_{0}) \right)_{\x_0} = \mathrm{d}^{r} f(t, \Phi(t; \x_{0}))_{\x_0} = \left. \mathrm{d}^{r} f_{\x} \right|_{\x = \Phi(t; \x_{0})} \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}}.
+\end{equation}
+In other words, the sensitivity $S(t) \coloneq \mathrm{d}^r \Phi(t; \x_{0})_{\x_{0}}$ satisfies the matrix-valued ODE
+\begin{equation}
+  \begin{aligned}
+    \frac{\mathrm{d}}{\mathrm{d}t} S(t) & = \left. \mathrm{d}^{r} f_{\x} \right|_{\x = \Phi(t; \x_{0})} S(t), \\
+    S(0) & = I.
+  \end{aligned}
+\end{equation}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../root"
+%%% End:
