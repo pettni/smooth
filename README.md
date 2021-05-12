@@ -82,14 +82,16 @@ Available:
 
 Planned:
 
-* [ ] B-spline fitting
 * [ ] Trust-region optimization
+* [ ] B-spline fitting
 * [ ] IMU pre-integration
 * [ ] Trajectory-tracking PD controller
 * [ ] Model-predictive control
 
+Algorithms also work with regular ```Eigen``` types.
 
-## Compatability
+
+## Compatibility
 
 Utility headers for interfacing with adjacent software are provided in `smooth/compat`
 
@@ -103,7 +105,7 @@ Interoperability is also planned with
 
 ## Related projects
 
-Two similar projects that have served as inspiration for `smooth` are [`manif`](https://github.com/artivis/manif/), which also has an accompagnying paper, and [`Sophus`](https://github.com/strasdat/Sophus/). Certain design decisions are different in `smooth`: jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which greatly facilitates control and estimation tasks, and is written in C++20 which enables cleaner code as well as saner compiler error messages.
+Two similar projects that have served as inspiration for `smooth` are [`manif`](https://github.com/artivis/manif/), which also has an accompanying paper, and [`Sophus`](https://github.com/strasdat/Sophus/). Certain design decisions are different in `smooth`: jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which greatly facilitates control and estimation tasks, and is written in C++20 which enables cleaner code as well as saner compiler error messages.
 
 
 # Next steps
@@ -121,6 +123,8 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 ## Library
 
 - [ ] Levenberg-Marquardt
+- [ ] Make algos work for Eigen types via dispatch traits for all lie operations
+- [ ] Runtime bundle using std::variant for ceres-like optimization
 - [ ] Set up Gitlab CI
-- [ ] autodiff compatability header and tests
+- [ ] autodiff compatibility header and tests
 - [ ] B-splines fitting using LM
