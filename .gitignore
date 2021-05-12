@@ -1,1 +1,5 @@
+compile_commands.json
+
 build
+.clangd
+
