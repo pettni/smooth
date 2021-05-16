@@ -1,8 +1,8 @@
 % !TEX root = ../root.tex
 
-\chapter{Optimization II: Pose-Graph Optimization}
+\chapter{Pose Graph Optimization}
 
-\section{Maximum Likelihood Estimation}
+\section{Maximum Likelihood Estimation as Nonlinear Least Squares}
 
 \paragraph{Notation}:
 
@@ -16,13 +16,13 @@
 Given a collection of measurements $\hat y_j$ we are interested in finding the \textbf{maximum-likelihood estimate} of the variables $X$. In the Gaussian setting this becomes
 $$
 \begin{aligned}
-  X^* = \underset{X}{\textrm{argmax}} \prod_{j} p_j(\hat y_j \mid X_j) = \underset{X}{\textrm{argmax}} \prod_j \frac{1}{\sqrt{ (2 \pi)^{d_j} |\Sigma_j|}} \exp \left( - \frac{(\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j))}{2} \right) \\
-= \underset{X}{\textrm{argmax}} \prod_j \exp \left( - \frac{(\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j))}{2} \right)
+  X^* = \argmax_{\x} \prod_{j} p_j(\hat y_j \mid X_j) = \argmax_{\x} \prod_j \frac{1}{\sqrt{ (2 \pi)^{d_j} |\Sigma_j|}} \exp \left( - \frac{(\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j))}{2} \right) \\
+= \argmax_{\x} \prod_j \exp \left( - \frac{(\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j))}{2} \right)
 \end{aligned}
 $$
 Maximizing $f(x)$ is equivalent to minimizing $2 \log(-f(x))$. Taking the negative log and multiplying by two yields
 $$
-  X^* = \underset{X}{\textrm{argmin}} \sum_j (\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j)) = \underset{X}{\textrm{argmin}} \sum_j \left\| \sqrt{I}_j \left( \hat y_j - h_j(X_j) \right) \right\|^2,
+  X^* = \argmin_{\x} \sum_j (\hat y_j - h_j(X_j))^T \Sigma_j^{-1} (\hat y_j - h_j(X_j)) = \argmin_{\x} \sum_j \left\| \sqrt{I}_j \left( \hat y_j - h_j(X_j) \right) \right\|^2,
 $$
 where $\sqrt{I}_j := \Sigma_j^{-1/2}$ is the \textbf{square root information matrix}. We have thus converted the maximum-likelihood estimation problem into a **least squares problem**. When the functions $h_j$  involve 3D geometry the least squares problem is typically **nonlinear**.
 

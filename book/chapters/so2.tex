@@ -1,0 +1,158 @@
+
+\chapter{$\SOtwo$}
+
+\paragraph{Parameterization} We use the isometry $\SOtwo \cong \Uone$, where $\Uone$ is the unitary group consisting of complex elements $c = q_{w} + i q_{z}$ with unit length, to parameterize elements of $\SOtwo$.
+\begin{equation}
+  \cSOtwo = \left\{ (q_w, q_z) \in \mathbb{R}^{2} \mid q_w^2 + q_z^2 = 1 \right\}.
+\end{equation}
+The hat and vee maps between the parameterization and matrix forms are thus as follows:
+\begin{center}
+\begin{tikzpicture}
+  \node (a1) {$\cSOtwo \ni (q_{w}, q_{z})$};
+  \node at (5, 0) (a2) {$\bR = \begin{bmatrix} q_{w} & -q_{z} \\ q_{z} & q_{w} \end{bmatrix} \in \SOtwo$};
+  \draw[-latex] (a1) to[bend left] node[above] {$\wedge$} (a2);
+  \draw[-latex] (a2) to[bend left] node[above] {$\vee$} (a1);
+\end{tikzpicture}
+\end{center}
+
+From the isometry to complex numbers it follows that the identity element is $(1, 0)$ and the inverse is
+$(q_w, q_z)^{-1} = (q_w, -q_z)$. A formula for group composition can either be obtained by expanding the complex product $(q_{w} + i q_{z}) (q_{w}' + i q_{z})$ and identifying the coefficients, or by going via the matrix form:
+\begin{equation*}
+  \begin{aligned}
+    (q_w, q_z) \circ (q_w', q_z') = \left( (q_w, q_z)^\wedge \cdot (q_w', q_z')^\wedge \right)^\vee = \left( \begin{bmatrix}
+      q_w & -q_z \\ q_z & q_w
+    \end{bmatrix} \cdot \begin{bmatrix}
+      q_w' & -q_z' \\ q_z' & q_w'
+    \end{bmatrix}  \right)^\vee & = (q_w q_w' - q_z q_z', q_z q_w' + q_w q_z').
+  \end{aligned}
+\end{equation*}
+
+\paragraph{Action on $\mathbb{R}^2$:}
+In robotics applications it is convenient to define a rotational action on vectors in $\mathbb{R}^2$. For $\bR \in \SOtwo$ and $\bu \in \mathbb{R}^2$ the action is matrix multiplication
+\begin{equation}
+  \left \langle \bR, \bu \right \rangle_{\SOtwo} = \bR \cdot u.
+\end{equation}
+
+\paragraph{Lie Algebra}
+
+For the special orthogonal groups $\mathbb{SO}(n)$ the group constraint is orthogonality of the matrix: $\X^T \X = I_n$. Take a one-parameter subgroup $\X(t) \coloneq \Exp(t \A)$; it must then hold that
+\begin{equation}
+  0 \overset{!}= \left. \frac{\mathrm{d}}{\mathrm{d} t} \X(t)^T \X(t) \right|_{t=0} = \X'(0)^T \X(0) + \X(0)^T \X'(0) = \A^T + \A.
+\end{equation}
+It follows that the Lie algebra $\mathfrak{so}(n)$ corresponding to $\mathbb{SO}(n)$ consists of \textbf{skew-symmetric matrices}.
+\begin{equation}
+  \mathfrak{so}(n) = \left\{ \A \in \mathbb{R}^{n \times n} : \A^T + \A = 0 \right\}.
+\end{equation}
+
+The $2 \times 2$ skew-symmetric matrices have only one degree of freedom, let this single parameter of $\check{\sotwo}$ be denoted $\omega_z$ so that
+\begin{equation}
+  \mathfrak{so}(2) = \left\{ \begin{bmatrix} 0 & -\omega_z \\ \omega_z & 0 \end{bmatrix} \mid \omega_z \in \mathbb{R} \right\},
+\end{equation}
+and the algebra hat and vee maps become
+\begin{center}
+\begin{tikzpicture}
+  \node (a1) {$\check{\sotwo} \ni \omega_{z}$};
+  \node at (5, 0) (a2) {$\begin{bmatrix} 0 & -\omega_{z} \\ \omega_{z} & 0 \end{bmatrix} \in \sotwo$};
+  \draw[-latex] (a1) to[bend left] node[above] {$\wedge$} (a2);
+  \draw[-latex] (a2) to[bend left] node[above] {$\vee$} (a1);
+\end{tikzpicture}
+\end{center}
+\section{Derivations}
+
+\paragraph{Adjoint}
+
+From the definition,
+\begin{equation}
+    \bAd_{(q_{w}, q_{z})} \omega_{z} = \left( (q_{w}, q_{z})^{\wedge} \hat \omega_{z} \left (q_{w}, q_{z})^{-1} \right)^{\wedge} \right)^{\vee} = \left(
+      \begin{bmatrix}
+        q_{w} & -q_{z} \\ q_{z} & q_{w}
+      \end{bmatrix}
+      \begin{bmatrix}
+        0 & -\omega_{z} \\ \omega_{z} & 0
+      \end{bmatrix}\begin{bmatrix}
+        q_{w} & -q_{z} \\ q_{z} & q_{w}
+      \end{bmatrix}
+    \right)^{\vee} = \omega_{z},
+\end{equation}
+so it follows that $\bAd_{(q_{w}, q_{z})} = \begin{bmatrix} 1 \end{bmatrix}$.
+
+\paragraph{Exponential and Logarithm}
+
+Take an element $\hat \omega_z \coloneq \begin{bmatrix} 0 & -\omega_z \\ \omega_z & 0 \end{bmatrix} \in \mathfrak{so}(2)$. The exponential is calculated by noting that $(\omega_z^\wedge)^{2k} = (-1)^{k} \omega_z^{2k} I_2$:
+\begin{equation}
+  \begin{aligned}
+    \Exp {\omega_z^\wedge} = \sum_{k = 0}^{\infty} \frac{(\omega_z^\wedge)^k}{k!} = \sum_{k = 0}^{\infty} \frac{\left(\omega_{z}^{\wedge}\right)^{2k}}{(2k)!} + \frac{\left(\omega_{z}^{\wedge}\right)^{2k + 1}}{(2k + 1)!} = \sum_{k = 0}^{\infty} \frac{(-1)^{k} \omega_{z}^{2k}}{(2k)!} I_{2} + \frac{(-1)^{k} \omega_{z}^{2k}}{(2k + 1)!} \omega_{z}^{\wedge} \\
+    \overset{\eqref{eq:cos_sum}, \eqref{eq:trig_sum1}}= \cos \omega_z I_2 + \frac{\sin \omega_{z}}{\omega_{z}} \omega_z^\wedge = \begin{bmatrix} \cos \omega_z & - \sin \omega_z \\ \sin \omega_z & \cos \omega_z \end{bmatrix}.
+  \end{aligned}
+\end{equation}
+Thus $\exp(\omega_{z}) = (\cos \omega_{z}, \sin \omega_{z})$ and consequently $\log (q_{w}, q_{z}) = \arctantwo(q_{z}, q_{w})$.
+
+\paragraph{Derivatives of the Exponential}
+
+Consider algebra elements $\omega_z, \bar \omega_z \in \sotwo$. The bracket on $\sotwo$ is zero since
+\begin{equation}
+  \left[ \omega_z, \bar \omega_z \right] = \left( \begin{bmatrix}
+      0 & -\omega_z \\ \omega_z & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & -\bar \omega_z \\ \bar \omega_z & 0
+    \end{bmatrix} - \begin{bmatrix}
+      0 & -\bar \omega_z \\ \bar \omega_z & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & - \omega_z \\ \omega_z & 0
+    \end{bmatrix}\right)^\vee = 0.
+\end{equation}
+It follows that all terms in \eqref{eq:dexp_def} and \eqref{eq:dexpinv_def} vanish except for $n = 0$, so the derivatives of the exponential are equal to $I_{1} = \begin{bmatrix} 1 \end{bmatrix}$.
+
+\section{Summary}
+
+\begin{properties}[breakable, title={$\SOtwo$ parameterized by $\Uone$}]
+\paragraph{Group Parameterization}
+\begin{equation}
+  \left\{ (q_{w}, q_{z}) : q_{w}^{2} + q_{z}^{2} = 1 \right\}, \quad (q_{w}, q_{z})^{\wedge} = \begin{bmatrix} q_{w} & -q_{z} \\ q_{z} & q_{w} \end{bmatrix}.
+\end{equation}
+
+\paragraph{Algebra Parameterization}
+\begin{equation}
+  \left\{ \omega_{w} \mid \omega_{w} \in [-\pi, \pi] \right\}, \quad \hat \omega_{w} = \begin{bmatrix} 0 & -\omega_{w} \\ \omega_{w} & 0 \end{bmatrix}
+\end{equation}
+
+\paragraph{Group Operations}
+\begin{itemize}
+  \item Identity element: $(1, 0)$
+  \item Inverse: $(q_{w}, q_{z})^{-1} = (q_{w}, -q_{z})$
+  \item Composition: $(q_{w}, q_{z}) \circ (q_{w}', q_{z}') = (q_{w} q_{w}' - q_{z} q_{z}', q_{z} q_{w}' + q_{w} q_{z}')$
+\end{itemize}
+
+\paragraph{Adjoint}
+\begin{equation}
+  \bAd_{(q_{w}, q_{z})} = \begin{bmatrix} 1 \end{bmatrix}.
+\end{equation}
+
+\paragraph{Exponential}
+\begin{equation}
+  \exp (\omega_w) = (\cos \omega_{w}, \sin \omega_{w})
+\end{equation}
+
+\paragraph{Logarithm}
+\begin{equation}
+  \log (q_{w}, q_{z}) = \arctantwo(q_z, q_w)
+\end{equation}
+
+\paragraph{Lowercase adjoint}
+\begin{equation}
+  \ad_{\omega_z} = 0
+\end{equation}
+
+\paragraph{Derivatives of the Exponential}
+\begin{equation}
+  \mathrm{d}^r \exp_{\omega_z} =
+  \mathrm{d}^l \exp_{\omega_z} =
+  \left( \mathrm{d}^r \exp_{\omega_z} \right)^{-1} =
+  \left( \mathrm{d}^l \exp_{\omega_z} \right)^{-1} = \begin{bmatrix} 1 \end{bmatrix}.
+\end{equation}
+\end{properties}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../root"
+%%% End:

@@ -1,0 +1,164 @@
+\chapter{Common Matrix Lie Groups}
+
+Having gone through the foundational theory in the first part, we now turn our attention to specific groups and derive closed-form formulas for many of the concepts.
+
+\todo[inline]{Discuss lower-dimensional parameterizations and isometries}
+
+
+\section{Group and Algebra Structure of Matrix Lie Groups}
+
+We now introduce some common matrix Lie groups. Any subset of invertible square matrices that is closed under matrix multiplication is a Lie group. To find the structure of the corresponding Lie algebra it is useful to consider a trajectory
+\begin{equation}
+  \label{eq:4}
+  \X(t) = \Exp(t \A) \in \M
+\end{equation}
+that satisfies $\X(0) = I$ and $\X'(0) = \A$.
+
+The trajectory $\X(t)$ must satisfy a certain group constraint, which translates into a condition on $\A$. Since the Lie algebra of a group consists of all matrices $\A$ such that $\exp \A \in \M$ this yields the structure of the Lie algebra.
+
+
+\paragraph{General Linear Group $\GL(n, F)$}
+
+The general linear group over a field $F$ (here $F$ is either the real numbers $\mathbb{R}$ or the complex numbers $\mathbb{C}$) is the most general Matrix lie group and contains all other groups as subgroups.
+\begin{equation}
+  \GL(n, F) \coloneq \left\{ \A \in F^{{n \times n}} \mid \det \A \neq 0 \right\}.
+\end{equation}
+
+The exponential map always produces invertible matrices, so the corresponding lie algebra is the space of all $n \times n$ matrices.
+\begin{equation}
+  \gl(n, F) = F^{n \times n}.
+\end{equation}
+Any subset of $\GL(n, F)$ that is closed under matrix multiplication is also a matrix Lie group.
+
+
+\paragraph{Euclidean Group $\En$}
+
+The usual Euclidean vector space $\mathbb{R}^{n}$ can be embedded in matrices on the form $\begin{bmatrix} I_{n} & \bp \\ 0_{1 \times n} & 1 \end{bmatrix}$ for $\bp \in \mathbb{R}^{n}$, so that matrix multiplication corresponds to addition in $\mathbb{R}^{n}$. Being a closed subset of $\GL(n, \mathbb{R})$ those matrices form a matrix Lie group.
+
+To find the corresponding Lie algebra consider a trajectory
+\begin{equation}
+  \X(t) = \begin{bmatrix} I_{n} & \bp(t) \\ 0_{1 \times n} & 1 \end{bmatrix} = \Exp(t \A) \in \En,
+\end{equation}
+differentiating with respect to $t$ then shows that
+\begin{equation}
+  \begin{bmatrix}
+    \symbf{0}_{n \times n} & \bp'(t) \\ \symbf{0}_{1 \times n} & 0
+  \end{bmatrix} \overset{!}{=} \left.\frac{\mathrm{d}}{\mathrm{d}t} \X(t) \right|_{t = 0} = \A.
+\end{equation}
+From here it follows that the Lie algebra $\mathfrak{e}(n)$ of $\En$ consists of matrices where only the top $n$ coefficients in the right-most column are non-zero.
+\begin{important}
+  The Euclicean groups $\En$ and corresponding Lie algebras $\en$:
+  \begin{subequations}
+    \begin{align}
+      \En             & = \left\{\begin{bmatrix} I_{n} & \bp \\ 0 & 1 \end{bmatrix} \in \GL(n+1, \mathbb{R}) \mid \bp \in \mathbb{R}^{n} \right\}, \\
+      \en & = \left\{ \begin{bmatrix} \symbf{0}_{n \times n} & \bv \\ \symbf{0}_{1 \times n} & 0\end{bmatrix}, \bv \in \mathbb{R}^n \right\}.
+    \end{align}
+  \end{subequations}
+\end{important}
+
+\paragraph{Orthogonal Groups $\On$ and $\SOn$}
+
+The orthogonal matrices $\On$ are real matrices $\X$ s.t. the inverse is equal to the transpose, i.e. $\X \X^{T} \X = \X \X^{T}= I_{n}$. The special orthogonal matrices in addition have a determinant equal to 1. In robotics $\SOn$ is particularly useful in the $n=2,3$ cases since those correspond to rotation matrices in two and three dimensions.
+
+Take a one-parameter subgroup $\X(t) \coloneq \Exp(t \A)$ and differentiate the group constraint $I_{n} = \X(t) ^{T} \X(t)$:
+\begin{equation}
+  0 \overset{!}= \left. \frac{\mathrm{d}}{\mathrm{d} t} \X(t)^T \X(t) \right|_{t=0} = \X'(0)^T \X(0) + \X(0)^T \X'(0) = \A^T + \A.
+\end{equation}
+It follows that the Lie algebra $\mathfrak{so}(n)$ corresponding to $\mathbb{SO}(n)$ consists of \textbf{skew-symmetric matrices}.
+\begin{important}
+  Orthogonal groups and corresponding Lie algebras:
+  \begin{subequations}
+    \begin{align}
+      \label{eq:On}
+      \On             & = \left\{ \X \in \GL(n, \mathbb{R}) \mid \X^{T} \X = \X \X^{T}= I_{n} \right\}, \\
+      \label{eq:SOn}
+      \SOn            & = \left\{ \X \in \GL(n, \mathbb{R}) \mid \X^{T} \X = \X \X^{T}= I_{n}, \det \X = 1 \right\}, \\
+      \label{eq:son}
+      \mathfrak{o}(n) & = \mathfrak{so}(n) = \left\{ \A \in \mathbb{R}^{n \times n} : \A^T + \A = 0 \right\}.
+    \end{align}
+  \end{subequations}
+\end{important}
+
+
+\paragraph{Unitary Groups $\Un$ and $\SUn$}
+
+Unitary matrices $\X$ are characterized by the inverse being equal to the Hermitian transpose, i.e. $\X^{*} \X = \X \X^{*} = I$\footnote{The Hermitian transpose (also known as \emph{conjugate transpose}) of $\X_{ij}$ is $\X_{ij}^* = \bar {\X_{ji}}$.}. In the case of $\SUn$ the determinant is also required to be equal to 1.
+
+For a one-parameter subgroup $\X(t) = \Exp(t \A)$ constraint differentiation yields
+\begin{equation}
+  0 = \left. \frac{\mathrm{d}}{\mathrm{d} t} \X(t)^* \X(t) \right|_{t=0} = \X'(0)^* \X(0) + \X(0)^* \X'(0) = \A^* + \A.
+\end{equation}
+This shows that $\un$ consists of \textbf{skew-Hermitian matrices}. In addition, due to the Jacobi identity \eqref{eq:jacobi_identity} $\det \Exp(t \A) = 1$ implies that $\tr \A = 0$ i.e. $\mathfrak{su}(n)$ consists of \textbf{skew-Hermitian matrices with vanishing trace}.
+\begin{important}
+  Unitary groups and corresponding Lie algebras:
+  \begin{subequations}
+    \begin{align}
+      \Un              & = \left\{ \X \in \GL(n, \mathbb{C}) \mid \X^{*} \X = \X \X^{*}= I_{n} \right\} \\
+      \SUn             & = \left\{ \X \in \GL(n, \mathbb{C}) \mid \X^{*} \X = \X \X^{*}= I_{n}, \det \X = 1 \right\},  \\
+      \un              & = \left\{ \A \in \mathbb{C}^{n \times n} \mid \A^* + \A = 0 \right\},                                       \\
+      \mathfrak{su}(n) & = \left\{ \A \in \mathbb{C}^{n \times n} \mid \A^* + \A = 0, \tr \A = 0 \right\}.
+    \end{align}
+  \end{subequations}
+\end{important}
+
+\paragraph{Special Euclidean Group $\SEn$}
+
+A ``semi-simple product'' between $\SOn$ and $\En$ obtained by replacing the identity matrix in $\En$ by a member of $\SOn$, i.e. $\SEn$ consists of matrices on the form $ \begin{bmatrix} \bR & \bp \\ 0_{1 \times n} & 1 \end{bmatrix} $ for $\bR \in \SOn$. For a one-parameter subgroup $\X(t) = \begin{bmatrix} \bR(t) & \bp(t) \\ 0 & 1 \end{bmatrix} = \Exp(t \A)$ differentiating shows that
+\begin{equation}
+  \begin{bmatrix} \bR'(t) & \bp'(t) \\ 0 & 0 \end{bmatrix} = \A.
+\end{equation}
+Since we already know that structure of $\bR'(t)$ from \eqref{eq:son} it follows that $\A$ must be on the form
+\begin{important}
+  Special Euclidean groups and corresponding Lie algebras:
+  \begin{subequations}
+    \begin{align}
+      \SEn & = \left\{\begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix} \in \GL(n+1, \mathbb{R}) \mid \bR \in \SOn, \bp \in \mathbb{R}^{n} \right\}, \\
+      \sen & = \left\{\begin{bmatrix} \B & \bv \\ 0 & 0 \end{bmatrix} \mid \B \in \son, \bv \in \mathbb{R}^{n} \right\}.
+    \end{align}
+  \end{subequations}
+\end{important}
+
+\section{Some Summation Formulas}
+
+Starting with the familiar Taylor expansions of cosine and sine
+\begin{align}
+  \label{eq:cos_sum} \sum_{n=0}^\infty \frac{(-1)^n}{(2n)!} x^{2n}     & = \cos x, \\
+  \label{eq:sin_sum} \sum_{n=0}^\infty \frac{(-1)^n}{(2n+1)!} x^{2n+1} & = \sin x,
+\end{align}
+some higher-order formulas can be derived for $x \neq 0$ by dividing by a factor of $\x$ and subtracting the first summation terms.
+\begin{align}
+  \label{eq:trig_sum1}
+  \sum_{n=0}^\infty \frac{(-1)^n}{(2n+1)!} x^{2n} & = \frac{1}{x} \sum_{n=0}^\infty  \frac{(-1)^n}{(2n+1)!} x^{2n+1} = \frac{\sin x}{x},                        \\
+  \label{eq:trig_sum2}
+  \sum_{n=0}^\infty \frac{(-1)^n}{(2n+2)!} x^{2n} & = -\frac{1}{x^2} \sum_{n=1}^\infty \frac{(-1)^n}{(2n)!} x^{2n} = \frac{1 - \cos x}{x^2},                    \\
+  \label{eq:trig_sum3}
+  \sum_{n=0}^\infty \frac{(-1)^n}{(2n+3)!} x^{2n} & = -\frac{1}{x^3} \sum_{n=1}^\infty \frac{(-1)^n}{(2n+1)!} x^{2n+1} = \frac{x - \sin x}{x^3},                \\
+  \label{eq:trig_sum4}
+  \sum_{n=0}^\infty \frac{(-1)^n}{(2n+4)!} x^{2n} & = \frac{1}{x^4} \sum_{n=2}^\infty \frac{(-1)^n}{(2n)!} x^{2n} = \frac{\cos x - 1 + \frac{x^2}{2}}{x^4},     \\
+  \label{eq:trig_sum5}
+  \sum_{n=0}^\infty \frac{(-1)^n}{(2n+5)!} x^{2n} & = \frac{1}{x^5} \sum_{n=2}^\infty \frac{(-1)^n}{(2n+1)!} x^{2n+1} = \frac{\sin x - x + \frac{x^3}{6}}{x^5}.
+\end{align}
+
+Finally a sum involving the Bernoulli numbers will be useful for some groups of interest.
+\begin{proposition}
+  \begin{equation}
+    \label{eq:bernoulli_cot}
+    \sum_{n \geq 1} \frac{B_{2n} (-1)^n x^{2n}}{(2n)!} = \frac{x}{2} \cot \left(\frac{x}{2}\right).
+  \end{equation}
+\end{proposition}
+\begin{proof}
+  By setting $x = iy$ and observing that $B_n = 0$ for odd $n > 1$ we get
+  \begin{equation}
+    \begin{aligned}
+      \sum_{n=0}^\infty \frac{B_{2n} (-1)^n x^{2n}}{(2n)!} = \sum_{n=0}^\infty \frac{B_{2n} (-1)^n y^{2n} (-1)^n}{(2n)!} = \sum_{n=0}^\infty \frac{B_n y^n}{n!} - B_1 y \overset{\eqref{eq:bernoulli_number_def}} = \frac{y}{e^y - 1} + \frac{y}{2}
+      = \frac{y}{2} \frac{e^y + 1 }{e^y - 1} \\
+      = \frac{ix}{2} \frac{1 + e^{-iy}}{1 - e^{-iy}} - 1 = \frac{ix}{2} \frac{e^{iy / 2} + e^{-ix/2}}{e^{ix/2} - e^{-ix/2}} = \frac{ix}{2} \frac{\cos (x / 2)}{i \sin(x / 2)} = \frac{x}{2} \cot \left( \frac{x}{2} \right).
+    \end{aligned}
+  \end{equation}
+\end{proof}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../root"
+%%% End:

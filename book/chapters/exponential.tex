@@ -559,4 +559,29 @@ We can then also show \eqref{eq:plus_adjoint}
   \X \oplus_r \a \overset{\eqref{eq:right-plus}}= \X \circ \exp (\a) = (\X \circ \exp (\a) \circ \X^{-1}) \circ \X \overset{\eqref{eq:exp_adj_comm}}= \exp (\bAd_\X \a) \circ \X \overset{\eqref{eq:left-plus}}= (\bAd_\X \a) \oplus_l \X.
 \end{equation}
 
+Finally a result regarding the derivative of the adjoint.
+
+\begin{lemma}
+  \label{lem:d_bad_exp}
+  \begin{equation}
+    \frac{\mathrm{d}}{\mathrm{d}t} \bAd_{\exp(\lambda(t) \a)} = \lambda'(t) \ad_{\a} \bAd_{\exp(\lambda(t) \a)}.
+  \end{equation}
+\end{lemma}
+\begin{proof}
+  \begin{equation}
+    \begin{aligned}
+      \frac{\mathrm{d}}{\mathrm{d}t} \bAd_{\exp(\lambda(t) \a)}
+      \overset{\eqref{eq:adexp_expad}}= \frac{\mathrm{d}}{\mathrm{d}t} \sum_{k = 0}^\infty \exp(\ad_{\lambda(t) \a})
+      \overset{\eqref{eq:ad_{scaling}}}= \frac{\mathrm{d}}{\mathrm{d}t} \sum_{k = 0}^\infty \exp(\lambda(t) \ad_{\a})
+      \overset{\eqref{eq:def_expad}}= \frac{\mathrm{d}}{\mathrm{d}t} \sum_{k=0}^{\infty} \frac{\lambda(t)^{k} \ad_{\a}^{k}}{k!} \\
+      = \lambda'(t) \sum_{k=1}^{\infty} \frac{\lambda(t)^{k-1} \ad_{\a}^{k}}{(k-1)!} = \lambda'(t) \ad_{\a} \sum_{k=1}^{\infty} \frac{\lambda(t)^{k-1} \ad_{\a}^{k-1}}{(k-1)!} = \lambda'(t) \ad_{\a} \bAd_{\exp(\lambda(t) \a)}.
+    \end{aligned}
+  \end{equation}
+\end{proof}
+
 \todo[inline]{Examples calculating the adjoint for a couple of groups}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../root"
+%%% End:

@@ -1,0 +1,69 @@
+\chapter{$\SOthree$}
+
+\paragraph{Parameterization}
+
+\section{Derivations}
+
+\section{Summary}
+
+\begin{properties}[breakable, title={$\SOthree$ parameterized by $\Sthree$}]
+  \paragraph{Group Parameterization}
+  \begin{equation}
+    \begin{aligned}
+       & \left\{ \bq = (q_{w}, q_{x}, q_{y}, q_{z}) : q_{w}^{2} + q_{x}^{2} + q_{z}^{2} + q_{z}^{2} = 1 \right\}, \\
+       & \bq^{\wedge} = \bR(\bq) \coloneq \begin{bmatrix}
+        (1 - 2(q_y^2 + q_z^2)) & 2(q_x q_y - q_w q_z)    & 2( q_x q_z + q_w q_y ) \\
+        2(q_x q_y + q_w q_z)   & (1 - 2 (q_x^2 + q_z^2)) & 2( q_y q_z-q_w q_x)    \\
+        2 (q_x q_z  - q_w q_y) & 2 (q_w q_x + q_y q_z)   & (1 - 2(q_x^2 + q_y^2))
+      \end{bmatrix}.
+    \end{aligned}
+  \end{equation}
+
+  \paragraph{Algebra Parameterization}
+  \begin{equation}
+    \left\{ \bomega = \begin{bmatrix} \omega_{x} \\ \omega_{y} \\ \omega_{z} \end{bmatrix}
+    \mid \omega_{x}, \omega_{y}, \omega_{z} \in [-\pi, \pi] \right\}, \quad \hat \bomega = \begin{bmatrix} 0 & -\omega_{z} & \omega_{y} \\ \omega_{z} & 0 & -\omega_{x} \\ -\omega_{y} & \omega_{x} & 0 \end{bmatrix}.
+  \end{equation}
+
+  \paragraph{Group Operations}
+  \begin{itemize}
+    \item Identity element: $(1, 0, 0, 0)$
+    \item Inverse: $(q_{w}, q_{x}, q_{y}, q_{z})^{-1} = (q_{w}, -q_{x}, -q_{y}, -q_{z})$
+    \item Composition:
+  \end{itemize}
+
+  \paragraph{Adjoint}
+  \begin{equation}
+    \bAd_{\bq} = \bR(\bq)
+  \end{equation}
+
+  \paragraph{Exponential}
+  \begin{equation}
+    \label{eq:su2_exp}\exp (\bomega) = \left(
+    \cos (\| \bomega \|/2), \frac{\omega_x}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_y}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_z}{\| \bomega \|} \sin ( \| \bomega \|/2 ) \right), \end{equation}
+
+  \paragraph{Logarithm}
+  \begin{equation}
+    \label{eq:su2_log} \log (\bq)          = \left( 2 \frac{ \arctantwo \left(\sqrt{q_x^2 + q_y^2 + q_z^2}, q_w \right) }{ \sqrt{q_x^2 + q_y^2 + q_z^2} } \right) \times \begin{bmatrix} q_{x} \\ q_{y} \\ q_{z} \end{bmatrix}.
+  \end{equation}
+
+  \paragraph{Lowercase adjoint}
+  \begin{equation}
+    \ad_\bomega     = \hat \bomega
+  \end{equation}
+
+  \paragraph{Derivatives of the Exponential}
+  \begin{subequations}
+    \begin{align}
+      \mathrm{d}^r \exp_{\bomega}                     & =        I_3 - \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2, \\
+      \mathrm{d}^l \exp_{\bomega}                     & = I_3 + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2,        \\
+      \left( \mathrm{d}^r \exp_{\bomega} \right)^{-1} & = I_3 + \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2, \\
+      \left( \mathrm{d}^l \exp_{\bomega} \right)^{-1} & = I_3 - \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2.
+    \end{align}
+  \end{subequations}
+\end{properties}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../root"
+%%% End:

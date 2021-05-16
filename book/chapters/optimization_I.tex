@@ -1,6 +1,71 @@
 % !TEX root = ../root.tex
 
-\chapter{Optimization I: Gradient Descent on Manifolds}
+\chapter{Nonlinear Least Squares}
+
+Like how Lie groups thread the line between linear and nonlinear manifolds, the same can be said for the role of nonlinear least squares in optimization, which is a type of optimization problem is rich enough for to model a wide variety of situations, yet structured enough to be amenable to practical algorithms.
+
+A non-linear least squares problem has the general form
+\begin{equation}
+  \label{eq:nlsq}
+  \min_{\x \in \M} \frac{1}{2} \sum_{i=1}^{N} \left\| r_{i}(\x) \right\|^{2}, \quad r_{i} : \mathcal M \rightarrow \mathbb{R}^{n_{r_{i}}}.
+\end{equation}
+The manifold $\M$ can be a Lie group or a Lie group product $\x = (\x_{1}, \ldots, \x_{k}) \in \M_{1} \times \ldots \times \M_{k}$. For the latter case, typically not every residual depends on each member of the bundle, i.e. $r_{i}(\x) = r_{i}\left( \{ \x_{j}\}_{j \in I_{i}} \right)$ where $I_{i} \subset \{ 1, \ldots, k\}$ is a subset of variables.
+
+\begin{remark}
+  An equivalent problem with a single residual is $\min_{\x \in \M} \frac{1}{2} \| r(\x) \|^{2}$ for
+  \begin{equation}
+    r(\x) =
+    \begin{bmatrix}
+      r_{1}(\x) \\
+      \vdots \\
+      r_{k}(\x)
+    \end{bmatrix}.
+  \end{equation}
+  Although the single residual formulation simplifies notation somewhat, in practice it is for large problems important to leverage the sparsity structure which is better exposed in \eqref{eq:nlsq}.
+\end{remark}
+
+
+\section{Solution Sensitivity}
+
+In many applications the residuals $r_{i}(\x)$ are obtained from data and are therefore associated with uncertainty. In this situation it is natural to ask how sensitive the optimal solution of the nonlinear least squares problem is to noise in the data. Assume that the noise associated with each residual is Gaussian and independent of other residuals, i.e. that
+\begin{equation}
+  r_{i}(\x) \sim \mathcal N\left(\bar r_{i}(\x), I \right),
+\end{equation}
+and consider a point $\bar \x$. We expand the objective using a Taylor approximation as
+\begin{equation}
+  \min_{\bar \x \in \M} \frac{1}{2} \sum_{i=1}^{N} \left\| r_{i}(\bar \x) \right\|^{2} \approx \min_{\a \in T_{\bar \x} \M} \frac{1}{2}  \sum_{i=1}^{N} \left\| r_{i}(\bar \x) + \mathrm{d}^{r} (r_{i})_{\bar \x} \a \right\|^{2}.
+\end{equation}
+The optimal solution $\x^{*}$ of the left problem can be approximately retrieved from $\a^{*}$ as $\x^{*} = \bar \x \oplus_{r} \a^{*}$ assuming that $\a^{*}$ is small.
+
+Letting $r_{i} \coloneq r_{i}(\bar \x)$ and $J_{i} \coloneq \mathrm{d}^{r} (r_{i})_{\bar \x}$ expanding the square and ignoring the constant term yields
+\begin{equation}
+  \min_{\a \in T_{\bar \x} \M} \sum_{i=1}^{N}\frac{1}{2} \a^{T} J_{i}^{T} J_{i} \a + \a^{T} J_{i}^{T} r_{i} = \min_{\a \in T_{\bar \x} \M} \frac{1}{2} \a^{T} \left( \sum_{i=1}^{N} J_{i}^{T} J_{i} \right) \a + \a^{T} \sum_{i=1}^{N} J_{i}^{T} r_{i}.
+\end{equation}
+The optimal solution of this problem can be obtained by setting the gradient w.r.t. $\a$ to zero and is
+\begin{equation}
+  \a^{*} = -  \left( \sum_{i=1}^{N} J_{i}^{T} J_{i} \right)^{\dagger} \left( \sum_{i=1}^{N} J_{i}^{T} r_{i} \right).
+\end{equation}
+From this we can infer the sensitivity of $\a^{*}$ to noise in $r_{i}$: recalling that $\mathrm{Var}(A x + B y) = A \mathrm{Var}(x) A^{T} + B \mathrm{Var}(y) B^{T}$ we get that
+\begin{equation}
+  \a^{*} \sim \mathcal N \left( - \left( \sum_{i=1}^{N} J_{i}^{T} J_{i} \right)^{\dagger} \left( \sum_{i=1}^{N} J_{i}^{T} \bar r_{i} \right), \left( \sum_{i=1}^{N} J_{i}^{T} J_{i} \right)^{\dagger} \left( \sum_{i=1}^{N} J_{i}^{T} \Sigma_{i} J_{i} \right) \left( \sum_{i=1}^{N} J_{i}^{T} J_{i} \right)^{\dagger} \right).
+\end{equation}
+For the special case when all $r_{i}$'s have unit covariance, i.e. $\Sigma_{i} = I$, the expression simplifies to
+\begin{equation}
+  \a^{*} \sim \mathcal N \left( - \left( \sum_{i=1}^{N} J_{i}^{T} J_{i} \right)^{\dagger} \left( \sum_{i=1}^{N} J_{i}^{T} \bar r_{i} \right), \left( \sum_{i=1}^{N} J_{i}^{T} J_{i} \right)^{\dagger} \right).
+\end{equation}
+Given a residual $r(x) \sim \mathcal N(\bar r(x), \Sigma)$ a residual with unit covariance can be obtained by left-multiplying with the square root information matrix $\sqrt{I} \coloneq \Sigma^{-1/2}$:
+\begin{equation}
+  \label{eq:9}
+  \sqrt{I} r(x) \sim \mathcal N\left(\sqrt{I} \bar r(x), I\right). \end{equation}
+Scaling with $\sqrt{I}$ makes sense in many applications since it in effect scales the residual by the inverse noise magnitude.
+
+\begin{important}
+  For the unit covariance case $\Sigma_{i} = I$ the tangent space covariance of the optimal solution $x^{*}$ is
+  \begin{equation}
+    \left( \sum_{i=1}^{N} \left(\mathrm{d}^{r} (r_{i})_{x^{*}}\right)^{T} \mathrm{d}^{r} (r_{i})_{x^{*}} \right)^{\dagger}.
+  \end{equation}
+\end{important}
+
 
 \section{Levenberg-Marquardt}
 
@@ -69,7 +134,7 @@ We provide an argument based on duality to support this fact, see e.g. \cite[The
   \begin{equation}
     \sup_{\lambda \geq 0} -\frac{1}{2} \a^T \left( J^T J + \lambda D^T D \right) \a - \lambda \frac{\Delta^2}{2}.
   \end{equation}
-  Also this problem has a closed-form solution: either the optimal solution is attained at the boundary, i.e. $\lambda = 0$, or it is attained at zero derivative w.r.t. $\lambda$ which necessitates $\a^T D^T D \a + \Delta^2 = 0$. These two latter conditions imply that the complemnetarity condition $\lambda (\| D \a \| - \Delta) = 0$ holds.
+  Also this problem has a closed-form solution: either the optimal solution is attained at the boundary, i.e. $\lambda = 0$, or it is attained at zero derivative w.r.t. $\lambda$ which necessitates $\a^T D^T D \a + \Delta^2 = 0$. These two latter conditions imply that the complementarity condition $\lambda (\| D \a \| - \Delta) = 0$ holds.
 \end{proof}
 
 Equation \eqref{eq:lm_normaleqs} represents the normal equations for the least-squares problem
@@ -124,7 +189,7 @@ Calculation of the actual to predicted reduction ratio can be rewritten as
 where we have used that $\| r \|^2 - \| r + J \a \|^2 = -2 \a^T J r - \a^T J^T J \a = \| J \a \|^2 + 2 \lambda \| D \a \|^2$ which is a consequence of \eqref{eq:lm_normaleqs}. This formulation has the benefit of avoiding subtraction of numbers of large magnitude which may cause floating point roundoff errors.
 
 
-\subsubsection{Solving the Least-Squares Problem}
+\subsection{Solving the Least-Squares Problem}
 The least-squares problem
 \begin{equation}
   \label{eq:lm_structured_ls}
@@ -151,9 +216,9 @@ and it is now apparent that the optimal solution is
   \label{eq:5}
   \a_{\textrm{LM}} = - P \tilde R^{-1} \tilde Q_{11}^{T} Q^{T} r.
 \end{equation}
+When solving \eqref{eq:lm_structured_ls} repeatedly for different values of $\lambda$ only the second QR decomposition needs to be re-computed.
 
-
-\subsubsection{Finding the LM Parameter}
+\subsection{Finding the LM Parameter}
 
 \todo[inline]{Follow \cite{watson_levenberg-marquardt_1978}}
 
