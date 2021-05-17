@@ -1,4 +1,4 @@
-\chapter{$\SEthree$}
+\chapter{\texorpdfstring{$\SEthree$}{SE(3)}: The 3D Rigid Motion Group}
 
 \paragraph{Parameterization}
 
@@ -6,17 +6,168 @@
 
 \paragraph{Lie Algebra}
 
-\section{Derivations}
+\section{Formulas}
 
 \paragraph{Adjoint}
 
 \paragraph{Exponential and Logarithm}
 
+Continuing with $\SEthree$ we utilize \eqref{eq:so3_pow3} to calculate
+\begin{equation}
+  \sum\limits_{k=0}^\infty \frac{\hat{\bomega}^{k}} {(k+1)!} = I_3 - \frac{1}{\| \symbf\omega \|^2} \hat {\symbf{\symbf}} \sum\limits_{k=2}^\infty \frac{\hat{\bomega}^k}{k!} = I_3  - \frac{1}{\| \symbf\omega \|^2} \hat {\bomega} \left( \Exp_\SOthree(\hat {\bomega}) - I_3 - \hat{\bomega} \right).
+\end{equation}
+From \eqref{eq:so3_exp} we then have that
+\begin{equation}
+  \label{eq:so3_leftjac}
+  \begin{aligned}
+    \mathrm{d}^l \left( \exp_{\SOthree} \right)_\bomega
+     & \coloneq \sum\limits_{k=0}^\infty \frac{\hat{\bomega}^{k}} {(k+1)!} = I_3  - \frac{1}{\| \bomega \|^2} \hat {\bomega} \left( \left( I_3 + \frac{ \sin \| \bomega \|}{\| \bomega \|} \hat{\bomega} + \frac{ (1 - \cos \| \bomega \|)}{\| \bomega \|^2} \hat{\bomega}^2 \right) - I_3 - \hat{\bomega} \right)
+    \\
+     & = I_3 - \frac{ (\sin \| \bomega \| -\| \bomega \|)  }{\| \bomega\|^3} \hat {\bomega}^2 + \frac{\| \bomega \|^2  (1 - \cos \| \bomega \| ) }{\| \bomega \|^4} \hat {\bomega}
+    \\
+     & = I_3 + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2 + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} .
+  \end{aligned}
+\end{equation}
+Applying Lemma \ref{lem:help_exp} then gives the exponential.
+\begin{important}
+  The matrix exponential on $\mathfrak{se}(3)$ is
+  \begin{subequations}
+    \begin{align}
+      \exp_\SEthree (\bomega, \bv) = \Exp_\SEthree \begin{bmatrix}
+        \hat{\bomega} & \symbf{v} \\ \symbf{0}_{1 \times 3} & 0
+      \end{bmatrix} & = \begin{bmatrix}
+        \Exp_{\SOthree}(\hat{\bomega}) & \mathrm{d}^l \left( \exp_{\SOthree} \right)_\bomega \symbf v \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix},                                                                                        \\
+      \Log_\SEthree \begin{bmatrix}
+        \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix}                                & = \begin{bmatrix}
+        \hat{\symbf \alpha} & \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp \\ \symbf{0}_{1 \times 3} & 0
+      \end{bmatrix},                                                                                        \\
+      \log_\SEthree \begin{bmatrix}
+        \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix}                                & = \left(\symbf \alpha, \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp  \right),
+    \end{align}
+  \end{subequations}
+  where $\symbf \alpha = \log_\SOthree R$.
+\end{important}
+
 \paragraph{Derivatives of the Exponential}
 
-\section{Summary}
+First we derive an expression for $\ad_\a$ utilizing that for the hat operator on $\SOthree$,  $\hat \a \b = -\hat \b \a$
+\begin{equation}
+  \begin{aligned}
+    \left[ \begin{bmatrix}
+        \bv \\ \bomega
+      \end{bmatrix}, \begin{bmatrix}
+        \bar \bv \\ \bar \bomega
+      \end{bmatrix} \right]_\SEthree = \left(\begin{bmatrix} \hat \bomega & \bv \\ 0 & 0 \end{bmatrix}\begin{bmatrix} \hat {\bar \bomega} & \bar{\bv} \\ 0 & 0 \end{bmatrix} - \begin{bmatrix} \hat {\bar \bomega} & \bar{\bv} \\ 0 & 0 \end{bmatrix} \begin{bmatrix} \hat \bomega & \bv \\ 0 & 0 \end{bmatrix} \right)^\vee= \begin{bmatrix} \left[ \bomega, \bar \bomega \right]^\wedge_\SOthree & \hat \bomega \bar \bv - \hat {\bar \bomega} \bv \\ 0 & 0 \end{bmatrix}^\vee \\
+    = \begin{bmatrix}  \hat \bomega \bar \bv - \hat {\bar \bomega} \bv \\ \left[ \bomega, \bar \bomega \right]_\SOthree  \end{bmatrix} = \underbrace{\begin{bmatrix}
+        \hat \bomega & \hat \bv \\ 0 & \hat \bomega
+      \end{bmatrix}}_{\ad_\a} \begin{bmatrix}
+      \bar v \\ \bar \bomega
+    \end{bmatrix}.
+  \end{aligned}
+\end{equation}
+We are interested in the powers $\ad_\a^k$ in order to evaluate the exponential derivatives. For $k \geq 1$
+\begin{equation}
+  \ad_\a^k = \begin{bmatrix}
+    \hat \bomega & \hat \bv \\ 0 & \hat \bomega
+  \end{bmatrix}^k
+  = \begin{bmatrix}
+    \hat \bomega^k & \sum_{i=0}^{k-1} \hat \bomega^{i} \hat \bv \hat \bomega^{k-1-i} \\ 0 & \hat \bomega^k
+  \end{bmatrix}.
+\end{equation}
 
-\begin{properties}[breakable, title={$\SEthree$ parameterized by $\Sthree \times \mathbb{R}^{3}$}]
+Thus the left derivative of the exponential can be written
+\begin{equation*}
+  \mathrm{d}^l \exp_\a = \sum_{k = 0}^\infty \frac{\ad_\a^k}{(k+1)!} = I + \sum_{k = 1}^\infty \frac{1}{(k+1)!}  \begin{bmatrix}
+    \hat \bomega^k & \sum_{i = 0}^{k-1} \hat \bomega^i \hat \bv \hat \bomega^{k - 1 - i} \\ 0 & \hat \bomega^k
+  \end{bmatrix} = \begin{bmatrix}
+    \mathrm{d}^l \left(\exp_{\SOthree}\right)_\bomega & Q^l(\bv, \bomega)                                 \\
+    0                                                 & \mathrm{d}^l \left(\exp_{\SOthree}\right)_\bomega
+  \end{bmatrix},
+\end{equation*}
+where a closed-form expression for $Q^l(\bv, \bomega)$ can be painstakingly obtained through a series of sum manipulations. We first convert the formula to a form that is symmetric in $i$ and $k$.
+\begin{equation*}
+  \begin{aligned}
+    Q^l(\bv, \bomega) & \coloneq \sum_{k = 1}^\infty \frac{1}{(k+1)!} \sum_{i=0}^{k-1} \hat \bomega^i \hat \bv \hat \bomega^{k - 1 - i} = \sum_{k = 0}^\infty \sum_{i=0}^{k} \frac{1}{(k+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k - i} \\
+                      & = \sum_{i = 0}^\infty \sum_{k = i}^\infty \frac{1}{(k+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k - i} = \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k}.
+  \end{aligned}
+\end{equation*}
+With the same steps the right derivative can be shown to be
+\begin{equation}
+  \label{eq:se3_qr}
+  Q^r(\bv, \bomega) \coloneq \sum_{k=1}^\infty \frac{(-1)^k}{(k+1)!} \sum_{i=0}^{k-1} \hat \bomega ^i \hat \bv \hat \bomega^{k-1-i} = \ldots = - \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{(-1)^{k+i}}{(k+i+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k}
+\end{equation}
+and we can see that
+\begin{equation}
+  Q^r(\bv, \bomega) = Q^l(-\bv, -\bomega)
+\end{equation}
+which is convenient to know since calculating one of them is tedious enough.
+
+In the following calculation the sum $\sum_{k, i \geq 0}$ is first split into parts $(k=i=0)$, $(k=0, i \geq 1)$, $(k \geq 1, i = 0)$ and $(k, i \geq 1)$, and then the resulting single sums are split into two sums $i = 0, 2, \ldots$ and $i = 1, 3, \ldots$. Also using that
+\begin{equation}
+  \label{eq:hat_parity_rels}
+  \hat \bomega^{2k+1} = (-1)^{k} \| \bomega \|^{2k}\hat \bomega, \qquad \hat \bomega^{2k+2} = (-1)^{k} \| \bomega \|^{2k}\hat \bomega^2,
+\end{equation}
+which follows from \eqref{eq:so3_pow3}, we get
+\begin{equation*}
+  \begin{aligned}
+     & Q^l (\bv, \bomega) = \frac{1}{2} \hat \bv + \sum_{i = 1}^\infty \frac{\hat \bomega^i \hat \bv}{(i+2)!} + \sum_{k = 1}^\infty \frac{\hat \bv\hat \bomega^k }{(k+2)!} + \sum_{i=1}^\infty \sum_{k=1}^\infty \frac{1}{(i+k+2)!} \hat \bomega^i \hat \bv \hat \bomega^k                                                                                                                            \\
+     & = \frac{1}{2} \hat \bv + \sum_{i = 0}^\infty \frac{\hat \bomega^{i+1} \hat \bv + \hat \bv \hat \bomega^{i+1}}{(i+3)!} + \sum_{i=0}^\infty \sum_{k=0}^\infty \frac{1}{(i+k+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1}                                                                                                                                                                  \\
+     & = \frac{1}{2} \hat \bv + \sum_{i=0}^\infty \frac{\hat \bomega^{2i+1} \hat \bv + \hat \bv \hat \bomega^{2i+1}}{(2i+3 )!} + \sum_{i=0}^\infty \frac{\hat \bomega^{2i+2} \hat \bv + \hat \bv \hat \bomega^{2i+2}}{(2i+4)!} + \sum_{i=0}^\infty \sum_{k=0}^\infty \frac{1}{(i+k+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1}                                                                \\
+     & = \frac{1}{2} \hat \bv + \sum_{i=0}^\infty \frac{(-1)^{i}\| \bomega \|^{2i}}{(2i+3)!}  \left( \hat \bomega \hat \bv + \hat \bv \hat \bomega \right)  + \sum_{i=0}^\infty \frac{(-1)^{i}\| \bomega \|^{2i}}{(2i+4)!}  \left( \hat \bomega^2 \hat \bv + \hat \bv \hat \bomega^2 \right) + \sum_{i=0}^\infty \sum_{k=0}^\infty \frac{1}{(i+k+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1}.
+  \end{aligned}
+\end{equation*}
+The first two sums can now be evaluated in a fairly straightforward manner:
+\begin{subequations}
+  \begin{align}
+    \label{eq:sine_sum}
+    \sum_{i=0}^\infty \frac{(-1)^i}{(2i+3)!} \| \bomega \|^{2i}   & = - \frac{1}{\| \bomega \|^3} \sum_{i=0}^\infty \frac{(-1)^{i+1}}{(2(i+1)+1)!} \| \bomega \|^{2(i+1) + 1} = \frac{\| \bomega \| - \sin \| \bomega \|}{\| \bomega \|^3} ,         \\
+    \label{eq:cosine_sum}
+    \sum_{i=0}^\infty \frac{(-1)^{i}}{(2i+4)!} \| \bomega \|^{2i} & = \frac{1}{\| \bomega \|^4} \sum_{i=0}^\infty \frac{(-1)^{i+2}}{(2(i+2))!} \| \bomega \|^{2(i + 2)} =  \frac{\cos \| \bomega \| - 1 + \frac{\|\bomega\|^2}{2}}{\| \bomega \|^4}.
+  \end{align}
+\end{subequations}
+The double sum requries additional work. Using $\hat \bomega \hat \bv \hat \bomega = (-\bomega \cdot \bv) \hat \bomega$ from \eqref{eq:so3_pow3} yields
+\begin{equation*}
+  \begin{aligned}
+    \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1} = (-\bomega \cdot \bv) \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{k+i+1}  \overset{j = k+i}=  (-\bomega \cdot \bv) \sum_{j = 0}^\infty \sum_{k = 0}^{j} \frac{1}{(j+4)!} \hat \bomega^{j+1} \\
+    = -(\bomega \cdot \bv) \sum_{j = 0}^\infty \frac{j+1}{(j+4)!} \hat \bomega^{j+1} = -(\bomega \cdot \bv) \sum_{j=0}^\infty \left(\frac{1}{(j+3)!} - \frac{3}{(j+4)!} \right) \hat \bomega^{j+1}                                                                                                                                      \\
+    = -(\bomega \cdot \bv) \left( \sum_{j=0}^\infty \left(\frac{1}{(2j+3)!} - \frac{3}{(2j+4)!} \right) \hat \bomega^{2j+1} + \sum_{j=0}^\infty \left(\frac{1}{(2j+4)!} - \frac{3}{(2j+5)!} \right) \hat \bomega^{2j+2} \right)                                                                                                         \\
+    \overset{\eqref{eq:hat_parity_rels}}= (\bomega \cdot \bv) \left( -\sum_{j=0}^\infty \left(\frac{(-1)^j  }{(2j+3)!}\| \bomega \|^{2j} + 3\frac{(-1)^j }{(2j+4)!} \| \bomega \|^{2j}\right)  \hat \bomega + \sum_{j=0}^\infty \left(-\frac{(-1)^j  }{(2j+4)!} \| \bomega \|^{2j} + 3\frac{(-1)^j  }{(2j+5)!}\| \bomega \|^{2j} \right) \hat \bomega^2 \right).
+  \end{aligned}
+\end{equation*}
+The sums \eqref{eq:sine_sum} and \eqref{eq:cosine_sum} appear again and can be re-used. The remaining sum with denominator $(2j+5)!$ evaluates to a higher-order sine expression as follows
+\begin{equation}
+  \sum_{j=0}^\infty \frac{(-1)^j}{(2j+5)!} \| \bomega \|^{2j} = \frac{1}{\|\bomega\|^5} \sum_{j=0}^\infty \frac{(-1)^{j+2}}{((2j+2)+1)} \| \bomega \|^{2(j+2)+1} = \frac{\sin \|\bomega \| - \| \bomega \| + \frac{\|\bomega\|}{6}}{\| \bomega \|^5}.
+\end{equation}
+\begin{important}
+  After collecting the various expressions the closed-form expression for $Q^l$ can be written down
+  \begin{equation}
+    \label{eq:se3_q_expr}
+    \begin{aligned}
+      Q^l (\bv, \bomega) & = \frac{1}{2}\hat \bv + \frac{\| \bomega \| - \sin \| \bomega \|}{\| \bomega \|^3}\left(\hat \bomega \hat \bv + \hat \bv \hat \bomega - (\bomega \cdot \bv) \hat \bomega \right)                     \\
+                         & + \frac{ \cos \| \bomega \| - 1 + \frac{\|\bomega\|^2}{2} }{\| \bomega \|^4} \left(\hat \bomega^2 \hat \bv + \hat \bv \hat \bomega^2 + (\bomega \cdot \bv) (3 \hat \bomega - \hat \bomega^2) \right) \\
+                         & - 3(\bomega \cdot \bv) \left(  \frac{\|\bomega\| - \sin \|\bomega\| - \frac{\|\bomega\|^3}{6}}{\|\bomega\|^5} \right) \hat \bomega^2 .
+    \end{aligned}
+  \end{equation}
+\end{important}
+The $Q$ matrix allows us to write down a closed-form expression for $\mathrm{d}^l \exp_\a$ on $\SEthree$, and $\left( \mathrm{d}^l \exp_\a\right)^{-1}$ follows from noting that $\begin{bmatrix} A & B \\ 0 & A \end{bmatrix}^{-1} = \begin{bmatrix} A^{-1} & -A^{-1} B A^{-1} \\ 0 & A^{-1} \end{bmatrix}$ for $A$ invertible.
+
+\begin{properties}[title={Lowercase adjoint and exponential derivatives on $\SEthree$}]
+  Let $\a = \begin{bmatrix} \bv \\ \bomega \end{bmatrix}$ and $Q^l$ as in \eqref{eq:se3_q_expr}. Then
+  \begin{align}
+    \ad_{\a}                                   & =  \begin{bmatrix}  \hat \bomega & \hat \bv \\ 0 & \hat \bomega \end{bmatrix},  \\
+    \mathrm{d}^r \exp_{\a}                     & =   \begin{bmatrix} J^r_\SOthree & Q^l(-\bv, - \bomega) \\ 0 & J^r_\SOthree \end{bmatrix}, \\
+    \mathrm{d}^l \exp_{\a}                     & = \begin{bmatrix} J^l_\SOthree & Q^l(\bv, \bomega) \\ 0 & J^l_\SOthree\end{bmatrix}    \\
+    \left( \mathrm{d}^r \exp_{\a} \right)^{-1} & =  \begin{bmatrix} \left(J^r_\SOthree\right)^{-1}  &  -\left(J^r_\SOthree\right)^{-1} Q^l(-\bv, -\bomega)  \left(J^r_\SOthree\right)^{-1} \\ 0 &  \left(J^r_\SOthree\right)^{-1} \end{bmatrix},
+    \\
+    \left( \mathrm{d}^l \exp_{\a} \right)^{-1} & = \begin{bmatrix} \left(J^l_\SOthree\right)^{-1}  & -\left(J^l_\SOthree\right)^{-1} Q^l(\bv, \bomega)  \left(J^l_\SOthree\right)^{-1} \\ 0 &  \left(J^l_\SOthree\right)^{-1} \end{bmatrix} .
+  \end{align}
+  where $J^{l/r}_\SOthree = \left( \mathrm{d}^{l/r} \exp_{\SOthree} \right)_\bomega$ and $\left(J^{l/r}_\SOthree \right)^{-1} = \left( \left( \mathrm{d}^{l/r} \exp_{\SOthree} \right)_\bomega \right)^{-1}$. Note that in these formulas $\hat \bomega$ and $\hat \bv$ denote the hat operator on $\SOthree$.
+\end{properties}
+
+\begin{properties}[breakable, title={Formulas for $\SEthree$}]
 \paragraph{Group Parameterization}
 \begin{equation}
 \end{equation}
@@ -52,6 +203,8 @@
 \begin{equation}
 \end{equation}
 \end{properties}
+
+\section{Parameterization via Isomorphism with \texorpdfstring{$\Sthree \ltimes \mathbb{R}^{3}$}{S3 |x R3}}
 
 %%% Local Variables:
 %%% mode: latex

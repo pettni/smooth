@@ -1,58 +1,182 @@
-\chapter{$\SEtwo$}
+\chapter{\texorpdfstring{$\SEtwo$}{SE(2)}: The 2D Rigid Motion Group}
 
-\paragraph{Parameterization}
+We now combine $\Etwo$ and $\SOtwo$ into a group that simultaneously represents translation and rotation in two dimensions. The result is $\SEtwo$---the special euclidean group in two dimensions.
+
+In matrix form $\SEtwo$ consists of matrices on the form
+\begin{equation}
+  \label{eq:se2_matrix}
+  \SOtwo = \left\{ \begin{bmatrix}
+    \bR & \bp \\ \symbf{0}_{1 \times 2} & 1
+  \end{bmatrix} \mid R \in \SOtwo \right\},
+\end{equation}
+It follows that both $\SOtwo$ and $\Etwo$ are sub-groups of $\SEtwo$. In addition, $\Etwo$ is a normal subgroup\footnote{If $X \in \mathbb{E}^2$ and $Y \in \SOtwo$, then $Y X Y^{-1} \in \mathbb{E}^2$.} which implies that $\SEtwo$ is a \emph{semi-direct product} denoted $\SEtwo \cong \SOtwo \ltimes \Etwo$. Group products (direct and semi-direct) are discussed further below.
+
+\paragraph{Algebra}
+
+\paragraph{Lower-dimensional representation:} Four parameters are required, two for each subgroup
+\begin{equation}
+  \check{\mathbb{SE}}(2) = \cSOtwo  \times \cEtwo = \left\{ ((q_w, q_z), (p_x, p_y)) : (q_w, q_z) \in \cSOtwo , (p_x, p_y) \in \cEtwo \right\}.
+\end{equation}
+
+\paragraph{Identity:} The identity element is inherited from the sub-groups: $\id_{\check{\SEtwo}} = \left( \id_{\cSOtwo}, \id_{\check{\Etwo}} \right) = ((1, 0), (0, 0))$.
+
+\paragraph{Inverse:} From matrix inverse it follows that $(\bR, \bp)^{-1} = (\bR^T, -\bR^T \bp)$.
+
+\paragraph{Composition:} Matrix multiplication shows that composition in the lower-dimensional representation is
+\begin{equation}
+  (\bR, \bp) \circ (\bR', \bp') = (\bR \bR', \bR \bp' + \bp).
+\end{equation}
+
+\paragraph{Action on $\mathbb{\bR}^2$:}
+This group has a natural action on two-dimensional vectors that consists of rotation and translation. For $X \coloneq (\bR, \bp) \in \check {\SEtwo}$ the action is
+\begin{equation}
+  \left \langle \X, \bu \right \rangle_{\SEtwo} = \left \langle \bR, \bu \right \rangle_{\SOtwo} + \bp = \bR \bu + \bp.
+\end{equation}
+That is, the vector $\bu$ is first rotated through the action of the $\SOtwo$ part of the state, and then subjected to a translation. Like in \eqref{eq:en_action} this action can be written as a matrix multiplication if we associate $\bu$ with its homogeneous counterpart $\bu^H$:
+\begin{equation}
+  \left \langle \X, \bu^H \right \rangle = \begin{bmatrix}
+    \bR & \bp \\ \symbf{0}_{1 \times 2} & 1
+  \end{bmatrix} \begin{bmatrix}
+    \symbf u \\ 1
+  \end{bmatrix} = \begin{bmatrix}
+    \bR \bu + \bp \\ 1
+  \end{bmatrix}.
+\end{equation}
+The action has a natural interpretation as a change of coordinates: if $\begin{bmatrix} \bR & \bp \\ \symbf{0}_{1 \times 2} & 1 \end{bmatrix} \in \SEtwo$, then $\left \langle \X, \bu \right \rangle$ represents the transformation from a coordinate frame attached at $\bp$ with unit vectors the columns of $\bR$, to the global coordinate frame.
 
 \paragraph{Action on $\mathbb{R}^2$:}
 
 \paragraph{Lie Algebra}
 
-\section{Derivations}
+
+\section{Formulas}
 
 \paragraph{Adjoint}
+
+Take $\X = \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}$ and recall the hat formula $\hat \omega_{z} = \begin{bmatrix} 0 & -\omega_{z} \\ \omega_{z} & 0 \end{bmatrix}$ and adjoint $\left(\bAd_{\bR} \omega_{z} \right)^{\wedge} = \bR \hat \omega_{z} \bR^{T} = \hat \omega_{z}$ from $\SOtwo$. Evaluating \eqref{eq:def_bad} gives
+\begin{equation}
+  \begin{aligned}
+    \bAd_{\X} \begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix}
+    & = \left( \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}
+    \begin{bmatrix}
+      \hat \omega_{z} & \bv \\ 0 & 0
+    \end{bmatrix}
+    \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}^{-1} \right)^{\vee}
+    = \left( \begin{bmatrix} \bR \hat \omega_{z} & \bR \bv \\ 0 & 0 \end{bmatrix}
+    \begin{bmatrix} \bR^{T} & -\bR^{T} \bp \\ 0 & 1 \end{bmatrix} \right)^{\vee} \\
+    & = \begin{bmatrix} \bR \hat \omega_{z} \bR^{T} & \bR \bv - \bR \hat \omega_{z} \bR^{T} \bp \\ 0 & 1 \end{bmatrix}^{\vee}
+    = \begin{bmatrix} \bR \bv - \hat \omega_{z} \bp \\ \omega_{z} \end{bmatrix} =
+    \begin{bmatrix}
+      \bR & -\hat 1 \; \bp
+       \\ 0 & 1
+    \end{bmatrix}
+    \begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix}
+   ,
+  \end{aligned}
+\end{equation}
+which exposes the adjoint as the matrix $\begin{bmatrix} \bR & -\hat 1 \; \bp \\ 0 & 1 \end{bmatrix}$.
 
 \paragraph{Exponential and Logarithm}
 
+We use Lemma \ref{lem:help_exp} to derive the exponential map. The Lie algebra elements have structure
+\begin{equation}
+  \A = \B + \C, \quad \B = \begin{bmatrix} \hat \omega_{z} & \symbf{0} \\ \symbf 0 & 0 \end{bmatrix}, \quad \C = \begin{bmatrix} \symbf{0} & \bv \\ \symbf{0} & 0 \end{bmatrix}.
+\end{equation}
+Thus, it suffices to compute $S(\omega) \coloneq \sum_{k = 0}^\infty \frac{\hat \bomega}{(k+1)!}$ to obtain the exponential map for the semi-simple groups.
+
+For $\mathfrak{se}(2)$, disregarding the trivial case $\omega_{z} = 0$, we obtain
+\begin{equation}
+  \begin{aligned}
+    S(\omega_z)
+     & = \sum_{k = 0}^\infty \frac{\hat \omega_z^k}{(k+1)!} = \left( \hat \omega_z \right)^{-1} \left( \Exp \hat \omega_z - I \right) \\
+     & = \frac{1}{\omega_z^2} \begin{bmatrix}
+      0 & \omega_z \\ -\omega_z & 0
+    \end{bmatrix} \begin{bmatrix}
+      \cos \omega_z - 1 & -\sin \omega_z \\ \sin \omega_z & \cos \omega_z - 1
+    \end{bmatrix} =  \frac{1}{\omega_z}\begin{bmatrix}
+      \sin \omega_z     & \cos \omega_z - 1 \\
+      1 - \cos \omega_z & \sin \omega_z
+    \end{bmatrix}.
+  \end{aligned}
+\end{equation}
+Lemma \ref{lem:help_exp} now gives the exponential.
+\begin{equation}
+  \label{eq:6}
+  \exp(\A) = \exp(\B + \C) = \exp(\B) + \begin{bmatrix} S(\omega_{z}) & 0 \\ 0 & 1 \end{bmatrix} \C = \begin{bmatrix} \exp_{\SOtwo} \omega_{z} & S(\omega_{z}) \bv \\ 0 & 1 \end{bmatrix}
+\end{equation}
+
+
 \paragraph{Derivatives of the Exponential}
 
-\section{Summary}
-
-\begin{properties}[breakable, title={$\SEtwo$ parameterized by $\Uone \times \mathbb{R}^{2}$}]
-\paragraph{Group Parameterization}
+We first calculate an expression for the bracket.
 \begin{equation}
+  \begin{aligned}
+    \left[ \begin{bmatrix} v_x \\ v_y \\ \omega_z \end{bmatrix}, \begin{bmatrix} \bar v_x \\ v_y \\ \bar \omega_z \end{bmatrix} \right] = \left( \begin{bmatrix}
+      0 & -\omega_z & v_x \\ \omega_z & 0 & v_y \\ 0 & 0 & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & -\bar\omega_z & \bar v_x \\ \bar\omega_z & 0 & \bar v_y \\ 0 & 0 & 0
+    \end{bmatrix} - \begin{bmatrix}
+      0 & -\bar\omega_z & \bar v_x \\ \bar\omega_z & 0 & \bar v_y \\ 0 & 0 & 0
+    \end{bmatrix}\begin{bmatrix}
+      0 & -\omega_z & v_x \\ \omega_z & 0 & v_y \\ 0 & 0 & 0
+    \end{bmatrix} \right)^{\vee} \\
+    = \begin{bmatrix} 0 & 0 & -\omega_z \bar v_y + \bar \omega_z v_y \\
+                0 & 0 & \omega_z \bar v_x - \bar \omega_z v_x  \\
+                0 & 0 & 0
+    \end{bmatrix}^\vee
+    = \begin{bmatrix}  -\omega_z \bar v_y + \bar \omega_z v_y \\ \omega_z \bar v_x - \bar \omega_z v_x \\ 0 \end{bmatrix} = \underbrace{\begin{bmatrix}  0 & -\omega_z & v_y \\ \omega_z & 0 & -v_x \\ 0 & 0 & 0 \end{bmatrix}}_{\ad_\a} \begin{bmatrix} \bar v_x \\  \bar v_y  \\ \bar \omega_z \end{bmatrix}.
+  \end{aligned}
 \end{equation}
+A quick calculation reveals that $\ad_\a^3 = -\omega_z^2 \ad_\a$, which is exactly the relation we used for $\SOthree$ above. Consequently the inverse derivatives must have the same form as on $\SOthree$.
 
-\paragraph{Algebra Parameterization}
-\begin{equation}
-\end{equation}
 
-\paragraph{Group Operations}
-\begin{itemize}
-  \item Identity element:
-  \item Inverse:
-  \item Composition:
-\end{itemize}
+\begin{properties}[breakable, title={$\SEtwo$ formula sheet}]
+  Consists of $3 \times 3$ matrices $ \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}$ that act on $\mathbb{R}^{2}$ via $\bv \mapsto \bR \bv + \bp$.
 
-\paragraph{Adjoint}
-\begin{equation}
-\end{equation}
+  \paragraph{Algebra Parameterization}
+  \begin{equation}
+    \left\{\begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix} \mid \bv \in \mathbb{R}^{2},  \omega_{z} \in [-\pi, \pi] \right\}, \quad \begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix}^{\wedge} =
+    \begin{bmatrix}
+      \hat \omega_{z} & \bv \\ 0 & 0
+    \end{bmatrix} \in \setwo.
+  \end{equation}
 
-\paragraph{Exponential}
-\begin{equation}
-\end{equation}
+  \paragraph{Adjoint}
+  \begin{equation}
+    \bAd_{\X} = \begin{bmatrix}
+      \bR & \begin{bmatrix} p_{y} \\ -p_{x} \end{bmatrix}
+       \\ 0 & 1
+    \end{bmatrix}
+  \end{equation}
 
-\paragraph{Logarithm}
-\begin{equation}
-\end{equation}
+  \paragraph{Exponential and Logarithm}
+  \begin{align}
+    \exp_\SEtwo \left(\begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix} \right) & =  \begin{bmatrix}
+      \exp_{\SOtwo} (\omega_z) & S(\omega_z)\bv \\ \symbf{0}_{1 \times 2} & 1
+    \end{bmatrix}, \\
+    \log_\SEtwo \begin{bmatrix} \bR & \bp \\ \symbf{0}_{1 \times 2} & 1 \end{bmatrix}               & = \begin{bmatrix} \left( S(\omega_z) \right)^{-1} \bp \\ \alpha \end{bmatrix}.
+  \end{align}
 
-\paragraph{Lowercase adjoint}
-\begin{equation}
-\end{equation}
+  \paragraph{Bracket and Lowercase Adjoint}
+  \begin{equation}
+    \begin{aligned}
+      \left[
+        \begin{bmatrix} v_{x} \\ v_{y} \\ \omega_{z} \end{bmatrix},     \begin{bmatrix} v_{x}' \\ v_{y}' \\ \omega_{z}' \end{bmatrix}
+      \right] & = \begin{bmatrix} -\omega_{z} \v_{y}' + \omega_{z}' v_{y} \\ \omega_{z} v_{x}' - \omega_{z}' v_{x} \\ 0 \end{bmatrix},  \\
+      \ad_\a  & =  \begin{bmatrix}  0 & -\omega_z & v_y \\ \omega_z & 0 & -v_x \\ 0 & 0 & 0 \end{bmatrix}.
+    \end{aligned}
+  \end{equation}
 
-\paragraph{Derivatives of the Exponential}
-\begin{equation}
-\end{equation}
+  \paragraph{Derivatives of the Exponential} Let $\a =\begin{bmatrix} v_x & v_y & \omega_z \end{bmatrix}^T$. Then,
+  \begin{align}
+    \mathrm{d}^r \exp_{\a}                     & =        I_3 - \frac{1 - \cos \omega_z}{\omega_z^2} {\ad_\a} + \frac{ \omega_z - \sin \omega_z }{\omega_z^3} {\ad_\a}^2,       \\
+    \mathrm{d}^l \exp_{\a}                     & = I_3 + \frac{1 - \cos \omega_z}{\omega_z^2} {\ad_\a} + \frac{ \omega_z - \sin \omega_z }{\omega_z^3} {\ad_\a}^2,              \\
+    \left( \mathrm{d}^r \exp_{\a} \right)^{-1} & = I_3 + \frac{\ad_\a}{2} + \left( \frac{1}{\omega_z^2} - \frac{1 + \cos \omega_z }{2 \omega_z \sin \omega_z} \right) \ad_\a^2, \\
+    \left( \mathrm{d}^l \exp_{\a} \right)^{-1} & = I_3 - \frac{\ad_\a}{2} + \left( \frac{1}{\omega_z^2} - \frac{1 + \cos \omega_z }{2 \omega_z \sin \omega_z} \right) \ad_\a^2.
+  \end{align}
 \end{properties}
 
+\section{Parameterization via Isomorphism with \texorpdfstring{$\Uone \ltimes \mathbb{R}^{2}$}{U(1) |x R2}}
 
 %%% Local Variables:
 %%% mode: latex

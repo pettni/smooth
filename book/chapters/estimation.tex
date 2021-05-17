@@ -10,12 +10,12 @@ The gyro and accelerometer measurements of the IMU are then well modeled by the 
 \begin{subequations}
   \begin{align}
     \label{eq:gyro}  \tilde \bomega              & = \mathrm{d}^r (\bq_{WI})_t + \symbf b_\bomega + \eta_\bomega,                                                     \\
-    \label{eq:accelerometer} \tilde {\symbf {a}} & = \left[ (\mathrm{d}^r)^2 P_{WI} \right]_{3:6} + \bq_{WI}^{-1} \symbf g_W + \symbf b_{\symbf a} + \eta_{\symbf a}.
+    \label{eq:accelerometer} \tilde {\symbf {a}} & = \left[ \mathrm{d}^{2r} P_{WI} \right]_{3:6} + \bq_{WI}^{-1} \symbf g_W + \symbf b_{\symbf a} + \eta_{\symbf a}.
   \end{align}
 \end{subequations}
 In \eqref{eq:gyro}, the first term is the actual body angular velocity, $\symbf b_\bomega$ is a gyro bias, and $\eta_\bomega$ is white noise.
 
-For the accelerometer model \eqref{eq:accelerometer}, $\left[ \mathrm{d}^2 (P_{WI})_t \right]_{3:6}$ denotes the linear acceleration in the body frame (the last three components of the second derivative), $\symbf g_W$ is the gravity in the world frame, and $\symbf b_{\symbf a}$ and $\eta_{\symbf a}$ are bias and noise as above.
+For the accelerometer model \eqref{eq:accelerometer}, $\left[ \mathrm{d}^{2r} (P_{WI})_t \right]_{3:6}$ denotes the linear acceleration in the body frame (the last three components of the second derivative), $\symbf g_W$ is the gravity in the world frame, and $\symbf b_{\symbf a}$ and $\eta_{\symbf a}$ are bias and noise as above.
 
 
 \section{Complementary Filter for Attitude Estimation}
