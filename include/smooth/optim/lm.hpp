@@ -7,100 +7,70 @@
 #include <iostream>
 
 
-
-// Solve the least-squares problem
-//
-// min_a  || [ J; diag(d) ] a + [r; 0] ||^2
-//
-template<int nx>
-Eigen::Matrix<double, nx, 1> solve_ls(
-  const Eigen::Matrix<double, nx, nx> & J,
-  const Eigen::Matrix<double, nx, 1> & d,
-  const Eigen::Matrix<double, nx, 1> & r
+/**
+ * @brief Solve structured least-squares probelm
+ *
+ *   min_a \| [J ; diag(d)] a + [r; 0] \|^2
+ *
+ * Where a is a size N vector
+ *
+ * @param J_qrdecomp QR decomposition of J with column pivoting
+ * @param d vector of length N representing diagonal matrix
+ * @param r vector with same number of elements as there are rows in J
+ *
+ * Currenly only supports square J matrices
+ */
+template<int N>
+Eigen::Matrix<double, N, 1> solve_ls(
+  const Eigen::ColPivHouseholderQR<Eigen::Matrix<double, N, N>> & J_qrdecomp,
+  const Eigen::Matrix<double, N, 1> & d,
+  const Eigen::Matrix<double, N, 1> & r
 ) {
-  using std::sqrt;
-  // decomose Q
+  Eigen::Matrix<double, N, N> upper = J_qrdecomp.matrixR();
+  Eigen::Matrix<double, N, N> lower = (J_qrdecomp.colsPermutation().transpose() * d).asDiagonal();
 
-  std::cout << "Doing QR decomp" << std::endl;
-  Eigen::ColPivHouseholderQR<Eigen::Matrix<double, nx, nx>> Jqr(J);
+  Eigen::Matrix<double, N, 1> rhs_upper, rhs_lower;
+  rhs_upper = J_qrdecomp.matrixQ().transpose() * r;
+  rhs_lower.setZero();
 
-  std::cout << "Result R" << std::endl << Jqr.matrixR();
-  std::cout << "Result P" << std::endl << Jqr.colsPermutation().toDenseMatrix() << std::endl;
+  Eigen::JacobiRotation<double> G;
 
-  // want QR decomposition of matrix
-  // [ R  ]
-  // [ P' D P ]
-  // R is upper diagonal
-  // lower part is diagonal
-
-  // need to QR decompose M using givens rotations
-  // just need to eliminate lower part
-  Eigen::Matrix<double, nx, nx> upper;
-  upper.setZero();  // TODO remove
-  Eigen::Matrix<double, nx, nx> lower;
-  upper.template triangularView<Eigen::Upper>() = Jqr.matrixR().template triangularView<Eigen::Upper>();
-
-  lower = (Jqr.colsPermutation().transpose() * d).asDiagonal();
-
-  Eigen::Matrix<double, nx, 1> QTr = Jqr.matrixQ().transpose() * r;
-
-  std::cout << "Starting elimintation" << std::endl;
-  std::cout << "upper" << std::endl << upper << std::endl;
-  std::cout << "lower" << std::endl << lower << std::endl;
-
-  Eigen::Matrix<double, 2 * nx, 2 * nx> QQ;
-  Eigen::Matrix<double, 2 * nx, nx> RR, RR0;
-  QQ.setIdentity();
-  RR.template topLeftCorner<nx, nx>() = upper;
-  RR.template bottomLeftCorner<nx, nx>() = lower;
-
-  RR0 = RR;
-
-  std::cout << RR << std::endl;
-
-  Eigen::JacobiRotation<double> rot;
-  for (auto i = 0u; i != nx; ++i)  // for each column
+  // QR decomposition of A with Givens rotations;
+  // algorithm:
+  //   R = A, Q = I
+  //   for each nonzero in lower part:
+  //      find rotation G that eliminates nonzero without introducing new zeros
+  //      Q = Q G
+  //      R = G' R
+  for (auto col = 0u; col != N; ++col)  // for each column
   {
-    // find permuted d element
-    std::cout << "finding permuted element" << std::endl;
-    if (lower(i, i) == 0.) {
-      continue;
+    for (auto row = 0u; row != col + 1; ++row) {  // for each row above diagonal
+      G.makeGivens(upper(col, col), lower(row, col));  // eliminates lower(row, col)
+
+      // perform matrix multiplication R = G' R
+      upper(col, col) = G.c() * upper(col, col) - G.s() * lower(row, col);
+      for (int i = col + 1; i < N; ++i) {
+        double tmp = G.c() * upper(col, i) - G.s() * lower(row, i);
+        lower(row, i) = G.s() * upper(col, i) + G.c() * lower(row, i);
+        upper(col, i) = tmp;
+      }
+
+      // At the end we need Q matrix to multiply rhs as
+      // Q' * rhs = (I * Q0 * ... * Qk)' * rhs = Qk' * ... * Q0' * rhs
+      //
+      // We can therefore do it as we go, here we set
+      // rhs = Q' * rhs
+      double tmp = G.s() * rhs_upper(col) + G.c() * rhs_lower(row);
+      rhs_upper(col) = G.c() * rhs_upper(col) - G.s() * rhs_lower(row);
+      rhs_lower(row) = tmp;
     }
-
-    std::cout << "eliminating column " << i << std::endl;
-
-    // eliminate all elements in lower part
-    for (int k = i; k >= 0; --k) {  // for each row
-      rot.makeGivens(RR(i, i), RR(nx + k, i));
-
-      Eigen::Matrix<double, 2 * nx, 2 * nx> rotmat;
-      rotmat.setIdentity();
-      rotmat(i, i) = rot.c();
-      rotmat(i, nx + k) = rot.s();
-      rotmat(nx + k, i) = -rot.s();
-      rotmat(nx + k, nx + k) = rot.c();
-
-      std::cout << "k = " << k << std::endl;
-      std::cout << rotmat << std::endl;
-
-      RR = rotmat.transpose() * RR;
-      QQ = QQ * rotmat;
-    }
-
-    std::cout << "after elimination" << std::endl;
-
-    std::cout << RR << std::endl;
   }
 
-  std::cout << "started with" << std::endl;
-  std::cout << RR0 << std::endl;
-  std::cout << "result" << std::endl;
-  std::cout << QQ * RR << std::endl;
+  // solve triangular system R z = rhs to obtain z = R^-1 z
+  upper.template triangularView<Eigen::Upper>().solveInPlace(rhs_upper);
 
-  QTr = QQ.template topLeftCorner<nx, nx>().transpose() * QTr;
-  RR.template topLeftCorner<nx, nx>().template triangularView<Eigen::Upper>().solveInPlace(QTr);
-
-  return Jqr.colsPermutation() * QTr;
+  // solution is now equal to P z
+  return -(J_qrdecomp.colsPermutation() * rhs_upper);
 }
 
 
@@ -117,12 +87,10 @@ void optimize(_F && f)
 
   using Jac = Eigen::Matrix<double, num_res, G::lie_dof>;
 
-
   // optimization variable
   G g = G::Random();
   Jac J = f.df(g);
   R r = f(g);
-
 
   // trust region
   double Delta = 1;
@@ -155,12 +123,15 @@ void optimize(_F && f)
     rhs.template head<num_res>() = -r;
     rhs.template tail<G::lie_dof>().setZero();
 
-    // solve least-squares problem
-    Tangent a = lhs.colPivHouseholderQr().solve(rhs);
-    Tangent a2 = solve_ls<G::lie_dof>(J, sqrt(lambda) * diag, -r);
+    // solve least-squares problem with a big hammer
+    Tangent a_hammer = lhs.colPivHouseholderQr().solve(rhs);
 
-    std::cout << "step " << a.transpose() << std::endl;
-    std::cout << "step2 " << a2.transpose() << std::endl;
+    // solve least-squares problem with a small scalpel
+    Eigen::ColPivHouseholderQR<Eigen::Matrix<double, G::lie_dof, G::lie_dof>> J_qrdecomp(J);
+    Tangent a = solve_ls<G::lie_dof>(J_qrdecomp, sqrt(lambda) * diag, r);
+
+    std::cout << "step       " << a.transpose() << std::endl;
+    std::cout << "step truth " << a_hammer.transpose() << std::endl;
 
     double rpre_n = r.stableNorm();
 
