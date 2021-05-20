@@ -17,7 +17,7 @@ The manifold $\M$ can be a Lie group or a Lie group product $\x = (\x_{1}, \ldot
     r(\x) =
     \begin{bmatrix}
       r_{1}(\x) \\
-      \vdots \\
+      \vdots    \\
       r_{k}(\x)
     \end{bmatrix}.
   \end{equation}
@@ -190,6 +190,8 @@ where we have used that $\| r \|^2 - \| r + J \a \|^2 = -2 \a^T J r - \a^T J^T J
 
 
 \subsection{Solving the Least-Squares Problem}
+\label{ssec:lm_lsq}
+
 The least-squares problem
 \begin{equation}
   \label{eq:lm_structured_ls}
@@ -202,11 +204,12 @@ has structure which can be exploited to find a solution. Consider a QR decomposi
 \end{equation}
 Consider a second QR decomposition s.t.
 \begin{equation}
+  \label{eq:lm_qr}
   \begin{bmatrix}
     R \\ \sqrt{\lambda} P^{T} D^{k} P
   \end{bmatrix} = \tilde Q \begin{bmatrix} \tilde R \\ 0 \end{bmatrix}
 \end{equation}
-where $\tilde Q = \begin{bmatrix} \tilde Q_{11} & \tilde Q_{12} \\ \tilde Q_{21} & \tilde Q_{22} \end{bmatrix} \in \mathbb{R}^{2n \times 2n}$ is orthogonal and $\tilde R \in \mathbb{R}^{n \times n}$ is upper-diagonal and has rank $n$. In these variables the least-squares problem takes the form
+where $\tilde Q = \begin{bmatrix} \tilde Q_{11} & \tilde Q_{12} \\ \tilde Q_{21} & \tilde Q_{22} \end{bmatrix} \in \mathbb{R}^{2n \times 2n}$ is orthogonal and $\tilde R \in \mathbb{R}^{n \times n}$ is upper-diagonal and has rank $n$. Since there are only $n$ non-zero variables in the lower triangular part this step can be efficiently computed via $n (n+1) / 2$ Givens rotations. In these variables the least-squares problem takes the form
 \begin{equation*}
   \argmin_{\a} \left\| \tilde Q \begin{bmatrix} \tilde R \\ 0 \end{bmatrix} P^{T} \a + \begin{bmatrix} Q^{T} r \\ 0 \end{bmatrix} \right\|^2 =
   \argmin_{\a} \left\| \begin{bmatrix} \tilde R \\ 0 \end{bmatrix} P^{T} \a + \tilde Q^{T} \begin{bmatrix} Q^{T} r \\ 0 \end{bmatrix} \right\|^2 = \argmin_{\a} \left\| \tilde R P^{T} \a + \tilde Q_{11}^{T} Q^{T} r \right\|^{2},
@@ -220,12 +223,81 @@ When solving \eqref{eq:lm_structured_ls} repeatedly for different values of $\la
 
 \subsection{Finding the LM Parameter}
 
-\todo[inline]{Follow \cite{watson_levenberg-marquardt_1978}}
+To search for a parameter that satisfies the relations in Theorem \ref{thm:lm} consider the function
+\begin{equation}
+  \phi(\alpha) = \left\| D \left(J^{T} J + \alpha D^{T} D \right)^{-1} J^{T} r \right\| - \Delta.
+\end{equation}
+Note that $\phi(\alpha)$ can be evaluated by solving the a structured least-squares problem as discussed in Section \ref{ssec:lm_lsq}. With those variables we have
+\begin{equation}
+  \phi(\alpha) = \left\| D P \tilde R^{-1} \tilde Q_{11}^{T} Q^{T} r \right\| - \Delta
+\end{equation}
+where $\tilde R$ and $\tilde Q$ depend on $\alpha$ due to \eqref{eq:lm_qr}.
+
+We are interested in finding a value of $\alpha > 0$ s.t. $\phi(\alpha) \approx 0$. If $\phi(0) \leq 0$ it must hold that $\lambda = 0$ in Theorem \ref{thm:lm}, so we disregard this case. We follow \cite{watson_levenberg-marquardt_1978} to construct an algorithm for the case $\phi(0) > 0$.
+
+The function $\phi$ is strictly decreasing in $\alpha$, and approximately of the form $\phi(\alpha) \approx \tilde \phi(\alpha) = \frac{a}{b + \alpha} - \Delta$. Setting $\tilde \phi(\alpha)$ to zero then gives $\alpha = -b + a / \Delta$, and when fitting $a$ and $b$ s.t. $\phi(\alpha_{k}) = \tilde \phi(\alpha_{k})$ and $\phi'(\alpha_{k}) = \tilde \phi'(\alpha_{k})$ gives the update rule
+\begin{equation}
+  \alpha_{k+1} = \alpha_{k} - \frac{\phi(\alpha_{k}) + \Delta}{\Delta} \frac{\phi(\alpha_{k})}{\phi'(\alpha_{k})}.
+\end{equation}
+
+To implement this algorithm not only $\phi$ needs to be calculated, but also its derivative.
+
+\paragraph{Derivative of $\phi$} Introduce $q(\alpha) = D (J^{T} J + \alpha D^{T} D)^{-1} J^{T} r$ so that $\phi(\alpha) = \sqrt{q(\alpha)^{T} q(\alpha)} - \Delta$. The derivative of $q$ becomes
+\begin{equation}
+  q'(\alpha) = -D (J^{T} J + \alpha D^{T} D)^{-1} D^{T} D (J^{T} J + \alpha D^{T} D)^{-1} J^{T} r = -D (J^{T} J + \alpha D^{T} D) D^{T} q(\alpha).
+\end{equation}
+where we have utilized that the derivative of $(A + \alpha B)^{-1} (A + \alpha B)$ is zero which gives
+\begin{equation}
+  \frac{\mathrm{d}}{\mathrm{d}\alpha} (A + \alpha B)^{-1} = - (A + \alpha B)^{-1}) B (A + \alpha B)^{{-1}}.
+\end{equation}
+Therefore the derivative of $\phi$ becomes
+\begin{equation}
+  \phi'(\alpha) = \frac{q(\alpha)^{T} q'(\alpha)}{\| q(\alpha) \|} = -\frac{D^{T}q(\alpha))^{T} (J^{T} J + \alpha D^{T} D)^{-1} (D^{T} q(\alpha))}{\| q(\alpha) \|}.
+\end{equation}
+
+When utilizing the method in Section \ref{ssec:lm_lsq} the same QR decompositions $PJ = QR$ and \eqref{eq:lm_qr} can be leveraged to evaluate the expression efficiently.
+\begin{equation}
+  \begin{aligned}
+    J^{T} J + \alpha D^{T} D = (QRP^{T})^{T} (QRP^{T}) + \alpha D^{T} D = P R^{T} R P^{T} + \alpha D^{T} D \\
+    = P \begin{bmatrix} R^{T} & \sqrt{\alpha} (P^{T} D P)^{T} \end{bmatrix}\begin{bmatrix} R \\ \sqrt{\alpha} P^{T} D P \end{bmatrix} P^{T} \overset{\eqref{eq:lm_qr}}{=} P \tilde R^{T} \tilde R P^{T}.
+  \end{aligned}
+\end{equation}
+Therefore
+\begin{equation}
+  \phi'(\alpha) = - \frac{\left\| \tilde R^{-T} P^{T} D^{T} q(\alpha) \right\|^{2}}{\| q(\alpha) \|} = - \| q(\alpha) \| \left\| \tilde R^{-T} \frac{P^{T} D^{T} q(\alpha) }{\| q(\alpha) \|} \right\|^{2}
+\end{equation}
+
+\begin{algorithm}
+  \DontPrintSemicolon
+  \KwData{Matrices $J, D$, vector $r$, scalar $\Delta$}
+  \KwResult{$\lambda$ s.t. $\phi(\lambda) \leq 0.1$}
+
+  Calculate QR decomposition $J P = Q R$\;
+
+  $l_{0} = \begin{cases} -\phi(0)/\phi'(0) & \text{if $J$ nonsingular} \\ 0 & \textrm{otherwise} \end{cases}$\;
+  $u_{0} = \frac{\left\| (J D^{-1})^{T} r\right\|}{\Delta}$\;
+  $\alpha_{0} = \sqrt{l_{0} u_{0}}$\;
+
+  \Repeat{$|\phi| \leq 0.1 \Delta$} {
+  If $\alpha_{k} \not \in [l_{k}, u_{k}]$, set $\alpha_{k} = \max\left(0.001 u_{k}, \sqrt{l_{k} u_{k}}\right)$\;
+
+  Calculate QR decomposition $\begin{bmatrix} R \\ \sqrt{\lambda} P^{T} D^{k} P \end{bmatrix} = \tilde Q \begin{bmatrix} \tilde R \\ 0 \end{bmatrix}$\;
+
+  $z = -P \tilde R^{-1} \tilde Q_{11}^{T} Q^{T} r$\;
+  $\phi = \left\| D z \right\| - \Delta$\;
+  $\phi' = - \| D z \| \left\| \tilde R^{-T} \frac{P^{T} D^{T} D z }{\| D z \|} \right\|^{2}$\;
+
+  $l_{k+1} = \textrm{max}\left(l_{k}, \alpha_{k} - \frac{\phi}{\phi'}\right)$\;
+  $u_{k+1} = \begin{cases} \alpha_{k} & \text{if $\phi < 0$} \\ u_{k} & \text{otherwise} \end{cases}$\;
+  $\alpha_{k+1} = \alpha_{k} - \frac{\phi + \Delta}{\Delta} \frac{\phi}{\phi'}$\;
+  }
+
+  \caption{LM parameter algorithm}
+  \label{algo:lm_parameter}
+\end{algorithm}
 
 \begin{remark}
   Ceres just uses $\lambda = 1 / \Delta$.
-
-  Dense strategy: mimic MINPACK with column QR decomposition
 
   Sparse strategy: as ceres use $\lambda = 1 / \Delta$ and use a sparse eigen solver for the step.
 \end{remark}
