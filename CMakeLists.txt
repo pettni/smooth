@@ -149,6 +149,11 @@ if(BUILD_TESTING)
   target_link_libraries(test_bspline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_bspline)
 
+  add_executable(test_optim test/test_optim.cpp)
+  target_compile_options(test_optim PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_optim PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_optim)
+
   # TEST COVERAGE
 
   if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")

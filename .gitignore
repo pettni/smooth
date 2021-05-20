@@ -1,5 +1,7 @@
 compile_commands.json
 
+.auctex-auto
+
 build
 .clangd
 
