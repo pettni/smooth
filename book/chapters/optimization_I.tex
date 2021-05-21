@@ -79,9 +79,6 @@ LM Implementations
   \item Original MINPACK in fortran
   \item cminpack (ported from fortran) \url{https://devernay.github.io/cminpack/}
   \item Eigen unsupported (ported from cminpack)
-  \item scipy (calls cminpack)
-  \item Ceres
-  \item GTSAM
 \end{itemize}
 
 
@@ -91,18 +88,53 @@ Consider a Lie group optimization problem
 \end{equation}
 We are interested in devising an iterative algorithm for minimizing this function.
 
-Given a poimt $\x$ we can solve a local optimization problem to find step $\a \in T \M _\x$ that leads to an improved estimate $\x \oplus_r \a$. The optimization problem can be re-formulated in terms of $\a$ as
+Given a point $\x$ we can solve a local optimization problem to find step $\a \in T \M _\x$ that leads to an improved estimate $\x \oplus_r \a$. The optimization problem can be re-formulated in terms of $\a$ as
 \begin{equation}
   \argmin_{\a} \left\| f(\x \oplus_r \a) \right\|^2.
 \end{equation}
 Since the problem is nonlinear we resort to linearization. To avoid stepping outside the region where the linearization is accurate we also limit the stepsize and obtain the new problem
+
+The diagonal scaling matrix $D = \Diag (d_1, \ldots, d_n)$ is typically chosen so that a component $d_i$ is inversely proportional to the magnutide of the gradient in that direction, which has the effect of allowing larger steps in directions with low gradient. Common choices include $D = \sqrt{\Diag \left(\diag(J^T J) \right)}$ and $d_i = \left\| \left[ \mathrm{d}^r f_\x \right]_{\cdot, i} \right\|$---the norm of the $i$:th column of the jacobian.
+
+A complete Levenberg-Marquardt procedure is shown in Algorithm \ref{algo:lm}. The crucial step occurs on line 3 and is discussed further below.
+\begin{algorithm}
+  \DontPrintSemicolon
+  \KwData{Iteration variables: point $\x^k$, trust region $\Delta^k$, scaling parameters $d_i^k$ as diagonal matrix $D^{k}$}
+  \KwResult{Updated iteration variables $\x^{k+1}$, $\Delta^{k+1}$, $d_i^{k+1}$}
+
+  $r = f(\x)$\;
+  $J = \mathrm{d}^r f_\x$\;
+  $\a_\mathrm{LM} = \argmin_{\a : \| D^{k} \a \| \leq \Delta^{k} }\left\| r + J \a \right \|^2$ \tcp*[r]{calculate increment step}
+  $\rho = \frac{ \| r \|^2 - \| f(\x \oplus_r \a_\mathrm{LM}) \|^2 }{\| r \|^2 - \| r + J \a_\mathrm{LM} \|^2}$ \tcp*[r]{actual to predicted reduction ratio}
+  \uIf{$\rho \leq 0.25$}{
+    $\Delta^{k+1} = \Delta^k / 2$ \tcp*[f]{decrease trust region}
+  }
+  \ElseIf(){$\rho \geq 0.75$}{
+    $\Delta^{k+1} = 2 \Delta^{k}$ \tcp*[r]{increase trust region}
+  }
+  $d_i^{k+1} = \max \left(d_i^k, \left\| \left[ \mathrm{d}^r f_{\x^{k+1}} \right]_{\cdot, i} \right\| \right)$ \tcp*[r]{update scaling parameters}
+  \lIf(\tcp*[f]{reject step}){$\rho \leq 0.0001$}{$\x^{k+1} = \x^k$}
+  \lElse(\tcp*[f]{accept step}){ $\x^{k+1} = \x^k \oplus_r \a_\mathrm{LM}$}
+
+  \caption{Single LM step}
+  \label{algo:lm}
+\end{algorithm}
+
+Calculation of the actual to predicted reduction ratio can be rewritten as
+\begin{equation}
+  \rho = \frac{1 - \left( \frac{ \| f(\x \oplus \a_\mathrm{LM}) \|}{\|r\|} \right)^2 }{\left( \frac{\| J \a \|}{\| r \|} \right)^2 + 2 \left( \frac{\sqrt{\lambda} \| D \a \|}{\| r \|} \right)^2}
+\end{equation}
+where we have used that $\| r \|^2 - \| r + J \a \|^2 = -2 \a^T J r - \a^T J^T J \a = \| J \a \|^2 + 2 \lambda \| D \a \|^2$ which is a consequence of \eqref{eq:lm_normaleqs}. This formulation has the benefit of avoiding subtraction of numbers of large magnitude which may cause floating point roundoff errors.
+
+
+\subsection{Trust-Region Problem}
+
+We discuss how to solve a trust-region problem on the form
 \begin{equation}
   \label{eq:lm_minimize_trust}
-  \argmin_{\a : \| D \a \| \leq \Delta}\left\| f(\x) + \mathrm{d}^r f_\x \a \right \|^2,
+  \argmin_{\a : \| D \a \| \leq \Delta}\left\|J \a + r \right \|^2,
 \end{equation}
-where $D$ is a diagonal scaling matrix and $\Delta$ is a maximal step size.
-
-To simplify notation let $J \coloneq \mathrm{d}^r f_\x$ and $r = f(\x)$ which simplifies the objective function to $\| J \a + r \|^2$. We next show that this constrained problem can be transformed into an unconstrained problem.
+where $D$ is a diagonal scaling matrix and $\Delta$ is a maximal step size. This constrained problem can be transformed into an unconstrained problem.
 \begin{theorem}
   \label{thm:lm}
   A vector $\a^*$ is a global minimizer of
@@ -152,41 +184,7 @@ Equivalently, it can be written on the standard form
 \end{equation}
 For numerical stability it is preferable to solve a least-squares problem instead of directly solving the normal equations.
 
-The diagonal scaling matrix $D = \Diag (d_1, \ldots, d_n)$ is typically chosen so that a component $d_i$ is inversely proportional to the magnutide of the gradient in that direction, which has the effect of allowing larger steps in directions with low gradient. Common choices include $D = \sqrt{\Diag \left(\diag(J^T J) \right)}$ and $d_i = \left\| \left[ \mathrm{d}^r f_\x \right]_{\cdot, i} \right\|$---the norm of the $i$:th column of the jacobian.
-
-A complete Levenberg-Marquardt procedure is shown in Algorithm \ref{algo:lm}. The parameter $\lambda$ that approximately satisfies the conditions in Theorem \ref{thm:lm} can be obtained algorithmically \cite{nocedal_numerical_2006,watson_levenberg-marquardt_1978}, with implementations available in e.g. MINPACK's \texttt{lmpar}\footnote{\url{https://www.netlib.org/minpack}}.
-
-\begin{algorithm}
-  \DontPrintSemicolon
-  \KwData{Iteration variables: point $\x^k$, trust region $\Delta^k$, scaling parameters $d_i^k$ as diagonal matrix $D^{k}$}
-  \KwResult{Updated iteration variables $\x^{k+1}$, $\Delta^{k+1}$, $d_i^{k+1}$}
-
-  $r = f(\x)$\;
-  $J = \mathrm{d}^r f_\x$\;
-  $\lambda = \mathtt{lmpar}(J, r, D^k, \Delta^{k})$ \tcp*[r]{calculate LM parameter}
-  $\a_\mathrm{LM} = \argmin_{\a} \left\| \begin{bmatrix} J \\ \sqrt{\lambda} D^k \end{bmatrix} \a + \begin{bmatrix} r \\ 0 \end{bmatrix} \right\|^2$ \tcp*[r]{solve for increment step}
-  $\rho = \frac{ \| r \|^2 - \| f(\x \oplus_r \a_\mathrm{LM}) \|^2 }{\| r \|^2 - \| r + J \a_\mathrm{LM} \|^2}$ \tcp*[r]{actual to predicted reduction ratio}
-  \uIf{$\rho \leq 0.25$}{
-    $\Delta^{k+1} = \Delta^k / 2$ \tcp*[f]{decrease trust region}
-  }
-  \ElseIf(){$\rho \geq 0.75$}{
-    $\Delta^{k+1} = 2 \Delta^{k}$ \tcp*[r]{increase trust region}
-  }
-  $d_i^{k+1} = \max \left(d_i^k, \left\| \left[ \mathrm{d}^r f_{\x^{k+1}} \right]_{\cdot, i} \right\| \right)$ \tcp*[r]{update scaling parameters}
-  \lIf(\tcp*[f]{reject step}){$\rho \leq 0.0001$}{$\x^{k+1} = \x^k$}
-  \lElse(\tcp*[f]{accept step}){ $\x^{k+1} = \x^k \oplus_r \a_\mathrm{LM}$}
-
-  \caption{Single LM step}
-  \label{algo:lm}
-\end{algorithm}
-
-The crucial parts of the algorithm are line 3 and 4; the best way to implement these operations depends on the size and sparsity structure of $J$.
-
-Calculation of the actual to predicted reduction ratio can be rewritten as
-\begin{equation}
-  \rho = \frac{1 - \left( \frac{ \| f(\x \oplus \a_\mathrm{LM}) \|}{\|r\|} \right)^2 }{\left( \frac{\| J \a \|}{\| r \|} \right)^2 + 2 \left( \frac{\sqrt{\lambda} \| D \a \|}{\| r \|} \right)^2}
-\end{equation}
-where we have used that $\| r \|^2 - \| r + J \a \|^2 = -2 \a^T J r - \a^T J^T J \a = \| J \a \|^2 + 2 \lambda \| D \a \|^2$ which is a consequence of \eqref{eq:lm_normaleqs}. This formulation has the benefit of avoiding subtraction of numbers of large magnitude which may cause floating point roundoff errors.
+Theorem \ref{thm:lm} suggests that the trust-region problem can be recast as a least squares problem, but doing so requires knowledge of the parameter $\lambda$. In the following we show how the least squares problem can be efficiently solved assuming knowledge of $\lambda$, and then discuss an algorithm for finding $\lambda$.
 
 
 \subsection{Solving the Least-Squares Problem}
@@ -235,11 +233,10 @@ where $\tilde R$ and $\tilde Q$ depend on $\alpha$ due to \eqref{eq:lm_qr}.
 
 We are interested in finding a value of $\alpha > 0$ s.t. $\phi(\alpha) \approx 0$. If $\phi(0) \leq 0$ it must hold that $\lambda = 0$ in Theorem \ref{thm:lm}, so we disregard this case. We follow \cite{watson_levenberg-marquardt_1978} to construct an algorithm for the case $\phi(0) > 0$.
 
-The function $\phi$ is strictly decreasing in $\alpha$, and approximately of the form $\phi(\alpha) \approx \tilde \phi(\alpha) = \frac{a}{b + \alpha} - \Delta$. Setting $\tilde \phi(\alpha)$ to zero then gives $\alpha = -b + a / \Delta$, and when fitting $a$ and $b$ s.t. $\phi(\alpha_{k}) = \tilde \phi(\alpha_{k})$ and $\phi'(\alpha_{k}) = \tilde \phi'(\alpha_{k})$ gives the update rule
+The function $\phi$ is strictly decreasing in $\alpha$, and approximately of the form $\phi(\alpha) \approx \tilde \phi(\alpha) = \frac{a}{b + \alpha} - \Delta$. Setting $\tilde \phi(\alpha)$ to zero then gives $\alpha = -b + a / \Delta$, and fitting $a$ and $b$ s.t. $\phi(\alpha_{k}) = \tilde \phi(\alpha_{k})$ and $\phi'(\alpha_{k}) = \tilde \phi'(\alpha_{k})$ gives the update rule
 \begin{equation}
   \alpha_{k+1} = \alpha_{k} - \frac{\phi(\alpha_{k}) + \Delta}{\Delta} \frac{\phi(\alpha_{k})}{\phi'(\alpha_{k})}.
 \end{equation}
-
 To implement this algorithm not only $\phi$ needs to be calculated, but also its derivative.
 
 \paragraph{Derivative of $\phi$} Introduce $q(\alpha) = D (J^{T} J + \alpha D^{T} D)^{-1} J^{T} r$ so that $\phi(\alpha) = \sqrt{q(\alpha)^{T} q(\alpha)} - \Delta$. The derivative of $q$ becomes
@@ -266,6 +263,7 @@ Therefore
 \begin{equation}
   \phi'(\alpha) = - \frac{\left\| \tilde R^{-T} P^{T} D^{T} q(\alpha) \right\|^{2}}{\| q(\alpha) \|} = - \| q(\alpha) \| \left\| \tilde R^{-T} \frac{P^{T} D^{T} q(\alpha) }{\| q(\alpha) \|} \right\|^{2}
 \end{equation}
+We conclude by writing down the algorithm from \cite{watson_levenberg-marquardt_1978} for finding $\lambda$.
 
 \begin{algorithm}
   \DontPrintSemicolon
