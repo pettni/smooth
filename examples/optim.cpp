@@ -21,7 +21,8 @@ struct MyFunctor
 int main()
 {
   MyFunctor f;
-  optimize(f);
+  auto g = smooth::SO3d::Random();
+  minimize(f, g);
 
   return EXIT_SUCCESS;
 }

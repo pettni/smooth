@@ -154,6 +154,11 @@ if(BUILD_TESTING)
   target_link_libraries(test_optim PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_optim)
 
+  add_executable(test_nlreg test/test_nlreg.cpp)
+  target_compile_options(test_nlreg PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_nlreg PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_nlreg)
+
   # TEST COVERAGE
 
   if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
