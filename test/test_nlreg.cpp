@@ -2,9 +2,8 @@
 
 #include <unsupported/Eigen/NumericalDiff>
 
-#include "smooth/optim/lm.hpp"
-
 #include "nlreg_data.hpp"
+#include "smooth/optim/lm.hpp"
 
 /**
  * @brief Functor that wraps a callable with multiple forms of operator()
@@ -22,13 +21,10 @@ struct EigenFunctor
   using JacobianType =
     Eigen::Matrix<Scalar, ValueType::SizeAtCompileTime, InputType::SizeAtCompileTime>;
 
-  using JacobianTypeRowMajor =
-    Eigen::Matrix<Scalar, ValueType::SizeAtCompileTime, InputType::SizeAtCompileTime,
-                  InputType::SizeAtCompileTime == 1 ? Eigen::ColMajor : Eigen::RowMajor>;
-
-  int values_ = ValueType::SizeAtCompileTime;  // must be changed for dynamic sizing
-
-  explicit EigenFunctor(_Func && func) : func_(std::forward<_Func>(func)) {}
+  explicit EigenFunctor(int values, _Func && func)
+    : values_(values), func_(std::forward<_Func>(func))
+  {
+  }
 
   /**
    * @brief Return (dynamic) dimension of output vector
@@ -45,6 +41,7 @@ struct EigenFunctor
   }
 
  private:
+  int values_;
   _Func func_;
 };
 
@@ -52,18 +49,18 @@ struct EigenFunctor
 template <typename Input, typename F>
 struct MyFunctor
 {
-  MyFunctor(F && f) : ndiff(EigenFunctor<F, Input>(std::forward<F>(f))) {}
+  MyFunctor(int values, F && f) : ndiff(EigenFunctor<F, Input>(values, std::forward<F>(f))) {}
 
   auto operator()(const Input & x)
   {
-    typename EigenFunctor<F, Input>::ValueType y;
+    typename EigenFunctor<F, Input>::ValueType y(ndiff.values());
     ndiff(x, y);
     return y;
   }
 
   auto df(const Input & x)
   {
-    typename EigenFunctor<F, Input>::JacobianType J;
+    typename EigenFunctor<F, Input>::JacobianType J(ndiff.values(), x.size());
     ndiff.df(x, J);
     return J;
   }
@@ -73,55 +70,95 @@ struct MyFunctor
 
 TEST(NlReg, Misra1a)
 {
-  // only compile-time sizes for now..
   static constexpr int np = 2;
   static constexpr int nobs = 14;
 
   auto [f, data, start1, start2, optim] = Misra1a();
 
-  auto f_vec = [&] (const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
-    return data.col(0).binaryExpr(data.col(1), [&](double y, double x) {
-      return f(y, x, p);
-    }).eval();
-  };
+  // static size
+  {
+    auto f_vec = [&](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
+      return data.col(0)
+        .binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); })
+        .eval();
+    };
 
-  MyFunctor<Eigen::Matrix<double, np, 1>, decltype(f_vec)> f_wrap(std::move(f_vec));
+    MyFunctor<Eigen::Matrix<double, np, 1>, decltype(f_vec)> f_wrap(nobs, std::move(f_vec));
 
-  Eigen::Matrix<double, np, 1> p1 = start1;
-  minimize(f_wrap, p1);
-  ASSERT_TRUE(p1.isApprox(optim, 1e-7));
+    Eigen::Matrix<double, np, 1> p1 = start1;
+    minimize(f_wrap, p1);
+    ASSERT_TRUE(p1.isApprox(optim, 1e-7));
 
-  Eigen::Matrix<double, np, 1> p2 = start2;
-  minimize(f_wrap, p2);
-  ASSERT_TRUE(p2.isApprox(optim, 1e-7));
+    Eigen::Matrix<double, np, 1> p2 = start2;
+    minimize(f_wrap, p2);
+    ASSERT_TRUE(p2.isApprox(optim, 1e-7));
+  }
+
+  // dynamic size
+  {
+    auto f_vec = [&](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
+      return data.col(0)
+        .binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); })
+        .eval();
+    };
+
+    MyFunctor<Eigen::Matrix<double, -1, 1>, decltype(f_vec)> f_wrap(nobs, std::move(f_vec));
+
+    Eigen::Matrix<double, -1, 1> p1 = start1;
+    minimize(f_wrap, p1);
+    ASSERT_TRUE(p1.isApprox(optim, 1e-7));
+
+    Eigen::Matrix<double, -1, 1> p2 = start2;
+    minimize(f_wrap, p2);
+    ASSERT_TRUE(p2.isApprox(optim, 1e-7));
+  }
 }
-
 
 TEST(NlReg, Kirby2)
 {
-  // only compile-time sizes for now..
   static constexpr int np = 5;
   static constexpr int nobs = 151;
 
   auto [f, data, start1, start2, optim] = Kirby2();
 
-  auto f_vec = [&] (const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
-    return data.col(0).binaryExpr(data.col(1), [&](double y, double x) {
-      return f(y, x, p);
-    }).eval();
-  };
+  // static size
+  {
+    auto f_vec = [&](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
+      return data.col(0)
+        .binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); })
+        .eval();
+    };
 
-  MyFunctor<Eigen::Matrix<double, np, 1>, decltype(f_vec)> f_wrap(std::move(f_vec));
+    MyFunctor<Eigen::Matrix<double, np, 1>, decltype(f_vec)> f_wrap(nobs, std::move(f_vec));
 
-  Eigen::Matrix<double, np, 1> p1 = start1;
-  minimize(f_wrap, p1);
-  ASSERT_TRUE(p1.isApprox(optim, 1e-7));
+    Eigen::Matrix<double, np, 1> p1 = start1;
+    minimize(f_wrap, p1);
+    ASSERT_TRUE(p1.isApprox(optim, 1e-7));
 
-  Eigen::Matrix<double, np, 1> p2 = start2;
-  minimize(f_wrap, p2);
-  ASSERT_TRUE(p2.isApprox(optim, 1e-7));
+    Eigen::Matrix<double, np, 1> p2 = start2;
+    minimize(f_wrap, p2);
+    ASSERT_TRUE(p2.isApprox(optim, 1e-7));
+  }
+
+  // dynamic size
+  {
+    auto f_vec = [&](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
+      return data.col(0)
+        .binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); })
+        .eval();
+    };
+
+    MyFunctor<Eigen::Matrix<double, -1, 1>, decltype(f_vec)> f_wrap(nobs, std::move(f_vec));
+
+    Eigen::Matrix<double, -1, 1> p1 = start1;
+    minimize(f_wrap, p1);
+    ASSERT_TRUE(p1.isApprox(optim, 1e-7));
+
+    Eigen::Matrix<double, -1, 1> p2 = start2;
+    minimize(f_wrap, p2);
+    ASSERT_TRUE(p2.isApprox(optim, 1e-7));
+  }
 }
-
 
 // Cant handle this one..
 //
