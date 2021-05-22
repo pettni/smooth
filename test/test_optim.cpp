@@ -5,35 +5,38 @@
 template <int N, int M>
 void run_leastsquares_test(bool zero_d, bool sing)
 {
-  Eigen::Matrix<double, M, N> J;
-  Eigen::Matrix<double, M, 1> r;
-  Eigen::Matrix<double, N, 1> d;
-
+  // static
   for (auto i = 0u; i != 10; ++i) {
-    J.setRandom();
+    Eigen::Matrix<double, M, N> J;
+    Eigen::Matrix<double, M, 1> r;
+    Eigen::Matrix<double, N, 1> d;
 
+    J.setRandom();
     if (sing) {
+      J.col(N / 2).setZero();
       J.row(M / 2).setZero();
     }
 
     d.setRandom();
-    d = d + Eigen::Matrix<double, N, 1>::Ones();
-
+    d = (d + Eigen::Matrix<double, N, 1>::Ones()).cwiseMax(0);
     if (zero_d) {
       d.setZero();
     }
 
     r.setRandom();
 
-    // solve QR
+    // solve static
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
-
-    // use our algorithm
     auto a1 = solve_ls<N, M>(J_qr, d, r);
 
-    // solve full problem
-    Eigen::Matrix<double, N, 1> a2;
+    // solve dynamic
+    Eigen::Matrix<double, -1, -1> Jd = J;
+    Eigen::Matrix<double, -1, 1> rd = r;
+    Eigen::Matrix<double, -1, 1> dd = d;
+    Eigen::ColPivHouseholderQR<decltype(Jd)> Jd_qr(Jd);
+    auto a2 = solve_ls<-1, -1>(Jd_qr, dd, rd);
 
+    // verify solution
     Eigen::Matrix<double, N + M, N> lhs;
     lhs.template topLeftCorner<M, N>() = J;
     lhs.template bottomLeftCorner<N, N>() = d.asDiagonal();
@@ -41,29 +44,34 @@ void run_leastsquares_test(bool zero_d, bool sing)
     Eigen::Matrix<double, N + M, 1> rhs;
     rhs.template head<M>() = -r;
     rhs.template tail<N>().setZero();
-    a2 = lhs.fullPivHouseholderQr().solve(rhs);
+    Eigen::Matrix<double, N, 1> a_verif = lhs.fullPivHouseholderQr().solve(rhs);
 
-    ASSERT_TRUE(a1.isApprox(a2));
+    ASSERT_TRUE(a1.isApprox(a_verif));
+    ASSERT_TRUE(a2.isApprox(a_verif));
   }
 }
 
 TEST(Optimization, LeastSquares)
 {
   run_leastsquares_test<1, 1>(false, false);
-  run_leastsquares_test<5, 5>(false, false);
-  run_leastsquares_test<5, 8>(false, false);
+  run_leastsquares_test<5, 1>(false, false);
+  run_leastsquares_test<5, 10>(false, false);
+  run_leastsquares_test<8, 16>(false, false);
 
   run_leastsquares_test<1, 1>(false, true);
-  run_leastsquares_test<5, 5>(false, true);
-  run_leastsquares_test<5, 8>(false, true);
+  run_leastsquares_test<5, 1>(false, true);
+  run_leastsquares_test<5, 10>(false, true);
+  run_leastsquares_test<8, 16>(false, true);
 
   run_leastsquares_test<1, 1>(true, false);
-  run_leastsquares_test<5, 5>(true, false);
-  run_leastsquares_test<5, 8>(true, false);
+  run_leastsquares_test<5, 1>(true, false);
+  run_leastsquares_test<5, 10>(true, false);
+  run_leastsquares_test<8, 16>(true, false);
 
   run_leastsquares_test<1, 1>(true, true);
-  run_leastsquares_test<5, 5>(true, true);
-  run_leastsquares_test<5, 8>(true, true);
+  run_leastsquares_test<5, 1>(true, true);
+  run_leastsquares_test<5, 10>(true, true);
+  run_leastsquares_test<8, 16>(true, true);
 }
 
 TEST(Optimization, LmPar)
@@ -143,7 +151,7 @@ TEST(Optimization, LmParSing)
   double Delta = 1;
   for (auto i = 0u; i != 10; ++i) {
     J.setRandom();
-    J.row(3).setZero();
+    J.col(3).setZero();
 
     d.setRandom();
     d = d + Eigen::Matrix<double, N, 1>::Ones();
