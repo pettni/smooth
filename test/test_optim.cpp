@@ -126,17 +126,28 @@ TEST(Optimization, LmParSmall)
 
     Eigen::Matrix<double, N, 1> x;
 
-    // solve QR
-    auto par = lmpar<4, 4>(J, d, r, Delta, x);
+    // solve static
+    auto par1 = lmpar<4, 4>(J, d, r, Delta, x);
+
+    // solve dynamic
+    Eigen::MatrixXd Jd = J;
+    Eigen::VectorXd rd = r;
+    Eigen::VectorXd dd = d;
+    Eigen::VectorXd xd(N);
+    auto par2 = lmpar<-1, -1>(Jd, dd, rd, Delta, xd);
+
+    // check equality of static and dynamic
+    ASSERT_EQ(par1, par2);
+    ASSERT_TRUE(x.isApprox(xd));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
-    auto x_test = solve_ls<N, N>(J_qr, sqrt(par) * d, r);
+    auto x_test = solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
     ASSERT_TRUE(x_test.isApprox(x));
 
     // check that parameter satisfies conditions
-    bool cond1 = (par == 0) && (d.asDiagonal() * x).norm() <= 1.1 * Delta;
-    bool cond2 = (par > 0) && std::abs((d.asDiagonal() * x).norm() - Delta) <= 0.1 * Delta;
+    bool cond1 = (par1 == 0) && (d.asDiagonal() * x).norm() <= 1.1 * Delta;
+    bool cond2 = (par1 > 0) && std::abs((d.asDiagonal() * x).norm() - Delta) <= 0.1 * Delta;
     ASSERT_TRUE(cond1 || cond2);
   }
 }
@@ -161,17 +172,28 @@ TEST(Optimization, LmParSing)
     Eigen::Matrix<double, N, 1> x;
 
     // solve QR
-    auto par = lmpar<4, 4>(J, d, r, Delta, x);
+    auto par1 = lmpar<4, 4>(J, d, r, Delta, x);
+
+    // solve dynamic
+    Eigen::MatrixXd Jd = J;
+    Eigen::VectorXd rd = r;
+    Eigen::VectorXd dd = d;
+    Eigen::VectorXd xd(N);
+    auto par2 = lmpar<-1, -1>(Jd, dd, rd, Delta, xd);
+
+    // check equality of static and dynamic
+    ASSERT_EQ(par1, par2);
+    ASSERT_TRUE(x.isApprox(xd));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
-    auto x_test = solve_ls<N, N>(J_qr, sqrt(par) * d, r);
+    auto x_test = solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
 
     ASSERT_TRUE(x_test.isApprox(x));
 
     // check that parameter satisfies conditions
-    bool cond1 = (par == 0) && (d.asDiagonal() * x).norm() <= 1.1 * Delta;
-    bool cond2 = (par > 0) && std::abs((d.asDiagonal() * x).norm() - Delta) <= 0.1 * Delta;
+    bool cond1 = (par1 == 0) && (d.asDiagonal() * x).norm() <= 1.1 * Delta;
+    bool cond2 = (par1 > 0) && std::abs((d.asDiagonal() * x).norm() - Delta) <= 0.1 * Delta;
     ASSERT_TRUE(cond1 || cond2);
   }
 }
