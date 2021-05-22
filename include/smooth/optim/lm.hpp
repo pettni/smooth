@@ -22,7 +22,6 @@
  * @param[out] Rt output matrix s.t. Rt' Rt = P' (J' J + D' D) P
  *
  * TODO enable support for sparse J_qr
- * TODO support for dynamic size
  */
 template <int N, int M = N>
 Eigen::Matrix<double, N, 1> solve_ls(
@@ -30,17 +29,30 @@ Eigen::Matrix<double, N, 1> solve_ls(
   const Eigen::Matrix<double, N, 1> & d, const Eigen::Matrix<double, M, 1> & r,
   std::optional<Eigen::Ref<Eigen::Matrix<double, N, N>>> Rt = {})
 {
+  static constexpr int NM_min = std::min(N, M);
+  static constexpr int NM_rest = NM_min == -1 ? -1 : N - NM_min;
+
+  auto n = J_qr.cols();  // dynamic size
+  auto m = J_qr.rows();
+
+  auto nm_min = std::min(n, m);
+  auto nm_rest = n - nm_min;
+
   // form system
   // [A; B] x + [a; b]
   // where A = R
   //       B = P' diag(D) P
   //       a = Q' r
   //       b = 0
-  Eigen::Matrix<double, N, N> A = J_qr.matrixR().template topLeftCorner<N, N>();
-  Eigen::Matrix<double, N, N> B = (J_qr.colsPermutation().transpose() * d).asDiagonal();
+  Eigen::Matrix<double, N, N> A(n, n), B(n, n);
+  Eigen::Matrix<double, N, 1> a(n), b(n);
 
-  Eigen::Matrix<double, N, 1> a, b;
-  a = (J_qr.matrixQ().transpose() * r).template head<N>();
+  A.template topRows<NM_min>(nm_min) = J_qr.matrixR().template topRows<NM_min>(nm_min);
+  A.template bottomRows<NM_rest>(nm_rest).setZero();
+  a.template head<NM_min>(nm_min) = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
+  a.template bottomRows<NM_rest>(nm_rest).setZero();
+
+  B = (J_qr.colsPermutation().transpose() * d).asDiagonal();
   b.setZero();
 
   // QR decomposition of [A; B] with Givens rotations;
@@ -53,14 +65,14 @@ Eigen::Matrix<double, N, 1> solve_ls(
   //      Q = Q G
   //      R = G' R
   Eigen::JacobiRotation<double> G;
-  for (auto col = 0u; col != N; ++col)  // for each column
+  for (auto col = 0u; col != n; ++col)  // for each column
   {
     for (auto row = 0u; row != col + 1; ++row) {  // for each row above diagonal
       G.makeGivens(A(col, col), B(row, col));     // eliminates B(row, col)
 
       // perform matrix multiplication R = G' R
       A(col, col) = G.c() * A(col, col) - G.s() * B(row, col);
-      for (int i = col + 1; i < N; ++i) {
+      for (int i = col + 1; i < n; ++i) {
         const double tmp = G.c() * A(col, i) - G.s() * B(row, i);
         B(row, i) = G.s() * A(col, i) + G.c() * B(row, i);
         A(col, i) = tmp;
@@ -85,11 +97,11 @@ Eigen::Matrix<double, N, 1> solve_ls(
 
   // check rank of upper-diagonal A (may happen if D not full-rank)
   int rank = 0;
-  for (; rank != N && A(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {
+  for (; rank != n && A(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {
   }
 
-  Eigen::Matrix<double, N, 1> sol;
-  sol.tail(N - rank).setZero();
+  Eigen::Matrix<double, N, 1> sol(n);
+  sol.tail(n - rank).setZero();
   sol.head(rank) =
     A.topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(a.head(rank));
 
@@ -156,7 +168,6 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
   if (J_qr.rank() == N) {
     // full rank means we can calculate dphi(0)
     // as - \| Dx \| * \| Rinv (P' D' D x) / \| Dx \| \|^2
-    std::cout << "solving 0" << std::endl;
     Eigen::Matrix<double, N, 1> y =
       J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
     J_qr.matrixR()
@@ -166,7 +177,6 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
       .solveInPlace(y);
     dphi = -D_x_iter_norm * y.squaredNorm();
     l = std::max(l, -phi / dphi);
-    std::cout << "done" << std::endl;
   }
 
   // upper bound
