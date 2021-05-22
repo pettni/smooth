@@ -32,11 +32,11 @@ Eigen::Matrix<double, N, 1> solve_ls(
   static constexpr int NM_min = std::min(N, M);
   static constexpr int NM_rest = NM_min == -1 ? -1 : N - NM_min;
 
-  auto n = J_qr.cols();  // dynamic size
-  auto m = J_qr.rows();
-
-  auto nm_min = std::min(n, m);
-  auto nm_rest = n - nm_min;
+  // dynamic sizes
+  const auto n = J_qr.cols();
+  const auto m = J_qr.rows();
+  const auto nm_min = std::min(n, m);
+  const auto nm_rest = n - nm_min;
 
   // form system
   // [A; B] x + [a; b]
@@ -128,15 +128,16 @@ Eigen::Matrix<double, N, 1> solve_ls(
  * TODO enable support for sparse J
  * */
 template <int N, int M = N>
-double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N, 1> & d,
-             const Eigen::Matrix<double, M, 1> & r, double Delta,
-             std::optional<Eigen::Ref<Eigen::Matrix<double, N, 1>>> x = {})
+std::pair<double, Eigen::Matrix<double, N, 1>>
+lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N, 1> & d,
+             const Eigen::Matrix<double, M, 1> & r, double Delta)
 {
   static constexpr int NM_min = std::min(N, M);
 
-  auto m = J.rows();
-  auto n = J.cols();
-  auto nm_min = std::min(n, m);
+  // dynamic sizes
+  const auto m = J.rows();
+  const auto n = J.cols();
+  const auto nm_min = std::min(n, m);
 
   // calculate qr decomposition of J
   Eigen::ColPivHouseholderQR<Eigen::Matrix<double, M, N>> J_qr(J);
@@ -144,16 +145,16 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
   Eigen::Matrix<double, NM_min, 1> Qt_r = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
 
   // calculate phi(0) by solving J x = -r as x = P R^-1 (-Q' r)
-  Eigen::Matrix<double, N, 1> x_iter(n);
+  Eigen::Matrix<double, N, 1> x(n);
   int rank = J_qr.rank();
-  x_iter.head(rank) = J_qr.matrixR()
+  x.head(rank) = J_qr.matrixR()
                         .topLeftCorner(rank, rank)
                         .template triangularView<Eigen::Upper>()
                         .solve(-Qt_r.head(rank));
-  x_iter.tail(n - rank).setZero();
-  x_iter.applyOnTheLeft(J_qr.colsPermutation());
+  x.tail(n - rank).setZero();
+  x.applyOnTheLeft(J_qr.colsPermutation());
 
-  Eigen::Matrix<double, N, 1> D_x_iter = d.cwiseProduct(x_iter);
+  Eigen::Matrix<double, N, 1> D_x_iter = d.cwiseProduct(x);
   double D_x_iter_norm = D_x_iter.stableNorm();
 
   double alpha = 0;
@@ -162,10 +163,7 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
 
   if (phi <= 0.1 * Delta) {
     // zero solution fulfills condition
-    if (x.has_value()) {
-      x.value() = x_iter;
-    }
-    return alpha;
+    return std::make_pair(alpha, std::move(x));
   }
 
   // lower bound
@@ -196,10 +194,10 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
     // calculate phi
     Eigen::Matrix<double, N, N> Rt(n, n);
 
-    x_iter = solve_ls<N, M>(J_qr, sqrt(alpha) * d, r, Rt);
+    x = solve_ls<N, M>(J_qr, sqrt(alpha) * d, r, Rt);
 
 
-    D_x_iter = d.cwiseProduct(x_iter);
+    D_x_iter = d.cwiseProduct(x);
     D_x_iter_norm = D_x_iter.stableNorm();
     phi = D_x_iter_norm - Delta;
 
@@ -223,32 +221,16 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
     alpha = alpha - ((phi + Delta) / Delta) * (phi / dphi);
   }
 
-  if (x.has_value()) {
-    x.value() = x_iter;
-  }
-
-  return alpha;
+  return std::make_pair(alpha, std::move(x));
 }
 
-// TODO do this in a better way
-template <typename T>
-struct ttraits
-{
-  using type = typename T::Tangent;
-};
-
-template <int N>
-struct ttraits<Eigen::Matrix<double, N, 1>>
-{
-  using type = Eigen::Matrix<double, N, 1>;
-};
-
 /**
- * @brief Find a minimum of f
+ * @brief Find a minimum of
  *
- * @param f function to optimize
- * @param wrt arguments to optimize
- * @param at all arguments to f
+ *  \sum_i \| f(x)_i \|^2
+ *
+ * @param f residuals to minimize
+ * @param g initial guess for x
  *
  * TODO create autodiff interface w/ at and wrt
  * TODO split outer and inner loops
@@ -256,50 +238,24 @@ struct ttraits<Eigen::Matrix<double, N, 1>>
 template <typename _F, typename _G>
 void minimize(_F && f, _G & g)
 {
-  using Tangent = typename ttraits<_G>::type;
-  using R = decltype(f(g));
+  auto r = f(g);
+  auto J = f.df(g);
 
-  static constexpr int nr = R::SizeAtCompileTime;
-  static constexpr int nx = Tangent::SizeAtCompileTime;
-
-  using Jac = Eigen::Matrix<double, nr, nx>;
-
-  // optimization variable
-  R r = f(g);
-  Jac J = f.df(g);
   double r_norm = r.stableNorm();
 
-  // trust region
-  // TODO how to initialize?
+  // TODO how to initialize trust region?
   double Delta = 1;
 
   // scaling parameters
-  Eigen::Matrix<double, nx, 1> diag = J.colwise().stableNorm();
-
-  std::cout << "starting parameters" << std::endl;
-  std::cout << "g " << g << std::endl;
-  std::cout << "r " << r.transpose() << std::endl;
-  std::cout << "Delta " << Delta << std::endl;
-  std::cout << "diag " << diag.transpose() << std::endl;
-
-  std::cout << std::endl << std::endl;
+  auto diag = J.colwise().stableNorm().transpose().eval();
 
   for (int i = 0; i != 30; ++i) {
-    std::cout << "iteration " << i << std::endl;
-
-    Tangent a;
-    const double lambda = lmpar<nx, nr>(J, diag, r, Delta, a);
-    std::cout << "calculated parameter " << lambda << std::endl;
-    std::cout << "step       " << a.transpose() << std::endl;
-
+    const auto [lambda, a] = lmpar(J, diag, r, Delta);
     const double r_old_norm = r_norm;
 
-    // update optimization variables
     g += a;
     r = f(g);
     J = f.df(g);
-    std::cout << "new g " << g << std::endl;
-    std::cout << "new r " << r.transpose() << std::endl;
 
     r_norm = r.stableNorm();
     const double Da_norm = diag.cwiseProduct(a).stableNorm();
@@ -325,13 +281,9 @@ void minimize(_F && f, _G & g)
     } else if ((lambda == 0 && rho < 0.75) || rho > 0.75) {
       Delta = 2 * Da_norm;
     }
-    std::cout << "updated Delta " << Delta << std::endl;
 
     // update scaling
     diag = diag.cwiseMax(J.colwise().stableNorm().transpose());
-    std::cout << "updated diag " << diag.transpose() << std::endl;
-
-    std::cout << std::endl << std::endl;
   }
 }
 
