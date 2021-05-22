@@ -126,26 +126,31 @@ Eigen::Matrix<double, N, 1> solve_ls(
  * @param[out] x output least squares solution for final lambda
  *
  * TODO enable support for sparse J
- * TODO support for dynamic size
  * */
 template <int N, int M = N>
 double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N, 1> & d,
              const Eigen::Matrix<double, M, 1> & r, double Delta,
              std::optional<Eigen::Ref<Eigen::Matrix<double, N, 1>>> x = {})
 {
+  static constexpr int NM_min = std::min(N, M);
+
+  auto m = J.rows();
+  auto n = J.cols();
+  auto nm_min = std::min(n, m);
+
   // calculate qr decomposition of J
   Eigen::ColPivHouseholderQR<Eigen::Matrix<double, M, N>> J_qr(J);
 
-  Eigen::Matrix<double, N, 1> Qt_r = (J_qr.matrixQ().transpose() * r).template head<N>();
+  Eigen::Matrix<double, NM_min, 1> Qt_r = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
 
   // calculate phi(0) by solving J x = -r as x = P R^-1 (-Q' r)
+  Eigen::Matrix<double, N, 1> x_iter(n);
   int rank = J_qr.rank();
-  Eigen::Matrix<double, N, 1> x_iter;
-  x_iter.tail(N - rank).setZero();
   x_iter.head(rank) = J_qr.matrixR()
                         .topLeftCorner(rank, rank)
                         .template triangularView<Eigen::Upper>()
                         .solve(-Qt_r.head(rank));
+  x_iter.tail(n - rank).setZero();
   x_iter.applyOnTheLeft(J_qr.colsPermutation());
 
   Eigen::Matrix<double, N, 1> D_x_iter = d.cwiseProduct(x_iter);
@@ -165,13 +170,13 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
 
   // lower bound
   double l = 0;
-  if (J_qr.rank() == N) {
+  if (J_qr.rank() == n) {
     // full rank means we can calculate dphi(0)
     // as - \| Dx \| * \| Rinv (P' D' D x) / \| Dx \| \|^2
     Eigen::Matrix<double, N, 1> y =
       J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
     J_qr.matrixR()
-      .template topLeftCorner<N, N>()
+      .template topLeftCorner<N, N>(n, n)
       .template triangularView<Eigen::Upper>()
       .transpose()
       .solveInPlace(y);
@@ -189,8 +194,10 @@ double lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N,
     }
 
     // calculate phi
-    Eigen::Matrix<double, N, N> Rt;
+    Eigen::Matrix<double, N, N> Rt(n, n);
+
     x_iter = solve_ls<N, M>(J_qr, sqrt(alpha) * d, r, Rt);
+
 
     D_x_iter = d.cwiseProduct(x_iter);
     D_x_iter_norm = D_x_iter.stableNorm();
