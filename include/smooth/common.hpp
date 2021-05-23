@@ -31,6 +31,8 @@ template<typename Scalar>
 using R10 = Eigen::Matrix<Scalar, 10, 1>;
 
 // Helper trait to extract relevant properties for lie and en types
+namespace detail {
+
 template<typename T>
 struct lie_info;
 
@@ -48,7 +50,7 @@ struct lie_info<G>
   static int lie_actdim_dynamic(const G &) { return lie_actdim; }
 };
 
-template<EnLike G>
+template<RnLike G>
 struct lie_info<G>
 {
   static constexpr int lie_size   = G::SizeAtCompileTime;
@@ -61,6 +63,8 @@ struct lie_info<G>
   static int lie_dim_dynamic(const G & g) { return g.size() + 1; }
   static int lie_actdim_dynamic(const G & g) { return g.size(); }
 };
+
+}  // namespace detail
 
 }  // namespace smooth
 

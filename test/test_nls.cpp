@@ -246,9 +246,6 @@ TEST(NLS, MixedArgs)
 
   smooth::minimize(f, g1, v);
 
-  std::cout << g1 << std::endl;
-  std::cout << v.transpose() << std::endl;
-
   auto g1_plus_v = g1 + v.head<3>();
   ASSERT_TRUE(g1_plus_v.isApprox(g0, 1e-6));
   ASSERT_TRUE(v.isApprox(Eigen::Vector3d::Ones(), 1e-6));

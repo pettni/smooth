@@ -258,8 +258,8 @@ void minimize(_F && f, _Wrt &&... wrt)
     // take step a and re-evaluate function
     int segbeg        = 0;
     const auto f_iter = [&](auto && w) {
-      static constexpr int Nx_j = lie_info<std::decay_t<decltype(w)>>::lie_dof;
-      const int nx_j            = lie_info<std::decay_t<decltype(w)>>::lie_dof_dynamic(w);
+      static constexpr int Nx_j = detail::lie_info<std::decay_t<decltype(w)>>::lie_dof;
+      const int nx_j            = detail::lie_info<std::decay_t<decltype(w)>>::lie_dof_dynamic(w);
       w += a.template segment<Nx_j>(segbeg, nx_j);
       segbeg += nx_j;
     };

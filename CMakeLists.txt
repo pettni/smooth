@@ -166,10 +166,10 @@ if(BUILD_TESTING)
 
   find_package(autodiff QUIET)
   if(autodiff_FOUND)
-    add_executable(test_autodiff test/test_autodiff.cpp)
-    target_compile_options(test_autodiff PRIVATE -Wall -Wextra -Wpedantic)
-    target_link_libraries(test_autodiff PRIVATE smooth autodiff::autodiff GTest::Main)
-    gtest_discover_tests(test_autodiff)
+    target_compile_definitions(test_diff PRIVATE ENABLE_AUTODIFF_TESTS)
+    target_link_libraries(test_diff PRIVATE autodiff::autodiff)
+  else()
+    message(WARNING "autodiff not found, disabling autodiff tests")
   endif()
 
   # -------------------------------------------------------------------------------------

@@ -28,22 +28,24 @@ auto dr_autodiff(_F && f, _Wrt &&... wrt)
   using Scalar   = typename Result::Scalar;
   using AdScalar = autodiff::forward::Dual<Scalar, Scalar>;
 
-  static constexpr int Nx = std::min<int>({lie_info<std::decay_t<_Wrt>>::lie_dof...}) == -1
+  static constexpr int Nx = std::min<int>({detail::lie_info<std::decay_t<_Wrt>>::lie_dof...}) == -1
                             ? -1
-                            : (lie_info<std::decay_t<_Wrt>>::lie_dof + ...);
-  static constexpr int Ny = lie_info<Result>::lie_dof;
+                            : (detail::lie_info<std::decay_t<_Wrt>>::lie_dof + ...);
+  static constexpr int Ny = detail::lie_info<Result>::lie_dof;
 
   auto val = f(wrt...);
 
   // tuple of zero-valued tangent elements
-  std::tuple<Eigen::Matrix<AdScalar, lie_info<std::decay_t<_Wrt>>::lie_dof, 1>...> a_ad(
-    Eigen::Matrix<AdScalar, lie_info<std::decay_t<_Wrt>>::lie_dof, 1>::Zero()...);
+  std::tuple<Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1>...> a_ad(
+    Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1>::Zero()...);
 
   // create tuple of references to members of a_ad
-  auto a_ad_ref = std::apply(
-    std::forward_as_tuple<Eigen::Matrix<AdScalar, lie_info<std::decay_t<_Wrt>>::lie_dof, 1> &...>,
-    a_ad);
+  auto a_ad_ref =
+    std::apply(std::forward_as_tuple<
+                 Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1> &...>,
+      a_ad);
 
+  // TODO do cast once and store result
   Eigen::Matrix<Scalar, Ny, Nx> jac = autodiff::forward::jacobian(
     [&f, &val, &wrt...](auto &&... vars) -> Eigen::Matrix<AdScalar, Ny, 1> {
       return f(wrt.template cast<AdScalar>() + vars...) - val.template cast<AdScalar>();
