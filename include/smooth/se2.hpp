@@ -185,7 +185,7 @@ public:
       // https://www.wolframalpha.com/input/?i=series+x+%2F+tan+x+at+x%3D0
       A = Scalar(1) - th2 / Scalar(12);
     } else {
-      A = B / std::tan(B);
+      A = B / tan(B);
     }
 
     Eigen::Matrix<Scalar, 2, 2> Sinv;

@@ -138,7 +138,7 @@ struct map_dispatcher<const G>
 /**
  * @brief Use regular Eigen map as map for En
  */
-template<EnLike G>
+template<RnLike G>
 struct map_dispatcher<G>
 {
   using type = Eigen::Map<G>;
@@ -147,7 +147,7 @@ struct map_dispatcher<G>
 /**
  * @brief Use regular Eigen map as map for En
  */
-template<EnLike G>
+template<RnLike G>
 struct map_dispatcher<const G>
 {
   using type = Eigen::Map<const G>;

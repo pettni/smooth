@@ -124,7 +124,7 @@ struct is_eigen_vec<Eigen::Matrix<Scalar, rows, 1>> : public std::true_type {};
 
 
 template<typename G>
-concept EnLike =
+concept RnLike =
 requires {
   typename G::Scalar;
 } &&

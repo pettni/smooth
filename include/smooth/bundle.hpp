@@ -19,24 +19,24 @@ namespace smooth
  */
 template<typename _Scalar, MappableStorageLike _Storage, template<typename> typename ... _Gs>
 requires(
-  ((LieGroupLike<_Gs<_Scalar>>|| EnLike<_Gs<_Scalar>>) && ... && true) &&
+  ((LieGroupLike<_Gs<_Scalar>>|| RnLike<_Gs<_Scalar>>) && ... && true) &&
   (_Storage::SizeAtCompileTime ==
-  meta::iseq_sum_v<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>) &&
+  meta::iseq_sum_v<std::index_sequence<detail::lie_info<_Gs<_Scalar>>::lie_size ...>>) &&
   std::is_same_v<typename _Storage::Scalar, _Scalar>
 )
 class BundleBase
   : public LieGroupBase<
     BundleBase<_Scalar, _Storage, _Gs...>,
-    meta::iseq_sum_v<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>
+    meta::iseq_sum_v<std::index_sequence<detail::lie_info<_Gs<_Scalar>>::lie_size ...>>
   >
 {
 private:
   _Storage s_;
 
-  using lie_sizes = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>;
-  using lie_dofs = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dof ...>;
-  using lie_dims = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_dim ...>;
-  using lie_actdims = std::index_sequence<lie_info<_Gs<_Scalar>>::lie_actdim ...>;
+  using lie_sizes = std::index_sequence<detail::lie_info<_Gs<_Scalar>>::lie_size ...>;
+  using lie_dofs = std::index_sequence<detail::lie_info<_Gs<_Scalar>>::lie_dof ...>;
+  using lie_dims = std::index_sequence<detail::lie_info<_Gs<_Scalar>>::lie_dim ...>;
+  using lie_actdims = std::index_sequence<detail::lie_info<_Gs<_Scalar>>::lie_actdim ...>;
 
   using lie_sizes_psum = meta::iseq_psum_t<lie_sizes>;
   using lie_dofs_psum = meta::iseq_psum_t<lie_dofs>;
@@ -100,7 +100,7 @@ public:
   {
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           part<i>().setZero();
         } else {
           part<i>().setIdentity();
@@ -112,7 +112,7 @@ public:
   {
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           part<i>().setRandom();
         } else {
           part<i>().setRandom();
@@ -131,7 +131,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dim_beg = meta::iseq_el_v<i, lie_dims_psum>;
         static constexpr std::size_t dim_len = meta::iseq_el_v<i, lie_dims>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg).setIdentity();
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
           .template topRightCorner<PartType<i>::SizeAtCompileTime, 1>() = part<i>();
@@ -154,7 +154,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t actdim_beg = meta::iseq_el_v<i, lie_actdims_psum>;
         static constexpr std::size_t actdim_len = meta::iseq_el_v<i, lie_actdims>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template segment<actdim_len>(actdim_beg) =
           part<i>() + x.template segment<actdim_len>(actdim_beg);
         } else {
@@ -174,7 +174,7 @@ public:
     Group ret;
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template part<i>() = part<i>() + r.template part<i>();
         } else {
           ret.template part<i>() = part<i>() * r.template part<i>();
@@ -191,7 +191,7 @@ public:
     Group ret;
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template part<i>() = -part<i>();
         } else {
           ret.template part<i>() = part<i>().inverse();
@@ -210,7 +210,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template segment<dof_len>(dof_beg) = part<i>();
         } else {
           ret.template segment<dof_len>(dof_beg) = part<i>().log();
@@ -230,7 +230,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) = part<i>().Ad();
@@ -253,7 +253,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template part<i>() = a.template segment<dof_len>(dof_beg);
         } else {
           ret.template part<i>() = PartType<i>::exp(a.template segment<dof_len>(dof_beg));
@@ -275,7 +275,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           // ad is zero
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
@@ -300,7 +300,7 @@ public:
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         static constexpr std::size_t dim_beg = meta::iseq_el_v<i, lie_dims_psum>;
         static constexpr std::size_t dim_len = meta::iseq_el_v<i, lie_dims>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
           .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>() =
           a.template segment<dof_len>(dof_beg);
@@ -326,7 +326,7 @@ public:
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
         static constexpr std::size_t dim_beg = meta::iseq_el_v<i, lie_dims_psum>;
         static constexpr std::size_t dim_len = meta::iseq_el_v<i, lie_dims>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template segment<dof_len>(dof_beg) =
           A.template block<dim_len, dim_len>(dim_beg, dim_beg)
           .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>();
@@ -351,7 +351,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
@@ -374,7 +374,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = meta::iseq_el_v<i, lie_dofs_psum>;
         static constexpr std::size_t dof_len = meta::iseq_el_v<i, lie_dofs>;
-        if constexpr (EnLike<PartType<i>>) {
+        if constexpr (RnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
@@ -389,7 +389,7 @@ template<typename _Scalar, template<typename> typename ... _Gs>
 using Bundle = BundleBase<
   _Scalar,
   DefaultStorage<_Scalar,
-  meta::iseq_sum<std::index_sequence<lie_info<_Gs<_Scalar>>::lie_size ...>>::value>,
+  meta::iseq_sum<std::index_sequence<detail::lie_info<_Gs<_Scalar>>::lie_size ...>>::value>,
   _Gs...
 >;
 
