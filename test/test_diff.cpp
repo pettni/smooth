@@ -51,3 +51,27 @@ TEST(Differentiation, Dynamic) {
   Eigen::Matrix3d diag = Eigen::Vector3d::Constant(2).asDiagonal();
   ASSERT_TRUE(jac1.isApprox(diag, 1e-5));
 }
+
+TEST(Differentiation, Mixed) {
+  Eigen::Vector3d v(3);
+  v.setRandom();
+
+  auto [f1, jac1] = smooth::jacobian([](auto v1) {
+    Eigen::VectorXd ret(2);
+    ret << 2. * v1(1), 2. * v1(0);
+    return ret;
+  }, v);
+
+  static_assert(decltype(jac1)::RowsAtCompileTime == -1, "Error");
+  static_assert(decltype(jac1)::ColsAtCompileTime == 3, "Error");
+
+  ASSERT_EQ(f1.size(), 2);
+  ASSERT_EQ(jac1.cols(), 3);
+  ASSERT_EQ(jac1.rows(), 2);
+
+  Eigen::Matrix<double, 2, 3> diag;
+  diag.setZero();
+  diag(0, 1) = 2;
+  diag(1, 0) = 2;
+  ASSERT_TRUE(jac1.isApprox(diag, 1e-5));
+}

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "smooth/so3.hpp"
 #include "smooth/nls.hpp"
 
 template<int N, int M>
@@ -96,7 +97,7 @@ TEST(Optimization, LmPar) {
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
     // check equality of static and dynamic
-    ASSERT_EQ(par1, par2);
+    ASSERT_NEAR(par1, par2, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
 
     // check that x solves resulting problem
@@ -136,7 +137,7 @@ TEST(Optimization, LmParSmall) {
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
     // check equality of static and dynamic
-    ASSERT_EQ(par1, par2);
+    ASSERT_NEAR(par1, par2, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
 
     // check that x solves resulting problem
@@ -177,7 +178,7 @@ TEST(Optimization, LmParSing) {
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
     // check equality of static and dynamic
-    ASSERT_EQ(par1, par2);
+    ASSERT_NEAR(par1, par2, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
 
     // check that x solves resulting problem
@@ -191,4 +192,64 @@ TEST(Optimization, LmParSing) {
     bool cond2 = (par1 > 0) && std::abs((d.asDiagonal() * x).norm() - Delta) <= 0.1 * Delta;
     ASSERT_TRUE(cond1 || cond2);
   }
+}
+
+TEST(NLS, MultipleArgsStatic)
+{
+  smooth::SO3d g1, g2;
+  g1.setRandom();
+  g2.setRandom();
+
+  auto f = [] (auto v1, auto v2) {
+    Eigen::Vector3d diff = (v1 - v2) - Eigen::Vector3d::Ones();
+    Eigen::Matrix<double, 9, 1> ret;
+    ret << v1.log(), v2.log(), diff;
+    return ret;
+  };
+
+  smooth::minimize(f, g1, g2);
+
+  ASSERT_TRUE(g1.inverse().isApprox(g2, 1e-6));
+}
+
+TEST(NLS, MultipleArgsDynamic)
+{
+  smooth::SO3d g1, g2;
+  g1.setRandom();
+  g2.setRandom();
+
+  auto f = [] (auto v1, auto v2) -> Eigen::VectorXd {
+    Eigen::VectorXd diff = (v1 - v2) - Eigen::Vector3d::Ones();
+    Eigen::Matrix<double, 9, 1> ret;
+    ret << v1.log(), v2.log(), diff;
+    return ret;
+  };
+
+  smooth::minimize(f, g1, g2);
+
+  ASSERT_TRUE(g1.inverse().isApprox(g2, 1e-6));
+}
+
+TEST(NLS, MixedArgs)
+{
+  smooth::SO3d g0, g1;
+  Eigen::VectorXd v(3);
+  g0.setRandom();
+  g1.setRandom();
+  v.setRandom();
+
+  auto f = [&] (auto var_g, auto var_vec) -> Eigen::VectorXd {
+    Eigen::Matrix<double, -1, 1> ret(6);
+    ret << (var_g + var_vec.template head<3>()) - g0, var_vec - Eigen::Vector3d::Ones();
+    return ret;
+  };
+
+  smooth::minimize(f, g1, v);
+
+  std::cout << g1 << std::endl;
+  std::cout << v.transpose() << std::endl;
+
+  auto g1_plus_v = g1 + v.head<3>();
+  ASSERT_TRUE(g1_plus_v.isApprox(g0, 1e-6));
+  ASSERT_TRUE(v.isApprox(Eigen::Vector3d::Ones(), 1e-6));
 }

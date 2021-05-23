@@ -79,10 +79,10 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 Available:
 
 * [x] B-spline evaluation
+* [x] Trust-region optimization
 
 Planned:
 
-* [ ] Trust-region optimization
 * [ ] B-spline fitting
 * [ ] IMU pre-integration
 * [ ] Trajectory-tracking PD controller
@@ -113,7 +113,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 ## Book
 
 - [x] ceres derivatives
-- [ ] Levenberg-Marquardt trust-region optimization
+- [x] Levenberg-Marquardt trust-region NLS optimization
 - [ ] reorganize dynamics: bring in system linearization and Magnus expansion
 - Splines:
   - [x] Bsplines derivatives w.r.t. control points
@@ -122,9 +122,12 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Library
 
-- [ ] Levenberg-Marquardt
-- [ ] Make algos work for Eigen types via dispatch traits for all lie operations
-- [ ] Runtime bundle using std::variant for ceres-like optimization
-- [ ] Set up Gitlab CI
 - [ ] autodiff compatibility header and tests
+- [x] Levenberg-Marquardt
+  - [x] numerical derivatives
+  - [ ] automatic derivatives
+  - [ ] analytical derivatives
+- [ ] Runtime bundle using std::variant
 - [ ] B-splines fitting using LM
+- [ ] Make algos work for Eigen types via dispatch traits for all lie operations
+- [ ] Set up Gitlab CI

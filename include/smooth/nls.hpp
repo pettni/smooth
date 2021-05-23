@@ -256,7 +256,14 @@ void minimize(_F && f, _Wrt &&... wrt)
     const double r_old_norm = r_norm;
 
     // take step a and re-evaluate function
-    ((wrt += a), ...);  // TODO need both static and dynamic indices for a...
+    int segbeg        = 0;
+    const auto f_iter = [&](auto && w) {
+      static constexpr int Nx_j = lie_info<std::decay_t<decltype(w)>>::lie_dof;
+      const int nx_j            = lie_info<std::decay_t<decltype(w)>>::lie_dof_dynamic(w);
+      w += a.template segment<Nx_j>(segbeg, nx_j);
+      segbeg += nx_j;
+    };
+    (f_iter(wrt), ...);
     std::tie(r, J) = jacobian(f, wrt...);
 
     r_norm               = r.stableNorm();

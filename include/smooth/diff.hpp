@@ -16,7 +16,8 @@ namespace smooth {
  * @return pair( f(wrt...), dr f_(wrt...) )
  */
 template<typename _F, typename... _Wrt>
-auto jacobian(_F && f, _Wrt &&... wrt) {
+auto jacobian(_F && f, _Wrt &&... wrt)
+{
   using Result     = std::invoke_result_t<_F, _Wrt...>;
   using Scalar     = typename Result::Scalar;
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
@@ -40,7 +41,7 @@ auto jacobian(_F && f, _Wrt &&... wrt) {
 
   const auto f_iter = [&](auto && w) {
     static constexpr int Nx_j = lie_info<std::decay_t<decltype(w)>>::lie_dof;
-    const int            nx_j = lie_info<std::decay_t<decltype(w)>>::lie_dof_dynamic(w);
+    const int nx_j            = lie_info<std::decay_t<decltype(w)>>::lie_dof_dynamic(w);
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
       if constexpr (EnLike<std::decay_t<decltype(w)>>) {
