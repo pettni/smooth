@@ -371,6 +371,11 @@ which with some abuse of notation can be written as
   \mathrm{d}^r f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b).
 \end{equation}
 
+\todo[inline]{Pretty sure this will immediately yield the correct derivative}
+\begin{equation}
+  \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} \log \left( f(\X)^{-1} f(\X \oplus \b) \right)
+\end{equation}
+
 \subsection{Ceres Solver Local Parameterizations}
 
 A special case of when numerical derivatives are used is in the nonlinear optimizer Ceres. Being unaware of Lie groups, Ceres considers cost functions that are functions of some parameters, $f(\x)$, and uses automatic differentiation of $f : \mathbb{R}^p \rightarrow \mathbb{R}^k$ with respect to $\x \in \mathbb{R}^p$ to figure out in what direction to move in order to minimize $f$. However, if $\x$ represents the coordinates of a manifold chart, i.e. $\hat \x = \X$ for $\X \in \M$, it is not desirable to directly apply an update in the direction of the gradient since this may lead the resulting point no longer being on the manifold.

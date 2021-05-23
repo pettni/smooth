@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <Eigen/Jacobi>
 #include <Eigen/QR>
-#include <iostream>
+
 #include <numeric>
 
 #include "smooth/concepts.hpp"
@@ -241,7 +241,7 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double,
 template<typename _F, typename... _Wrt>
 void minimize(_F && f, _Wrt &&... wrt)
 {
-  auto [r, J] = jacobian(f, wrt...);
+  auto [r, J] = diff::dr(f, wrt...);
 
   double r_norm = r.stableNorm();
 
@@ -264,7 +264,7 @@ void minimize(_F && f, _Wrt &&... wrt)
       segbeg += nx_j;
     };
     (f_iter(wrt), ...);
-    std::tie(r, J) = jacobian(f, wrt...);
+    std::tie(r, J) = diff::dr(f, wrt...);
 
     r_norm               = r.stableNorm();
     const double Da_norm = diag.cwiseProduct(a).stableNorm();

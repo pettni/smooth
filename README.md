@@ -6,8 +6,8 @@ Do you want to do any of the following on a Lie group (or learn the theory)?
 
  * [x] Algebraic manipulation and analytic tangent space derivatives (example code below)
  * [x] Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
- * [ ] Automatic differentiation
- * [ ] Optimization
+ * [x] Automatic differentiation
+ * [x] Optimization
  * [x] Interpolation (right figure shows an interpolating B-spline of order 5 on SO(3), see `examples/bspline.cpp`)
  * [ ] Design controllers and estimators
 
@@ -122,7 +122,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Library
 
-- [ ] autodiff compatibility header and tests
+- [x] autodiff compatibility header and tests
 - [x] Levenberg-Marquardt
   - [x] numerical derivatives
   - [ ] automatic derivatives

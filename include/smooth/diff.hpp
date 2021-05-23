@@ -6,7 +6,7 @@
 
 #include "smooth/common.hpp"
 
-namespace smooth {
+namespace smooth::diff {
 
 /**
  * @brief Numerical differentiation in tangent space
@@ -16,17 +16,18 @@ namespace smooth {
  * @return pair( f(wrt...), dr f_(wrt...) )
  */
 template<typename _F, typename... _Wrt>
-auto jacobian(_F && f, _Wrt &&... wrt)
+auto dr_numerical(_F && f, _Wrt &&... wrt)
 {
-  using Result     = std::invoke_result_t<_F, _Wrt...>;
-  using Scalar     = typename Result::Scalar;
-  const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
+  using Result = std::invoke_result_t<_F, _Wrt...>;
+  using Scalar = typename Result::Scalar;
 
   // static sizes
   static constexpr int Nx = std::min<int>({lie_info<std::decay_t<_Wrt>>::lie_dof...}) == -1
                             ? -1
                             : (lie_info<std::decay_t<_Wrt>>::lie_dof + ...);
   static constexpr int Ny = lie_info<Result>::lie_dof;
+
+  const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
   auto val = f(wrt...);
 
@@ -66,6 +67,22 @@ auto jacobian(_F && f, _Wrt &&... wrt)
   return std::make_pair(val, jac);
 }
 
-}  // namespace smooth
+
+/**
+ * @brief Differentiation in local tangent space (right derivative)
+ *
+ * @param f function to differentiate
+ * @param wrt... function arguments
+ * @return pair( f(wrt...), dr f_(wrt...) )
+ *
+ * TODO: dispatch between diff methods
+ */
+template<typename _F, typename... _Wrt>
+auto dr(_F && f, _Wrt &&... wrt)
+{
+  return dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(wrt) ...);
+}
+
+}  // namespace smooth::diff
 
 #endif  // SMOOTH__DIFF_HPP_
