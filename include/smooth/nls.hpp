@@ -5,8 +5,15 @@
 #include <Eigen/Jacobi>
 #include <Eigen/QR>
 #include <iostream>
+#include <numeric>
 
 #include "smooth/concepts.hpp"
+#include "smooth/diff.hpp"
+#include "smooth/meta.hpp"
+
+namespace smooth {
+
+namespace detail {
 
 /**
  * @brief Solve structured least-squares probelm
@@ -23,19 +30,20 @@
  *
  * TODO enable support for sparse J_qr
  */
-template <int N, int M = N>
+template<int N, int M = N>
 Eigen::Matrix<double, N, 1> solve_ls(
   const Eigen::ColPivHouseholderQR<Eigen::Matrix<double, M, N>> & J_qr,
-  const Eigen::Matrix<double, N, 1> & d, const Eigen::Matrix<double, M, 1> & r,
+  const Eigen::Matrix<double, N, 1> & d,
+  const Eigen::Matrix<double, M, 1> & r,
   std::optional<Eigen::Ref<Eigen::Matrix<double, N, N>>> Rt = {})
 {
-  static constexpr int NM_min = std::min(N, M);
+  static constexpr int NM_min  = std::min(N, M);
   static constexpr int NM_rest = NM_min == -1 ? -1 : N - NM_min;
 
   // dynamic sizes
-  const auto n = J_qr.cols();
-  const auto m = J_qr.rows();
-  const auto nm_min = std::min(n, m);
+  const auto n       = J_qr.cols();
+  const auto m       = J_qr.rows();
+  const auto nm_min  = std::min(n, m);
   const auto nm_rest = n - nm_min;
 
   // form system
@@ -74,8 +82,8 @@ Eigen::Matrix<double, N, 1> solve_ls(
       A(col, col) = G.c() * A(col, col) - G.s() * B(row, col);
       for (int i = col + 1; i < n; ++i) {
         const double tmp = G.c() * A(col, i) - G.s() * B(row, i);
-        B(row, i) = G.s() * A(col, i) + G.c() * B(row, i);
-        A(col, i) = tmp;
+        B(row, i)        = G.s() * A(col, i) + G.c() * B(row, i);
+        A(col, i)        = tmp;
       }
 
       // At the end we need Q matrix to multiply rhs as
@@ -84,26 +92,22 @@ Eigen::Matrix<double, N, 1> solve_ls(
       // We can therefore do it as we go, here we set
       // rhs = G * rhs
       const double tmp = G.s() * a(col) + G.c() * b(row);
-      a(col) = G.c() * a(col) - G.s() * b(row);
-      b(row) = tmp;
+      a(col)           = G.c() * a(col) - G.s() * b(row);
+      b(row)           = tmp;
     }
   }
 
-  if (Rt.has_value()) {
-    Rt.value().template triangularView<Eigen::Upper>() = A.template triangularView<Eigen::Upper>();
-  }
-
   // solve triangular system A z = a to obtain z = R^-1 z
-
-  // check rank of upper-diagonal A (may happen if D not full-rank)
+  // first check rank of upper-diagonal A (may happen if D not full-rank)
   int rank = 0;
-  for (; rank != n && A(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {
-  }
+  for (; rank != n && A(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {}
 
   Eigen::Matrix<double, N, 1> sol(n);
   sol.tail(n - rank).setZero();
   sol.head(rank) =
     A.topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(a.head(rank));
+
+  if (Rt.has_value()) { Rt.value() = A; }
 
   // solution is now equal to P z
   return -(J_qr.colsPermutation() * sol);
@@ -123,42 +127,44 @@ Eigen::Matrix<double, N, 1> solve_ls(
  * @param d vector size Nx1
  * @param r vector size Mx1
  * @param Delta scalar
- * @param[out] x output least squares solution for final lambda
+ * @return pair(lambda, x) where x is solves the least-squares problem for lambda
  *
  * TODO enable support for sparse J
  * */
-template <int N, int M = N>
-std::pair<double, Eigen::Matrix<double, N, 1>>
-lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N, 1> & d,
-             const Eigen::Matrix<double, M, 1> & r, double Delta)
+template<int N, int M = N>
+std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double, M, N> J,
+  const Eigen::Matrix<double, N, 1> & d,
+  const Eigen::Matrix<double, M, 1> & r,
+  double Delta)
 {
   static constexpr int NM_min = std::min(N, M);
 
   // dynamic sizes
-  const auto m = J.rows();
-  const auto n = J.cols();
+  const auto m      = J.rows();
+  const auto n      = J.cols();
   const auto nm_min = std::min(n, m);
 
   // calculate qr decomposition of J
   Eigen::ColPivHouseholderQR<Eigen::Matrix<double, M, N>> J_qr(J);
 
-  Eigen::Matrix<double, NM_min, 1> Qt_r = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
+  Eigen::Matrix<double, NM_min, 1> Qt_r =
+    (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
 
   // calculate phi(0) by solving J x = -r as x = P R^-1 (-Q' r)
   Eigen::Matrix<double, N, 1> x(n);
-  int rank = J_qr.rank();
+  int rank     = J_qr.rank();
   x.head(rank) = J_qr.matrixR()
-                        .topLeftCorner(rank, rank)
-                        .template triangularView<Eigen::Upper>()
-                        .solve(-Qt_r.head(rank));
+                   .topLeftCorner(rank, rank)
+                   .template triangularView<Eigen::Upper>()
+                   .solve(-Qt_r.head(rank));
   x.tail(n - rank).setZero();
   x.applyOnTheLeft(J_qr.colsPermutation());
 
   Eigen::Matrix<double, N, 1> D_x_iter = d.cwiseProduct(x);
-  double D_x_iter_norm = D_x_iter.stableNorm();
+  double D_x_iter_norm                 = D_x_iter.stableNorm();
 
   double alpha = 0;
-  double phi = D_x_iter_norm - Delta;
+  double phi   = D_x_iter_norm - Delta;
   double dphi;
 
   if (phi <= 0.1 * Delta) {
@@ -179,27 +185,25 @@ lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N, 1> & d
       .transpose()
       .solveInPlace(y);
     dphi = -D_x_iter_norm * y.squaredNorm();
-    l = std::max(l, -phi / dphi);
+    l    = std::max(l, -phi / dphi);
   }
 
   // upper bound
   double u = (d.cwiseInverse().cwiseProduct(J.transpose() * r)).stableNorm() / Delta;
 
+  // it typically converges in 2 or 3 iterations
   for (auto i = 0u; i != 20; ++i) {
     // ensure alpha stays within bounds (and not equal to zero)
-    if (!(l < alpha && alpha < u)) {
-      alpha = std::max<double>(0.001 * u, sqrt(l * u));
-    }
+    if (!(l < alpha && alpha < u)) { alpha = std::max<double>(0.001 * u, sqrt(l * u)); }
 
     // calculate phi
     Eigen::Matrix<double, N, N> Rt(n, n);
 
     x = solve_ls<N, M>(J_qr, sqrt(alpha) * d, r, Rt);
 
-
-    D_x_iter = d.cwiseProduct(x);
+    D_x_iter      = d.cwiseProduct(x);
     D_x_iter_norm = D_x_iter.stableNorm();
-    phi = D_x_iter_norm - Delta;
+    phi           = D_x_iter_norm - Delta;
 
     if (std::abs(phi) <= 0.1 * Delta) {
       break;  // condition fulfilled
@@ -213,9 +217,7 @@ lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N, 1> & d
 
     // update bounds
     l = std::max<double>(l, alpha - phi / dphi);
-    if (phi < 0) {
-      u = alpha;
-    }
+    if (phi < 0) { u = alpha; }
 
     // update alpha
     alpha = alpha - ((phi + Delta) / Delta) * (phi / dphi);
@@ -224,22 +226,22 @@ lmpar(const Eigen::Matrix<double, M, N> J, const Eigen::Matrix<double, N, 1> & d
   return std::make_pair(alpha, std::move(x));
 }
 
+}  // namespace detail
+
 /**
- * @brief Find a minimum of
+ * @brief Find a minimum of the non-linear least-squares problem
  *
- *  \sum_i \| f(x)_i \|^2
+ *  \min_{wrt...} \sum_i \| f(wrt...)_i \|^2
  *
  * @param f residuals to minimize
- * @param g initial guess for x
+ * @param wrt arguments to f
  *
- * TODO create autodiff interface w/ at and wrt
- * TODO split outer and inner loops
+ * TODO split outer and inner loops, add printing, termination conditions, parameters
  */
-template <typename _F, typename _G>
-void minimize(_F && f, _G & g)
+template<typename _F, typename... _Wrt>
+void minimize(_F && f, _Wrt &&... wrt)
 {
-  auto r = f(g);
-  auto J = f.df(g);
+  auto [r, J] = jacobian(f, wrt...);
 
   double r_norm = r.stableNorm();
 
@@ -250,21 +252,21 @@ void minimize(_F && f, _G & g)
   auto diag = J.colwise().stableNorm().transpose().eval();
 
   for (int i = 0; i != 30; ++i) {
-    const auto [lambda, a] = lmpar(J, diag, r, Delta);
+    const auto [lambda, a]  = detail::lmpar(J, diag, r, Delta);
     const double r_old_norm = r_norm;
 
-    g += a;
-    r = f(g);
-    J = f.df(g);
+    // take step a and re-evaluate function
+    ((wrt += a), ...);  // TODO need both static and dynamic indices for a...
+    std::tie(r, J) = jacobian(f, wrt...);
 
-    r_norm = r.stableNorm();
+    r_norm               = r.stableNorm();
     const double Da_norm = diag.cwiseProduct(a).stableNorm();
 
     // calculate actual to predicted reduction
     const double fra1 = Eigen::numext::abs2(r_norm / r_old_norm);
     const double fra2 = Eigen::numext::abs2((J * a).stableNorm() / r_old_norm);
     const double fra3 = Eigen::numext::abs2(std::sqrt(lambda) * Da_norm / r_old_norm);
-    const double rho = (1. - fra1) / (fra2 + 2. * fra3);
+    const double rho  = (1. - fra1) / (fra2 + 2. * fra3);
 
     // update trust region following Moré (1978)
     if (rho < 0.25) {
@@ -273,7 +275,7 @@ void minimize(_F && f, _G & g)
         mu = 0.5;
       } else if (r_norm <= 10 * r_old_norm) {
         const double gamma = -fra2 - fra3;
-        mu = std::clamp(gamma / (2. * gamma + 1. - fra1), 0.1, 0.5);
+        mu                 = std::clamp(gamma / (2. * gamma + 1. - fra1), 0.1, 0.5);
       } else {
         mu = 0.1;
       }
@@ -286,5 +288,7 @@ void minimize(_F && f, _G & g)
     diag = diag.cwiseMax(J.colwise().stableNorm().transpose());
   }
 }
+
+}  // namespace smooth
 
 #endif  // SMOOTH__OPTIM__LM_HPP_

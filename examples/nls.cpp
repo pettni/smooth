@@ -1,5 +1,5 @@
-#include <smooth/optim/lm.hpp>
 #include <smooth/so3.hpp>
+#include <smooth/nls.hpp>
 
 
 struct MyFunctor
@@ -22,7 +22,7 @@ int main()
 {
   MyFunctor f;
   auto g = smooth::SO3d::Random();
-  minimize(f, g);
+  smooth::minimize(f, g);
 
   return EXIT_SUCCESS;
 }

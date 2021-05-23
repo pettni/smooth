@@ -39,7 +39,7 @@ class BSpline : public ::testing::Test
 
 using GroupsToTest = ::testing::Types<
   smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
-  smooth::Bundle<double, smooth::SO3, smooth::E4, smooth::SE2>
+  smooth::Bundle<double, smooth::SO3, smooth::R4, smooth::SE2>
 >;
 
 TYPED_TEST_SUITE(BSpline, GroupsToTest);
@@ -113,18 +113,18 @@ TEST(BSpline, Outside)
   ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(48)));
 }
 
-TEST(BSpline, DerivE1)
+TEST(BSpline, DerivR1)
 {
   std::srand(5);
-  std::vector<smooth::Bundle<double, smooth::E1>> c1;
+  std::vector<smooth::Bundle<double, smooth::R1>> c1;
   for (auto i = 0u; i != 4; ++i) {
-    c1.push_back(smooth::Bundle<double, smooth::E1>::Random());
+    c1.push_back(smooth::Bundle<double, smooth::R1>::Random());
   }
 
   double u = 0.5;
 
   Eigen::Matrix<double, 1, 4> jac;
-  auto g0 = smooth::bspline_eval<3, smooth::Bundle<double, smooth::E1>>(c1, u, {}, {}, jac);
+  auto g0 = smooth::bspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, u, {}, {}, jac);
 
   Eigen::Matrix<double, 4, 1> eps = 1e-4 * Eigen::Matrix<double, 4, 1>::Random();
   for (auto i = 0u; i != 4; ++i) {
@@ -132,7 +132,7 @@ TEST(BSpline, DerivE1)
   }
 
   // expect gp \approx g0 + jac * eps
-  auto gp = smooth::bspline_eval<3, smooth::Bundle<double, smooth::E1>>(c1, u);
+  auto gp = smooth::bspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, u);
   auto gp_exact = g0 + (jac * eps);
 
   std::cout << jac << std::endl;

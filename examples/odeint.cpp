@@ -12,11 +12,7 @@
 using matplot::plot;
 using std::views::transform;
 
-
-template<typename Scalar>
-using E3 = Eigen::Matrix<Scalar, 3, 1>;
-
-using state_t = smooth::Bundle<double, smooth::SO3, E3>;
+using state_t = smooth::Bundle<double, smooth::SO3, smooth::R3>;
 using deriv_t = typename state_t::Tangent;
 
 
