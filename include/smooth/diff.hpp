@@ -26,13 +26,13 @@ auto jacobian(_F && f, _Wrt &&... wrt)
   static constexpr int Nx = std::min<int>({lie_info<std::decay_t<_Wrt>>::lie_dof...}) == -1
                             ? -1
                             : (lie_info<std::decay_t<_Wrt>>::lie_dof + ...);
-  static constexpr int Ny = Result::SizeAtCompileTime;
+  static constexpr int Ny = lie_info<Result>::lie_dof;
 
   auto val = f(wrt...);
 
   // dynamic sizes
   int nx = (lie_info<std::decay_t<_Wrt>>::lie_dof_dynamic(wrt) + ... + 0);
-  int ny = val.size();
+  int ny = lie_info<Result>::lie_dof_dynamic(val);
 
   // output variable
   Eigen::Matrix<Scalar, Ny, Nx> jac(ny, nx);

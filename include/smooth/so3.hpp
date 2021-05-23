@@ -175,7 +175,7 @@ public:
     Scalar phi;
     if (xyz2 < Scalar(eps2)) {
       // https://www.wolframalpha.com/input/?i=series+atan%28y%2Fx%29+%2F+y+at+y%3D0
-      phi = Scalar(1) / s_[3] - xyz2 / (Scalar(3) * s_[3] * s_[3] * s_[3]);
+      phi = Scalar(2) / s_[3] - Scalar(2) * xyz2 / (Scalar(3) * s_[3] * s_[3] * s_[3]);
     } else {
       Scalar xyz = sqrt(xyz2);
       phi = Scalar(2) * atan2(xyz, s_[3]) / xyz;

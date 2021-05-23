@@ -86,7 +86,7 @@ if(BUILD_EXAMPLES)
 endif()
 
 # ---------------------------------------------------------------------------------------
-# CODE COVERAGE
+# TESTING
 # ---------------------------------------------------------------------------------------
 
 if(BUILD_TESTING)
@@ -109,7 +109,29 @@ if(BUILD_TESTING)
   target_link_libraries(${PROJECT_NAME}_tests PRIVATE smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
 
-  # MODULE TESTS
+  # ALGO TESTS
+
+  add_executable(test_bspline test/test_bspline.cpp)
+  target_compile_options(test_bspline PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_bspline PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_bspline)
+
+  add_executable(test_diff test/test_diff.cpp)
+  target_compile_options(test_diff PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_diff PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_diff)
+
+  add_executable(test_nls test/test_nls.cpp)
+  target_compile_options(test_nls PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_nls PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_nls)
+
+  add_executable(test_nlreg test/test_nlreg.cpp)
+  target_compile_options(test_nlreg PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_nlreg PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_nlreg)
+
+  # COMPATABILITY TESTS
 
   find_package(Boost QUIET)
   if(Boost_FOUND)
@@ -142,29 +164,9 @@ if(BUILD_TESTING)
     message(WARNING "geometry_msgs not found, disabling ros test")
   endif()
 
-  # ALGO TESTS
-
-  add_executable(test_bspline test/test_bspline.cpp)
-  target_compile_options(test_bspline PRIVATE -Wall -Wextra -Wpedantic)
-  target_link_libraries(test_bspline PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_bspline)
-
-  add_executable(test_diff test/test_diff.cpp)
-  target_compile_options(test_diff PRIVATE -Wall -Wextra -Wpedantic)
-  target_link_libraries(test_diff PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_diff)
-
-  add_executable(test_nls test/test_nls.cpp)
-  target_compile_options(test_nls PRIVATE -Wall -Wextra -Wpedantic)
-  target_link_libraries(test_nls PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_nls)
-
-  add_executable(test_nlreg test/test_nlreg.cpp)
-  target_compile_options(test_nlreg PRIVATE -Wall -Wextra -Wpedantic)
-  target_link_libraries(test_nlreg PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_nlreg)
-
+  # -------------------------------------------------------------------------------------
   # TEST COVERAGE
+  # -------------------------------------------------------------------------------------
 
   if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(${PROJECT_NAME}_tests PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
@@ -177,6 +179,12 @@ if(BUILD_TESTING)
     target_link_libraries(test_ros PRIVATE --coverage)
     target_compile_options(test_bspline PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
     target_link_libraries(test_bspline PRIVATE --coverage)
+    target_compile_options(test_diff PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(test_diff PRIVATE --coverage)
+    target_compile_options(test_nls PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(test_nls PRIVATE --coverage)
+    target_compile_options(test_nlreg PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
+    target_link_libraries(test_nlreg PRIVATE --coverage)
 
     add_custom_target(testcov
       COMMAND lcov -c --include ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/\\* -d ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles -o ${PROJECT_NAME}_testcov.info
