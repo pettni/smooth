@@ -16,19 +16,13 @@ template<smooth::LieGroupLike G>
 class LieGroupInterface : public ::testing::Test
 {};
 
-template<typename Scalar>
-using E2 = Eigen::Matrix<Scalar, 2, 1>;
-
-template<typename Scalar>
-using E4 = Eigen::Matrix<Scalar, 4, 1>;
-
 using GroupsToTest = ::testing::Types<
   smooth::SO2f, smooth::SO3f,
   smooth::SE2f, smooth::SE3f,
   smooth::Bundle<
     double,
     smooth::SO2, smooth::SO3, smooth::SE2, smooth::SE3,
-    E2, E4
+    smooth::R2, smooth::R4
   >
 >;
 

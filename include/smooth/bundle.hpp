@@ -12,52 +12,6 @@
 namespace smooth
 {
 
-// The bundle supports Eigen vector types to represent En, these typedefs
-template<typename Scalar>
-using E1 = Eigen::Matrix<Scalar, 1, 1>;
-template<typename Scalar>
-using E2 = Eigen::Matrix<Scalar, 2, 1>;
-template<typename Scalar>
-using E3 = Eigen::Matrix<Scalar, 3, 1>;
-template<typename Scalar>
-using E4 = Eigen::Matrix<Scalar, 4, 1>;
-template<typename Scalar>
-using E5 = Eigen::Matrix<Scalar, 5, 1>;
-template<typename Scalar>
-using E6 = Eigen::Matrix<Scalar, 6, 1>;
-template<typename Scalar>
-using E7 = Eigen::Matrix<Scalar, 7, 1>;
-template<typename Scalar>
-using E8 = Eigen::Matrix<Scalar, 8, 1>;
-template<typename Scalar>
-using E9 = Eigen::Matrix<Scalar, 9, 1>;
-template<typename Scalar>
-using E10 = Eigen::Matrix<Scalar, 10, 1>;
-
-
-// Helper trait to extract relevant properties for lie and en types
-template<typename T>
-struct lie_info;
-
-template<LieGroupLike G>
-struct lie_info<G>
-{
-  static constexpr uint32_t lie_size = G::lie_size;
-  static constexpr uint32_t lie_dof = G::lie_dof;
-  static constexpr uint32_t lie_dim = G::lie_dim;
-  static constexpr uint32_t lie_actdim = G::lie_actdim;
-};
-
-template<EnLike G>
-struct lie_info<G>
-{
-  static constexpr uint32_t lie_size = G::SizeAtCompileTime;
-  static constexpr uint32_t lie_dof = G::SizeAtCompileTime;
-  static constexpr uint32_t lie_dim = G::SizeAtCompileTime + 1;
-  static constexpr uint32_t lie_actdim = G::SizeAtCompileTime;
-};
-
-
 /**
  * @brief Bundle of multiple Lie types that can be treated as a single Lie group
  *

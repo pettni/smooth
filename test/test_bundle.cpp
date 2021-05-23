@@ -11,7 +11,7 @@ using namespace smooth;
 
 TEST(Bundle, Static)
 {
-  using bundle_t = Bundle<double, SE2, SE3, E2, SO2, SO3>;
+  using bundle_t = Bundle<double, SE2, SE3, R2, SO2, SO3>;
 
   static_assert(bundle_t::lie_size == 19);
   static_assert(bundle_t::lie_dof == 15);
@@ -27,14 +27,14 @@ TEST(Bundle, Static)
   static_assert(
     std::is_same_v<
       change_storage<bundle_t, MappedStorage<double, 19>>::type,
-      BundleBase<double, MappedStorage<double, 19>, SE2, SE3, E2, SO2, SO3>
+      BundleBase<double, MappedStorage<double, 19>, SE2, SE3, R2, SO2, SO3>
     >
   );
 
   static_assert(
     std::is_same_v<
       change_storage<bundle_t, const MappedStorage<double, 19>>::type,
-      BundleBase<double, const MappedStorage<double, 19>, SE2, SE3, E2, SO2, SO3>
+      BundleBase<double, const MappedStorage<double, 19>, SE2, SE3, R2, SO2, SO3>
     >
   );
 }
@@ -43,7 +43,7 @@ TEST(Bundle, Construct)
 {
   std::srand(5);
 
-  using mybundle = Bundle<double, SO2, SO3, E3>;
+  using mybundle = Bundle<double, SO2, SO3, R3>;
 
   auto so2 = SO2d::Random();
   auto so3 = SO3d::Random();
@@ -62,7 +62,7 @@ TEST(Bundle, Construct)
 }
 
 template<typename Scalar>
-using SubBundle = Bundle<Scalar, SO3, E3>;
+using SubBundle = Bundle<Scalar, SO3, R3>;
 
 TEST(Bundle, BundleOfBundle)
 {

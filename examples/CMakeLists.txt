@@ -18,5 +18,5 @@ target_link_libraries(bspline smooth matplot)
 add_executable(odeint odeint.cpp)
 target_link_libraries(odeint smooth matplot)
 
-add_executable(optim optim.cpp)
-target_link_libraries(optim smooth)
+add_executable(nls nls.cpp)
+target_link_libraries(nls smooth)

@@ -1,10 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "smooth/optim/lm.hpp"
+#include "smooth/nls.hpp"
 
-template <int N, int M>
-void run_leastsquares_test(bool zero_d, bool sing)
-{
+template<int N, int M>
+void run_leastsquares_test(bool zero_d, bool sing) {
   // static
   for (auto i = 0u; i != 10; ++i) {
     Eigen::Matrix<double, M, N> J;
@@ -19,26 +18,24 @@ void run_leastsquares_test(bool zero_d, bool sing)
 
     d.setRandom();
     d = (d + Eigen::Matrix<double, N, 1>::Ones()).cwiseMax(0);
-    if (zero_d) {
-      d.setZero();
-    }
+    if (zero_d) { d.setZero(); }
 
     r.setRandom();
 
     // solve static
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
-    auto a1 = solve_ls<N, M>(J_qr, d, r);
+    auto                                    a1 = smooth::detail::solve_ls<N, M>(J_qr, d, r);
 
     // solve dynamic
-    Eigen::Matrix<double, -1, -1> Jd = J;
-    Eigen::Matrix<double, -1, 1> rd = r;
-    Eigen::Matrix<double, -1, 1> dd = d;
+    Eigen::Matrix<double, -1, -1>            Jd = J;
+    Eigen::Matrix<double, -1, 1>             rd = r;
+    Eigen::Matrix<double, -1, 1>             dd = d;
     Eigen::ColPivHouseholderQR<decltype(Jd)> Jd_qr(Jd);
-    auto a2 = solve_ls<-1, -1>(Jd_qr, dd, rd);
+    auto                                     a2 = smooth::detail::solve_ls<-1, -1>(Jd_qr, dd, rd);
 
     // verify solution
     Eigen::Matrix<double, N + M, N> lhs;
-    lhs.template topLeftCorner<M, N>() = J;
+    lhs.template topLeftCorner<M, N>()    = J;
     lhs.template bottomLeftCorner<N, N>() = d.asDiagonal();
 
     Eigen::Matrix<double, N + M, 1> rhs;
@@ -51,8 +48,7 @@ void run_leastsquares_test(bool zero_d, bool sing)
   }
 }
 
-TEST(Optimization, LeastSquares)
-{
+TEST(Optimization, LeastSquares) {
   run_leastsquares_test<1, 1>(false, false);
   run_leastsquares_test<5, 1>(false, false);
   run_leastsquares_test<5, 10>(false, false);
@@ -74,9 +70,8 @@ TEST(Optimization, LeastSquares)
   run_leastsquares_test<8, 16>(true, true);
 }
 
-TEST(Optimization, LmPar)
-{
-  constexpr int M = 4, N = 4;
+TEST(Optimization, LmPar) {
+  constexpr int               M = 4, N = 4;
   Eigen::Matrix<double, M, N> J;
   Eigen::Matrix<double, M, 1> r;
   Eigen::Matrix<double, N, 1> d;
@@ -92,13 +87,13 @@ TEST(Optimization, LmPar)
     r.setRandom();
 
     // solve static
-    auto [par1, x] = lmpar<4, 4>(J, d, r, Delta);
+    auto [par1, x] = smooth::detail::lmpar<4, 4>(J, d, r, Delta);
 
     // solve dynamic
     Eigen::MatrixXd Jd = J;
     Eigen::VectorXd rd = r;
     Eigen::VectorXd dd = d;
-    auto [par2, xd] = lmpar<-1, -1>(Jd, dd, rd, Delta);
+    auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
     // check equality of static and dynamic
     ASSERT_EQ(par1, par2);
@@ -106,7 +101,7 @@ TEST(Optimization, LmPar)
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
-    auto x_test = solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
+    auto x_test = smooth::detail::solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
     ASSERT_TRUE(x_test.isApprox(x));
 
     // check that parameter satisfies conditions
@@ -116,9 +111,8 @@ TEST(Optimization, LmPar)
   }
 }
 
-TEST(Optimization, LmParSmall)
-{
-  constexpr int M = 4, N = 4;
+TEST(Optimization, LmParSmall) {
+  constexpr int               M = 4, N = 4;
   Eigen::Matrix<double, M, N> J;
   Eigen::Matrix<double, M, 1> r;
   Eigen::Matrix<double, N, 1> d;
@@ -133,13 +127,13 @@ TEST(Optimization, LmParSmall)
     r.setRandom();
 
     // solve static
-    auto [par1, x] = lmpar<4, 4>(J, d, r, Delta);
+    auto [par1, x] = smooth::detail::lmpar<4, 4>(J, d, r, Delta);
 
     // solve dynamic
     Eigen::MatrixXd Jd = J;
     Eigen::VectorXd rd = r;
     Eigen::VectorXd dd = d;
-    auto [par2, xd] = lmpar<-1, -1>(Jd, dd, rd, Delta);
+    auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
     // check equality of static and dynamic
     ASSERT_EQ(par1, par2);
@@ -147,7 +141,7 @@ TEST(Optimization, LmParSmall)
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
-    auto x_test = solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
+    auto x_test = smooth::detail::solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
     ASSERT_TRUE(x_test.isApprox(x));
 
     // check that parameter satisfies conditions
@@ -157,9 +151,8 @@ TEST(Optimization, LmParSmall)
   }
 }
 
-TEST(Optimization, LmParSing)
-{
-  constexpr int M = 4, N = 4;
+TEST(Optimization, LmParSing) {
+  constexpr int               M = 4, N = 4;
   Eigen::Matrix<double, M, N> J;
   Eigen::Matrix<double, M, 1> r;
   Eigen::Matrix<double, N, 1> d;
@@ -175,13 +168,13 @@ TEST(Optimization, LmParSing)
     r.setRandom();
 
     // solve QR
-    auto [par1, x] = lmpar<4, 4>(J, d, r, Delta);
+    auto [par1, x] = smooth::detail::lmpar<4, 4>(J, d, r, Delta);
 
     // solve dynamic
     Eigen::MatrixXd Jd = J;
     Eigen::VectorXd rd = r;
     Eigen::VectorXd dd = d;
-    auto [par2, xd] = lmpar<-1, -1>(Jd, dd, rd, Delta);
+    auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
     // check equality of static and dynamic
     ASSERT_EQ(par1, par2);
@@ -189,7 +182,7 @@ TEST(Optimization, LmParSing)
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
-    auto x_test = solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
+    auto x_test = smooth::detail::solve_ls<N, N>(J_qr, sqrt(par1) * d, r);
 
     ASSERT_TRUE(x_test.isApprox(x));
 
