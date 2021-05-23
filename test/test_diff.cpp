@@ -5,7 +5,8 @@
 
 using namespace smooth;
 
-TEST(Differentiation, SO3) {
+TEST(Differentiation, SO3)
+{
   smooth::SO3d g1, g2;
   g1.setRandom();
   g2.setRandom();
@@ -35,7 +36,29 @@ TEST(Differentiation, SO3) {
   ASSERT_TRUE(jac2.isApprox(jac3.rightCols<3>(), 1e-5));
 }
 
-TEST(Differentiation, Dynamic) {
+TEST(Differentiation, GroupToGroup)
+{
+  smooth::SO3d g1, g2;
+  g1.setRandom();
+  g2.setRandom();
+
+  auto [f1, jac1] =
+    smooth::jacobian([](auto v1, auto v2) -> smooth::SO3d { return v1 * v2; }, g1, g2);
+
+  ASSERT_EQ(jac1.cols(), 6);
+  ASSERT_EQ(jac1.rows(), 3);
+
+  auto jac1_true = g2.inverse().Ad();
+  auto jac2_true = Eigen::Matrix3d::Identity();
+
+  ASSERT_TRUE(f1.isApprox(g1 * g2, 1e-5));
+
+  ASSERT_TRUE(jac1.leftCols(3).isApprox(jac1_true, 1e-5));
+  ASSERT_TRUE(jac1.rightCols(3).isApprox(jac2_true, 1e-5));
+}
+
+TEST(Differentiation, Dynamic)
+{
   Eigen::VectorXd v(3);
   v.setRandom();
 
@@ -52,15 +75,18 @@ TEST(Differentiation, Dynamic) {
   ASSERT_TRUE(jac1.isApprox(diag, 1e-5));
 }
 
-TEST(Differentiation, Mixed) {
+TEST(Differentiation, Mixed)
+{
   Eigen::Vector3d v(3);
   v.setRandom();
 
-  auto [f1, jac1] = smooth::jacobian([](auto v1) {
-    Eigen::VectorXd ret(2);
-    ret << 2. * v1(1), 2. * v1(0);
-    return ret;
-  }, v);
+  auto [f1, jac1] = smooth::jacobian(
+    [](auto v1) {
+      Eigen::VectorXd ret(2);
+      ret << 2. * v1(1), 2. * v1(0);
+      return ret;
+    },
+    v);
 
   static_assert(decltype(jac1)::RowsAtCompileTime == -1, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == 3, "Error");
