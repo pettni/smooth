@@ -5,6 +5,7 @@
 #include <Eigen/Jacobi>
 #include <Eigen/QR>
 
+#include <iostream>
 #include <numeric>
 
 #include "smooth/concepts.hpp"
@@ -28,6 +29,13 @@ namespace detail {
  * @param r vector with same number of elements as there are rows in J
  * @param[out] Rt output matrix s.t. Rt' Rt = P' (J' J + D' D) P
  *
+ * TODO change input args to take
+ *  (
+ *    Eigen::Matrix<double, N, N> & R,   // write resulting upper triangular matrix into here
+ *    const Eigen::PermutationMatrix<N, N, PermIdx> & P
+ *    const Eigen::Matrix<double, N, 1> & d,
+ *    const Eigen::Matrix<double, N, 1> & Qt_r
+ *  )
  * TODO enable support for sparse J_qr
  */
 template<int N, int M = N>
@@ -73,17 +81,17 @@ Eigen::Matrix<double, N, 1> solve_ls(
   //      Q = Q G
   //      R = G' R
   Eigen::JacobiRotation<double> G;
-  for (auto col = 0u; col != n; ++col)  // for each column
-  {
-    for (auto row = 0u; row != col + 1; ++row) {  // for each row above diagonal
-      G.makeGivens(A(col, col), B(row, col));     // eliminates B(row, col)
+  for (auto j = 0u; j != n; ++j) {           // for each diagonal element
+    for (auto col = j; col != n; ++col) {    // for each column right of diagonal
+      G.makeGivens(A(col, col), B(j, col));  // eliminates B(j, col)
 
       // perform matrix multiplication R = G' R
-      A(col, col) = G.c() * A(col, col) - G.s() * B(row, col);
-      for (int i = col + 1; i < n; ++i) {
-        const double tmp = G.c() * A(col, i) - G.s() * B(row, i);
-        B(row, i)        = G.s() * A(col, i) + G.c() * B(row, i);
-        A(col, i)        = tmp;
+      // affects row 'col' of A and row 'j' of B
+      A(col, col) = G.c() * A(col, col) - G.s() * B(j, col);
+      for (auto k = col + 1; k != n; ++k) {
+        const double tmp = G.c() * A(col, k) - G.s() * B(j, k);
+        B(j, k)          = G.s() * A(col, k) + G.c() * B(j, k);
+        A(col, k)        = tmp;
       }
 
       // At the end we need Q matrix to multiply rhs as
@@ -91,9 +99,9 @@ Eigen::Matrix<double, N, 1> solve_ls(
       //
       // We can therefore do it as we go, here we set
       // rhs = G * rhs
-      const double tmp = G.s() * a(col) + G.c() * b(row);
-      a(col)           = G.c() * a(col) - G.s() * b(row);
-      b(row)           = tmp;
+      const double tmp = G.c() * a(col) - G.s() * b(j);
+      b(j)             = G.s() * a(col) + G.c() * b(j);
+      a(col)           = tmp;
     }
   }
 
