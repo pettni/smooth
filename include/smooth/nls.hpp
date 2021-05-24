@@ -57,23 +57,23 @@ Eigen::Matrix<double, N, 1> solve_ls(
   // form system
   // [A; B] x + [a; b]
   // where A = R
-  //       B = P' diag(D) P
+  //       B = P' diag(D) P = diag(P' D)
   //       a = Q' r
   //       b = 0
-  Eigen::Matrix<double, N, N> A(n, n), B(n, n);
-  Eigen::Matrix<double, N, 1> a(n), b(n);
+  Eigen::Matrix<double, N, N> A(n, n);
+  Eigen::Matrix<double, N, 1> a(n);
+
+  // We operate on B and b row-wise, so just need to allocate one row
+  Eigen::Matrix<double, N, 1> Bj(n);
+  double bj;
 
   A.template topRows<NM_min>(nm_min) = J_qr.matrixR().template topRows<NM_min>(nm_min);
   A.template bottomRows<NM_rest>(nm_rest).setZero();
   a.template head<NM_min>(nm_min) = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
   a.template bottomRows<NM_rest>(nm_rest).setZero();
 
-  B = (J_qr.colsPermutation().transpose() * d).asDiagonal();
-  b.setZero();
-
   // QR decomposition of [A; B] with Givens rotations;
   // where it is known that A is upper triangular and B is diagonal
-  //
   // algorithm:
   //   R = A, Q = I
   //   for each nonzero in B part:
@@ -81,16 +81,23 @@ Eigen::Matrix<double, N, 1> solve_ls(
   //      Q = Q G
   //      R = G' R
   Eigen::JacobiRotation<double> G;
-  for (auto j = 0u; j != n; ++j) {           // for each diagonal element
-    for (auto col = j; col != n; ++col) {    // for each column right of diagonal
-      G.makeGivens(A(col, col), B(j, col));  // eliminates B(j, col)
+  for (auto j = 0u; j != n; ++j) {  // for each diagonal element
+    // find permuted diagonal index
+    const auto permidx = J_qr.colsPermutation().indices()(j);
+    // initialize row j of B and b
+    Bj.tail(n - j).setZero();
+    Bj(j) = d(permidx);  // Bj(k) represents B(j, k)
+    bj    = 0;           // bj represents b(j)
+
+    for (auto col = j; col != n; ++col) {  // for each column right of diagonal
+      G.makeGivens(A(col, col), Bj(col));  // eliminates B(j, col)
 
       // perform matrix multiplication R = G' R
       // affects row 'col' of A and row 'j' of B
-      A(col, col) = G.c() * A(col, col) - G.s() * B(j, col);
+      A(col, col) = G.c() * A(col, col) - G.s() * Bj(col);
       for (auto k = col + 1; k != n; ++k) {
-        const double tmp = G.c() * A(col, k) - G.s() * B(j, k);
-        B(j, k)          = G.s() * A(col, k) + G.c() * B(j, k);
+        const double tmp = G.c() * A(col, k) - G.s() * Bj(k);
+        Bj(k)            = G.s() * A(col, k) + G.c() * Bj(k);
         A(col, k)        = tmp;
       }
 
@@ -99,8 +106,8 @@ Eigen::Matrix<double, N, 1> solve_ls(
       //
       // We can therefore do it as we go, here we set
       // rhs = G * rhs
-      const double tmp = G.c() * a(col) - G.s() * b(j);
-      b(j)             = G.s() * a(col) + G.c() * b(j);
+      const double tmp = G.c() * a(col) - G.s() * bj;
+      bj               = G.s() * a(col) + G.c() * bj;
       a(col)           = tmp;
     }
   }
