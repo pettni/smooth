@@ -109,6 +109,13 @@ if(BUILD_TESTING)
   target_link_libraries(${PROJECT_NAME}_tests PRIVATE smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
 
+  add_executable(test_dynamic_bundle
+    test/test_dynamic_bundle.cpp
+  )
+  target_compile_options(test_dynamic_bundle PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_dynamic_bundle PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_dynamic_bundle)
+
   # ALGO TESTS
 
   add_executable(test_bspline test/test_bspline.cpp)

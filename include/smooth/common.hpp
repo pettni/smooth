@@ -30,6 +30,28 @@ using R9 = Eigen::Matrix<Scalar, 9, 1>;
 template<typename Scalar>
 using R10 = Eigen::Matrix<Scalar, 10, 1>;
 
+using R1f = R1<float>;
+using R2f = R2<float>;
+using R3f = R3<float>;
+using R4f = R4<float>;
+using R5f = R5<float>;
+using R6f = R6<float>;
+using R7f = R7<float>;
+using R8f = R8<float>;
+using R9f = R9<float>;
+using R10f = R10<float>;
+
+using R1d = R1<double>;
+using R2d = R2<double>;
+using R3d = R3<double>;
+using R4d = R4<double>;
+using R5d = R5<double>;
+using R6d = R6<double>;
+using R7d = R7<double>;
+using R8d = R8<double>;
+using R9d = R9<double>;
+using R10d = R10<double>;
+
 // Helper trait to extract relevant properties for lie and en types
 namespace detail {
 

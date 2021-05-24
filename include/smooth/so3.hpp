@@ -35,10 +35,10 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr uint32_t lie_size = 4;
-  static constexpr uint32_t lie_dof = 3;
-  static constexpr uint32_t lie_dim = 3;
-  static constexpr uint32_t lie_actdim = 3;
+  static constexpr int lie_size = 4;
+  static constexpr int lie_dof = 3;
+  static constexpr int lie_dim = 3;
+  static constexpr int lie_actdim = 3;
 
   // CONSTRUCTORS AND OPERATORS
 

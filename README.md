@@ -95,7 +95,7 @@ Algorithms also work with regular ```Eigen``` types.
 
 Utility headers for interfacing with adjacent software are provided in `smooth/compat`
 
-* [ ] Automatic differentiation in tangent space using [autodiff](https://autodiff.github.io/)
+* [x] Automatic differentiation in tangent space using [autodiff](https://autodiff.github.io/)
 * [x] Zero-copy memory mapping of [ROS/ROS2](https://www.ros.org/) message types
 * [x] Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization
 * [x] Numerical integration using [`boost::odeint`](https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html)
@@ -123,10 +123,13 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 - [x] autodiff compatibility header and tests
 - [x] Levenberg-Marquardt
   - [x] numerical derivatives
-  - [ ] automatic derivatives (autodiff/ceres)
-  - [ ] analytical derivatives
+  - [ ] automatic derivatives
+  - [x] analytical derivatives
 - [ ] ceres autodiff 
-- [ ] Runtime bundle using std::variant
+- [x] Runtime bundle using std::variant
 - [ ] B-splines fitting using LM
 - [ ] Make algos work for Eigen types via dispatch traits for all lie operations
+  - [x] diff
+  - [x] nls
+  - [ ] bsplines
 - [ ] Set up Gitlab CI
