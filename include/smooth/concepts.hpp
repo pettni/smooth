@@ -61,19 +61,19 @@ concept LieGroupLike =
 } &&
 // static constants
 requires {
-  {G::lie_size}->std::same_as<const uint32_t &>;      // size of representation
-  {G::lie_dim}->std::same_as<const uint32_t &>;       // side of square matrix group
-  {G::lie_dof}->std::same_as<const uint32_t &>;       // degrees of freedom (tangent space dimension)
-  {G::lie_actdim}->std::same_as<const uint32_t &>;   // dimension of vector space on which group acts
+  {G::lie_size}->std::same_as<const int &>;      // size of representation
+  {G::lie_dim}->std::same_as<const int &>;       // side of square matrix group
+  {G::lie_dof}->std::same_as<const int &>;       // degrees of freedom (tangent space dimension)
+  {G::lie_actdim}->std::same_as<const int &>;   // dimension of vector space on which group acts
 } &&
 std::is_same_v<typename G::Tangent::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::MatrixBase<typename G::Tangent>, typename G::Tangent>&&
+std::is_base_of_v<Eigen::EigenBase<typename G::Tangent>, typename G::Tangent>&&
 std::is_same_v<typename G::TangentMap::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::MatrixBase<typename G::TangentMap>, typename G::TangentMap>&&
+std::is_base_of_v<Eigen::EigenBase<typename G::TangentMap>, typename G::TangentMap>&&
 std::is_same_v<typename G::Vector::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::MatrixBase<typename G::Vector>, typename G::Vector>&&
+std::is_base_of_v<Eigen::EigenBase<typename G::Vector>, typename G::Vector>&&
 std::is_same_v<typename G::MatrixGroup::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::MatrixBase<typename G::MatrixGroup>, typename G::MatrixGroup>&&
+std::is_base_of_v<Eigen::EigenBase<typename G::MatrixGroup>, typename G::MatrixGroup>&&
 (G::Tangent::RowsAtCompileTime == G::lie_dof) &&
 (G::Tangent::ColsAtCompileTime == 1) &&
 (G::TangentMap::RowsAtCompileTime == G::lie_dof) &&
@@ -94,6 +94,14 @@ requires(const G & g1, const G & g2, const typename G::Vector & v)
   {g1.matrix_group()}->std::same_as<typename G::MatrixGroup>;
   {g1.Ad()}->std::same_as<typename G::TangentMap>;
 } &&
+// only these members are required for differentiation/optimization
+// TODO create separate concept that defines those
+requires(const G & g1, G g2, const typename G::Tangent & a)
+{
+  {g1 + a}->std::same_as<typename G::Group>;
+  {g1 - g2}->std::same_as<typename G::Tangent>;
+  {g2 += a}->std::convertible_to<typename G::Group>;
+} &&
 // static methods
 requires(const typename G::Tangent & a)
 {
@@ -106,7 +114,6 @@ requires(const typename G::Tangent & a)
 
 template<typename G>
 concept ModifiableLieGroupLike = LieGroupLike<G>&&
-// std::is_constructible_v<G> &&
 // member methods
 requires(G & g)
 {

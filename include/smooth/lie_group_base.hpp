@@ -13,7 +13,7 @@ namespace smooth
 /**
  * @brief CRTP base for lie groups with common functionality and syntactic sugar
  */
-template<typename Derived, uint32_t size>
+template<typename Derived, int size>
 class LieGroupBase;
 
 template<
@@ -21,7 +21,7 @@ template<
   typename _Scalar,
   typename _Storage,
   template<typename> typename ... _Ts,
-  uint32_t size
+  int size
 >
 class LieGroupBase<_Derived<_Scalar, _Storage, _Ts...>, size>
 {
@@ -190,10 +190,10 @@ protected:
 
 }  // namespace smooth
 
-template<typename Stream, typename Derived, uint32_t lie_size>
+template<typename Stream, typename Derived, int lie_size>
 Stream & operator<<(Stream & s, const smooth::LieGroupBase<Derived, lie_size> & g)
 {
-  for (auto i = 0u; i != lie_size; ++i) {
+  for (auto i = 0; i != lie_size; ++i) {
     s << g.coeffs()[i] << " ";
   }
   return s;

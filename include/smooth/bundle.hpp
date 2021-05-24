@@ -15,7 +15,7 @@ namespace smooth
 /**
  * @brief Bundle of multiple Lie types that can be treated as a single Lie group
  *
- * Bundle members can also be Eigen vectors by including En in the template argument list.
+ * Bundle members can also be Eigen vectors by including Rn in the template argument list.
  */
 template<typename _Scalar, MappableStorageLike _Storage, template<typename> typename ... _Gs>
 requires(
@@ -46,10 +46,10 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr uint32_t lie_size = meta::iseq_sum_v<lie_sizes>;
-  static constexpr uint32_t lie_dof = meta::iseq_sum_v<lie_dofs>;
-  static constexpr uint32_t lie_dim = meta::iseq_sum_v<lie_dims>;
-  static constexpr uint32_t lie_actdim = meta::iseq_sum_v<lie_actdims>;
+  static constexpr int lie_size = meta::iseq_sum_v<lie_sizes>;
+  static constexpr int lie_dof = meta::iseq_sum_v<lie_dofs>;
+  static constexpr int lie_dim = meta::iseq_sum_v<lie_dims>;
+  static constexpr int lie_actdim = meta::iseq_sum_v<lie_actdims>;
 
   // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
