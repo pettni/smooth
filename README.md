@@ -123,7 +123,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 - [x] autodiff compatibility header and tests
 - [x] Levenberg-Marquardt
   - [x] numerical derivatives
-  - [ ] automatic derivatives
+  - [x] automatic derivatives
   - [x] analytical derivatives
 - [ ] ceres autodiff 
 - [x] Runtime bundle using std::variant

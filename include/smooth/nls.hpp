@@ -6,7 +6,6 @@
 #include <Eigen/QR>
 #include <Eigen/Sparse>
 
-#include <iostream>
 #include <numeric>
 
 #include "smooth/concepts.hpp"
@@ -20,10 +19,11 @@ namespace detail {
 /**
  * @brief Solve structured least-squares probelm
  *
- *   min_x \| [J ; diag(d)] x + [r; 0] \|^2
+ *   min_x \| [J ; D] x + [r; 0] \|^2
  *
  * Where a is a size N vector and J is M x N
  * and it must hold that J^T J + D^T D is positive semi-definite
+ * where D = diag(d) is a diagonal matrix
  *
  * @param J_qr QR decomposition J P = Q R of J with column pivoting
  * @param d vector of length N representing diagonal matrix
@@ -48,7 +48,8 @@ Eigen::Matrix<double, N, 1> solve_ls(const QrType & J_qr,
   static constexpr bool is_sparse =
     std::is_base_of_v<Eigen::SparseMatrixBase<typename QrType::MatrixType>,
       typename QrType::MatrixType>;
-  // type to use for A matrix
+
+  // figure type to use for A matrix
   using AType = std::conditional_t<is_sparse,
     Eigen::SparseMatrix<double, Eigen::RowMajor>,
     Eigen::Matrix<double, N, N>>;
@@ -65,7 +66,7 @@ Eigen::Matrix<double, N, 1> solve_ls(const QrType & J_qr,
   // form system
   // [A; B] x + [a; b]
   // where A = R
-  //       B = P' diag(D) P = diag(P' D)
+  //       B = P' diag(d) P = diag(P' d)
   //       a = Q' r
   //       b = 0
   AType A(n, n);
@@ -133,7 +134,7 @@ Eigen::Matrix<double, N, 1> solve_ls(const QrType & J_qr,
   if constexpr (is_sparse) { A.makeCompressed(); }
 
   // solve triangular system A z = a to obtain z = R^-1 z
-  // first check rank of upper-diagonal A (may happen if D not full-rank)
+  // first check rank of upper-diagonal A (may happen if d not full-rank)
   int rank = 0;
   for (; rank != n && A.coeff(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {}
 
@@ -151,27 +152,27 @@ Eigen::Matrix<double, N, 1> solve_ls(const QrType & J_qr,
 /**
  * @brief Approximate a Levenberg-Marquardt parameter lambda s.t. if x solves
  *
- *   \| [J; sqrt(lambda) * diag(D)] x  +  [r ; 0] \|^2
+ *   \| [J; sqrt(lambda) * diag(d)] x  +  [r ; 0] \|^2
  *
  * then either
- *  * lambda = 0 AND \|diag(D) * x\| <= 0.1 Delta
+ *  * lambda = 0 AND \|diag(d) * x\| <= 0.1 Delta
  *    OR
- *  * lambda > 0 AND 0.9 Delta <= \|diag(D) * x\| <= 1.1 Delta
+ *  * lambda > 0 AND 0.9 Delta <= \|diag(d) * x\| <= 1.1 Delta
  *
- * @param J matrix MxN
- * @param d vector size Nx1
- * @param r vector size Mx1
+ * @param J matrix MxN (static/dynamic/sparse sizes supported)
+ * @param d vector size Nx1 (static/dynamic sizes supported)
+ * @param r vector size Mx1 (static/dynamic sizes supported)
  * @param Delta scalar
  * @return pair(lambda, x) where x is solves the least-squares problem for lambda
- *
- * TODO enable support for sparse J
- * */
-template<int N, int M>
-std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double, M, N> J,
+ */
+template<int N, int M, typename MatrixT>
+std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
   const Eigen::Matrix<double, N, 1> & d,
   const Eigen::Matrix<double, M, 1> & r,
   double Delta)
 {
+  static constexpr bool is_sparse = std::is_base_of_v<Eigen::SparseMatrixBase<MatrixT>, MatrixT>;
+
   static constexpr int NM_min = std::min(N, M);
 
   // dynamic sizes
@@ -180,7 +181,10 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double,
   const auto nm_min = std::min(n, m);
 
   // calculate qr decomposition of J
-  Eigen::ColPivHouseholderQR<Eigen::Matrix<double, M, N>> J_qr(J);
+  using QrType = std::conditional_t<is_sparse,
+    Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<int>>,
+    Eigen::ColPivHouseholderQR<MatrixT>>;
+  QrType J_qr(J);
 
   Eigen::Matrix<double, NM_min, 1> Qt_r =
     (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
@@ -203,7 +207,7 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double,
   double dphi;
 
   if (phi <= 0.1 * Delta) {
-    // zero solution fulfills condition
+    // alpha = 0 solution fulfills condition
     return std::make_pair(alpha, std::move(x));
   }
 
@@ -211,7 +215,7 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double,
   double l = 0;
   if (J_qr.rank() == n) {
     // full rank means we can calculate dphi(0)
-    // as - \| Dx \| * \| Rinv (P' D' D x) / \| Dx \| \|^2
+    // as - \| D x \| * \| Rinv (P' D' D x) / \| Dx \| \|^2
     Eigen::Matrix<double, N, 1> y =
       J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
     J_qr.matrixR()
@@ -263,6 +267,19 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double,
 
 }  // namespace detail
 
+struct NlsOptions
+{
+  // relative tolerance for termination
+  double eps_rel{1e-6};
+  // absolute tolerance for termination
+  double eps_abs{1e-6};
+  // maximum number of iterations
+  std::size_t max_iter{1000};
+
+  // verbosity level
+  int verbosity{0};
+};
+
 /**
  * @brief Find a minimum of the non-linear least-squares problem
  *
@@ -273,21 +290,32 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const Eigen::Matrix<double,
  *
  * TODO split outer and inner loops, add printing, termination conditions, parameters
  */
-template<typename _F, typename... _Wrt>
+template<diff::Type difftype, typename _F, typename... _Wrt>
 void minimize(_F && f, _Wrt &&... wrt)
 {
-  auto [r, J] = diff::dr(f, wrt...);
+  auto [r, J] = diff::dr<difftype>(f, wrt...);
+
+  // extract some properties from jacobian
+  static constexpr bool is_sparse =
+    std::is_base_of_v<Eigen::SparseMatrixBase<decltype(J)>, decltype(J)>;
+  static constexpr int Nx = decltype(J)::ColsAtCompileTime;
+  const int nx            = J.cols();
 
   double r_norm = r.stableNorm();
 
-  // TODO how to initialize trust region?
-  double Delta = 1;
-
   // scaling parameters
-  auto diag = J.colwise().stableNorm().transpose().eval();
+  Eigen::Matrix<double, Nx, 1> d(nx);
+  if constexpr (is_sparse) {
+    d = (Eigen::Matrix<double, 1, -1>::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose();
+  } else {
+    d = J.colwise().stableNorm().transpose();
+  }
+
+  // for Rn arguments we should multiply with d
+  double Delta = 100. * d.stableNorm();
 
   for (int i = 0; i != 30; ++i) {
-    const auto [lambda, a]  = detail::lmpar(J, diag, r, Delta);
+    const auto [lambda, a]  = detail::lmpar(J, d, r, Delta);
     const double r_old_norm = r_norm;
 
     // take step a and re-evaluate function
@@ -299,10 +327,10 @@ void minimize(_F && f, _Wrt &&... wrt)
       segbeg += nx_j;
     };
     (f_iter(wrt), ...);
-    std::tie(r, J) = diff::dr(f, wrt...);
+    std::tie(r, J) = diff::dr<difftype>(f, wrt...);
 
     r_norm               = r.stableNorm();
-    const double Da_norm = diag.cwiseProduct(a).stableNorm();
+    const double Da_norm = d.cwiseProduct(a).stableNorm();
 
     // calculate actual to predicted reduction
     const double fra1 = Eigen::numext::abs2(r_norm / r_old_norm);
@@ -327,8 +355,19 @@ void minimize(_F && f, _Wrt &&... wrt)
     }
 
     // update scaling
-    diag = diag.cwiseMax(J.colwise().stableNorm().transpose());
+    if constexpr (is_sparse) {
+      d = d.cwiseMax(
+        (Eigen::Matrix<double, 1, -1>::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose());
+    } else {
+      d = d.cwiseMax(J.colwise().stableNorm().transpose());
+    }
   }
+}
+
+template<typename _F, typename... _Wrt>
+void minimize(_F && f, _Wrt &&... wrt)
+{
+  minimize<diff::Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
 }
 
 }  // namespace smooth

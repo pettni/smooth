@@ -58,7 +58,8 @@ void run_composition_test()
   g1.setRandom();
   g2.setRandom();
 
-  auto [f1, jac1] = smooth::diff::dr([](auto v1, auto v2) -> TypeParam { return v1 * v2; }, g1, g2);
+  auto [f1, jac1] =
+    smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 * v2; }, g1, g2);
 
   static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::lie_dof, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == 2 * TypeParam::lie_dof, "Error");
@@ -81,7 +82,10 @@ void run_exp_test()
   typename TypeParam::Tangent a;
   a.setRandom();
 
-  auto [f, jac] = smooth::diff::dr([](auto var) -> TypeParam { return TypeParam::exp(var); }, a);
+  auto [f, jac] = smooth::diff::dr<dm>(
+    [](auto var) {
+      return TypeParam::template CastType<typename decltype(var)::Scalar>::exp(var);
+    }, a);
 
   static_assert(decltype(jac)::RowsAtCompileTime == TypeParam::lie_dof, "Error");
   static_assert(decltype(jac)::ColsAtCompileTime == TypeParam::lie_dof, "Error");
@@ -102,10 +106,7 @@ TYPED_TEST(DiffTest, composition_numerical)
   run_composition_test<smooth::diff::Type::NUMERICAL, TypeParam>();
 }
 
-TYPED_TEST(DiffTest, exp_numerical)
-{
-  run_exp_test<smooth::diff::Type::NUMERICAL, TypeParam>();
-}
+TYPED_TEST(DiffTest, exp_numerical) { run_exp_test<smooth::diff::Type::NUMERICAL, TypeParam>(); }
 
 #ifdef ENABLE_AUTODIFF_TESTS
 TYPED_TEST(DiffTest, rminus_autodiff)
@@ -118,10 +119,7 @@ TYPED_TEST(DiffTest, composition_autodiff)
   run_composition_test<smooth::diff::Type::AUTODIFF, TypeParam>();
 }
 
-TYPED_TEST(DiffTest, exp_autodiff)
-{
-  run_exp_test<smooth::diff::Type::AUTODIFF, TypeParam>();
-}
+TYPED_TEST(DiffTest, exp_autodiff) { run_exp_test<smooth::diff::Type::AUTODIFF, TypeParam>(); }
 #endif
 
 TEST(Differentiation, Dynamic)
@@ -129,7 +127,8 @@ TEST(Differentiation, Dynamic)
   Eigen::VectorXd v(3);
   v.setRandom();
 
-  auto [f1, jac1] = smooth::diff::dr([](auto v1) { return (2 * v1).eval(); }, v);
+  auto [f1, jac1] =
+    smooth::diff::dr<smooth::diff::Type::NUMERICAL>([](auto v1) { return (2 * v1).eval(); }, v);
 
   static_assert(decltype(jac1)::RowsAtCompileTime == -1, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == -1, "Error");
@@ -147,7 +146,7 @@ TEST(Differentiation, Mixed)
   Eigen::Vector3d v(3);
   v.setRandom();
 
-  auto [f1, jac1] = smooth::diff::dr(
+  auto [f1, jac1] = smooth::diff::dr<smooth::diff::Type::NUMERICAL>(
     [](auto v1) {
       Eigen::VectorXd ret(2);
       ret << 2. * v1(1), 2. * v1(0);
