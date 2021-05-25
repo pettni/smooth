@@ -106,9 +106,16 @@ TEST(Optimization, LmPar)
     Eigen::VectorXd dd = d;
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
+    // solve sparse
+    Eigen::SparseMatrix<double> Jsp;
+    Jsp              = J.sparseView();
+    auto [par3, xsp] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+
     // check equality of static and dynamic
     ASSERT_NEAR(par1, par2, 1e-10);
+    ASSERT_NEAR(par1, par3, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
+    ASSERT_TRUE(x.isApprox(xsp));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
@@ -147,9 +154,16 @@ TEST(Optimization, LmParSmall)
     Eigen::VectorXd dd = d;
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
+    // solve sparse
+    Eigen::SparseMatrix<double> Jsp;
+    Jsp              = J.sparseView();
+    auto [par3, xsp] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+
     // check equality of static and dynamic
     ASSERT_NEAR(par1, par2, 1e-10);
+    ASSERT_NEAR(par1, par3, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
+    ASSERT_TRUE(x.isApprox(xsp));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
@@ -189,9 +203,16 @@ TEST(Optimization, LmParSing)
     Eigen::VectorXd dd = d;
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
+    // solve sparse
+    Eigen::SparseMatrix<double> Jsp;
+    Jsp              = J.sparseView();
+    auto [par3, xsp] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+
     // check equality of static and dynamic
     ASSERT_NEAR(par1, par2, 1e-10);
+    ASSERT_NEAR(par1, par3, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
+    ASSERT_TRUE(x.isApprox(xsp));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
@@ -261,4 +282,68 @@ TEST(NLS, MixedArgs)
   auto g1_plus_v = g1 + v.head<3>();
   ASSERT_TRUE(g1_plus_v.isApprox(g0, 1e-6));
   ASSERT_TRUE(v.isApprox(Eigen::Vector3d::Ones(), 1e-6));
+}
+
+struct AnalyticSparseFunctor
+{
+  template<typename T>
+  auto operator()(const smooth::SO3<T> & g1, const smooth::SO3<T> & g2, const smooth::SO3<T> & g3)
+  {
+    auto dr_f1_g1 = smooth::SO3d::dr_expinv(g1.log());
+
+    auto dr_f2_g3 = smooth::SO3d::dr_expinv(g3 - g2);
+    auto dr_f2_g2 = (-smooth::SO3d::dl_expinv(g3 - g2)).eval();
+
+    auto dr_f3_g1 = smooth::SO3d::dr_expinv(g1 - g3);
+    auto dr_f3_g3 = (-smooth::SO3d::dl_expinv(g1 - g3)).eval();
+
+    Eigen::Matrix<T, -1, 1> f(9);
+    f.template segment<3>(0) = g1.log();
+    f.template segment<3>(3) = (g3 - g2) - d23;
+    f.template segment<3>(6) = (g1 - g3) - d31;
+
+    Eigen::SparseMatrix<T> dr_f;
+    dr_f.resize(9, 9);
+    for (int i = 0; i != 3; ++i) {
+      for (int j = 0; j != 3; ++j) {
+        dr_f.insert(i, j) = dr_f1_g1(i, j);
+
+        dr_f.insert(3 + i, 3 + j) = dr_f2_g2(i, j);
+        dr_f.insert(3 + i, 6 + j) = dr_f2_g3(i, j);
+
+        dr_f.insert(6 + i, 6 + j) = dr_f3_g3(i, j);
+        dr_f.insert(6 + i, 0 + j) = dr_f3_g1(i, j);
+      }
+    }
+    dr_f.makeCompressed();
+
+    return std::make_pair(f, dr_f);
+  }
+
+  Eigen::Vector3d d23, d31;
+};
+
+TEST(NLS, AnalyticSparse)
+{
+  auto f = AnalyticSparseFunctor{Eigen::Vector3d::Random(), Eigen::Vector3d::Random()};
+
+  smooth::SO3d g1, g2, g3;
+  g1.setRandom();
+  g2.setRandom();
+  g3.setRandom();
+
+  auto g1c = g1;
+  auto g2c = g2;
+  auto g3c = g3;
+
+  // solve sparse
+  smooth::minimize<smooth::diff::Type::ANALYTIC>(f, g1, g2, g3);
+
+  // solve with default
+  smooth::minimize<smooth::diff::Type::DEFAULT>(
+    [&](auto... var) { return std::get<0>(f(var...)); }, g1c, g2c, g3c);
+
+  ASSERT_TRUE(g1.isApprox(g1c, 1e-5));
+  ASSERT_TRUE(g2.isApprox(g2c, 1e-5));
+  ASSERT_TRUE(g3.isApprox(g3c, 1e-5));
 }

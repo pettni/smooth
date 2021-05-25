@@ -30,10 +30,10 @@ class LieGroupBase<_Derived<_Scalar, _Storage, _Ts...>, size>
   using Derived = _Derived<Scalar, Storage, _Ts...>;
   using DerivedRet = _Derived<Scalar, DefaultStorage<Scalar, size>, _Ts...>;
 
-  template<typename NewScalar>
-  using GroupCast = _Derived<NewScalar, DefaultStorage<NewScalar, size>, _Ts...>;
-
 public:
+  template<typename NewScalar>
+  using CastType = _Derived<NewScalar, DefaultStorage<NewScalar, size>, _Ts...>;
+
   /**
    * @brief Construct the group identity element
    */
@@ -79,9 +79,9 @@ public:
    * @brief Cast to different datatype
    */
   template<typename NewScalar>
-  GroupCast<NewScalar> cast() const
+  CastType<NewScalar> cast() const
   {
-    GroupCast<NewScalar> ret;
+    CastType<NewScalar> ret;
     meta::static_for<size>(
       [&](auto i) {
         ret.coeffs()[i] = static_cast<NewScalar>(static_cast<const Derived &>(*this).coeffs()[i]);

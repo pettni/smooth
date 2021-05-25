@@ -37,7 +37,8 @@ auto dr_autodiff(_F && f, _Wrt &&... wrt)
 
   // tuple of zero-valued tangent elements
   std::tuple<Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1>...> a_ad(
-    Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1>::Zero()...);
+    Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1>::Zero(
+      detail::lie_info<std::decay_t<_Wrt>>::lie_dof_dynamic(wrt))...);
 
   // create tuple of references to members of a_ad
   auto a_ad_ref =

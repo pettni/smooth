@@ -84,10 +84,11 @@ auto dr_numerical(_F && f, _Wrt &&... wrt)
  * Ceres compatability header
  *
  * ANALYTIC is meant for hand-coded derivatives, and requires that
- * the function object f has a member function f.dr(wrt...) that computes
- * the right jacobian
+ * the function returns a pair [f(x), dr f_x]
+ *
+ * DEFAULT selects from a priority list based on availability
  */
-enum class Type { NUMERICAL, AUTODIFF, CERES, ANALYTIC };
+enum class Type { NUMERICAL, AUTODIFF, CERES, ANALYTIC, DEFAULT };
 
 /**
  * @brief Differentiation in local tangent space (right derivative)
@@ -116,7 +117,15 @@ auto dr(_F && f, _Wrt &&... wrt)
     static_assert(dm != Type::CERES, "compat/ceres.hpp header not included");
 #endif
   } else if constexpr (dm == Type::ANALYTIC) {
-    return std::make_pair(f(wrt...), f.dr(wrt...));
+    return f(std::forward<_Wrt>(wrt)...);
+  } else if constexpr (dm == Type::DEFAULT) {
+#ifdef SMOOTH_DIFF_AUTODIFF
+    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+#elif SMOOTH_DIFF_CERES
+    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+#else
+    return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+#endif
   }
 }
 
@@ -130,7 +139,7 @@ auto dr(_F && f, _Wrt &&... wrt)
 template<typename _F, typename... _Wrt>
 auto dr(_F && f, _Wrt &&... wrt)
 {
-  return dr<Type::NUMERICAL>(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+  return dr<Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
 }
 
 }  // namespace smooth::diff
