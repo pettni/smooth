@@ -25,24 +25,110 @@ namespace detail {
  * and it must hold that J^T J + D^T D is positive semi-definite
  * where D = diag(d) is a diagonal matrix
  *
+ * Let J P = Q R  be a QR decomposition of J
+ *
+ * @param[in, out] R square upper triangular matrix representing QR decomposition of J
+ * @param[in] Qt_r product Q' * r where Q is from the QR decomposition
+ * @param[in] P permutation matrix in QR decomposition
+ * @param[in] d diagonal of D
+ *
+ * The function modifies R to be an upper triangular matrix Rt in the QR decomposition
+ * of [R; P' D P] which satisfies
+ *
+ *    Rt' Rt = P' (J' J + D' D) P
+ */
+template<int N, int M, typename MatrixType, typename PermIndex>
+Eigen::Matrix<double, N, 1> solve_ls(MatrixType & R,
+  const Eigen::Matrix<double, N, 1> & Qt_r,
+  const Eigen::PermutationMatrix<N, N, PermIndex> & P,
+  const Eigen::Matrix<double, N, 1> & d)
+{
+  // true if R is sparse
+  static constexpr bool is_sparse =
+    std::is_base_of_v<Eigen::SparseMatrixBase<MatrixType>, MatrixType>;
+
+  const auto n                  = R.cols();
+  Eigen::Matrix<double, N, 1> a = Qt_r;
+
+  // We operate on B and b row-wise, so just need to allocate one row
+  Eigen::Matrix<double, N, 1> Bj(n);
+  double bj;
+
+  // QR decomposition of [A; B] with Givens rotations;
+  // where it is known that A is upper triangular and B is diagonal
+  // algorithm:
+  //   R = A, Q = I
+  //   for each nonzero in B part:
+  //      find rotation G that eliminates nonzero without introducing new zeros
+  //      Q = Q G
+  //      R = G' R
+  Eigen::JacobiRotation<double> G;
+  for (auto j = 0u; j != n; ++j) {  // for each diagonal element
+    // find permuted diagonal index
+    const auto permidx = P.indices()(j);
+    // initialize row j of B and b
+    Bj.tail(n - 1 - j).setZero();
+    Bj(j) = d(permidx);  // Bj(k) represents B(j, k)
+    bj    = 0;           // bj represents b(j)
+
+    for (auto col = j; col != n; ++col) {  // for each column right of diagonal
+      if (R.coeff(col, col) >= 0 && Bj(col) == 0) { continue; }
+
+      double r;
+      G.makeGivens(R.coeff(col, col), Bj(col), &r);  // eliminates B(j, col)
+
+      // perform matrix multiplication R = G' R
+      // affects row 'col' of A and row 'j' of B
+      R.coeffRef(col, col) = r;
+      for (auto k = col + 1; k != n; ++k) {
+        const double tmp   = G.c() * R.coeff(col, k) - G.s() * Bj(k);
+        Bj(k)              = G.s() * R.coeff(col, k) + G.c() * Bj(k);
+        R.coeffRef(col, k) = tmp;
+      }
+
+      // At the end we need Q matrix to multiply rhs as
+      // Q' * rhs = (I * G0 * ... * Gk)' * rhs = Gk' * ... * G0' * rhs
+      //
+      // We can therefore do it as we go, here we set
+      // rhs = G * rhs
+      const double tmp = G.c() * a(col) - G.s() * bj;
+      bj               = G.s() * a(col) + G.c() * bj;
+      a(col)           = tmp;
+    }
+  }
+
+  if constexpr (is_sparse) { R.makeCompressed(); }
+
+  // solve triangular system R z = a to obtain z = R^-1 z
+  // first check rank of upper-diagonal R (may happen if d not full-rank)
+  int rank = 0;
+  for (; rank != n && R.coeff(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {}
+
+  Eigen::Matrix<double, N, 1> sol(n);
+  sol.tail(n - rank).setZero();
+  sol.head(rank) =
+    R.topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(a.head(rank));
+
+  // solution is now equal to -P z
+  return -(P * sol);
+}
+
+/**
+ * @brief Solve structured least-squares probelm
+ *
+ *   min_x \| [J ; D] x + [r; 0] \|^2
+ *
+ * Where a is a size N vector and J is M x N
+ * and it must hold that J^T J + D^T D is positive semi-definite
+ * where D = diag(d) is a diagonal matrix
+ *
  * @param J_qr QR decomposition J P = Q R of J with column pivoting
  * @param d vector of length N representing diagonal matrix
  * @param r vector with same number of elements as there are rows in J
- * @param[out] Rt output matrix s.t. Rt' Rt = P' (J' J + D' D) P
- *
- * TODO change input args to take
- *  (
- *    Eigen::Matrix<double, N, N> & R,   // write resulting upper triangular matrix into here
- *    const Eigen::PermutationMatrix<N, N, PermIdx> & P
- *    const Eigen::Matrix<double, N, 1> & d,
- *    const Eigen::Matrix<double, N, 1> & Qt_r
- *  )
  */
 template<int N, int M, typename QrType>
-Eigen::Matrix<double, N, 1> solve_ls(const QrType & J_qr,
-  const Eigen::Matrix<double, N, 1> & d,
-  const Eigen::Matrix<double, M, 1> & r,
-  std::optional<Eigen::Ref<Eigen::Matrix<double, N, N>>> Rt = {})
+Eigen::Matrix<double, N, 1> solve_ls(
+  const QrType & J_qr, const Eigen::Matrix<double, N, 1> & d, const Eigen::Matrix<double, M, 1> & r)
 {
   // true if it's a sparse decomposition
   static constexpr bool is_sparse =
@@ -63,90 +149,23 @@ Eigen::Matrix<double, N, 1> solve_ls(const QrType & J_qr,
   const auto nm_min  = std::min(n, m);
   const auto nm_rest = n - nm_min;
 
-  // form system
-  // [A; B] x + [a; b]
-  // where A = R
-  //       B = P' diag(d) P = diag(P' d)
-  //       a = Q' r
-  //       b = 0
-  AType A(n, n);
+  AType R(n, n);
   if constexpr (is_sparse) {
     // allocate upper triangular pattern
     Eigen::Matrix<Eigen::Index, N, 1> pattern(n);
     for (auto i = 0u; i != n; ++i) { pattern(i) = i + 1; }
-    A.reserve(pattern);
+    R.reserve(pattern);
   } else {
-    A.template bottomRows<NM_rest>(nm_rest).setZero();
+    R.template bottomRows<NM_rest>(nm_rest).setZero();
   }
-  A.template topRows<NM_min>(nm_min) = J_qr.matrixR().template topRows<NM_min>(nm_min);
+  R.template topRows<NM_min>(nm_min) = J_qr.matrixR().template topRows<NM_min>(nm_min);
 
-  Eigen::Matrix<double, N, 1> a(n);
-  a.template head<NM_min>(nm_min) = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
-  a.template bottomRows<NM_rest>(nm_rest).setZero();
+  Eigen::Matrix<double, N, 1> Qt_r(n);
+  Qt_r.template head<NM_min>(nm_min) =
+    (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
+  Qt_r.template bottomRows<NM_rest>(nm_rest).setZero();
 
-  // We operate on B and b row-wise, so just need to allocate one row
-  Eigen::Matrix<double, N, 1> Bj(n);
-  double bj;
-
-  // QR decomposition of [A; B] with Givens rotations;
-  // where it is known that A is upper triangular and B is diagonal
-  // algorithm:
-  //   R = A, Q = I
-  //   for each nonzero in B part:
-  //      find rotation G that eliminates nonzero without introducing new zeros
-  //      Q = Q G
-  //      R = G' R
-  Eigen::JacobiRotation<double> G;
-  for (auto j = 0u; j != n; ++j) {  // for each diagonal element
-    // find permuted diagonal index
-    const auto permidx = J_qr.colsPermutation().indices()(j);
-    // initialize row j of B and b
-    Bj.tail(n - 1 - j).setZero();
-    Bj(j) = d(permidx);  // Bj(k) represents B(j, k)
-    bj    = 0;           // bj represents b(j)
-
-    for (auto col = j; col != n; ++col) {  // for each column right of diagonal
-      if (A.coeff(col, col) >= 0 && Bj(col) == 0) { continue; }
-
-      double r;
-      G.makeGivens(A.coeff(col, col), Bj(col), &r);  // eliminates B(j, col)
-
-      // perform matrix multiplication R = G' R
-      // affects row 'col' of A and row 'j' of B
-      A.coeffRef(col, col) = r;
-      for (auto k = col + 1; k != n; ++k) {
-        const double tmp   = G.c() * A.coeff(col, k) - G.s() * Bj(k);
-        Bj(k)              = G.s() * A.coeff(col, k) + G.c() * Bj(k);
-        A.coeffRef(col, k) = tmp;
-      }
-
-      // At the end we need Q matrix to multiply rhs as
-      // Q' * rhs = (I * G0 * ... * Gk)' * rhs = Gk' * ... * G0' * rhs
-      //
-      // We can therefore do it as we go, here we set
-      // rhs = G * rhs
-      const double tmp = G.c() * a(col) - G.s() * bj;
-      bj               = G.s() * a(col) + G.c() * bj;
-      a(col)           = tmp;
-    }
-  }
-
-  if constexpr (is_sparse) { A.makeCompressed(); }
-
-  // solve triangular system A z = a to obtain z = R^-1 z
-  // first check rank of upper-diagonal A (may happen if d not full-rank)
-  int rank = 0;
-  for (; rank != n && A.coeff(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {}
-
-  Eigen::Matrix<double, N, 1> sol(n);
-  sol.tail(n - rank).setZero();
-  sol.head(rank) =
-    A.topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(a.head(rank));
-
-  if (Rt.has_value()) { Rt.value() = A; }
-
-  // solution is now equal to P z
-  return -(J_qr.colsPermutation() * sol);
+  return solve_ls<N, M>(R, Qt_r, J_qr.colsPermutation(), d);
 }
 
 /**
@@ -173,12 +192,14 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
 {
   static constexpr bool is_sparse = std::is_base_of_v<Eigen::SparseMatrixBase<MatrixT>, MatrixT>;
 
-  static constexpr int NM_min = std::min(N, M);
+  static constexpr int NM_min  = std::min(N, M);
+  static constexpr int NM_rest = NM_min == -1 ? -1 : N - NM_min;
 
   // dynamic sizes
-  const auto m      = J.rows();
-  const auto n      = J.cols();
-  const auto nm_min = std::min(n, m);
+  const auto m       = J.rows();
+  const auto n       = J.cols();
+  const auto nm_min  = std::min(n, m);
+  const auto nm_rest = n - nm_min;
 
   // calculate qr decomposition of J
   using QrType = std::conditional_t<is_sparse,
@@ -186,8 +207,26 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
     Eigen::ColPivHouseholderQR<MatrixT>>;
   QrType J_qr(J);
 
-  Eigen::Matrix<double, NM_min, 1> Qt_r =
+  // calculate size n Qt_r
+  Eigen::Matrix<double, N, 1> Qt_r(n);
+  Qt_r.template head<NM_min>(nm_min) =
     (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
+  Qt_r.template bottomRows<NM_rest>(nm_rest).setZero();
+
+  // calculate square R
+  using RType = std::conditional_t<is_sparse,
+    Eigen::SparseMatrix<double, Eigen::RowMajor>,
+    Eigen::Matrix<double, N, N>>;
+  RType R(n, n);
+  if constexpr (is_sparse) {
+    // allocate upper triangular pattern
+    Eigen::Matrix<Eigen::Index, N, 1> pattern(n);
+    for (auto i = 0u; i != n; ++i) { pattern(i) = i + 1; }
+    R.reserve(pattern);
+  } else {
+    R.template bottomRows<NM_rest>(nm_rest).setZero();
+  }
+  R.template topRows<NM_min>(nm_min) = J_qr.matrixR().template topRows<NM_min>(nm_min);
 
   // calculate phi(0) by solving J x = -r as x = P R^-1 (-Q' r)
   Eigen::Matrix<double, N, 1> x(n);
@@ -236,9 +275,8 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
     if (!(l < alpha && alpha < u)) { alpha = std::max<double>(0.001 * u, sqrt(l * u)); }
 
     // calculate phi
-    Eigen::Matrix<double, N, N> Rt(n, n);
-
-    x = solve_ls<N, M>(J_qr, sqrt(alpha) * d, r, Rt);
+    RType Rc = R;
+    x        = solve_ls<N, M>(Rc, Qt_r, J_qr.colsPermutation(), sqrt(alpha) * d);
 
     D_x_iter      = d.cwiseProduct(x);
     D_x_iter_norm = D_x_iter.stableNorm();
@@ -248,10 +286,10 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
       break;  // condition fulfilled
     }
 
-    // calculate derivative of phi
+    // calculate derivative of phi wrt alpha
     Eigen::Matrix<double, N, 1> y =
       J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
-    Rt.template triangularView<Eigen::Upper>().transpose().solveInPlace(y);
+    Rc.template triangularView<Eigen::Upper>().transpose().solveInPlace(y);
     dphi = -D_x_iter_norm * y.squaredNorm();
 
     // update bounds
@@ -311,7 +349,7 @@ void minimize(_F && f, _Wrt &&... wrt)
     d = J.colwise().stableNorm().transpose();
   }
 
-  // for Rn arguments we should multiply with d
+  // TODO for Rn arguments we should multiply with d
   double Delta = 100. * d.stableNorm();
 
   for (int i = 0; i != 30; ++i) {
