@@ -125,6 +125,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
   - [x] numerical derivatives
   - [x] automatic derivatives
   - [x] analytical derivatives
+- [ ] new member function tangentNorm() that returns Tangent with norm of scalar parts and 1 for angular parts
 - [ ] ceres autodiff 
 - [x] Runtime bundle using std::variant
 - [ ] B-splines fitting using LM

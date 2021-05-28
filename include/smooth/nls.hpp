@@ -25,19 +25,21 @@ namespace detail {
  * and it must hold that J^T J + D^T D is positive semi-definite
  * where D = diag(d) is a diagonal matrix
  *
- * Let J P = Q R  be a QR decomposition of J
+ * Let J P = Q R0  be a QR decomposition of J where P is a permutation matrix
  *
- * @param[in, out] R square upper triangular matrix representing QR decomposition of J
- * @param[in] Qt_r product Q' * r where Q is from the QR decomposition
- * @param[in] P permutation matrix in QR decomposition
- * @param[in] d diagonal of D
+ * @param[in, out] R top left NxN corner of R0 (NxN upper triangular)
+ * @param[in] Qt_r N-vector containing product Q' * r
+ * @param[in] P NxN permutation matrix in QR decomposition
+ * @param[in] d N-vector representing diagonal of D
  *
  * The function modifies R to be an upper triangular matrix Rt in the QR decomposition
  * of [R; P' D P] which satisfies
  *
  *    Rt' Rt = P' (J' J + D' D) P
+ *
+ * NOTE For systems with M < N, R and Qt_r should be filled with zeros at the bottom
  */
-template<int N, int M, typename MatrixType, typename PermIndex>
+template<int N, typename MatrixType, typename PermIndex>
 Eigen::Matrix<double, N, 1> solve_ls(MatrixType & R,
   const Eigen::Matrix<double, N, 1> & Qt_r,
   const Eigen::PermutationMatrix<N, N, PermIndex> & P,
@@ -54,7 +56,7 @@ Eigen::Matrix<double, N, 1> solve_ls(MatrixType & R,
   Eigen::Matrix<double, N, 1> Bj(n);
   double bj;
 
-  // QR decomposition of [A; B] with Givens rotations;
+  // QR decomposition of [R; P' D P] with Givens rotations;
   // where it is known that A is upper triangular and B is diagonal
   // algorithm:
   //   R = A, Q = I
@@ -165,7 +167,7 @@ Eigen::Matrix<double, N, 1> solve_ls(
     (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
   Qt_r.template bottomRows<NM_rest>(nm_rest).setZero();
 
-  return solve_ls<N, M>(R, Qt_r, J_qr.colsPermutation(), d);
+  return solve_ls<N>(R, Qt_r, J_qr.colsPermutation(), d);
 }
 
 /**
@@ -276,7 +278,7 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
 
     // calculate phi
     RType Rc = R;
-    x        = solve_ls<N, M>(Rc, Qt_r, J_qr.colsPermutation(), sqrt(alpha) * d);
+    x        = solve_ls<N>(Rc, Qt_r, J_qr.colsPermutation(), sqrt(alpha) * d);
 
     D_x_iter      = d.cwiseProduct(x);
     D_x_iter_norm = D_x_iter.stableNorm();
