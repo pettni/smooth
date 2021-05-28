@@ -112,7 +112,7 @@ auto dr(_F && f, _Wrt &&... wrt)
 #endif
   } else if constexpr (dm == Type::CERES) {
 #ifdef SMOOTH_DIFF_CERES
-    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
 #else
     static_assert(dm != Type::CERES, "compat/ceres.hpp header not included");
 #endif
@@ -122,7 +122,7 @@ auto dr(_F && f, _Wrt &&... wrt)
 #ifdef SMOOTH_DIFF_AUTODIFF
     return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
 #elif SMOOTH_DIFF_CERES
-    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
 #else
     return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
 #endif
