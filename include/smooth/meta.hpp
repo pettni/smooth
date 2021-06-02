@@ -3,6 +3,8 @@
 
 #include <array>
 #include <cstddef>
+#include <functional>
+#include <numeric>
 #include <utility>
 
 
@@ -14,21 +16,38 @@ namespace smooth::meta
 /////////////////////
 
 /**
- * @brief Compile-time for loop
+ * @brief Compile-time for loop implementation
  */
-template<std::size_t _Ibegin, std::size_t _Iend, typename _F>
-inline static constexpr void static_for(_F && f)
+template<typename _F, std::size_t ... _Idx>
+inline static constexpr void static_for_impl(_F && f, std::index_sequence<_Idx...>)
 {
-  if constexpr (_Ibegin < _Iend) {
-    f(std::integral_constant<std::size_t, _Ibegin>());
-    static_for<_Ibegin + 1, _Iend>(std::forward<_F>(f));
-  }
+  (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
 }
 
-template<std::size_t _Iend, typename _F>
+/**
+ * @brief Compile-time for loop over 0, ..., _I-1
+ */
+template<std::size_t _I, typename _F>
 inline static constexpr void static_for(_F && f)
 {
-  static_for<0, _Iend>(std::forward<_F>(f));
+  static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
+}
+
+
+/////////////////
+// ARRAY UTILS //
+/////////////////
+
+/**
+ * @brief Prefix-sum an array starting at zero
+ */
+template<typename T, std::size_t L>
+constexpr std::array<T, L+1> array_psum(const std::array<T, L> & x)
+{
+  std::array<T, L+1> ret;
+  ret[0] = T(0);
+  std::partial_sum(x.begin(), x.end(), ret.begin() + 1);
+  return ret;
 }
 
 
@@ -51,7 +70,6 @@ struct iseq_add<_X, std::index_sequence<Idx...>>
 template<std::size_t _X, typename _Seq>
 using iseq_add_t = typename iseq_add<_X, _Seq>::type;
 
-
 /**
  * @brief Sum an index sequence
  */
@@ -66,7 +84,6 @@ struct iseq_sum<std::index_sequence<_Is...>>
 
 template<typename _Seq>
 static constexpr std::size_t iseq_sum_v = iseq_sum<_Seq>::value;
-
 
 /**
  * @brief Get the N:th element of an index sequence
@@ -87,7 +104,6 @@ struct iseq_el<_N, std::index_sequence<_Beg, _Is...>>
 template<std::size_t _N, typename _Seq>
 static constexpr std::size_t iseq_el_v = iseq_el<_N, _Seq>::value;
 
-
 /**
  * @brief Get the length of an index sequence
  */
@@ -102,7 +118,6 @@ struct iseq_len<std::index_sequence<_Is...>>
 
 template<typename _Seq>
 static constexpr std::size_t iseq_len_v = iseq_len<_Seq>::value;
-
 
 /**
  * @brief prefix-sum an index sequence
