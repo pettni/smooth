@@ -125,9 +125,17 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
   - [x] numerical derivatives
   - [x] automatic derivatives
   - [x] analytical derivatives
+  - [ ] good way to pass options struct (first argument or horrible TMP...)
+- [x] use std arrays instead of intseq in bundle
 - [ ] new member function tangentNorm() that returns Tangent with norm of scalar parts and 1 for angular parts
 - [ ] ceres autodiff 
+- [ ] Refactor concepts: liegrouplike
+  - [ ] Liegrouplike (full lie API)
+  - [ ] ManifoldLike (tangent, plus, minus)
+  - [ ] Functions only require the minimally necessary for compilation speed
 - [x] Runtime bundle using std::variant
+  - [ ] Only implement a simplified concept (algebra)
+- [ ] Cubic bezier curves (3rd deg poly): solve for velocities, pass through points
 - [ ] B-splines fitting using LM
 - [ ] Make algos work for Eigen types via dispatch traits for all lie operations
   - [x] diff

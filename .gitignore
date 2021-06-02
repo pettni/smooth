@@ -3,5 +3,6 @@ compile_commands.json
 .auctex-auto
 
 build
+.cache
 .clangd
 
