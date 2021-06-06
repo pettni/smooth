@@ -18,49 +18,46 @@ namespace detail {
  * @return pair( f(wrt...), dr f_(wrt...) )
  */
 template<typename _F, typename... _Wrt>
+  requires (Manifold<std::decay_t<_Wrt>> &&...)
+  && (Manifold<std::invoke_result_t<_F, _Wrt...>>)
 auto dr_numerical(_F && f, _Wrt &&... wrt)
 {
   using Result = std::invoke_result_t<_F, _Wrt...>;
   using Scalar = typename Result::Scalar;
 
   // static sizes
-  static constexpr int Nx =
-    std::min<int>({::smooth::detail::lie_info<std::decay_t<_Wrt>>::lie_dof...}) == -1
+  static constexpr Eigen::Index Nx =
+    std::min<Eigen::Index>({std::decay_t<_Wrt>::SizeAtCompileTime...}) == -1
       ? -1
-      : (::smooth::detail::lie_info<std::decay_t<_Wrt>>::lie_dof + ...);
-  static constexpr int Ny = ::smooth::detail::lie_info<Result>::lie_dof;
+      : (std::decay_t<_Wrt>::SizeAtCompileTime + ...);
+  static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
   auto val = f(wrt...);
 
   // dynamic sizes
-  int nx = (::smooth::detail::lie_info<std::decay_t<_Wrt>>::lie_dof_dynamic(wrt) + ... + 0);
-  int ny = ::smooth::detail::lie_info<Result>::lie_dof_dynamic(val);
+  Eigen::Index nx = (wrt.size() + ... + 0);
+  Eigen::Index ny = val.size();
 
   // output variable
   Eigen::Matrix<Scalar, Ny, Nx> jac(ny, nx);
 
-  int index_pos = 0;
+  Eigen::Index index_pos = 0;
 
   const auto f_iter = [&](auto && w) {
-    static constexpr int Nx_j = ::smooth::detail::lie_info<std::decay_t<decltype(w)>>::lie_dof;
-    const int nx_j = ::smooth::detail::lie_info<std::decay_t<decltype(w)>>::lie_dof_dynamic(w);
+    static constexpr Eigen::Index Nx_j = std::decay_t<decltype(w)>::SizeAtCompileTime;
+    const int nx_j                     = w.size();
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
       if constexpr (RnLike<std::decay_t<decltype(w)>>) {
         // scale step size if we are in Rn
         eps_j *= abs(w[j]);
         if (eps_j == 0.) { eps_j = eps; }
-
-        w[j] += eps_j;
-        jac.col(index_pos + j) = (f(wrt...) - val) / eps_j;
-        w[j] -= eps_j;
-      } else {
-        w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
-        jac.col(index_pos + j) = (f(wrt...) - val) / eps_j;
-        w += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
       }
+      w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
+      jac.col(index_pos + j) = (f(wrt...) - val) / eps_j;
+      w += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
     }
     index_pos += nx_j;
   };

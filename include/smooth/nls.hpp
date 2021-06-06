@@ -331,6 +331,7 @@ struct NlsOptions
  * TODO split outer and inner loops, add printing, termination conditions, parameters
  */
 template<diff::Type difftype, typename _F, typename... _Wrt>
+requires (Manifold<std::decay_t<_Wrt>> && ...)
 void minimize(_F && f, _Wrt &&... wrt)
 {
   auto [r, J] = diff::dr<difftype>(f, wrt...);
@@ -361,8 +362,8 @@ void minimize(_F && f, _Wrt &&... wrt)
     // take step a and re-evaluate function
     int segbeg        = 0;
     const auto f_iter = [&](auto && w) {
-      static constexpr int Nx_j = detail::lie_info<std::decay_t<decltype(w)>>::lie_dof;
-      const int nx_j            = detail::lie_info<std::decay_t<decltype(w)>>::lie_dof_dynamic(w);
+      static constexpr auto Nx_j = std::decay_t<decltype(w)>::SizeAtCompileTime;
+      const auto nx_j            = w.size();
       w += a.template segment<Nx_j>(segbeg, nx_j);
       segbeg += nx_j;
     };

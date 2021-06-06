@@ -33,7 +33,7 @@ TEST(BSpline, Static)
 }
 
 
-template<smooth::LieGroupLike G>
+template<smooth::LieGroup G>
 class BSpline : public ::testing::Test
 {};
 

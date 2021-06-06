@@ -20,3 +20,10 @@ target_link_libraries(odeint smooth matplot)
 
 add_executable(nls nls.cpp)
 target_link_libraries(nls smooth)
+
+include(cmake/FindCHOLMOD.cmake)
+include(cmake/FindSPQR.cmake)
+
+add_executable(sparse sparse.cpp)
+target_include_directories(sparse PRIVATE /usr/include/suitesparse)
+target_link_libraries(sparse smooth ${SPQR_LIBRARIES})

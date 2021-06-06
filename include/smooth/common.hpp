@@ -52,42 +52,6 @@ using R8d = R8<double>;
 using R9d = R9<double>;
 using R10d = R10<double>;
 
-// Helper trait to extract relevant properties for lie and en types
-namespace detail {
-
-template<typename T>
-struct lie_info;
-
-template<LieGroupLike G>
-struct lie_info<G>
-{
-  static constexpr int lie_size   = G::lie_size;
-  static constexpr int lie_dof    = G::lie_dof;
-  static constexpr int lie_dim    = G::lie_dim;
-  static constexpr int lie_actdim = G::lie_actdim;
-
-  static int lie_size_dynamic(const G &) { return lie_size; }
-  static int lie_dof_dynamic(const G &) { return lie_dof; }
-  static int lie_dim_dynamic(const G &) { return lie_dim; }
-  static int lie_actdim_dynamic(const G &) { return lie_actdim; }
-};
-
-template<RnLike G>
-struct lie_info<G>
-{
-  static constexpr int lie_size   = G::SizeAtCompileTime;
-  static constexpr int lie_dof    = G::SizeAtCompileTime;
-  static constexpr int lie_dim    = lie_size == -1 ? -1 : G::SizeAtCompileTime + 1;
-  static constexpr int lie_actdim = G::SizeAtCompileTime;
-
-  static int lie_size_dynamic(const G & g) { return g.size(); }
-  static int lie_dof_dynamic(const G & g) { return g.size(); }
-  static int lie_dim_dynamic(const G & g) { return g.size() + 1; }
-  static int lie_actdim_dynamic(const G & g) { return g.size(); }
-};
-
-}  // namespace detail
-
 }  // namespace smooth
 
 #endif  // SMOOTH__COMMON_HPP_

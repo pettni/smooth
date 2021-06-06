@@ -74,6 +74,43 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
  ```
 
 
+## Concepts
+
+### Manifold
+
+Implementations: - ManifoldVector<Manifold>
+
+Algorithms: - differentiation
+            - optimization
+
+
+### Rn > Manifold
+
+Implementations: - Static Eigen vectors
+                 - Dynamic Eigen vectors
+
+
+### StaticRn > Rn
+
+Implementations: - Static Eigen vectors
+
+
+### LieGroup > Manifold
+
+Implementations: - SO2, SO3, SE2, SE3
+                 - Bundle<LieGroup | StaticRn>
+
+Algorithms: - splines
+            - integration
+            - linearization
+
+## Which types to use
+
+Dynamics / control / filtering : Bundle<LieGroup | StaticRn>
+
+Optimization: ManifoldVector<Manifold> ...
+
+
 ## Algorithms
 
 Available:
@@ -116,7 +153,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 - Splines:
   - [x] Bsplines derivatives w.r.t. control points
   - [ ] Fitting of bsplines
-  - [ ] Fitting of cubic splines: with and without given velocity
+  - [ ] Interpolation using cubic splines: with and without given velocity
 
 ## Library
 
@@ -127,14 +164,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
   - [x] analytical derivatives
   - [ ] good way to pass options struct (first argument or horrible TMP...)
 - [x] use std arrays instead of intseq in bundle
-- [ ] new member function tangentNorm() that returns Tangent with norm of scalar parts and 1 for angular parts
-- [ ] ceres autodiff 
-- [ ] Refactor concepts: liegrouplike
-  - [ ] Liegrouplike (full lie API)
-  - [ ] ManifoldLike (tangent, plus, minus)
-  - [ ] Functions only require the minimally necessary for compilation speed
-- [x] Runtime bundle using std::variant
-  - [ ] Only implement a simplified concept (algebra)
+- [ ] ceres autodiff
 - [ ] Cubic bezier curves (3rd deg poly): solve for velocities, pass through points
 - [ ] B-splines fitting using LM
 - [ ] Make algos work for Eigen types via dispatch traits for all lie operations
@@ -142,3 +172,4 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
   - [x] nls
   - [ ] bsplines
 - [ ] Set up Gitlab CI
+

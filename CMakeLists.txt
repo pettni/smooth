@@ -9,7 +9,6 @@ option(BUILD_EXAMPLES "Build the examples." ON)
 option(CODE_COVERAGE "Code coverage for tests." OFF)
 
 find_package(Eigen3 REQUIRED)
-
 # ---------------------------------------------------------------------------------------
 # TARGETS
 # ---------------------------------------------------------------------------------------
@@ -109,12 +108,12 @@ if(BUILD_TESTING)
   target_link_libraries(${PROJECT_NAME}_tests PRIVATE smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
 
-  add_executable(test_dynamic_bundle
-    test/test_dynamic_bundle.cpp
+  add_executable(test_manifold_vector
+    test/test_manifold_vector.cpp
   )
-  target_compile_options(test_dynamic_bundle PRIVATE -Wall -Wextra -Wpedantic)
-  target_link_libraries(test_dynamic_bundle PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_dynamic_bundle)
+  target_compile_options(test_manifold_vector PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_manifold_vector PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_manifold_vector)
 
   # ALGO TESTS
 

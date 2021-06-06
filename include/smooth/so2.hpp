@@ -5,6 +5,7 @@
 #include "concepts.hpp"
 #include "lie_group_base.hpp"
 #include "macro.hpp"
+#include "storage.hpp"
 
 
 namespace smooth
@@ -24,7 +25,7 @@ namespace smooth
  * Tangent: -pi < wz <= pi
  */
 template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 2>>
-requires(_Storage::SizeAtCompileTime == 2 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
+requires(_Storage::Size== 2 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
 class SO2 : public LieGroupBase<SO2<_Scalar, _Storage>, 2>
 {
 private:
@@ -33,10 +34,10 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr int lie_size = 2;
-  static constexpr int lie_dof = 1;
-  static constexpr int lie_dim = 2;
-  static constexpr int lie_actdim = 2;
+  static constexpr int RepSize = 2;
+  static constexpr int Dof = 1;
+  static constexpr int Dim = 2;
+  static constexpr int ActDim = 2;
 
   // CONSTRUCTORS AND OPERATORS
 
@@ -110,7 +111,6 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_actdim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return matrix_group() * x;
@@ -120,17 +120,17 @@ public:
    * @brief Group composition
    */
   template<StorageLike OS>
-  Group operator*(const SO2<Scalar, OS> & r) const
+  PlainObject operator*(const SO2<Scalar, OS> & r) const
   {
-    return Group(s_[0] * r.s_[1] + s_[1] * r.s_[0], s_[1] * r.s_[1] - s_[0] * r.s_[0]);
+    return PlainObject(s_[0] * r.s_[1] + s_[1] * r.s_[0], s_[1] * r.s_[1] - s_[0] * r.s_[0]);
   }
 
   /**
    * @brief Group inverse
    */
-  Group inverse() const
+  PlainObject inverse() const
   {
-    return Group(-s_[0], s_[1]);
+    return PlainObject(-s_[0], s_[1]);
   }
 
   /**
@@ -156,11 +156,11 @@ public:
    * @brief Group exponential
    */
   template<typename Derived>
-  static Group exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     using std::cos, std::sin;
-    return Group(sin(a.x()), cos(a.x()));
+    return PlainObject(sin(a.x()), cos(a.x()));
   }
 
   /**
@@ -168,7 +168,7 @@ public:
    */
   template<typename Derived>
   static TangentMap ad(const Eigen::MatrixBase<Derived> &)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     return TangentMap::Zero();
   }
@@ -178,7 +178,7 @@ public:
    */
   template<typename Derived>
   static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     return (MatrixGroup() <<
            Scalar(0), -a.x(),
@@ -191,7 +191,7 @@ public:
    */
   template<typename Derived>
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
-  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
+  requires(Derived::RowsAtCompileTime == Dim && Derived::ColsAtCompileTime == Dim)
   {
     return (Tangent() << A.coeff(1, 0) - A.coeff(0, 1)).finished() / Scalar(2);
   }
@@ -201,7 +201,7 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_exp(const Eigen::MatrixBase<Derived> &)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     return TangentMap::Identity();
   }
@@ -211,7 +211,7 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> &)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     return TangentMap::Identity();
   }

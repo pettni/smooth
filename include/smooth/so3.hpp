@@ -26,7 +26,7 @@ namespace smooth
  * Tangent: -pi < wx, wy, wz <= pi
  */
 template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 4>>
-requires(_Storage::SizeAtCompileTime == 4 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
+requires(_Storage::Size == 4 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
 class SO3 : public LieGroupBase<SO3<_Scalar, _Storage>, 4>
 {
 private:
@@ -35,10 +35,10 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr int lie_size = 4;
-  static constexpr int lie_dof = 3;
-  static constexpr int lie_dim = 3;
-  static constexpr int lie_actdim = 3;
+  static constexpr Eigen::Index RepSize = 4;
+  static constexpr Eigen::Index Dof = 3;
+  static constexpr Eigen::Index Dim = 3;
+  static constexpr Eigen::Index ActDim = 3;
 
   // CONSTRUCTORS AND OPERATORS
 
@@ -141,7 +141,6 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_actdim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return quat() * x;
@@ -151,17 +150,17 @@ public:
    * @brief Group composition
    */
   template<StorageLike OS>
-  Group operator*(const SO3<Scalar, OS> & r) const
+  PlainObject operator*(const SO3<Scalar, OS> & r) const
   {
-    return Group(quat() * r.quat());
+    return PlainObject(quat() * r.quat());
   }
 
   /**
    * @brief Group inverse
    */
-  Group inverse() const
+  PlainObject inverse() const
   {
-    return Group(quat().inverse());
+    return PlainObject(quat().inverse());
   }
 
   /**
@@ -199,8 +198,7 @@ public:
    * Valid arguments are (-pi, pi]
    */
   template<typename Derived>
-  static Group exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
   {
     using std::sqrt, std::cos, std::sin;
 
@@ -218,7 +216,7 @@ public:
       B = cos(th / Scalar(2));
     }
 
-    return Group(Eigen::Quaternion<Scalar>(B, A * a.x(), A * a.y(), A * a.z()));
+    return PlainObject(Eigen::Quaternion<Scalar>(B, A * a.x(), A * a.y(), A * a.z()));
   }
 
   /**
@@ -226,7 +224,6 @@ public:
    */
   template<typename Derived>
   static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     return hat(a);
   }
@@ -236,7 +233,6 @@ public:
    */
   template<typename Derived>
   static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     return (MatrixGroup() <<
            Scalar(0), -a.z(), a.y(),
@@ -250,7 +246,6 @@ public:
    */
   template<typename Derived>
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
-  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
   {
     return (Tangent() <<
       A.coeff(2, 1) - A.coeff(1, 2),
@@ -264,7 +259,6 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = a.squaredNorm();
@@ -290,7 +284,6 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
   {
     using std::sqrt, std::sin, std::cos;
     const Scalar th2 = a.squaredNorm();
