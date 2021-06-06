@@ -22,7 +22,9 @@ namespace smooth::diff {
  * @return pair( f(wrt...), dr f_(wrt...) )
  */
 template<typename _F, typename... _Wrt>
-requires(Manifold<std::invoke_result_t<_F, _Wrt...>>) auto dr_autodiff(_F && f, _Wrt &&... wrt)
+  requires(Manifold<std::decay_t<_Wrt>> && ...)
+  && (Manifold<std::invoke_result_t<_F, _Wrt...>>)
+auto dr_autodiff(_F && f, _Wrt &&... wrt)
 {
   using Result   = std::invoke_result_t<_F, _Wrt...>;
   using Scalar   = typename Result::Scalar;
