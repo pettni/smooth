@@ -78,6 +78,7 @@ requires(const M & m1, M & m2, const Eigen::Matrix<typename M::Scalar, M::SizeAt
   {m1 + a}->std::convertible_to<typename M::PlainObject>;
   {m2 += a}->std::convertible_to<typename M::PlainObject>;
   {m1 - m2}->std::convertible_to<Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1>>;
+  {m1.template cast<float>()};
 };
 
 template<typename T>
@@ -98,21 +99,19 @@ concept LieGroup = Manifold<G> &&
 // static constants
 requires {
   typename G::Tangent;
-  {G::RepSize}->std::convertible_to<Eigen::Index>;      // representation size
-  {G::Dof}->std::convertible_to<Eigen::Index>;          // degrees of freedom
-  {G::Dim}->std::convertible_to<Eigen::Index>;          // dimension
-  {G::ActDim}->std::convertible_to<Eigen::Index>;       // dimension of space of which group act on
+  {G::RepSize}->std::convertible_to<Eigen::Index>;  // representation size
+  {G::Dof}->std::convertible_to<Eigen::Index>;      // degrees of freedom
+  {G::Dim}->std::convertible_to<Eigen::Index>;      // dimension
+  {G::ActDim}->std::convertible_to<Eigen::Index>;   // dimension of space of which group act on
 } &&
 (G::RepSize >= 1) &&
 (G::Dof >= 1) &&
 (G::Dim >= 1) &&
 (G::ActDim >= 1) &&
+(G::SizeAtCompileTime == G::Dof) &&
+(std::is_same_v<typename G::Tangent, Eigen::Matrix<typename G::Scalar, G::Dof, 1>>) &&
 // member methods
-requires(
-  const G & g1,
-  const G & g2,
-  const Eigen::Matrix<typename G::Scalar, G::ActDim, 1> & v
-)
+requires(const G & g1, const G & g2, const Eigen::Matrix<typename G::Scalar, G::ActDim, 1> & v)
 {
   {g1.template cast<double>()};
   {g1.template cast<float>()};
