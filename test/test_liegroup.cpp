@@ -2,7 +2,7 @@
 
 #include <unsupported/Eigen/MatrixFunctions>  // for matrix exponential, must be after en
 
-#include <iostream>
+#include <sstream>
 
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"

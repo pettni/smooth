@@ -242,6 +242,9 @@ TEST(NLS, MultipleArgsStatic)
 
   smooth::minimize(f, g1, g2);
 
+  std::cout << g1.inverse() << std::endl;
+  std::cout << g2 << std::endl;
+
   ASSERT_TRUE(g1.inverse().isApprox(g2, 1e-6));
 }
 
@@ -259,6 +262,9 @@ TEST(NLS, MultipleArgsDynamic)
   };
 
   smooth::minimize(f, g1, g2);
+
+  std::cout << g1.inverse() << std::endl;
+  std::cout << g2 << std::endl;
 
   ASSERT_TRUE(g1.inverse().isApprox(g2, 1e-6));
 }

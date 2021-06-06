@@ -214,12 +214,11 @@ Thus the derivatives $\symbf r_j \coloneq \mathrm{d}^r \x(t)_{\x_j}$ of $\x$ bec
     \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \right)_{\x_j}                                                                                                                                                             \\
      & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\bar \z_1 \circ \exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                     \\
      & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                                     \\
-     & \overset{\eqref{eq:dr_sj}}= \bAd_{\bar z_2^{-1}} \left( \tilde B_{j, k}(t) \bAd_{\exp(-s_{j+1})} \left[ \mathrm{d}^r \exp_{\symbf s_j} \right] \left[ \mathrm{d}^r \exp_{\symbf v_j} \right]^{-1} - \tilde B_{j+1, k}(t) \left[ \mathrm{d}^r \exp_{\symbf s_{j+1}} \right] \left[ \mathrm{d}^l \exp_{\bv_{j+1}} \right]^{-1} \right).
+     & \overset{\eqref{eq:dr_sj}}= \bAd_{\bar z_2^{-1}} \left( \tilde B_{j, k}(t) \bAd_{\exp(-s_{j+1})} \left[ \mathrm{d}^r \exp_{\symbf s_j} \right] \left[ \mathrm{d}^r \exp_{\symbf v_j} \right]^{-1} - \tilde B_{j+1, k}(t) \left[ \mathrm{d}^r \exp_{\symbf s_{j+1}} \right] \left[ \mathrm{d}^l \exp_{\bv_{j+1}} \right]^{-1} \right), \\
+     \symbf r_{i^{*} - k} & = \mathrm{d}^{r} \left( \x_{i^{*} - k} \circ \exp \left[ \symbf s_{i^{*}-k+1} \right] \circ \bar z_{2}^{-1} \right) =  \\
+     & = \bAd_{\bar z_{2}^{-1}} \left( \bAd_{\exp(-\symbf s_{i^{*} - k + 1})} - \tilde B_{i^{*} - k + 1}(t) \mathrm{d}^{r} \exp_{\symbf s_{i^{*} - k + 1}} \left[ \mathrm{d}^{r} \exp_{v_{i^{*} - k + 1}} \right]^{-1} \right).
   \end{aligned}
 \end{equation*}
-
-\todo[inline]{Can this be simplified?}
-\todo[inline]{Write down recursive scheme}
 
 \section{General Coefficient Recursion}
 

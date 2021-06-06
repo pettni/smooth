@@ -1,11 +1,14 @@
 #ifndef INTERP__BSPLINE_HPP_
 #define INTERP__BSPLINE_HPP_
 
-#include <iostream>
 #include <ranges>
 
+#include <Eigen/Sparse>
+
 #include "smooth/concepts.hpp"
+#include "smooth/manifold_vector.hpp"
 #include "smooth/meta.hpp"
+#include "smooth/nls.hpp"
 
 namespace smooth {
 
@@ -82,8 +85,8 @@ constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> cum_card_coeffmat()
  * @param[out] der derivatives of g w.r.t. the K+1 control points
  */
 template<std::size_t K, LieGroup G, std::ranges::range Range>
-requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>) G
-  bspline_eval(const G & g_0,
+requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>)
+G bspline_eval(const G & g_0,
     const Range & diff_points,
     typename G::Scalar u,
     std::optional<Eigen::Ref<typename G::Tangent>> vel                                        = {},
@@ -147,7 +150,6 @@ requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>)
 
     der.value().setZero();
 
-    // TODO: loop over diff_points instead of over differentiation variable to reduce calculations
     for (int j = K; j >= 0; --j) {
       if (j != K) {
         const Scalar Btilde_jp          = uvec.dot(M.row(j + 1));
@@ -156,13 +158,18 @@ requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>)
 
         der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) -=
           Btilde_jp * z2inv.Ad() * G::dr_exp(sjp) * G::dl_expinv(vjp);
+
         z2inv *= G::exp(-sjp);
       }
-      const Scalar Btilde_j          = uvec.dot(M.row(j));
-      const typename G::Tangent & vj = *(std::ranges::begin(diff_points) + j - 1);
 
-      der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) +=
-        Btilde_j * z2inv.Ad() * G::dr_exp(Btilde_j * vj) * G::dr_expinv(vj);
+      const Scalar Btilde_j = uvec.dot(M.row(j));
+      if (j != 0) {
+        const typename G::Tangent & vj = *(std::ranges::begin(diff_points) + j - 1);
+        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) +=
+          Btilde_j * z2inv.Ad() * G::dr_exp(Btilde_j * vj) * G::dr_expinv(vj);
+      } else {
+        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) += Btilde_j * z2inv.Ad();
+      }
     }
   }
 
@@ -186,8 +193,8 @@ requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>)
  * @param[out] der derivatives w.r.t. the K+1 control points
  */
 template<std::size_t K, LieGroup G, std::ranges::range Range>
-requires(std::is_same_v<std::ranges::range_value_t<Range>, G>) G
-  bspline_eval(const Range & ctrl_points,
+requires(std::is_same_v<std::ranges::range_value_t<Range>, G>)
+G bspline_eval(const Range & ctrl_points,
     typename G::Scalar u,
     std::optional<Eigen::Ref<typename G::Tangent>> vel                                        = {},
     std::optional<Eigen::Ref<typename G::Tangent>> acc                                        = {},
@@ -234,11 +241,11 @@ public:
    *
    * The first K ctrl_pts are exterior points and are outside
    * the support of the spline, which means that the spline is defined on
-   * [t0_, (N-K)*dt]
+   * [t0, (N-K)*dt]
    *
    * For interpolation purposes use an odd spline degree and set
    *
-   *  t0 = (timestamp of first control point) + dt*K/2
+   *  t0 = (timestamp of first control point) + dt*(K-1)/2
    *
    * which aligns control points with the maximum of the corresponding
    * basis function.
@@ -252,15 +259,20 @@ public:
    * @brief As above but for any range
    */
   template<std::ranges::range R>
-  BSpline(double t0, double dt, const R & ctrl_pts)
-  requires std::is_same_v<std::ranges::range_value_t<R>, G>
+  BSpline(double t0,
+    double dt,
+    const R & ctrl_pts) requires std::is_same_v<std::ranges::range_value_t<R>, G>
       : t0_(t0), dt_(dt), ctrl_pts_(std::ranges::begin(ctrl_pts), std::ranges::end(ctrl_pts))
   {
   }
 
+  double dt() const { return dt_; }
+
   double t_min() const { return t0_; }
 
   double t_max() const { return t0_ + (ctrl_pts_.size() - K) * dt_; }
+
+  const std::vector<G> & ctrl_pts() const { return ctrl_pts_; }
 
   G eval(double t,
     std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
@@ -294,6 +306,87 @@ private:
   double t0_, dt_;
   std::vector<G> ctrl_pts_;
 };
+
+/**
+ * @brief Fit a bpsline to data points (t_i, g_i)
+ *        by solving the optimization problem
+ *
+ *   \min_{p}  \| p(t_i) - g_i \|^2
+ *
+ * @tparam K bspline degree
+ * @param tt time values t_i (doubles, non-decreasing)
+ * @param gg data values t_i
+ * @param dt distance between spline control points
+ */
+template<std::size_t K, std::ranges::range Rt, std::ranges::range Rg>
+  requires(LieGroup<std::ranges::range_value_t<Rg>>)
+  && std::is_same_v<std::ranges::range_value_t<Rt>, double>
+BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg & gg, double dt)
+{
+  using G = std::ranges::range_value_t<Rg>;
+
+  auto [tmin, tmax] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
+
+  const std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));
+  const std::size_t NumPts  = K + static_cast<std::size_t>((*tmax - *tmin + dt) / dt);
+
+  auto f = [&](const auto & var) {
+    Eigen::VectorXd ret(G::Dof * NumData);
+
+    Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;
+    Jac.resize(G::Dof * NumData, G::Dof * NumPts);
+    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(G::Dof * NumData, G::Dof * (K + 1)));
+    Jac.makeCompressed();
+
+    auto t_iter = std::ranges::begin(tt);
+    auto g_iter = std::ranges::begin(gg);
+
+    for (auto i = 0u; i != NumData; ++t_iter, ++g_iter, ++i) {
+      const int64_t istar = static_cast<int64_t>((*t_iter - *tmin) / dt);
+      const double u      = (*t_iter - *tmin - istar * dt) / dt;
+
+      Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_vali_pts;
+      auto g_spline = bspline_eval<K, G>(
+        var | std::views::drop(istar) | std::views::take(K + 1), u, {}, {}, d_vali_pts);
+
+      const typename G::Tangent resi = g_spline - *g_iter;
+
+      ret.segment<G::Dof>(i * G::Dof) = resi;
+
+      const Eigen::Matrix<double, G::Dof, G::Dof> d_resi_vali          = G::dr_expinv(resi);
+      const Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_resi_pts = d_resi_vali * d_vali_pts;
+
+      for (auto r = 0u; r != G::Dof; ++r) {
+        for (auto c = 0u; c != G::Dof * (K + 1); ++c) {
+          Jac.insert(i * G::Dof + r, istar * G::Dof + c) = d_resi_pts(r, c);
+        }
+      }
+    }
+
+    return std::make_pair(std::move(ret), std::move(Jac));
+  };
+
+  // create optimization variable
+  ManifoldVector<G, Eigen::aligned_allocator> ctrl_pts(NumPts);
+
+  // create initial guess
+  auto t_iter = std::ranges::begin(tt);
+  auto g_iter = std::ranges::begin(gg);
+  for (auto i = 0u; i != NumPts; ++i) {
+    const double t_target = *tmin + (i - static_cast<double>(K + 1) / 2) * dt;
+    while (t_iter + 1 < std::ranges::end(tt)
+           && std::abs(t_target - *(t_iter + 1)) < std::abs(t_target - *t_iter)) {
+      ++t_iter;
+      ++g_iter;
+    }
+    ctrl_pts[i] = *g_iter;
+  }
+
+  // fit to data
+  minimize<diff::Type::ANALYTIC>(f, ctrl_pts);
+
+  return BSpline<K, G>(*tmin, dt, std::move(ctrl_pts));
+}
 
 }  // namespace smooth
 

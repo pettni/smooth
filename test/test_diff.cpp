@@ -40,7 +40,7 @@ void run_rminus_test()
 
   auto v         = g1 - g2;
   auto jac1_true = TypeParam::dr_expinv(v);
-  auto jac2_true = -TypeParam::dl_expinv(v);
+  auto jac2_true = (-TypeParam::dl_expinv(v)).eval();
 
   ASSERT_TRUE(f1.isApprox(f2));
   ASSERT_TRUE(f1.isApprox(v));

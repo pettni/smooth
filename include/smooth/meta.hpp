@@ -19,18 +19,18 @@ namespace smooth::meta
  * @brief Compile-time for loop implementation
  */
 template<typename _F, std::size_t ... _Idx>
-inline static constexpr void static_for_impl(_F && f, std::index_sequence<_Idx...>)
+inline static constexpr auto static_for_impl(_F && f, std::index_sequence<_Idx...>)
 {
-  (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
+  return (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
 }
 
 /**
  * @brief Compile-time for loop over 0, ..., _I-1
  */
 template<std::size_t _I, typename _F>
-inline static constexpr void static_for(_F && f)
+inline static constexpr auto static_for(_F && f)
 {
-  static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
+  return static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
 }
 
 
