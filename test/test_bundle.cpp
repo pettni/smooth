@@ -13,10 +13,10 @@ TEST(Bundle, Static)
 {
   using bundle_t = Bundle<double, SE2, SE3, R2, SO2, SO3>;
 
-  static_assert(bundle_t::lie_size == 19);
-  static_assert(bundle_t::lie_dof == 15);
-  static_assert(bundle_t::lie_dim == 15);
-  static_assert(bundle_t::lie_actdim == 12);
+  static_assert(bundle_t::RepSize == 19);
+  static_assert(bundle_t::Dof == 15);
+  static_assert(bundle_t::Dim == 15);
+  static_assert(bundle_t::ActDim == 12);
 
   static_assert(std::is_same_v<bundle_t::PartType<0>, SE2d>);
   static_assert(std::is_same_v<bundle_t::PartType<1>, SE3d>);

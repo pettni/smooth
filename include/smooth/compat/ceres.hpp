@@ -10,7 +10,7 @@
 namespace smooth
 {
 
-template<LieGroupLike G>
+template<LieGroup G>
 struct ParameterizationFunctor
 {
   template<typename Scalar>
@@ -27,9 +27,9 @@ struct ParameterizationFunctor
   }
 };
 
-template<LieGroupLike G>
+template<LieGroup G>
 class LieGroupParameterization
-  : public ceres::AutoDiffLocalParameterization<ParameterizationFunctor<G>, G::lie_size, G::lie_dof>
+  : public ceres::AutoDiffLocalParameterization<ParameterizationFunctor<G>, G::RepSize, G::Dof>
 {};
 
 }  // namespace smooth

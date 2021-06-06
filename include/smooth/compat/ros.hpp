@@ -4,8 +4,8 @@
 #include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/transform.hpp>
 
-#include "smooth/storage.hpp"
 #include "smooth/se3.hpp"
+#include "smooth/storage.hpp"
 
 // Statically check that messages are laid out as expected in memory
 
@@ -39,31 +39,34 @@ static_assert(offsetof(geometry_msgs::msg::Quaternion, z) == 2 * sizeof(double))
 static_assert(offsetof(geometry_msgs::msg::Quaternion, w) == 3 * sizeof(double));
 
 // Pose
-static_assert(std::is_same_v<decltype(geometry_msgs::msg::Pose::position), geometry_msgs::msg::Point>);
-static_assert(std::is_same_v<decltype(geometry_msgs::msg::Pose::orientation), geometry_msgs::msg::Quaternion>);
+static_assert(
+  std::is_same_v<decltype(geometry_msgs::msg::Pose::position), geometry_msgs::msg::Point>);
+static_assert(
+  std::is_same_v<decltype(geometry_msgs::msg::Pose::orientation), geometry_msgs::msg::Quaternion>);
 static_assert(offsetof(geometry_msgs::msg::Pose, position) == 0);
 static_assert(offsetof(geometry_msgs::msg::Pose, orientation) == sizeof(geometry_msgs::msg::Point));
 
 // Tranform
-static_assert(std::is_same_v<decltype(geometry_msgs::msg::Transform::translation), geometry_msgs::msg::Vector3>);
-static_assert(std::is_same_v<decltype(geometry_msgs::msg::Transform::rotation), geometry_msgs::msg::Quaternion>);
+static_assert(std::is_same_v<decltype(geometry_msgs::msg::Transform::translation),
+  geometry_msgs::msg::Vector3>);
+static_assert(std::is_same_v<decltype(geometry_msgs::msg::Transform::rotation),
+  geometry_msgs::msg::Quaternion>);
 static_assert(offsetof(geometry_msgs::msg::Transform, translation) == 0);
-static_assert(offsetof( geometry_msgs::msg::Transform, rotation) == sizeof(geometry_msgs::msg::Vector3));
+static_assert(
+  offsetof(geometry_msgs::msg::Transform, rotation) == sizeof(geometry_msgs::msg::Vector3));
 
-
-namespace smooth
-{
+namespace smooth {
 
 template<typename MsgType>
-class RosMsgStorage : public MappedStorage<double, sizeof(MsgType) / sizeof(double)>
-{
+class RosMsgStorage : public MappedStorage<double, sizeof(MsgType) / sizeof(double)> {
 public:
-  using Scalar = double;
+  using Scalar                                = double;
   static constexpr uint32_t SizeAtCompileTime = sizeof(MsgType) / sizeof(double);
 
   RosMsgStorage(const MsgType & p)
-  : MappedStorage<double, SizeAtCompileTime>(reinterpret_cast<const double *>(&p))
-  {}
+      : MappedStorage<double, SizeAtCompileTime>(reinterpret_cast<const double *>(&p))
+  {
+  }
 };
 
 // Vector3
@@ -126,6 +129,6 @@ struct map_dispatcher<const ::geometry_msgs::msg::Transform>
   using type = smooth::SE3<double, const RosMsgStorage<::geometry_msgs::msg::Transform>>;
 };
 
-}   // namespace smooth
+}  // namespace smooth
 
 #endif  // SMOOTH__COMPAT__ROS_HPP_

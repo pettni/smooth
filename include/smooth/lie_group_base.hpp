@@ -13,7 +13,7 @@ namespace smooth
 /**
  * @brief CRTP base for lie groups with common functionality and syntactic sugar
  */
-template<typename Derived, int size>
+template<typename Derived, int RepSize>
 class LieGroupBase;
 
 template<
@@ -21,18 +21,18 @@ template<
   typename _Scalar,
   typename _Storage,
   template<typename> typename ... _Ts,
-  int size
+  int RepSize
 >
-class LieGroupBase<_Derived<_Scalar, _Storage, _Ts...>, size>
+class LieGroupBase<_Derived<_Scalar, _Storage, _Ts...>, RepSize>
 {
   using Scalar = _Scalar;
   using Storage = _Storage;
   using Derived = _Derived<Scalar, Storage, _Ts...>;
-  using DerivedRet = _Derived<Scalar, DefaultStorage<Scalar, size>, _Ts...>;
+  using DerivedRet = _Derived<Scalar, DefaultStorage<Scalar, RepSize>, _Ts...>;
 
 public:
   template<typename NewScalar>
-  using CastType = _Derived<NewScalar, DefaultStorage<NewScalar, size>, _Ts...>;
+  using CastType = _Derived<NewScalar, DefaultStorage<NewScalar, RepSize>, _Ts...>;
 
   /**
    * @brief Construct the group identity element
@@ -59,14 +59,14 @@ public:
   /**
    * @brief Compare two Lie group elements
    */
-  template<LieGroupLike OG>
+  template<LieGroup OG>
   requires(std::is_same_v<_Scalar, typename OG::Scalar>)
   bool isApprox(
     const OG & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
     double n1_sq{0}, n2_sq{0}, n12_sq{0};
-    meta::static_for<size>(
+    meta::static_for<RepSize>(
       [&](auto i) {
         n1_sq += coeffs()[i] * coeffs()[i];
         n2_sq += o.coeffs()[i] * o.coeffs()[i];
@@ -82,7 +82,7 @@ public:
   CastType<NewScalar> cast() const
   {
     CastType<NewScalar> ret;
-    meta::static_for<size>(
+    meta::static_for<RepSize>(
       [&](auto i) {
         ret.coeffs()[i] = static_cast<NewScalar>(static_cast<const Derived &>(*this).coeffs()[i]);
       });
@@ -190,10 +190,10 @@ protected:
 
 }  // namespace smooth
 
-template<typename Stream, typename Derived, int lie_size>
-Stream & operator<<(Stream & s, const smooth::LieGroupBase<Derived, lie_size> & g)
+template<typename Stream, typename Derived, int RepSize>
+Stream & operator<<(Stream & s, const smooth::LieGroupBase<Derived, RepSize> & g)
 {
-  for (auto i = 0; i != lie_size; ++i) {
+  for (auto i = 0; i != RepSize; ++i) {
     s << g.coeffs()[i] << " ";
   }
   return s;

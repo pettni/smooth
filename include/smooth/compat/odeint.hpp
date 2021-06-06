@@ -47,12 +47,12 @@ struct lie_operations
       return ((std::get<Is + 1>(m_alpha) * as) + ...);
     }
 
-    template<LieGroupLike T1, LieGroupLike T2, typename ... Ts>
+    template<Manifold T1, Manifold T2, typename ... Ts>
     requires std::is_same_v<T1, T2>&&
     std::conjunction_v<std::is_same<typename T1::Tangent, Ts>...>
     void operator()(T1 & y, const T2 & x, const Ts & ... as)
     {
-      y = x * T2::exp(helper(std::make_index_sequence<sizeof...(Ts)>(), as...));
+      y = x + helper(std::make_index_sequence<sizeof...(Ts)>(), as...);
     }
 
     using result_type = void;
@@ -102,7 +102,7 @@ struct lie_operations
 
 // Specialize internal boost trait to use the above operations for Lie
 // group types.
-template<::smooth::LieGroupLike G>
+template<::smooth::Manifold G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
   using operations_type = ::smooth::lie_operations;

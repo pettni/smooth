@@ -3,7 +3,7 @@
 #include "smooth/compat/ros.hpp"
 
 
-template<smooth::LieGroupLike G>
+template<smooth::LieGroup G>
 void test(G)
 {}
 

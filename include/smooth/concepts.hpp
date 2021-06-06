@@ -1,13 +1,17 @@
 #ifndef SMOOTH__CONCEPTS_HPP_
 #define SMOOTH__CONCEPTS_HPP_
 
-#include <Eigen/Core>
-
 #include <concepts>
+
+#include <Eigen/Core>
 
 
 namespace smooth
 {
+
+/**********************
+ *  STORAGE CONCEPTS  *
+ **********************/
 
 /**
  * @brief Storage concept: requires operator[] to access one of N ints
@@ -19,7 +23,7 @@ namespace smooth
 template<typename S>
 concept StorageLike = requires {
   typename S::Scalar;
-  {S::SizeAtCompileTime}->std::convertible_to<uint32_t>;
+  {S::Size}->std::convertible_to<Eigen::Index>;
 } &&
 requires(const S & s, int i) {
   {s[i]}->std::convertible_to<typename S::Scalar>;
@@ -48,94 +52,86 @@ template<typename S>
 concept ConstStorageLike = StorageLike<S>&& !ModifiableStorageLike<S>;
 
 
-template<typename G>
-concept LieGroupLike =
-// typedefs
-  requires {
-  typename G::Scalar;
-  typename G::Group;
-  typename G::Tangent;
-  typename G::TangentMap;
-  typename G::Vector;
-  typename G::MatrixGroup;
+/********************
+ *  SPACE CONCEPTS  *
+ ********************/
+
+/**
+ * @brief A (smooth) manifold M requires a tangent type T and must support
+ * the following operations
+ *
+ * - M + T -> M : geodesic addition
+ * - M += T : in-place geodesic addition
+ * - M - M -> T : inverse of geodesic addition (in practice only used for infinitesimal values)
+ */
+template<typename M>
+concept Manifold =
+requires
+{
+  typename M::Scalar;
+  typename M::PlainObject;
+  {M::SizeAtCompileTime}->std::convertible_to<Eigen::Index>;  // degrees of freedom at compile time
 } &&
+requires(const M & m1, M & m2, const Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1> & a)
+{
+  {m1.size()}->std::convertible_to<Eigen::Index>;             // degrees of freedom at runtime
+  {m1 + a}->std::convertible_to<typename M::PlainObject>;
+  {m2 += a}->std::convertible_to<typename M::PlainObject>;
+  {m1 - m2}->std::convertible_to<Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1>>;
+};
+
+template<typename T>
+concept RnLike = Manifold<T> &&
+std::is_base_of_v<Eigen::MatrixBase<T>, T> &&
+T::IsVectorAtCompileTime == 1 &&
+T::ColsAtCompileTime == 1;
+
+template<typename T>
+concept StaticRnLike = RnLike<T> && T::RowsAtCompileTime >= 1;
+
+/**
+ * @brief A (matrix) Lie Group is a smooth manifold that can be represented
+ * as a subset of GL(F, c)
+ */
+template<typename G>
+concept LieGroup = Manifold<G> &&
 // static constants
 requires {
-  {G::lie_size}->std::same_as<const int &>;      // size of representation
-  {G::lie_dim}->std::same_as<const int &>;       // side of square matrix group
-  {G::lie_dof}->std::same_as<const int &>;       // degrees of freedom (tangent space dimension)
-  {G::lie_actdim}->std::same_as<const int &>;   // dimension of vector space on which group acts
+  typename G::Tangent;
+  {G::RepSize}->std::convertible_to<Eigen::Index>;      // representation size
+  {G::Dof}->std::convertible_to<Eigen::Index>;          // degrees of freedom
+  {G::Dim}->std::convertible_to<Eigen::Index>;          // dimension
+  {G::ActDim}->std::convertible_to<Eigen::Index>;       // dimension of space of which group act on
 } &&
-std::is_same_v<typename G::Tangent::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::EigenBase<typename G::Tangent>, typename G::Tangent>&&
-std::is_same_v<typename G::TangentMap::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::EigenBase<typename G::TangentMap>, typename G::TangentMap>&&
-std::is_same_v<typename G::Vector::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::EigenBase<typename G::Vector>, typename G::Vector>&&
-std::is_same_v<typename G::MatrixGroup::Scalar, typename G::Scalar>&&
-std::is_base_of_v<Eigen::EigenBase<typename G::MatrixGroup>, typename G::MatrixGroup>&&
-(G::Tangent::RowsAtCompileTime == G::lie_dof) &&
-(G::Tangent::ColsAtCompileTime == 1) &&
-(G::TangentMap::RowsAtCompileTime == G::lie_dof) &&
-(G::TangentMap::ColsAtCompileTime == G::lie_dof) &&
-(G::Vector::RowsAtCompileTime == G::lie_actdim) &&
-(G::Vector::ColsAtCompileTime == 1) &&
-(G::MatrixGroup::RowsAtCompileTime == G::lie_dim) &&
-(G::MatrixGroup::ColsAtCompileTime == G::lie_dim) &&
+(G::RepSize >= 1) &&
+(G::Dof >= 1) &&
+(G::Dim >= 1) &&
+(G::ActDim >= 1) &&
 // member methods
-requires(const G & g1, const G & g2, const typename G::Vector & v)
+requires(
+  const G & g1,
+  const G & g2,
+  const Eigen::Matrix<typename G::Scalar, G::ActDim, 1> & v
+)
 {
   {g1.template cast<double>()};
   {g1.template cast<float>()};
-  {g1.inverse()}->std::same_as<typename G::Group>;
-  {g1 * v}->std::same_as<typename G::Vector>;
-  {g1 * g2}->std::same_as<typename G::Group>;
-  {g1.log()}->std::same_as<typename G::Tangent>;
-  {g1.matrix_group()}->std::same_as<typename G::MatrixGroup>;
-  {g1.Ad()}->std::same_as<typename G::TangentMap>;
-} &&
-// only these members are required for differentiation/optimization
-// TODO create separate concept that defines those
-requires(const G & g1, G g2, const typename G::Tangent & a)
-{
-  {g1 + a}->std::same_as<typename G::Group>;
-  {g1 - g2}->std::same_as<typename G::Tangent>;
-  {g2 += a}->std::convertible_to<typename G::Group>;
+  {g1.inverse()}->std::convertible_to<typename G::PlainObject>;
+  {g1 * g2}->std::convertible_to<typename G::PlainObject>;
+  {g1 * v}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::ActDim, 1>>;
+  {g1.log()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
+  {g1.matrix_group()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
+  {g1.Ad()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
 } &&
 // static methods
-requires(const typename G::Tangent & a)
+requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
 {
-  {G::Identity()}->std::same_as<typename G::Group>;
-  {G::Random()}->std::same_as<typename G::Group>;
-  {G::exp(a)}->std::same_as<typename G::Group>;
-  {G::ad(a)}->std::same_as<typename G::TangentMap>;
-  {G::hat(a)}->std::same_as<typename G::MatrixGroup>;
+  {G::Identity()}->std::convertible_to<typename G::PlainObject>;
+  {G::Random()}->std::convertible_to<typename G::PlainObject>;
+  {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
+  {G::ad(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {G::hat(a)}->std::convertible_to<typename G::MatrixGroup>;
 };
-
-template<typename G>
-concept ModifiableLieGroupLike = LieGroupLike<G>&&
-// member methods
-requires(G & g)
-{
-  {g.setIdentity()}->std::same_as<void>;
-  {g.setRandom()}->std::same_as<void>;
-  {g.data()}->std::same_as<typename G::Scalar *>;
-};
-
-
-template<typename T>
-struct is_eigen_vec : public std::false_type {};
-
-template<typename Scalar, int rows>
-struct is_eigen_vec<Eigen::Matrix<Scalar, rows, 1>> : public std::true_type {};
-
-
-template<typename G>
-concept RnLike =
-requires {
-  typename G::Scalar;
-} &&
-(is_eigen_vec<G>::value);
 
 } // namespace smooth
 

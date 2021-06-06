@@ -11,14 +11,14 @@ namespace smooth
 /**
  * @brief Reverse storage type for testing purposes
  */
-template<typename _Scalar, uint32_t size>
+template<typename _Scalar, uint32_t _Size>
 struct ReverseStorage
 {
   using Scalar = _Scalar;
-  static constexpr uint32_t SizeAtCompileTime = size;
+  static constexpr Eigen::Index Size = _Size;
 
   const Scalar & operator[](int i) const {
-    return a[size - 1 - i];
+    return a[Size - 1 - i];
   }
 
   Scalar * a;

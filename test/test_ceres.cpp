@@ -9,7 +9,7 @@
 #include "smooth/compat/ceres.hpp"
 
 
-template<smooth::LieGroupLike G>
+template<smooth::LieGroup G>
 class CeresLocalParam : public ::testing::Test
 {};
 
@@ -24,8 +24,8 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
 {
   smooth::LieGroupParameterization<TypeParam> lgp;
 
-  static constexpr uint32_t p = TypeParam::lie_size;
-  static constexpr uint32_t n = TypeParam::lie_dof;
+  static constexpr uint32_t p = TypeParam::RepSize;
+  static constexpr uint32_t n = TypeParam::Dof;
 
   using ParamsT = Eigen::Matrix<double, p, 1>;
 

@@ -9,16 +9,17 @@
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/bundle.hpp"
-#include "smooth/storage.hpp"
 
 
-template<smooth::LieGroupLike G>
+template<smooth::LieGroup G>
 class LieGroupInterface : public ::testing::Test
 {};
 
 using GroupsToTest = ::testing::Types<
-  smooth::SO2f, smooth::SO3f,
-  smooth::SE2f, smooth::SE3f,
+  smooth::SO2f,
+  smooth::SO3f,
+  smooth::SE2f,
+  smooth::SE3f,
   smooth::Bundle<
     double,
     smooth::SO2, smooth::SO3, smooth::SE2, smooth::SE3,
@@ -28,21 +29,15 @@ using GroupsToTest = ::testing::Types<
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 
-template<smooth::LieGroupLike T>
+template<smooth::LieGroup T>
 void test()
-{}
-
-template<smooth::ModifiableLieGroupLike T>
-void test_modifiable()
 {}
 
 TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
 {
-  // check that groups satisfy LieGroupLike concept
+  // check that groups satisfy LieGroup concept
   test<TypeParam>();
-  test_modifiable<TypeParam>();
   test<smooth::Map<TypeParam>>();
-  test_modifiable<smooth::Map<TypeParam>>();
   test<smooth::Map<const TypeParam>>();
 }
 
@@ -55,7 +50,7 @@ TYPED_TEST(LieGroupInterface, Constructors)
   g.setRandom();
 
   // map
-  std::array<typename TypeParam::Scalar, TypeParam::lie_size> a1;
+  std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1;
   smooth::Map<TypeParam> m1(a1.data());
   smooth::Map<const TypeParam> m2(a1.data());
   m1.setRandom();
@@ -66,7 +61,7 @@ TYPED_TEST(LieGroupInterface, Constructors)
   ASSERT_TRUE(g_copy.isApprox(g));
 
   // copy constructor from map
-  std::array<typename TypeParam::Scalar, TypeParam::lie_size> a;
+  std::array<typename TypeParam::Scalar, TypeParam::RepSize> a;
   smooth::Map<TypeParam> m(a.data());
   m.setRandom();
   TypeParam m_copy(m);
@@ -157,7 +152,7 @@ TYPED_TEST(LieGroupInterface, Copying)
 {
   std::srand(5);
 
-  std::array<typename TypeParam::Scalar, TypeParam::lie_size> a1, a2;
+  std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1, a2;
   TypeParam g1, g2;
   smooth::Map<TypeParam> m1(a1.data()), m2(a2.data());
 
@@ -165,7 +160,7 @@ TYPED_TEST(LieGroupInterface, Copying)
   g1.setRandom();
   g2 = g1;
   ASSERT_TRUE(g2.isApprox(g1));
-  for (auto i = 0u; i != TypeParam::lie_size; ++i) {
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
     ASSERT_DOUBLE_EQ(g1.coeffs()[i], g2.coeffs()[i]);
   }
 
@@ -173,7 +168,7 @@ TYPED_TEST(LieGroupInterface, Copying)
   g1.setRandom();
   m1 = g1;
   ASSERT_TRUE(m1.isApprox(g1));
-  for (auto i = 0u; i != TypeParam::lie_size; ++i) {
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
     ASSERT_DOUBLE_EQ(m1.coeffs()[i], a1[i]);
   }
 
@@ -181,7 +176,7 @@ TYPED_TEST(LieGroupInterface, Copying)
   m1.setRandom();
   m2 = m1;
   ASSERT_TRUE(m2.isApprox(m1));
-  for (auto i = 0u; i != TypeParam::lie_size; ++i) {
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
     ASSERT_DOUBLE_EQ(m1.coeffs()[i], a2[i]);
   }
 
@@ -189,7 +184,7 @@ TYPED_TEST(LieGroupInterface, Copying)
   m1.setRandom();
   g1 = m1;
   ASSERT_TRUE(g1.isApprox(m1));
-  for (auto i = 0u; i != TypeParam::lie_size; ++i) {
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
     ASSERT_DOUBLE_EQ(g1.coeffs()[i], a1[i]);
   }
 

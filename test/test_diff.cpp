@@ -10,7 +10,7 @@
 
 using namespace smooth;
 
-template<smooth::LieGroupLike G>
+template<smooth::LieGroup G>
 class DiffTest : public ::testing::Test {
 };
 
@@ -31,12 +31,12 @@ void run_rminus_test()
     [&g1](auto v2) { return g1.template cast<typename decltype(v2)::Scalar>() - v2; }, g2);
   auto [f3, jac3] = smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 - v2; }, g1, g2);
 
-  static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::lie_dof, "Error");
-  static_assert(decltype(jac1)::ColsAtCompileTime == TypeParam::lie_dof, "Error");
-  static_assert(decltype(jac2)::RowsAtCompileTime == TypeParam::lie_dof, "Error");
-  static_assert(decltype(jac2)::ColsAtCompileTime == TypeParam::lie_dof, "Error");
-  static_assert(decltype(jac3)::RowsAtCompileTime == TypeParam::lie_dof, "Error");
-  static_assert(decltype(jac3)::ColsAtCompileTime == 2 * TypeParam::lie_dof, "Error");
+  static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::Dof, "Error");
+  static_assert(decltype(jac1)::ColsAtCompileTime == TypeParam::Dof, "Error");
+  static_assert(decltype(jac2)::RowsAtCompileTime == TypeParam::Dof, "Error");
+  static_assert(decltype(jac2)::ColsAtCompileTime == TypeParam::Dof, "Error");
+  static_assert(decltype(jac3)::RowsAtCompileTime == TypeParam::Dof, "Error");
+  static_assert(decltype(jac3)::ColsAtCompileTime == 2 * TypeParam::Dof, "Error");
 
   auto v         = g1 - g2;
   auto jac1_true = TypeParam::dr_expinv(v);
@@ -47,8 +47,8 @@ void run_rminus_test()
 
   ASSERT_TRUE(jac1.isApprox(jac1_true, 1e-5));
   ASSERT_TRUE(jac2.isApprox(jac2_true, 1e-5));
-  ASSERT_TRUE(jac1.isApprox(jac3.template leftCols<TypeParam::lie_dof>(), 1e-5));
-  ASSERT_TRUE(jac2.isApprox(jac3.template rightCols<TypeParam::lie_dof>(), 1e-5));
+  ASSERT_TRUE(jac1.isApprox(jac3.template leftCols<TypeParam::Dof>(), 1e-5));
+  ASSERT_TRUE(jac2.isApprox(jac3.template rightCols<TypeParam::Dof>(), 1e-5));
 }
 
 template<smooth::diff::Type dm, typename TypeParam>
@@ -61,19 +61,19 @@ void run_composition_test()
   auto [f1, jac1] =
     smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 * v2; }, g1, g2);
 
-  static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::lie_dof, "Error");
-  static_assert(decltype(jac1)::ColsAtCompileTime == 2 * TypeParam::lie_dof, "Error");
+  static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::Dof, "Error");
+  static_assert(decltype(jac1)::ColsAtCompileTime == 2 * TypeParam::Dof, "Error");
 
-  ASSERT_EQ(jac1.rows(), TypeParam::lie_dof);
-  ASSERT_EQ(jac1.cols(), 2 * TypeParam::lie_dof);
+  ASSERT_EQ(jac1.rows(), TypeParam::Dof);
+  ASSERT_EQ(jac1.cols(), 2 * TypeParam::Dof);
 
   auto jac1_true = g2.inverse().Ad();
   auto jac2_true = decltype(jac1_true)::Identity();
 
   ASSERT_TRUE(f1.isApprox(g1 * g2, 1e-5));
 
-  ASSERT_TRUE(jac1.template leftCols<TypeParam::lie_dof>().isApprox(jac1_true, 1e-5));
-  ASSERT_TRUE(jac1.template rightCols<TypeParam::lie_dof>().isApprox(jac2_true, 1e-5));
+  ASSERT_TRUE(jac1.template leftCols<TypeParam::Dof>().isApprox(jac1_true, 1e-5));
+  ASSERT_TRUE(jac1.template rightCols<TypeParam::Dof>().isApprox(jac2_true, 1e-5));
 }
 
 template<smooth::diff::Type dm, typename TypeParam>
@@ -87,8 +87,8 @@ void run_exp_test()
       return TypeParam::template CastType<typename decltype(var)::Scalar>::exp(var);
     }, a);
 
-  static_assert(decltype(jac)::RowsAtCompileTime == TypeParam::lie_dof, "Error");
-  static_assert(decltype(jac)::ColsAtCompileTime == TypeParam::lie_dof, "Error");
+  static_assert(decltype(jac)::RowsAtCompileTime == TypeParam::Dof, "Error");
+  static_assert(decltype(jac)::ColsAtCompileTime == TypeParam::Dof, "Error");
 
   auto jac_true = TypeParam::dr_exp(a);
 

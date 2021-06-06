@@ -12,6 +12,34 @@
 namespace smooth
 {
 
+namespace detail {
+
+template<typename T>
+struct lie_info;
+
+template<LieGroup G>
+struct lie_info<G>
+{
+  static constexpr int lie_size   = G::RepSize;
+  static constexpr int lie_dof    = G::Dof;
+  static constexpr int lie_dim    = G::Dim;
+  static constexpr int lie_actdim = G::ActDim;
+};
+
+
+template<typename G>
+requires StaticRnLike<G>
+struct lie_info<G>
+{
+  static constexpr int lie_size   = G::SizeAtCompileTime;
+  static constexpr int lie_dof    = G::SizeAtCompileTime;
+  static constexpr int lie_dim    = lie_size == -1 ? -1 : G::SizeAtCompileTime + 1;
+  static constexpr int lie_actdim = G::SizeAtCompileTime;
+};
+
+}  // namespace detail
+
+
 /**
  * @brief Bundle of multiple Lie types that can be treated as a single Lie group
  *
@@ -19,8 +47,8 @@ namespace smooth
  */
 template<typename _Scalar, MappableStorageLike _Storage, template<typename> typename ... _Gs>
 requires(
-  ((LieGroupLike<_Gs<_Scalar>> || RnLike<_Gs<_Scalar>>) && ... && true) &&
-  (_Storage::SizeAtCompileTime == (detail::lie_info<_Gs<_Scalar>>::lie_size + ...)) &&
+  ((LieGroup<_Gs<_Scalar>> || StaticRnLike<_Gs<_Scalar>>) && ... && true) &&
+  (_Storage::Size== (detail::lie_info<_Gs<_Scalar>>::lie_size + ...)) &&
   std::is_same_v<typename _Storage::Scalar, _Scalar>
 )
 class BundleBase
@@ -45,10 +73,10 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr int lie_size = lie_sizes_psum.back();
-  static constexpr int lie_dof = lie_dofs_psum.back();
-  static constexpr int lie_dim = lie_dims_psum.back();
-  static constexpr int lie_actdim = lie_actdims_psum.back();
+  static constexpr int RepSize = lie_sizes_psum.back();
+  static constexpr int Dof = lie_dofs_psum.back();
+  static constexpr int Dim = lie_dims_psum.back();
+  static constexpr int ActDim = lie_actdims_psum.back();
 
   // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
@@ -99,7 +127,7 @@ public:
   {
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           part<i>().setZero();
         } else {
           part<i>().setIdentity();
@@ -126,7 +154,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dim_beg = std::get<i>(lie_dims_psum);
         static constexpr std::size_t dim_len = std::get<i>(lie_dims);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg).setIdentity();
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
           .template topRightCorner<PartType<i>::SizeAtCompileTime, 1>() = part<i>();
@@ -141,7 +169,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::SizeAtCompileTime == lie_actdim)
+  requires(Derived::SizeAtCompileTime == ActDim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     Vector ret;
@@ -149,7 +177,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t actdim_beg = std::get<i>(lie_actdims_psum);
         static constexpr std::size_t actdim_len = std::get<i>(lie_actdims);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template segment<actdim_len>(actdim_beg) =
           part<i>() + x.template segment<actdim_len>(actdim_beg);
         } else {
@@ -164,12 +192,12 @@ public:
    * @brief Group composition
    */
   template<typename OS, template<typename> typename ... _OGs>
-  Group operator*(const BundleBase<Scalar, OS, _OGs...> & r) const
+  PlainObject operator*(const BundleBase<Scalar, OS, _OGs...> & r) const
   {
-    Group ret;
+    PlainObject ret;
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template part<i>() = part<i>() + r.template part<i>();
         } else {
           ret.template part<i>() = part<i>() * r.template part<i>();
@@ -181,12 +209,12 @@ public:
   /**
    * @brief Group inverse
    */
-  Group inverse() const
+  PlainObject inverse() const
   {
-    Group ret;
+    PlainObject ret;
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template part<i>() = -part<i>();
         } else {
           ret.template part<i>() = part<i>().inverse();
@@ -205,7 +233,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = std::get<i>(lie_dofs_psum);
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template segment<dof_len>(dof_beg) = part<i>();
         } else {
           ret.template segment<dof_len>(dof_beg) = part<i>().log();
@@ -225,7 +253,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = std::get<i>(lie_dofs_psum);
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) = part<i>().Ad();
@@ -240,15 +268,15 @@ public:
    * @brief Group exponential
    */
   template<typename Derived>
-  static Group exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
-    Group ret;
+    PlainObject ret;
     meta::static_for<sizeof...(_Gs)>(
       [&](auto i) {
         static constexpr std::size_t dof_beg = std::get<i>(lie_dofs_psum);
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template part<i>() = a.template segment<dof_len>(dof_beg);
         } else {
           ret.template part<i>() = PartType<i>::exp(a.template segment<dof_len>(dof_beg));
@@ -262,7 +290,7 @@ public:
    */
   template<typename Derived>
   static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     TangentMap ret;
     ret.setZero();
@@ -270,7 +298,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = std::get<i>(lie_dofs_psum);
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           // ad is zero
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
@@ -285,7 +313,7 @@ public:
    */
   template<typename Derived>
   static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     MatrixGroup ret;
     ret.setZero();
@@ -295,7 +323,7 @@ public:
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
         static constexpr std::size_t dim_beg = std::get<i>(lie_dims_psum);
         static constexpr std::size_t dim_len = std::get<i>(lie_dims);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
           .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>() =
           a.template segment<dof_len>(dof_beg);
@@ -312,7 +340,7 @@ public:
    */
   template<typename Derived>
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
-  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
+  requires(Derived::RowsAtCompileTime == Dim && Derived::ColsAtCompileTime == Dim)
   {
     Tangent ret;
     meta::static_for<sizeof...(_Gs)>(
@@ -321,7 +349,7 @@ public:
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
         static constexpr std::size_t dim_beg = std::get<i>(lie_dims_psum);
         static constexpr std::size_t dim_len = std::get<i>(lie_dims);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template segment<dof_len>(dof_beg) =
           A.template block<dim_len, dim_len>(dim_beg, dim_beg)
           .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>();
@@ -338,7 +366,7 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     TangentMap ret;
     ret.setZero();
@@ -346,7 +374,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = std::get<i>(lie_dofs_psum);
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
@@ -361,7 +389,7 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     TangentMap ret;
     ret.setZero();
@@ -369,7 +397,7 @@ public:
       [&](auto i) {
         static constexpr std::size_t dof_beg = std::get<i>(lie_dofs_psum);
         static constexpr std::size_t dof_len = std::get<i>(lie_dofs);
-        if constexpr (RnLike<PartType<i>>) {
+        if constexpr (StaticRnLike<PartType<i>>) {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
         } else {
           ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =

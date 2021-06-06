@@ -25,7 +25,7 @@ namespace smooth
  * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
  */
 template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 7>>
-requires(_Storage::SizeAtCompileTime == 7 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
+requires(_Storage::Size == 7 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
 class SE3 : public LieGroupBase<SE3<_Scalar, _Storage>, 7>
 {
 private:
@@ -34,10 +34,10 @@ private:
 public:
   // REQUIRED CONSTANTS
 
-  static constexpr int lie_size = 7;
-  static constexpr int lie_dof = 6;
-  static constexpr int lie_dim = 4;
-  static constexpr int lie_actdim = 3;
+  static constexpr int RepSize = 7;
+  static constexpr int Dof = 6;
+  static constexpr int Dim = 4;
+  static constexpr int ActDim = 3;
 
   // CONSTRUCTORS AND OPERATORS
 
@@ -182,7 +182,7 @@ public:
    * @brief Group action
    */
   template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_actdim)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == ActDim)
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     return so3() * x + translation();
@@ -192,16 +192,16 @@ public:
    * @brief Group composition
    */
   template<typename OS>
-  Group operator*(const SE3<Scalar, OS> & r) const
+  PlainObject operator*(const SE3<Scalar, OS> & r) const
   {
-    return Group( so3() * r.translation() + translation(), so3() * r.so3());
+    return PlainObject( so3() * r.translation() + translation(), so3() * r.so3());
   }
 
   /**
    * @brief Group inverse
    */
-  Group inverse() const {
-    return Group(-(so3().inverse() * translation()), so3().inverse());
+  PlainObject inverse() const {
+    return PlainObject(-(so3().inverse() * translation()), so3().inverse());
   }
 
   /**
@@ -235,10 +235,10 @@ public:
    * @brief Group exponential
    */
   template<typename Derived>
-  static Group exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
-    return Group(
+    return PlainObject(
       SO3<Scalar>::dl_exp(a.template tail<3>()) * a.template head<3>(),
       SO3<Scalar>::exp(a.template tail<3>())
     );
@@ -249,7 +249,7 @@ public:
    */
   template<typename Derived>
   static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     TangentMap ret;
     ret.template topLeftCorner<3, 3>() = SO3<Scalar>::hat(a.template tail<3>());
@@ -264,7 +264,7 @@ public:
    */
   template<typename Derived>
   static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     MatrixGroup ret;
     ret.setZero();
@@ -278,7 +278,7 @@ public:
    */
   template<typename Derived>
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
-  requires(Derived::RowsAtCompileTime == lie_dim && Derived::ColsAtCompileTime == lie_dim)
+  requires(Derived::RowsAtCompileTime == Dim && Derived::ColsAtCompileTime == Dim)
   {
     Tangent ret;
     ret.template tail<3>() = SO3<Scalar>::vee(A.template topLeftCorner<3, 3>());
@@ -291,7 +291,7 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     TangentMap ret;
     ret.template topLeftCorner<3, 3>() = SO3<Scalar>::dr_exp(a.template tail<3>());
@@ -306,7 +306,7 @@ public:
    */
   template<typename Derived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == lie_dof)
+  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     TangentMap ret;
     ret.template topLeftCorner<3, 3>() = SO3<Scalar>::dr_expinv(a.template tail<3>());

@@ -22,29 +22,27 @@ namespace smooth::diff {
  * @return pair( f(wrt...), dr f_(wrt...) )
  */
 template<typename _F, typename... _Wrt>
-auto dr_autodiff(_F && f, _Wrt &&... wrt)
+requires(Manifold<std::invoke_result_t<_F, _Wrt...>>) auto dr_autodiff(_F && f, _Wrt &&... wrt)
 {
   using Result   = std::invoke_result_t<_F, _Wrt...>;
   using Scalar   = typename Result::Scalar;
   using AdScalar = autodiff::forward::Dual<Scalar, Scalar>;
 
-  static constexpr int Nx = std::min<int>({detail::lie_info<std::decay_t<_Wrt>>::lie_dof...}) == -1
+  static constexpr int Nx = std::min<int>({std::decay_t<_Wrt>::SizeAtCompileTime...}) == -1
                             ? -1
-                            : (detail::lie_info<std::decay_t<_Wrt>>::lie_dof + ...);
-  static constexpr int Ny = detail::lie_info<Result>::lie_dof;
+                            : (std::decay_t<_Wrt>::SizeAtCompileTime + ...);
+  static constexpr int Ny = Result::SizeAtCompileTime;
 
   auto val = f(wrt...);
 
   // tuple of zero-valued tangent elements
-  std::tuple<Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1>...> a_ad(
-    Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1>::Zero(
-      detail::lie_info<std::decay_t<_Wrt>>::lie_dof_dynamic(wrt))...);
+  std::tuple<Eigen::Matrix<AdScalar, std::decay_t<_Wrt>::SizeAtCompileTime, 1>...> a_ad(
+    Eigen::Matrix<AdScalar, std::decay_t<_Wrt>::SizeAtCompileTime, 1>::Zero(wrt.size())...);
 
   // create tuple of references to members of a_ad
-  auto a_ad_ref =
-    std::apply(std::forward_as_tuple<
-                 Eigen::Matrix<AdScalar, detail::lie_info<std::decay_t<_Wrt>>::lie_dof, 1> &...>,
-      a_ad);
+  auto a_ad_ref = std::apply(
+    std::forward_as_tuple<Eigen::Matrix<AdScalar, std::decay_t<_Wrt>::SizeAtCompileTime, 1> &...>,
+    a_ad);
 
   // TODO do cast once and store result
   Eigen::Matrix<Scalar, Ny, Nx> jac = autodiff::forward::jacobian(
