@@ -11,7 +11,7 @@ void test(const M &)
 
 TEST(ManifoldVector, Static)
 {
-  using M = smooth::ManifoldVector<double, smooth::SO3>;
+  using M = smooth::ManifoldVector<smooth::SO3d>;
   M m;
 
   test(m);
@@ -19,7 +19,7 @@ TEST(ManifoldVector, Static)
 
 TEST(ManifoldVector, Construct)
 {
-  using M = smooth::ManifoldVector<double, smooth::SO3>;
+  using M = smooth::ManifoldVector<smooth::SO3d>;
   M m;
 
   m.push_back(smooth::SO3d::Random());
@@ -39,7 +39,7 @@ TEST(ManifoldVector, Optimize)
     return ret;
   };
 
-  using M = smooth::ManifoldVector<double, smooth::SO3>;
+  using M = smooth::ManifoldVector<smooth::SO3d>;
   M m;
 
   m.push_back(smooth::SO3d::Random());

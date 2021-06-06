@@ -8,7 +8,7 @@ using namespace smooth::meta;
 
 TEST(Meta, StaticFor)
 {
-
+  auto x = static_for<5>([] (auto var) {return var;});
 }
 
 TEST(Meta, IndexSequence)

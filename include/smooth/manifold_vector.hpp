@@ -8,20 +8,18 @@
 
 namespace smooth {
 
-template<typename _Scalar, template<typename> typename _M>
-requires Manifold<_M<_Scalar>>
-class ManifoldVector
-    : public std::vector<_M<_Scalar>, Eigen::aligned_allocator<_M<_Scalar>>> {
+// TODO ugly with different size()
+template<Manifold M, template<typename> typename Allocator = std::allocator>
+class ManifoldVector : public std::vector<M, Allocator<M>> {
 private:
-  using U    = _M<_Scalar>;
-  using Base = std::vector<U, Eigen::aligned_allocator<U>>;
+  using Base = std::vector<M, Allocator<M>>;
 
 public:
   static constexpr Eigen::Index SizeAtCompileTime = -1;
 
-  using PlainObject = ManifoldVector<_Scalar, _M>;
+  using PlainObject = ManifoldVector<M, Allocator>;
 
-  using Scalar = _Scalar;
+  using Scalar = typename M::Scalar;
 
   ManifoldVector()                         = default;
   ManifoldVector(const ManifoldVector & o) = default;
@@ -34,7 +32,7 @@ public:
    * Forwarding constructor to std::vector
    */
   template<typename... Ts>
-  ManifoldVector(Ts &&... ts) : std::vector<_M<_Scalar>>(std::forward<Ts>(ts)...)
+  ManifoldVector(Ts &&... ts) : Base(std::forward<Ts>(ts)...)
   {
   }
 
@@ -42,9 +40,10 @@ public:
    * @brief Cast to different scalar type
    */
   template<typename NewScalar>
-  ManifoldVector<NewScalar, _M> cast() const
+  auto cast() const
   {
-    ManifoldVector<NewScalar, _M> ret(vector_size());
+    using CastT = decltype(M{}.template cast<NewScalar>())::PlainObject;
+    ManifoldVector<CastT, Allocator> ret(vector_size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
       return x.template cast<NewScalar>();
     });
@@ -61,8 +60,8 @@ public:
    */
   Eigen::Index size() const
   {
-    if constexpr (U::SizeAtCompileTime > 0) {
-      return vector_size() * U::Dof;
+    if constexpr (M::SizeAtCompileTime > 0) {
+      return vector_size() * M::SizeAtCompileTime;
     } else {
       return std::accumulate(this->begin(), this->end(), 0u, [](auto & v1, const auto & item) {
         return v1 + item.size();
@@ -79,7 +78,7 @@ public:
     Eigen::Index idx = 0;
     for (auto i = 0u; i != this->vector_size(); ++i) {
       const auto size_i = this->operator[](i).size();
-      this->operator[](i) += a.template segment<U::SizeAtCompileTime>(idx, size_i);
+      this->operator[](i) += a.template segment<M::SizeAtCompileTime>(idx, size_i);
       idx += size_i;
     }
     return *this;
@@ -99,20 +98,20 @@ public:
   /**
    * @brief Subtraction
    */
-  Eigen::Matrix<_Scalar, -1, 1> operator-(const PlainObject & o) const
+  Eigen::Matrix<Scalar, -1, 1> operator-(const PlainObject & o) const
   {
     std::size_t dof = 0;
-    if (U::SizeAtCompileTime > 0) {
-      dof = U::SizeAtCompileTime * vector_size();
+    if (M::SizeAtCompileTime > 0) {
+      dof = M::SizeAtCompileTime * vector_size();
     } else {
       for (auto i = 0u; i != vector_size(); ++i) { dof += this->operator[](i).size(); }
     }
 
-    Eigen::Matrix<_Scalar, -1, 1> ret(dof);
+    Eigen::Matrix<Scalar, -1, 1> ret(dof);
     Eigen::Index idx = 0;
     for (auto i = 0u; i != vector_size(); ++i) {
       const auto & size_i                                     = this->operator[](i).size();
-      ret.template segment<U::SizeAtCompileTime>(idx, size_i) = this->operator[](i) - o[i];
+      ret.template segment<M::SizeAtCompileTime>(idx, size_i) = this->operator[](i) - o[i];
       idx += size_i;
     }
 
@@ -122,8 +121,8 @@ public:
 
 }  // namespace smooth
 
-template<typename Stream, typename Scalar, template<typename> typename... _M>
-Stream & operator<<(Stream & s, const smooth::ManifoldVector<Scalar, _M...> & g)
+template<typename Stream, typename M, template<typename> typename Allocator>
+Stream & operator<<(Stream & s, const smooth::ManifoldVector<M, Allocator> & g)
 {
   s << "ManifoldVector with " << g.vector_size() << " elements:" << std::endl;
   for (auto i = 0u; i != g.vector_size(); ++i) {

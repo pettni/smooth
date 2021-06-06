@@ -115,12 +115,11 @@ Optimization: ManifoldVector<Manifold> ...
 
 Available:
 
-* [x] B-spline evaluation
+* [x] B-spline evaluation and fitting
 * [x] Trust-region optimization
 
 Planned:
 
-* [ ] B-spline fitting
 * [ ] IMU pre-integration
 * [ ] Trajectory-tracking PD controller
 * [ ] Model-predictive control
@@ -152,8 +151,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 - [ ] reorganize dynamics: bring in system linearization and Magnus expansion
 - Splines:
   - [x] Bsplines derivatives w.r.t. control points
-  - [ ] Fitting of bsplines
-  - [ ] Interpolation using cubic splines: with and without given velocity
+  - [ ] Cubic bezier curves: solve for velocities
 
 ## Library
 
@@ -165,11 +163,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
   - [ ] good way to pass options struct (first argument or horrible TMP...)
 - [x] use std arrays instead of intseq in bundle
 - [ ] ceres autodiff
-- [ ] Cubic bezier curves (3rd deg poly): solve for velocities, pass through points
-- [ ] B-splines fitting using LM
-- [ ] Make algos work for Eigen types via dispatch traits for all lie operations
-  - [x] diff
-  - [x] nls
-  - [ ] bsplines
+- [ ] Cubic bezier curves (3rd deg poly): solve for velocities
+- [x] B-splines fitting using LM
+- [ ] Optimize NLS: experiment with direct ways for solving sparse LS
 - [ ] Set up Gitlab CI
-
