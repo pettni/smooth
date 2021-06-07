@@ -117,10 +117,10 @@ if(BUILD_TESTING)
 
   # ALGO TESTS
 
-  add_executable(test_bspline test/test_bspline.cpp)
-  target_compile_options(test_bspline PRIVATE -Wall -Wextra -Wpedantic)
-  target_link_libraries(test_bspline PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_bspline)
+  add_executable(test_spline test/test_spline.cpp)
+  target_compile_options(test_spline PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_spline PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_spline)
 
   add_executable(test_diff test/test_diff.cpp)
   target_compile_options(test_diff PRIVATE -Wall -Wextra -Wpedantic)

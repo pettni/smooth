@@ -146,24 +146,14 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Book
 
-- [x] ceres derivatives
-- [x] Levenberg-Marquardt trust-region NLS optimization
 - [ ] reorganize dynamics: bring in system linearization and Magnus expansion
+- Prove that $dr exp_a a = a$
 - Splines:
-  - [x] Bsplines derivatives w.r.t. control points
   - [ ] Cubic bezier curves: solve for velocities
 
 ## Library
 
-- [x] autodiff compatibility header and tests
-- [x] Levenberg-Marquardt
-  - [x] numerical derivatives
-  - [x] automatic derivatives
-  - [x] analytical derivatives
-  - [ ] good way to pass options struct (first argument or horrible TMP...)
-- [x] use std arrays instead of intseq in bundle
+- [ ] pass options in NLS
 - [ ] ceres autodiff
-- [ ] Cubic bezier curves (3rd deg poly): solve for velocities
-- [x] B-splines fitting using LM
 - [ ] Optimize NLS: experiment with direct ways for solving sparse LS
 - [ ] Set up Gitlab CI
