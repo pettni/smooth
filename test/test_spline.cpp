@@ -2,14 +2,15 @@
 
 #include "smooth/bundle.hpp"
 #include "smooth/interp/bspline.hpp"
+#include "smooth/interp/bezier.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 
-TEST(BSpline, Static)
+TEST(Coefmat, Bspline)
 {
-  constexpr auto c3 = smooth::detail::cum_card_coeffmat<double, 3>();
+  constexpr auto c3 = smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>();
   static_assert(std::abs(c3[0][0] - 1) < 1e-8);
   static_assert(std::abs(c3[0][1] - 5. / 6) < 1e-8);
   static_assert(std::abs(c3[0][2] - 1. / 6) < 1e-8);
@@ -31,8 +32,33 @@ TEST(BSpline, Static)
   static_assert(std::abs(c3[3][3] - 1. / 6) < 1e-8);
 }
 
+TEST(Coefmat, Bezier)
+{
+  constexpr auto c3 = smooth::detail::cum_coefmat<smooth::CSplineType::BEZIER, double, 3>();
+  static_assert(std::abs(c3[0][0] - 1) < 1e-8);
+  static_assert(std::abs(c3[0][1] - 0) < 1e-8);
+  static_assert(std::abs(c3[0][2] - 0) < 1e-8);
+  static_assert(std::abs(c3[0][3] - 0) < 1e-8);
+
+  static_assert(std::abs(c3[1][0] + 0) < 1e-8);
+  static_assert(std::abs(c3[1][1] - 3) < 1e-8);
+  static_assert(std::abs(c3[1][2] - 0) < 1e-8);
+  static_assert(std::abs(c3[1][3] - 0) < 1e-8);
+
+  static_assert(std::abs(c3[2][0] - 0) < 1e-8);
+  static_assert(std::abs(c3[2][1] + 3) < 1e-8);
+  static_assert(std::abs(c3[2][2] - 3) < 1e-8);
+  static_assert(std::abs(c3[2][3] - 0) < 1e-8);
+
+  static_assert(std::abs(c3[3][0] - 0) < 1e-8);
+  static_assert(std::abs(c3[3][1] - 1) < 1e-8);
+  static_assert(std::abs(c3[3][2] + 2) < 1e-8);
+  static_assert(std::abs(c3[3][3] - 1) < 1e-8);
+}
+
+
 template<smooth::LieGroup G>
-class BSpline : public ::testing::Test {
+class Spline : public ::testing::Test {
 };
 
 using GroupsToTest = ::testing::Types<smooth::SO2d,
@@ -41,9 +67,9 @@ using GroupsToTest = ::testing::Types<smooth::SO2d,
   smooth::SE3d,
   smooth::Bundle<double, smooth::SO3, smooth::R4, smooth::SE2>>;
 
-TYPED_TEST_SUITE(BSpline, GroupsToTest);
+TYPED_TEST_SUITE(Spline, GroupsToTest);
 
-TYPED_TEST(BSpline, Constant)
+TYPED_TEST(Spline, BSplineConstant)
 {
   std::srand(5);
 
@@ -54,9 +80,12 @@ TYPED_TEST(BSpline, Constant)
     ctrl_pts.push_back(TypeParam::Random());
     for (auto i = 0u; i != K; ++i) { ctrl_pts.push_back(ctrl_pts.back()); }
 
+    constexpr auto Mstatic = smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, K>().transpose();
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
+
     for (double u = 0.; u < 1; u += 0.05) {
       typename TypeParam::Tangent vel, acc;
-      auto g = smooth::bspline_eval<K, TypeParam>(ctrl_pts, u, vel, acc);
+      auto g = smooth::cspline_eval<K, TypeParam>(ctrl_pts, M, u, vel, acc);
 
       ASSERT_TRUE(g.isApprox(ctrl_pts.front()));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -64,11 +93,11 @@ TYPED_TEST(BSpline, Constant)
     }
 
     ctrl_pts.push_back(ctrl_pts.back());
-    ASSERT_THROW((smooth::bspline_eval<K, TypeParam>(ctrl_pts, 1)), std::runtime_error);
+    ASSERT_THROW((smooth::cspline_eval<K, TypeParam>(ctrl_pts, M, 1)), std::runtime_error);
   });
 }
 
-TEST(BSpline, Constructors)
+TEST(Spline, BSplineConstructors)
 {
   std::srand(5);
 
@@ -88,7 +117,7 @@ TEST(BSpline, Constructors)
   }
 }
 
-TEST(BSpline, Outside)
+TEST(Spline, BSplineOutside)
 {
   std::srand(5);
 
@@ -105,7 +134,7 @@ TEST(BSpline, Outside)
   ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(48)));
 }
 
-TEST(BSpline, DerivR1)
+TEST(Spline, BSplineDerivR1)
 {
   std::srand(5);
   std::vector<smooth::Bundle<double, smooth::R1>> c1;
@@ -113,20 +142,23 @@ TEST(BSpline, DerivR1)
 
   double u = 0.5;
 
+  constexpr auto Mstatic = smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>().transpose();
+  Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(Mstatic[0].data());
+
   Eigen::Matrix<double, 1, 4> jac;
-  auto g0 = smooth::bspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, u, {}, {}, jac);
+  auto g0 = smooth::cspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, M, u, {}, {}, jac);
 
   Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
   for (auto i = 0u; i != 4; ++i) { c1[i].part<0>()(0) += eps(i); }
 
   // expect gp \approx g0 + jac * eps
   auto gp       = g0 + (jac * eps);
-  auto gp_exact = smooth::bspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, u);
+  auto gp_exact = smooth::cspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, M, u);
 
   ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
 }
 
-TEST(BSpline, DerivSO3)
+TEST(Spline, BSplineDerivSO3)
 {
   for (double u = 0.1; u < 1; u += 0.2) {
     std::srand(5);
@@ -134,21 +166,24 @@ TEST(BSpline, DerivSO3)
     std::vector<smooth::SO3d> c1;
     for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::SO3d::Random()); }
 
+    constexpr auto Mstatic = smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>().transpose();
+    Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(Mstatic[0].data());
+
     Eigen::Matrix<double, 3, 12> jac;
-    smooth::SO3d g0 = smooth::bspline_eval<3, smooth::SO3d>(c1, u, {}, {}, jac);
+    smooth::SO3d g0 = smooth::cspline_eval<3, smooth::SO3d>(c1, M, u, {}, {}, jac);
 
     Eigen::Matrix<double, 12, 1> eps = 1e-6 * Eigen::Matrix<double, 12, 1>::Random();
     for (auto i = 0u; i != 4; ++i) { c1[i] += eps.segment<3>(i * 3); }
 
     // expect gp \approx g0 + jac * eps
     smooth::SO3d gp       = g0 + (jac * eps).eval();
-    smooth::SO3d gp_exact = smooth::bspline_eval<3, smooth::SO3d>(c1, u);
+    smooth::SO3d gp_exact = smooth::cspline_eval<3, smooth::SO3d>(c1, M, u);
 
     ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
   }
 }
 
-TEST(BSpline, Fit)
+TEST(Spline, BSplineFit)
 {
   std::vector<double> tt;
   std::vector<smooth::SO3d> gg;

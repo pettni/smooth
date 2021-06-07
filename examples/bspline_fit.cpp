@@ -1,4 +1,5 @@
 #include "smooth/interp/bspline.hpp"
+#include "smooth/interp/bezier.hpp"
 #include "smooth/so3.hpp"
 
 #include "matplot/matplot.h"
@@ -24,60 +25,37 @@ int main(int argc, char const * argv[])
 
   for (auto i = 0u; i != 39; ++i) {
     data_g.push_back(data_g.back() + 0.3 * Eigen::Vector3d::Random());
-    data_t.push_back(data_t.back() + dt);
+    data_t.push_back(data_t.back() + (1 + i % 2) * dt);
   }
 
-  auto spline = smooth::fit_bspline<K>(data_t, data_g, 2);
+  auto bspline = smooth::fit_bspline<K>(data_t, data_g, 2);
+  auto bezier = smooth::fit_quadratic_bezier(data_t, data_g, Eigen::Vector3d::Zero());
 
-  auto tvec = matplot::linspace(spline.t_min(), spline.t_max(), 300);
-  std::vector<smooth::SO3d> gvec;
-  std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> vvec, avec;
+  auto tvec = matplot::linspace(bspline.t_min(), bspline.t_max(), 1000);
+  std::vector<smooth::SO3d> bspline_vec, bezier_vec;
 
   for (auto t : tvec) {
-    Eigen::Vector3d vel, acc;
-    auto g = spline.eval(t, vel, acc);
-    gvec.push_back(g);
-    vvec.push_back(vel);
-    avec.push_back(acc);
-  }
-
-  std::vector<double> ctrl_t;
-  for (auto i = 0u; i != spline.ctrl_pts().size(); ++i) {
-    ctrl_t.push_back(spline.t_min() + i * spline.dt() - K * spline.dt());
+    bspline_vec.push_back(bspline.eval(t));
+    bezier_vec.push_back(bezier.eval(t));
   }
 
   matplot::figure();
   matplot::hold(matplot::on);
-  plot(tvec, r2v(vvec | transform([](auto s) {return s[0];})), "r")->line_width(2);
-  plot(tvec, r2v(vvec | transform([](auto s) {return s[1];})), "g")->line_width(2);
-  plot(tvec, r2v(vvec | transform([](auto s) {return s[2];})), "b")->line_width(2);
-  matplot::title("Velocity");
+  plot(tvec, r2v(bspline_vec | transform([](auto s) {return s.quat().x();})), "b")->line_width(2);
+  plot(tvec, r2v(bspline_vec | transform([](auto s) {return s.quat().y();})), "r")->line_width(2);
+  plot(tvec, r2v(bspline_vec | transform([](auto s) {return s.quat().z();})), "g")->line_width(2);
+  plot(tvec, r2v(bspline_vec | transform([](auto s) {return s.quat().w();})), "k")->line_width(2);
 
-  matplot::figure();
-  matplot::hold(matplot::on);
-  plot(tvec, r2v(avec | transform([](auto s) {return s[0];})), "r")->line_width(2);
-  plot(tvec, r2v(avec | transform([](auto s) {return s[1];})), "g")->line_width(2);
-  plot(tvec, r2v(avec | transform([](auto s) {return s[2];})), "b")->line_width(2);
-  matplot::title("Acceleration");
-
-  matplot::figure();
-  matplot::hold(matplot::on);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().x();})), "b")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().y();})), "r")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().z();})), "g")->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) {return s.quat().w();})), "k")->line_width(2);
+  plot(tvec, r2v(bezier_vec | transform([](auto s) {return s.quat().x();})), "b")->line_width(2);
+  plot(tvec, r2v(bezier_vec | transform([](auto s) {return s.quat().y();})), "r")->line_width(2);
+  plot(tvec, r2v(bezier_vec | transform([](auto s) {return s.quat().z();})), "g")->line_width(2);
+  plot(tvec, r2v(bezier_vec | transform([](auto s) {return s.quat().w();})), "k")->line_width(2);
 
   // plot data points
   plot(data_t, r2v(data_g | transform([](auto s) {return s.quat().x();})), "ob");
   plot(data_t, r2v(data_g | transform([](auto s) {return s.quat().y();})), "or");
   plot(data_t, r2v(data_g | transform([](auto s) {return s.quat().z();})), "og");
   plot(data_t, r2v(data_g | transform([](auto s) {return s.quat().w();})), "ok");
-
-  // plot control points
-  plot(ctrl_t, r2v(spline.ctrl_pts() | transform([](auto s) {return s.quat().x();})), "xb")->marker_size(15);
-  plot(ctrl_t, r2v(spline.ctrl_pts() | transform([](auto s) {return s.quat().y();})), "xr")->marker_size(15);
-  plot(ctrl_t, r2v(spline.ctrl_pts() | transform([](auto s) {return s.quat().z();})), "xg")->marker_size(15);
-  plot(ctrl_t, r2v(spline.ctrl_pts() | transform([](auto s) {return s.quat().w();})), "xk")->marker_size(15);
   matplot::title("Quaternion");
 
   matplot::show();
