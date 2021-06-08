@@ -2,9 +2,6 @@
 
 \chapter{Splines on Lie Groups}
 
-This is largely based on \cite{patron-perez_spline-based_2015, sommer_efficient_2020}.
-
-
 \begin{figure}[h]
   \begin{center}
     \begin{tikzpicture}
@@ -22,6 +19,200 @@ This is largely based on \cite{patron-perez_spline-based_2015, sommer_efficient_
   \end{center}
 \end{figure}
 
+It is often convenient to be able to interpolate sparsely defined data. Examples in robotics include representing trajectories as a sequence of $(t_{i}, \x_{i})$ pairs, and interpolating sensor data for calibration.
+
+A general form for a spline $p(x)$ constructed from \emph{control points} $\x_{i}$ is
+\begin{equation}
+  \label{eq:spline}
+  p(t) = \sum_{i=0}^{n} B_{i}(t) \x_{i},
+\end{equation}
+where $\B_{i}$ are some form of \emph{basis functions} that form a partition of unity, i.e. $\sum_{i} B_{i} (t) = 1$ for all $t$. The weighted sum does not have an immediate analogue on Lie groups, but \eqref{eq:spline} can be re-arranged on \emph{cumulative form} as
+\begin{equation}
+  \label{eq:cum_spline}
+  p(t) = \x_{0} + \sum_{i=1}^{n} \tilde B_{i}(t) (\x_{i} - \x_{i-1}),
+\end{equation}
+where $\tilde B_{i}(t) = \sum_{j=i}^{n} B_{i}(t)$ are \emph{cumulative basis functions}. From this formulation we can write down a Lie group generalization as follows:
+\begin{equation}
+  \label{eq:cum_spline_liegroup}
+  p(t) = \x_{0} \circ \exp \left(\tilde B_{1}(t) (\x_{1} \ominus \x_{0}) \right) \circ \exp \left(\tilde B_{2}(t) (\x_{2} \ominus \x_{1}) \right) \circ \ldots \circ \exp \left(\tilde B_{n}(t) (\x_{n} \ominus \x_{n-1}) \right)
+\end{equation}
+
+We first discuss two choices for basis functions---Bezier curves and B-Splines---and then show how the value and derivatives of such splines can be calculated.
+
+Below we will need the derivative with respect to $t$ of \eqref{eq:cum_spline_liegroup}. For this purpose it will be convenient to introduce the variables
+\begin{equation}
+  \begin{aligned}
+    \symbf v_{i} = \x_{i} \ominus \x_{i-1}, \\
+    \symbf s_{i} = \tilde B_{i}(t) \symbf v_{i}.
+  \end{aligned}
+\end{equation}
+With this notation, $\mathrm{d}^{r} \left( \exp \symbf s_{i} \right)_{t} = \tilde B_{i}'(t) \mathrm{d}^{r} \exp_{\symbf s_{i}} \symbf v_{i}$. We can now write down the derivative of \eqref{eq:cum_spline_liegroup} by utilizing \eqref{eq:d_composition_rght_fst} and \eqref{eq:d_composition_rght_snd}:
+\begin{equation}
+  \label{eq:cum_spline_liegroup_deriv}
+  \begin{aligned}
+    \mathrm{d}^{r} p_{t} & = \bAd_{\exp(-\symbf s_{n})} \mathrm{d}^{r} \left( \x_{0} \exp(\symbf s_{1})  \ldots \exp(\symbf s_{n-1})\right)_{t} + \mathrm{d}^{r} \exp (\symbf s_{n})_{t}                                                                                              \\
+                         & = \bAd_{\exp(-\symbf s_{n}) \exp(-\symbf s_{n-1})} \mathrm{d}^{r} \left( \x_{0} \exp(\symbf s_{1})  \ldots \exp(\symbf s_{n-2})\right)_{t} + \bAd_{\exp(-s_{n})} \mathrm{d}^{r} \exp (\symbf s_{n-1})_{t} + \mathrm{d}^{r} \exp(s_{n})_{t}                 \\
+                         & = \sum_{i=1}^{n} \bAd_{\exp(-\symbf s_{n}) \ldots \exp(-\symbf s_{i+1})} \mathrm{d}^{r} \exp (\symbf s_{i})_{t} = \sum_{i=1}^{n} \tilde B_{i}'(t) \bAd_{\exp(-\symbf s_{n}) \ldots \exp(-\symbf s_{i+1})} \mathrm{d}^{r} \exp_{\symbf s_{i}} \symbf v_{i}.
+  \end{aligned}
+\end{equation}
+
+\section{Bezier Curves}
+
+\begin{figure}[h]
+  \begin{center}
+    \footnotesize
+    \begin{tikzpicture}[]
+      \begin{axis}[
+          axis y line=left,
+          axis x line=middle,
+          width=0.5\columnwidth,
+          height=0.35\columnwidth,
+          xmin=0,
+          xmax=1,
+          ymin=-0.,
+          ymax=1.1
+          ]
+          \addplot+[red, no marks, thick, smooth, domain=0:1] ({\x}, {(1-3*\x+3*\x^2-\x^3)}) node[pos=0.2, right] {$B_{0,3}(t)$};
+          \addplot+[blue, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x-6*\x^2+3*x^3)}) node[pos=0.4, above] {$B_{1,3}(t)$};
+          \addplot+[black, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x^2-3*\x^3)}) node[pos=0.6, above] {$B_{2,3}(t)$};
+          \addplot+[orange, no marks, thick, smooth, domain=0:1] ({\x}, {(x^3)}) node[pos=0.8, left] {$B_{3,3}(t)$};
+      \end{axis}
+    \end{tikzpicture}~
+    \begin{tikzpicture}[]
+      \begin{axis}[
+          axis y line=left,
+          axis x line=middle,
+          width=0.5\columnwidth,
+          height=0.35\columnwidth,
+          xmin=0,
+          xmax=1,
+          ymin=-0.,
+          ymax=1.1
+          ]
+          \addplot+[red, no marks, thick, smooth, domain=0:1] ({\x}, {(1)}) node[pos=0.2, below] {$\tilde B_{0,3}(t)$};
+          \addplot+[blue, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x-3*\x^2+x^3)}) node[pos=0.4, left] {$\tilde B_{1,3}(t)$};
+          \addplot+[black, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x^2-2*\x^3)}) node[pos=0.6, left] {$\tilde B_{2,3}(t)$};
+          \addplot+[orange, no marks, thick, smooth, domain=0:1] ({\x}, {(x^3)}) node[pos=0.6, below] {$\tilde B_{3,3}(t)$};
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+  \caption{Bernstein cubic (order 3) basis functions (left) and cumulative basis functions (right).}
+  \label{fig:bezier}
+\end{figure}
+
+A Bezier curve of order $k$ is defined on the interval $[0, 1]$ via the \emph{Bernstein basis functions} defined as
+\begin{equation}
+  B_{i, k}(t) = \binom{k}{i} t^{i} (1 - t)^{k - i}, \qquad i = 0, \ldots, k.
+\end{equation}
+The binomial formula $1 = (t + 1 - t)^{n} = \sum_{i=0}^{n}B_{i, k}(t)$ shows that the Berstein basis is indeed a partition of unity. A Bezier spline is a curve that consists of Bezier curve pieces.
+
+The Bernstein basis functions have the following properties
+\begin{itemize}
+  \item They satisfy the recurrence relation
+        \begin{equation}
+          \label{eq:bezier_recurrence}
+          B_{i, k}(t) = t B_{i-1, k-1}(t) + (1-t) B_{i, k-1}(t).
+        \end{equation}
+  \item They are symmetric in the sense that $B_{i, k}(t) = B_{k-i, k}(1 - t)$.
+  \item The derivative can be expressed in terms of lower-order polynomials
+        \begin{equation*}
+          \begin{aligned}
+            B_{i, k}'(t)
+             & = i \binom{k}{i} t^{i-1} (1-t)^{k-i} - (k-i) \binom{k}{i} t^{i} (1-t)^{k-i-1}                                                                         \\
+             & = \frac{k!}{(i-1)! (k-i)!} t^{i-1} (1-t)^{k-i} + \frac{k!}{i! (k-i-1)!} t^{i} (1 - t)^{k - i + 1} = k \left(  B_{i-1, k-1}(t) - B_{i, k-1}(t)\right).
+          \end{aligned}
+        \end{equation*}
+  \item At $t = 0$ only the first spline is nonzero: $B_{0, k}(0) = 1$, and $B_{1, k}(0) = \ldots = B_{k, k}(0) = 0$. It follows that the non-zero derivatives at $t = 0$ are $B_{0, k}'(0) = -k$ and $B_{1, k}'(0) = k$. The converse holds for $t = 1$ due to symmetry.
+  \item At $t = 0$ only the $i=0$ cumulative spline is nonzero: $\tilde B_{0, k}(0) = 1$, and only the $i=1$ cumulative derivative is non-zero: $\tilde B_{1, k}'(0) = k$.
+  \item At $t = 1$ only the $i=k$ cumulative spline is nonzero: $\tilde B_{k, k}(1) = 1$, and only the $i=k$ cumulative derivative is non-zero: $\tilde B_{k, k}'(0) = k$.
+\end{itemize}
+
+Utilizing these fact and that $\mathrm{d}^{r} \exp_{\a} \a = \a$ we can evaluate \eqref{eq:cum_spline_liegroup} and \eqref{eq:cum_spline_liegroup_deriv}
+\begin{equation}
+  p(0) = \x_{0}, \quad p(1) = \x_{n}, \quad \left. \mathrm{d}^{r} p_{t} \right|_{t=0} = \tilde B_{1, k}'(0) \symbf v_{1} = k \symbf v_{1}, \quad
+  \left. \mathrm{d}^{r} p_{t} \right|_{t=1} = \tilde B_{k, k}'(0) \symbf v_{k} = k \symbf v_{k}.
+\end{equation}
+These formulas can be used to fit low-degree splines to given boundary conditions.
+
+\paragraph{Quadratic Bezier curve} A $k=2$ spline $\x(t) = \x_{0} \exp \left( \tilde B_{1, 2}(t) \symbf v_{1}\right) \exp\left(\tilde B_{2, 2}(t) \symbf v_{2}\right)$ such that $\x(0) = \x_{a}, \x(1) = \x_{b}$, and $\left. \mathrm{d}^{r} \x_{t} \right|_{t=0} = \a_{a}$ is defined by the coefficients
+\begin{equation}
+  \x_{0}  = \x_{a}, \quad
+  \symbf v_{1} = \frac{\a_{a}}{2}, \quad  \symbf v_{2} = \log \left( \exp \left( -\frac{\a_{a}}{2} \right) \x_{a}^{-1} \x_{b} \right),
+\end{equation}
+and has the property that $\left. \mathrm{d}^{r} \x_{t} \right|_{t=1} = 2 \symbf v_{2}$.
+
+\paragraph{Cubic Bezier curve} For the cubic case $k = 3$ a Bezier curve
+\begin{equation}
+  \x(t) = \x_{0} \exp \left( \tilde B_{1, 3}(t) \symbf v_{1}\right) \exp\left(\tilde B_{2, 3}(t) \symbf v_{2}\right)\exp\left(\tilde B_{3, 3}(t) \symbf v_{3}\right)
+\end{equation}
+  such that $\x(0) = \x_{a}, \x(1) = \x_{b}, \left. \mathrm{d}^{r} \x_{t} \right|_{t = 0} = \a_{a}$, and $\left. \mathrm{d}^{r} \x_{t} \right|_{t = 1} = \a_{b}$ is defined by the coefficients
+\begin{equation}
+  \x_{0}  = \x_{a}, \quad
+  \symbf v_{1} = \frac{\a_{a}}{3}, \quad  \symbf v_{3} = \frac{\a_{b}}{3}, \quad  \symbf v_{2} = \log \left( \exp \left( -\frac{\a_{a}}{3} \right) \x_{a}^{-1} \x_{b} \exp \left( -\frac{\a_{b}}{3} \right ) \right).
+\end{equation}
+For cubic splines on $\mathbb{R}$ a system of linear equations can be solved in order to fit a cubic spline to data (for some boundary conditions). Unfortunately the equation for $\symbf v_{2}$ is non-linear, so this is no longer possible in the more general Lie group case. Instead we either have to solve a non-linear system of equations, or resort to some other method for estimating the velocities at the inner knot points.
+
+\section{B-Splines}
+
+\begin{figure}[h]
+  \begin{center}
+    \footnotesize
+    \begin{tikzpicture}[
+        declare function={
+            bspline3(\x) = and(0<=\x, \x<1) * (\x^3/6) +
+            and(1<=\x, \x<2) * ((-3*(\x-1)^3+3*(\x-1)^2+3*(\x-1)+1)/6) +
+            and(2<=\x, \x<3) * ((3*(\x-2)^3-6*(\x-2)^2+4)/6) +
+            and(3<=\x, \x<4) * ((-(\x-3)^3+3*(\x-3)^2-3*(\x-3)+1)/6);
+          }
+      ]
+      \begin{axis}[
+          axis y line=none,
+          axis x line=middle,
+          xtick={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+          xticklabels={$t_0$, $t_1$, $t_2$, $t_3$, $t_4$, $t_5$, $t_6$, $t_7$, $t_8$, $t_9$, $t_{10}$},
+          width=0.7\columnwidth,
+          height=0.3\columnwidth,
+          xmin=0,
+          xmax=10,
+          ymin=-0.,
+          ymax=1.1,
+          cycle list name=color list]
+        \pgfplotsinvokeforeach {0, 1, 2, 3, 4, 5, 6} {
+          \addplot+[no marks, thick, smooth, domain=#1:#1+4] ({\x}, {bspline3(\x-#1)}) node[pos=0.5, above] {$B_{#1,3}(t)$};
+        }
+      \end{axis}
+    \end{tikzpicture} \\
+    \begin{tikzpicture}[
+        declare function={
+            cbspline3(\x) = and(0<=\x, \x<1) * ((\x^3                                          )/6) +
+            and(1<=\x, \x<2) *                 ((-2*(\x-1)^3  + 3*(\x-1)^2    +3*(\x-1)       +1)/6) +
+            and(2<=\x, \x<3) *                 ((1*(\x-2)^3   - 3*(\x-2)^2    +3*(\x-2)       +5)/6) +
+            and(3<=\x, \x<4) *                 ((0*(\x-3)^3   + 0*(\x-3)^2    +0*(\x-3)       +6)/6);
+          }
+      ]
+      \begin{axis}[
+          axis y line=none,
+          axis x line=middle,
+          xtick={0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
+          xticklabels={$t_0$, $t_1$, $t_2$, $t_3$, $t_4$, $t_5$, $t_6$, $t_7$, $t_8$, $t_9$, $t_{10}$},
+          width=0.7\columnwidth,
+          height=0.25\columnwidth,
+          xmin=0,
+          xmax=10,
+          ymin=-0.,
+          ymax=1.1,
+          cycle list name=color list]
+        \pgfplotsinvokeforeach {0, 1, 2, 3, 4, 5, 6} {
+          \addplot+[no marks, thick, smooth, domain=#1:#1+4] ({\x}, {cbspline3(\x-#1)}) node[pos=0.3, left] {$B_{#1,3}(t)$};
+        }
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+  \caption{B-spline basis function and cumulative basis functions. For $k=3$ and $t \in [t_4, t_5)$ the non-zero basis functions are $B_{1, 4}, B_{2, 4}, B_{3, 4}$ and $B_{4, 4}$.}
+  \label{fig:bspline_nonzero}
+\end{figure}
+
+
 A B-spline interpolation of order $k$ is a function $\x(t) = \sum_{i=0}^N B_{i, k}(t) \x_{v(i)}$ where $\x_{v(i)} \in \mathbb{R}^n$ are \textbf{control points} for \textbf{knots} $t_i$, and $B_{i, k}(t)$ are \textbf{basis functions} recursively defined as
 
 \begin{equation}
@@ -30,7 +221,7 @@ A B-spline interpolation of order $k$ is a function $\x(t) = \sum_{i=0}^N B_{i, 
     B_{i, 0}(t) & = \begin{cases}
       1 & t_i \leq t < t_{i+1}, \\
       0 & \text{otherwise}.
-    \end{cases}                                                                                \\
+    \end{cases}                                                                               \\
     B_{i, k}(t) & = \frac{t - t_i}{t_{i+k} - t_i} B_{i, k-1}(t) + \frac{t_{i+k+1} - t}{t_{i+k+1} - t_{i+1}} B_{i+1, k-1}(t).
   \end{aligned}
 \end{equation}
@@ -65,56 +256,10 @@ we can write the value of a spline $x(t)$ for $t \in [t_{i^*}, t_{i^*+1}]$ as
   \end{aligned}
 \end{equation}
 
-\begin{figure}[h]
-  \begin{center}
-    \footnotesize
-    \begin{tikzpicture}[
-        declare function={
-            bspline3(\x) = and(0<=\x, \x<1) * (\x^3/6) +
-            and(1<=\x, \x<2) * ((-3*(\x-1)^3+3*(\x-1)^2+3*(\x-1)+1)/6) +
-            and(2<=\x, \x<3) * ((3*(\x-2)^3-6*(\x-2)^2+4)/6) +
-            and(3<=\x, \x<4) * ((-(\x-3)^3+3*(\x-3)^2-3*(\x-3)+1)/6);
-          }
-      ]
-      \begin{axis}[
-          axis y line=none,
-          axis x line=middle,
-          xtick={0, 1, 2, 3, 4, 4.4, 5, 6, 7, 8, 9, 10},
-          xticklabels={$t_0$, $t_1$, $t_2$, $t_3$, $t_4$, $t$, $t_5$, $t_6$, $t_7$, $t_8$, $t_9$, $t_{10}$},
-          width=0.7\columnwidth,
-          height=0.3\columnwidth,
-          xmin=0,
-          xmax=10,
-          ymin=-0.,
-          ymax=1.1,
-          cycle list name=color list]
-        \pgfplotsinvokeforeach {0, 1, 2, 3, 4, 5, 6} {
-          \addplot+[no marks, thick, smooth, domain=#1:#1+4] ({\x}, {bspline3(\x-#1)}) node[pos=0.5, above] {$B_{#1,3}(t)$};
-        }
-      \end{axis}
-    \end{tikzpicture}
-  \end{center}
-  \caption{For $k=3$ and $t \in [t_4, t_5)$ the non-zero basis functions are $B_1, B_2, B_3$ and $B_4$. For interpolation purposes those basis functions should be matched with the control points $\x_{3}, \x_4, \x_5, \x_6$.}
-  \label{fig:bspline_nonzero}
-\end{figure}
 
+\section{Evaluating Cumulative Splines}
 
-\section{Splines on Lie Groups}
-
-We can re-arrange a B-spline into cumulative form
-\begin{equation}
-  \sum_{i=0}^N B_{i, k}(t) \x_i = \tilde B_{0, k}(t) \x_0 + \sum_{i=1}^N \tilde B_{i, k}(t) (\x_i - \x_{i-1})
-\end{equation}
-where $\tilde B_{i, k}(t) = \sum_{j = i}^N B_{i, k}(t)$ and $\tilde B_{0, k}(t) \equiv 1$.
-The cumulative formulation lends itself well to a Lie group translation when $\x \in \X$ since we can replace plus and minus by the corresponding Lie group operations.
-\begin{equation}
-  \label{eq:full_lie_spline}
-  \x(t) = \exp \left[ \tilde B_{0, k}(t) \log (\x_0) \right] \circ \prod_{i=1}^N \exp \left[ \tilde B_{i, k} (t) (\x_i \ominus_r \x_{i-1}) \right].
-\end{equation}
-
-\subsection{Spline evaluation}
-
-Since for $t \in [t_{i^*}, t_{i^*+1})$ it holds that $\tilde B_{i, k}(t) = 1$ for $i \leq i^* - k$ and $\tilde B_{i, k}(t) = 0$ for $i \geq i^* + 1$ we can simplify \eqref{eq:full_lie_spline} into
+Since for $t \in [t_{i^*}, t_{i^*+1})$ it holds that $\tilde B_{i, k}(t) = 1$ for $i \leq i^* - k$ and $\tilde B_{i, k}(t) = 0$ for $i \geq i^* + 1$ we can simplify \eqref{eq:cum_spline} into
 \begin{important}
   \begin{equation}
     \label{eq:simple_lie_spline}
@@ -150,9 +295,9 @@ This gives us a recursive procedure to calculate the derivative of a form \eqref
   \begin{equation}
     \label{eq:bspline_dx_dt}
     \begin{aligned}
-      \symbf w_{i^* - k}    & = \symbf 0,                                                                                                                         \\
-      \symbf w_{j}      & = \bAd_{\exp \left( - \tilde B_{j, k}(t) \bv_j \right)} \symbf w_{j-1} + \tilde B_{j, k}'(t) \bv_j, \quad j = i^*+1, \ldots, i^*+k, \\
-      \mathrm{d}^r \x_t & = \symbf w_{i^*}.
+      \symbf w_{i^* - k} & = \symbf 0,                                                                                                                         \\
+      \symbf w_{j}       & = \bAd_{\exp \left( - \tilde B_{j, k}(t) \bv_j \right)} \symbf w_{j-1} + \tilde B_{j, k}'(t) \bv_j, \quad j = i^*+1, \ldots, i^*+k, \\
+      \mathrm{d}^r \x_t  & = \symbf w_{i^*}.
     \end{aligned}
   \end{equation}
 \end{important}
@@ -169,7 +314,7 @@ The recursion in \eqref{eq:bspline_dx_dt} can be differentiated a second time wi
     \bAd_{\exp(\lambda(t) \bu_1)} \bu_2
      & \overset{\eqref{eq:adexp_expad}}= \exp \left( \ad_{\lambda(t) \bu_1} \right) \bu_2 \overset{\eqref{eq:ad_scaling}}= \exp \left( \lambda(t) \ad_{\bu_1} \right) \bu_2 \overset{\eqref{eq:def_expad}}= \sum_{k=0}^\infty \frac{\lambda(t)^k \ad_{\bu_1}^k  }{k!} \bu_2 \\
     \implies \frac{\mathrm{d}}{\mathrm{d}t} \bAd_{\exp(\lambda(t) \bu_1)} \bu_2
-     & = \lambda'(t) \sum_{k=1}^\infty \frac{\lambda(t)^{k-1} \ad_{\bu_1}^k }{(k-1)!} \bu_2 = \lambda'(t) \ad_{\bu_1} \sum_{k=1}^\infty \frac{\lambda(t)^{k-1} \ad_{\bu_1}^{k-1} }{(k-1)!}\bu_2                                                                               \\
+     & = \lambda'(t) \sum_{k=1}^\infty \frac{\lambda(t)^{k-1} \ad_{\bu_1}^k }{(k-1)!} \bu_2 = \lambda'(t) \ad_{\bu_1} \sum_{k=1}^\infty \frac{\lambda(t)^{k-1} \ad_{\bu_1}^{k-1} }{(k-1)!}\bu_2                                                                             \\
      & = \lambda'(t) \left[ \bu_1, \sum_{k=0}^\infty \frac{\lambda(t)^k \ad_{\bu_1}^k}{k!} \bu_2 \right]                                                                                   =  \lambda'(t) \left[ \bu_1, \bAd_{\exp(\lambda(t) \bu_1)} \bu_2 \right].
   \end{aligned}
 \end{equation}
@@ -178,9 +323,9 @@ With $\lambda(t) \rightarrow - \tilde B_{j, k}(t), \bu_1 \rightarrow \bv_j, \bu_
   \begin{equation}
     \begin{aligned}
       \symbf q_{i^* - k} & = \symbf 0,                                                                                                                                                                        \\
-      \symbf q_j     & = \tilde B_{j, k}'(t) \left[ \symbf w_j, \bv_j \right]  + \bAd_{\exp(-\tilde B_{j, k}(t) \bv_j )} \bq_{j-1} + \tilde B^{(2)}_{j, k}(t) \bv_j, \qquad j = i^* + 1, \ldots, i^* + k, \\
+      \symbf q_j         & = \tilde B_{j, k}'(t) \left[ \symbf w_j, \bv_j \right]  + \bAd_{\exp(-\tilde B_{j, k}(t) \bv_j )} \bq_{j-1} + \tilde B^{(2)}_{j, k}(t) \bv_j, \qquad j = i^* + 1, \ldots, i^* + k, \\
       \frac{\mathrm{d}}{\mathrm{d}t} \mathrm{d}^r \x_t
-                     & = \bq_{i^* + k}.
+                         & = \bq_{i^* + k}.
     \end{aligned}
   \end{equation}
 \end{important}
@@ -207,16 +352,16 @@ Thus the derivatives $\symbf r_j \coloneq \mathrm{d}^r \x(t)_{\x_j}$ of $\x$ bec
 \begin{equation*}
   \begin{aligned}
     \symbf r_{i^*}
-     & = \mathrm{d}^r \left( \bar \z \circ \exp \left[ \symbf s_{i^*} \right] \right)_{\x_{i^*}}
-    \overset{\eqref{eq:product_rule}}= \mathrm{d}^r \exp\left( \symbf s_{i^*} \right)_{\x_{i^*}} \overset{\eqref{eq:dr_sj_xj}}=  \tilde B_{i^*, k} \mathrm{d}^r \exp_{\symbf s_{i^*}} \left[ \mathrm{d}^r \exp_{\bv_{i^*}} \right]^{-1},                                                                      \\
+                         & = \mathrm{d}^r \left( \bar \z \circ \exp \left[ \symbf s_{i^*} \right] \right)_{\x_{i^*}}
+    \overset{\eqref{eq:product_rule}}= \mathrm{d}^r \exp\left( \symbf s_{i^*} \right)_{\x_{i^*}} \overset{\eqref{eq:dr_sj_xj}}=  \tilde B_{i^*, k} \mathrm{d}^r \exp_{\symbf s_{i^*}} \left[ \mathrm{d}^r \exp_{\bv_{i^*}} \right]^{-1},                                                                                                                         \\
     \symbf r_{j}
-     & = \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \circ \bar \z_2 \right)_{\x_j}
-    \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \right)_{\x_j}                                                                                                                                                             \\
-     & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\bar \z_1 \circ \exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                     \\
-     & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                                     \\
-     & \overset{\eqref{eq:dr_sj}}= \bAd_{\bar z_2^{-1}} \left( \tilde B_{j, k}(t) \bAd_{\exp(-s_{j+1})} \left[ \mathrm{d}^r \exp_{\symbf s_j} \right] \left[ \mathrm{d}^r \exp_{\symbf v_j} \right]^{-1} - \tilde B_{j+1, k}(t) \left[ \mathrm{d}^r \exp_{\symbf s_{j+1}} \right] \left[ \mathrm{d}^l \exp_{\bv_{j+1}} \right]^{-1} \right), \\
-     \symbf r_{i^{*} - k} & = \mathrm{d}^{r} \left( \x_{i^{*} - k} \circ \exp \left[ \symbf s_{i^{*}-k+1} \right] \circ \bar z_{2}^{-1} \right) =  \\
-     & = \bAd_{\bar z_{2}^{-1}} \left( \bAd_{\exp(-\symbf s_{i^{*} - k + 1})} - \tilde B_{i^{*} - k + 1}(t) \mathrm{d}^{r} \exp_{\symbf s_{i^{*} - k + 1}} \left[ \mathrm{d}^{r} \exp_{v_{i^{*} - k + 1}} \right]^{-1} \right).
+                         & = \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \circ \bar \z_2 \right)_{\x_j}
+    \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \mathrm{d}^r \left( \bar \z_1 \circ \exp \left[ \symbf s_{j} \right]\circ \exp \left[ \symbf s_{j+1} \right] \right)_{\x_j}                                                                                                                                                                          \\
+                         & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\bar \z_1 \circ \exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                              \\
+                         & \overset{\eqref{eq:product_rule}}= \bAd_{\bar z_2^{-1}} \left( \bAd_{\exp(-\symbf s_{j+1})} \mathrm{d}^r (\exp(\symbf s_j))_{\x_j} + \mathrm{d}^r (\exp(\symbf s_{j+1}))_{\x^j}  \right)                                                                                                                                              \\
+                         & \overset{\eqref{eq:dr_sj}}= \bAd_{\bar z_2^{-1}} \left( \tilde B_{j, k}(t) \bAd_{\exp(-s_{j+1})} \left[ \mathrm{d}^r \exp_{\symbf s_j} \right] \left[ \mathrm{d}^r \exp_{\symbf v_j} \right]^{-1} - \tilde B_{j+1, k}(t) \left[ \mathrm{d}^r \exp_{\symbf s_{j+1}} \right] \left[ \mathrm{d}^l \exp_{\bv_{j+1}} \right]^{-1} \right), \\
+    \symbf r_{i^{*} - k} & = \mathrm{d}^{r} \left( \x_{i^{*} - k} \circ \exp \left[ \symbf s_{i^{*}-k+1} \right] \circ \bar z_{2}^{-1} \right) =                                                                                                                                                                                                                 \\
+                         & = \bAd_{\bar z_{2}^{-1}} \left( \bAd_{\exp(-\symbf s_{i^{*} - k + 1})} - \tilde B_{i^{*} - k + 1}(t) \mathrm{d}^{r} \exp_{\symbf s_{i^{*} - k + 1}} \left[ \mathrm{d}^{r} \exp_{v_{i^{*} - k + 1}} \right]^{-1} \right).
   \end{aligned}
 \end{equation*}
 

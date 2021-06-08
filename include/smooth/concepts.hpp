@@ -14,7 +14,7 @@ namespace smooth
  **********************/
 
 /**
- * @brief Storage concept: requires operator[] to access one of N ints
+ * @brief Storage concept: requires operator[] to access one of N values
  *
  * @tparam S storage type
  * @tparam Scalar scalar type
@@ -29,14 +29,18 @@ requires(const S & s, int i) {
   {s[i]}->std::convertible_to<typename S::Scalar>;
 };
 
-// Storage that can be mapped
+/**
+ * @brief Storage that can be mapped
+ */
 template<typename S>
 concept MappableStorageLike = StorageLike<S>&&
   requires(const S & s) {
   {s.data()}->std::same_as<const typename S::Scalar *>;
 };
 
-// Storage that can be both mapped and modified
+/**
+ * @brief Storage that can be both mapped and modified
+ */
 template<typename S>
 concept ModifiableStorageLike =
   MappableStorageLike<S>&&
@@ -101,7 +105,7 @@ requires {
   typename G::Tangent;
   {G::RepSize}->std::convertible_to<Eigen::Index>;  // representation size
   {G::Dof}->std::convertible_to<Eigen::Index>;      // degrees of freedom
-  {G::Dim}->std::convertible_to<Eigen::Index>;      // dimension
+  {G::Dim}->std::convertible_to<Eigen::Index>;      // matrix dimension
   {G::ActDim}->std::convertible_to<Eigen::Index>;   // dimension of space of which group act on
 } &&
 (G::RepSize >= 1) &&
