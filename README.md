@@ -8,8 +8,7 @@ Do you want to do any of the following on a Lie group (or learn the theory)?
  * [x] Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
  * [x] Automatic differentiation
  * [x] Optimization
- * [x] Interpolation (right figure shows an interpolating B-spline of order 5 on SO(3), see `examples/bspline.cpp`)
- * [ ] Design controllers and estimators
+ * [x] Interpolation (right figure shows a B-spline of order 5 on SO(3), see `examples/bspline.cpp`)
 
 Then this project may be of interest. **Currently in development**, the goal is to
 facilitate the use of Lie theory for robotics practitioners.
@@ -108,6 +107,8 @@ Algorithms: - splines
 
 Dynamics / control / filtering : Bundle<LieGroup | StaticRn>
 
+Calibration : LieGroup | Bunndle<LieGroup>
+
 Optimization: ManifoldVector<Manifold> ...
 
 
@@ -120,6 +121,7 @@ Available:
 
 Planned:
 
+* [ ] Bezier curve evaluation and fitting
 * [ ] IMU pre-integration
 * [ ] Trajectory-tracking PD controller
 * [ ] Model-predictive control
@@ -147,9 +149,6 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 ## Book
 
 - [ ] reorganize dynamics: bring in system linearization and Magnus expansion
-- Prove that $dr exp_a a = a$
-- Splines:
-  - [ ] Cubic bezier curves: solve for velocities
 
 ## Library
 
@@ -157,3 +156,4 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 - [ ] ceres autodiff
 - [ ] Optimize NLS: experiment with direct ways for solving sparse LS
 - [ ] Set up Gitlab CI
+
