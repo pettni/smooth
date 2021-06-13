@@ -116,12 +116,14 @@ Optimization: ManifoldVector<Manifold> ...
 
 Available:
 
-* [x] B-spline evaluation and fitting
-* [x] Trust-region optimization
+* [x] Tangent space differentiation (`diff.hpp`)
+* [x] B-spline evaluation and fitting (`interp/bspline.hpp`)
+* [x] Non-linear least squares optimization (`nls.hpp`)
 
 Planned:
 
-* [ ] Bezier curve evaluation and fitting
+* [ ] Bezier curve evaluation and fitting (`interp/bezier.hpp`)
+* [ ] Lie group means (`mean.hpp`)
 * [ ] IMU pre-integration
 * [ ] Trajectory-tracking PD controller
 * [ ] Model-predictive control
