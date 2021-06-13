@@ -37,12 +37,12 @@ Applying Lemma \ref{lem:help_exp} then gives the exponential.
         \hat{\bomega} & \symbf{v} \\ \symbf{0}_{1 \times 3} & 0
       \end{bmatrix} & = \begin{bmatrix}
         \Exp_{\SOthree}(\hat{\bomega}) & \mathrm{d}^l \left( \exp_{\SOthree} \right)_\bomega \symbf v \\ \symbf{0}_{1 \times 3} & 1
-      \end{bmatrix},                                                                                        \\
+      \end{bmatrix},                                                                                         \\
       \Log_\SEthree \begin{bmatrix}
         \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
       \end{bmatrix}                                & = \begin{bmatrix}
         \hat{\symbf \alpha} & \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp \\ \symbf{0}_{1 \times 3} & 0
-      \end{bmatrix},                                                                                        \\
+      \end{bmatrix},                                                                                         \\
       \log_\SEthree \begin{bmatrix}
         \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
       \end{bmatrix}                                & = \left(\symbf \alpha, \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp  \right),
@@ -130,11 +130,14 @@ The first two sums can now be evaluated in a fairly straightforward manner:
 \end{subequations}
 The double sum requries additional work. Using $\hat \bomega \hat \bv \hat \bomega = (-\bomega \cdot \bv) \hat \bomega$ from \eqref{eq:so3_pow3} yields
 \begin{equation*}
+  \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1} = (-\bomega \cdot \bv) \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{k+i+1}  \overset{j = k+i}=  (-\bomega \cdot \bv) \sum_{j = 0}^\infty \sum_{k = 0}^{j} \frac{1}{(j+4)!} \hat \bomega^{j+1},
+\end{equation*}
+and we can evaluate the sum as
+\begin{equation*}
   \begin{aligned}
-    \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1} = (-\bomega \cdot \bv) \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{k+i+1}  \overset{j = k+i}=  (-\bomega \cdot \bv) \sum_{j = 0}^\infty \sum_{k = 0}^{j} \frac{1}{(j+4)!} \hat \bomega^{j+1} \\
-    = -(\bomega \cdot \bv) \sum_{j = 0}^\infty \frac{j+1}{(j+4)!} \hat \bomega^{j+1} = -(\bomega \cdot \bv) \sum_{j=0}^\infty \left(\frac{1}{(j+3)!} - \frac{3}{(j+4)!} \right) \hat \bomega^{j+1}                                                                                                                                      \\
-    = -(\bomega \cdot \bv) \left( \sum_{j=0}^\infty \left(\frac{1}{(2j+3)!} - \frac{3}{(2j+4)!} \right) \hat \bomega^{2j+1} + \sum_{j=0}^\infty \left(\frac{1}{(2j+4)!} - \frac{3}{(2j+5)!} \right) \hat \bomega^{2j+2} \right)                                                                                                         \\
-    \overset{\eqref{eq:hat_parity_rels}}= (\bomega \cdot \bv) \left( -\sum_{j=0}^\infty \left(\frac{(-1)^j  }{(2j+3)!}\| \bomega \|^{2j} + 3\frac{(-1)^j }{(2j+4)!} \| \bomega \|^{2j}\right)  \hat \bomega + \sum_{j=0}^\infty \left(-\frac{(-1)^j  }{(2j+4)!} \| \bomega \|^{2j} + 3\frac{(-1)^j  }{(2j+5)!}\| \bomega \|^{2j} \right) \hat \bomega^2 \right).
+    \sum_{j=0}^\infty \sum_{k=0}^j \frac{1}{(j+4)!} \hat \bomega^{j+1} = - \sum_{j = 0}^\infty \frac{j+1}{(j+4)!} \hat \bomega^{j+1} = - \sum_{j=0}^\infty \left(\frac{1}{(j+3)!} - \frac{3}{(j+4)!} \right) \hat \bomega^{j+1} \\
+    = - \sum_{j=0}^\infty \left(\frac{1}{(2j+3)!} - \frac{3}{(2j+4)!} \right) \hat \bomega^{2j+1} + \sum_{j=0}^\infty \left(\frac{1}{(2j+4)!} - \frac{3}{(2j+5)!} \right) \hat \bomega^{2j+2}                                   \\
+    \overset{\eqref{eq:hat_parity_rels}}=   -\sum_{j=0}^\infty \left(\frac{(-1)^j  }{(2j+3)!}\| \bomega \|^{2j} + 3\frac{(-1)^j }{(2j+4)!} \| \bomega \|^{2j}\right)  \hat \bomega + \sum_{j=0}^\infty \left(-\frac{(-1)^j  }{(2j+4)!} \| \bomega \|^{2j} + 3\frac{(-1)^j  }{(2j+5)!}\| \bomega \|^{2j} \right) \hat \bomega^2 .
   \end{aligned}
 \end{equation*}
 The sums \eqref{eq:sine_sum} and \eqref{eq:cosine_sum} appear again and can be re-used. The remaining sum with denominator $(2j+5)!$ evaluates to a higher-order sine expression as follows
@@ -168,40 +171,40 @@ The $Q$ matrix allows us to write down a closed-form expression for $\mathrm{d}^
 \end{properties}
 
 \begin{properties}[breakable, title={Formulas for $\SEthree$}]
-\paragraph{Group Parameterization}
-\begin{equation}
-\end{equation}
+  \paragraph{Group Parameterization}
+  \begin{equation}
+  \end{equation}
 
-\paragraph{Algebra Parameterization}
-\begin{equation}
-\end{equation}
+  \paragraph{Algebra Parameterization}
+  \begin{equation}
+  \end{equation}
 
-\paragraph{Group Operations}
-\begin{itemize}
-  \item Identity element:
-  \item Inverse:
-  \item Composition:
-\end{itemize}
+  \paragraph{Group Operations}
+  \begin{itemize}
+    \item Identity element:
+    \item Inverse:
+    \item Composition:
+  \end{itemize}
 
-\paragraph{Adjoint}
-\begin{equation}
-\end{equation}
+  \paragraph{Adjoint}
+  \begin{equation}
+  \end{equation}
 
-\paragraph{Exponential}
-\begin{equation}
-\end{equation}
+  \paragraph{Exponential}
+  \begin{equation}
+  \end{equation}
 
-\paragraph{Logarithm}
-\begin{equation}
-\end{equation}
+  \paragraph{Logarithm}
+  \begin{equation}
+  \end{equation}
 
-\paragraph{Lowercase adjoint}
-\begin{equation}
-\end{equation}
+  \paragraph{Lowercase adjoint}
+  \begin{equation}
+  \end{equation}
 
-\paragraph{Derivatives of the Exponential}
-\begin{equation}
-\end{equation}
+  \paragraph{Derivatives of the Exponential}
+  \begin{equation}
+  \end{equation}
 \end{properties}
 
 \section{Parameterization via Isomorphism with \texorpdfstring{$\Sthree \ltimes \mathbb{R}^{3}$}{S3 |x R3}}

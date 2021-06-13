@@ -16,6 +16,11 @@
 \KOMAoption{paper}{letter}
 \KOMAoption{DIV}{11}  % calculates margins
 
+% Todo notes
+\setlength{\marginparwidth}{2cm}
+\usepackage{todonotes}
+% \usepackage[disable]{todonotes}
+
 % Fonts
 \usepackage{fontspec, unicode-math}
 % \usepackage{mathspec}
@@ -33,8 +38,8 @@
 }
 
 % Tikz
-\usepackage{tikz,pgfplots}
-\pgfplotsset{compat=newest}
+\usepackage{tikz, pgfplots}
+\pgfplotsset{compat=1.17}
 \usetikzlibrary{calc, arrows.meta, shapes.geometric, positioning, scopes, shadows, decorations.markings, external, intersections, fit, patterns, automata, backgrounds}
 
 % Dont externalize todos
