@@ -1,6 +1,6 @@
 % !TEX root = ../root.tex
 
-\chapter{Application: Geometric Control}
+\chapter{Application: Control}
 
 \begin{itemize_outcomes}
   \item Extend PD theory to Lie Groups.
@@ -386,7 +386,7 @@ where $B$ is some number that upper bounds $\| \left( 2 J R^T \bomega_d - \text{
 \end{itemize}
 
 
-\chapter{Application: Model-Predictive Control}
+\section{Model-Predictive Control}
 
 Consider a system $\X(t)$ evolving on a Matrix Lie group
 \begin{equation}
@@ -444,3 +444,4 @@ We can thus write it on the form
 \begin{equation}
   \left\| \sqrt{Q} \left( \left( \X_l \oplus_r \a_e \right) \ominus_r \X_d \right)  \right\|_2^2 \approx \left( \X_l \ominus_r \X_d + \a_e \right)^T Q \left( \X_l \ominus_r \X_d + \a_e \right) = \a_e^T Q \a_e + 2\left( \X_l \ominus_r \X_d  \right)^T Q \a_e.
 \end{equation}
+
