@@ -151,9 +151,39 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 ## Book
 
 - [x] reorganize dynamics: bring in system linearization and Magnus expansion
+- [ ] clean up parameterization vs matrix groups stuff
+- Work out missing parts
+  - [ ] Probability theory
+  - [ ] Equivariance
+  - [ ] Numerical Integration
+  - [ ] Estimation
+- Make readable
+  - Part 1:
+    - [ ] Introduction
+    - [ ] Lie Groups
+    - [ ] Lie Algebras
+    - [ ] Exponential map
+    - [ ] Derivatives
+    - [ ] Dynamical Systems
+    - [ ] Equivariance
+  - Part 2:
+    - [ ] Classical groups
+    - [ ] SO2
+    - [ ] SO3
+    - [ ] SE2
+    - [ ] SE3
+  - Part 3:
+    - [ ] Numerical integration
+    - [ ] Control
+    - [ ] Estimation
+    - [ ] NLS
+    - [ ] PGO / marginalization
+    - [ ] Splines
+
 
 ## Library
 
+- [ ] implement approximate cubic Bezier spline fitting via sparse solving
 - [ ] pass options in NLS
 - [ ] ceres autodiff
 - [ ] Optimize NLS: experiment with direct ways for solving sparse LS
