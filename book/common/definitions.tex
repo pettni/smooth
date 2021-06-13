@@ -1,16 +1,52 @@
-% Math notation
+% !TEX root = ../root.tex
 
-%%%% NEW TERMINOLOGY
+%%%%%%%%%%%%%%%%%%%%%%%
+%%%% ENVIRONMENTS %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{remark}{Remark}[chapter]
+\newtheorem{exercise}{Exercise}[chapter]
+\newtheorem{problem}{Problem}[chapter]
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}{Lemma}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+
+%%%%%%%%%%%%%%%%%%
+%%% OPERATORS %%%%
+%%%%%%%%%%%%%%%%%%
+
+\newcommand{\tr}{\mathrm{Tr}}
+
+\DeclareMathOperator{\ad}{ad}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\bAd}{\textbf{Ad}}
+
+\DeclareMathOperator{\Exp}{Exp}
+\DeclareMathOperator{\Log}{Log}
+
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\Diag}{Diag}
+
+\DeclareMathOperator{\arctantwo}{arctan2}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+%%%%%%%%%%%%%%%%%%
+%%%% SYMBOLS %%%%%
+%%%%%%%%%%%%%%%%%%
 
 %% Manifolds
 \newcommand{\M}{\mathbb{M}}
 \newcommand{\N}{\mathbb{N}}
-\newcommand{\cM}{\check{\mathbb{M}}}
-\newcommand{\cN}{\check{\mathbb{N}}}
+\newcommand{\cM}{\check{\mathbb{M}}}  % should go away
+\newcommand{\cN}{\check{\mathbb{N}}}  % should go away
+
+\newcommand{\chart}{c}
 
 %% Lie algebras
 \newcommand{\lM}{\mathfrak{m}}
-
 \newcommand{\lN}{\mathfrak{n}}
 \newcommand{\clM}{\check{\mathfrak{m}}}
 \newcommand{\clN}{\check{\mathfrak{n}}}
@@ -100,6 +136,9 @@
 \newcommand{\SOtwo}{{\mathbb{SO}(2)}}
 \newcommand{\SOthree}{{\mathbb{SO}(3)}}
 
+\newcommand{\Etwo}{{\mathbb{E}(2)}}
+\newcommand{\Ethree}{\mathbb{E}(3)}
+
 \newcommand{\SEtwo}{{\mathbb{SE}(2)}}
 \newcommand{\SEthree}{{\mathbb{SE}(3)}}
 
@@ -114,6 +153,9 @@
 \newcommand{\ttwo}{{\mathfrak{t}(2)}}
 \newcommand{\tthree}{\mathfrak{t}(3)}
 
+\newcommand{\etwo}{{\mathfrak{e}(2)}}
+\newcommand{\ethree}{\mathfrak{e}(3)}
+
 \newcommand{\sotwo}{{\mathfrak{so}(2)}}
 \newcommand{\sothree}{{\mathfrak{so}(3)}}
 
@@ -126,94 +168,5 @@
 
 \newcommand{\sthree}{{\mathfrak{s}^3}}
 
-%%%% DEPRECATED
-
-\newcommand{\cEn}{\check{\mathbb{E}}(n)}
-\newcommand{\cSOn}{\check{\mathbb{SO}}(n)}
-\newcommand{\cSEn}{\check{\mathbb{SE}}(n)}
-\newcommand{\cEtwo}{\check{\mathbb{E}}(2)}
-\newcommand{\cEthree}{\check{\mathbb{E}}(3)}
-\newcommand{\cSOtwo}{\check{\mathbb{SO}}(2)}
-\newcommand{\cSOthree}{\check{\mathbb{SO}}(3)}
-\newcommand{\cSEtwo}{\check{\mathbb{SE}}(2)}
-\newcommand{\cSEthree}{\check{\mathbb{SE}}(3)}
-\newcommand{\cSUn}{\check{\mathbb{SU}}(n)}
-\newcommand{\cSUtwo}{\check{\mathbb{SU}}(2)}
 
 
-\newcommand{\Etwo}{{\mathbb{E}(2)}}
-\newcommand{\Ethree}{\mathbb{E}(3)}
-\newcommand{\etwo}{{\mathfrak{e}(2)}}
-\newcommand{\ethree}{\mathfrak{e}(3)}
-
-%% Manifolds
-\newcommand{\T}{T}  %% Tangent space
-\newcommand{\chart}{c}
-
-%% Lie Algebras
-\newcommand{\lX}{\mathfrak m}
-\newcommand{\lY}{\mathfrak n}
-
-%% States
-\newcommand{\quat}{\mathbf{q}}
-
-%%% Manifold points
-
-%%% Lie algebra elements (matrices)
-\newcommand{\lx}{A}
-\newcommand{\ly}{B}
-
-%%% Lie algebra parameterizations
-\newcommand{\lxp}{\tau}
-
-
-%%% Tangent vector points
-\renewcommand{\v}{v}
-
-
-% Environments
-\newtheorem{definition}{Definition}[chapter]
-\newtheorem{remark}{Remark}[chapter]
-\newtheorem{exercise}{Exercise}[chapter]
-\newtheorem{problem}{Problem}[chapter]
-\newtheorem{theorem}{Theorem}[chapter]
-\newtheorem{lemma}{Lemma}[chapter]
-\newtheorem{proposition}{Proposition}[chapter]
-
-
-\usepackage{bm,cancel}
-
-\makeatletter
-\newdimen\rh@wd
-\newdimen\rh@hta
-\newdimen\rh@htb
-\newbox\rh@box
-\def\rh@measure#1{\setbox\rh@box=\hbox{$#1$}\rh@wd=\wd\rh@box \rh@hta=\ht\rh@box}
-
-\def\widecheck#1{\rh@measure{#1}%
-  \setbox\rh@box=\hbox{$\widehat{\vrule height \rh@hta width\z@ \kern\rh@wd}$}%
-  \rh@htb=\ht\rh@box \advance\rh@htb\rh@hta \advance\rh@htb\p@
-  \ooalign{$\vrule height \ht\rh@box width\z@ #1$\cr
-    \raise\rh@htb\hbox{\scalebox{1}[-1]{\box\rh@box}}\cr}}
-\makeatother
-
-%%% MATH OPERATORS
-
-\newcommand{\tr}{\mathrm{Tr}}
-
-\newcommand{\btau}{\tau}
-
-\DeclareMathOperator{\ad}{ad}
-\DeclareMathOperator{\Ad}{Ad}
-\DeclareMathOperator{\bAd}{\textbf{Ad}}
-
-\DeclareMathOperator{\Exp}{Exp}
-\DeclareMathOperator{\Log}{Log}
-
-\DeclareMathOperator{\diag}{diag}
-\DeclareMathOperator{\Diag}{Diag}
-
-\DeclareMathOperator{\arctantwo}{arctan2}
-
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}

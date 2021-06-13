@@ -81,7 +81,7 @@ There is no trivial low-dimensional parameterizations of this set, however, it i
 \begin{equation}
   \Sthree = \left \{ (q_w, q_x, q_y, q_z)  : q_w^2 + q_x^2 + q_y^2 + q_z^2 = 1 \right\}.
 \end{equation}
-However, the mapping is not 1-to-1, since both $\symbf{q} \coloneq (q_w, q_x, q_y, q_z)$ and $-\symbf{q}$ correspond to the same rotation matrix.
+However, the mapping is not 1-to-1, since both $\bq \coloneq (q_w, q_x, q_y, q_z)$ and $-\bq$ correspond to the same rotation matrix.
 
 
 \paragraph{Action on \texorpdfstring{$\mathbb{R}^3$}{R3}}
@@ -95,7 +95,7 @@ The action of $\bR \in \SOthree$ on $\bu \in \mathbb{R}^3$ is rotation:
 
 \subsubsection{\texorpdfstring{$\mathbb{SU}(2)$}{SU(2)} and its relation to the quaternion group \texorpdfstring{$\Sthree$}{S3}}
 
-We can associate a quaternion $\symbf{q} = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ with the unitary matrix
+We can associate a quaternion $\bq = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ with the unitary matrix
 \begin{equation}
   \label{eq:su2_matrix}
   \mathbb{SU}(2) = \left\{ \begin{bmatrix}
@@ -103,7 +103,7 @@ We can associate a quaternion $\symbf{q} = q_w + q_x \symbf{i} + q_y \symbf{j} +
     q_x - i q_y & q_w - i q_z
   \end{bmatrix} \mid q_w^2 + q_x^2 + q_y^2 + q_z^2 = 1 \right\}
 \end{equation}
-for which it holds that $A_{\quat_1 * \quat_2} = A_{\quat_1} A_{\quat_2}$. Thus the unit quaternions $\Sthree$ are isomorphic to $\mathbb{SU}(2)$ and can therefore be viewed as a matrix Lie group.
+for which it holds that $A_{\bq_1 * \bq_2} = A_{\bq_1} A_{\bq_2}$. Thus the unit quaternions $\Sthree$ are isomorphic to $\mathbb{SU}(2)$ and can therefore be viewed as a matrix Lie group.
 
 By muliplying two elements in $\mathbb{SU}$ we retrieve quaternion multiplication:
 \begin{equation}
@@ -139,7 +139,7 @@ with the quaternion rules $\symbf{i}\symbf{j} = \symbf{k}, \symbf{j}\symbf{k} = 
 
 \paragraph{Action on \texorpdfstring{$\mathbb{R}^3$}{R3}}
 
-A quaternion $\symbf{q} = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ acts on $\bu \coloneq \begin{bmatrix} u_x \\ u_y \\ u_z \end{bmatrix} \in \mathbb{R}^3$ as quaternion rotation $\symbf{q} * \bu * \bar {\symbf{q}}$ where $\bu$ is associated with the quaternion $u_x \symbf{i} + u_y \symbf{j} + u_z \symbf{k}$.
+A quaternion $\bq = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ acts on $\bu \coloneq \begin{bmatrix} u_x \\ u_y \\ u_z \end{bmatrix} \in \mathbb{R}^3$ as quaternion rotation $\bq * \bu * \bar {\bq}$ where $\bu$ is associated with the quaternion $u_x \symbf{i} + u_y \symbf{j} + u_z \symbf{k}$.
 
 In terms of matrix multiplication operation can be written
 \begin{equation}
@@ -169,7 +169,7 @@ for
   \end{aligned}
 \end{equation}
 
-Since this is a linear mapping in $u_x, u_y, u_z$ we can identify $\symbf{q}$ with a matrix $\bR(\bq)$ with coefficients
+Since this is a linear mapping in $u_x, u_y, u_z$ we can identify $\bq$ with a matrix $\bR(\bq)$ with coefficients
 \begin{equation}
   \label{eq:quat_to_so3}
   \bR(\bq) = \begin{bmatrix}

@@ -150,7 +150,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Book
 
-- [ ] reorganize dynamics: bring in system linearization and Magnus expansion
+- [x] reorganize dynamics: bring in system linearization and Magnus expansion
 
 ## Library
 
