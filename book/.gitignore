@@ -17,3 +17,5 @@
 *.xdv
 
 .auctex-auto
+
+**.bak*

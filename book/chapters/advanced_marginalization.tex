@@ -1,9 +1,8 @@
-% !TEX root = ../manuscript.tex
+% !TEX root = ../root.tex
 
 \chapter{Advanced: Marginalization of nonlinear least squares}
 
 Objective is to remove a variable from the problem in a way so that
-
 
 * The optimal solution is not effected
 * The first derivative at the optimal solution remains the same
@@ -30,39 +29,39 @@ where $\mathrm{Exp} : \mathbb{R}^{n{_i}} \rightarrow M_i$ maps from coordinates 
 
 We now expand the sum
 $$
-\begin{aligned}
-  2S & \approx \sum_j \left( h_j(\mu_j) - y_j \right)^T I_j \left( h_j(\mu_j) - y_j \right) + \sum_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right)^T I_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right) \\
-  & \quad + 2 \sum_j \left( h_j(\mu_j) - y_j \right)^T I_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right)
-\end{aligned}
+  \begin{aligned}
+    2S & \approx \sum_j \left( h_j(\mu_j) - y_j \right)^T I_j \left( h_j(\mu_j) - y_j \right) + \sum_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right)^T I_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right) \\
+       & \quad + 2 \sum_j \left( h_j(\mu_j) - y_j \right)^T I_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right)
+  \end{aligned}
 $$
-and consider the term quadratic in $e$. We can augment the middle matrix with the differentials and 
+and consider the term quadratic in $e$. We can augment the middle matrix with the differentials and
 $$
-\begin{aligned}
-  & \sum_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right)^T I_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right) \\
-  & = \sum_j \begin{bmatrix}
-    e_{j_1} & \ldots & e_{j_{n_j}}
-  \end{bmatrix} \begin{bmatrix}
-    [\mathrm{d}_{j_1} h_j]_{\mu_j}^T \\ \vdots \\ [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}^T
-   \end{bmatrix} I_j \begin{bmatrix}
-    [\mathrm{d}_{j_1} h_j]_{\mu_j} & \dots & [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}
-   \end{bmatrix}
-   \begin{bmatrix}
-    e_{j_1} \\ \vdots \\ e_{j_{n_j}}
-  \end{bmatrix} \\
-  & = \sum_j \begin{bmatrix}
-    e_{j_1} & \ldots & e_{j_{n_j}}
-  \end{bmatrix} \begin{bmatrix}
-    [\mathrm{d}_{j_1} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_1} h_j]_{\mu_j} & \dots & [\mathrm{d}_{j_{1}} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}  \\ \vdots & \ddots & \vdots \\ [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_{1}} h_j]_{\mu_j} & \cdots & [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}
-   \end{bmatrix}
-   \begin{bmatrix}
-    e_{j_1} \\ \vdots \\ e_{j_{n_j}}
-  \end{bmatrix} \\
-  & = \sum_{i_1, i_2} e_{i_1} \left[\sum_{j : i_1, i_2 \in I_j} [\mathrm{d}_{i_1} h_j]_{\mu_j}^T I_j [\mathrm{d}_{i_2} h_j]_{\mu_j} \right]  e_{i_2} = \begin{bmatrix}
-    e_1  & \ldots & e_k
-  \end{bmatrix} \Lambda \begin{bmatrix}
-    e_1  \\ \vdots \\ e_k
-  \end{bmatrix},
-\end{aligned}
+  \begin{aligned}
+     & \sum_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right)^T I_j \left( \sum_{i \in I_j} [\mathrm{d}_i h_j]_{\mu_j} e_i \right)                                                                        \\
+     & = \sum_j \begin{bmatrix}
+      e_{j_1} & \ldots & e_{j_{n_j}}
+    \end{bmatrix} \begin{bmatrix}
+      [\mathrm{d}_{j_1} h_j]_{\mu_j}^T \\ \vdots \\ [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}^T
+    \end{bmatrix} I_j \begin{bmatrix}
+      [\mathrm{d}_{j_1} h_j]_{\mu_j} & \dots & [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}
+    \end{bmatrix}
+    \begin{bmatrix}
+      e_{j_1} \\ \vdots \\ e_{j_{n_j}}
+    \end{bmatrix}                                                                                                                                                                                            \\
+     & = \sum_j \begin{bmatrix}
+      e_{j_1} & \ldots & e_{j_{n_j}}
+    \end{bmatrix} \begin{bmatrix}
+      [\mathrm{d}_{j_1} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_1} h_j]_{\mu_j} & \dots & [\mathrm{d}_{j_{1}} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j} \\ \vdots & \ddots & \vdots \\ [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_{1}} h_j]_{\mu_j} & \cdots & [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}^T I_j [\mathrm{d}_{j_{n_j}} h_j]_{\mu_j}
+    \end{bmatrix}
+    \begin{bmatrix}
+      e_{j_1} \\ \vdots \\ e_{j_{n_j}}
+    \end{bmatrix}                                                                                                                                                                                            \\
+     & = \sum_{i_1, i_2} e_{i_1} \left[\sum_{j : i_1, i_2 \in I_j} [\mathrm{d}_{i_1} h_j]_{\mu_j}^T I_j [\mathrm{d}_{i_2} h_j]_{\mu_j} \right]  e_{i_2} = \begin{bmatrix}
+      e_1 & \ldots & e_k
+    \end{bmatrix} \Lambda \begin{bmatrix}
+      e_1 \\ \vdots \\ e_k
+    \end{bmatrix},
+  \end{aligned}
 $$
 where $\Lambda$ is the sum of \textbf{block-lifted information matrices} obtained by placing the blocks from cost functions at the appropriate places.
 
@@ -89,23 +88,23 @@ $$
     \Lambda_{\alpha \alpha} & \Lambda_{\alpha \beta} \\ \Lambda_{\beta \alpha} & \Lambda_{\beta \beta}
   \end{bmatrix} \begin{bmatrix}
     e_\alpha \\ e_\beta
-  \end{bmatrix} 
+  \end{bmatrix}
 $$
 We can then expand the information matrix in the same way as in \textcolor{red}{Joplin normal distribution} to obtain
 $$
- S \sim \begin{bmatrix}
-  \eta_\alpha^T - \eta_\beta^T \Lambda_{\beta \beta}^{-1} \Lambda_{\beta \alpha} & \eta_\beta^T
-\end{bmatrix}   \begin{bmatrix}
-  e_\alpha \\ e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha
-\end{bmatrix} + \frac{1}{2}\begin{bmatrix}
-  e_\alpha \\ e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha
-\end{bmatrix}^T \begin{bmatrix}
-  \Lambda/\Lambda_{\beta \beta} & 0 \\ 0 & \Lambda_{\beta \beta}
-\end{bmatrix} \begin{bmatrix}
-  e_\alpha \\ e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha
-\end{bmatrix}.
+  S \sim \begin{bmatrix}
+    \eta_\alpha^T - \eta_\beta^T \Lambda_{\beta \beta}^{-1} \Lambda_{\beta \alpha} & \eta_\beta^T
+  \end{bmatrix}   \begin{bmatrix}
+    e_\alpha \\ e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha
+  \end{bmatrix} + \frac{1}{2}\begin{bmatrix}
+    e_\alpha \\ e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha
+  \end{bmatrix}^T \begin{bmatrix}
+    \Lambda/\Lambda_{\beta \beta} & 0 \\ 0 & \Lambda_{\beta \beta}
+  \end{bmatrix} \begin{bmatrix}
+    e_\alpha \\ e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha
+  \end{bmatrix}.
 $$
-That is, we have separated the expression into two quadratic expressions. A coordinate change $\kappa = e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha$ reveals that they can be solved independently. The sub-problem for $e_\alpha$ reads
+That is, we have separated the expression into two quadratic expressions. A coordinate change $$\kappa = e_\beta + \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} e_\alpha$$ reveals that they can be solved independently. The sub-problem for $e_\alpha$ reads
 $$
   \left( \eta_\alpha^T - \eta_\beta^T \Lambda_{\beta\beta}^{-1} \Lambda_{\beta \alpha} \right) e_a + \frac{1}{2} e_\alpha^T (\Lambda/\Lambda_{\beta\beta}) e_\alpha.
 $$
@@ -125,33 +124,33 @@ Ceres provides evaluations $E_j = \sqrt{I_j} (h_j(\mu_j) - y_j)$ and gradient bl
 2. Find the mean vector $\eta$ by summing over all factors in $F$. Sum segments in $\eta$ are of the form $(h_j(\mu_j) - y_j)^T I_j [\mathrm{d}_i h_j]_{\mu_j} = E_{j}^TG_{ji}$.
 3. Partition $\Lambda$ and $\eta$ as
 $$
- \Lambda = \begin{bmatrix}
-   \Lambda_{\lnot k \lnot k} & \Lambda_{\lnot k k} \\ \Lambda_{k \lnot k} & \Lambda_{kk}
- \end{bmatrix}, \quad \eta = \begin{bmatrix}
-   \eta_{\lnot k} \\
-   \eta_l
- \end{bmatrix}.
+  \Lambda = \begin{bmatrix}
+    \Lambda_{\lnot k \lnot k} & \Lambda_{\lnot k k} \\ \Lambda_{k \lnot k} & \Lambda_{kk}
+  \end{bmatrix}, \quad \eta = \begin{bmatrix}
+    \eta_{\lnot k} \\
+    \eta_l
+  \end{bmatrix}.
 $$
 3. Calculate $\tilde \Lambda = \Lambda/ \Lambda_{k}$ and $\gamma = - (\Lambda / \Lambda_k)^{-1} \left( \eta_{\lnot k} - \Lambda_{\lnot k k} \Lambda_{kk}^{-1}   \eta_k \right)$
 4. Remove factors $F$ and instead insert a new factor with cost function
 $$
-(e_{\lnot k} - \gamma)^T \tilde \Lambda (e_{\lnot k} - \gamma) =
- \begin{bmatrix}
-  e_1 - \gamma_1 \\
-  \vdots \\
-  e_n - \gamma_n
-\end{bmatrix}^T \tilde \Lambda \begin{bmatrix}
-  e_1 - \gamma_1 \\
-  \vdots \\
-  e_n - \gamma_n
-\end{bmatrix} =
+  (e_{\lnot k} - \gamma)^T \tilde \Lambda (e_{\lnot k} - \gamma) =
+  \begin{bmatrix}
+    e_1 - \gamma_1 \\
+    \vdots         \\
+    e_n - \gamma_n
+  \end{bmatrix}^T \tilde \Lambda \begin{bmatrix}
+    e_1 - \gamma_1 \\
+    \vdots         \\
+    e_n - \gamma_n
+  \end{bmatrix} =
   \begin{bmatrix}
     \mathrm{Log}(\mu_1^{-1} x_1) - \gamma_1 \\
-    \vdots \\
+    \vdots                                  \\
     \mathrm{Log}(\mu_n^{-1} x_n) - \gamma_n
   \end{bmatrix}^T \tilde \Lambda \begin{bmatrix}
     \mathrm{Log}(\mu_1^{-1} x_1) - \gamma_1 \\
-    \vdots \\
+    \vdots                                  \\
     \mathrm{Log}(\mu_n^{-1} x_n) - \gamma_n
   \end{bmatrix}
 $$
@@ -166,7 +165,7 @@ and consider the cost
 $$
   \left\| \sqrt{D} U^T \begin{bmatrix}
     \mathrm{Log}(\mu_1^{-1} x_1) - \gamma_1 \\
-    \vdots \\
+    \vdots                                  \\
     \mathrm{Log}(\mu_n^{-1} x_n) - \gamma_n
   \end{bmatrix} \right\|^2
 $$
@@ -177,11 +176,11 @@ which has a non-zero information matrix.
 The above linearizes around a world point $\{ \mu \}$. This makes sense if marginalizing a node that has an absolute factor, but perhaps not when it is only connected via relative factors and there may be a lot of drift. We can transform the measurements into a local frame by instead introducing the cost
 
 $$
-\left\| \sqrt{D} U^T \begin{bmatrix}
-  \mathrm{Log}(\mu_{01}^{-1} x_0^{-1} x_1) - \gamma_1 \\
-  \vdots \\
-  \mathrm{Log}( \mu_{0n}^{-1} x_0^{-1} x_n) - \gamma_n
-\end{bmatrix} \right\|^2
+  \left\| \sqrt{D} U^T \begin{bmatrix}
+    \mathrm{Log}(\mu_{01}^{-1} x_0^{-1} x_1) - \gamma_1 \\
+    \vdots                                              \\
+    \mathrm{Log}( \mu_{0n}^{-1} x_0^{-1} x_n) - \gamma_n
+  \end{bmatrix} \right\|^2
 $$
 where $\mu_{0i} = \mu_0^{-1} \mu_i$ are linearization points transformed into the local frame of $x_0$, which should be selected as a pose in the vicinity of the removed node.
 
@@ -191,7 +190,7 @@ where $\mu_{0i} = \mu_0^{-1} \mu_i$ are linearization points transformed into th
 
 \section{Example}
 
-Consider the least-squares problem 
+Consider the least-squares problem
 $$
   S = (x_1 - x_3 + 1)^2 + (x_2 - x_3 + 1)^2
 $$
@@ -199,51 +198,51 @@ where $h_1(\mathbf{x}) = x_1 - x_3$, $y_1 = -1$, $h_2(\mathbf{x}) = x_2 - x_3$, 
 
 We expand in a Taylor form as above
 $$
-\begin{aligned}
-  S & \approx \left( h_1(\mathbf{x}_0) + \mathrm{d} h_1 \cdot (\mathbf{x} - \mathbf{x}_0) - y_1 \right)^2 +  \left( h_2(\mathbf{x}_0) + \mathrm{d} h_2 \cdot (\mathbf{x} - \mathbf{x}_0) - y_2 \right)^2 \\
-  & = (\mathrm{d} h_1 \cdot (\mathbf{x} - \mathbf{x}_0))^2 + (\mathrm{d} h_2 \cdot (\mathbf{x} - \mathbf{x}_0) )^2 \\
-  & \quad + 2 \left[ (h_1(\mathbf{x}_0) - y_1) \mathrm{d} h_1 \cdot (\mathbf{x} - \mathbf{x}_0) + (h_2(\mathbf{x}_0) - y_2) \mathrm{d} h_2 \cdot (\mathbf{x} - \mathbf{x}_0)\right] + C
-\end{aligned}
+  \begin{aligned}
+    S & \approx \left( h_1(\mathbf{x}_0) + \mathrm{d} h_1 \cdot (\mathbf{x} - \mathbf{x}_0) - y_1 \right)^2 +  \left( h_2(\mathbf{x}_0) + \mathrm{d} h_2 \cdot (\mathbf{x} - \mathbf{x}_0) - y_2 \right)^2 \\
+      & = (\mathrm{d} h_1 \cdot (\mathbf{x} - \mathbf{x}_0))^2 + (\mathrm{d} h_2 \cdot (\mathbf{x} - \mathbf{x}_0) )^2                                                                                     \\
+      & \quad + 2 \left[ (h_1(\mathbf{x}_0) - y_1) \mathrm{d} h_1 \cdot (\mathbf{x} - \mathbf{x}_0) + (h_2(\mathbf{x}_0) - y_2) \mathrm{d} h_2 \cdot (\mathbf{x} - \mathbf{x}_0)\right] + C
+  \end{aligned}
 $$
 where $C$ is a constant. Since both $h$ are linear this expression is exact for any $\mathbf{x}_0$ (can be verified).
 
 We let $e_i = x_i - x_0^i$ and get
 $$
-\begin{aligned}
-  S & = \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix}^T \left( \mathrm{d} h_1^T \mathrm{d} h_1 + \mathrm{d} h_2^T \mathrm{d} h_2 \right) \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix} + 2 \left[ (h_1(\mathbf{x}_0) - y_1) \mathrm{d}h_1 + (h_2(\mathbf{x}_0) - y_2)\mathrm{d}h_2 \right] \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix} \\
-  & = \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix}^T \begin{bmatrix}
-    1 & 0 & -1 \\ 0 & 1 & -1 \\ -1 & -1 & 2
-  \end{bmatrix} \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix} \\
-  & + 2 \left[ (x_1^0 - x_3^0 +1) \begin{bmatrix}
-    1 & 0 & -1
-  \end{bmatrix} + (x_2^0 - x_3^0 + 1) \begin{bmatrix}
-    0 & 1 & -1
-  \end{bmatrix} \right] \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix} \\
-  & = \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix}^T \begin{bmatrix}
-    1 & 0 & -1 \\ 0 & 1 & -1 \\ -1 & -1 & 2
-  \end{bmatrix} \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix} \\
-  & + 2 \begin{bmatrix}
-    x_1^0 - x_3^0 +1 & x_2^0 - x_3^0 + 1 & -x_1^0 - x_2^0 + 2 x_3^0 -2
-  \end{bmatrix} \begin{bmatrix}
-    e_1 \\ e_2 \\ e_3
-  \end{bmatrix}
-\end{aligned}
+  \begin{aligned}
+    S & = \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix}^T \left( \mathrm{d} h_1^T \mathrm{d} h_1 + \mathrm{d} h_2^T \mathrm{d} h_2 \right) \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix} + 2 \left[ (h_1(\mathbf{x}_0) - y_1) \mathrm{d}h_1 + (h_2(\mathbf{x}_0) - y_2)\mathrm{d}h_2 \right] \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix} \\
+      & = \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix}^T \begin{bmatrix}
+      1 & 0 & -1 \\ 0 & 1 & -1 \\ -1 & -1 & 2
+    \end{bmatrix} \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix}                                                                                                                                                                                      \\
+      & + 2 \left[ (x_1^0 - x_3^0 +1) \begin{bmatrix}
+        1 & 0 & -1
+      \end{bmatrix} + (x_2^0 - x_3^0 + 1) \begin{bmatrix}
+        0 & 1 & -1
+      \end{bmatrix} \right] \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix}                                                                                                                              \\
+      & = \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix}^T \begin{bmatrix}
+      1 & 0 & -1 \\ 0 & 1 & -1 \\ -1 & -1 & 2
+    \end{bmatrix} \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix}                                                                                                                                                                                      \\
+      & + 2 \begin{bmatrix}
+      x_1^0 - x_3^0 +1 & x_2^0 - x_3^0 + 1 & -x_1^0 - x_2^0 + 2 x_3^0 -2
+    \end{bmatrix} \begin{bmatrix}
+      e_1 \\ e_2 \\ e_3
+    \end{bmatrix}
+  \end{aligned}
 $$
 We now marginalize out $x_3$ and identify the marginalized covariance
 $$
@@ -261,36 +260,40 @@ $$
 $$
 and the marginalized mean
 $$
-  \tilde \eta^T = \eta_{\alpha}^T - \eta_\beta^T \Lambda_{\beta \beta}^{-1} \Lambda_{\beta \alpha} = \begin{bmatrix}
-    x_1^0 - x_3^0 +1 & x_2^0 - x_3^0 + 1
-  \end{bmatrix} - \begin{bmatrix} -x_1^0 - x_2^0 + 2 x_3^0 -2\end{bmatrix} \begin{bmatrix}
-    2
-  \end{bmatrix}^{-1} \begin{bmatrix}
-    -1 & -1
-  \end{bmatrix} \\
-  = \frac{1}{2}\begin{bmatrix}
-    x_1^0 - x_2^0 & -x_1^0 + x_2^0
-  \end{bmatrix}.
+  \begin{aligned}
+    \tilde \eta^T = \eta_{\alpha}^T - \eta_\beta^T \Lambda_{\beta \beta}^{-1} \Lambda_{\beta \alpha} \\
+    = \begin{bmatrix}
+      x_1^0 - x_3^0 +1 & x_2^0 - x_3^0 + 1
+    \end{bmatrix} - \begin{bmatrix} -x_1^0 - x_2^0 + 2 x_3^0 -2\end{bmatrix} \begin{bmatrix}
+      2
+    \end{bmatrix}^{-1} \begin{bmatrix}
+      -1 & -1
+    \end{bmatrix} \\
+    \\
+    = \frac{1}{2}\begin{bmatrix}
+      x_1^0 - x_2^0 & -x_1^0 + x_2^0
+    \end{bmatrix}.
+  \end{aligned}
 $$
 The marginalized problem is now
 $$
- \tilde S = \begin{bmatrix}
-   x_1 - x_1^0 \\
-   x_2 - x_2^0
- \end{bmatrix}^T
- \begin{bmatrix}
-  1/2 & -1/2 \\ -1/2 & 1/2
-\end{bmatrix}
-\begin{bmatrix}
-  x_1 - x_1^0 \\
-  x_2 - x_2^0
-\end{bmatrix}
-+ 2 \begin{bmatrix}
-  \frac{x_1^0 - x_2^0}{2} & \frac{-x_1^0 + x_2^0}{2}
-\end{bmatrix} \begin{bmatrix}
-  x_1 - x_1^0 \\
-  x_2 - x_2^0
-\end{bmatrix}.
+  \tilde S = \begin{bmatrix}
+    x_1 - x_1^0 \\
+    x_2 - x_2^0
+  \end{bmatrix}^T
+  \begin{bmatrix}
+    1/2 & -1/2 \\ -1/2 & 1/2
+  \end{bmatrix}
+  \begin{bmatrix}
+    x_1 - x_1^0 \\
+    x_2 - x_2^0
+  \end{bmatrix}
+  + 2 \begin{bmatrix}
+    \frac{x_1^0 - x_2^0}{2} & \frac{-x_1^0 + x_2^0}{2}
+  \end{bmatrix} \begin{bmatrix}
+    x_1 - x_1^0 \\
+    x_2 - x_2^0
+  \end{bmatrix}.
 $$
 After expanding and removing constant terms this is equal to
 $$
@@ -317,6 +320,3 @@ $$
 $$
 This has the same optimial solution $x_1=0, x_2=2/3$ and optimzal value $1/3$ as the full problem above.
 
-\url{https://www.wolframalpha.com/input/?i=Minimize%5Bx%5E2+%2B+%28x-y%2B1%29%5E2+%2B+%28x-z%2B1%29%5E2+%2B+%28y-z%2B1%29%5E2%5D}
-
-\url{https://www.wolframalpha.com/input/?i=Minimize%5Bx%5E2+%2B+%28x-y%2B1%29%5E2+%2B+%28x-y%29%5E2%2F2%5D}

@@ -2,7 +2,7 @@
 
 Let $\bR$ denote an element of $\SOtwo$; we know that $\bR \bR^{T} = I_{2}$.
 
-\paragraph{Action on $\mathbb{R}^2$:}
+\paragraph{Action on \texorpdfstring{$\mathbb{R}^2$}{R2}:}
 In robotics applications it is convenient to define a rotational action on vectors in $\mathbb{R}^2$. For $\bR \in \SOtwo$ and $\bu \in \mathbb{R}^2$ the action is matrix multiplication
 \begin{equation}
   \left \langle \bR, \bu \right \rangle_{\SOtwo} = \bR \cdot \bu.
@@ -100,7 +100,7 @@ It follows that all terms in \eqref{eq:dexp_def} and \eqref{eq:dexpinv_def} vani
   \end{equation}
 \end{properties}
 
-\section{Parameterization via Isomorhphism with $\Uone$}
+\section{Parameterization via Isomorhphism with \texorpdfstring{$\Uone$}{U(1)}}
 
 We use the isomorphism $\SOtwo \cong \Uone$, where $\Uone$ is the unitary group consisting of complex elements $c = q_{w} + i q_{z}$ with unit length, to parameterize elements of $\SOtwo$.
 \begin{equation}
@@ -128,7 +128,11 @@ $(q_w, q_z)^{-1} = (q_w, -q_z)$. A formula for group composition can either be o
   \end{aligned}
 \end{equation*}
 
-It also follows from isomorphism that $\exp(\omega_{z}) = (\cos \omega_{z}, \sin \omega_{z})$, consequently $\log (q_{w}, q_{z}) = \arctantwo(q_{z}, q_{w})$, where $\arctantwo(y, x)$ is the angle between the ray passing through $(1, 0)$ and the ray passing through $(x, y)$.
+It also follows from isomorphism that 
+$$
+  \exp(\omega_{z}) = (\cos \omega_{z}, \sin \omega_{z}),
+$$
+consequently $\log (q_{w}, q_{z}) = \arctantwo(q_{z}, q_{w})$, where $\arctantwo(y, x)$ is the angle between the ray passing through $(1, 0)$ and the ray passing through $(x, y)$.
 
 \begin{properties}[breakable, title={$\Uone$ as a parameterization of $\SOtwo$}]
   \paragraph{Group Parameterization}
@@ -164,7 +168,3 @@ It also follows from isomorphism that $\exp(\omega_{z}) = (\cos \omega_{z}, \sin
   \end{subequations}
 \end{properties}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../root"
-%%% End:

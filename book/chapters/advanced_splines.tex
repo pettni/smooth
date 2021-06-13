@@ -46,13 +46,13 @@ Below we will need the derivative with respect to $t$ of \eqref{eq:cum_spline_li
     \symbf s_{i} = \tilde B_{i}(t) \symbf v_{i}.
   \end{aligned}
 \end{equation}
-With this notation, $\mathrm{d}^{r} \left( \exp \symbf s_{i} \right)_{t} = \tilde B_{i}'(t) \mathrm{d}^{r} \exp_{\symbf s_{i}} \symbf v_{i}$. We can now write down the derivative of \eqref{eq:cum_spline_liegroup} by utilizing \eqref{eq:d_composition_rght_fst} and \eqref{eq:d_composition_rght_snd}:
+With this notation, $\mathrm{d}^{r} \left( \exp \symbf s_{i} \right)_{t} = \tilde B_{i}'(t) \mathrm{d}^{r} \exp_{\symbf s_{i}} \symbf v_{i} = \tilde B_{i}'(t) \symbf v_{i}$. We can now write down the derivative of \eqref{eq:cum_spline_liegroup} by utilizing \eqref{eq:d_composition_rght_fst} and \eqref{eq:d_composition_rght_snd}:
 \begin{equation}
   \label{eq:cum_spline_liegroup_deriv}
   \begin{aligned}
-    \mathrm{d}^{r} p_{t} & = \bAd_{\exp(-\symbf s_{n})} \mathrm{d}^{r} \left( \x_{0} \exp(\symbf s_{1})  \ldots \exp(\symbf s_{n-1})\right)_{t} + \mathrm{d}^{r} \exp (\symbf s_{n})_{t}                                                                                              \\
-                         & = \bAd_{\exp(-\symbf s_{n}) \exp(-\symbf s_{n-1})} \mathrm{d}^{r} \left( \x_{0} \exp(\symbf s_{1})  \ldots \exp(\symbf s_{n-2})\right)_{t} + \bAd_{\exp(-s_{n})} \mathrm{d}^{r} \exp (\symbf s_{n-1})_{t} + \mathrm{d}^{r} \exp(s_{n})_{t}                 \\
-                         & = \sum_{i=1}^{n} \bAd_{\exp(-\symbf s_{n}) \ldots \exp(-\symbf s_{i+1})} \mathrm{d}^{r} \exp (\symbf s_{i})_{t} = \sum_{i=1}^{n} \tilde B_{i}'(t) \bAd_{\exp(-\symbf s_{n}) \ldots \exp(-\symbf s_{i+1})} \mathrm{d}^{r} \exp_{\symbf s_{i}} \symbf v_{i}.
+    \mathrm{d}^{r} p_{t} & = \bAd_{\exp(-\symbf s_{n})} \mathrm{d}^{r} \left( \x_{0} \exp(\symbf s_{1})  \ldots \exp(\symbf s_{n-1})\right)_{t} + \mathrm{d}^{r} \exp (\symbf s_{n})_{t}                                                                              \\
+                         & = \bAd_{\exp(-\symbf s_{n}) \exp(-\symbf s_{n-1})} \mathrm{d}^{r} \left( \x_{0} \exp(\symbf s_{1})  \ldots \exp(\symbf s_{n-2})\right)_{t} + \bAd_{\exp(-s_{n})} \mathrm{d}^{r} \exp (\symbf s_{n-1})_{t} + \mathrm{d}^{r} \exp(s_{n})_{t} \\
+                         & = \sum_{i=1}^{n} \bAd_{\exp(-\symbf s_{n}) \ldots \exp(-\symbf s_{i+1})} \mathrm{d}^{r} \exp (\symbf s_{i})_{t} = \sum_{i=1}^{n} \tilde B_{i}'(t) \bAd_{\exp(-\symbf s_{n}) \ldots \exp(-\symbf s_{i+1})} \symbf v_{i}.
   \end{aligned}
 \end{equation}
 
@@ -71,11 +71,11 @@ With this notation, $\mathrm{d}^{r} \left( \exp \symbf s_{i} \right)_{t} = \tild
           xmax=1,
           ymin=-0.,
           ymax=1.1
-          ]
-          \addplot+[red, no marks, thick, smooth, domain=0:1] ({\x}, {(1-3*\x+3*\x^2-\x^3)}) node[pos=0.2, right] {$B_{0,3}(t)$};
-          \addplot+[blue, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x-6*\x^2+3*x^3)}) node[pos=0.4, above] {$B_{1,3}(t)$};
-          \addplot+[black, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x^2-3*\x^3)}) node[pos=0.6, above] {$B_{2,3}(t)$};
-          \addplot+[orange, no marks, thick, smooth, domain=0:1] ({\x}, {(x^3)}) node[pos=0.8, left] {$B_{3,3}(t)$};
+        ]
+        \addplot+[red, no marks, thick, smooth, domain=0:1] ({\x}, {(1-3*\x+3*\x^2-\x^3)}) node[pos=0.2, right] {$B_{0,3}(t)$};
+        \addplot+[blue, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x-6*\x^2+3*x^3)}) node[pos=0.4, above] {$B_{1,3}(t)$};
+        \addplot+[black, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x^2-3*\x^3)}) node[pos=0.6, above] {$B_{2,3}(t)$};
+        \addplot+[orange, no marks, thick, smooth, domain=0:1] ({\x}, {(x^3)}) node[pos=0.8, left] {$B_{3,3}(t)$};
       \end{axis}
     \end{tikzpicture}~
     \begin{tikzpicture}[]
@@ -88,11 +88,11 @@ With this notation, $\mathrm{d}^{r} \left( \exp \symbf s_{i} \right)_{t} = \tild
           xmax=1,
           ymin=-0.,
           ymax=1.1
-          ]
-          \addplot+[red, no marks, thick, smooth, domain=0:1] ({\x}, {(1)}) node[pos=0.2, below] {$\tilde B_{0,3}(t)$};
-          \addplot+[blue, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x-3*\x^2+x^3)}) node[pos=0.4, left] {$\tilde B_{1,3}(t)$};
-          \addplot+[black, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x^2-2*\x^3)}) node[pos=0.6, left] {$\tilde B_{2,3}(t)$};
-          \addplot+[orange, no marks, thick, smooth, domain=0:1] ({\x}, {(x^3)}) node[pos=0.6, below] {$\tilde B_{3,3}(t)$};
+        ]
+        \addplot+[red, no marks, thick, smooth, domain=0:1] ({\x}, {(1)}) node[pos=0.2, below] {$\tilde B_{0,3}(t)$};
+        \addplot+[blue, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x-3*\x^2+x^3)}) node[pos=0.4, left] {$\tilde B_{1,3}(t)$};
+        \addplot+[black, no marks, thick, smooth, domain=0:1] ({\x}, {(3*\x^2-2*\x^3)}) node[pos=0.6, left] {$\tilde B_{2,3}(t)$};
+        \addplot+[orange, no marks, thick, smooth, domain=0:1] ({\x}, {(x^3)}) node[pos=0.6, below] {$\tilde B_{3,3}(t)$};
       \end{axis}
     \end{tikzpicture}
   \end{center}
@@ -134,23 +134,79 @@ Utilizing these fact and that $\mathrm{d}^{r} \exp_{\a} \a = \a$ we can evaluate
 \end{equation}
 These formulas can be used to fit low-degree splines to given boundary conditions.
 
-\paragraph{Quadratic Bezier curve} A $k=2$ spline $\x(t) = \x_{0} \exp \left( \tilde B_{1, 2}(t) \symbf v_{1}\right) \exp\left(\tilde B_{2, 2}(t) \symbf v_{2}\right)$ such that $\x(0) = \x_{a}, \x(1) = \x_{b}$, and $\left. \mathrm{d}^{r} \x_{t} \right|_{t=0} = \a_{a}$ is defined by the coefficients
+\subsection{Quadratic Bezier curve} A $k=2$ spline $\x(t) = \x_{0} \exp \left( \tilde B_{1, 2}(t) \symbf v_{1}\right) \exp\left(\tilde B_{2, 2}(t) \symbf v_{2}\right)$ such that $\x(0) = \x_{a}, \x(1) = \x_{b}$, and $\left. \mathrm{d}^{r} \x_{t} \right|_{t=0} = \a_{a}$ is defined by the coefficients
 \begin{equation}
   \x_{0}  = \x_{a}, \quad
   \symbf v_{1} = \frac{\a_{a}}{2}, \quad  \symbf v_{2} = \log \left( \exp \left( -\frac{\a_{a}}{2} \right) \x_{a}^{-1} \x_{b} \right),
 \end{equation}
 and has the property that $\left. \mathrm{d}^{r} \x_{t} \right|_{t=1} = 2 \symbf v_{2}$.
 
-\paragraph{Cubic Bezier curve} For the cubic case $k = 3$ a Bezier curve
+\subsection{Cubic Bezier curve} For the cubic case $k = 3$ a Bezier curve takes the form
 \begin{equation}
   \x(t) = \x_{0} \exp \left( \tilde B_{1, 3}(t) \symbf v_{1}\right) \exp\left(\tilde B_{2, 3}(t) \symbf v_{2}\right)\exp\left(\tilde B_{3, 3}(t) \symbf v_{3}\right)
 \end{equation}
-  such that $\x(0) = \x_{a}, \x(1) = \x_{b}, \left. \mathrm{d}^{r} \x_{t} \right|_{t = 0} = \a_{a}$, and $\left. \mathrm{d}^{r} \x_{t} \right|_{t = 1} = \a_{b}$ is defined by the coefficients
+and has first and second derivatives w.r.t. time
+\begin{equation}
+  \begin{aligned}
+    \mathrm{d}^{r }\x_{t}  & = \tilde B_{1, 3}'(t) \bAd_{\exp (-\symbf s_{3})} \bAd_{\exp(-\symbf s_{2})} \symbf v_{1}                                                                                         \\
+                           & + \tilde B_{2, 3}'(t) \bAd_{\exp (-\symbf s_{3})} \symbf v_{2}                                                                                                                    \\
+                           & + \tilde B_{3, 3}'(t) \symbf v_{3}                                                                                                                                                \\
+    \mathrm{d}^{2r}\x_{tt} & = \tilde B_{1, 3}''(t) \bAd_{\exp (-\symbf s_{3})} \bAd_{\exp(-\symbf s_{2})} \symbf v_{1}                                                                                        \\
+                           & \quad - \tilde B_{1,3}'(t) \tilde B_{3, 3}'(t) \left[ \symbf v_{3}, \bAd_{\exp(-\symbf s_{3})} \bAd_{\exp(-\symbf s_{2})} \symbf v_{1} \right]                                    \\
+                           & \quad - \tilde B_{1,3}'(t) \tilde B_{2, 3}'(t) \bAd_{\exp(-\symbf s_{3})} \left[ \symbf v_{2}, \bAd_{\exp(-\symbf s_{2})} \symbf v_{1} \right ]                                   \\
+                           & + \tilde B_{2, 3}''(t) \bAd_{\exp (-\symbf s_{3})} \symbf v_{2} - \tilde B_{2, 3}'(t) \tilde B'_{3, 3}(t) \left[ \symbf v_{3} , \bAd_{\exp(- \symbf s_{3})} \symbf v_{2} \right ] \\
+                           & + \tilde B_{3, 3}''(t) \symbf v_{3}.
+  \end{aligned}
+\end{equation}
+The cumulative basis functions of order three are $\tilde B_{1, 3}(t) = 3t - 3 t^{2} + t^{3}$, $\tilde B_{2, 3}(t) = 3x^{2} - 2 x^{3}$, and $\tilde B_{3, 3}(t) = t^{3}$. With the derivative formulas above it therefore follows that
+\begin{equation}
+  \begin{aligned}
+    \left. \mathrm{d}^{r} \x_{t} \right|_{t = 0}   & = 3 \symbf v_{1}, \quad \left. \mathrm{d}^{r} \x_{t} \right|_{t = 1} = 3 \symbf v_{3},                                                                            \\
+    \left. \mathrm{d}^{2r} \x_{tt} \right|_{t = 0} & = 6 (\symbf v_{2} - \symbf v_{1}), \quad \left. \mathrm{d}^{2r} \x_{tt} \right|_{t = 1} = 6 \left(\symbf v_{3} - \bAd_{\exp(-\symbf v_{3})} \symbf v_{2} \right)
+  \end{aligned}
+\end{equation}
+This information can be used in two ways.
+
+\paragraph{Bezier curve with given endpoint velocities} First, if the values $\x_{a}, \x_{b}$ and first-order derivatives $\a_a, \a_{b}$ at the end points are given there is a unique Bezier curve $\x(t)$ such that $\x(0) = \x_{a}, \x(1) = \x_{b}, \left. \mathrm{d}^{r} \x_{t} \right|_{t = 0} = \a_{a}$, and $\left. \mathrm{d}^{r} \x_{t} \right|_{t = 1} = \a_{b}$. It is defined by the coefficients
 \begin{equation}
   \x_{0}  = \x_{a}, \quad
   \symbf v_{1} = \frac{\a_{a}}{3}, \quad  \symbf v_{3} = \frac{\a_{b}}{3}, \quad  \symbf v_{2} = \log \left( \exp \left( -\frac{\a_{a}}{3} \right) \x_{a}^{-1} \x_{b} \exp \left( -\frac{\a_{b}}{3} \right ) \right).
 \end{equation}
-For cubic splines on $\mathbb{R}$ a system of linear equations can be solved in order to fit a cubic spline to data (for some boundary conditions). Unfortunately the equation for $\symbf v_{2}$ is non-linear, so this is no longer possible in the more general Lie group case. Instead we either have to solve a non-linear system of equations, or resort to some other method for estimating the velocities at the inner knot points.
+
+\paragraph{Cubic interpolating Bezier spline} Secondly, an interpolating spline for a dataset $\{ ( t_{i}, \x_{i} ) \}_{i=0}^{n}$ can be defined as a collection of $n$ Bezier curves $$\x_{i}(u) = \x_{a, i} \exp (\tilde B_{1, 3}(u) \symbf v_{1, i})\exp (\tilde B_{2, 3}(u) \symbf v_{2, i})\exp (\tilde B_{3, 3}(u) \symbf v_{3, i})$$ where $u = (t - t_{i}) / (t_{i+1} - t_{i}) \in [0, 1]$. To ensure a smooth interpolation consider the following constraints (for simplicity we assume that $t_{i+1} - t_{i} = 1$ for all $i$; if not the derivative constraints have to be rescaled):
+\begin{itemize}
+  \item Interpolation: $\x_{a, i} = \x_{i}$ and $\x_{a, i} \exp(\symbf v_{1}) \exp(\symbf v_{2})\exp(\symbf v_{3})= \x_{i+1}$, for $i = 0, \ldots, n-1$,
+  \item First derivative continuity: $\symbf v_{3, i} = \symbf v_{1, i+1}$ for $i = 0, \ldots, n-2$,
+  \item Second derivative continuity: $\bAd_{\exp(-\symbf v_{3, i})} \symbf v_{2, i} - \symbf v_{3, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1}$ for $i = 0, \ldots, n-2$,
+  \item Zero second derivative at start: $\symbf v_{2, 0} - \symbf v_{1, 0} = 0$, and at end: $\bAd_{\exp(-\symbf v_{3, n-1})} \symbf v_{2, n-1} - \symbf v_{3, n-1} = 0$.
+\end{itemize}
+The variables $\x_{a, i}, \x_{b, i}$ can be eliminated to end up with the following system of equations for $\symbf v_{j, i}$:
+\begin{equation}
+  \label{eq:cubic_spline_equations}
+  \begin{aligned}
+     & \symbf v_{2, 0} = \symbf v_{1, 0},                                                                                                   \\
+     & \bAd_{\exp(-\symbf v_{3, n-1})}\symbf v_{2, n-1} = \symbf v_{3, n-1},                                                                \\
+     & \exp (\symbf v_{1, i}) \exp (\symbf v_{2, i}) \exp (\symbf v_{3, i}) = \x_{i}^{-1} \x_{i+1},                      & \quad i = 0, \ldots, n-1, \\
+     & \symbf v_{3, i} = \symbf v_{1, i+1},                                                                     & \quad i = 0, \ldots, n-2, \\
+     & \bAd_{\exp(-\symbf v_{3, i})} \symbf v_{2, i} - \symbf v_{3, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1}, & \quad i = 0, \ldots, n-2. \\
+  \end{aligned}
+\end{equation}
+For Euclidean space this is a linear system of equations and is therefore straightforward to solve, but on Lie groups this is no longer possible due to nonlinearities. To find an interpolating spline we therefore either have to solve a nonlinear system of equations, or give up the strict requirement on continuity of the second-order derivatives. The following simple algorithm is of the latter kind:
+\begin{enumerate}
+  \item Solve the following linearized version of \eqref{eq:cubic_spline_equations}:
+        \begin{equation}
+          \label{eq:cubic_spline_equations_linearized}
+          \begin{aligned}
+             & \symbf v_{2, 0} = \symbf v_{1, 0},                                                                               \\
+             & \symbf v_{2, n-1} = \symbf v_{3, n-1},                                                                           \\
+             & \symbf v_{1, i} + \symbf v_{2, i} + \symbf v_{3, i} = \log\left(\x_{i}^{-1} \x_{i+1} \right), & \quad i = 0, \ldots, n-1, \\
+             & \symbf v_{3, i} = \symbf v_{1, i+1},                                                 & \quad i = 0, \ldots, n-2, \\
+             & \symbf v_{2, i} - \symbf v_{3, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1},           & \quad i = 0, \ldots, n-2. \\
+          \end{aligned}
+        \end{equation}
+  \item Set $\symbf v_{2, i} = \log \left( \exp(-\symbf v_{1, i}) x_{i}^{-1} x_{i+1} \exp(-\symbf v_{3, i}) \right )$ for $i = 0, \ldots, n-1$.
+\end{enumerate}
+The first step finds values for all coefficients that do not necessarily produce a continuous spline. This is however rectified in the second step. The resulting spline is guaranteed to be continuous and have a continuous first-order derivative, but in general does not have a continuous second-order derivative.
 
 \section{B-Splines}
 
@@ -203,7 +259,7 @@ For cubic splines on $\mathbb{R}$ a system of linear equations can be solved in 
           ymax=1.1,
           cycle list name=color list]
         \pgfplotsinvokeforeach {0, 1, 2, 3, 4, 5, 6} {
-          \addplot+[no marks, thick, smooth, domain=#1:#1+4] ({\x}, {cbspline3(\x-#1)}) node[pos=0.3, left] {$B_{#1,3}(t)$};
+          \addplot+[no marks, thick, smooth, domain=#1:#1+4] ({\x}, {cbspline3(\x-#1)}) node[pos=0.4, left] {$B_{#1,3}(t)$};
         }
       \end{axis}
     \end{tikzpicture}
@@ -211,7 +267,6 @@ For cubic splines on $\mathbb{R}$ a system of linear equations can be solved in 
   \caption{B-spline basis function and cumulative basis functions. For $k=3$ and $t \in [t_4, t_5)$ the non-zero basis functions are $B_{1, 4}, B_{2, 4}, B_{3, 4}$ and $B_{4, 4}$.}
   \label{fig:bspline_nonzero}
 \end{figure}
-
 
 A B-spline interpolation of order $k$ is a function $\x(t) = \sum_{i=0}^N B_{i, k}(t) \x_{v(i)}$ where $\x_{v(i)} \in \mathbb{R}^n$ are \textbf{control points} for \textbf{knots} $t_i$, and $B_{i, k}(t)$ are \textbf{basis functions} recursively defined as
 
@@ -255,7 +310,6 @@ we can write the value of a spline $x(t)$ for $t \in [t_{i^*}, t_{i^*+1}]$ as
     \x(t) = \sum_{j = 0}^n B_{j,k}(t) \x_{v(j)} = \sum_{j = i^*-k}^{i^*} B_{j,k}(t) \x_{v(j)} = \sum_{j = i^*-k}^{i^*} \sum_{l=0}^k \alpha_{j, k}^l u^l \x_{v(j)} =  \begin{bmatrix} 1 & u & \cdots & u^k \end{bmatrix} M_{i^*, k} \begin{bmatrix} \x_{v(i^* - k)} \\ \vdots \\ \x_{v(i^*)} \end{bmatrix}.
   \end{aligned}
 \end{equation}
-
 
 \section{Evaluating Cumulative Splines}
 
@@ -372,8 +426,10 @@ We seek an expression for $M_{i^*, k}$ which via \eqref{eq:cumulative_coeff_matr
   \begin{aligned}
      & \sum_{j=0}^k \alpha^j_{i, k} u^j  \eqcolon B_{i, k}(t) = \frac{t - t_i}{t_{i+k} - t_i} B_{i, k-1}(t) + \frac{t_{i+k+1} - t}{t_{i+k+1} - t_{i+1}} B_{i+1, k-1}(t)                                                                                                                                                                                                \\
      & = \left[\frac{t_{i^*} - t_i}{t_{i+k} - t_i} + \frac{t_{i^*+1} - t_{i^*}}{t_{i+k} - t_i} u \right] B_{i, k-1}(t) + \left[ \frac{t_{i+k+1} - t_{i^*}}{t_{i+k+1} - t_{i+1} } - \frac{t_{i^*+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} u \right] B_{i+1, k-1}(t)                                                                                                             \\
-     & = \frac{t_{i^*} - t_i}{t_{i+k} - t_i} \sum_{j=0}^{k-1} \alpha_{i, k-1}^{j} u^j +  \frac{t_{i^*+1}-t_{i^*}} {t_{i+k} - t_{i}} \sum_{j=0}^{k-1} \alpha^{j}_{i, k-1} u^{j+1} + \frac{t_{i+k+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=0}^{k-1} \alpha^j_{i+1,k-1} u^{j} - \frac{t_{i^*+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=0}^{k-1} \alpha^j_{i+1,k-1} u^{j+1} \\
-     & = \frac{t_{i^*} - t_i}{t_{i+k} - t_i} \sum_{j=0}^{k-1} \alpha_{i, k-1}^{j} u^j +  \frac{t_{i^*+1}-t_{i^*}} {t_{i+k} - t_{i}} \sum_{j=1}^{k} \alpha^{j-1}_{i, k-1} u^{j} + \frac{t_{i+k+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=0}^{k-1} \alpha^j_{i+1,k-1} u^{j} - \frac{t_{i^*+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=1}^{k} \alpha^{j-1}_{i+1,k-1} u^{j}   \\
+     & = \frac{t_{i^*} - t_i}{t_{i+k} - t_i} \sum_{j=0}^{k-1} \alpha_{i, k-1}^{j} u^j +  \frac{t_{i^*+1}-t_{i^*}} {t_{i+k} - t_{i}} \sum_{j=0}^{k-1} \alpha^{j}_{i, k-1} u^{j+1}\\
+     & + \frac{t_{i+k+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=0}^{k-1} \alpha^j_{i+1,k-1} u^{j} - \frac{t_{i^*+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=0}^{k-1} \alpha^j_{i+1,k-1} u^{j+1} \\
+     & = \frac{t_{i^*} - t_i}{t_{i+k} - t_i} \sum_{j=0}^{k-1} \alpha_{i, k-1}^{j} u^j +  \frac{t_{i^*+1}-t_{i^*}} {t_{i+k} - t_{i}} \sum_{j=1}^{k} \alpha^{j-1}_{i, k-1} u^{j} + \\
+     & \frac{t_{i+k+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=0}^{k-1} \alpha^j_{i+1,k-1} u^{j} - \frac{t_{i^*+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \sum_{j=1}^{k} \alpha^{j-1}_{i+1,k-1} u^{j}   \\
      & = \sum_{j=0}^k \left[ \frac{t_{i^*} - t_i}{t_{i+k} - t_i} \alpha_{i, k-1}^{j} + \frac{t_{i^*+1}-t_{i^*}} {t_{i+k} - t_{i}}  \alpha^{j-1}_{i, k-1} + \frac{t_{i+k+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}} \alpha^j_{i+1,k-1} - \frac{t_{i^*+1}-t_{i^*}}{t_{i+k+1} - t_{i+1}}  \alpha^{j-1}_{i+1,k-1} \right] u^j,
   \end{aligned}
 \end{equation*}
@@ -421,7 +477,6 @@ However, close to the endpoints $\beta_{j, i^*, k}$ and $\gamma_{j, i^*, k}$ can
 \end{equation}
 that are valid for all indices $0 \leq i^* < n$.
 
-
 \section{Cardinal Cofficient Recursion}
 
 When all control points with indices $i^* - k + 1, \ldots, i^*$ are equally spaced such that $t_{i+1} - t_i = \Delta t$ for all $i$ the expression can be simplified and $M_{i^*, k}$ no longer depends on $i^*$ for interior points. In this case we have that
@@ -453,7 +508,3 @@ We can use this to retrieve the first couple of matrices:
 \end{subequations}
 Close to the boundary the formulas \eqref{eq:beta_capped} should instead be applied.
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../root"
-%%% End:

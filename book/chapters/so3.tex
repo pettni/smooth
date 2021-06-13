@@ -36,7 +36,6 @@ As a result many properties of the cross product are inherited by the embedding 
 
 We can use \eqref{eq:so3_pow3} to obtain the exponential map on $\mathfrak{so}(3)$:
 \begin{equation}
-  \label{eq:so3_exp}
   \begin{aligned}
     \Exp \; \hat {\bomega} = \sum_{k \geq 0} \frac{(\hat {\bomega})^k}{k!} = I + \hat{\bomega} + \frac{\hat{\bomega}^2}{2!} - \| \bomega \|^2 \left( \frac{\hat {\bomega}}{3!} + \frac{\hat {\bomega}^2}{4!} \right) + \| \bomega \|^4 \left( \frac{\hat {\bomega}}{5!} + \frac{\hat {\bomega}^2}{6!} \right) + \ldots \\
     = I + \left( 1 - \frac{\|\bomega \|^2}{3!} + \frac{\|\bomega \|^4}{5!} - \ldots \right) \hat{\bomega} + \left( \frac{1}{2!} - \frac{\|\bomega \|^2}{4!} + \frac{\|\bomega \|^4}{6!} - \ldots \right) \hat{\bomega}^2                                                                                               \\
@@ -70,7 +69,7 @@ which makes it possible to write down an expression for the logarithm.
 \end{important}
 The lower-dimensional representation of $\SOthree$ is $\Sthree$, but as shown previously the $\wedge$ and $\vee$ mappings are not straightforward. In the next section we obtain the exponential and logarithm on $\Sthree$ through its relation to $\SUtwo$.
 
-\subsubsection{$\SOthree$: three-dimensional rotations}
+\subsubsection{\texorpdfstring{$\SOthree$}{SO(3)}: three-dimensional rotations}
 
 $\SOthree$ is a matrix Lie group that consists of $3 \times 3$ orthogonal matrices with determinant equal to one:
 \begin{equation}
@@ -85,7 +84,7 @@ There is no trivial low-dimensional parameterizations of this set, however, it i
 However, the mapping is not 1-to-1, since both $\symbf{q} \coloneq (q_w, q_x, q_y, q_z)$ and $-\symbf{q}$ correspond to the same rotation matrix.
 
 
-\paragraph{Action on $\mathbb{R}^3$}
+\paragraph{Action on \texorpdfstring{$\mathbb{R}^3$}{R3}}
 
 The action of $\bR \in \SOthree$ on $\bu \in \mathbb{R}^3$ is rotation:
 \begin{equation}
@@ -94,7 +93,7 @@ The action of $\bR \in \SOthree$ on $\bu \in \mathbb{R}^3$ is rotation:
 
 
 
-\subsubsection{$\mathbb{SU}(2)$ and its relation to the quaternion group $\Sthree$}
+\subsubsection{\texorpdfstring{$\mathbb{SU}(2)$}{SU(2)} and its relation to the quaternion group \texorpdfstring{$\Sthree$}{S3}}
 
 We can associate a quaternion $\symbf{q} = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ with the unitary matrix
 \begin{equation}
@@ -138,7 +137,7 @@ which is exactly what is obtained by carrying out the usual quaternion multiplic
 \end{equation}
 with the quaternion rules $\symbf{i}\symbf{j} = \symbf{k}, \symbf{j}\symbf{k} = \symbf{i}, \symbf{k}\symbf{i} = \symbf{j}$ and $\symbf{i}^2 = \symbf{j}^2 = \symbf{k}^2 = -1$.
 
-\paragraph{Action on $\mathbb{R}^3$}
+\paragraph{Action on \texorpdfstring{$\mathbb{R}^3$}{R3}}
 
 A quaternion $\symbf{q} = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ acts on $\bu \coloneq \begin{bmatrix} u_x \\ u_y \\ u_z \end{bmatrix} \in \mathbb{R}^3$ as quaternion rotation $\symbf{q} * \bu * \bar {\symbf{q}}$ where $\bu$ is associated with the quaternion $u_x \symbf{i} + u_y \symbf{j} + u_z \symbf{k}$.
 
@@ -316,7 +315,7 @@ where the half-angle formula $\cot x = (1 + \cos x) / \sin x$ has been used. The
   \end{subequations}
 \end{properties}
 
-\section{Parameterization via Double Cover by $\Sthree$}
+\section{Parameterization via Double Cover by \texorpdfstring{$\Sthree$}{S3}}
 
 \begin{properties}[breakable, title={The unit quaternion group $\Sthree$}]
   \paragraph{Group definition}
@@ -343,7 +342,3 @@ where the half-angle formula $\cot x = (1 + \cos x) / \sin x$ has been used. The
 
 \end{properties}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../root"
-%%% End:

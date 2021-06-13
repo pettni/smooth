@@ -2,14 +2,16 @@
 
 \documentclass{scrbook}
 
+\setlength{\marginparwidth}{2cm}
 \usepackage{todonotes}
 % \usepackage[disable]{todonotes}
+
+\input{common/preamble}
+\input{common/definitions}
 
 \usepackage[backend=biber, refsegment=chapter]{biblatex}
 \addbibresource{refs.bib}
 
-\input{common/preamble}
-\input{common/definitions}
 
 \title{Lie Theory for Robotics}
 \author{Petter Nilsson}
@@ -50,6 +52,8 @@
 
 \part{Applications}
 
+\include{chapters/numerical_integration}
+
 \include{chapters/controls}
 
 \include{chapters/estimation}
@@ -64,7 +68,6 @@
 
 \include{chapters/lidar_odometry}
 
-\include{chapters/magnus_expansion}
 
 \include{chapters/advanced_marginalization}
 

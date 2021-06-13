@@ -1,4 +1,4 @@
-% !TEX root = ../manuscript.tex
+% !TEX root = ../root.tex
 
 
 \section{Next todos}
@@ -12,8 +12,13 @@
 \begin{enumerate}
   \item How to define semi-simple group products? Can they be implemented using only a definition of group composition? Seems to be the case at least for SE2 and SE3 since the exponential shows up with the derivative of the exponential.
   \item Equivariance and control-invariance for reduced-dimensionality asif.
-  \item Use Magnus expansion with closed-form dexpin expressions to work with implicit invariance on lie groups
+  \item Implicit invariance (requires numerical intergration)
+  \begin{itemize}
+      \item Magnus expansion with closed-form dexpinv
+      \item Just overload + in runge kutta scheme
+  \end{itemize}
   \item Can optimization be improved for functions that are ``linear in tangent space''? Should look for conditions where predicted to actual reduction $\rho = 1$, i.e. linearization is exact.
+  \item Iterative algorithm to fit Bezier splines that are twice differentiable (solve \eqref{eq:cubic_spline_equations})
 \end{enumerate}
 
 
@@ -22,11 +27,6 @@
 \begin{itemize}
   \item BOOKS:
         \begin{itemize}
-          \item Naive Lie Theory: \cite{stillwell_naive_2008}
-                \begin{itemize}
-                  \item Matrix groups only
-                  \item Relation between $SO(3)$ and $S^3$
-                \end{itemize}
           \item Barfoot: \cite{barfoot_state_2017}
                 \begin{itemize}
                   \item Estimation in robotics
@@ -37,7 +37,6 @@
                   \item Guassians and information theory
                 \end{itemize}
           \item Agrachev: \cite{agrachev_control_2004}
-          \item Geometrical Numerical Integration: \cite{blanes_concise_2016}
         \end{itemize}
 
   \item ARTICLES
@@ -46,6 +45,5 @@
           \item A Micro Lie Theory \cite{sola_micro_2018}, application-focused.
           \item Quadrotor control \cite{Lee2015}
           \item IMU estimation: \cite{hua_implementation_2014, mahony_nonlinear_2008}
-          \item Banana distribution: \cite{wheeler_relative_2018}
         \end{itemize}
 \end{itemize}

@@ -1,29 +1,14 @@
-% !TEX root = ../manuscript.tex
+% !TEX root = ../root.tex
 
 \chapter{Dynamical Systems on Lie Groups}
 
-Having defined derivatives on Lie Groups we can introduce dynamical systems that evolve on Lie Groups. ODEs can be defined in multiple ways depending on how derivatives are handled. Consider a system $\X(t)$ whose state can be interpreted as a mapping $\mathbb{E}(1) \rightarrow \cM$.
-
-If $^\X \a$ is the body derivative the system can be written with an equation involving the right derivative:
+Having defined Lie group derivatives a logical next step is to consider differential equations on Lie groups, i.e. solutions $\x(t)$ to
 \begin{equation}
-  \mathrm{d}^r \X_t = {^\X}\a(t), \quad {^\X}\a(t) \in T_\X \cM.
+  \begin{aligned}
+    \mathrm{d}^r \x_t = f(t, \x(t)), \\
+    \x(0) = \x_0.
+  \end{aligned}
 \end{equation}
-The same system can be written in terms of the derivative ${^\id}\a(t)$ in the global tangent frame $T_\id \cM$ using the left derivative:
-\begin{equation}
-  \mathrm{d}^l \X_t = {^\id}\a(t), \quad {^\id}\a(t) \in T_\id \cM.
-\end{equation}
-We can also write the global derivative as
-\begin{equation}
-  \mathrm{D} \X_t = \X \circ {^\X}{\hat\a}(t) = {^\id}{\hat\a}(t) \circ \X,
-\end{equation}
-where the derivative is with respect to the coefficients of the matrix $\X$. Naturally, as long as
-\begin{equation}
-  \label{eq:velocity_at_identity}
-  {^\id \a(t)} = \bAd_{\X(t)} {^\X \a}(t)
-\end{equation}
-all these formulations describe the same dynamical system, which can be readily seen from \eqref{eq:derivative_trans}.
-
-\section{Dynamical systems and the exponential map}
 
 Consider the dynamical system $\X(t) = x_0 \circ \exp(t \a)$, evaluating the right derivative with respect to $t$ gives
 \begin{equation}
@@ -38,109 +23,221 @@ It follows that $\X_0 \circ \exp (t \a)$ is the solution to the ordinary differe
 \end{equation}
 
 
-\todo[inline]{Show connection with formulas that map velocities in a rotating frame}
+\section{The Magnus Expansion}
 
-\subsection{Geometric Numerical Integration}
+The Bernoulli numbers are defined by
+\begin{equation}
+  \label{eq:bernoulli_number_definition}
+  \frac{t}{e^t - 1} = \sum_{n=0}^\infty \frac{B_n}{n!} t^n.
+\end{equation}
 
-\todo[inline]{Geometric RK scheme}
+\subsection{The Lie Group Adjoint}
 
-
-
-\section{A Stabilizing Lie Group Controller}
-
-Consider the system
+We can consider ``higher order'' Lie brackets and introduce an adjoint operator on the Lie Algebra to simplify notation.  In particular, define:
 \begin{equation}
   \begin{aligned}
-    \mathrm{d}^r \X_t & = v \\
-    \mathrm{d}^r v_t  & = u
+    \ad_\lx^0 \ly & : = \lx                                                                                                              \\
+    \ad_\lx^1 \ly & : = \ad_\lx \ly = [\lx,\ly]                                                                                          \\
+    \ad_\lx^2 \ly & : =[\lx,  \ad_\lx \ly] = \underbrace{[\lx,[\lx,\ly]]}_{2-\mathrm{times}}                                             \\
+                  & \vdots                                                                                                               \\
+    \ad_\lx^k \ly & := [\lx, \ad_\lx^{k - 1} \ly] = \underbrace{[\lx, [ \lx , \ldots, [\lx,\ly]]]}_{k-\mathrm{times}} , \qquad k \geq 1.
   \end{aligned}
 \end{equation}
-where $u$ is a control input, and the objective of tracking a twice differentiable trajectory $\X_d(t)$ with first and second right-derivatives $v_d$ and $a_d$. Consider the error
+Note that this adjoint operator is different from the Lie group utilized above.
+
+Define also the exponential of the adjoint as the formal expansion
 \begin{equation}
-  e_\X \coloneq \X_d \ominus_r \X,
+  \label{eq:adjoint_exponential}
+  \Exp(\ad_\lx) \coloneq \sum_{k \geq 0} \frac{\ad_\lx^k}{k!}.
 \end{equation}
-with derivative
+
+\begin{lemma}
+  \label{lemma:expadj}
+  \begin{equation}
+    \label{eq:adjoint_exponential_formula}
+    \Exp(\ad_\lx) \; \ly = \Exp(\lx) \; \ly \; \Exp(-\lx).
+  \end{equation}
+\end{lemma}
+\begin{proof}
+  By expanding the right-hand side in \eqref{eq:adjoint_exponential_formula} we obtain
+  \begin{equation}
+    \label{eq:magnus:expansion}
+    \sum_{k \geq 0} \sum_{i = 0}^{k} \frac{\lx^i \ly (-\lx)^{k-i}}{i! (k - i)!}.
+  \end{equation}
+  We next show by induction that the summands in \eqref{eq:adjoint_exponential} and \eqref{eq:magnus:expansion} are equal for each value of $k$. Equality evidently holds for the base case $k=0$. Assume that it holds for $k-1$, i.e. that
+  \begin{equation}
+    \frac{\ad_\lx^{k-1} \ly}{(k-1)!} = \sum_{i=0}^{k-1} \frac{\lx^i B (-\lx)^{k-1-i}}{i! (k-1-i)!}.
+  \end{equation}
+  Then we have that
+  \begin{equation*}
+    \begin{aligned}
+      \frac{\ad_\lx^{k} \ly}{k!} = \frac{1}{k} \left[ \lx \frac{(\ad_\lx^{k-1} \ly)}{(k-1)!} - \frac{(\ad_\lx^{k-1} \ly)}{(k-1)!} \lx \right] =
+      \frac{1}{k} \left[ \sum_{i=0}^{k-1} \frac{\lx^{i+1} B (-\lx)^{k-1-i}}{i! (k-1-i)!} + \sum_{i=0}^{k-1} \frac{\lx^i B (-\lx)^{k-i}}{i! (k-1-i)!} \right] \\
+      = \frac{1}{k} \left[ \sum_{i=0}^{k-1} \frac{\lx^i B (-\lx)^{k-i}}{i! (k-1-i)!} +  \sum_{i=1}^{k} \frac{\lx^{i} B (-\lx)^{k-i}}{(i-1)! (k-i)!} \right] = \frac{\ly (-\lx)^k}{k!} + \sum_{i=1}^{k-1} c_i A^i B (-A)^{k-i} + \frac{\lx^k B}{k!},
+    \end{aligned}
+  \end{equation*}
+  where $c_i = \frac{1}{k} \left( \frac{1}{i!(k-1-i)!} + \frac{1}{(i-1)!(k-i)!} \right)$ and it can be verified that $c_i = \frac{1}{i!(k-i)!}$ as required.
+\end{proof}
+
+We are interested in solutions of the system
 \begin{equation}
-  \mathrm{d}^r (e_\X)_t \overset{\eqref{eq:d_rminus_fst},\eqref{eq:d_rminus_snd}}= \left(\mathrm{d}^r \exp_{e_\X} \right)^{-1} \mathrm{d}^r \X_d - \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} \mathrm{d}^r \X = \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} (\bAd_{\exp(e_\X)} v_d - v).
+  \label{eq:magnus_ode}
+  \frac{\mathrm{d}}{\mathrm{d}t} \x(t) = \lx(t) \x(t), \quad \x(t) \in \X, A(t) \in \lX.
 \end{equation}
-Note that $\bAd_{\exp(e_\X)} = \exp \ad_{e} = \sum_{k \geq 0} \frac{\ad_e}{k!}$ can typically be found on closed form via the usual expansion tricks. Let $e_v \coloneq \bAd_{\exp(e_\X)} v_d - v$ be the velocity error in the body frame; we then have the double intergrator-like error system
+If $A$ is constant in time the solution is given by the exponential, but in the general case the solution is more involved. The integrating factor technique used in scalar ODEs does not work since $A(t)$ and $\dot A(t)$ do not necessarily commute.
+
+The Magnus Expansion approach is to posit that the solution of \eqref{eq:magnus_ode} is of the form
+\begin{equation}
+  \x(t) = \Exp (\Omega(t)), \quad \Omega(t) \in \lX.
+\end{equation}
+
+Consider $\x(t, \sigma) = \frac{\partial }{\partial t} \left[ \Exp(\sigma \Omega(t)) \right] \Exp(-\sigma \Omega(t))$. Differentiating with respect to $\sigma$ yields
 \begin{equation}
   \begin{aligned}
-    \frac{\mathrm{d}}{\mathrm{d}t} e_\X & = \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v,                        \\
-    \frac{\mathrm{d}}{\mathrm{d}t} e_v  & = \frac{\mathrm{d}}{\mathrm{d}t} \left( \bAd_{\exp(e_\X)} v_d\right) - u,
+    \frac{\partial}{\partial \sigma} \x(t, \sigma) = \frac{\partial}{\partial t} \left[ \Exp(\sigma \Omega) \Omega \right] \Exp(-\sigma \Omega) - \frac{\partial}{\partial t} \left[ \Exp(\sigma \Omega) \right] \Omega \Exp(-\sigma \Omega) =  \Exp(\sigma \Omega) \frac{\mathrm{d} \Omega}{\mathrm{d}t} \Exp(-\sigma \Omega) \\
+    = \Exp (\ad_{\sigma \Omega}) \frac{\mathrm{d} \Omega}{\mathrm{d}t} = \sum_{k \geq 0} \frac{\sigma^k}{k!} \ad_{\Omega}^k \frac{\mathrm{d} \Omega}{\mathrm{d}t}.
   \end{aligned}
 \end{equation}
-Where we can further simplify
+We can therefore write
 \begin{equation}
-  \frac{\mathrm{d}}{\mathrm{d}t} \left( \bAd_{\exp(e_\X)} v_d\right) \overset{\eqref{eq:bAd_dl}}= \left[ \mathrm{d}^l \exp_{e_\X} \dot e_\X,  \bAd_{\exp(e_\X)} v_d \right] + \bAd_{\exp(e_\X)} \dot v_d = \left[ e_v,  \bAd_{\exp(e_\X)} v_d \right] + \bAd_{\exp(e_\X)} \dot v_d.
+  \x(t, 1) = \int_0^1 \frac{\partial}{\partial \sigma} \x(t, \sigma) \mathrm{d}\sigma = \sum_{k \geq 0} \frac{\ad_{\Omega}^k}{(k+1)!}  \frac{\mathrm{d} \Omega}{\mathrm{d}t}
 \end{equation}
-If we further consider an input on the form $u = \left[ e_v,  \bAd_{\exp(e_\X)} v_d \right] + \bAd_{\exp(e_\X)} \dot v_d + k_p \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X + k_d e_v$ that cancels out the contribution from $v_d$ and adds PD feedback terms the closed-loop dynamics become
+and we have the following (where the second formulation follows by multiplying from the left with $\Exp(\Omega(t))$ and utilizing Lemma \ref{lemma:expadj}):
+\begin{equation}
+  \label{eq:magnus_matrix_ode}
+  \frac{\mathrm{d}}{\mathrm{d}t} \Exp(\Omega(t)) = \left(\mathrm{d} \Exp_{\Omega(t)} \frac{\mathrm{d} \Omega}{\mathrm{d}t} \right) \Exp(\Omega(t)) = \Exp(\Omega(t)) \left( \mathrm{d} \Exp_{-\Omega(t)} \frac{\mathrm{d} \Omega}{\mathrm{d}t} \right),
+\end{equation}
+where, formally, $\mathrm{d} \Exp_\Omega : T \lX_\Omega \rightarrow \lX$ is the derivative of the exponential map $\Exp: \lX \rightarrow \X$ \textcolor{red}{around zero?}
+\begin{equation}
+  \mathrm{d} \Exp_\Omega = \sum_{k \geq 0} \frac{\ad_{\Omega}^k}{(k+1)!} = \frac{1}{\ad_\Omega} \sum_{k \geq 0} \frac{\ad_{\Omega}^{k+1}}{(k+1)!} = \frac{\Exp(\ad_\Omega) - I}{\ad_\Omega}.
+\end{equation}
+
+Under certain conditions the linear operator $\mathrm{d} \Exp_\Omega$ can be inverted, and from the definition of the Bernoulli numbers in \eqref{eq:bernoulli_number_definition} we obtain
+\begin{equation}
+  \mathrm{d} \Exp^{-1}_\Omega \ly = \frac{\ad_\Omega}{\Exp(\ad_\Omega) - I} \ly = \sum_{k \geq 0} \frac{B_k}{k!} \ad_\Omega^k \ly.
+\end{equation}
+
+\begin{important}
+  \begin{theorem}
+    \label{thm:magnus_solution}
+    The solution of the time-varying ODE
+    \begin{equation}
+      \frac{\mathrm{d}}{\mathrm{d}t} \x(t) = \lx(t) \x(t), \quad \x(0) = \x_0,
+    \end{equation}
+    is given by
+    \begin{equation}
+      \x(t) = \Exp(\Omega(t)) \x_0,
+    \end{equation}
+    where $\Omega(t)$ satisfies the initial-value problem
+    \begin{equation}
+      \label{eq:magnus_omega_ode}
+      \Omega(0) = 0, \quad \frac{\mathrm{d}}{\mathrm{d}t} \Omega(t) = \mathrm{d}\Exp^{-1}_{\Omega(t)} \lx(t) \coloneq \sum_{k \geq 0} \frac{B_k}{k!} \ad_{\Omega(t)}^k A(t).
+    \end{equation}
+  \end{theorem}
+\end{important}
+\begin{proof}
+  Consider $\y(t) = \Exp (\Omega(t)) \x_0$, by \eqref{eq:magnus_matrix_ode} it satisfies
+  \begin{equation}
+    \frac{\mathrm{d}}{\mathrm{d}t} \y(t) = \mathrm{d} \Exp_{\Omega(t)}(\Omega'(t)) \Exp(\Omega(t)) \x_0 = \mathrm{d} \Exp_{\Omega(t)}(\Omega'(t)) \y(t),
+  \end{equation}
+  and we see that $A(t) = \mathrm{d} \Exp_{\Omega(t)}(\Omega'(t))$. Applying the inverse operator results in the theorem statement.
+\end{proof}
+
+\begin{remark}
+  For a body-velocity problem
+  \begin{equation}
+    \dot \x = \x \lx, \quad \x(0) = \x_0,
+  \end{equation}
+  the second expression in \eqref{eq:magnus_matrix_ode} can be used to show that the solution is
+  \begin{equation}
+    \x(t) = \x_0 \Exp (\Omega(t)),
+  \end{equation}
+  where $\Omega$ satisfies
+  \begin{equation}
+    \frac{\mathrm{d}}{\mathrm{d}t}\Omega(t) = \mathrm{d} \Exp^{-1}_{-\Omega(t)} A(t) = \sum_{k \geq 0} \frac{B_k}{k!} \ad_{-\Omega(t)}^k A(t), \quad \Omega(0) = 0.
+  \end{equation}
+\end{remark}
+
+\todo[inline]{Should verify this with a nilpotent Lie Algebra: The Lie group of invertible upper triangular matrices is the algebra of upper triangular invertible matrices!}
+
+The initial value problem for $\Omega$ is still challenging to solve. The \textbf{Magnus expansion} is obtained by setting $A = \epsilon \tilde A$ and expressing $\Omega$ as a series
+\begin{equation}
+  \Omega(t) = \sum_{k \geq 1} \epsilon^k \Omega_k(t).
+\end{equation}
+Inserting this in \eqref{eq:magnus_omega_ode} and comparing powers of $\epsilon$ yields
 \begin{equation}
   \begin{aligned}
-    \frac{\mathrm{d}}{\mathrm{d}t} e_\X & = \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v,                                   \\
-    \frac{\mathrm{d}}{\mathrm{d}t} e_v  & = -k_p \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X - k_d e_v.
+    \Omega_1(t) & = \int_0^t A(s_1) \mathrm{d}s_1,                                                                                                                                                                                 \\
+    \Omega_2(t) & = -\frac{1}{2} \int_0^t \left[ \Omega_1(s_1), A(s_1) \right] \mathrm{d}s_1 = \frac{1}{2} \int_0^t \int_{0}^{s_2} \left[ A(s_1), A(s_2) \right] \mathrm{d} s_2 \mathrm{d} s_1,                                    \\
+    \Omega_3(t) & = \frac{1}{6} \int_{0}^t \int_{0}^{s_1} \int_{0}^{s_2} \left[ A(s_1), \left[ A(s_2), A(s_3) \right] \right] + \left[ \left[ A(s_1), A(s_2) \right], A(s_3) \right] \mathrm{d} s_3 \mathrm{d} s_2 \mathrm{d} s_1.
   \end{aligned}
 \end{equation}
-Now consider a Lyapunov candidate function on the form
+
+
+\section{Example}
+
+Consider the initial value problem on $\mathbb{SE}(2)$:
 \begin{equation}
-  V = \frac{k_p}{2} \| e_\X \|^2 + \frac{1}{2} \| e_v \|^2 + c \left \langle e_v, e_\X \right \rangle \geq \frac{1}{2} \begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix}^T \begin{bmatrix} k_p & -c \\ -c & 1 \end{bmatrix} \begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix},
+  \dot \x(t) = \lx(t) \x(t), \quad \x(0) = \x_0, \quad \x \in \mathbb{SE}(2), \quad \lx \in \mathfrak{se}(2).
 \end{equation}
-where $c$ is s.t. $k_p - c^2 \geq 0$ so that the matrix is positive definite. Its derivative evaluates to
+We assume that $\lx(t) = \hat \lxp(t)$ is a known curve, i.e.
+\begin{equation}
+  \label{eq:se2matrix}
+  \lx(t) = \begin{bmatrix}
+    0 & -\theta(t) & u(t) \\ \theta(t) & 0 & v(t) \\ 0 & 0 & 0
+  \end{bmatrix}
+\end{equation}
+According to Theorem \ref{thm:magnus_solution} the solution is then
+\begin{equation}
+  \x(t) = \Exp(\Omega(t)) \x_0 = \Exp \left( \sum_{k \geq 0} \Omega_k(t) \right) \x_0.
+\end{equation}
+The Lie algebra $\mathfrak{se}(2)$ is not nilpotent, so the exact solution requires the full Magnus expansion. Below we develop an approximate solution corresponding to the first two terms
+\begin{equation}
+  \x(t) \approx \Exp \left( \int_0^t A(t) \mathrm{d} t + \frac{1}{2} \int_{0}^t \left(\int_{0}^{t_1} \left[ A(t_1), A(t_2) \right] \mathrm{d} t_2 \right) \mathrm{d} t_1 \right) \x_0.
+\end{equation}
+To find $\Omega_2$ we consider the commutator of matrices in $\mathfrak{se}(2)$ on the form \eqref{eq:se2matrix}:
 \begin{equation*}
   \begin{aligned}
-    \dot V & = k_p \left \langle e_\X, \left( \mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v \right \rangle - k_p \left \langle e_v,  \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X \right \rangle - k_d \| e_v \|^2 + c \left \langle \dot e_v, e_\X \right \rangle + c \left \langle e_v, \dot e_\X \right \rangle \\
-           & = - k_d \| e_v \|^2 - c \left \langle k_p \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X + k_d e_v, e_\X \right \rangle + c \left \langle e_v, \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v \right \rangle                                                                                       \\
-           & = -k_d \| e_v \|^2 - c k_p \| e_\X \|^2 - c k_d \left \langle e_v, e_\X \right \rangle + c \left \langle e_v, \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v \right \rangle - c k_p \left \langle ( \textcolor{red}{(\mathrm{d}^l \exp_{e_\X})^{-T}} - I) e_\X , e_\X \right \rangle                                   \\
-           & \leq -k_d \| e_v \|^2 - c k_p \| e_\X \|^2 + c k_d \| e_v \| \| e_\X \| + c \lambda_{\textrm{max}}\left( \left( \mathrm{d}^l \exp_{e_\X} \right)^{-1} \right) \| e_v \|^2 + c k_p \lambda_{\textrm{max}} \left( \textcolor{red}{\left(\mathrm{d}^l \exp_{e_\X} \right)^{-1}} - I \right) \| e_\X \|^2.
+    \left[ A(t_1), A(t_2) \right] & = \begin{bmatrix}
+      0 & -\theta(t_1) & u(t_1) \\ \theta(t_1) & 0 & v(t_1) \\ 0 & 0 & 0
+    \end{bmatrix} \begin{bmatrix}
+      0 & -\theta(t_2) & u(t_2) \\ \theta(t_2) & 0 & v(t_2) \\ 0 & 0 & 0
+    \end{bmatrix} \\
+                                 & - \begin{bmatrix}
+      0 & -\theta(t_2) & u(t_2) \\ \theta(t_2) & 0 & v(t_2) \\ 0 & 0 & 0
+    \end{bmatrix} \begin{bmatrix}
+      0 & -\theta(t_1) & u(t_1) \\ \theta(t_1) & 0 & v(t_1) \\ 0 & 0 & 0
+    \end{bmatrix} \\
+                                  & = \begin{bmatrix}
+      -\theta(t_1) \theta(t_2) & 0                        & -\theta(t_1)v(t_2) \\
+      0                        & -\theta(t_1) \theta(t_2) & \theta(t_1)u(t_2)  \\
+      0                        & 0                        & 0
+    \end{bmatrix} - \begin{bmatrix}
+      -\theta(t_1) \theta(t_2) & 0                        & -\theta(t_2) v(t_1) \\
+      0                        & -\theta(t_1) \theta(t_2) & \theta(t_2) u(t_1)  \\
+      0                        & 0                        & 0
+    \end{bmatrix}                                                       \\
+                                  & = \begin{bmatrix}
+      0 & 0 & -\theta(t_1) v(t_2) + \theta(t_2) v(t_1) \\
+      0 & 0 & \theta(t_1) u(t_2) - \theta(t_2) u(t_1)  \\
+      0 & 0 & 0
+    \end{bmatrix}.
   \end{aligned}
 \end{equation*}
 
-\begin{itemize}
-  \item Eigenvalues of $(\mathrm{d}^l \exp_{e_\X})^{-1}$ can be shown to be on the form $\frac{\lambda}{e^{\lambda} - 1} = \sum_{k=0}^\infty \frac{B_n}{n!} \lambda^n$, where $\lambda$ is an eigenvalue of $\ad_e$.
-  \item Zero is always an eigenvalue of $\ad_e$ since $\ad_e e = 0$ due to it being a commutator (the corresponding eigenvalue of $(\mathrm{d}^l \exp_e)^{-1}$ is 1
-  \item Often, the eigenvalues of $\ad_e$ are purely imaginary. The corresponding eigenvalues of $(\mathrm{d}^l \exp_{e_\X})^{-1}$ are
-        \begin{equation}
-          \frac{i \lambda}{e^{i \lambda} - 1} = \frac{i \lambda e^{-i \lambda / 2}}{e^{i \lambda / 2} - e^{- i \lambda / 2}} = \frac{i \lambda e^{-i \lambda / 2}}{2 i \sin \lambda / 2} = \lambda \frac{\cos \lambda / 2 - i \sin \lambda / 2}{2 \sin \lambda / 2} = \frac{\lambda}{2} \cot \frac{\lambda}{2} - i \frac{\lambda}{2}.
-        \end{equation}
-        That is, the real part is equal to $\frac{\lambda}{2}\cot \frac{\lambda}{2}$.
-  \item For angular groups we should throttle the angular part of $\| e_X \|$ at $\pm \pi/2$ in order to avoid the region where the eigenvalues approach zero which otherwise would lead to sluggish convergence
-\end{itemize}
-
-The maximal real part for $\lambda \in [-\pi, \pi]$ is attained at $\lambda = 0$ and is equal to 1, as shown in Figure \ref{fig:cot_fcn}. Thus, for lie groups s.t. $\ad_\a$ has purely imaginary eigenvalues in the range $[-\pi, \pi]$ for all $\a$, it holds that $\left( \mathrm{d}^l \exp_{e_\X} \right)^{-1}$ has no eigenvalue with real absolute magnitude larger than 1.
-
-\begin{figure}
-  \begin{center}
-    \begin{tikzpicture}
-      \begin{axis}
-        [
-          width=3in,
-          height=2in,
-          xmin=-3.15,
-          xmax=3.15,
-          ymin=0,
-          ymax=1,
-          xtick={-3.14, 0, 3.1415},
-          xticklabels={$-\pi$, 0, $\pi$},
-        ]
-        \addplot[no marks, thick, blue, samples=400]{x/2 * cot(deg(x/2))};
-      \end{axis}
-    \end{tikzpicture}
-  \end{center}
-  \caption{Function $x \mapsto \frac{x}{2} \cot \frac{x}{2}$.}
-  \label{fig:cot_fcn}
-\end{figure}
-
-Let $\epsilon = \lambda_\textrm{max} \left( \textcolor{red}{\left(\mathrm{d}^l \exp_{e_\X} \right)^{-1}} - I \right)$; then we have
-\begin{equation}
-  \dot V \leq -\begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix}^T \begin{bmatrix} c k_p (1 - \epsilon) & -\frac{c k_d}{2} \\ -\frac{c k_d}{2} & k_d - c \end{bmatrix} \begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix}
-\end{equation}
-Therefore, if
-\begin{equation}
-  \begin{aligned}
-    c k_p (1 - \epsilon) + k_d - c \geq 0 \\
-    c k_p (1 - \epsilon) - \frac{c^2 k_d^2}{4}  \geq 0
-  \end{aligned}
-\end{equation}
+\begin{important}
+  In the affine case where $\theta(t) = \theta_0 + a_\theta t$, and similarly for $u$ and $v$, we get after evaluating the integrals:
+  \begin{equation*}
+    \begin{bmatrix}
+      a(t) \\
+      b(t) \\
+      x(t) \\
+      y(t)
+    \end{bmatrix} \approx \exp \left( \begin{bmatrix} \theta_0 t + a_\theta t \frac{t^2}{2}                                                 \\
+      u_0 t + a_u \frac{t^2}{2} + \theta_0 a_v \frac{t^3}{12} - a_\theta v_0 \frac{t^3}{12} \\
+      v_0 t + a_v \frac{t^2}{2} - \theta_0 a_u \frac{t^3}{12} + a_\theta u_0 \frac{t^3}{12}\end{bmatrix} \right).
+  \end{equation*}
+\end{important}
 
 
 \section{Sensitivity Analysis}
@@ -214,7 +311,8 @@ We can then evaluate how $\mathrm{d}^{r} \Phi(t; \x_{0})_{t}$ depends on $t$ by 
      & \left( \mathrm{d}^r \Phi(t; \x_0)_{\x_0} \a \right)
     = \frac{\mathrm{d}}{\mathrm{d}t} \left( \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d} \tau} \right|_{\tau = 0} \Phi(t; \x_{0} \oplus \tau \a) \right)^{\vee}                                                                                                                                                                                                                                                                                      \\
      & = \left( \left( -\Phi(t; \x_{0})^{-1} \dot \Phi(t; \x_{0}) \Phi(t; \x_{0}) \right)^{-1} \frac{\mathrm{d}}{\mathrm{d}\tau} \Phi(t; \x_{0} \oplus \tau \a) +  \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau=0} \dot \Phi(t; \x_{0} \oplus \tau \a) \right)^{\vee}                                                                                                                                                             \\
-     & = \left( -\hat f\left(t; \Phi(t; \x_{0})\right) \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \Phi(t; \x_{0} \oplus \tau \a)                                                                                                                + \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \Phi(t; \x_{0} \oplus \tau \a) \hat f(t; \Phi(t; \x_{0} \oplus \tau \a)) \right)^{\vee} \\
+     & = \left( -\hat f\left(t; \Phi(t; \x_{0})\right) \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \Phi(t; \x_{0} \oplus \tau \a) \right)^\vee  \\ 
+     & + \left( \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \Phi(t; \x_{0} \oplus \tau \a) \hat f(t; \Phi(t; \x_{0} \oplus \tau \a)) \right)^{\vee} \\
      & = - \left( \hat f(t; \Phi(t; \x_{0})) \left( \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}} \a \right)^{\wedge}
     + \left( \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}} \a \right)^{\wedge} \hat f(t; \Phi(t; \x_{0}))  + \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \hat f(t; \Phi(t; \x_{0} \oplus \tau \a)) \right)^{\vee}                                                                                                                                                                                                                                      \\
      & = -\left[  f(t; \Phi(t; \x_{0})), \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}} \a\right] + \mathrm{d}^{r} f(t, \Phi(t; \x_{0}))_{\x_{0}} \a                                                                                                                                                                                                                                                                                                                    \\
@@ -298,7 +396,63 @@ i.e.
   Due to the semi-group property $\exp((t + \delta) \a) \approx \exp(t \a) \circ \exp(\delta \times \mathrm{d}^{r} \exp_{t \a} \a)$, therefore $\mathrm{d}^{r} \exp_{t \a} \a = \a$, so it follows that $\Omega(t) = t \a$ is the unique solution to \eqref{eq:magnus_example} which agrees with \eqref{eq:sensitivity_magnus}.
 \end{example}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../root"
-%%% End:
+
+\section{Monotonicity}
+
+Monotonicity is a useful property of dynamical systems that can be leveraged in order to bound the envelope of possible behaviors by a small number of extremal trajectories. For instance, a forward-traveling vehicle that is trying to stop is always better of the less it accelerates, which means that it is sufficient to analyze it's minimal acceleration in order to determine whether it can stop in time.
+
+\paragraph{Monotonicity on $\mathbb{R}^n$} Monotonicity is usually defined with respect to a \emph{cone}---a set with the property that $0 \in K$ and $\x \in K \implies \alpha K \in K$ for $\alpha \geq 0$. For a cone we can define an ordering $\preceq_K$ such that
+\begin{equation}
+  x \preceq_K y \quad \Longleftrightarrow \quad y - x \in K.
+\end{equation}
+
+Monotonicity of a function $f$ can then be defined as the following property:
+\begin{equation}
+  x \preceq_K y  \quad \implies \quad f(x) \preceq_K f(y).
+\end{equation}
+
+\paragraph{Monotonicity on Lie groups}
+The usual notion of monotonicity only applies for \emph{ordered spaces}, which is a property that is not present in the usual Lie groups used in robotics. Indeed, for a circle ordering makes little sense.  However, the tangent space of a Lie group is monotone which makes it possible to define a notion of \emph{local monotonicity} in a way that is analogous to the Euclidean case.
+
+\begin{definition}
+  \label{def:monotonicity}
+  A function $f : \M \rightarrow \N$ is locally monotone around $\Z \in \M$ with respect to a cone $K \subset \mathfrak m \cong \mathbb{R}^n$ if for all $\a, \b$ that are sufficiently small it holds that
+  \begin{equation}
+    \a \preceq_K \b \quad \implies \quad f(\Z \oplus_r \a) \ominus_r f(\Z) \preceq_K f(\Z \oplus_r \b) \ominus f(\Z).
+  \end{equation}
+\end{definition}
+When $\M$ and $\N$ are Euclidean spaces $\Z$ can be set to zero to retrieve the original definition.
+
+\begin{itemize}
+  \item Define mixed monotonicity corresponding to Def \eqref{def:monotonicity}.
+  \item Derive a jacobian condition on $f$ for mixed monotonicity that is analogous to sign-stability?
+  \item Create a dynamical system that over-approximates reach sets of one of these forms:
+  \begin{itemize}
+    \item MID-DOWN-UP: $\Alpha(\X, l, u) = \{ \Y : l \preceq_K \Y \ominus_r \X \preceq_K u \}$
+    \item MID-SINGLE: $\Alpha(\X, k) = \{ \Y : -k \preceq_K \Y \ominus_r \X \preceq_K k \}$
+    \item MID-RADIUS: $\Alpha(\X, r) = \{ \Y : \| \Y \ominus_r \X \| < r \}$
+    \item The values $l, u$ need to be twisted as part of the mapping
+  \end{itemize}
+\end{itemize}
+
+The derivative of the mapping $\a \mapsto f(\Z \oplus_r \a) \ominus f(\Z)$ from $\mathbb{R}^n$ to $\mathbb{R}^m$ is
+\begin{equation}
+\mathrm{d}^r \left( f(\Z \oplus_r \a) \ominus f(\Z) \right)_\a = \left[ \mathrm{d}^r \exp_{f(\Z \oplus_r \a) \ominus f(\Z)} \right]^{-1} \; \mathrm{d}^r f_{\Z \oplus \a} \; \mathrm{d}^r \exp_\a
+\end{equation}
+It follows that this is what we need to make sign-stable, so the decomposition should depend on it. Challenge is that the decomposition may have to depend on both $\a$ and on $\Z$.
+
+\paragraph{Reach mapping:}
+
+Set $\left\{ \X : \underline \a \preceq_K \X \ominus_r \Z \preceq_K \overline \a \right\}$
+
+Decomposition function $g$ s.t. $f(\Z \oplus \a) \ominus f(\Z) = g_{\Z}(\a, \a)$
+
+Mapped set:
+\begin{equation}
+  \left\{ \X : g_\Z(\underline \a, \overline \a) \preceq_K \X \ominus f(\Z) \preceq_K g_\Z(\overline \a, \underline \a) \right\}.
+\end{equation}
+
+\begin{itemize}
+  \item How to go from monotonicity of $f : \M \rightarrow \mathbb{R}^m$ to monotonicity of the flow $\phi : \M \rightarrow \M$?
+  \item How is decomposition function done in practice? Like in Necmiyes paper?
+\end{itemize}

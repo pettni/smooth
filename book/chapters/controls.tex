@@ -1,12 +1,107 @@
-% !TEX root = ../manuscript.tex
-
+% !TEX root = ../root.tex
 
 \chapter{Application: Geometric Control}
 
 \begin{itemize_outcomes}
   \item Extend PD theory to Lie Groups.
-  \item Quadrotor control on $SE(3)$
+  \item Model-predictive control
 \end{itemize_outcomes}
+
+\section{A Stabilizing Lie Group Controller}
+
+Consider the system
+\begin{equation}
+  \begin{aligned}
+    \mathrm{d}^r \X_t & = v \\
+    \mathrm{d}^r v_t  & = u
+  \end{aligned}
+\end{equation}
+where $u$ is a control input, and the objective of tracking a twice differentiable trajectory $\X_d(t)$ with first and second right-derivatives $v_d$ and $a_d$. Consider the error
+\begin{equation}
+  e_\X \coloneq \X_d \ominus_r \X,
+\end{equation}
+with derivative
+\begin{equation}
+  \mathrm{d}^r (e_\X)_t \overset{\eqref{eq:d_rminus_fst},\eqref{eq:d_rminus_snd}}= \left(\mathrm{d}^r \exp_{e_\X} \right)^{-1} \mathrm{d}^r \X_d - \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} \mathrm{d}^r \X = \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} (\bAd_{\exp(e_\X)} v_d - v).
+\end{equation}
+Note that $\bAd_{\exp(e_\X)} = \exp \ad_{e} = \sum_{k \geq 0} \frac{\ad_e}{k!}$ can typically be found on closed form via the usual expansion tricks. Let $e_v \coloneq \bAd_{\exp(e_\X)} v_d - v$ be the velocity error in the body frame; we then have the double intergrator-like error system
+\begin{equation}
+  \begin{aligned}
+    \frac{\mathrm{d}}{\mathrm{d}t} e_\X & = \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v,                        \\
+    \frac{\mathrm{d}}{\mathrm{d}t} e_v  & = \frac{\mathrm{d}}{\mathrm{d}t} \left( \bAd_{\exp(e_\X)} v_d\right) - u,
+  \end{aligned}
+\end{equation}
+Where we can further simplify
+\begin{equation}
+  \frac{\mathrm{d}}{\mathrm{d}t} \left( \bAd_{\exp(e_\X)} v_d\right) \overset{\eqref{eq:bAd_dl}}= \left[ \mathrm{d}^l \exp_{e_\X} \dot e_\X,  \bAd_{\exp(e_\X)} v_d \right] + \bAd_{\exp(e_\X)} \dot v_d = \left[ e_v,  \bAd_{\exp(e_\X)} v_d \right] + \bAd_{\exp(e_\X)} \dot v_d.
+\end{equation}
+If we further consider an input on the form $u = \left[ e_v,  \bAd_{\exp(e_\X)} v_d \right] + \bAd_{\exp(e_\X)} \dot v_d + k_p \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X + k_d e_v$ that cancels out the contribution from $v_d$ and adds PD feedback terms the closed-loop dynamics become
+\begin{equation}
+  \begin{aligned}
+    \frac{\mathrm{d}}{\mathrm{d}t} e_\X & = \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v,                                   \\
+    \frac{\mathrm{d}}{\mathrm{d}t} e_v  & = -k_p \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X - k_d e_v.
+  \end{aligned}
+\end{equation}
+Now consider a Lyapunov candidate function on the form
+\begin{equation}
+  V = \frac{k_p}{2} \| e_\X \|^2 + \frac{1}{2} \| e_v \|^2 + c \left \langle e_v, e_\X \right \rangle \geq \frac{1}{2} \begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix}^T \begin{bmatrix} k_p & -c \\ -c & 1 \end{bmatrix} \begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix},
+\end{equation}
+where $c$ is s.t. $k_p - c^2 \geq 0$ so that the matrix is positive definite. Its derivative evaluates to
+\begin{equation*}
+  \begin{aligned}
+    \dot V & = k_p \left \langle e_\X, \left( \mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v \right \rangle - k_p \left \langle e_v,  \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X \right \rangle - k_d \| e_v \|^2 + c \left \langle \dot e_v, e_\X \right \rangle + c \left \langle e_v, \dot e_\X \right \rangle \\
+           & = - k_d \| e_v \|^2 - c \left \langle k_p \textcolor{red}{\left( \mathrm{d}^l \exp_{e_\X} \right)^{-T}} e_\X + k_d e_v, e_\X \right \rangle + c \left \langle e_v, \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v \right \rangle                                                                                       \\
+           & = -k_d \| e_v \|^2 - c k_p \| e_\X \|^2 - c k_d \left \langle e_v, e_\X \right \rangle + c \left \langle e_v, \left(\mathrm{d}^l \exp_{e_\X} \right)^{-1} e_v \right \rangle - c k_p \left \langle ( \textcolor{red}{(\mathrm{d}^l \exp_{e_\X})^{-T}} - I) e_\X , e_\X \right \rangle                                   \\
+           & \leq -k_d \| e_v \|^2 - c k_p \| e_\X \|^2 + c k_d \| e_v \| \| e_\X \| + c \lambda_{\textrm{max}}\left( \left( \mathrm{d}^l \exp_{e_\X} \right)^{-1} \right) \| e_v \|^2 + c k_p \lambda_{\textrm{max}} \left( \textcolor{red}{\left(\mathrm{d}^l \exp_{e_\X} \right)^{-1}} - I \right) \| e_\X \|^2.
+  \end{aligned}
+\end{equation*}
+
+\begin{itemize}
+  \item Eigenvalues of $(\mathrm{d}^l \exp_{e_\X})^{-1}$ can be shown to be on the form $\frac{\lambda}{e^{\lambda} - 1} = \sum_{k=0}^\infty \frac{B_n}{n!} \lambda^n$, where $\lambda$ is an eigenvalue of $\ad_e$.
+  \item Zero is always an eigenvalue of $\ad_e$ since $\ad_e e = 0$ due to it being a commutator (the corresponding eigenvalue of $(\mathrm{d}^l \exp_e)^{-1}$ is 1
+  \item Often, eigenvalues of $\ad_e$ are purely imaginary. The corresponding eigenvalues of $(\mathrm{d}^l \exp_{e_\X})^{-1}$ are
+        \begin{equation}
+          \frac{i \lambda}{e^{i \lambda} - 1} = \frac{i \lambda e^{-i \lambda / 2}}{e^{i \lambda / 2} - e^{- i \lambda / 2}} = \frac{i \lambda e^{-i \lambda / 2}}{2 i \sin \lambda / 2} = \lambda \frac{\cos \lambda / 2 - i \sin \lambda / 2}{2 \sin \lambda / 2} = \frac{\lambda}{2} \cot \frac{\lambda}{2} - i \frac{\lambda}{2}.
+        \end{equation}
+        That is, the real part is equal to $\frac{\lambda}{2}\cot \frac{\lambda}{2}$.
+  \item For angular groups we should throttle the angular part of $\| e_X \|$ at $\pm \pi/2$ in order to avoid the region where the eigenvalues approach zero which otherwise would lead to sluggish convergence
+\end{itemize}
+
+The maximal real part for $\lambda \in [-\pi, \pi]$ is attained at $\lambda = 0$ and is equal to 1, as shown in Figure \ref{fig:cot_fcn}. Thus, for lie groups s.t. $\ad_\a$ has purely imaginary eigenvalues in the range $[-\pi, \pi]$ for all $\a$, it holds that $\left( \mathrm{d}^l \exp_{e_\X} \right)^{-1}$ has no eigenvalue with real absolute magnitude larger than 1.
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}
+        [
+          width=3in,
+          height=2in,
+          xmin=-3.15,
+          xmax=3.15,
+          ymin=0,
+          ymax=1,
+          xtick={-3.14, 0, 3.1415},
+          xticklabels={$-\pi$, 0, $\pi$},
+        ]
+        \addplot[no marks, thick, blue, samples=400]{x/2 * cot(deg(x/2))};
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+  \caption{Function $x \mapsto \frac{x}{2} \cot \frac{x}{2}$.}
+  \label{fig:cot_fcn}
+\end{figure}
+
+Let $\epsilon = \lambda_\textrm{max} \left( \textcolor{red}{\left(\mathrm{d}^l \exp_{e_\X} \right)^{-1}} - I \right)$; then we have
+\begin{equation}
+  \dot V \leq -\begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix}^T \begin{bmatrix} c k_p (1 - \epsilon) & -\frac{c k_d}{2} \\ -\frac{c k_d}{2} & k_d - c \end{bmatrix} \begin{bmatrix} \| e_\X \| \\ \| e_v \| \end{bmatrix}
+\end{equation}
+Therefore, if
+\begin{equation}
+  \begin{aligned}
+    c k_p (1 - \epsilon) + k_d - c \geq 0 \\
+    c k_p (1 - \epsilon) - \frac{c^2 k_d^2}{4}  \geq 0
+  \end{aligned}
+\end{equation}
 
 
 In the following we let $M = SO(3)$ be the Lie group consisting of rotation matrices with matrix multiplication being the group action. We also write $e = I_3$ for the identity element of the group.
@@ -19,11 +114,11 @@ Consider the rigid body dynamics
     \label{eq:attitude2} J \; {^R\dot{\bomega}} & = -{^R\hat\bomega} J {^R\bomega} + u,
   \end{align}
 \end{subequations}
-where $J$ is the moment of inertia, ${^R \hat \bomega} \in T M_R$ is the angular velocity in the body frame, and $R \in SO(3)$ is the attitude. By \eqref{eq:velocity_at_identity} we can see that the angular velocity ${^{e} \hat\bomega} \in T M_{e}$ in the inertial frame can be obtained as
+where $J$ is the moment of inertia, ${^R \hat \bomega} \in T M_R$ is the angular velocity in the body frame, and $R \in SO(3)$ is the attitude. We can see that the angular velocity ${^{e} \hat\bomega} \in T M_{e}$ in the inertial frame can be obtained as
 \begin{equation}
   ^{e} \bomega = \Ad_R \left( ^R\bomega \right) = R {^R\bomega}.
 \end{equation}
-Using \eqref{eq:ad_relation1} we also see that $^e \hat\bomega = \widehat {\Ad_R ^R\bomega } = R  \; {^R\bomega} \; R^T$, so it follows that \eqref{eq:attitude1} can be written as
+We also see that $^e \hat\bomega = \widehat {\Ad_R ^R\bomega } = R  \; {^R\bomega} \; R^T$, so it follows that \eqref{eq:attitude1} can be written as
 \begin{equation}
   \dot R = {^e\hat\bomega} R.
 \end{equation}
@@ -54,29 +149,13 @@ It can be seen by \eqref{eq:so3_log} that $e_r$ is a rescaling of $\tilde e_r$. 
   \begin{aligned}
     \dot \Psi = & -\frac{1}{2} \left( \left\langle R_d, \dot R \right\rangle_F + \left\langle \dot R_d, R \right\rangle_F \right) = - \frac{1}{2} \left( \left\langle R_d , R \hat \bomega \right\rangle_F + \left\langle \hat \bomega_d R_d , R \right\rangle_F \right) =                             \\
                 & = - \frac{1}{2} \left( \left\langle R^T R_d , \hat \bomega \right\rangle_F - \left\langle \hat \bomega_d^T R_d , R \right\rangle_F \right) = - \frac{1}{2} \left( \left\langle R^T R_d , \hat \bomega \right\rangle_F - \left\langle  R_d , \hat \bomega_d R \right\rangle_F \right) \\
-                & \overset{\eqref{eq:so3_adjoint_hat}}= - \frac{1}{2} \left( \left\langle R^T R_d , \hat \bomega \right\rangle_F - \left\langle  R_d , R \widehat {R^T\bomega_d} \right\rangle_F \right) = - \frac{1}{2} \left\langle R^T R_d , \hat e_\bomega \right\rangle_F                         \\
-                & = \frac{1}{4} \left\langle R_d^T R - R^T R_d, \hat e_\bomega \right\rangle_F \overset{\eqref{eq:dot_trace_rel}}= e_r \cdot e_\bomega,
+                & = - \frac{1}{2} \left( \left\langle R^T R_d , \hat \bomega \right\rangle_F - \left\langle  R_d , R \widehat {R^T\bomega_d} \right\rangle_F \right) = - \frac{1}{2} \left\langle R^T R_d , \hat e_\bomega \right\rangle_F                         \\
+                & = \frac{1}{4} \left\langle R_d^T R - R^T R_d, \hat e_\bomega \right\rangle_F = e_r \cdot e_\bomega,
   \end{aligned}
 \end{equation}
 where we have used the property that the Frobenius product $\left\langle A, B \right\rangle_F = - \left\langle A^T, B \right\rangle_F$ for $B$ skew-symmetric.
 
-\section{WIP: Derivative via Jacobians}
-
-It should also be possible to calculate the time derivative via \eqref{eq:dtr_dr}, but it seems difficult to arrive at the same expression:
-\begin{equation}
-  \begin{aligned}
-    \frac{\mathrm{d}}{\mathrm{d}t} \Psi = -\frac{1}{2} \frac{^e\partial \tr(R R_d^T)}{^e \partial R R_d^T} \left[ \frac{^e\partial R R_d^T}{^e \partial R} \; {^e\bomega} + \frac{^e\partial R R_d^T}{^e \partial R_d}  {^e\bomega_d}  \right] \\
-    = -\frac{1}{2} \left( R_d R^T - R  R_d^T \right)^\vee \cdot \left[ {^e\bomega} - R {^e\bomega_d}  \right]
-  \end{aligned}
-\end{equation}
-Using right derivatives instead:
-\begin{equation}
-  \begin{aligned}
-    \frac{\mathrm{d}}{\mathrm{d}t} \Psi = -\frac{1}{2} \frac{^{\tr(R R_d^T)} \partial \tr(R R_d^T)}{^{R R_d^T} \partial R R_d^T} \left[ \frac{^{R R_d^T} \partial R R_d^T}{^R \partial R}  {^R\bomega} + \frac{^{R R_d^T}\partial R R_d^T}{^{R_d} \partial R_d} {^{R_d} \bomega_d}  \right] \\
-    = -\frac{1}{2} \left( R_d R^T - R R_d^T \right)^\vee \left[ R_d \; {^R\bomega} - {^{R_d}\bomega_d}  \right]
-  \end{aligned}
-\end{equation}
-
+\todo[inline]{Do derivatives via jacobians instead}
 
 
 \section{Lyapunov Stability}
@@ -101,10 +180,10 @@ The derivative of the Lyapunov candidate then \begin{proposition}
     \begin{aligned}
       \frac{\mathrm{d}}{\mathrm{d}t} J e_\bomega & \overset{\eqref{eq:e_omega}}= J \dot \bomega - J \dot R^T \bomega_d - J R^T \dot \bomega_d \overset{\eqref{eq:attitude}}= u - \hat \bomega J \bomega - J \left( R \hat \bomega \right)^T \bomega_d - J R^T \dot \bomega_d \\
                                                  & \overset{\eqref{eq:feedback}}= -k_r e_r - k_\bomega e_\bomega + \widehat{R^T \; {\bomega_d}} J R^T \; {\bomega_d} - \hat \bomega J \bomega - J \hat \bomega^T R^T \bomega_d                                               \\
-                                                 & \overset{\eqref{eq:e_omega}, \eqref{eq:so3_transpose}}= -k_r e_r - k_\bomega e_\bomega + \widehat{R^T \; {\bomega_d}} J R^T \; {\bomega_d} - (\hat e_\bomega + \widehat{R^T \bomega_d}) J (e_\bomega + {R^T \bomega_d})   \\
+                                                 & \overset{\eqref{eq:e_omega}}= -k_r e_r - k_\bomega e_\bomega + \widehat{R^T \; {\bomega_d}} J R^T \; {\bomega_d} - (\hat e_\bomega + \widehat{R^T \bomega_d}) J (e_\bomega + {R^T \bomega_d})   \\
                                                  & \quad + J \left( \hat e_\bomega + \cancelto{0}{\widehat{R^T \bomega_d}} \right) R^T \bomega_d                                                                                                                             \\
-                                                 & \overset{\eqref{eq:hat_so_rel1}}= -k_r e_r - k_\bomega e_\bomega + \left( \widehat{J e_\bomega} + \widehat{J R^T \bomega_d} - \widehat{R^T \bomega_d} J - J \widehat{R^T \bomega_d} \right) e_\bomega                     \\
-                                                 & \overset{\eqref{eq:hat_so_rel4}}= -k_r e_r - k_\bomega e_\bomega + \left( J e_\bomega + \left(2 J R^T \bomega_d - \text{trace}(J) I \right) R^T \bomega_d \right)^\wedge e_\bomega.
+                                                 & = -k_r e_r - k_\bomega e_\bomega + \left( \widehat{J e_\bomega} + \widehat{J R^T \bomega_d} - \widehat{R^T \bomega_d} J - J \widehat{R^T \bomega_d} \right) e_\bomega                     \\
+                                                 & = -k_r e_r - k_\bomega e_\bomega + \left( J e_\bomega + \left(2 J R^T \bomega_d - \text{trace}(J) I \right) R^T \bomega_d \right)^\wedge e_\bomega.
     \end{aligned}
   \end{equation*}
 \end{proof}
@@ -115,9 +194,9 @@ We then get
     \dot V = -k_\bomega \| e_\bomega \|^2 + c \dot e_r \cdot J e_\bomega + c e_r \cdot J \dot e_\bomega
   \end{aligned}
 \end{equation}
-It remains to bound the terms involving $c$. From \eqref{eq:dot_trace_rel} we have that $\| \bomega \|_2^2 = \frac{1}{2} \| \hat \bomega \|_F^2$. We also have
+It remains to bound the terms involving $c$. We have that $\| \bomega \|_2^2 = \frac{1}{2} \| \hat \bomega \|_F^2$. We also have
 \begin{equation}
-  \frac{\mathrm{d}}{\mathrm{d}t} R_d^T R = R_d^T R \hat \bomega + R_d^T \hat \bomega_d^T R \overset{\eqref{eq:so3_transpose}} = R_d^T R \hat \bomega - R_d^T \hat \bomega_d R \overset{\eqref{eq:so3_adjoint_hat}}= R_d^T R \hat \bomega - R_d^T R \; \widehat{R^T \bomega_d} = R_d^T R \hat e_\bomega.
+  \frac{\mathrm{d}}{\mathrm{d}t} R_d^T R = R_d^T R \hat \bomega + R_d^T \hat \bomega_d^T R = R_d^T R \hat \bomega - R_d^T \hat \bomega_d R = R_d^T R \hat \bomega - R_d^T R \; \widehat{R^T \bomega_d} = R_d^T R \hat e_\bomega.
 \end{equation}
 and therefore we get that $\| \dot {\hat {e}}_r \|_F = \left\| \frac{1}{2} \left( R_d^T R \hat e_\bomega + \hat e_\bomega R^T R_d \right) \right\|_F \leq \| \hat e_\bomega \|_F$, so it follows that
 \begin{equation}
@@ -160,8 +239,8 @@ The derivative of $\Psi_i(R)$ becomes
   \label{eq:dot_psi}
   \begin{aligned}
     \dot \Psi_i(R) & = -\dot R b_i \cdot R_d b_i - R b_i \cdot \dot R_d b_i \overset{\eqref{eq:attitude1}, \eqref{eq:desired_dyn}}{=} -R {^R{\hat \bomega}} b_i \cdot R_d b_i - R b_i \cdot {^e\hat \bomega_d} R_d b_i                                                                                                                                   \\
-                   & = - {^R{\hat \bomega}} b_i \cdot R^T R_d b_i - b_i \cdot R^T \; {^e\hat \bomega_d} R_d b_i \overset{\eqref{eq:so3_adjoint_hat}}{=} - {^R{\hat \bomega}} b_i \cdot R^T R_d b_i - b_i \cdot  \widehat{R^T \; {^e\bomega_d}} R^TR_d b_i                                                                                                \\
-                   & \overset{\eqref{eq:hat_so_rel3}}{=} -{^R{\bomega}} \cdot \left( \widehat{b_i} \; R^T R_d b_i \right) - R^T \; {^e\bomega_d} \cdot \widehat{R^TR_d b_i} b_i \overset{\eqref{eq:hat_so_rel1}}{=} \underbrace{\left( {^R{ \bomega}} - R^T \; {^e\bomega_d} \right)}_{e_\bomega} \cdot \underbrace{\widehat{R^TR_d b_i} b_i}_{e_{r_i}},
+                   & = - {^R{\hat \bomega}} b_i \cdot R^T R_d b_i - b_i \cdot R^T \; {^e\hat \bomega_d} R_d b_i = - {^R{\hat \bomega}} b_i \cdot R^T R_d b_i - b_i \cdot  \widehat{R^T \; {^e\bomega_d}} R^TR_d b_i                                                                                                \\
+                   & = -{^R{\bomega}} \cdot \left( \widehat{b_i} \; R^T R_d b_i \right) - R^T \; {^e\bomega_d} \cdot \widehat{R^TR_d b_i} b_i = \underbrace{\left( {^R{ \bomega}} - R^T \; {^e\bomega_d} \right)}_{e_\bomega} \cdot \underbrace{\widehat{R^TR_d b_i} b_i}_{e_{r_i}},
   \end{aligned}
 \end{equation}
 where we have defined two error functions
@@ -246,10 +325,10 @@ We start with an intermediate result
     \begin{aligned}
       \frac{\mathrm{d}}{\mathrm{d}t} J e_\bomega & \overset{\eqref{eq:e_omega}}= J \dot \bomega - J \dot R^T \bomega_d - J R^T \dot \bomega_d \overset{\eqref{eq:attitude}}= u - \hat \bomega J \bomega - J \left( R \hat \bomega \right)^T \bomega_d - J R^T \dot \bomega_d \\
                                                  & \overset{\eqref{eq:feedback}}= -e_r - k_\bomega e_\bomega + \widehat{R^T \; {\bomega_d}} J R^T \; {\bomega_d} - \hat \bomega J \bomega - J \hat \bomega^T R^T \bomega_d                                                   \\
-                                                 & \overset{\eqref{eq:e_omega}, \eqref{eq:so3_transpose}}= -e_r - k_\bomega e_\bomega + \widehat{R^T \; {\bomega_d}} J R^T \; {\bomega_d} - (\hat e_\bomega + \widehat{R^T \bomega_d}) J (e_\bomega + {R^T \bomega_d})       \\
+                                                 & \overset{\eqref{eq:e_omega}}= -e_r - k_\bomega e_\bomega + \widehat{R^T \; {\bomega_d}} J R^T \; {\bomega_d} - (\hat e_\bomega + \widehat{R^T \bomega_d}) J (e_\bomega + {R^T \bomega_d})       \\
                                                  & \quad + J \left( \hat e_\bomega + \cancelto{0}{\widehat{R^T \bomega_d}} \right) R^T \bomega_d                                                                                                                             \\
-                                                 & \overset{\eqref{eq:hat_so_rel1}}= -e_r - k_\bomega e_\bomega + \left( \widehat{J e_\bomega} + \widehat{J R^T \bomega_d} - \widehat{R^T \bomega_d} J - J \widehat{R^T \bomega_d} \right) e_\bomega                         \\
-                                                 & \overset{\eqref{eq:hat_so_rel4}}= -e_r - k_\bomega e_\bomega + \left( J e_\bomega + \left(2 J R^T \bomega_d - \text{trace}(J) I \right) R^T \bomega_d \right)^\wedge e_\bomega.
+                                                 & = -e_r - k_\bomega e_\bomega + \left( \widehat{J e_\bomega} + \widehat{J R^T \bomega_d} - \widehat{R^T \bomega_d} J - J \widehat{R^T \bomega_d} \right) e_\bomega                         \\
+                                                 & = -e_r - k_\bomega e_\bomega + \left( J e_\bomega + \left(2 J R^T \bomega_d - \text{trace}(J) I \right) R^T \bomega_d \right)^\wedge e_\bomega.
     \end{aligned}
   \end{equation*}
 \end{proof}
@@ -263,7 +342,7 @@ Thus the derivative of $V$ is
 so we would like to bound $J \dot e_\bomega \cdot e_r$ and $J e_\bomega \cdot \dot e_r$ in terms of $\| e_\bomega \|$ and $\| e_r \|$.  First we have
 \begin{equation}
   \label{eq:rdr_dt}
-  \frac{\mathrm{d}}{\mathrm{d}t} R_d^T R = R_d^T R \hat \bomega + R_d^T \hat \bomega_d^T R \overset{\eqref{eq:so3_transpose}} = R_d^T R \hat \bomega - R_d^T \hat \bomega_d R \overset{\eqref{eq:so3_adjoint_hat}}= R_d^T R \hat \bomega - R_d^T R \; \widehat{R^T \bomega_d} = R_d^T R \hat e_\bomega.
+  \frac{\mathrm{d}}{\mathrm{d}t} R_d^T R = R_d^T R \hat \bomega + R_d^T \hat \bomega_d^T R  = R_d^T R \hat \bomega - R_d^T \hat \bomega_d R = R_d^T R \hat \bomega - R_d^T R \; \widehat{R^T \bomega_d} = R_d^T R \hat e_\bomega.
 \end{equation}
 Now, $e_{r_i} = \widehat{R^T R_d b_i} b_i,$ so by linearity of the hat mapping and that $\| \hat b_i \| = \| b_i \| = 1$ it follows that
 \begin{equation}

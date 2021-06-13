@@ -112,11 +112,14 @@ A complete Levenberg-Marquardt procedure is shown in Algorithm \ref{algo:lm}. Th
   \ElseIf(){$\rho \geq 0.75$}{
     $\Delta^{k+1} = 2 \Delta^{k}$ \tcp*[r]{increase trust region}
   }
-  $d_i^{k+1} = \max \left(d_i^k, \left\| \left[ \mathrm{d}^r f_{\x^{k+1}} \right]_{\cdot, i} \right\| \right)$ \tcp*[r]{update scaling parameters}
-  \lIf(\tcp*[f]{reject step}){$\rho \leq 0.0001$}{$\x^{k+1} = \x^k$}
-  \lElse(\tcp*[f]{accept step}){ $\x^{k+1} = \x^k \oplus_r \a_\mathrm{LM}$}
-
-  \caption{Single LM step}
+  \uIf{$\rho \leq 0.0001$}{
+    $\x^{k+1} = \x^k$ \tcp*[f]{reject step}
+  }
+  \Else {
+    $\x^{k+1} = \x^k \oplus_r \a_\mathrm{LM}$  \tcp*[r]{accept step}
+    $d_i^{k+1} = \max \left(d_i^k, \left\| \left[ \mathrm{d}^r f_{\x^{k+1}} \right]_{\cdot, i} \right\| \right)$ \tcp*[r]{update scaling parameters}
+  }
+  \caption{One iteration of the Levenberg-Marquardt algorithm.}
   \label{algo:lm}
 \end{algorithm}
 
@@ -197,7 +200,6 @@ The least-squares problem
 \end{equation}
 has structure which can be exploited to find a solution. Consider a QR decomposition with column pivoting of $J$ s.t. $J P = Q R$, where $P \in \mathbb{R}^{n \times n}$ is a permutation matrix, $Q \in \mathbb{R}^{n \times n}$ is orthogonal, and $R \in \mathbb{R}^{n \times n}$ is upper-diagonal. If $\a$ is a minimizer of \eqref{eq:lm_structured_ls} it is also a minimizer of
 \begin{equation}
-  \label{eq:lm_structured_ls}
   \argmin_{\a} \left\| \begin{bmatrix} Q^{T} J P \\ \sqrt{\lambda} P^{T} D^k P \end{bmatrix} P^{T} \a + \begin{bmatrix} Q^{T} r \\ 0 \end{bmatrix} \right\|^2 =     \argmin_{\a} \left\| \begin{bmatrix} R \\ \sqrt{\lambda} P^{T} D^k P \end{bmatrix} P^{T} \a + \begin{bmatrix} Q^{T} r \\ 0 \end{bmatrix} \right\|^2.
 \end{equation}
 Consider a second QR decomposition s.t.
@@ -300,8 +302,3 @@ We conclude by writing down the algorithm from \cite{watson_levenberg-marquardt_
   Sparse strategy: as ceres use $\lambda = 1 / \Delta$ and use a sparse eigen solver for the step.
 \end{remark}
 
-
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../root"
-%%% End:

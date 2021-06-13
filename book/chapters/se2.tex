@@ -18,7 +18,7 @@ It follows that both $\SOtwo$ and $\Etwo$ are sub-groups of $\SEtwo$. In additio
   \check{\mathbb{SE}}(2) = \cSOtwo  \times \cEtwo = \left\{ ((q_w, q_z), (p_x, p_y)) : (q_w, q_z) \in \cSOtwo , (p_x, p_y) \in \cEtwo \right\}.
 \end{equation}
 
-\paragraph{Identity:} The identity element is inherited from the sub-groups: $\id_{\check{\SEtwo}} = \left( \id_{\cSOtwo}, \id_{\check{\Etwo}} \right) = ((1, 0), (0, 0))$.
+\paragraph{Identity:} The identity element is inherited: $\id_{\check{\SEtwo}} = \left( \id_{\cSOtwo}, \id_{\check{\Etwo}} \right) = ((1, 0), (0, 0))$.
 
 \paragraph{Inverse:} From matrix inverse it follows that $(\bR, \bp)^{-1} = (\bR^T, -\bR^T \bp)$.
 
@@ -32,7 +32,7 @@ This group has a natural action on two-dimensional vectors that consists of rota
 \begin{equation}
   \left \langle \X, \bu \right \rangle_{\SEtwo} = \left \langle \bR, \bu \right \rangle_{\SOtwo} + \bp = \bR \bu + \bp.
 \end{equation}
-That is, the vector $\bu$ is first rotated through the action of the $\SOtwo$ part of the state, and then subjected to a translation. Like in \eqref{eq:en_action} this action can be written as a matrix multiplication if we associate $\bu$ with its homogeneous counterpart $\bu^H$:
+That is, the vector $\bu$ is first rotated through the action of the $\SOtwo$ part of the state, and then subjected to a translation. This action can be written as a matrix multiplication if we associate $\bu$ with its homogeneous counterpart $\bu^H$:
 \begin{equation}
   \left \langle \X, \bu^H \right \rangle = \begin{bmatrix}
     \bR & \bp \\ \symbf{0}_{1 \times 2} & 1
@@ -178,7 +178,3 @@ A quick calculation reveals that $\ad_\a^3 = -\omega_z^2 \ad_\a$, which is exact
 
 \section{Parameterization via Isomorphism with \texorpdfstring{$\Uone \ltimes \mathbb{R}^{2}$}{U(1) |x R2}}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../root"
-%%% End:

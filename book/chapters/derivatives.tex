@@ -212,6 +212,11 @@ we can also show that the adjoint of the exponential equals the exponential of t
   \end{equation*}
   where $c_i = \frac{1}{k} \left( \frac{1}{i!(k-1-i)!} + \frac{1}{(i-1)!(k-i)!} \right)$ and it can be verified that $c_i = \frac{1}{i!(k-i)!}$ as required.
 \end{proof}
+As a consequence,
+\begin{equation}
+  \label{eq:ad_exp_a_a}
+  \bAd_{\lambda \exp(\a)} \a = \exp \ad_{\lambda \a} \a = \a. 
+\end{equation}
 
 Another useful identity is the following.
 \begin{important}
@@ -273,8 +278,14 @@ From \eqref{eq:exponential_derivative_posit} we can see that $\Gamma(1, 0)$ is e
     \left(\mathrm{d}^l \exp_\a\right)^{-1} = -\ad_\a + \left(\mathrm{d}^r \exp_\a\right)^{-1}.
   \end{equation}
 \end{properties}
+From these definitions it follows that
+\begin{equation}
+  \left[ \a, \b \right] = 0 \quad \implies \quad \mathrm{d}^r \exp_{\b} \a = \mathrm{d}^l \exp_\b = \left( \mathrm{d}^r \exp_\b \right)^{-1} = \left( \mathrm{d}^l \exp_\b \right)^{-1} = \a,
+\end{equation}
+which in particular holds for the case $\b = \lambda \a$.
 
 While the derivatives \eqref{eq:dexp_def} - \eqref{eq:dexpinv_def} could be evaluated to arbitrary precision by adding enough terms, this is not a practical solution. Fortunately closed-form expressions can be obtained for all groups of interest, but we postpone those calculations to the next part.
+
 
 
 \section{Derivatives of common operations}
@@ -401,7 +412,3 @@ and it holds that (local derivative) = (global derivative) $\times$ (jacobian). 
   \item Jacobian: $\left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee$.
 \end{itemize}
 
-%%% Local Variables:
-%%% mode: latex
-%%% TeX-master: "../root"
-%%% End:
