@@ -6,23 +6,33 @@ Having defined Lie group derivatives a logical next step is to consider differen
 \begin{equation}
   \label{eq:system}
   \begin{aligned}
-    \mathrm{d}^r \x_t = f(t, \x(t)), \\
-    \x(0) = \x_0.
+    \dr \x_t & = f(t, \x(t)), \\
+    \x(0)    & = \x_0.
   \end{aligned}
 \end{equation}
-In this chapter we study various properties of this system: its linearization, sensitivity with respect to initial conditions, monotonicity, and finally a method to analyze it via a system on $\mathbb{R}^n$.
+The same system can due to \eqref{eq:derivative_trans} be written with the left derivative as
+\begin{equation}
+  \mathrm{d}^l \x_t = f^l(t, \x(t)), \quad f^l(t, \x(t)) = \bAd_{\x(t)} f^R(t, \x(t)),
+\end{equation}
+or with the global derivative as
+\begin{equation}
+  \mathrm{D} \X_t = \X(t) \hat f(t, \X(t)) = \hat f^l(t, \X(t)) \X(t),
+\end{equation}
+where $\X(t)$ is a matrix Lie group. For a constant $f^l$ we recognize the typical form $\dot x = Ax$ of a linear system.
+
+In this chapter we study various properties of \eqref{eq:system}: its linearization, sensitivity with respect to initial conditions, monotonicity, and finally a method to analyze it via a system on $\mathbb{R}^n$.
 
 For a given initial condition $\x_{0}$ the solution of \eqref{eq:system} at time $t \geq 0$ can be denoted $\phi(t; \x_{0})$ where the \emph{flow} operator $\phi : \mathbb{R} \times \M \rightarrow \M$ is s.t.
 \begin{equation}
   \begin{aligned}
-    \phi(0; \x_{0})                    & = \x_{0},                            \\
-    \mathrm{d}^{r} \phi(t; \x_{0})_{t} & = f\left(t, \phi(t; \x_{0}) \right).
+    \phi(0; \x_{0})         & = \x_{0},                            \\
+    \dr \phi(t; \x_{0})_{t} & = f\left(t, \phi(t; \x_{0}) \right).
   \end{aligned}
 \end{equation}
 
 \begin{remark}
   \label{remark:parameter_initial}
-  Parameters and initial conditions are equivalent. A parameter-dependent system
+  Parameters and initial conditions are equivalent in the following sense. A parameter-dependent system
   \begin{equation}
     \begin{aligned}
       \mathrm{d}^r \x_t & = f(t, \x; p_{0}), \\
@@ -39,20 +49,19 @@ For a given initial condition $\x_{0}$ the solution of \eqref{eq:system} at time
   where $g(t, \x, p) = f(t, \x; p)$. Conversely, the system
   \begin{equation}
     \begin{aligned}
-      \mathrm{d}^{r} \x_{t} & = f(t, \x), \\
-      \x(t_{0})             & = \x_{0},
+      \dr \x_{t} & = f(t, \x), \\
+      \x(t_{0})  & = \x_{0},
     \end{aligned}
   \end{equation}
   with a non-trivial initial condition is (locally) equivalent to the parameter-dependent system
   \begin{equation}
     \begin{aligned}
-      \mathrm{d}^{r} \a_{t} & = g(t, \a; t_{0}, \x_{0}), \qquad g(t, \a; t_{0}, \x_{0}) \coloneq \left[ \mathrm{d}^{r} \exp_{\a} \right]^{-1} \; f(t_{0} + t, \x_{0} \oplus_{r} \a), \\
-      \a(0)                 & = 0,
+      \dr \a_{t} & = g(t, \a; t_{0}, \x_{0}), \qquad g(t, \a; t_{0}, \x_{0}) \coloneq \left[ \dr \exp_{\a} \right]^{-1} \; f(t_{0} + t, \x_{0} \oplus_{r} \a), \\
+      \a(0)      & = 0,
     \end{aligned}
   \end{equation}
   with trivial initial conditions, in the sense that $\Phi^{\x}(t_{0} + t; t_{0}, \x_{0}) = \x_{0} \oplus_{r} \Phi^{\a}(t; t_{0}, \x_{0})$.
 \end{remark}
-
 
 \section{Tangent Space Linearization}
 
@@ -89,7 +98,7 @@ Next we study the sensitivity of $\phi(t; \x_0)$ with respect to the initial con
 
 Global derivative on matrix form $\Phi = \hat \phi$.
 \begin{equation}
-  \dot \Phi(t; \x_{0}) = \Phi(t; \x_{0}) \left( \mathrm{d}^{r} \Phi(t; \x_{0})_{t} \right )^{\wedge} = \Phi(t; \x_{0})  \hat f\left(t, \Phi(t; \x_{0}) \right).
+  \dot \Phi(t; \x_{0}) = \Phi(t; \x_{0}) \left( \dr \Phi(t; \x_{0})_{t} \right )^{\wedge} = \Phi(t; \x_{0})  \hat f\left(t, \Phi(t; \x_{0}) \right).
 \end{equation}
 Derivative of inverse
 \begin{equation}
@@ -98,7 +107,7 @@ Derivative of inverse
     \implies \; \; \frac{\mathrm{d}}{\mathrm{d}t} \phi(t; \x_{0})^{-1} = \Phi(t; \x_{0})^{-1} \dot \Phi(t; \x_{0}) \Phi(t; \x_{0})^{-1}.
   \end{aligned}
 \end{equation}
-We can then evaluate how $\mathrm{d}^{r} \Phi(t; \x_{0})_{t}$ depends on $t$ by moving to global derivatives and changing the order of integration.
+We can then evaluate how $\dr \Phi(t; \x_{0})_{t}$ depends on $t$ by moving to global derivatives and changing the order of integration.
 \begin{equation*}
   \begin{aligned}
     \frac{\mathrm{d}}{\mathrm{d}t}
@@ -107,10 +116,10 @@ We can then evaluate how $\mathrm{d}^{r} \Phi(t; \x_{0})_{t}$ depends on $t$ by 
      & = \left( \left( -\Phi(t; \x_{0})^{-1} \dot \Phi(t; \x_{0}) \Phi(t; \x_{0}) \right)^{-1} \frac{\mathrm{d}}{\mathrm{d}\tau} \Phi(t; \x_{0} \oplus \tau \a) +  \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau=0} \dot \Phi(t; \x_{0} \oplus \tau \a) \right)^{\vee} \\
      & = \left( -\hat f\left(t; \Phi(t; \x_{0})\right) \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \Phi(t; \x_{0} \oplus \tau \a) \right)^\vee                                                                                                                  \\
      & + \left( \Phi(t; \x_{0})^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \Phi(t; \x_{0} \oplus \tau \a) \hat f(t; \Phi(t; \x_{0} \oplus \tau \a)) \right)^{\vee}                                                                                                             \\
-     & = - \left( \hat f(t; \Phi(t; \x_{0})) \left( \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}} \a \right)^{\wedge}
-    + \left( \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}} \a \right)^{\wedge} \hat f(t; \Phi(t; \x_{0}))  + \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \hat f(t; \Phi(t; \x_{0} \oplus \tau \a)) \right)^{\vee}                                                                          \\
-     & = -\left[  f(t; \Phi(t; \x_{0})), \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}} \a\right] + \mathrm{d}^{r} f(t, \Phi(t; \x_{0}))_{\x_{0}} \a                                                                                                                                                        \\
-     & = -\ad_{f(t; \Phi(t; \x_{0}))} \mathrm{d}^{r} \Phi(t; \x_{0})_{\x_{0}} \a + \mathrm{d}^{r} f(t, \x)_{\x = \Phi(t; \x_{0})} \mathrm{d}^{r} \Phi(t; \x_{0}))_{\x_{0}} \a.
+     & = - \left( \hat f(t; \Phi(t; \x_{0})) \left( \dr \Phi(t; \x_{0})_{\x_{0}} \a \right)^{\wedge}
+    + \left( \dr \Phi(t; \x_{0})_{\x_{0}} \a \right)^{\wedge} \hat f(t; \Phi(t; \x_{0}))  + \left. \frac{\mathrm{d}}{\mathrm{d}\tau} \right|_{\tau = 0} \hat f(t; \Phi(t; \x_{0} \oplus \tau \a)) \right)^{\vee}                                                                                     \\
+     & = -\left[  f(t; \Phi(t; \x_{0})), \dr \Phi(t; \x_{0})_{\x_{0}} \a\right] + \dr f(t, \Phi(t; \x_{0}))_{\x_{0}} \a                                                                                                                                                                              \\
+     & = -\ad_{f(t; \Phi(t; \x_{0}))} \dr \Phi(t; \x_{0})_{\x_{0}} \a + \dr f(t, \x)_{\x = \Phi(t; \x_{0})} \dr \Phi(t; \x_{0}))_{\x_{0}} \a.
   \end{aligned}
 \end{equation*}
 \begin{important}
@@ -118,7 +127,7 @@ We can then evaluate how $\mathrm{d}^{r} \Phi(t; \x_{0})_{t}$ depends on $t$ by 
   \begin{equation}
     \label{eq:sensitivity_direct}
     \begin{aligned}
-      \frac{\mathrm{d}}{\mathrm{d}t} S(t) & = \left(-\ad_{f(t, \Phi(t; \x_{0}))} + \left. \mathrm{d}^{r} f_{\x} \right|_{\x = \Phi(t; \x_{0})} \right) S(t), \\
+      \frac{\mathrm{d}}{\mathrm{d}t} S(t) & = \left(-\ad_{f(t, \Phi(t; \x_{0}))} + \left. \dr f_{\x} \right|_{\x = \Phi(t; \x_{0})} \right) S(t), \\
       S(0)                                & = I.
     \end{aligned}
   \end{equation}
@@ -127,9 +136,9 @@ We can then evaluate how $\mathrm{d}^{r} \Phi(t; \x_{0})_{t}$ depends on $t$ by 
 \subsection{Example}
 
 \begin{example}
-  If $\mathrm{d}^{r} \x_{t} = f(\x) \equiv \a$, then $\x(t) = \x_{0} \exp(t \a)$ and we get
+  If $\dr \x_{t} = f(\x) \equiv \a$, then $\x(t) = \x_{0} \exp(t \a)$ and we get
   \begin{equation}
-    \mathrm{d}^{r} (\x(t))_{\x_{0}} \overset{\eqref{eq:d_composition_rght_fst}} = \bAd_{\exp(-t \a)}.
+    \dr (\x(t))_{\x_{0}} \overset{\eqref{eq:d_composition_rght_fst}} = \bAd_{\exp(-t \a)}.
   \end{equation}
 
   We furthermore know from Lemma \ref{lem:d_bad_exp} that
@@ -214,9 +223,9 @@ For the case when the right-hand side in \eqref{eq:system} only depends on $t$,
   \label{eq:system_time}
   \mathrm{d}^r \x_t = \a(t),
 \end{equation}
-we can posit that the solution be on the form
+which is the Lie group equivalent of a linear time-varying (LTV) system, we can posit that the solution be on the form
 \begin{equation}
-  \x(t) = \exp (\Omega(t)), \quad \Omega(t) \in \M.
+  \x(t) = \exp (\Omega(t)) \x_0, \quad \Omega(t) \in \M.
 \end{equation}
 From the differentiation rules it follows that
 \begin{equation}
@@ -234,8 +243,8 @@ which yields an ODE for $\Omega(t)$.
     \begin{equation}
       \label{eq:magnus_omega_ode}
       \begin{aligned}
-        \frac{\mathrm{d}}{\mathrm{d}t} \Omega(t) &= \left(\mathrm{d}^r \exp_{\Omega(t)}\right)^{-1} \a(t), \\
-        \Omega(0) &= 0.
+        \frac{\mathrm{d}}{\mathrm{d}t} \Omega(t) & = \left(\mathrm{d}^r \exp_{\Omega(t)}\right)^{-1} \a(t), \\
+        \Omega(0)                                & = 0.
       \end{aligned}
     \end{equation}
   \end{theorem}
@@ -248,8 +257,8 @@ The initial value problem for $\Omega$ may still be challenging to solve in case
 Inserting this in \eqref{eq:magnus_omega_ode} and comparing powers of $\epsilon$ yields
 \begin{equation}
   \begin{aligned}
-    \Omega_1(t) & = \int_0^t \a(s_1) \mathrm{d}s_1,                                                                                                                                                                                 \\
-    \Omega_2(t) & = -\frac{1}{2} \int_0^t \left[ \Omega_1(s_1), \a(s_1) \right] \mathrm{d}s_1 = \frac{1}{2} \int_0^t \int_{0}^{s_2} \left[ \a(s_1), \a(s_2) \right] \mathrm{d} s_2 \mathrm{d} s_1,                                    \\
+    \Omega_1(t) & = \int_0^t \a(s_1) \mathrm{d}s_1,                                                                                                                                                                                      \\
+    \Omega_2(t) & = -\frac{1}{2} \int_0^t \left[ \Omega_1(s_1), \a(s_1) \right] \mathrm{d}s_1 = \frac{1}{2} \int_0^t \int_{0}^{s_2} \left[ \a(s_1), \a(s_2) \right] \mathrm{d} s_2 \mathrm{d} s_1,                                       \\
     \Omega_3(t) & = \frac{1}{6} \int_{0}^t \int_{0}^{s_1} \int_{0}^{s_2} \left[ \a(s_1), \left[ \a(s_2), \a(s_3) \right] \right] + \left[ \left[ \a(s_1), \a(s_2) \right], \a(s_3) \right] \mathrm{d} s_3 \mathrm{d} s_2 \mathrm{d} s_1,
   \end{aligned}
 \end{equation}

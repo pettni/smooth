@@ -1,24 +1,25 @@
+% !TEX root = ../root.tex
+
 \chapter{Classical Lie Groups}
 
-Having gone through the foundational theory in the first part, we now turn our attention to specific groups and derive closed-form formulas for many of the concepts.
+Having gone through the foundational theory in the first part, we now turn our attention to specific groups and derive closed-form formulas for the most important objects.
 
-We now introduce some classical matrix Lie groups. Any subset of invertible square matrices that is closed under matrix multiplication is a Lie group. To find the structure of the corresponding Lie algebra it is useful to consider a trajectory
+First we introduce what are commonly known as the \emph{classical} Lie groups, which are all families of matrix groups parameterized by the matrix size $n$. A general recipe to figure out the structure of the Lie algebra associated with a particular Lie group is to consider a trajectory of the form
 \begin{equation}
   \label{eq:4}
   \X(t) = \Exp(t \A) \in \M
 \end{equation}
-that satisfies $\X(0) = I$ and $\X'(0) = \A$.
+that evidently satisfies $\X(0) = I$ and $\X'(0) = \A$.
 
-The trajectory $\X(t)$ must satisfy a certain group constraint, which translates into a condition on $\A$. Since the Lie algebra of a group consists of all matrices $\A$ such that $\exp \A \in \M$ this yields the structure of the Lie algebra.
+The trajectory $\X(t)$ must satisfy the constraints that define the group, which translates into conditions on $\A$. Since the Lie algebra of a group consists of all matrices $\A$ such that $\exp \A \in \M$ this yields the structure of the Lie algebra.
 
 \paragraph{General Linear Group $\GL(n, F)$}
 
-The general linear group over a field $F$ (here $F$ is either the real numbers $\mathbb{R}$ or the complex numbers $\mathbb{C}$) is the most general Matrix lie group and contains all other groups as subgroups.
+The general linear group over a field $F$ (in the following $F$ is either the real numbers $\mathbb{R}$ or the complex numbers $\mathbb{C}$) is the largest Matrix lie group and contains all other matrix Lie groups as subgroups.
 \begin{equation}
   \GL(n, F) \coloneq \left\{ \A \in F^{{n \times n}} \mid \det \A \neq 0 \right\}.
 \end{equation}
-
-The exponential map always produces invertible matrices, so the corresponding lie algebra is the space of all $n \times n$ matrices.
+The exponential map always produces invertible matrices, so the corresponding Lie algebra is the space of all $n \times n$ matrices.
 \begin{equation}
   \gl(n, F) = F^{n \times n}.
 \end{equation}
@@ -26,7 +27,7 @@ Any subset of $\GL(n, F)$ that is closed under matrix multiplication is also a m
 
 \paragraph{Translation Group $\Tn$}
 
-The usual Euclidean vector space $\mathbb{R}^{n}$ can be embedded in matrices on the form $\begin{bmatrix} I_{n} & \bp \\ 0_{1 \times n} & 1 \end{bmatrix}$ for $\bp \in \mathbb{R}^{n}$, so that matrix multiplication corresponds to addition in $\mathbb{R}^{n}$. Being a closed subset of $\GL(n, \mathbb{R})$ those matrices form a matrix Lie group.
+The usual Euclidean vector space $\mathbb{R}^{n}$ can be embedded in matrices on the form $\begin{bmatrix} I_{n} & \bp \\ 0_{1 \times n} & 1 \end{bmatrix}$ for $\bp \in \mathbb{R}^{n}$, so that matrix multiplication in $\Tn$ corresponds to addition in $\mathbb{R}^{n}$. Being a closed subset of $\GL(n, \mathbb{R})$, those matrices form a matrix Lie group.
 
 To find the corresponding Lie algebra consider a trajectory
 \begin{equation}
@@ -51,13 +52,13 @@ From here it follows that the Lie algebra $\mathfrak{e}(n)$ of $\Tn$ consists of
 
 \paragraph{Orthogonal Groups $\On$ and $\SOn$}
 
-The orthogonal matrices $\On$ are real matrices $\X$ s.t. the inverse is equal to the transpose, i.e. $\X \X^{T} \X = \X \X^{T}= I_{n}$. The special orthogonal matrices in addition have a determinant equal to 1. In robotics $\SOn$ is particularly useful in the $n=2,3$ cases since those correspond to rotation matrices in two and three dimensions.
+The orthogonal matrices $\On$ are real matrices $\X$ s.t. the inverse is equal to the transpose, i.e. $\X^{T} \X = \X \X^{T}= I_{n}$. The special orthogonal matrices in addition have a determinant equal to 1. In robotics $\SOn$ is particularly useful in the $n=2,3$ cases since those correspond to rotation matrices in two and three dimensions.
 
-Take a one-parameter subgroup $\X(t) \coloneq \Exp(t \A)$ and differentiate the group constraint $I_{n} = \X(t) ^{T} \X(t)$:
+Take a one-parameter subgroup $\X(t) \coloneq \Exp(t \A) \in \SOn$ and differentiate the group constraint $I_{n} = \X(t) ^{T} \X(t)$:
 \begin{equation}
   0 \overset{!}= \left. \frac{\mathrm{d}}{\mathrm{d} t} \X(t)^T \X(t) \right|_{t=0} = \X'(0)^T \X(0) + \X(0)^T \X'(0) = \A^T + \A.
 \end{equation}
-It follows that the Lie algebra $\mathfrak{so}(n)$ corresponding to $\mathbb{SO}(n)$ consists of \textbf{skew-symmetric matrices}.
+It follows that the Lie algebra $\mathfrak{so}(n)$ of $\mathbb{SO}(n)$ consists of \textbf{skew-symmetric matrices}.
 \begin{important}
   Orthogonal groups and corresponding Lie algebras:
   \begin{subequations}
@@ -74,13 +75,13 @@ It follows that the Lie algebra $\mathfrak{so}(n)$ corresponding to $\mathbb{SO}
 
 \paragraph{Unitary Groups $\Un$ and $\SUn$}
 
-Unitary matrices $\X$ are characterized by the inverse being equal to the Hermitian transpose, i.e. $\X^{*} \X = \X \X^{*} = I$\footnote{The Hermitian transpose (also known as \emph{conjugate transpose}) of $\X_{ij}$ is $\X_{ij}^* = \bar {\X_{ji}}$.}. In the case of $\SUn$ the determinant is also required to be equal to 1.
+Unitary matrices $\X$ are complex matrices characterized by the inverse being equal to the Hermitian transpose, i.e. $\X^{*} \X = \X \X^{*} = I$\footnote{The Hermitian transpose (also known as \emph{conjugate transpose}) of $\X_{ij}$ is $\X_{ij}^* = \bar {\X_{ji}}$.}. In the case of $\SUn$ the determinant is also required to be equal to 1.
 
 For a one-parameter subgroup $\X(t) = \Exp(t \A)$ constraint differentiation yields
 \begin{equation}
   0 = \left. \frac{\mathrm{d}}{\mathrm{d} t} \X(t)^* \X(t) \right|_{t=0} = \X'(0)^* \X(0) + \X(0)^* \X'(0) = \A^* + \A.
 \end{equation}
-This shows that $\un$ consists of \textbf{skew-Hermitian matrices}. In addition, due to the Jacobi identity \eqref{eq:jacobi_identity} $\det \Exp(t \A) = 1$ implies that $\tr \A = 0$ i.e. $\mathfrak{su}(n)$ consists of \textbf{skew-Hermitian matrices with vanishing trace}.
+This shows that $\un$ consists of \textbf{skew-Hermitian matrices}. In addition, due to the Jacobi identity \eqref{eq:jacobi_identity} $\det \Exp(t \A) = 1$ implies that $\tr \A = 0$, i.e. $\mathfrak{su}(n)$ consists of \textbf{skew-Hermitian matrices with vanishing trace}.
 \begin{important}
   Unitary groups and corresponding Lie algebras:
   \begin{subequations}
@@ -95,11 +96,11 @@ This shows that $\un$ consists of \textbf{skew-Hermitian matrices}. In addition,
 
 \paragraph{Euclidean Groups $\En$ and $\SEn$}
 
-A ``semi-simple product'' between $\On$ (resp. $\SOn$) and $\Tn$ obtained by replacing the identity matrix in $\Tn$ by a member of $\On$ (resp. $\SOn$). For example, $\SEn$ consists of matrices on the form $ \begin{bmatrix} \bR & \bp \\ 0_{1 \times n} & 1 \end{bmatrix} $ for $\bR \in \SOn$. For a one-parameter subgroup $\X(t) = \begin{bmatrix} \bR(t) & \bp(t) \\ 0 & 1 \end{bmatrix} = \Exp(t \A)$ differentiating shows that
+These groups are formed via a ``semi-simple product'' between $\On$ (resp. $\SOn$) and $\Tn$ obtained by replacing the identity matrix in $\Tn$ by a member of $\On$ (resp. $\SOn$). For example, $\SEn$ consists of matrices on the form $ \begin{bmatrix} \bR & \bp \\ 0_{1 \times n} & 1 \end{bmatrix} $ for $\bR \in \SOn$. For a one-parameter subgroup $\X(t) = \begin{bmatrix} \bR(t) & \bp(t) \\ 0 & 1 \end{bmatrix} = \Exp(t \A)$ differentiating shows that
 \begin{equation}
   \begin{bmatrix} \bR'(t) & \bp'(t) \\ 0 & 0 \end{bmatrix} = \A.
 \end{equation}
-Since we already know that structure of $\bR'(t)$ from \eqref{eq:son} the form of $\A$ can be determined.
+Since we already know the structure of $\bR'(t)$ from \eqref{eq:son} the form of $\A$ can be determined.
 \begin{important}
   Euclidean groups and corresponding Lie algebras:
   \begin{subequations}
@@ -113,9 +114,39 @@ Since we already know that structure of $\bR'(t)$ from \eqref{eq:son} the form o
 
 \paragraph{Symplectic Groups $\Spn$}
 
+Are these useful?
+
+\todo[inline]{Write about symplectic groups maybe}
+
+\section{Lower-Dimensional Representations}
+
+Although matrix Lie groups are convenient to analyze in comparison to their non-matrix counterparts, a matrix representation is often not the best practical choice. One reason is that it is often unnecessarily large: $\SOthree$ for example consists of $3x3$ matrices with 9 elements, but the manifold just has three degrees of freedom. Computational gains can therefore be had by selecting a more parsimonious parameterization.
+
+A principled way of parameterizing a matrix Lie group is by leveraging Lie group isomorphism between the matrix Lie group of interest and another group with a more compact representation. An isomorphism is a bijective function $f : \M \rightarrow \N$ that is homomorphic with respect to the group operation, i.e. $f$ is required to be one-to-one and onto, and for all $\x, \y \in \M$ it must hold that
+\begin{equation}
+  f(\x \circ \y) = f(\x) \circ f(\y).
+\end{equation}
+When $\N$ is a matrix Lie group $f(\x) \circ f(\y)$ is simply matrix multiplication. If an isomorphism exists between $\M$ and $\N$ we say that the two groups are isomorphic and write $\M \cong \N$. It should be clear that the presence of an isomorphism makes it possible to move freely between elements of $\M$ and $\N$, and means that we can have the best of both worlds: the analysis framework of matrix Lie groups and the compactness of the non-matrix isomorphic groups.
+
+Leveraging isomorphism is utilized as a recipe in the following. As a parameterization of $\SOthree$ we suggest $\Sthree$---the unit quaternions represented by four scalars, and we utilize that $\SOtwo \cong \Uone$ to parameterize $\SOtwo$ with just two scalars. Like for Lie algebras we denote by the hat ($\wedge$) and vee ($\vee$) maps conversions between a matrix Lie groups and its parameterization. That is, if $f : \check \M \rightarrow \M$ is an isomorphism and $\M$ is a matrix Lie group, then
+\begin{equation}
+  \begin{aligned}
+    & \wedge: \check \M \rightarrow \M, \\
+    & \x \overset{\wedge}{\mapsto} \x^\wedge \coloneq f(\x), \\
+    & \vee: \M \rightarrow \check \M, \\
+    & \X \mapsto \X^\vee \coloneq f^{-1}(\X).
+  \end{aligned}
+\end{equation}
+
+If two Lie groups are isomorphic so are their Lie algebras. We can therefore select the same parameterization of the Lie algebras so that for instance
+\begin{equation}
+  \left(\exp_{\check M} \x \right)^\wedge = \exp_{M} \left( \x^\wedge \right),
+\end{equation}
+which in turn can be utilized to find an expression for $\exp$ on $\check \M$.
+
 \section{Mathematical Preliminaries}
 
-\paragraph{Trigonometric Sums}
+Our goal is to study the most important groups for robotics, namely $\SOtwo, \SOthree, \SEtwo$, and $\SEthree$. In the remainder of this chapter we provide certain formulas that are useful towards that end.
 
 Starting with the familiar Taylor expansions of cosine and sine
 \begin{align}
@@ -136,9 +167,7 @@ some higher-order formulas can be derived for $x \neq 0$ by dividing by a factor
   \sum_{n=0}^\infty \frac{(-1)^n}{(2n+5)!} x^{2n} & = \frac{1}{x^5} \sum_{n=2}^\infty \frac{(-1)^n}{(2n+1)!} x^{2n+1} = \frac{\sin x - x + \frac{x^3}{6}}{x^5}.
 \end{align}
 
-\paragraph{Bernoulli Numbers}
-
-Finally a sum involving the Bernoulli numbers will be useful for some groups of interest.
+A sum involving the Bernoulli numbers will be useful for some groups of interest.
 \begin{proposition}
   \begin{equation}
     \label{eq:bernoulli_cot}
@@ -156,9 +185,7 @@ Finally a sum involving the Bernoulli numbers will be useful for some groups of 
   \end{equation}
 \end{proof}
 
-\paragraph{Exponential of Structured Matrices}
-
-We derive an identity that will be useful to construct the exponential maps for semi-simple groups.
+Finally we derive an identity that will be useful to construct the exponential maps for semi-simple groups.
 \begin{lemma}
   \label{lem:help_exp}
   Consider two matrices $\A , \B \in \mathbb{R}^{n \times n}$ such that $\B^2 = \B\A = 0$. Then we have that

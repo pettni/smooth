@@ -8,8 +8,161 @@
   \item Left-invariant, right-invariant, equivariant dynamical systems
 \end{itemize}
 
+Literature:
 \begin{itemize}
-  \item Grizzle: \cite{grizzle_structure_1985}
-  \item Filtering: \cite{van_goor_equivariant_2020}
+  \item Grizzle on structure of control systems with symmetries \cite{grizzle_structure_1985}
+  \item Modern paper on equivariant filtering \cite{van_goor_equivariant_2020}
 \end{itemize}
+
+One of the primary reasons to study Lie groups is to take advantage of the symmetry that comes with being a group. In this chapter we formalize the concept of symmetries and discuss how it can be leveraged.
+
+Up until now we have taken $\M$ to be a Lie group, but in this chapter it denotes any manifold. On the other hand, $\G$ denotes a Lie group that \emph{acts} on the manifold. A special case is when $\M = \G$ and the action is that of group composition.
+
+\begin{definition}
+  Consider a manifold $\M$ and a Lie group $\G$. A function $\phi : \G \times \M \rightarrow \M$ is a (left) \textbf{action} if
+  \begin{itemize}
+    \item $\phi_\id(\x) = \x$ for all $\x \in \M$
+    \item $\phi_h \circ \phi_g (\x)= \phi_{h \circ g} (\x)$ for all $h, g \in \G$ and all $\x \in \M$
+  \end{itemize}
+\end{definition}
+When the actions are understood from the context we write $g . \x = \phi_g \x$ to denote the action of $g$ on $\x$. Some properties of actions are introduced next
+\begin{definition}
+  Consider an action $\phi$ of $\G$ on $\M$. It is said to be
+  \begin{itemize}
+    \item \textbf{Free} if $g . \x = \x$ if and only if $g = \id$,
+    \item \textbf{Proper} if $(g, \x) \mapsto (\x, g.\x)$ is proper (the pre-image of compact sets is compact).
+  \end{itemize}
+\end{definition}
+It is known that if an action is free and proper, then the quotient space
+\begin{equation}
+  M / G \coloneq \left\{ G x : \x \in \M \right\}
+\end{equation}
+is a smooth manifold \cite[Proposition 9.3.2]{marsden_introduction_1998}.
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \node (m) {$\M$};
+      \node[node distance=7em, right=of m] (n) {$\N$};
+      \node[node distance=4em, below=of m] (m2) {$\M$};
+      \node[node distance=4em, below=of n] (n2) {$\N$};
+      \draw[-latex] (m) -- node[left] {$\phi^M$} (m2);
+      \draw[-latex] (n) -- node[right] {$\phi^N$} (n2);
+      \draw[-latex] (m) -- node[above] {$f$} (n);
+      \draw[-latex] (m2) -- node[above] {$f$} (n2);
+    \end{tikzpicture}
+  \end{center}
+  \caption{Commutation diagram of an equivariant function $f : \M \rightarrow \N$.}
+  \label{fig:equivariance_diagram}
+\end{figure}
+
+We next define equivariance of a function with respect to two actions by the same Lie group.
+\begin{definition}
+  Let $\G$ be a Lie group that acts on two manifolds $\M$ and $\N$ via actions $\phi^\M$ and $\phi^\N$. Then a function $f : \M \rightarrow \N$ is \textbf{equivariant} with respect to $\left(\phi^\M, \phi^\N\right)$ if
+  \begin{equation}
+    f \circ \phi^M_g = \phi^N_g \circ f, \quad \forall g \in \G.
+  \end{equation}
+\end{definition}
+Equivariance is illustrated by the commutation diagram in Figure \ref{fig:equivariance_diagram}. A special case of equivariance is \textbf{invariance}, which is when $\phi^N_g \x = \x$ is the trivial action.
+
+Equivariance and invariance are useful since the behavior of an equivariant function $f : \M \rightarrow \N$ is completely characterized by the restricted function $f : \M / G \rightarrow \N$., where $\M / G$ is a lower-dimensional space.
+
+
+\section{Equivariance in Dynamical Systems}
+
+Equivariance can also be defined for dynamical systems.
+
+\begin{figure}
+  \begin{center}
+    \begin{tikzpicture}
+      \node (m) {$\M$};
+      \node[node distance=7em, right=of m] (n) {$\lM$};
+      \node[node distance=4em, below=of m] (m2) {$\M$};
+      \node[node distance=4em, below=of n] (n2) {$\lM$};
+      \draw[-latex] (m) -- node[left] {$\phi$} (m2);
+      \draw[-latex] (n) -- node[right] {$\mathrm{d} \phi$} (n2);
+      \draw[-latex] (m) -- node[above] {$f$} (n);
+      \draw[-latex] (m2) -- node[above] {$f$} (n2);
+    \end{tikzpicture}
+  \end{center}
+  \caption{Commutation diagram for an equivariant dynamical system.}
+  \label{fig:system_equivariance_diagram}
+\end{figure}
+
+\begin{definition}
+  Consider a dynamical system on a Lie group
+  \begin{equation}
+    \mathrm{d}^r \x_t = f(\x(t)).
+  \end{equation}
+  This system is said to be equivariant with respect to a $\G$-action $\phi_g$ on $\M$ if
+  \begin{equation}
+    f \circ \phi_g = (\mathrm{d}^r \phi_g) \circ f, \quad \forall g \in \G.
+  \end{equation}
+\end{definition}
+
+\todo[inline]{Equivariant control system, prove closed-loop system equivariant}
+
+We show how equivariance in a dynamical system can be applied in a Lyapunov context. Consider a function $h : M \rightarrow \mathbb{R}$ that is $G$-\textbf{invariant}, i.e. for all $g \in G$ it holds that
+\begin{equation}
+\label{eq:invariance}
+  h \equiv h \circ \phi^g.
+\end{equation}
+We show that if $h$ is $G$-invariant, and $f$ is $G$-equivariant, then $\mathcal L_f h(X) \coloneq \langle \mathrm{d} h_{X}, f(X) \rangle$ is $G$-invariant as well. By differentiating \eqref{eq:invariance} at $X$ it follows that
+\begin{equation}
+  \mathrm{d} h_X = \mathrm{d} h_{\phi^g X} \circ \mathrm{d} \phi^g_{X} \quad \Leftrightarrow \quad \mathrm{d} h_{\phi^g X} = \mathrm{d} h_X \circ \left(\mathrm{d} \phi_X^g \right)^{-1}.
+\end{equation}
+
+Then indeed we have,
+\begin{equation}
+  \mathcal L_f h (\phi^g X) = \left \langle \mathrm{d} h_{\phi^g X}, (f \circ \phi^g) (X)\right \rangle = \left \langle \mathrm{d} h_X \circ (\mathrm{d} \phi_X^{g})^{-1} , (\mathrm{d} \phi^g_X \circ f)(X) \right \rangle = \langle \mathrm{d} h_X, f(X) \rangle,
+\end{equation}
+or in other words, $\mathcal L_f h$ is $G$-invariant:
+\begin{equation}
+  \mathcal L_f h \circ \phi^g  \equiv   \mathcal L_f h.
+\end{equation}
+Thus, if the dynamics are $G$-equivariant and $h$ is $G$-invariant, it is enough to assertain that a Lyapunov condition holds on a quotient space:
+\begin{equation}
+  \mathcal L_f h(X) \leq 0 \qquad \forall X \in M / G,
+\end{equation}
+since this implies that the property holds on all of $M$.
+
+
+\section{Equivariance of Lie Group Control Systems}
+
+If $M$ itself is a Lie Group we can write a second-order system on control-affine form as
+\begin{equation}
+\label{eq:lie_control_system}
+  \begin{bmatrix} \mathrm{d} X_t \\ \mathrm{d} \omega_t \end{bmatrix} =  f\left( X, \omega, u \right) \coloneq \begin{bmatrix} \omega \\ e(X, \omega)u \end{bmatrix},
+\end{equation}
+where $f : M \times TM \times U \rightarrow TM \times TTM$. For a group $G$ acting on $M$ via $\phi^g : M \rightarrow M$ we can introduce a lifted action $\bar \phi_g : M \times TM \rightarrow M \times TM$ in a natural way by mapping the tangent element through the differential $\mathrm{d} \phi^g_X : T_X M \rightarrow T_{\phi^g X} M$ of $\phi^g$:
+\begin{equation}
+  \bar \phi^g \begin{bmatrix}
+    X \\ \omega
+  \end{bmatrix} = \begin{bmatrix} \phi^g X \\ \mathrm{d} \phi^g_X \omega \end{bmatrix}, \qquad \mathrm{d} \bar \phi^g_{X, \omega} \begin{bmatrix}
+    \omega \\ a
+  \end{bmatrix} = \begin{bmatrix} \mathrm{d} \phi^g_X \omega \\ \mathrm{d} \phi^g_X a \end{bmatrix},
+\end{equation}
+since $\mathrm{d} (\mathrm{d} \phi^g_X \omega)_\omega = \mathrm{d} \phi^g_X$. With this as the action the we can apply the equivariance ideas from above. We also introduce a separate action $\psi^g$ that represents the action of $g \in G$ on an element of the input space $U$. We say that the control system is $G$-equivariant if
+\begin{equation}
+  \label{eq:controlled_equivariance}
+  f \left( \phi^g X, \mathrm{d} \phi^g_X \omega, \psi^g u \right) = \mathrm{d} \bar \phi_X^g f(X, \omega, u),
+\end{equation}
+which is illustrated as a commutation property in Figure \ref{fig:equivariance_diagram}.
+
+\begin{proposition}
+  Assume that the control system \eqref{eq:lie_control_system} satisfies the equi-variance property \eqref{eq:controlled_equivariance}. Then, if
+  $u(X, \omega)$ is $G$-equivariant with respect to $(\bar \phi^g, \psi^g)$, i.e. 
+  \begin{equation}
+    \label{eq:input_equivariance}
+    u(\phi^g X, \mathrm{d} \phi^g_X \omega) = \psi^g u(X, \omega),
+  \end{equation}
+  then the closed-loop system is also $G$-equivariant.
+\end{proposition}
+\begin{proof}
+  From the \eqref{eq:controlled_equivariance} and \eqref{eq:input_equivariance} we have
+  \begin{equation}
+    f(\phi^g X, \mathrm{d} \phi^g_X \omega, u(\phi^g X, \mathrm{d} \phi^g_X \omega)) = f(\phi^g, \mathrm{d} \phi^g_X \omega, \psi^g u(X, \omega)) = \mathrm{d} \phi_X^g f(X, \omega, u(X, \omega)),
+  \end{equation}
+  which shows equivariance of the closed-loop system.
+\end{proof}
 

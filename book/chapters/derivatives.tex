@@ -10,47 +10,47 @@
 \todo[inline]{Define derivatives w.r.t. matrix elements only, motivate that we can disregard parameterized expressions.}
 
 \begin{definition}
-  The \textbf{right derivative} of $f : \M \rightarrow \N$ at $\X \in {\cM}$ is a linear mapping $\mathrm{d}^r f_\X : T {\M}_{\X} \rightarrow T \N_{f(\X)}$ such that:
+  The \textbf{right derivative} of $f : \M \rightarrow \N$ at $\X \in {\cM}$ is a linear mapping $\dr f_\X : T {\M}_{\X} \rightarrow T \N_{f(\X)}$ such that:
   \begin{equation}
     \label{eq:deriv_rght}
-    \mathrm{d}^r f_\X \coloneq \lim_{\a \rightarrow 0} \frac{f( \X \oplus_r\a) \ominus_r f(\X)}{\a} = \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\X)^{-1} \circ  f(\X \circ \exp(\a) \right)}{\a},
+    \dr f_\X \coloneq \lim_{\a \rightarrow 0} \frac{f( \X \oplus_r\a) \ominus_r f(\X)}{\a} = \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\X)^{-1} \circ  f(\X \circ \exp(\a) \right)}{\a},
   \end{equation}
   where $\a \in T_\X \check{\M}$ is a member of the parameterized Lie algebra and the division is component-wise.
 
-  Similarly, the \textbf{left derivative} is a linear mapping $\mathrm{d}^r f_\X : T {\M}_{e} \rightarrow T \N_{e}$ such that
+  Similarly, the \textbf{left derivative} is a linear mapping $\dr f_\X : T {\M}_{e} \rightarrow T \N_{e}$ such that
   \begin{equation}
     \label{eq:deriv_left}
-    \mathrm{d}^l f_\X \coloneq \lim_{\a \rightarrow 0} \frac{f( \X \oplus_l \a) \ominus_l  f(\X)}{\a} = \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\exp(\a) \circ \X) \circ f(\X)^{-1} \right)}{\a},
+    \dl f_\X \coloneq \lim_{\a \rightarrow 0} \frac{f( \X \oplus_l \a) \ominus_l  f(\X)}{\a} = \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\exp(\a) \circ \X) \circ f(\X)^{-1} \right)}{\a},
   \end{equation}
 \end{definition}
 
 From the definition it can be seen that for small $\a$ it approximately holds that
 \begin{equation}
   \label{eq:right_approx}
-  f(\X \oplus_r {\a}) = f(\X) \oplus_r \left( \mathrm{d}^r f_\X \a + \mathcal O(\| \a \|^2) \right),
+  f(\X \oplus_r {\a}) = f(\X) \oplus_r \left( \dr f_\X \a + \mathcal O(\| \a \|^2) \right),
 \end{equation}
 and for left-plus:
 \begin{equation}
   \label{eq:left_approx}
-  f(\a \oplus_l \X) = \left( \mathrm{d}^l f_\X \a + \mathcal O(\| \a \|^2) \right) \oplus_l f(\X).
+  f(\a \oplus_l \X) = \left( \dl f_\X \a + \mathcal O(\| \a \|^2) \right) \oplus_l f(\X).
 \end{equation}
 From \eqref{eq:right_approx} and \eqref{eq:left_approx} we have that for small $\a$,
 \begin{equation}
-  f(\X) \oplus_r (\mathrm{d}^r f_\X  \a) \overset{\eqref{eq:right_approx}}= f(\X \oplus_r \a) \overset{\eqref{eq:plus_adjoint}}= f\left( \bAd_\X \a \oplus_l \X\right)  \overset{\eqref{eq:left_approx}}= ( \mathrm{d}^l f_\X \bAd_\X \a) \oplus_l f(\X).
+  f(\X) \oplus_r (\dr f_\X  \a) \overset{\eqref{eq:right_approx}}= f(\X \oplus_r \a) \overset{\eqref{eq:plus_adjoint}}= f\left( \bAd_\X \a \oplus_l \X\right)  \overset{\eqref{eq:left_approx}}= ( \dl f_\X \bAd_\X \a) \oplus_l f(\X).
 \end{equation}
 Consequently,
 \begin{equation}
-  \exp( \mathrm{d}^l f_\X \bAd_\X \a ) = f(\X) \circ \exp (\mathrm{d}^r f_\X \a) \circ f(\X)^{-1} = \bAd_{f(\X)} \exp (\mathrm{d}^r f_\X \a),
+  \exp( \dl f_\X \bAd_\X \a ) = f(\X) \circ \exp (\dr f_\X \a) \circ f(\X)^{-1} = \bAd_{f(\X)} \exp (\dr f_\X \a),
 \end{equation}
 and due to \eqref{eq:exp_adj_comm} it follows that left and right derivatives are related through the adjoints via
 \begin{equation}
   \label{eq:derivative_trans}
-  \mathrm{d}^l f_\X = \bAd_{f(\X)} \; \mathrm{d}^r f_\X \; \bAd_{\X}^{-1}.
+  \dl f_\X = \bAd_{f(\X)} \; \dr f_\X \; \bAd_{\X}^{-1}.
 \end{equation}
 With the interpretation of the adjoints as coordinate changes this formula can be seen as follows: the derivative of $f$ with respect to a tangent vector $^\id\a$ at $\id$ can be obtained by
 \begin{enumerate}
   \item Convert $^{\id}\a$ to a tangent vector at $\X$: $^{\X}\a = \bAd_\X^{-1}  {^\id\a} \in T_\X \cM$,
-  \item Map the tangent vector through the derivative: ${^\X}\b = \mathrm{d}^r f_\X \; {^\X\a} \in T_{f(\X)} \cM$,
+  \item Map the tangent vector through the derivative: ${^\X}\b = \dr f_\X \; {^\X\a} \in T_{f(\X)} \cM$,
   \item Convert the result back to a tangent vector at $\id$: ${^\id}\b = \bAd_{f(\X)}  {^\X\b} \in T_\id \cM$.
 \end{enumerate}
 
@@ -58,19 +58,19 @@ Jacobians on Lie Groups satisfy the chain rule. Indeed, if $f(\X) = g \circ h (\
 \begin{equation}
   \label{eq:chain_rule}
   \begin{aligned}
-    \mathrm{d}^r (g \circ h)_\X = \lim_{\a \rightarrow 0} \frac{g \left( h( \X \oplus_r \a ) \right) \ominus_r g(h(\X))}{\a}  \overset{\eqref{eq:right_approx}} = \lim_{\a \rightarrow 0} \frac{g \left( h( \X ) \oplus_r \left( \mathrm{d}^r h_\X \a + \mathcal O(\|\a\|^2) \right)  \right) \ominus_r g(h(\X))}{\a} \\
-    \overset{\eqref{eq:right_approx}} = \lim_{\a \rightarrow 0} \frac{ \left( g (\Z) \oplus_r \left( \mathrm{d}^r g_\Z \;  \mathrm{d}^r h_\X \a + \mathcal O(\| \a \|^2) \right) \right) \ominus_r g(h(\X))}{\a} \overset{\eqref{eq:x_plus_a_minus_x}}= \mathrm{d}^r g_\Z \;  \mathrm{d}^r h_\X.
+    \dr (g \circ h)_\X = \lim_{\a \rightarrow 0} \frac{g \left( h( \X \oplus_r \a ) \right) \ominus_r g(h(\X))}{\a}  \overset{\eqref{eq:right_approx}} = \lim_{\a \rightarrow 0} \frac{g \left( h( \X ) \oplus_r \left( \dr h_\X \a + \mathcal O(\|\a\|^2) \right)  \right) \ominus_r g(h(\X))}{\a} \\
+    \overset{\eqref{eq:right_approx}} = \lim_{\a \rightarrow 0} \frac{ \left( g (\Z) \oplus_r \left( \dr g_\Z \;  \dr h_\X \a + \mathcal O(\| \a \|^2) \right) \right) \ominus_r g(h(\X))}{\a} \overset{\eqref{eq:x_plus_a_minus_x}}= \dr g_\Z \;  \dr h_\X.
   \end{aligned}
 \end{equation}
 An analogous left chain rule can be developed in the same manner via \eqref{eq:left_approx} in lieu of \eqref{eq:right_approx}.
 
 \begin{properties}[title=Important formulas for Lie group derivatives]
   \begin{itemize}
-    \item Right derivative: $\mathrm{d}^r f_\X \coloneq \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\X)^{-1} \circ  f(\X \circ \exp(\a) \right)}{\a} \in T_\X \M$,
-    \item Left derivative: $\mathrm{d}^l f_\X \coloneq \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\exp(\a) \circ \X) \circ  f(\X)^{-1} \right)}{\a} \in T_\id \M$,
-    \item Conversion between left and right jacobians: $\mathrm{d}^l f_\X = \bAd_{f(\X)} \; \mathrm{d}^r f_\X \; \bAd_{\X}^{-1}$,
-    \item Right chain rule: $\mathrm{d}^r (g (h(\X)))_\X =  \mathrm{d}^r g_{h(\X)} \;  \mathrm{d}^r h_\X$,
-    \item Left chain rule: $\mathrm{d}^l (g (h(\X)))_\X =  \mathrm{d}^l g_{h(\X)} \;  \mathrm{d}^l h_\X$.
+    \item Right derivative: $\dr f_\X \coloneq \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\X)^{-1} \circ  f(\X \circ \exp(\a) \right)}{\a} \in T_\X \M$,
+    \item Left derivative: $\dl f_\X \coloneq \lim_{\a\ \rightarrow 0} \frac{\log \left( f(\exp(\a) \circ \X) \circ  f(\X)^{-1} \right)}{\a} \in T_\id \M$,
+    \item Conversion between left and right jacobians: $\dl f_\X = \bAd_{f(\X)} \; \dr f_\X \; \bAd_{\X}^{-1}$,
+    \item Right chain rule: $\dr (g (h(\X)))_\X =  \dr g_{h(\X)} \;  \dr h_\X$,
+    \item Left chain rule: $\dl (g (h(\X)))_\X =  \dl g_{h(\X)} \;  \dl h_\X$.
   \end{itemize}
 \end{properties}
 
@@ -88,8 +88,8 @@ for $\B \in T_\X \M$. Note that this definition wouldn't make sense for an arbit
 \begin{equation}
   \label{eq:rght_deriv_traditional}
   \begin{aligned}
-    \mathrm{d}^r f_\X \a & \coloneq \left( f(\X)^{-1} \left( \mathrm{D} f_\X \; \X \hat \a \right) \right)^{\vee} = \left( f(\X)^{-1} \left( \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t = 0} f(\gamma(t)) \right) \right)^\vee, \qquad \begin{cases} \gamma(0) = \X, \\ \gamma'(0) = \X \hat \a, \end{cases}  \\
-    \mathrm{d}^l f_\X \a & \coloneq \left( \left( \mathrm{D} f_\X \; \hat \a \X \right) f(\X)^{-1} \right)^{\vee} = \left( \left( \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t = 0} f(\gamma(t)) \right) f(\X)^{-1}  \right)^\vee, \qquad \begin{cases} \gamma(0) = \X, \\ \gamma'(0) = \hat \a \X. \end{cases}
+    \dr f_\X \a & \coloneq \left( f(\X)^{-1} \left( \mathrm{D} f_\X \; \X \hat \a \right) \right)^{\vee} = \left( f(\X)^{-1} \left( \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t = 0} f(\gamma(t)) \right) \right)^\vee, \qquad \begin{cases} \gamma(0) = \X, \\ \gamma'(0) = \X \hat \a, \end{cases}  \\
+    \dl f_\X \a & \coloneq \left( \left( \mathrm{D} f_\X \; \hat \a \X \right) f(\X)^{-1} \right)^{\vee} = \left( \left( \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t = 0} f(\gamma(t)) \right) f(\X)^{-1}  \right)^\vee, \qquad \begin{cases} \gamma(0) = \X, \\ \gamma'(0) = \hat \a \X. \end{cases}
   \end{aligned}
 \end{equation}
 
@@ -100,21 +100,21 @@ for $\B \in T_\X \M$. Note that this definition wouldn't make sense for an arbit
 Consider a function $f(\X) = g(\X) \circ h(\X)$, we utilize \eqref{eq:right_approx} to obtain
 \begin{equation}
   \begin{aligned}
-    f(\X \oplus \a) & = \left( g (\X) \oplus \left(\mathrm{d}^r g_\X \a + \mathcal O(\a^2) \right) \right) \circ  \left( h (\X) \oplus \left( \mathrm{d}^r h_\X  \a + \mathcal O(\a^2) \right) \right)
+    f(\X \oplus \a) & = \left( g (\X) \oplus \left(\dr g_\X \a + \mathcal O(\a^2) \right) \right) \circ  \left( h (\X) \oplus \left( \dr h_\X  \a + \mathcal O(\a^2) \right) \right)
     \\
-                    & = g(\X) \circ \exp( \mathrm{d}^r g_\X \a + \mathcal O(\a^2)) \circ h(\X) \circ \exp( \mathrm{d}^r h_\X \a + \mathcal O(\a^2))
+                    & = g(\X) \circ \exp( \dr g_\X \a + \mathcal O(\a^2)) \circ h(\X) \circ \exp( \dr h_\X \a + \mathcal O(\a^2))
     \\
-                    & = g(\X) \circ h(\X) \circ \left( \Ad_{h(\X)^{-1}} \exp \left( \mathrm{d}^r g_\X \a + \mathcal O(\a^2) \right)  \right) \circ \exp( \mathrm{d}^r h_\X \a+ \mathcal O(\a^2) )
+                    & = g(\X) \circ h(\X) \circ \left( \Ad_{h(\X)^{-1}} \exp \left( \dr g_\X \a + \mathcal O(\a^2) \right)  \right) \circ \exp( \dr h_\X \a+ \mathcal O(\a^2) )
     \\
-                    & \overset{\eqref{eq:exp_adj_comm}}=  g(\X) \circ h(\X) \circ \left( \exp \bAd_{h(\X)^{-1}} \left( \mathrm{d}^r g_\X \a + \mathcal O(\a^2) \right)\right) \circ \exp( \mathrm{d}^r h_\X \a + \mathcal O(\a^2))
+                    & \overset{\eqref{eq:exp_adj_comm}}=  g(\X) \circ h(\X) \circ \left( \exp \bAd_{h(\X)^{-1}} \left( \dr g_\X \a + \mathcal O(\a^2) \right)\right) \circ \exp( \dr h_\X \a + \mathcal O(\a^2))
     \\
-                    & \overset{\eqref{eq:bch_formula}}=  g(\X) \circ h(\X) \circ \exp \left( \bAd_{h(\X)^{-1}} \mathrm{d}^r g_\X \a + \mathrm{d}^r h_\X \a + \mathcal O(\a^2)) \right).
+                    & \overset{\eqref{eq:bch_formula}}=  g(\X) \circ h(\X) \circ \exp \left( \bAd_{h(\X)^{-1}} \dr g_\X \a + \dr h_\X \a + \mathcal O(\a^2)) \right).
   \end{aligned}
 \end{equation}
 From here we can conclude that
 \begin{equation}
   \label{eq:product_rule}
-  \mathrm{d}^r (g \circ h)_\X = \bAd_{h(\X)^{-1}} \mathrm{d}^r g_\X + \mathrm{d}^r h_\X
+  \dr (g \circ h)_\X = \bAd_{h(\X)^{-1}} \dr g_\X + \dr h_\X
 \end{equation}
 which is the product rule for Lie group derivatives.
 
@@ -124,19 +124,19 @@ which is the product rule for Lie group derivatives.
   \begin{equation}
     \begin{aligned}
       f(g(\X \oplus \a), h(\X \oplus \a))
-       & \approx f \left( g(\X) \oplus \mathrm{d}^r g_\X \; \a , h(\X) \oplus \mathrm{d}^r h_\X \; \a \right)                                                                                      \\
-       & \approx f \left( g(\X) , h(\X) \oplus \mathrm{d} h_\X \a \right) \oplus \mathrm{d}^r f_{g} \; \mathrm{d}^r g_\X \a                                                                        \\
-       & \approx \left[ f \left( g(\X) , h(\X) \right) \oplus \mathrm{d}^r f_h \; \mathrm{d}^r h_\X \a \right] \oplus \mathrm{d}^r f_{g} \; \mathrm{d}^r g_\X \a                                   \\
-       & =  f \left( g(\X) , h(\X) \right) \circ \left[ \exp\left( \mathrm{d}^r f_h \; \mathrm{d}^r h_\X \a  \right) \circ \exp\left ( \mathrm{d}^r f_{g} \; \mathrm{d}^r g_\X \a \right) \right].
+       & \approx f \left( g(\X) \oplus \dr g_\X \; \a , h(\X) \oplus \dr h_\X \; \a \right)                                                                    \\
+       & \approx f \left( g(\X) , h(\X) \oplus \mathrm{d} h_\X \a \right) \oplus \dr f_{g} \; \dr g_\X \a                                                      \\
+       & \approx \left[ f \left( g(\X) , h(\X) \right) \oplus \dr f_h \; \dr h_\X \a \right] \oplus \dr f_{g} \; \dr g_\X \a                                   \\
+       & =  f \left( g(\X) , h(\X) \right) \circ \left[ \exp\left( \dr f_h \; \dr h_\X \a  \right) \circ \exp\left ( \dr f_{g} \; \dr g_\X \a \right) \right].
     \end{aligned}
   \end{equation}
   That is, if $f(\X) = f(g(\X), h(\X))$ we typically have that
   \begin{equation}
-    \mathrm{d}^r (f(g(\X), h(\X)))_\X  \neq  \mathrm{d}^r f_{g(\X)} \; \mathrm {d}^r g_\X + \mathrm{d}^r f_{h(\X)} \; \mathrm {d}^r h_\X.
+    \dr (f(g(\X), h(\X)))_\X  \neq  \dr f_{g(\X)} \; \mathrm {d}^r g_\X + \dr f_{h(\X)} \; \mathrm {d}^r h_\X.
   \end{equation}
   However, from \eqref{eq:bch_formula} it can be seen that if
   \begin{equation}
-    \left[ \mathrm{d}^r f_{h(\X)} \; \mathrm{d}^r h_\X \a  ,   \mathrm{d}^r f_{g(\X)} \; \mathrm{d}^r g_\X \a  \right] = 0, \qquad \forall \a,
+    \left[ \dr f_{h(\X)} \; \dr h_\X \a  ,   \dr f_{g(\X)} \; \dr g_\X \a  \right] = 0, \qquad \forall \a,
   \end{equation}
   then the rule of total derivatives applies. One important case when this holds is when $f$ takes values in $\mathbb{E}(n)$ since matrix multiplication on $\mathbb{E}(n)$ corresponds to vector addition on $\mathbb{R}^n$ and hence all brackets are zero.
 \end{remark}
@@ -154,14 +154,14 @@ The Lie bracket between two tangent elements can be defined as the global deriva
       \label{eq:bAd_D}
       \mathrm{D} (\bAd_\X \b)_\X \hat \a & = \hat \a \hat \b \X^{-1} - \X \hat \b \X^{-1} \hat \a X^{-1},                                                                                   \\
       \label{eq:bAd_dr}
-      \mathrm{d}^r (\bAd_\X \b)_\X \a    & = \left( \mathrm{D} \left(\bAd_\X \b \right)_\X \X \hat \a \right)^\vee = \bAd_\X \left[ \a, \b \right] = \left[ \bAd_\X \a, \bAd_\X \b \right], \\
+      \dr (\bAd_\X \b)_\X \a             & = \left( \mathrm{D} \left(\bAd_\X \b \right)_\X \X \hat \a \right)^\vee = \bAd_\X \left[ \a, \b \right] = \left[ \bAd_\X \a, \bAd_\X \b \right], \\
       \label{eq:bAd_dl}
-      \mathrm{d}^l (\bAd_\X \b)_\X \a    & = \left( \mathrm{D} \left(\bAd_\X \b \right)_\X \hat \a \X \right)^\vee = \left[ \a, \bAd_\X \b \right],
+      \dl (\bAd_\X \b)_\X \a             & = \left( \mathrm{D} \left(\bAd_\X \b \right)_\X \hat \a \X \right)^\vee = \left[ \a, \bAd_\X \b \right],
     \end{align}
   \end{subequations}
   whereas at $\X = \id$ they simplify to
   \begin{equation}
-    \left( \mathrm{D} (\bAd_\X \b)_{\X = \id} \hat \a \right)^\vee = \mathrm{d}^r (\bAd_\X \b)_{\X = \id} \a= \mathrm{d}^l \left(\bAd_\X \b \right)_{\X = \id}  \a = \left[ \a, \b \right].
+    \left( \mathrm{D} (\bAd_\X \b)_{\X = \id} \hat \a \right)^\vee = \dr (\bAd_\X \b)_{\X = \id} \a= \dl \left(\bAd_\X \b \right)_{\X = \id}  \a = \left[ \a, \b \right].
   \end{equation}
 \end{properties}
 The lower-case adjoint is defined as
@@ -215,7 +215,7 @@ we can also show that the adjoint of the exponential equals the exponential of t
 As a consequence,
 \begin{equation}
   \label{eq:ad_exp_a_a}
-  \bAd_{\lambda \exp(\a)} \a = \exp \ad_{\lambda \a} \a = \a. 
+  \bAd_{\lambda \exp(\a)} \a = \exp \ad_{\lambda \a} \a = \a.
 \end{equation}
 
 Another useful identity is the following.
@@ -228,7 +228,7 @@ Another useful identity is the following.
 
 The derivatives of the exponential map is a fundamental expression that often shows up when manipulating derivatives on Lie groups. From \eqref{eq:rght_deriv_traditional} we have that
 \begin{equation}
-  \mathrm{d}^r \exp_\a \b = \left( \exp(\bgamma(0))^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}t}\right|_{t = 0} \exp(\bgamma(t)) \right)^\vee, \quad \bgamma(0) = \a, \; \bgamma'(0) = \b.
+  \dr \exp_\a \b = \left( \exp(\bgamma(0))^{-1} \left. \frac{\mathrm{d}}{\mathrm{d}t}\right|_{t = 0} \exp(\bgamma(t)) \right)^\vee, \quad \bgamma(0) = \a, \; \bgamma'(0) = \b.
 \end{equation}
 To calculate this derivative consider a curve $\bgamma(t) \in \check{\mathfrak{m}}$ and the expression
 \begin{equation}
@@ -256,8 +256,8 @@ From \eqref{eq:exponential_derivative_posit} we can see that $\Gamma(1, 0)$ is e
   \begin{equation}
     \label{eq:dexp_def}
     \begin{aligned}
-      \mathrm{d}^r \exp_\a & = \frac{I - \exp (-\ad_{\a})}{\ad_{\a}} \coloneq \sum_{k=0}^\infty \frac{(-1)^k }{(k+1)!} \ad^k_{\a}, \\
-      \mathrm{d}^l \exp_\a & = \frac{\exp \ad_{a} - I}{\ad_{a}} \coloneq \sum_{k=0}^\infty \frac{1 }{(k+1)!} \ad^k_{\a}.
+      \dr \exp_\a & = \frac{I - \exp (-\ad_{\a})}{\ad_{\a}} \coloneq \sum_{k=0}^\infty \frac{(-1)^k }{(k+1)!} \ad^k_{\a}, \\
+      \dl \exp_\a & = \frac{\exp \ad_{a} - I}{\ad_{a}} \coloneq \sum_{k=0}^\infty \frac{1 }{(k+1)!} \ad^k_{\a}.
     \end{aligned}
   \end{equation}
   Through the Bernoulli numbers $B_0 = 0, B_1 = -1/2, B_2 = 1/6, \ldots$ that are defined as
@@ -269,24 +269,22 @@ From \eqref{eq:exponential_derivative_posit} we can see that $\Gamma(1, 0)$ is e
   \begin{equation}
     \label{eq:dexpinv_def}
     \begin{aligned}
-      \left(\mathrm{d}^r \exp_\a\right)^{-1} & = \frac{\ad_{\a}}{I - \exp (- \ad_{\a})} \coloneq \sum_{n=0}^\infty B_n \frac{(-1)^n}{n!} \ad_{\a}^n, \\
-      \left(\mathrm{d}^l \exp_\a\right)^{-1} & = \frac{\ad_{\a}}{\exp \ad_{\a} - I} \coloneq \sum_{n=0}^\infty B_n \frac{1}{n!} \ad_\a^n.
+      \left(\dr \exp_\a\right)^{-1} & = \frac{\ad_{\a}}{I - \exp (- \ad_{\a})} \coloneq \sum_{n=0}^\infty B_n \frac{(-1)^n}{n!} \ad_{\a}^n, \\
+      \left(\dl \exp_\a\right)^{-1} & = \frac{\ad_{\a}}{\exp \ad_{\a} - I} \coloneq \sum_{n=0}^\infty B_n \frac{1}{n!} \ad_\a^n.
     \end{aligned}
   \end{equation}
   Notably, at $\a = \symbf{0}$ these are all equal to the identity matrix. Since $B_1 = -1/2$ and $B_n = 0$ for odd $n > 1$ it follows that
   \begin{equation}
-    \left(\mathrm{d}^l \exp_\a\right)^{-1} = -\ad_\a + \left(\mathrm{d}^r \exp_\a\right)^{-1}.
+    \left(\dl \exp_\a\right)^{-1} = -\ad_\a + \left(\dr \exp_\a\right)^{-1}.
   \end{equation}
 \end{properties}
 From these definitions it follows that
 \begin{equation}
-  \left[ \a, \b \right] = 0 \quad \implies \quad \mathrm{d}^r \exp_{\b} \a = \mathrm{d}^l \exp_\b = \left( \mathrm{d}^r \exp_\b \right)^{-1} = \left( \mathrm{d}^l \exp_\b \right)^{-1} = \a,
+  \left[ \a, \b \right] = 0 \quad \implies \quad \dr \exp_{\b} \a = \dl \exp_\b = \left( \dr \exp_\b \right)^{-1} = \left( \dl \exp_\b \right)^{-1} = \a,
 \end{equation}
 which in particular holds for the case $\b = \lambda \a$.
 
 While the derivatives \eqref{eq:dexp_def} - \eqref{eq:dexpinv_def} could be evaluated to arbitrary precision by adding enough terms, this is not a practical solution. Fortunately closed-form expressions can be obtained for all groups of interest, but we postpone those calculations to the next part.
-
-
 
 \section{Derivatives of common operations}
 
@@ -297,21 +295,21 @@ We calculate the right derivatives using \eqref{eq:deriv_rght} and the left deri
 \begin{align}
   \label{eq:d_composition_rght_fst}
   \begin{split}
-    \mathrm{d}^r (\X \circ \Y)_{\X}
+    \dr (\X \circ \Y)_{\X}
     & \overset{\eqref{eq:deriv_rght}}= \lim_{\a \rightarrow 0} \frac{ \log \left( (\X \circ \Y)^{-1} \circ \X \circ \exp(\a) \circ \Y \right) }{\a} = \lim_{\a \rightarrow 0} \frac{ \log \left( \Y^{-1} \circ \exp(\a) \circ \Y \right) }{\a}                                                                                     \\
     & \overset{\eqref{eq:exp_adj_comm}}= \lim_{\a \rightarrow 0} \frac{\log \exp \bAd_{\Y^{-1}} \a}{\a} = \bAd_{\Y^{-1}},
   \end{split}
   \\
   \label{eq:d_composition_left_fst}
-  \mathrm{d}^l (\X \circ \Y)_{\X}
+  \dl (\X \circ \Y)_{\X}
    & \overset{\eqref{eq:derivative_trans}}= \bAd_{\X \circ \Y} \bAd_{\Y^{-1}} \bAd_{\X}^{-1} \overset{\eqref{eq:adjoint_properties}}= I_n,
   \\
   \label{eq:d_composition_rght_snd}
-  \mathrm{d}^r (\X \circ \Y)_\Y
+  \dr (\X \circ \Y)_\Y
    & \overset{\eqref{eq:deriv_rght}}= \lim_{\a \rightarrow 0} \frac{ \log \left( (\X \circ \Y)^{-1} \circ \X \circ \Y \circ \exp(\a) \right) }{\a} = I_n,
   \\
   \label{eq:d_composition_left_snd}
-  \mathrm{d}^l (\X \circ \Y)_{\Y}
+  \dl (\X \circ \Y)_{\Y}
    & \overset{\eqref{eq:derivative_trans}} = \bAd_{\X \circ \Y} I_n \bAd_{\Y}^{-1} \overset{\eqref{eq:adjoint_properties}}= \bAd_{\X}.
 \end{align}
 
@@ -320,7 +318,7 @@ We calculate the right derivatives using \eqref{eq:deriv_rght} and the left deri
 \begin{align}
   \label{eq:d_inv_rght}
   \begin{split}
-    \mathrm{d}^r (\X^{-1})_\X
+    \dr (\X^{-1})_\X
     &\overset{\eqref{eq:deriv_rght}}= \lim_{\a \rightarrow 0} \frac{ \log \left( \X \circ (\X \circ \exp(\a))^{-1} \right) }{\a} =   \lim_{\a \rightarrow 0} \frac{ \log \left( \X \circ \exp(-\a) \circ \X^{-1} \right) }{\a}
     \\
     &
@@ -328,16 +326,16 @@ We calculate the right derivatives using \eqref{eq:deriv_rght} and the left deri
   \end{split}
   \\
   \label{eq:d_inv_left}
-  \mathrm{d}^l (\X^{-1})_\X
+  \dl (\X^{-1})_\X
    & \overset{\eqref{eq:derivative_trans}}= -\bAd_{\X^{-1}} \bAd_\X \bAd_{\X^{-1}} = -\bAd_{\X^{-1}}.
 \end{align}
 
 \paragraph{Logarithm}
 
-From differentiating $\a = \log \exp \a$ using the chain rule we get $I = \mathrm{d}^r \log_{\exp \a} \; \mathrm{d}^r \exp_{\a}$, which implies that
+From differentiating $\a = \log \exp \a$ using the chain rule we get $I = \dr \log_{\exp \a} \; \dr \exp_{\a}$, which implies that
 \begin{align}
-  \mathrm{d}^r \log_{\X} = \left[\mathrm{d}^r \exp_{\log \X} \right]^{-1}, \label{eq:d_log_rght} \\
-  \mathrm{d}^l \log_{\X} = \left[\mathrm{d}^l \exp_{\log \X} \right]^{-1}. \label{eq:d_log_left} \\
+  \dr \log_{\X} = \left[\dr \exp_{\log \X} \right]^{-1}, \label{eq:d_log_rght} \\
+  \dl \log_{\X} = \left[\dl \exp_{\log \X} \right]^{-1}. \label{eq:d_log_left} \\
 \end{align}
 
 \paragraph{Plus and minus}
@@ -346,40 +344,40 @@ From the chain rule and the above we can also deduce the derivatives of the plus
 
 \begin{align}
   \label{eq:d_rplus_fst}
-  \mathrm{d}^r (\X \oplus_r \a)_\X  & = \mathrm{d}^r (\X \circ \exp (\a) )_\X \overset{\eqref{eq:d_composition_rght_fst}}= \bAd_{\exp(\a)}^{-1},
+  \dr (\X \oplus_r \a)_\X  & = \dr (\X \circ \exp (\a) )_\X \overset{\eqref{eq:d_composition_rght_fst}}= \bAd_{\exp(\a)}^{-1},
   \\
   \label{eq:d_rplus_snd}
-  \mathrm{d}^r (\X \oplus_r \a)_\a  & = \mathrm{d}^r (\X \circ \exp (\a) )_\a \overset{\eqref{eq:chain_rule}}= \mathrm{d}^r (\X \circ \exp (\a) )_{\exp \a} \; \mathrm{d}^r \exp_\a \overset{\eqref{eq:d_composition_rght_snd}}= \mathrm{d}^r \exp_\a,
+  \dr (\X \oplus_r \a)_\a  & = \dr (\X \circ \exp (\a) )_\a \overset{\eqref{eq:chain_rule}}= \dr (\X \circ \exp (\a) )_{\exp \a} \; \dr \exp_\a \overset{\eqref{eq:d_composition_rght_snd}}= \dr \exp_\a,
   \\
   \label{eq:d_rminus_fst}
-  \mathrm{d}^r (\Y \ominus_r \X)_\Y & = \mathrm{d}^r \left(\log \X^{-1} \circ \Y \right)_\Y \overset{\eqref{eq:chain_rule}}= \mathrm{d}^r \log_{\X^{-1} \circ \Y} \; \mathrm{d}^r (\X^{-1} \circ \Y)_{\Y} \overset{\eqref{eq:d_composition_rght_snd}}= \left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1},
+  \dr (\Y \ominus_r \X)_\Y & = \dr \left(\log \X^{-1} \circ \Y \right)_\Y \overset{\eqref{eq:chain_rule}}= \dr \log_{\X^{-1} \circ \Y} \; \dr (\X^{-1} \circ \Y)_{\Y} \overset{\eqref{eq:d_composition_rght_snd}}= \left[ \dr \exp_{\Y \ominus_r \X} \right]^{-1},
   \\
   \label{eq:d_rminus_snd}
   \begin{split}
-    \mathrm{d}^r (\Y \ominus_r \X)_\X & = \mathrm{d}^r \left(\log \X^{-1} \circ \Y \right)_\X \overset{\eqref{eq:chain_rule}}= \mathrm{d}^r \log_{\X^{-1} \circ \Y} \; \mathrm{d}^r (\X^{-1} \circ \Y)_{\X^{-1}} \; \mathrm{d}^r (\X^{-1})_\X \\
-    & \overset{\eqref{eq:d_log_rght}, \eqref{eq:d_composition_rght_fst}, \eqref{eq:d_inv_rght}}= \left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\Y^{-1}} (-\bAd_{\X}) \overset{\eqref{eq:ad_product}}= -\left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\Y^{-1} \circ \X} \\
-    & = -\left[ \mathrm{d}^r \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\exp \Y \ominus_r \X}^{-1} \overset{\eqref{eq:derivative_trans}}= - \left[ \mathrm{d}^l \exp_{\Y \ominus_r \X} \right]^{-1}.
+    \dr (\Y \ominus_r \X)_\X & = \dr \left(\log \X^{-1} \circ \Y \right)_\X \overset{\eqref{eq:chain_rule}}= \dr \log_{\X^{-1} \circ \Y} \; \dr (\X^{-1} \circ \Y)_{\X^{-1}} \; \dr (\X^{-1})_\X \\
+    & \overset{\eqref{eq:d_log_rght}, \eqref{eq:d_composition_rght_fst}, \eqref{eq:d_inv_rght}}= \left[ \dr \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\Y^{-1}} (-\bAd_{\X}) \overset{\eqref{eq:ad_product}}= -\left[ \dr \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\Y^{-1} \circ \X} \\
+    & = -\left[ \dr \exp_{\Y \ominus_r \X} \right]^{-1} \bAd_{\exp \Y \ominus_r \X}^{-1} \overset{\eqref{eq:derivative_trans}}= - \left[ \dl \exp_{\Y \ominus_r \X} \right]^{-1}.
   \end{split}
 \end{align}
 
 \section{On Automatic Differentiation}
 
-Consider a function $f : \M \rightarrow \N$ whose derivative we are interested in. Since autodiff tools are not aware of manifolds we can not directly obtain e.g. $\mathrm{d}^r f_\X$; here we discuss how to obtain on-manifold derivatives by only differentiating Euclidean functions. Since $\mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} = \mathrm{d}^r f_\X \mathrm{d} \exp_0 = \mathrm{d}^r f_\X$ we can write
+Consider a function $f : \M \rightarrow \N$ whose derivative we are interested in. Since autodiff tools are not aware of manifolds we can not directly obtain e.g. $\dr f_\X$; here we discuss how to obtain on-manifold derivatives by only differentiating Euclidean functions. Since $\dr (f(\X \oplus_r \a))_{\a = 0} = \dr f_\X \mathrm{d} \exp_0 = \dr f_\X$ we can write
 \begin{equation}
   \begin{aligned}
-    \mathrm{d}^r f_\X \b = \mathrm{d}^r (f(\X \oplus_r \a))_{\a = 0} \b = \left.  \left( f(\X \oplus_r \a)^{-1} \mathrm{D} (f(\X \oplus_r \a))_\a \hat \b  \right)^\vee \right|_{\a = 0} = \left( f(\X)^{-1}  \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0}  f(\X \oplus (t \b)) \right)^\vee.
+    \dr f_\X \b = \dr (f(\X \oplus_r \a))_{\a = 0} \b = \left.  \left( f(\X \oplus_r \a)^{-1} \mathrm{D} (f(\X \oplus_r \a))_\a \hat \b  \right)^\vee \right|_{\a = 0} = \left( f(\X)^{-1}  \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0}  f(\X \oplus (t \b)) \right)^\vee.
   \end{aligned}
 \end{equation}
-Here the function $t \mapsto f(\X \oplus (t\b))$ maps a scalar to a matrix and can therefore be differentiated using regular tools, after which the expression can be evaluated to obtain $\mathrm{d}^r f_\X \b$. Naturally, if the complete derivative $\mathrm{d}^r f_\X$ is desired it can be obtained by repeating this procedure $n$ times for each basis unit vector.
+Here the function $t \mapsto f(\X \oplus (t\b))$ maps a scalar to a matrix and can therefore be differentiated using regular tools, after which the expression can be evaluated to obtain $\dr f_\X \b$. Naturally, if the complete derivative $\dr f_\X$ is desired it can be obtained by repeating this procedure $n$ times for each basis unit vector.
 
 If $f$ maps to a Euclidean space (i.e. $\N = \mathbb{R}^k$) this further simplifies to
 \begin{equation}
-  \mathrm{d}^r f_\X b = \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0} f(\X \oplus (t \b)), \quad f : \M \rightarrow \mathbb{R}^n,
+  \dr f_\X b = \left. \frac{\mathrm{d}}{\mathrm{d}t} \right|_{t=0} f(\X \oplus (t \b)), \quad f : \M \rightarrow \mathbb{R}^n,
 \end{equation}
 which with some abuse of notation can be written as
 \begin{equation}
   \label{eq:rn_autodiff}
-  \mathrm{d}^r f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b).
+  \dr f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b).
 \end{equation}
 
 \todo[inline]{Pretty sure this will immediately yield the correct derivative}
@@ -395,12 +393,12 @@ Being unaware of the manifold structure, automatic differentiation can only eval
 
 According to \eqref{eq:rn_autodiff} we can write a tangent space derivative for a Euclidean-valued function
 \begin{equation}
-  \mathrm{d}^r f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b) = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f \left( \left( \left( \hat \x \oplus \b \right)^\vee \right)^\wedge \right) = \left. \frac{\mathrm{d}}{\mathrm{d} \y} \right|_{\y = \x} f(\hat \y) \; \times \; \left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee.
+  \dr f_\X = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f(\X \oplus \b) = \left. \frac{\mathrm{d}}{\mathrm{d}\b} \right|_{\b = 0} f \left( \left( \left( \hat \x \oplus \b \right)^\vee \right)^\wedge \right) = \left. \frac{\mathrm{d}}{\mathrm{d} \y} \right|_{\y = \x} f(\hat \y) \; \times \; \left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee.
 \end{equation}
 
 Thus, if $\left. \frac{\mathrm{d}}{\mathrm{d} \y} \right|_{\y = \x} f(\hat \y)$ is obtained through automatic differentiation it needs to be right-multiplied by a state-dependent matrix in order to obtain the tangent-space derivative. In Ceres parlance these matrices are called
 \begin{itemize}
-  \item Local derivative: $\mathrm{d}^r f_\X$, a $k \times n$ matrix,
+  \item Local derivative: $\dr f_\X$, a $k \times n$ matrix,
   \item Global derivative: $\left. \frac{\mathrm{d}}{\mathrm{d} \y} \right|_{\y = \x} f(\hat \y)$, a $k \times p$ matrix,
   \item Jacobian: $\left. \frac{\mathrm{d}}{\mathrm{d} \b} \right|_{\b = 0} \left( \hat \x \oplus \b\right)^\vee$, a $p \times n$ matrix
 \end{itemize}

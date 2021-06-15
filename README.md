@@ -163,13 +163,13 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
     - [ ] Lie Groups
     - [ ] Lie Algebras
     - [ ] Exponential map
-    - [ ] Derivatives
+    - [/] Derivatives
     - [ ] Dynamical Systems
     - [ ] Equivariance
   - Part 2:
-    - [ ] Classical groups
-    - [ ] SO2
-    - [ ] SO3
+    - [x] Classical groups
+    - [x] SO2
+    - [x] SO3
     - [ ] SE2
     - [ ] SE3
   - Part 3:

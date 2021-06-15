@@ -1,6 +1,6 @@
 \chapter{\texorpdfstring{$\SOtwo$}{SO(2)}: The 2D Rotation Group}
 
-Let $\bR$ denote an element of $\SOtwo$; we know that $\bR \bR^{T} = I_{2}$.
+Let $\bR$ denote an element of $\SOtwo$, commonly referred to as a \emph{2D rotation matrix}.
 
 \paragraph{Action on \texorpdfstring{$\mathbb{R}^2$}{R2}:}
 In robotics applications it is convenient to define a rotational action on vectors in $\mathbb{R}^2$. For $\bR \in \SOtwo$ and $\bu \in \mathbb{R}^2$ the action is matrix multiplication
@@ -10,7 +10,7 @@ In robotics applications it is convenient to define a rotational action on vecto
 
 \paragraph{Lie Algebra}
 
-The $2 \times 2$ skew-symmetric matrices have only one degree of freedom, let this single parameter of $\check{\sotwo}$ be denoted $\omega_z$ so that
+The $2 \times 2$ skew-symmetric matrices have only one degree of freedom, let this single parameter of $\sotwo$ be denoted $\omega_z$ so that
 \begin{equation}
   \mathfrak{so}(2) = \left\{ \begin{bmatrix} 0 & -\omega_z \\ \omega_z & 0 \end{bmatrix} \mid \omega_z \in \mathbb{R} \right\},
 \end{equation}
@@ -23,6 +23,7 @@ and the Lie algebra hat and vee maps become
     \draw[-latex] (a2) to[bend left] node[above] {$\vee$} (a1);
   \end{tikzpicture}
 \end{center}
+
 \section{Formulas}
 
 \paragraph{Adjoint}
@@ -42,6 +43,14 @@ Take an element $\begin{bmatrix}\omega_z\end{bmatrix}$; The exponential is calcu
     \Exp {\omega_z^\wedge} = \sum_{k = 0}^{\infty} \frac{(\omega_z^\wedge)^k}{k!} = \sum_{k = 0}^{\infty} \frac{\left(\omega_{z}^{\wedge}\right)^{2k}}{(2k)!} + \frac{\left(\omega_{z}^{\wedge}\right)^{2k + 1}}{(2k + 1)!} = \sum_{k = 0}^{\infty} \frac{(-1)^{k} \omega_{z}^{2k}}{(2k)!} I_{2} + \frac{(-1)^{k} \omega_{z}^{2k}}{(2k + 1)!} \omega_{z}^{\wedge} \\
     \overset{\eqref{eq:cos_sum}, \eqref{eq:trig_sum1}}= \cos \omega_z I_2 + \frac{\sin \omega_{z}}{\omega_{z}} \omega_z^\wedge = \begin{bmatrix} \cos \omega_z & - \sin \omega_z \\ \sin \omega_z & \cos \omega_z \end{bmatrix}.
   \end{aligned}
+\end{equation}
+With $\bR = \begin{bmatrix} \cos \omega_z & -\sin \omega_z \\ \sin \omega_z & \cos \omega_z \end{bmatrix}$ it follows that
+\begin{equation}
+  \tr (\bR + \bR^T) = 2 \cos \omega_z,
+\end{equation}
+from where it follows that
+\begin{equation}
+  \log \bR = \arccos \left( \frac{1}{2} \tr \left( \bR^T + \bR \right) \right).
 \end{equation}
 
 \paragraph{Derivatives of the Exponential}
@@ -65,7 +74,7 @@ It follows that all terms in \eqref{eq:dexp_def} and \eqref{eq:dexpinv_def} vani
 
   \paragraph{Algebra Parameterization}
   \begin{equation}
-    \left\{ \omega_{w} \mid \omega_{w} \in [-\pi, \pi] \right\}, \qquad \omega_{w}^\wedge = \begin{bmatrix} 0 & -\omega_{w} \\ \omega_{w} & 0 \end{bmatrix} \in \sotwo.
+    \left\{ \omega_{w} \mid \omega_{w} \in [-\pi, \pi] \right\}, \qquad (\omega_{w})^\wedge = \begin{bmatrix} 0 & -\omega_{w} \\ \omega_{w} & 0 \end{bmatrix} \in \sotwo.
   \end{equation}
 
   \paragraph{Adjoint}
@@ -77,9 +86,9 @@ It follows that all terms in \eqref{eq:dexp_def} and \eqref{eq:dexpinv_def} vani
   \begin{subequations}
     \begin{align}
       \label{eq:so2_exp}
-      \exp (\omega_w) & = \begin{bmatrix} \cos \omega_{w} & -\sin \omega_{w} \\ \sin \omega_{w} & \cos \omega_{w} \end{bmatrix},                   \\
+      \exp (\omega_w) & = \begin{bmatrix} \cos \omega_{w} & -\sin \omega_{w} \\ \sin \omega_{w} & \cos \omega_{w} \end{bmatrix},                           \\
       \label{eq:so2_log}
-      \log (\bR)      & = \arccos \left(\frac{\bR^{T} + \bR}{2}\right).
+      \log (\bR)      & = \arccos \left( \frac{1}{2} \tr (\bR^T + \bR) \right).
     \end{align}
   \end{subequations}
 
@@ -102,37 +111,29 @@ It follows that all terms in \eqref{eq:dexp_def} and \eqref{eq:dexpinv_def} vani
 
 \section{Parameterization via Isomorhphism with \texorpdfstring{$\Uone$}{U(1)}}
 
-We use the isomorphism $\SOtwo \cong \Uone$, where $\Uone$ is the unitary group consisting of complex elements $c = q_{w} + i q_{z}$ with unit length, to parameterize elements of $\SOtwo$.
+We use the isomorphism $\SOtwo \cong \Uone$, where $\Uone$ is the unitary group consisting of complex elements $c = \omega_w + \omega_z \bi \in \mathbb{C}$ with unit length, to parameterize elements of $\SOtwo$.
 \begin{equation}
-  \Uone = \left\{ (q_w, q_z) \in \mathbb{R}^{2} \mid q_w^2 + q_z^2 = 1 \right\}.
+  \Uone = \left\{ c \in \mathbb{C} \mid | c | = c \bar c = 1 \right\}.
 \end{equation}
-The hat and vee maps between the parameterization and matrix forms are thus as follows:
+
+The hat and vee maps between the parameterization and matrix forms are
 \begin{center}
   \begin{tikzpicture}
-    \node (a1) {$\Uone \ni (q_{w}, q_{z})$};
-    \node at (5, 0) (a2) {$\bR = \begin{bmatrix} q_{w} & -q_{z} \\ q_{z} & q_{w} \end{bmatrix} \in \SOtwo$};
-    \draw[-latex] (a1) to[bend left] node[above] {$\wedge$} (a2);
-    \draw[-latex] (a2) to[bend left] node[above] {$\vee$} (a1);
+    \node (a1) {$\Uone \ni c$};
+    \node at (5, 0) (a2) {$\bR = \begin{bmatrix} \textrm{Re}(c) & -\textrm{Im}(c) \\ \textrm{Im}(c) & \textrm{Re}(c) \end{bmatrix} \in \SOtwo$};
+    \draw[-latex] (a1) to[bend left] node[above] {$\wedge$} (a2.north west);
+    \draw[-latex] (a2.south west) to[bend left] node[above] {$\vee$} (a1);
   \end{tikzpicture}
 \end{center}
-
-From the isomorphism to complex numbers it follows that the identity element is $(1, 0)$ and the inverse is
-$(q_w, q_z)^{-1} = (q_w, -q_z)$. A formula for group composition can either be obtained by expanding the complex product $(q_{w} + i q_{z}) (q_{w}' + i q_{z})$ and identifying the coefficients, or by going via the matrix form:
-\begin{equation*}
-  \begin{aligned}
-    (q_w, q_z) \circ (q_w', q_z') = \left( (q_w, q_z)^\wedge \cdot (q_w', q_z')^\wedge \right)^\vee = \left( \begin{bmatrix}
-      q_w & -q_z \\ q_z & q_w
-    \end{bmatrix} \cdot \begin{bmatrix}
-      q_w' & -q_z' \\ q_z' & q_w'
-    \end{bmatrix}  \right)^\vee & = (q_w q_w' - q_z q_z', q_z q_w' + q_w q_z').
-  \end{aligned}
-\end{equation*}
-
-It also follows from isomorphism that 
-$$
-  \exp(\omega_{z}) = (\cos \omega_{z}, \sin \omega_{z}),
-$$
-consequently $\log (q_{w}, q_{z}) = \arctantwo(q_{z}, q_{w})$, where $\arctantwo(y, x)$ is the angle between the ray passing through $(1, 0)$ and the ray passing through $(x, y)$.
+and it can be verified that this is indeed a group isomorphism. Due to the simplicity of the isomorphism it follows that the lowercase exponential on $\Uone$ is
+\begin{equation}
+  \exp \omega_z = \cos \omega_z + \sin \omega_z \bi,
+\end{equation}
+and consequently the lowercase logarithm can be taken as
+\begin{equation}
+  \log c = \arctantwo\left(\textrm{Im}(c), \textrm{Re}(c)\right).
+\end{equation}
+The following table summarizes the properties of $\Uone$. Note that the Lie algebra is shared with $\SOtwo$ so operators such as $\bAd$ and $\dr \exp$ are identical to $\SOtwo$ and not repeated here.
 
 \begin{properties}[breakable, title={$\Uone$ as a parameterization of $\SOtwo$}]
   \paragraph{Group Parameterization}
@@ -141,7 +142,7 @@ consequently $\log (q_{w}, q_{z}) = \arctantwo(q_{z}, q_{w})$, where $\arctantwo
   \end{equation}
   \paragraph{Group Operations}
   \begin{itemize}
-    \item Identity element: $1 \in \mathbb{C}$,
+    \item Identity element: $1 + 0 \bi \in \mathbb{C}$,
     \item Inverse: $c^{-1} = \bar c$, where bar denotes complex conjugate,
     \item Composition: $c \circ c' = \textrm{Re}(c) \textrm{Re}(c') - \textrm{Im}(c)\textrm{Im}(c') + i \left(\textrm{Re}(c) \textrm{Im}(c') + \textrm{Im}(c) \textrm{Re}(c') \right)$.
   \end{itemize}
@@ -161,7 +162,7 @@ consequently $\log (q_{w}, q_{z}) = \arctantwo(q_{z}, q_{w})$, where $\arctantwo
   \begin{subequations}
     \begin{align}
       \label{eq:u1_exp}
-      \exp (\omega_w) & = \cos \omega_{w} + i \sin \omega_{w},                   \\
+      \exp (\omega_w) & = \cos \omega_{w} + \sin \omega_{w} \bi,                   \\
       \label{eq:u1_log}
       \log (c)        & = \arctantwo\left(\textrm{Im}(c), \textrm{Re}(c)\right).
     \end{align}

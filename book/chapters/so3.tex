@@ -1,18 +1,23 @@
-\chapter{\texorpdfstring{$\SOthree$}{SO(3)}: The 3D Rotation Group}
-
-\todo[inline]{Needs to be cleaned up}
-
-As opposed to the 2D case where $\SOtwo$ as defined above is the canonical way to represent rotations, the situation is more complicated in three dimensions. While $\SOtwo$ generalizes to $\SOthree$ that consists of orthogonal $3 \times 3$ matrices with determinant 1, it is no longer as easy to construct a lower-dimensional representation. The usual choice is the unit quaternions, which are isomorphic to the matrix Lie group $\SUtwo$. We begin by defining the matrix group $\SOthree$.
-
-
-\section{Grab bag}
-
-We proceed with $\SOthree$: skew-symmetric matrices of size $3 \times 3$ are parameterized by three parameters $\bomega  \coloneq (\omega_x, \omega_y, \omega_z)$ so that $\mathfrak{so}(3)$ consists of elements on the form
+\chapter{\texorpdfstring{$\SOthree$}{SO(3)}: The 3D Rotation Group} As with $\SOtwo$ we denote by $\bR$ an element of $\SOthree$; these matrices are commonly known as \emph{3D rotation matrices}. Also like with $\SOtwo$ we define an action on $\mathbb{R}^3$ to be that of  matrix multiplication; for $\bu \in \mathbb{R}^3$
 \begin{equation}
-  \hat {\bomega} = \begin{bmatrix} 0 & -\omega_z & \omega_y \\ \omega_z & 0 & -\omega_x \\ -\omega_y & \omega_x & 0	\end{bmatrix}.
+  \left \langle \bR, \bu \right \rangle_\SOthree = \bR \cdot \bu,
 \end{equation}
-Such a matrix has several interesting properties. First of all, for $\symbf u \in \mathbb{R}^3$ left matrix multiplication of $\hat {\bomega}$ is equivalent to taking the vector cross product: $\hat {\bomega} \symbf u = \bomega \times \symbf u$.
-As a result many properties of the cross product are inherited by the embedding $\mathbb{R}^3 \overset{\wedge}\mapsto \mathbb{R}^{3 \times 3}$.
+which corresponds to a rotation of $\bR$.
+
+The Lie algebra $\sothree$ consists of skew-symmetric matrices
+\begin{equation}
+  \sothree = \left\{ \begin{bmatrix} 0 & -\omega_z & \omega_y \\ \omega_z & 0 & -\omega_x \\ -\omega_y & \omega_x & 0 \end{bmatrix} \right\}.
+\end{equation}
+It is defined by just three elements $\bomega = \begin{bmatrix} \omega_x \\ \omega_y \\ \omega_z \end{bmatrix}$ which means that the hat and vee maps can be defined as
+\begin{center}
+  \begin{tikzpicture}
+    \node (a1) {$\mathbb{R}^{3} \ni \begin{bmatrix}  \omega_x \\ \omega_y \\ \omega_z \end{bmatrix}$};
+    \node at (5, 0) (a2) {$\begin{bmatrix} 0 & -\omega_{z} & \omega_y \\ \omega_{z} & 0 & -\omega_x \\ -\omega_z & \omega_x & 0 \end{bmatrix} \in \sotwo$};
+    \draw[-latex] (a1) to[bend left] node[above] {$\wedge$} (a2.north west);
+    \draw[-latex] (a2.south west) to[bend left] node[above] {$\vee$} (a1);
+  \end{tikzpicture}
+\end{center}
+Matrices on this form have several interesting properties. First of all, for $\bu \in \mathbb{R}^3$ left matrix multiplication of $\hat {\bomega}$ is equivalent to taking the vector cross product: $\hat {\bomega} \bu = \bomega \times \bu$.  As a result many properties of the cross product are inherited by the embedding $\mathbb{R}^3 \overset{\wedge}\mapsto \mathbb{R}^{3 \times 3}$.
 
 \begin{properties}[title=Properties of $\wedge$ on $\mathfrak{so}(3)$]
   For $\a, \symbf b, \symbf c \in \mathbb{R}^3$:
@@ -26,7 +31,6 @@ As a result many properties of the cross product are inherited by the embedding 
     \end{align}
   \end{subequations}
 \end{properties}
-
 \begin{proof}[Proof of \eqref{eq:so3_pow3}]
   Consider $\hat \a \hat \b \hat \a \c = \a \times (\b \times (\a \times \c))$. Expanding with the vector triple product gives
   \begin{equation}
@@ -34,11 +38,26 @@ As a result many properties of the cross product are inherited by the embedding 
   \end{equation}
 \end{proof}
 
-We can use \eqref{eq:so3_pow3} to obtain the exponential map on $\mathfrak{so}(3)$:
+\section{Formulas}
+
+\paragraph{Adjoint}
+Take any $\bu, \bv \in \mathbb{R}^3$, since the cross product satisfies $(\bR \bu) \times (\bR \bv) = \bR (\bu \times \bv)$ it follows that
+\begin{equation}
+  (\bR \bomega^\wedge) \bu = (\bR \bomega) \times \bu = \bR (\bomega \times \bR^T \bu) = \bR \bomega^\wedge \bR \bu,
+\end{equation}
+and hence $(\bR \bomega)^\wedge = \bR \bomega^\wedge \bR^T$. From \eqref{eq:def_bad} therefore
+\begin{equation}
+  \bAd_\bR \bomega \coloneq (\bR \bomega^\wedge \bR^T)^\vee = \bR \bomega,
+\end{equation}
+so $\bAd_\bR = \bR$.
+
+\paragraph{Exponential and Logarithm}
+
+We can use \eqref{eq:so3_pow3} to obtain the exponential map on $\SOthree$:
 \begin{equation}
   \begin{aligned}
-    \Exp \; \hat {\bomega} = \sum_{k \geq 0} \frac{(\hat {\bomega})^k}{k!} = I + \hat{\bomega} + \frac{\hat{\bomega}^2}{2!} - \| \bomega \|^2 \left( \frac{\hat {\bomega}}{3!} + \frac{\hat {\bomega}^2}{4!} \right) + \| \bomega \|^4 \left( \frac{\hat {\bomega}}{5!} + \frac{\hat {\bomega}^2}{6!} \right) + \ldots \\
-    = I + \left( 1 - \frac{\|\bomega \|^2}{3!} + \frac{\|\bomega \|^4}{5!} - \ldots \right) \hat{\bomega} + \left( \frac{1}{2!} - \frac{\|\bomega \|^2}{4!} + \frac{\|\bomega \|^4}{6!} - \ldots \right) \hat{\bomega}^2                                                                                               \\
+    \exp \bomega \coloneq \Exp \; \hat {\bomega} = \sum_{k \geq 0} \frac{(\hat {\bomega})^k}{k!} = I + \hat{\bomega} + \frac{\hat{\bomega}^2}{2!} - \| \bomega \|^2 \left( \frac{\hat {\bomega}}{3!} + \frac{\hat {\bomega}^2}{4!} \right) + \| \bomega \|^4 \left( \frac{\hat {\bomega}}{5!} + \frac{\hat {\bomega}^2}{6!} \right) + \ldots \\
+    = I + \left( 1 - \frac{\|\bomega \|^2}{3!} + \frac{\|\bomega \|^4}{5!} - \ldots \right) \hat{\bomega} + \left( \frac{1}{2!} - \frac{\|\bomega \|^2}{4!} + \frac{\|\bomega \|^4}{6!} - \ldots \right) \hat{\bomega}^2                                                                                                                     \\
     = I + \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2.
   \end{aligned}
 \end{equation}
@@ -57,55 +76,91 @@ Secondly,
   \tr \left(\bR  \right) = 3 + \frac{1 - \cos \| \bomega \|}{\|\bomega \|^2} \tr(\hat \bomega^2) =3 - 2 \frac{1 - \cos \| \bomega \|}{\|\bomega \|^2} \| \bomega \|^2 = 1 + 2 \cos \| \bomega \|,
 \end{equation}
 which makes it possible to write down an expression for the logarithm.
+\begin{equation}
+  \log \bR = \left(\frac{\alpha}{\sin \alpha} \frac{\bR - \bR^T}{2}\right)^\vee, \quad \alpha = \arccos \left( \frac{\tr\bR) - 1}{2} \right).
+\end{equation}
 
-\begin{important}
-  The exponential and logarithm on $\SOthree$ are
+\paragraph{Derivatives of the Exponential}
+
+We know from \eqref{eq:so3_pow3} that $[\bomega, \bomega'] = \bomega^\wedge \bomega'$, hence that $\ad_\bomega = \hat \bomega$, and from \eqref{eq:so3_pow3} that $\hat \bomega^3 = - \| \bomega \|^2 \hat \bomega$. Thus $\ad_\bomega^3 = -\| \bomega \|^2 \ad_\bomega$ and we get,
+\begin{equation*}
+  \begin{aligned}
+    \sum_{n=0}^\infty
+     &
+    \frac{B_n (-1)^n}{n!} \ad_\bomega^n
+    = \sum_{n=0}^\infty \frac{B_n (-1)^n}{n!} \hat \bomega^n = I_3 + \frac{\ad_\bomega}{2} + \sum_{n \geq 2} \frac{B_n (-1)^n}{n!}\ad_\bomega^n                                                                                                                                                                                                                    \\
+     & = I_3 + \frac{\ad_\bomega}{2} + \left( \frac{B_2}{2!}\ad_\bomega^2 - \frac{B_4 \| \bomega \|^2} {4!} \ad_\bomega^2 + \frac{B_6 \| \bomega \|^4}{6!} \ad_\bomega^2 - \ldots \right) = I_3 + \frac{\ad_\bomega}{2} - \frac{1}{\| \bomega \|^2} \sum_{n \geq 1} \frac{B_{2n} (-1)^n \| \bomega \|^{2n}}{(2n)!} \ad_\bomega^2                                   \\
+     & \overset{\eqref{eq:bernoulli_cot}}= I_3 + \frac{\ad_\bomega}{2} - \frac{1}{\| \bomega \|^2} \left( \frac{\| \bomega \|}{2} \cot \left( \frac{\| \bomega \|}{2} \right) - 1 \right) \ad_\bomega^2 = I_3 + \frac{\ad_\bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \ad_\bomega^2,
+  \end{aligned}
+\end{equation*}
+where the half-angle formula $\cot x = (1 + \cos x) / \sin x$ has been used. The left jacobian $\dl \exp_\bomega$ was already calculated in \eqref{eq:so3_leftjac} and since $\left( \dr \exp_{\bomega} \right)^{-1} = \left[ \left( \dl \exp_{\bomega} \right)^{-1} \right]^T$. Due to the anti-symmetry of $\ad_\bomega$ it follows that also $\mathrm{d}^r \exp_\bomega = \left[ \dl \exp_\bomega \right]^T$ must hold.
+
+\begin{properties}[breakable, title={$\SOthree$ formula sheet}]
+  \paragraph{Group definition}
+  \begin{equation}
+    \SOthree = \left\{ \bR \in \GL(3, \mathbb{R}) \mid \bR \bR^{T} = \bR^{T} \bR = I_{3}, \det \bR = 1 \right\}.
+  \end{equation}
+
+  \paragraph{Algebra parameterization}
+  \begin{equation}
+    \left\{ \bomega = \begin{bmatrix} \omega_{x} \\ \omega_{y} \\ \omega_{z} \end{bmatrix}
+    \mid \omega_{x}, \omega_{y}, \omega_{z} \in [-\pi, \pi] \right\}, \quad \hat \bomega = \begin{bmatrix} 0 & -\omega_{z} & \omega_{y} \\ \omega_{z} & 0 & -\omega_{x} \\ -\omega_{y} & \omega_{x} & 0 \end{bmatrix} \in \sothree.
+  \end{equation}
+
+  \paragraph{Adjoint}
+  \begin{equation}
+    \bAd_{\bR} = \bR
+  \end{equation}
+
+  \paragraph{Exponential and Logarithm}
   \begin{subequations}
     \begin{align}
-      \exp_\SOthree \bomega = \Exp_\SOthree \hat {\bomega} & = I + \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2, \\
-      \Log_\SOthree \bR                                    & = \frac{\alpha}{\sin \alpha} \frac{\bR - \bR^T}{2}, \quad \alpha = \arccos \left( \frac{\tr(\bR) - 1}{2} \right).
+      \label{eq:so3_exp}
+      \exp \bomega & = I + \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2,        \\
+      \label{eq:so3_log}
+      \log \bR     & = \left(\frac{\alpha}{\sin \alpha} \frac{\bR - \bR^T}{2} \right)^{\vee}, \quad \alpha = \arccos \left( \frac{\tr(\bR) - 1}{2} \right).
     \end{align}
   \end{subequations}
-\end{important}
-The lower-dimensional representation of $\SOthree$ is $\Sthree$, but as shown previously the $\wedge$ and $\vee$ mappings are not straightforward. In the next section we obtain the exponential and logarithm on $\Sthree$ through its relation to $\SUtwo$.
 
-\subsubsection{\texorpdfstring{$\SOthree$}{SO(3)}: three-dimensional rotations}
+  \paragraph{Bracket and Lowercase adjoint}
+  \begin{subequations}
+    \begin{align}
+      [\bomega, \bomega'] & = \hat \bomega \bomega' \\
+      \ad_\bomega         & = \hat \bomega
+    \end{align}
+  \end{subequations}
 
-$\SOthree$ is a matrix Lie group that consists of $3 \times 3$ orthogonal matrices with determinant equal to one:
+  \paragraph{Derivatives of the Exponential}
+  \begin{subequations}
+    \begin{align}
+      \dr \exp_{\bomega}                     & =        I_3 - \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2, \\
+      \dl \exp_{\bomega}                     & = I_3 + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2,        \\
+      \left( \dr \exp_{\bomega} \right)^{-1} & = I_3 + \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2, \\
+      \left( \dl \exp_{\bomega} \right)^{-1} & = I_3 - \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2.
+    \end{align}
+  \end{subequations}
+\end{properties}
+
+\section{Parameterization via Isomorphism with \texorpdfstring{$\Sthree$}{S3}}
+
+As opposed to the 2D case where $\Uone$ was a fairly straightforward isomorphic choice, the situation is more complicated in three dimensions. The usual choice is the group of unit quaternions
 \begin{equation}
-  \SOthree = \left\{ \bR \in \mathbb{GL}(3) \mid \bR^T \bR = I, \det(\bR) = 1  \right\}.
+  \Sthree = \left \{ \bq = q_w + q_x \bi + q_y \bj + q_z \bk  : q_w^2 + q_x^2 + q_y^2 + q_z^2 = 1 \right\},
 \end{equation}
-These matrices are usually referred to as \textbf{rotation matrices}.
+which forms a double cover of $\SOthree$.  While the double cover mapping between $\Sthree$ and $\SOthree$ is fairly complicated, $\Sthree$ is isomorphic to $\SUtwo$ which is also a matrix Lie group. We therefore go via $\SUtwo$ to derive formulas for $\Sthree$.
 
-There is no trivial low-dimensional parameterizations of this set, however, it is isometric to another group $\mathbb{SU}(2)$ that is in turn isometric to the unit quaternions $\Sthree$ which can be used as a lower-dimensional representation of $\SOthree$.
-\begin{equation}
-  \Sthree = \left \{ (q_w, q_x, q_y, q_z)  : q_w^2 + q_x^2 + q_y^2 + q_z^2 = 1 \right\}.
-\end{equation}
-However, the mapping is not 1-to-1, since both $\bq \coloneq (q_w, q_x, q_y, q_z)$ and $-\bq$ correspond to the same rotation matrix.
-
-
-\paragraph{Action on \texorpdfstring{$\mathbb{R}^3$}{R3}}
-
-The action of $\bR \in \SOthree$ on $\bu \in \mathbb{R}^3$ is rotation:
-\begin{equation}
-  \left \langle \bR, \bu \right \rangle = \bR \cdot \bu.
-\end{equation}
-
-
-
-\subsubsection{\texorpdfstring{$\mathbb{SU}(2)$}{SU(2)} and its relation to the quaternion group \texorpdfstring{$\Sthree$}{S3}}
+\subsection{\texorpdfstring{$\SUtwo$}{SU(2)} is isomorphic to \texorpdfstring{$\Sthree$}{S3}}
 
 We can associate a quaternion $\bq = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ with the unitary matrix
 \begin{equation}
-  \label{eq:su2_matrix}
-  \mathbb{SU}(2) = \left\{ \begin{bmatrix}
+  \begin{bmatrix}
     q_w + i q_z & -q_x - i q_y \\
     q_x - i q_y & q_w - i q_z
-  \end{bmatrix} \mid q_w^2 + q_x^2 + q_y^2 + q_z^2 = 1 \right\}
+  \end{bmatrix}
 \end{equation}
-for which it holds that $A_{\bq_1 * \bq_2} = A_{\bq_1} A_{\bq_2}$. Thus the unit quaternions $\Sthree$ are isomorphic to $\mathbb{SU}(2)$ and can therefore be viewed as a matrix Lie group.
+for which it holds that $A_{\bq_1 * \bq_2} = A_{\bq_1} A_{\bq_2}$. Thus $\Sthree \cong \SUtwo$ and the matrix structure of $\SUtwo$ be leveraged to derive quaternion formulas.
 
-By muliplying two elements in $\mathbb{SU}$ we retrieve quaternion multiplication:
+Muliplying two elements in $\SUtwo$ yields:
 \begin{equation}
   \begin{aligned}
     \begin{bmatrix}
@@ -125,9 +180,9 @@ where
 \begin{equation}
   \label{eq:quaternion_composition}
   \begin{aligned}
-    q_w'' & = q_w q_w' - q_x q_x' - q_y q_y' - q_z q_z',  \\
+    q_w'' & = q_w q_w' - q_x q_x' - q_y q_y' - q_z q_z', \\
     q_x'' & = q_x q_w' + q_w q_x' + q_y q_z' - q_z q_y', \\
-    q_y'' & = q_y q_w' + q_w q_y' + q_z q_x' - q_x q_z',  \\
+    q_y'' & = q_y q_w' + q_w q_y' + q_z q_x' - q_x q_z', \\
     q_z'' & = q_z q_w' + q_w q_z' + q_x q_y' - q_y q_x',
   \end{aligned}
 \end{equation}
@@ -137,7 +192,7 @@ which is exactly what is obtained by carrying out the usual quaternion multiplic
 \end{equation}
 with the quaternion rules $\symbf{i}\symbf{j} = \symbf{k}, \symbf{j}\symbf{k} = \symbf{i}, \symbf{k}\symbf{i} = \symbf{j}$ and $\symbf{i}^2 = \symbf{j}^2 = \symbf{k}^2 = -1$.
 
-\paragraph{Action on \texorpdfstring{$\mathbb{R}^3$}{R3}}
+\subsection{\texorpdfstring{$\Sthree$}{S3} forms a double cover of \texorpdfstring{$\SOthree$}{SO(3)}}
 
 A quaternion $\bq = q_w + q_x \symbf{i} + q_y \symbf{j} + q_z \symbf{k}$ acts on $\bu \coloneq \begin{bmatrix} u_x \\ u_y \\ u_z \end{bmatrix} \in \mathbb{R}^3$ as quaternion rotation $\bq * \bu * \bar {\bq}$ where $\bu$ is associated with the quaternion $u_x \symbf{i} + u_y \symbf{j} + u_z \symbf{k}$.
 
@@ -162,13 +217,13 @@ In terms of matrix multiplication operation can be written
 \end{equation}
 for
 \begin{equation}
+  \label{eq:quat_rotation}
   \begin{aligned}
     u_x' & = (1 - 2(q_y^2 + q_z^2)) u_x + 2(q_x q_y - q_w q_z) u_y + 2( q_x q_z + q_w q_y ) u_z   \\
     u_y' & = 2(q_x q_y + q_w q_z) u_x + (1 - 2 (q_x^2 + q_z^2)) u_y + 2( q_y q_z-q_w q_x) u_z     \\
     u_z' & = 2 (q_x q_z  - q_w q_y) u_x  + 2 (q_w q_x + q_y q_z) u_y + (1 - 2(q_x^2 + q_y^2)) u_z
   \end{aligned}
 \end{equation}
-
 Since this is a linear mapping in $u_x, u_y, u_z$ we can identify $\bq$ with a matrix $\bR(\bq)$ with coefficients
 \begin{equation}
   \label{eq:quat_to_so3}
@@ -176,41 +231,22 @@ Since this is a linear mapping in $u_x, u_y, u_z$ we can identify $\bq$ with a m
     (1 - 2(q_y^2 + q_z^2)) & 2(q_x q_y - q_w q_z)    & 2( q_x q_z + q_w q_y ) \\
     2(q_x q_y + q_w q_z)   & (1 - 2 (q_x^2 + q_z^2)) & 2( q_y q_z-q_w q_x)    \\
     2 (q_x q_z  - q_w q_y) & 2 (q_w q_x + q_y q_z)   & (1 - 2(q_x^2 + q_y^2))
-  \end{bmatrix}.
+  \end{bmatrix},
 \end{equation}
-Thus we can utilize the quaternion group $\Sthree$ as the lower-dimensional representation of $\SOthree$.
+which is a mapping from $\Sthree$ to $\SOthree$. However, the mapping is not one-to-one since both $\bq$ and $-\bq$ map to the same rotation matrix: $\bR(\bq) = \bR(-\bq)$. This is what is meant when saying that $\Sthree$ forms a \emph{double cover} of $\SOthree$.
 
-\begin{properties}[title=Useful quaternion identities]
-  \paragraph{Axis-angle to quaternion} The quaternion $\bq$ representing the rotation about a unit axis $\symbf{\beta} = (\beta_x, \beta_y, \beta_z)$ for an angle $\alpha$ is
-  \begin{equation}
-    \label{eq:axis_angle_to_quaternion}
-    \bq = \cos \left( \frac{\alpha}{2} \right) + \sin \left( \frac{\alpha}{2} \right) \left( \beta_x \symbf{i} + \beta_y \symbf{j} + \beta_z \symbf{k} \right).
-  \end{equation}
-  \paragraph{Two vectors to quaternion} A quaternion $\bq$ such that $\bq \bu = \bv$ for unit vectors $\bu, \bv$.
-  \begin{equation}
-    \label{eq:two_vectors_to_quaternion}
-    \bq = \sqrt{\frac{1 + s}{2}} + \sqrt{\frac{1 - s}{2}} \left( \beta_x \symbf{i} + \beta_y \symbf{j} + \beta_z \symbf{k} \right), \quad s = \bu \cdot \bv, \; \symbf{\beta} = \bu \times \bv.
-  \end{equation}
-  \paragraph{Hopf fibration} The quaternions can be parameterized as the product of a rotation $\bq_\theta$ around the $z$ axis and a quaternion that rotates $\symbf{e}_z$ to $\symbf{\beta} \coloneq \begin{bmatrix} \beta_x, \beta_y, \beta_z \end{bmatrix} \in \mathbb{S}^2$ as
-  \begin{equation}
-    \bq = \bq_{\symbf{\beta}} * \bq_{\theta}, \quad \bq_{\symbf{\beta}} = \frac{1}{\sqrt{2(1 + \beta_z)}} \left( 1 + \beta_z - \symbf{i} \beta_x + \symbf{j} \beta_y \right), \; \; \bq_{\theta} = \cos \left( \frac{\theta}{2} \right) + \symbf{k} \sin \left( \frac{\theta}{2} \right).
-  \end{equation}
-  The special case when $\beta_z = -1$ is a singularity and must be handled separately, for example by setting $\bq_{\begin{bmatrix}0, 0, -1\end{bmatrix}} = \symbf{i}$. The Hopf parameterization is a manifestation of the fact that $\Sthree$ locally is a product of the spaces $\mathbb{S}^2$ and $\mathbb{S}^1$.
-\end{properties}
-\begin{proof}[Proof of \eqref{eq:two_vectors_to_quaternion}]
-  From properties of the dot and cross products the sought-after rotation is about the axis $\symbf{\beta} = \bu \times \bv$ for the angle $\alpha$ such that $s \coloneq \bu \cdot \bv = \cos (\alpha)$. The half-angle formulas then give that $\cos (\alpha / 2) = \sqrt{(1 + s) / 2}$, and similarly for the sine part in \eqref{eq:axis_angle_to_quaternion}.
-\end{proof}
+\todo[inline]{Inverse mapping...}
 
 \section{Formulas}
 
-\paragraph{Adjoint}
-
-\paragraph{Exponential and Logarithm}
-
-The Lie algebra $\mathfrak{su}(2)$ is parameterized by three elements $\bomega = (\omega_x, \omega_y, \omega_z)$ that correspond to the skew-Hermitian matrix $\hat \bomega \coloneq \coloneq \frac{1}{{2}} \begin{bmatrix}
+To obtain the exponential map on $\Sthree$ we go via $\SUtwo$. The Lie algebra $\mathfrak{su}(2)$ is parameterized by three elements $\bomega = (\omega_x, \omega_y, \omega_z)$ that can be associated with the skew-Hermitian matrix
+\begin{equation}
+  \bomega^\wedge \coloneq \frac{1}{{2}} \begin{bmatrix}
     i \omega_z            & -\omega_x - i \omega_y \\
     \omega_x - i \omega_y & -i \omega_z
-  \end{bmatrix}$, where the factor $1/2$ is added for reasons that will become clear below. A simple calculation reveals that $\hat \bomega^2 =  -\frac{\| \bomega \|}{4} I_2$ which can be used to evaluate the exponential.
+  \end{bmatrix},
+\end{equation}
+where the factor $1/2$ is added for reasons that will become clear below. A simple calculation reveals that $\hat \bomega^2 =  -\frac{\| \bomega \|}{4} I_2$ which can be used to evaluate the exponential.
 \begin{equation*}
   \begin{aligned}
     \Exp \hat \bomega
@@ -222,18 +258,15 @@ The Lie algebra $\mathfrak{su}(2)$ is parameterized by three elements $\bomega =
     \end{bmatrix}.
   \end{aligned}
 \end{equation*}
-Since the mappings $\wedge: \Sthree \rightarrow \SUtwo$ and $\vee: \SUtwo \rightarrow \Sthree$ are straightforward, we can also write down the exponentail and logarithm on $\Sthree$. Since $\Sthree$ is not itself a matrix Lie group, the uppercase exponential and logarithm do not have a meaning.
-\begin{important}
-  The exponential and logarithm on $\Sthree$ are
-  \begin{subequations}
-    \label{eq:su2_exp_log}
-    \begin{align}
-      \label{eq:su2_exp}\exp (\omega_x, \omega_y, \omega_z) & = \left(
-      \cos (\| \bomega \|/2), \frac{\omega_x}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_y}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_z}{\| \bomega \|} \sin ( \| \bomega \|/2 ) \right), \\
-      \label{eq:su2_log} \log (q_w, q_x, q_y, q_z)          & = \left( 2 \frac{ \arctantwo \left(\sqrt{q_x^2 + q_y^2 + q_z^2}, q_w \right) }{ \sqrt{q_x^2 + q_y^2 + q_z^2} } \right) \times (q_x, q_y, q_z).
-    \end{align}
-  \end{subequations}
-\end{important}
+Since the mappings $\wedge: \Sthree \rightarrow \SUtwo$ and $\vee: \SUtwo \rightarrow \Sthree$ are straightforward, we can identify the exponentail and logarithm on $\Sthree$.
+\begin{subequations}
+  \label{eq:su2_exp_log}
+  \begin{align}
+    \label{eq:su2_exp}\exp (\omega_x, \omega_y, \omega_z) & = \left(
+    \cos (\| \bomega \|/2), \frac{\omega_x}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_y}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_z}{\| \bomega \|} \sin ( \| \bomega \|/2 ) \right), \\
+    \label{eq:su2_log} \log (q_w, q_x, q_y, q_z)          & = \left( 2 \frac{ \arctantwo \left(\sqrt{q_x^2 + q_y^2 + q_z^2}, q_w \right) }{ \sqrt{q_x^2 + q_y^2 + q_z^2} } \right) \times (q_x, q_y, q_z).
+  \end{align}
+\end{subequations}
 From \eqref{eq:su2_exp_log} the reason to divide the expression for $\hat \bomega$ by a factor 2  becomes apparent---$\| \bomega \|$ represents the rotation angle in radians. We provide a quick proof for the logarithm expression.
 \begin{proof}[Proof of \eqref{eq:su2_log}]
   Let $(q_w, q_x, q_y, q_z) = \exp(\omega_x, \omega_y, \omega_z)$. From \eqref{eq:su2_exp} we have that
@@ -251,94 +284,55 @@ From \eqref{eq:su2_exp_log} the reason to divide the expression for $\hat \bomeg
   \end{equation}
 \end{proof}
 
-\paragraph{Derivatives of the Exponential}
-
-We know that $\ad_\bomega = \hat \bomega$ and from \eqref{eq:so3_pow3} that $\hat \bomega^3 = - \| \bomega \|^2 \hat \bomega$. Thus $\ad_\bomega^3 = -\| \bomega \|^2 \ad_\bomega$ and we get,
-\begin{equation*}
-  \begin{aligned}
-    \sum_{n=0}^\infty
-     &
-    \frac{B_n (-1)^n}{n!} \ad_\bomega^n
-    = \sum_{n=0}^\infty \frac{B_n (-1)^n}{n!} \hat \bomega^n = I_3 + \frac{\ad_\bomega}{2} + \sum_{n \geq 2} \frac{B_n (-1)^n}{n!}\ad_\bomega^n                                                                                                                                                                                                                    \\
-     & = I_3 + \frac{\ad_\bomega}{2} + \left( \frac{B_2}{2!}\ad_\bomega^2 - \frac{B_4 \| \bomega \|^2} {4!} \ad_\bomega^2 + \frac{B_6 \| \bomega \|^4}{6!} \ad_\bomega^2 - \ldots \right) = I_3 + \frac{\ad_\bomega}{2} - \frac{1}{\| \bomega \|^2} \sum_{n \geq 1} \frac{B_{2n} (-1)^n \| \bomega \|^{2n}}{(2n)!} \ad_\bomega^2                                   \\
-     & \overset{\eqref{eq:bernoulli_cot}}= I_3 + \frac{\ad_\bomega}{2} - \frac{1}{\| \bomega \|^2} \left( \frac{\| \bomega \|}{2} \cot \left( \frac{\| \bomega \|}{2} \right) - 1 \right) \ad_\bomega^2 = I_3 + \frac{\ad_\bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \ad_\bomega^2,
-  \end{aligned}
-\end{equation*}
-where the half-angle formula $\cot x = (1 + \cos x) / \sin x$ has been used. The left jacobian $\mathrm{d}^l \exp_\bomega$ was already calculated in \eqref{eq:so3_leftjac} and since $\left( \mathrm{d}^r \exp_{\bomega} \right)^{-1} = \left[ \left( \mathrm{d}^l \exp_{\bomega} \right)^{-1} \right]^T$. Due to the anti-symmetry of $\ad_\bomega$ it follows that also $\mathrm{d}^r \exp_\bomega = \left[ \mathrm{d}^l \exp_\bomega \right]^T$ must hold.
-
-
-\section{Summary}
-
-
-\begin{properties}[breakable, title={$\SOthree$}]
+\begin{properties}[breakable, title={$\Sthree$ as a parameterization of $\SOthree$}]
   \paragraph{Group definition}
   \begin{equation}
-    \SOthree = \left\{ \bR \in \GL(3, \mathbb{R}) \mid \bR \bR^{T} = \bR^{T} \bR = I_{3}, \det \bR = 1 \right\}.
-  \end{equation}
-
-  \paragraph{Algebra parameterization}
-  \begin{equation}
-    \left\{ \bomega = \begin{bmatrix} \omega_{x} \\ \omega_{y} \\ \omega_{z} \end{bmatrix}
-    \mid \omega_{x}, \omega_{y}, \omega_{z} \in [-\pi, \pi] \right\}, \quad \hat \bomega = \begin{bmatrix} 0 & -\omega_{z} & \omega_{y} \\ \omega_{z} & 0 & -\omega_{x} \\ -\omega_{y} & \omega_{x} & 0 \end{bmatrix} \in \sothree.
-  \end{equation}
-
-  \paragraph{Adjoint}
-  \begin{equation}
-    \bAd_{\bR} = \bR
-  \end{equation}
-
-  \paragraph{Exponential}
-  \begin{equation}
-    \label{eq:so3_exp}
-    \exp (\bomega) = I + \frac{\sin \| \bomega \|}{\|\bomega \|} \hat {\bomega} + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega}^2
-  \end{equation}
-
-  \paragraph{Logarithm}
-  \begin{equation}
-    \label{eq:so3_log}
-    \log \bR = \left(\frac{\alpha}{\sin \alpha} \frac{\bR - \bR^T}{2} \right)^{\vee}, \quad \alpha = \arccos \left( \frac{\tr(\bR) - 1}{2} \right).
-  \end{equation}
-
-  \paragraph{Lowercase adjoint}
-  \begin{equation}
-    \ad_\bomega = \hat \bomega
-  \end{equation}
-
-  \paragraph{Derivatives of the Exponential}
-  \begin{subequations}
-    \begin{align}
-      \mathrm{d}^r \exp_{\bomega}                     & =        I_3 - \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2, \\
-      \mathrm{d}^l \exp_{\bomega}                     & = I_3 + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2,        \\
-      \left( \mathrm{d}^r \exp_{\bomega} \right)^{-1} & = I_3 + \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2, \\
-      \left( \mathrm{d}^l \exp_{\bomega} \right)^{-1} & = I_3 - \frac{\hat \bomega}{2} + \left( \frac{1}{\| \bomega \|^2} - \frac{1 + \cos \| \bomega \| }{2 \|\bomega \| \sin \|\bomega \|} \right) \hat \bomega^2.
-    \end{align}
-  \end{subequations}
-\end{properties}
-
-\section{Parameterization via Double Cover by \texorpdfstring{$\Sthree$}{S3}}
-
-\begin{properties}[breakable, title={The unit quaternion group $\Sthree$}]
-  \paragraph{Group definition}
-  \begin{equation}
-    \Sthree = \left\{ \bq = (q_{w}, q_{x}, q_{y}, q_{z}) : q_{w}^{2} + q_{x}^{2} + q_{z}^{2} = 1 \right\}
+    \Sthree = \left\{ \bq = q_w + q_x \bi + q_y \bj + q_z \bk : q_{w}^{2} + q_{x}^{2} + q_y^2 + q_{z}^{2} = 1 \right\}
   \end{equation}
   \begin{itemize}
-    \item Identity element: $(1, 0, 0, 0)$
-    \item Inverse: $(q_{w}, q_{x}, q_{y}, q_{z})^{-1} = (q_{w}, -q_{x}, -q_{y}, -q_{z})$
+    \item Identity element: $1$
+    \item Inverse: $(q_w + q_x \bi + q_z \bj + q_w \bk)^{-1} = q_w - q_x \bi - q_z \bj - q_w \bk$
     \item Composition via \eqref{eq:quaternion_composition}
   \end{itemize}
   $\Sthree$ forms a double cover of $\SOthree$ via \eqref{eq:quat_to_so3} and therefore inherits Lie algebra properties from $\SOthree$.
 
-  \paragraph{Exponential}
-  \begin{equation}
-    \label{eq:s3_exp}\exp (\bomega) = \left(
-    \cos (\| \bomega \|/2), \frac{\omega_x}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_y}{\| \bomega \|} \sin (\| \bomega \|/2), \frac{\omega_z}{\| \bomega \|} \sin ( \| \bomega \|/2 ) \right),
-  \end{equation}
+  \paragraph{Rotation action on $\mathbb{R}^3$}
+  Defined by \eqref{eq:quat_rotation}.
 
-  \paragraph{Logarithm}
-  \begin{equation}
-    \label{eq:s3_log} \log (\bq)          = \left( 2 \frac{ \arctantwo \left(\sqrt{q_x^2 + q_y^2 + q_z^2}, q_w \right) }{ \sqrt{q_x^2 + q_y^2 + q_z^2} } \right) \times \begin{bmatrix} q_{x} \\ q_{y} \\ q_{z} \end{bmatrix}.
-  \end{equation}
-
+  \paragraph{Exponential and Logarithm}
+  \begin{subequations}
+    \begin{align}
+      \label{eq:s3_exp}
+      \exp \bomega & = \cos \left( \frac{\| \bomega \|}{2} \right) + \frac{1}{\| \bomega \|} \sin \left( \frac{\| \bomega \|}{2} \right) \left( \omega_x \bi + \omega_y \bj + \omega_z \bk \right), \\
+      \label{eq:s3_log}
+      \log \bq     & = \left( 2 \frac{ \arctantwo \left(\sqrt{q_x^2 + q_y^2 + q_z^2}, q_w \right) }{ \sqrt{q_x^2 + q_y^2 + q_z^2} } \right) \times \begin{bmatrix} q_{x} \\ q_{y} \\ q_{z} \end{bmatrix}.
+    \end{align}
+  \end{subequations}
 \end{properties}
+
+We conclude with some additional quaternion formulas that may be of practical interest.
+
+\begin{properties}[title=Useful quaternion identities]
+  \paragraph{Axis-angle to quaternion} The quaternion $\bq$ representing the rotation about a unit axis $\symbf{\beta} = (\beta_x, \beta_y, \beta_z)$ for an angle $\alpha$ is
+  \begin{equation}
+    \label{eq:axis_angle_to_quaternion}
+    \bq = \cos \left( \frac{\alpha}{2} \right) + \sin \left( \frac{\alpha}{2} \right) \left( \beta_x \symbf{i} + \beta_y \symbf{j} + \beta_z \symbf{k} \right),
+  \end{equation}
+  which follows from \eqref{eq:s3_exp} and the interpretation of $\bomega$ as angles.
+
+  \paragraph{Two vectors to quaternion} A quaternion $\bq$ such that $\bq \bu = \bv$ for unit vectors $\bu, \bv$.
+  \begin{equation}
+    \label{eq:two_vectors_to_quaternion}
+    \bq = \sqrt{\frac{1 + s}{2}} + \sqrt{\frac{1 - s}{2}} \left( \beta_x \symbf{i} + \beta_y \symbf{j} + \beta_z \symbf{k} \right), \quad s = \bu \cdot \bv, \; \symbf{\beta} = \bu \times \bv.
+  \end{equation}
+
+  \paragraph{Hopf fibration} The quaternions can be parameterized as the product of a rotation $\bq_\theta$ around the $z$ axis and a quaternion that rotates $\symbf{e}_z$ to $\symbf{\beta} \coloneq \begin{bmatrix} \beta_x, \beta_y, \beta_z \end{bmatrix} \in \mathbb{S}^2$ as
+  \begin{equation}
+    \bq = \bq_{\symbf{\beta}} * \bq_{\theta}, \quad \bq_{\symbf{\beta}} = \frac{1}{\sqrt{2(1 + \beta_z)}} \left( 1 + \beta_z - \symbf{i} \beta_x + \symbf{j} \beta_y \right), \; \; \bq_{\theta} = \cos \left( \frac{\theta}{2} \right) + \symbf{k} \sin \left( \frac{\theta}{2} \right).
+  \end{equation}
+  The special case when $\beta_z = -1$ is a singularity and must be handled separately, for example by setting $\bq_{\begin{bmatrix}0, 0, -1\end{bmatrix}} = \symbf{i}$. The Hopf parameterization is a manifestation of the fact that $\Sthree$ locally is a product of the spaces $\mathbb{S}^2$ and $\mathbb{S}^1$.
+\end{properties}
+\begin{proof}[Proof of \eqref{eq:two_vectors_to_quaternion}]
+  From properties of the dot and cross products the sought-after rotation is about the axis $\symbf{\beta} = \bu \times \bv$ for the angle $\alpha$ such that $s \coloneq \bu \cdot \bv = \cos (\alpha)$. The half-angle formulas then give that $\cos (\alpha / 2) = \sqrt{(1 + s) / 2}$, and similarly for the sine part in \eqref{eq:axis_angle_to_quaternion}.
+\end{proof}
 
