@@ -9,6 +9,7 @@ option(BUILD_EXAMPLES "Build the examples." ON)
 option(CODE_COVERAGE "Code coverage for tests." OFF)
 
 find_package(Eigen3 REQUIRED)
+
 # ---------------------------------------------------------------------------------------
 # TARGETS
 # ---------------------------------------------------------------------------------------

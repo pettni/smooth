@@ -23,7 +23,9 @@ Matrices on this form have several interesting properties. First of all, for $\b
   For $\a, \symbf b, \symbf c \in \mathbb{R}^3$:
   \begin{subequations}
     \begin{align}
-      \hat \a \hat \b \hat \a            & = - (\a \cdot \b)  \hat \a  \label{eq:so3_pow3},                                                                                     \\
+      \label{eq:so3_pow3}
+      \hat \a \hat \b \hat \a            & = - (\a \cdot \b)  \hat \a,                                                                                     \\
+      \label{eq:so3_hat_neg}
       \hat {\a} \symbf{b}                & = - \hat {\symbf b} \a,                                                                                                              \\
       \a \cdot (\hat{\symbf b} \symbf c) & = \symbf b \cdot (\hat{\symbf c} \a),                                                                                                \\
       A \hat {\symbf b}                  & = \tr(A) \hat{\symbf b} - (A \symbf b)^{\wedge} - \hat {\symbf{b}} A, \quad A \; \text{symmetric $3 \times 3$ matrix},               \\
@@ -101,6 +103,11 @@ where the half-angle formula $\cot x = (1 + \cos x) / \sin x$ has been used. The
     \SOthree = \left\{ \bR \in \GL(3, \mathbb{R}) \mid \bR \bR^{T} = \bR^{T} \bR = I_{3}, \det \bR = 1 \right\}.
   \end{equation}
 
+  \paragraph{Action on $\mathbb{R}^3$:} Left multiplication by rotation matrix
+  \begin{equation}
+    \left \langle \bR, \bu \right \rangle_\SOthree = \bR \bu.
+  \end{equation}
+
   \paragraph{Algebra parameterization}
   \begin{equation}
     \left\{ \bomega = \begin{bmatrix} \omega_{x} \\ \omega_{y} \\ \omega_{z} \end{bmatrix}
@@ -109,6 +116,7 @@ where the half-angle formula $\cot x = (1 + \cos x) / \sin x$ has been used. The
 
   \paragraph{Adjoint}
   \begin{equation}
+    \label{eq:so3_Ad}
     \bAd_{\bR} = \bR
   \end{equation}
 
@@ -284,7 +292,7 @@ From \eqref{eq:su2_exp_log} the reason to divide the expression for $\hat \bomeg
   \end{equation}
 \end{proof}
 
-\begin{properties}[breakable, title={$\Sthree$ as a parameterization of $\SOthree$}]
+\begin{properties}[breakable, title={$\Sthree$ formula sheet}]
   \paragraph{Group definition}
   \begin{equation}
     \Sthree = \left\{ \bq = q_w + q_x \bi + q_y \bj + q_z \bk : q_{w}^{2} + q_{x}^{2} + q_y^2 + q_{z}^{2} = 1 \right\}

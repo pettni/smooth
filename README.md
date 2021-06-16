@@ -170,8 +170,8 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
     - [x] Classical groups
     - [x] SO2
     - [x] SO3
-    - [ ] SE2
-    - [ ] SE3
+    - [/] SE2
+    - [/] SE3
   - Part 3:
     - [ ] Numerical integration
     - [ ] Control

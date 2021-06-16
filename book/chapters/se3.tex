@@ -2,56 +2,90 @@
 
 \chapter{\texorpdfstring{$\SEthree$}{SE(3)}: The 3D Rigid Motion Group}
 
-\paragraph{Parameterization}
-
-\paragraph{Action on $\mathbb{R}^3$:}
-
-\paragraph{Lie Algebra}
+Moving to three dimensions changes little---the properties of $\SEthree$ are quite similar to those of $\SEtwo$. It is formed as a semi-direct product between $\SOthree$ and $\Tthree$
+\begin{equation}
+  \SEthree = \SOthree \ltimes \Tthree = \left\{ \X = \begin{bmatrix}
+    \bR & \bp \\ 0 & 1
+  \end{bmatrix} \mid \bR \in \SOthree, \bp \in \mathbb{R}^3 \right\}.
+\end{equation}
+A rotation plus translation action on $\bu \in \mathbb{R}^3$ is defined by
+\begin{equation}
+  \left \langle \X, \bu \right \rangle_\SEthree = \left \langle \bR, \bu \right \rangle_\SOthree + \bp = \bR \bu + \bp.
+\end{equation}
+The Lie algebra has six degrees of freedom that we parameterize by
+\begin{center}
+  \begin{tikzpicture}
+    \node (a1) {$\mathbb{R}^{6} \ni \begin{bmatrix}  \bv \\ \bomega \end{bmatrix}$};
+    \node at (5, 0) (a2) {$\begin{bmatrix} \bomega^\wedge & \bv \\ 0 & 0 \end{bmatrix} \in \sethree$};
+    \draw[-latex] (a1) to[bend left] node[above] {$\wedge$} (a2.north west);
+    \draw[-latex] (a2.south west) to[bend left] node[above] {$\vee$} (a1);
+  \end{tikzpicture}
+\end{center}
+where $\bv, \bomega \in \mathbb{R}^3$ are the linear and angular components, respectively.
 
 \section{Formulas}
 
-\paragraph{Adjoint}
+\paragraph{Adjoint} From the definition \eqref{eq:def_bad},
+\begin{equation*}
+  \begin{aligned}
+    \bAd_\X \begin{bmatrix}
+      \bv \\ \bomega
+    \end{bmatrix} & = \left( \begin{bmatrix}
+      \bR & \bp \\ 0 & 1
+    \end{bmatrix} \begin{bmatrix}
+      \hat \bomega & \bv \\ 0 & 0
+    \end{bmatrix}\begin{bmatrix}
+      \bR & \bp \\ 0 & 1
+    \end{bmatrix}^{-1} \right)^\vee
+    = \begin{bmatrix}
+      \bR \bomega^\wedge \bR^T & -\bR \bomega^\wedge \bR^T \bp + \bR \bv \\ 0 & 1
+    \end{bmatrix}^\vee                                                                                                            \\
+                                      & = \begin{bmatrix} \bR \bv - \bR \bomega^\wedge \bR^T \bp \\ (\bR \bomega^\wedge \bR)^\vee \end{bmatrix}
+    \overset{\eqref{eq:so3_Ad}}{=} \begin{bmatrix} \bR \bv - (\bR \bomega)^\wedge \bp \\ \bR \bomega \end{bmatrix} \overset{\eqref{eq:so3_hat_neg}}{=} \begin{bmatrix} \bR \bv + \bp^\wedge \bR \bomega \\ \bR \bomega \end{bmatrix} = \begin{bmatrix} \bR & \bp^\wedge \bR \\ 0 & \bR \end{bmatrix} \begin{bmatrix} \bv \\ \bomega \end{bmatrix},
+  \end{aligned}
+\end{equation*}
+thus the uppercase adjoint is
+\begin{equation}
+  \bAd_\X = \begin{bmatrix}
+    \bR & \bp^\wedge \bR \\ 0 & \bR
+  \end{bmatrix}.
+\end{equation}
 
 \paragraph{Exponential and Logarithm}
 
-Continuing with $\SEthree$ we utilize \eqref{eq:so3_pow3} to calculate
+Looking to again utilize Lemma \ref{lem:help_exp} we calculate
 \begin{equation}
-  \sum\limits_{k=0}^\infty \frac{\hat{\bomega}^{k}} {(k+1)!} = I_3 - \frac{1}{\| \symbf\omega \|^2} \hat {\symbf{\symbf}} \sum\limits_{k=2}^\infty \frac{\hat{\bomega}^k}{k!} = I_3  - \frac{1}{\| \symbf\omega \|^2} \hat {\bomega} \left( \Exp_\SOthree(\hat {\bomega}) - I_3 - \hat{\bomega} \right).
+  S(\bomega) \coloneq \sum\limits_{k=0}^\infty \frac{\hat{\bomega}^{k}} {(k+1)!} = I_3 - \frac{1}{\| \symbf\omega \|^2} {\symbf{\symbf}} \sum\limits_{k=2}^\infty \frac{\hat{\bomega}^k}{k!} = I_3  - \frac{1}{\| \symbf\omega \|^2} \hat {\bomega} \left( \Exp_\SOthree(\hat {\bomega}) - I_3 - \hat{\bomega} \right).
 \end{equation}
-From \eqref{eq:so3_exp} we then have that
+From the $\SOthree$ exponential in \eqref{eq:so3_exp},
 \begin{equation}
   \label{eq:so3_leftjac}
   \begin{aligned}
-    \mathrm{d}^l \left( \exp_{\SOthree} \right)_\bomega
-     & \coloneq \sum\limits_{k=0}^\infty \frac{\hat{\bomega}^{k}} {(k+1)!} = I_3  - \frac{1}{\| \bomega \|^2} \hat {\bomega} \left( \left( I_3 + \frac{ \sin \| \bomega \|}{\| \bomega \|} \hat{\bomega} + \frac{ (1 - \cos \| \bomega \|)}{\| \bomega \|^2} \hat{\bomega}^2 \right) - I_3 - \hat{\bomega} \right)
+    S(\bomega)
+     & = I_3  - \frac{1}{\| \bomega \|^2} \hat {\bomega} \left( \left( I_3 + \frac{ \sin \| \bomega \|}{\| \bomega \|} \hat{\bomega} + \frac{ (1 - \cos \| \bomega \|)}{\| \bomega \|^2} \hat{\bomega}^2 \right) - I_3 - \hat{\bomega} \right)
     \\
      & = I_3 - \frac{ (\sin \| \bomega \| -\| \bomega \|)  }{\| \bomega\|^3} \hat {\bomega}^2 + \frac{\| \bomega \|^2  (1 - \cos \| \bomega \| ) }{\| \bomega \|^4} \hat {\bomega}
     \\
      & = I_3 + \frac{ \| \bomega \| - \sin \| \bomega \| }{\| \bomega\|^3} \hat {\bomega}^2 + \frac{1 - \cos \| \bomega \|}{\| \bomega \|^2} \hat {\bomega} .
   \end{aligned}
 \end{equation}
-Applying Lemma \ref{lem:help_exp} then gives the exponential.
-\begin{important}
-  The matrix exponential on $\mathfrak{se}(3)$ is
-  \begin{subequations}
-    \begin{align}
-      \exp_\SEthree (\bomega, \bv) = \Exp_\SEthree \begin{bmatrix}
-        \hat{\bomega} & \symbf{v} \\ \symbf{0}_{1 \times 3} & 0
-      \end{bmatrix} & = \begin{bmatrix}
-        \Exp_{\SOthree}(\hat{\bomega}) & \mathrm{d}^l \left( \exp_{\SOthree} \right)_\bomega \symbf v \\ \symbf{0}_{1 \times 3} & 1
-      \end{bmatrix},                                                                                         \\
-      \Log_\SEthree \begin{bmatrix}
-        \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
-      \end{bmatrix}                                & = \begin{bmatrix}
-        \hat{\symbf \alpha} & \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp \\ \symbf{0}_{1 \times 3} & 0
-      \end{bmatrix},                                                                                         \\
-      \log_\SEthree \begin{bmatrix}
-        \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
-      \end{bmatrix}                                & = \left(\symbf \alpha, \left( \mathrm{d}^l \left( \exp_{\SOthree} \right)_{\symbf \alpha} \right)^{-1} \bp  \right),
-    \end{align}
-  \end{subequations}
-  where $\symbf \alpha = \log_\SOthree R$.
-\end{important}
+Remark that for $\SEthree$ it happens that $S(\bomega) = \dl \left( \exp_\SOthree \right)_\bomega$, which is a difference from $\SEtwo$ where there is no direct relation between $S(\omega_z)$ and the derivatives of the exponential on $\SOtwo$.
+
+Applying Lemma \ref{lem:help_exp} then gives the sought-after $\SEthree$ exponential
+\begin{equation}
+  \exp_\SEthree (\bomega, \bv) = \Exp_\SEthree \begin{bmatrix}
+    \hat{\bomega} & \symbf{v} \\ \symbf{0}_{1 \times 3} & 0
+  \end{bmatrix} = \begin{bmatrix}
+    \exp_{\SOthree}(\bomega) & S(\bomega) \symbf v \\ \symbf{0}_{1 \times 3} & 1
+  \end{bmatrix},
+\end{equation}
+and consequently the logarithm
+\begin{equation}
+  \log_\SEthree \begin{bmatrix}
+    \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
+  \end{bmatrix}                                = \left(\symbf \alpha, S(\symbf \alpha)^{-1} \bp  \right),
+\end{equation}
+where $\symbf \alpha = \log_\SOthree R$.
 
 \paragraph{Derivatives of the Exponential}
 
@@ -79,7 +113,6 @@ We are interested in the powers $\ad_\a^k$ in order to evaluate the exponential 
     \hat \bomega^k & \sum_{i=0}^{k-1} \hat \bomega^{i} \hat \bv \hat \bomega^{k-1-i} \\ 0 & \hat \bomega^k
   \end{bmatrix}.
 \end{equation}
-
 Thus the left derivative of the exponential can be written
 \begin{equation*}
   \mathrm{d}^l \exp_\a = \sum_{k = 0}^\infty \frac{\ad_\a^k}{(k+1)!} = I + \sum_{k = 1}^\infty \frac{1}{(k+1)!}  \begin{bmatrix}
@@ -101,7 +134,7 @@ With the same steps the right derivative can be shown to be
   \label{eq:se3_qr}
   Q^r(\bv, \bomega) \coloneq \sum_{k=1}^\infty \frac{(-1)^k}{(k+1)!} \sum_{i=0}^{k-1} \hat \bomega ^i \hat \bv \hat \bomega^{k-1-i} = \ldots = - \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{(-1)^{k+i}}{(k+i+2)!} \hat \bomega^i \hat \bv \hat \bomega^{k}
 \end{equation}
-and we can see that
+and we can see that $Q^r$ is conveniently obtained from $Q^l$ by
 \begin{equation}
   Q^r(\bv, \bomega) = Q^l(-\bv, -\bomega)
 \end{equation}
@@ -121,15 +154,12 @@ which follows from \eqref{eq:so3_pow3}, we get
      & = \frac{1}{2} \hat \bv + \sum_{i=0}^\infty \frac{(-1)^{i}\| \bomega \|^{2i}}{(2i+3)!}  \left( \hat \bomega \hat \bv + \hat \bv \hat \bomega \right)  + \sum_{i=0}^\infty \frac{(-1)^{i}\| \bomega \|^{2i}}{(2i+4)!}  \left( \hat \bomega^2 \hat \bv + \hat \bv \hat \bomega^2 \right) + \sum_{i=0}^\infty \sum_{k=0}^\infty \frac{1}{(i+k+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1}.
   \end{aligned}
 \end{equation*}
-The first two sums can now be evaluated in a fairly straightforward manner:
-\begin{subequations}
-  \begin{align}
-    \label{eq:sine_sum}
-    \sum_{i=0}^\infty \frac{(-1)^i}{(2i+3)!} \| \bomega \|^{2i}   & = - \frac{1}{\| \bomega \|^3} \sum_{i=0}^\infty \frac{(-1)^{i+1}}{(2(i+1)+1)!} \| \bomega \|^{2(i+1) + 1} = \frac{\| \bomega \| - \sin \| \bomega \|}{\| \bomega \|^3} ,         \\
-    \label{eq:cosine_sum}
-    \sum_{i=0}^\infty \frac{(-1)^{i}}{(2i+4)!} \| \bomega \|^{2i} & = \frac{1}{\| \bomega \|^4} \sum_{i=0}^\infty \frac{(-1)^{i+2}}{(2(i+2))!} \| \bomega \|^{2(i + 2)} =  \frac{\cos \| \bomega \| - 1 + \frac{\|\bomega\|^2}{2}}{\| \bomega \|^4}.
-  \end{align}
-\end{subequations}
+The first two sums are given in \eqref{eq:trig_sum3} and \eqref{eq:trig_sum4}:
+\begin{equation}
+  \label{eq:se3_sine_sums}
+  \sum_{i=0}^\infty \frac{(-1)^i}{(2i+3)!} \| \bomega \|^{2i}   = \frac{\| \bomega \| - \sin \| \bomega \|}{\| \bomega \|^3}, \quad
+  \sum_{i=0}^\infty \frac{(-1)^{i}}{(2i+4)!} \| \bomega \|^{2i} =  \frac{\cos \| \bomega \| - 1 + \frac{\|\bomega\|^2}{2}}{\| \bomega \|^4}.
+\end{equation}
 The double sum requries additional work. Using $\hat \bomega \hat \bv \hat \bomega = (-\bomega \cdot \bv) \hat \bomega$ from \eqref{eq:so3_pow3} yields
 \begin{equation*}
   \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{i+1} \hat \bv \hat \bomega^{k+1} = (-\bomega \cdot \bv) \sum_{i = 0}^\infty \sum_{k = 0}^\infty \frac{1}{(k+i+4)!} \hat \bomega^{k+i+1}  \overset{j = k+i}=  (-\bomega \cdot \bv) \sum_{j = 0}^\infty \sum_{k = 0}^{j} \frac{1}{(j+4)!} \hat \bomega^{j+1},
@@ -142,9 +172,9 @@ and we can evaluate the sum as
     \overset{\eqref{eq:hat_parity_rels}}=   -\sum_{j=0}^\infty \left(\frac{(-1)^j  }{(2j+3)!}\| \bomega \|^{2j} + 3\frac{(-1)^j }{(2j+4)!} \| \bomega \|^{2j}\right)  \hat \bomega + \sum_{j=0}^\infty \left(-\frac{(-1)^j  }{(2j+4)!} \| \bomega \|^{2j} + 3\frac{(-1)^j  }{(2j+5)!}\| \bomega \|^{2j} \right) \hat \bomega^2 .
   \end{aligned}
 \end{equation*}
-The sums \eqref{eq:sine_sum} and \eqref{eq:cosine_sum} appear again and can be re-used. The remaining sum with denominator $(2j+5)!$ evaluates to a higher-order sine expression as follows
+The sums in \eqref{eq:se3_sine_sums} appear again and can be re-used, and the remaining sum with denominator $(2j+5)!$ was given in \eqref{eq:trig_sum5}:
 \begin{equation}
-  \sum_{j=0}^\infty \frac{(-1)^j}{(2j+5)!} \| \bomega \|^{2j} = \frac{1}{\|\bomega\|^5} \sum_{j=0}^\infty \frac{(-1)^{j+2}}{((2j+2)+1)} \| \bomega \|^{2(j+2)+1} = \frac{\sin \|\bomega \| - \| \bomega \| + \frac{\|\bomega\|}{6}}{\| \bomega \|^5}.
+  \sum_{j=0}^\infty \frac{(-1)^j}{(2j+5)!} \| \bomega \|^{2j} = \frac{\sin \|\bomega \| - \| \bomega \| + \frac{\|\bomega\|}{6}}{\| \bomega \|^5}.
 \end{equation}
 \begin{important}
   After collecting the various expressions the closed-form expression for $Q^l$ can be written down
@@ -157,57 +187,115 @@ The sums \eqref{eq:sine_sum} and \eqref{eq:cosine_sum} appear again and can be r
     \end{aligned}
   \end{equation}
 \end{important}
-The $Q$ matrix allows us to write down a closed-form expression for $\mathrm{d}^l \exp_\a$ on $\SEthree$, and $\left( \mathrm{d}^l \exp_\a\right)^{-1}$ follows from noting that $\begin{bmatrix} A & B \\ 0 & A \end{bmatrix}^{-1} = \begin{bmatrix} A^{-1} & -A^{-1} B A^{-1} \\ 0 & A^{-1} \end{bmatrix}$ for $A$ invertible.
+The $Q$ matrix allows us to write down a closed-form expression for $\mathrm{d}^l \exp_\a$ on $\SEthree$, and $\left( \mathrm{d}^l \exp_\a\right)^{-1}$ follows from noting that $\begin{bmatrix} \A & \B \\ 0 & \A \end{bmatrix}^{-1} = \begin{bmatrix} \A^{-1} & -\A^{-1} \B \A^{-1} \\ 0 & \A^{-1} \end{bmatrix}$ for $\A$ invertible.
 
-\begin{properties}[title={Lowercase adjoint and exponential derivatives on $\SEthree$}]
-  Let $\a = \begin{bmatrix} \bv \\ \bomega \end{bmatrix}$ and $Q^l$ as in \eqref{eq:se3_q_expr}. Then
-  \begin{align}
-    \ad_{\a}                                   & =  \begin{bmatrix}  \hat \bomega & \hat \bv \\ 0 & \hat \bomega \end{bmatrix},  \\
-    \mathrm{d}^r \exp_{\a}                     & =   \begin{bmatrix} J^r_\SOthree & Q^l(-\bv, - \bomega) \\ 0 & J^r_\SOthree \end{bmatrix}, \\
-    \mathrm{d}^l \exp_{\a}                     & = \begin{bmatrix} J^l_\SOthree & Q^l(\bv, \bomega) \\ 0 & J^l_\SOthree\end{bmatrix}    \\
-    \left( \mathrm{d}^r \exp_{\a} \right)^{-1} & =  \begin{bmatrix} \left(J^r_\SOthree\right)^{-1}  &  -\left(J^r_\SOthree\right)^{-1} Q^l(-\bv, -\bomega)  \left(J^r_\SOthree\right)^{-1} \\ 0 &  \left(J^r_\SOthree\right)^{-1} \end{bmatrix},
-    \\
-    \left( \mathrm{d}^l \exp_{\a} \right)^{-1} & = \begin{bmatrix} \left(J^l_\SOthree\right)^{-1}  & -\left(J^l_\SOthree\right)^{-1} Q^l(\bv, \bomega)  \left(J^l_\SOthree\right)^{-1} \\ 0 &  \left(J^l_\SOthree\right)^{-1} \end{bmatrix} .
-  \end{align}
-  where $J^{l/r}_\SOthree = \left( \mathrm{d}^{l/r} \exp_{\SOthree} \right)_\bomega$ and $\left(J^{l/r}_\SOthree \right)^{-1} = \left( \left( \mathrm{d}^{l/r} \exp_{\SOthree} \right)_\bomega \right)^{-1}$. Note that in these formulas $\hat \bomega$ and $\hat \bv$ denote the hat operator on $\SOthree$.
-\end{properties}
-
-\begin{properties}[breakable, title={Formulas for $\SEthree$}]
-  \paragraph{Group Parameterization}
-  \begin{equation}
-  \end{equation}
+\begin{properties}[breakable, title={$\SEthree$ formula sheet}]
+  Consists of $3 \times 3$ matrices $\X = \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}$ that act on $\mathbb{R}^3$ via $\bu \mapsto \bR \bu + \bp$.
 
   \paragraph{Algebra Parameterization}
   \begin{equation}
+    \left\{ \begin{bmatrix}
+      \bv \\ \bomega
+    \end{bmatrix} \mid \bv \in \mathbb{R}^3, \bomega \in ??? \right\}, \quad \begin{bmatrix}
+      \bv \\ \bomega
+    \end{bmatrix}^\wedge = \begin{bmatrix}
+      \bomega^\wedge & \bv \\ 0 & 0
+    \end{bmatrix} \in \sethree.
   \end{equation}
-
-  \paragraph{Group Operations}
-  \begin{itemize}
-    \item Identity element:
-    \item Inverse:
-    \item Composition:
-  \end{itemize}
 
   \paragraph{Adjoint}
   \begin{equation}
+    \bAd_X = \begin{bmatrix}
+      \bR & \bp^\wedge \bR \\ 0 & \bR
+    \end{bmatrix}.
   \end{equation}
 
-  \paragraph{Exponential}
-  \begin{equation}
-  \end{equation}
+  \paragraph{Exponential and Logarithm}
+  \begin{subequations}
+    \label{eq:se3_exp_log}
+    \begin{align}
+      \label{eq:se3_exp}
+      \exp_\SEthree \begin{bmatrix}
+        \bv \\ \bomega
+      \end{bmatrix} & = \begin{bmatrix}
+        \exp_{\SOthree}(\bomega) & S(\bomega) \symbf v \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix}, \\
+      \label{eq:se3_log}
+      \log_\SEthree \begin{bmatrix}
+        \bR & \bp \\ \symbf{0}_{1 \times 3} & 1
+      \end{bmatrix} & = \begin{bmatrix}
+        S(\symbf \alpha)^{-1} \bp \\
+        \symbf \alpha
+      \end{bmatrix},
+    \end{align}
+  \end{subequations}
+  where $\symbf \alpha = \log_\SOthree(\bomega)$ and $S(\symbf \alpha) = \dl \left( \exp_\SOthree \right)_{\symbf \alpha}$.
 
-  \paragraph{Logarithm}
-  \begin{equation}
-  \end{equation}
-
-  \paragraph{Lowercase adjoint}
-  \begin{equation}
-  \end{equation}
+  \paragraph{Bracket and Lowercase adjoint}
+  \begin{align}
+    \left[ \begin{bmatrix}
+        \bv \\ \bomega
+      \end{bmatrix}, \begin{bmatrix} \bv' \\ \bomega' \end{bmatrix}  \right] & = \begin{bmatrix} \bomega^\wedge \bv' - (\bomega')^\wedge \bv \\ \left[ \bomega, \bomega' \right]_\SOthree \end{bmatrix}   \\
+    \ad_{\a}                                                               & =  \begin{bmatrix}  \hat \bomega & \hat \bv \\ 0 & \hat \bomega \end{bmatrix}.
+  \end{align}
+  Note that in these formulas $\bomega^\wedge$ and $\bv^\wedge$ denote the hat operator on $\SOthree$.
 
   \paragraph{Derivatives of the Exponential}
-  \begin{equation}
-  \end{equation}
+  Let $Q^{l/r}$ be as in \eqref{eq:se3_q_expr},
+  \begin{subequations}
+    \begin{align}
+      \mathrm{d}^r \exp_{\a}                     & =   \begin{bmatrix} J^r_\SOthree & Q^l(-\bv, - \bomega) \\ 0 & J^r_\SOthree \end{bmatrix}, \\
+      \mathrm{d}^l \exp_{\a}                     & = \begin{bmatrix} J^l_\SOthree & Q^l(\bv, \bomega) \\ 0 & J^l_\SOthree\end{bmatrix}    \\
+      \left( \mathrm{d}^r \exp_{\a} \right)^{-1} & =  \begin{bmatrix} \left(J^r_\SOthree\right)^{-1}  &  -\left(J^r_\SOthree\right)^{-1} Q^l(-\bv, -\bomega)  \left(J^r_\SOthree\right)^{-1} \\ 0 &  \left(J^r_\SOthree\right)^{-1} \end{bmatrix},
+      \\
+      \left( \mathrm{d}^l \exp_{\a} \right)^{-1} & = \begin{bmatrix} \left(J^l_\SOthree\right)^{-1}  & -\left(J^l_\SOthree\right)^{-1} Q^l(\bv, \bomega)  \left(J^l_\SOthree\right)^{-1} \\ 0 &  \left(J^l_\SOthree\right)^{-1} \end{bmatrix} .
+    \end{align}
+  \end{subequations}
+  where $J^{l/r}_\SOthree = \mathrm{d}^{l/r} \left( \exp_{\SOthree} \right)_\bomega$ and $\left(J^{l/r}_\SOthree \right)^{-1} = \left( \mathrm{d}^{l/r} \left( \exp_{\SOthree} \right)_\bomega \right)^{-1}$.
 \end{properties}
 
 \section{Parameterization via Isomorphism with \texorpdfstring{$\Sthree \ltimes \mathbb{R}^{3}$}{S3 |x R3}}
+
+Similarly to $\SEtwo \cong \Uone \ltimes \mathbb{R}^2$ we utilize that $\SEthree \cong \Sthree \times \mathbb{R}^3$ to get a compact representation of $\SEthree$ elements and with group operation
+\begin{equation}
+  \label{eq:s3_r3_composition}
+  (\bq, \bp) \circ (\bq, \bp') = \left( \bq \circ \bq', \left \langle \bq, \bp' \right \rangle_\Sthree + \bp \right).
+\end{equation}
+
+The hat and vee maps between $\SEthree$ and $\Sthree \ltimes \mathbb{R}^3$ are
+\begin{center}
+  \begin{tikzpicture}
+    \node (a1) {$\Sthree \ltimes \mathbb{R}^3 \ni (\bq, \bp)$};
+    \node at (5, 0) (a2) {$\begin{bmatrix} \bq^\wedge & \bp \\ 0 & 1\end{bmatrix} \in \SEthree$};
+    \draw[-latex] (a1.north east) to[bend left] node[above] {$\wedge$} (a2.north west);
+    \draw[-latex] (a2.south west) to[bend left] node[above] {$\vee$} (a1.south east);
+  \end{tikzpicture}
+\end{center}
+from where the exponential and log maps follow from \eqref{eq:se3_exp_log}.
+
+\begin{properties}[breakable, title={$\Sthree \ltimes \mathbb{R}^3$ formula sheet}]
+  \paragraph{Group Definition}
+  The parameterization of $\Sthree \ltimes \mathbb{R}^3$ is
+  \begin{equation}
+    \left\{ (\bq, \bp) \in \Sthree \times \mathbb{R}^3 \right\}
+  \end{equation}
+  and the group operation is defined in \eqref{eq:s3_r3_composition}. $\Sthree \ltimes \mathbb{R}^3$ is isomorphic to $\SEthree$ and inherits its Lie algebra properties.
+
+  \paragraph{Frame Transformation Action on $\bu \in \mathbb{R}^{3}$}
+  \begin{equation}
+    \left\langle (\bq, \bp), \bu \right \rangle_{\Sthree \ltimes \mathbb{R}^3} = \left \langle \bq, \bu \right \rangle_\Sthree + \bp.
+  \end{equation}
+
+  \paragraph{Exponential and Logarithm}
+  \begin{subequations}
+    \label{eq:s3r3_exp_log}
+    \begin{align}
+      \label{eq:s3r3_exp}
+      \exp \begin{bmatrix} \bv \\ \bomega \end{bmatrix} & = \left(\exp_\Sthree(\bomega), S(\bomega) \bv\right),      \\
+      \label{eq:s3r3_log}
+      \log (\bq, \bp)                   & = \begin{bmatrix} S(\symbf \alpha)^{-1} \bp \\ \symbf \alpha \end{bmatrix}, \quad \symbf \alpha = \log_\Sthree \bq.
+    \end{align}
+  \end{subequations}
+  where $\symbf \alpha = \log_\SOthree(\bomega)$ and $S(\symbf \alpha) = \dl \left( \exp_\SOthree \right)_{\symbf \alpha}$.
+\end{properties}
 

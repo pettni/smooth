@@ -2,15 +2,12 @@
 
 Let $\bR$ denote an element of $\SOtwo$, commonly referred to as a \emph{2D rotation matrix}.
 
-\paragraph{Action on \texorpdfstring{$\mathbb{R}^2$}{R2}:}
 In robotics applications it is convenient to define a rotational action on vectors in $\mathbb{R}^2$. For $\bR \in \SOtwo$ and $\bu \in \mathbb{R}^2$ the action is matrix multiplication
 \begin{equation}
   \left \langle \bR, \bu \right \rangle_{\SOtwo} = \bR \cdot \bu.
 \end{equation}
 
-\paragraph{Lie Algebra}
-
-The $2 \times 2$ skew-symmetric matrices have only one degree of freedom, let this single parameter of $\sotwo$ be denoted $\omega_z$ so that
+By \eqref{eq:son} the Lie algebra consists of the $2 \times 2$ skew-symmetric matrices, which have just one degree of freedom. Let this single parameter of $\sotwo$ be denoted $\omega_z$ so that
 \begin{equation}
   \mathfrak{so}(2) = \left\{ \begin{bmatrix} 0 & -\omega_z \\ \omega_z & 0 \end{bmatrix} \mid \omega_z \in \mathbb{R} \right\},
 \end{equation}
@@ -135,7 +132,7 @@ and consequently the lowercase logarithm can be taken as
 \end{equation}
 The following table summarizes the properties of $\Uone$. Note that the Lie algebra is shared with $\SOtwo$ so operators such as $\bAd$ and $\dr \exp$ are identical to $\SOtwo$ and not repeated here.
 
-\begin{properties}[breakable, title={$\Uone$ as a parameterization of $\SOtwo$}]
+\begin{properties}[breakable, title={$\Uone$ formula sheet}]
   \paragraph{Group Parameterization}
   \begin{equation}
     \Uone = \left\{ c \in \mathbb{C} \mid |c| = 1 \right\}
@@ -155,7 +152,7 @@ The following table summarizes the properties of $\Uone$. Note that the Lie alge
 
   \paragraph{Rotation Action on $\bu \in \mathbb{R}^{2}$}
   \begin{equation}
-    \left\langle c, \bu \right \rangle = \begin{bmatrix} \textrm{Re}(c) & -\textrm{Im}(c) \\ \textrm{Im}(c) & \textrm{Re}(c) \end{bmatrix} \bu.
+    \left\langle c, \bu \right \rangle_\Uone = \begin{bmatrix} \textrm{Re}(c) & -\textrm{Im}(c) \\ \textrm{Im}(c) & \textrm{Re}(c) \end{bmatrix} \bu.
   \end{equation}
 
   \paragraph{Exponential and Logarithm}

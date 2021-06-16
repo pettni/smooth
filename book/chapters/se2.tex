@@ -1,40 +1,22 @@
+% !TEX root = ../root.tex
+
 \chapter{\texorpdfstring{$\SEtwo$}{SE(2)}: The 2D Rigid Motion Group}
 
-We now combine $\Etwo$ and $\SOtwo$ into a group that simultaneously represents translation and rotation in two dimensions. The result is $\SEtwo$---the special euclidean group in two dimensions.
-
-In matrix form $\SEtwo$ consists of matrices on the form
+The special Euclidean group in two dimensions, $\SEtwo$, is formed as a semi-direct product between $\SOtwo$ and $\Ttwo$, and consists of matrices on the form
 \begin{equation}
   \label{eq:se2_matrix}
-  \SOtwo = \left\{ \begin{bmatrix}
+  \SEtwo = \SOtwo \ltimes \Etwo = \left\{ \begin{bmatrix}
     \bR & \bp \\ \symbf{0}_{1 \times 2} & 1
-  \end{bmatrix} \mid R \in \SOtwo \right\},
-\end{equation}
-It follows that both $\SOtwo$ and $\Etwo$ are sub-groups of $\SEtwo$. In addition, $\Etwo$ is a normal subgroup\footnote{If $X \in \mathbb{E}^2$ and $Y \in \SOtwo$, then $Y X Y^{-1} \in \mathbb{E}^2$.} which implies that $\SEtwo$ is a \emph{semi-direct product} denoted $\SEtwo \cong \SOtwo \ltimes \Etwo$. Group products (direct and semi-direct) are discussed further below.
-
-\paragraph{Algebra}
-
-\paragraph{Lower-dimensional representation:} Four parameters are required, two for each subgroup
-\begin{equation}
-   \left\{ ((q_w, q_z), (p_x, p_y)) \right\}.
+  \end{bmatrix} \mid \bR \in \SOtwo \right\},
 \end{equation}
 
-\paragraph{Identity:} The identity element is inherited: 
-
-\paragraph{Inverse:} From matrix inverse it follows that $(\bR, \bp)^{-1} = (\bR^T, -\bR^T \bp)$.
-
-\paragraph{Composition:} Matrix multiplication shows that composition in the lower-dimensional representation is
-\begin{equation}
-  (\bR, \bp) \circ (\bR', \bp') = (\bR \bR', \bR \bp' + \bp).
-\end{equation}
-
-\paragraph{Action on $\mathbb{\bR}^2$:}
-This group has a natural action on two-dimensional vectors that consists of rotation and translation. For $X \coloneq (\bR, \bp) \in \check {\SEtwo}$ the action is
+This group has a natural action on two-dimensional vectors that consists of rotation and translation. For $\X \in \SEtwo$ the action is
 \begin{equation}
   \left \langle \X, \bu \right \rangle_{\SEtwo} = \left \langle \bR, \bu \right \rangle_{\SOtwo} + \bp = \bR \bu + \bp.
 \end{equation}
-That is, the vector $\bu$ is first rotated through the action of the $\SOtwo$ part of the state, and then subjected to a translation. This action can be written as a matrix multiplication if we associate $\bu$ with its homogeneous counterpart $\bu^H$:
+That is, the vector $\bu$ is first rotated by the $\SOtwo$ component, and then subjected to a translation. This action can be written as a matrix multiplication if we associate $\bu$ with its homogeneous counterpart $\bu^H = \begin{bmatrix} \bu^T & 1 \end{bmatrix}^T$:
 \begin{equation}
-  \left \langle \X, \bu^H \right \rangle = \begin{bmatrix}
+  \left \langle \X, \bu \right \rangle = \X \bu^H = \begin{bmatrix}
     \bR & \bp \\ \symbf{0}_{1 \times 2} & 1
   \end{bmatrix} \begin{bmatrix}
     \symbf u \\ 1
@@ -44,10 +26,15 @@ That is, the vector $\bu$ is first rotated through the action of the $\SOtwo$ pa
 \end{equation}
 The action has a natural interpretation as a change of coordinates: if $\begin{bmatrix} \bR & \bp \\ \symbf{0}_{1 \times 2} & 1 \end{bmatrix} \in \SEtwo$, then $\left \langle \X, \bu \right \rangle$ represents the transformation from a coordinate frame attached at $\bp$ with unit vectors the columns of $\bR$, to the global coordinate frame.
 
-\paragraph{Action on $\mathbb{R}^2$:}
-
-\paragraph{Lie Algebra}
-
+The Lie algebra $\setwo$ has three degrees of freedom; we parameterize it with the following hat and vee maps:
+\begin{center}
+  \begin{tikzpicture}
+    \node (a1) {$\mathbb{R}^{3} \ni \begin{bmatrix}  v_x \\ v_y \\ \omega_z \end{bmatrix}$};
+    \node at (5, 0) (a2) {$\begin{bmatrix} 0 & -\omega_{z} & v_x \\ \omega_{z} & 0 & v_y \\ 0 & 0 & 0 \end{bmatrix} \in \setwo$};
+    \draw[-latex] (a1) to[bend left] node[above] {$\wedge$} (a2.north west);
+    \draw[-latex] (a2.south west) to[bend left] node[above] {$\vee$} (a1);
+  \end{tikzpicture}
+\end{center}
 
 \section{Formulas}
 
@@ -57,21 +44,21 @@ Take $\X = \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}$ and recall the hat 
 \begin{equation}
   \begin{aligned}
     \bAd_{\X} \begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix}
-    & = \left( \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}
+     & = \left( \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}
     \begin{bmatrix}
       \hat \omega_{z} & \bv \\ 0 & 0
     \end{bmatrix}
     \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}^{-1} \right)^{\vee}
     = \left( \begin{bmatrix} \bR \hat \omega_{z} & \bR \bv \\ 0 & 0 \end{bmatrix}
     \begin{bmatrix} \bR^{T} & -\bR^{T} \bp \\ 0 & 1 \end{bmatrix} \right)^{\vee} \\
-    & = \begin{bmatrix} \bR \hat \omega_{z} \bR^{T} & \bR \bv - \bR \hat \omega_{z} \bR^{T} \bp \\ 0 & 1 \end{bmatrix}^{\vee}
+     & = \begin{bmatrix} \bR \hat \omega_{z} \bR^{T} & \bR \bv - \bR \hat \omega_{z} \bR^{T} \bp \\ 0 & 1 \end{bmatrix}^{\vee}
     = \begin{bmatrix} \bR \bv - \hat \omega_{z} \bp \\ \omega_{z} \end{bmatrix} =
     \begin{bmatrix}
       \bR & -\hat 1 \; \bp
-       \\ 0 & 1
+      \\ 0 & 1
     \end{bmatrix}
     \begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix}
-   ,
+    ,
   \end{aligned}
 \end{equation}
 which exposes the adjoint as the matrix $\begin{bmatrix} \bR & -\hat 1 \; \bp \\ 0 & 1 \end{bmatrix}$.
@@ -82,10 +69,9 @@ We use Lemma \ref{lem:help_exp} to derive the exponential map. The Lie algebra e
 \begin{equation}
   \A = \B + \C, \quad \B = \begin{bmatrix} \hat \omega_{z} & \symbf{0} \\ \symbf 0 & 0 \end{bmatrix}, \quad \C = \begin{bmatrix} \symbf{0} & \bv \\ \symbf{0} & 0 \end{bmatrix}.
 \end{equation}
-Thus, it suffices to compute $S(\omega) \coloneq \sum_{k = 0}^\infty \frac{\hat \bomega}{(k+1)!}$ to obtain the exponential map for the semi-simple groups.
-
-For $\mathfrak{se}(2)$, disregarding the trivial case $\omega_{z} = 0$, we obtain
+Thus, it suffices to compute $S(\omega) \coloneq \sum_{k = 0}^\infty \frac{\hat \bomega}{(k+1)!}$ to obtain the exponential map for the semi-simple groups. Disregarding the trivial case $\omega_{z} = 0$, we obtain
 \begin{equation}
+  \label{eq:se2_s_omegaz}
   \begin{aligned}
     S(\omega_z)
      & = \sum_{k = 0}^\infty \frac{\hat \omega_z^k}{(k+1)!} = \left( \hat \omega_z \right)^{-1} \left( \Exp \hat \omega_z - I \right) \\
@@ -104,7 +90,6 @@ Lemma \ref{lem:help_exp} now gives the exponential.
   \label{eq:6}
   \exp(\A) = \exp(\B + \C) = \exp(\B) + \begin{bmatrix} S(\omega_{z}) & 0 \\ 0 & 1 \end{bmatrix} \C = \begin{bmatrix} \exp_{\SOtwo} \omega_{z} & S(\omega_{z}) \bv \\ 0 & 1 \end{bmatrix}
 \end{equation}
-
 
 \paragraph{Derivatives of the Exponential}
 
@@ -129,9 +114,8 @@ We first calculate an expression for the bracket.
 \end{equation}
 A quick calculation reveals that $\ad_\a^3 = -\omega_z^2 \ad_\a$, which is exactly the relation we used for $\SOthree$ above. Consequently the inverse derivatives must have the same form as on $\SOthree$.
 
-
 \begin{properties}[breakable, title={$\SEtwo$ formula sheet}]
-  Consists of $3 \times 3$ matrices $ \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}$ that act on $\mathbb{R}^{2}$ via $\bv \mapsto \bR \bv + \bp$.
+  Consists of $3 \times 3$ matrices $\X = \begin{bmatrix} \bR & \bp \\ 0 & 1 \end{bmatrix}$ that act on $\mathbb{R}^{2}$ via $\bu \mapsto \bR \bu + \bp$.
 
   \paragraph{Algebra Parameterization}
   \begin{equation}
@@ -145,17 +129,23 @@ A quick calculation reveals that $\ad_\a^3 = -\omega_z^2 \ad_\a$, which is exact
   \begin{equation}
     \bAd_{\X} = \begin{bmatrix}
       \bR & \begin{bmatrix} p_{y} \\ -p_{x} \end{bmatrix}
-       \\ 0 & 1
+      \\ 0 & 1
     \end{bmatrix}
   \end{equation}
 
   \paragraph{Exponential and Logarithm}
-  \begin{align}
-    \exp_\SEtwo \left(\begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix} \right) & =  \begin{bmatrix}
-      \exp_{\SOtwo} (\omega_z) & S(\omega_z)\bv \\ \symbf{0}_{1 \times 2} & 1
-    \end{bmatrix}, \\
-    \log_\SEtwo \begin{bmatrix} \bR & \bp \\ \symbf{0}_{1 \times 2} & 1 \end{bmatrix}               & = \begin{bmatrix} \left( S(\omega_z) \right)^{-1} \bp \\ \alpha \end{bmatrix}.
-  \end{align}
+  Let $S(\omega_z)$ be as in \eqref{eq:se2_s_omegaz},
+  \begin{subequations}
+    \label{eq:se2_exp_log}
+    \begin{align}
+      \label{eq:se2_exp}
+      \exp_\SEtwo \left(\begin{bmatrix} \bv \\ \omega_{z} \end{bmatrix} \right) & =  \begin{bmatrix}
+        \exp_{\SOtwo} (\omega_z) & S(\omega_z)\bv \\ \symbf{0}_{1 \times 2} & 1
+      \end{bmatrix},                                 \\
+      \label{eq:se2_log}
+      \log_\SEtwo \begin{bmatrix} \bR & \bp \\ \symbf{0}_{1 \times 2} & 1 \end{bmatrix}               & = \begin{bmatrix} S(\alpha)^{-1} \bp \\ \alpha \end{bmatrix}, \quad \alpha = \log_\SOtwo(\bR).
+    \end{align}
+  \end{subequations}
 
   \paragraph{Bracket and Lowercase Adjoint}
   \begin{equation}
@@ -177,4 +167,49 @@ A quick calculation reveals that $\ad_\a^3 = -\omega_z^2 \ad_\a$, which is exact
 \end{properties}
 
 \section{Parameterization via Isomorphism with \texorpdfstring{$\Uone \ltimes \mathbb{R}^{2}$}{U(1) |x R2}}
+
+Since $\SEtwo = \SOtwo \ltimes \Ttwo$, and we know that $\SOtwo \cong \Uone$ and $\Ttwo \cong \mathbb{R}^2$, a natural parameterization of $\SEtwo$ is via the isomorphism
+\begin{equation}
+  \SEtwo \cong \Uone \ltimes \mathbb{R}^2,
+\end{equation}
+where the group operation in $\Uone \ltimes \mathbb{R}^2$ is defined analogously to $\SEtwo$. For $c, c' \in \Uone$ and $\bp, \bp' \in \mathbb{R}^2$ this becomes
+\begin{equation}
+  \label{eq:u1_r2_action}
+  (c, \bp) \circ (c', \bp') = \left( c \circ c', \left \langle c, \bp' \right \rangle_\Uone + \bp \right).
+\end{equation}
+
+The hat and vee maps between $\SEtwo$ and $\Uone \ltimes \mathbb{R}^2$ are
+\begin{center}
+  \begin{tikzpicture}
+    \node (a1) {$\Uone \ltimes \mathbb{R}^2 \ni (c, \bp)$};
+    \node at (5, 0) (a2) {$\begin{bmatrix} c^\wedge & \bp \\ 0 & 1\end{bmatrix} \in \SEtwo$};
+    \draw[-latex] (a1.north east) to[bend left] node[above] {$\wedge$} (a2.north west);
+    \draw[-latex] (a2.south west) to[bend left] node[above] {$\vee$} (a1.south east);
+  \end{tikzpicture}
+\end{center}
+from where the exponential and log maps follow from \eqref{eq:se2_exp_log}.
+
+\begin{properties}[breakable, title={$\Uone\ltimes \mathbb{R}^2$ as a parameterization of $\SEtwo$}]
+  \paragraph{Group Definition}
+  The parameterization of $\Uone \ltimes \mathbb{R}^2$ is
+  \begin{equation}
+    \left\{ (c, \bp) \in \mathbb{C} \times \mathbb{R}^2 \right\}
+  \end{equation}
+  and the group operation is defined in \eqref{eq:u1_r2_action}. $\Uone \ltimes \mathbb{R}^2$ is isomorphic to $\SEtwo$ and inherits its Lie algebra properties.
+
+  \paragraph{Frame Transformation Action on $\bu \in \mathbb{R}^{2}$}
+  \begin{equation}
+    \left\langle (c, \bp), \bu \right \rangle_{\Uone \ltimes \mathbb{R}^2} = \left \langle c, \bu \right \rangle_\Uone + \bp.
+  \end{equation}
+
+  \paragraph{Exponential and Logarithm}
+  \begin{subequations}
+    \begin{align}
+      \label{eq:u1r2_exp}
+      \exp \begin{bmatrix} \bv \\ \omega_z \end{bmatrix} & = \left(\exp_\Uone(\omega_z), S(\omega_z) \bv\right),      \\
+      \label{eq:u1r2_log}
+      \log (c, \bp)                   & = \begin{bmatrix} S(\alpha)^{-1} \bp \\ \alpha \end{bmatrix}, \quad \alpha = \log_\Uone c.
+    \end{align}
+  \end{subequations}
+\end{properties}
 
