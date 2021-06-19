@@ -15,7 +15,7 @@ class CeresLocalParam : public ::testing::Test
 
 using GroupsToTest = ::testing::Types<
   smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
-  smooth::Bundle<double, smooth::SO3, smooth::R4, smooth::SE2>
+  smooth::Bundle<smooth::SO3d, smooth::T4d, smooth::SE2d>
 >;
 
 TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest);

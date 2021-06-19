@@ -12,7 +12,7 @@
 using matplot::plot;
 using std::views::transform;
 
-using state_t = smooth::Bundle<double, smooth::SO3, smooth::R3>;
+using state_t = smooth::Bundle<smooth::SO3d, smooth::T3d>;
 using deriv_t = typename state_t::Tangent;
 
 

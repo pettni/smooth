@@ -65,9 +65,12 @@ using GroupsToTest = ::testing::Types<smooth::SO2d,
   smooth::SO3d,
   smooth::SE2d,
   smooth::SE3d,
-  smooth::Bundle<double, smooth::SO3, smooth::R4, smooth::SE2>>;
+  smooth::Bundle<smooth::SO3d, smooth::T4d, smooth::SE2d>>;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 TYPED_TEST_SUITE(Spline, GroupsToTest);
+#pragma GCC diagnostic pop
 
 TYPED_TEST(Spline, BSplineConstant)
 {
@@ -134,11 +137,11 @@ TEST(Spline, BSplineOutside)
   ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(48)));
 }
 
-TEST(Spline, BSplineDerivR1)
+TEST(Spline, BSplineDerivT1)
 {
   std::srand(5);
-  std::vector<smooth::Bundle<double, smooth::R1>> c1;
-  for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::Bundle<double, smooth::R1>::Random()); }
+  std::vector<smooth::Bundle<smooth::T1d>> c1;
+  for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::Bundle<smooth::T1d>::Random()); }
 
   double u = 0.5;
 
@@ -146,14 +149,14 @@ TEST(Spline, BSplineDerivR1)
   Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(Mstatic[0].data());
 
   Eigen::Matrix<double, 1, 4> jac;
-  auto g0 = smooth::cspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, M, u, {}, {}, jac);
+  auto g0 = smooth::cspline_eval<3, smooth::Bundle<smooth::T1d>>(c1, M, u, {}, {}, jac);
 
   Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
   for (auto i = 0u; i != 4; ++i) { c1[i].part<0>()(0) += eps(i); }
 
   // expect gp \approx g0 + jac * eps
   auto gp       = g0 + (jac * eps);
-  auto gp_exact = smooth::cspline_eval<3, smooth::Bundle<double, smooth::R1>>(c1, M, u);
+  auto gp_exact = smooth::cspline_eval<3, smooth::Bundle<smooth::T1d>>(c1, M, u);
 
   ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
 }
