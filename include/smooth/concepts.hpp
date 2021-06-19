@@ -61,12 +61,16 @@ concept ConstStorageLike = StorageLike<S>&& !ModifiableStorageLike<S>;
  ********************/
 
 /**
- * @brief A (smooth) manifold M requires a tangent type T and must support
- * the following operations
+ * @brief A (smooth) manifold M requires the following
  *
+ * - M::Scalar scalar type
+ * - M::SizeAtCompileTime tangent space dimension (compile time, -1 if dynamic)
+ * - M.size() : tangent space dimension (runtime)
  * - M + T -> M : geodesic addition
  * - M += T : in-place geodesic addition
  * - M - M -> T : inverse of geodesic addition (in practice only used for infinitesimal values)
+ *
+ * Where T = Eigen::Matrix<Scalar, SizeAtCompileTime, 1> is the tangent type
  */
 template<typename M>
 concept Manifold =
@@ -80,7 +84,7 @@ requires(const M & m1, M & m2, const Eigen::Matrix<typename M::Scalar, M::SizeAt
 {
   {m1.size()}->std::convertible_to<Eigen::Index>;             // degrees of freedom at runtime
   {m1 + a}->std::convertible_to<typename M::PlainObject>;
-  // {m2 += a}->std::convertible_to<typename M::PlainObject>;
+  // {m2 += a}->std::convertible_to<typename M::PlainObject>;  // TODO(pettni) what's the problem with this??
   {m1 - m2}->std::convertible_to<Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1>>;
   {m1.template cast<float>()};
 };

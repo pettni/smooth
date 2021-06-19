@@ -44,9 +44,11 @@ public:
   static constexpr Eigen::Index Dim = 3;
   static constexpr Eigen::Index ActDim = 3;
 
-  // CONSTRUCTORS AND OPERATORS
+  // REQUIRED TYPES
 
-  SMOOTH_GROUP_BOILERPLATE(SO3)
+  SMOOTH_COMMON_TYPES(SO3)
+
+  // CONSTRUCTORS AND OPERATORS
 
   SMOOTH_COMMON_API(SO3)
 

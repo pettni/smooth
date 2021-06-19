@@ -43,9 +43,11 @@ public:
   static constexpr int Dim = 3;
   static constexpr int ActDim = 2;
 
-  // CONSTRUCTORS AND OPERATORS
+  // REQUIRED TYPES
 
-  SMOOTH_GROUP_BOILERPLATE(SE2)
+  SMOOTH_COMMON_TYPES(SE2)
+
+  // CONSTRUCTORS AND OPERATORS
 
   SMOOTH_COMMON_API(SE2)
 

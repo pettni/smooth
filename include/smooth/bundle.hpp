@@ -46,28 +46,18 @@ struct lie_info<G>
  * Bundle members can also be Eigen vectors by including Tn in the template argument list.
  */
 template<MappableStorageLike _Storage, typename ... _Ts>
-requires(
-    ((LieGroup<_Ts> || StaticRnLike<_Ts>) &&... && true)
+requires ((LieGroup<_Ts> || StaticRnLike<_Ts>) &&... && true)
    && (_Storage::Size == (detail::lie_info<_Ts>::lie_size + ...))
-)
 class BundleBase
 {
 private:
-
-  using _Scalar = std::common_type_t<typename _Ts::Scalar ...>;
-  static_assert(
-    (std::is_same_v<_Scalar, typename _Ts::Scalar> && ...),
-    "Bundle members must have the same Scalar type"
-  );
 
   _Storage s_;
 
   /* friend with other storage types */
   template<MappableStorageLike OS, typename... _OTs>
-  requires(
-     ((LieGroup<_OTs> || StaticRnLike<_OTs>)&&... && true)
+  requires ((LieGroup<_OTs> || StaticRnLike<_OTs>)&&... && true)
      && (OS::Size == (detail::lie_info<_OTs>::lie_size + ...))
-  )
   friend class BundleBase;
 
   static constexpr std::array<Eigen::Index, sizeof...(_Ts)>
@@ -89,9 +79,15 @@ public:
   static constexpr auto Dim     = DimsPsum.back();
   static constexpr auto ActDim  = ActDimsPsum.back();
 
-  // CONSTRUCTOR AND OPERATOR BOILERPLATE
+  // REQUIRED TYPES
 
-  SMOOTH_BOILERPLATE(BundleBase)
+  using Scalar = std::common_type_t<typename _Ts::Scalar ...>;
+  using Storage = _Storage;
+
+  static_assert(
+    (std::is_same_v<Scalar, typename _Ts::Scalar> && ...),
+    "Bundle members must have the same Scalar type"
+  );
 
   using PlainObject = BundleBase<DefaultStorage<Scalar, RepSize>, _Ts...>;
 
@@ -104,22 +100,7 @@ public:
   template<MappableStorageLike NewStorage>
   using NewStorageType = BundleBase<NewStorage, _Ts ...>;
 
-  /* copy constructor from other storage */
-  template<StorageLike OS>
-  requires ModifiableStorageLike<Storage>
-  BundleBase(const NewStorageType<OS> & o)
-  {
-    meta::static_for<RepSize>([&](auto i) { s_[i] = o.coeffs()[i]; });
-  }
-
-  /* copy assignment from other storage */
-  template<StorageLike OS>
-  requires ModifiableStorageLike<Storage>
-  BundleBase & operator=(const NewStorageType<OS> & o)
-  {
-    meta::static_for<RepSize>([&](auto i) { s_[i] = o.s_[i]; });
-    return *this;
-  }
+  // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
   SMOOTH_COMMON_API(BundleBase)
 
@@ -132,12 +113,14 @@ public:
    * @brief Construct from components
    */
   template<typename... S>
-  explicit BundleBase(S &&... args)
-  requires ModifiableStorageLike<Storage> && (sizeof...(S) == sizeof...(_Ts))
+  requires ModifiableStorageLike<Storage>
+    && (sizeof...(S) == sizeof...(_Ts))
     && std::conjunction_v<std::is_assignable<_Ts, S>...>
+  explicit BundleBase(S &&... args)
   {
     meta::static_for<sizeof...(_Ts)>(
-      [&](auto i) { part<i>() = std::get<i>(std::forward_as_tuple(args...)); });
+      [&](auto i) { part<i>() = std::get<i>(std::forward_as_tuple(args...)); }
+    );
   }
 
   /**
@@ -295,8 +278,8 @@ public:
    * @brief Group exponential
    */
   template<typename Derived>
-  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
+  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
   {
     PlainObject ret;
     meta::static_for<sizeof...(_Ts)>([&](auto i) {
@@ -315,8 +298,8 @@ public:
    * @brief Algebra adjoint
    */
   template<typename Derived>
-  static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
+  static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
   {
     TangentMap ret;
     ret.setZero();
@@ -337,8 +320,8 @@ public:
    * @brief Algebra hat
    */
   template<typename Derived>
-  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
+  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
   {
     MatrixGroup ret;
     ret.setZero();
@@ -363,8 +346,8 @@ public:
    * @brief Algebra vee
    */
   template<typename Derived>
-  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
   requires(Derived::RowsAtCompileTime == Dim && Derived::ColsAtCompileTime == Dim)
+  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
   {
     Tangent ret;
     meta::static_for<sizeof...(_Ts)>([&](auto i) {
@@ -388,8 +371,8 @@ public:
    * @brief Right jacobian of the exponential map
    */
   template<typename Derived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
+  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
   {
     TangentMap ret;
     ret.setZero();
@@ -410,8 +393,8 @@ public:
    * @brief Inverse of the right jacobian of the exponential map
    */
   template<typename Derived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
+  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
   {
     TangentMap ret;
     ret.setZero();
