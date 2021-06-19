@@ -5,11 +5,22 @@
 
 namespace smooth {
 
-// Boilerplate that is common for all groups and the bundle
-#define SMOOTH_BOILERPLATE(X)                                                        \
+// Boilerplate for regular groups
+#define SMOOTH_COMMON_TYPES(X)                                                       \
+  using Scalar = _Scalar;                                                            \
   using Storage = _Storage;                                                          \
-  using Scalar  = _Scalar;                                                           \
                                                                                      \
+  using PlainObject = X<Scalar, DefaultStorage<Scalar, RepSize>>;                    \
+                                                                                     \
+  template<typename NewScalar>                                                       \
+  using CastType = X<NewScalar, DefaultStorage<NewScalar, RepSize>>;                 \
+                                                                                     \
+  template<StorageLike NewStorage>                                                   \
+  using NewStorageType = X<Scalar, NewStorage>;                                      \
+                                                                                     \
+
+// Boilerplate for regular groups and bundle
+#define SMOOTH_COMMON_API(X)                                                         \
   using Tangent     = Eigen::Matrix<Scalar, Dof, 1>;                                 \
   using TangentMap  = Eigen::Matrix<Scalar, Dof, Dof>;                               \
   using Vector      = Eigen::Matrix<Scalar, ActDim, 1>;                              \
@@ -32,37 +43,24 @@ namespace smooth {
   template<typename S>                                                               \
   requires std::is_constructible_v<Storage, S> explicit X(S && s)                    \
   : s_(std::forward<S>(s))                                                           \
-  {}
-
-// Boilerplate to be used for regular groups
-#define SMOOTH_GROUP_BOILERPLATE(X)                                                  \
-  SMOOTH_BOILERPLATE(X)                                                              \
-  using PlainObject = X<Scalar, DefaultStorage<Scalar, RepSize>>;                    \
-                                                                                     \
-  template<typename NewScalar>                                                       \
-  using CastType = X<NewScalar, DefaultStorage<NewScalar, RepSize>>;                 \
-                                                                                     \
-  template<StorageLike NewStorage>                                                   \
-  using NewStorageType = X<Scalar, NewStorage>;                                      \
+  {}                                                                                 \
                                                                                      \
   /* copy constructor from other storage */                                          \
   template<StorageLike OS>                                                           \
-  X(const NewStorageType<OS> & o)                                                    \
   requires ModifiableStorageLike<Storage>                                            \
+  X(const NewStorageType<OS> & o)                                                    \
   {                                                                                  \
     meta::static_for<RepSize>([&](auto i) { s_[i] = o.coeffs()[i]; });               \
   }                                                                                  \
   /* copy assignment from other storage */                                           \
   template<StorageLike OS>                                                           \
-  X & operator=(const NewStorageType<OS> & o)                                        \
   requires ModifiableStorageLike<Storage>                                            \
+  X & operator=(const NewStorageType<OS> & o)                                        \
   {                                                                                  \
     meta::static_for<RepSize>([&](auto i) { s_[i] = o.s_[i]; });                     \
     return *this;                                                                    \
-  }
-
-// Syntactic sugar that is identical for each group in this library
-#define SMOOTH_COMMON_API(X)                                                         \
+  }                                                                                  \
+                                                                                     \
   /**                                                                                \
    * @brief Construct the group identity element                                     \
    */                                                                                \
@@ -89,7 +87,7 @@ namespace smooth {
    * @brief Compare two Lie group elements                                           \
    */                                                                                \
   template<StorageLike OS>                                                           \
-  requires(std::is_same_v<_Scalar, typename OS::Scalar>)                             \
+  requires(std::is_same_v<Scalar, typename OS::Scalar>)                              \
   bool isApprox(                                                                     \
     const NewStorageType<OS> & o,                                                    \
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()                 \
