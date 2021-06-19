@@ -3,7 +3,6 @@
 
 #include "common.hpp"
 #include "concepts.hpp"
-#include "lie_group_base.hpp"
 #include "macro.hpp"
 #include "storage.hpp"
 
@@ -26,7 +25,7 @@ namespace smooth
  */
 template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 2>>
 requires(_Storage::Size== 2 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
-class SO2 : public LieGroupBase<SO2<_Scalar, _Storage>, 2>
+class SO2
 {
 private:
   _Storage s_;
@@ -46,6 +45,10 @@ public:
   // CONSTRUCTORS AND OPERATORS
 
   SMOOTH_GROUP_BOILERPLATE(SO2)
+
+  // COMMON API
+
+  SMOOTH_COMMON_API(SO2)
 
   // SO2-SPECIFIC API
 

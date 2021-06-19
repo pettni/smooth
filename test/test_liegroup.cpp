@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <unsupported/Eigen/MatrixFunctions>  // for matrix exponential, must be after en
+#include <unsupported/Eigen/MatrixFunctions>
 
 #include <sstream>
 
@@ -21,9 +21,8 @@ using GroupsToTest = ::testing::Types<
   smooth::SE2f,
   smooth::SE3f,
   smooth::Bundle<
-    double,
-    smooth::SO2, smooth::SO3, smooth::SE2, smooth::SE3,
-    smooth::R2, smooth::R4
+    smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
+    smooth::T2d, smooth::T4d
   >
 >;
 

@@ -1,0 +1,55 @@
+name: build_and_test
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch: ~
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04]
+        build_type: [Release, Debug]
+        compiler: [
+         {
+          "cc": "gcc",
+          "cxx": "g++"
+         },
+         {
+          "cc": "clang",
+          "cxx": "clang++"
+         }
+        ]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+        libeigen-dev
+
+    - name: Configure CMake
+      run: |
+        cmake -B ${{ github.workspace }}/build \
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+        -DCMAKE_C_COMPILER=${{ matrix.compiler.cc }} \
+        -DCMAKE_CXX_COMPILER=${{ matrix.compiler.cxx }} \
+        -DBUILD_TESTING=ON \
+        -DBUILD_EXAMPLES=ON
+
+    - name: Build
+      working-directory: ${{ github.workspace }}/build
+      run: make -j2
+
+    - name: Test
+      working-directory: ${{ github.workspace }}/build
+      run: make test
+

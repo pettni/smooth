@@ -3,7 +3,6 @@
 
 #include "common.hpp"
 #include "concepts.hpp"
-#include "lie_group_base.hpp"
 #include "macro.hpp"
 #include "meta.hpp"
 #include "storage.hpp"
@@ -18,19 +17,25 @@ struct lie_info;
 template<LieGroup G>
 struct lie_info<G>
 {
-  static constexpr auto lie_size   = G::RepSize;
-  static constexpr auto lie_dof    = G::Dof;
-  static constexpr auto lie_dim    = G::Dim;
-  static constexpr auto lie_actdim = G::ActDim;
+  static constexpr Eigen::Index lie_size   = G::RepSize;
+  static constexpr Eigen::Index lie_dof    = G::Dof;
+  static constexpr Eigen::Index lie_dim    = G::Dim;
+  static constexpr Eigen::Index lie_actdim = G::ActDim;
+
+  template<typename NewScalar>
+  using CastType = typename G::template CastType<NewScalar>;
 };
 
 template<StaticRnLike G>
 struct lie_info<G>
 {
-  static constexpr auto lie_size   = G::SizeAtCompileTime;
-  static constexpr auto lie_dof    = G::SizeAtCompileTime;
-  static constexpr auto lie_dim    = lie_size == -1 ? Eigen::Index(-1) : G::SizeAtCompileTime + 1;
-  static constexpr auto lie_actdim = G::SizeAtCompileTime;
+  static constexpr Eigen::Index lie_size   = G::SizeAtCompileTime;
+  static constexpr Eigen::Index lie_dof    = G::SizeAtCompileTime;
+  static constexpr Eigen::Index lie_dim    = lie_size == -1 ? Eigen::Index(-1) : G::SizeAtCompileTime + 1;
+  static constexpr Eigen::Index lie_actdim = G::SizeAtCompileTime;
+
+  template<typename NewScalar>
+  using CastType = Eigen::Matrix<NewScalar, G::SizeAtCompileTime, 1>;
 };
 
 }  // namespace detail
@@ -38,29 +43,38 @@ struct lie_info<G>
 /**
  * @brief Bundle of multiple Lie types that can be treated as a single Lie group
  *
- * Bundle members can also be Eigen vectors by including Rn in the template argument list.
+ * Bundle members can also be Eigen vectors by including Tn in the template argument list.
  */
-template<typename _Scalar, MappableStorageLike _Storage, template<typename> typename... _Gs>
-requires(((LieGroup<_Gs<_Scalar>> || StaticRnLike<_Gs<_Scalar>>)&&... && true)
-         && (_Storage::Size == (detail::lie_info<_Gs<_Scalar>>::lie_size + ...))
-         && std::is_same_v<typename _Storage::Scalar, _Scalar>) class BundleBase
-    : public LieGroupBase<BundleBase<_Scalar, _Storage, _Gs...>,
-        (detail::lie_info<_Gs<_Scalar>>::lie_size + ...)> {
+template<MappableStorageLike _Storage, typename ... _Ts>
+requires(
+    ((LieGroup<_Ts> || StaticRnLike<_Ts>) &&... && true)
+   && (_Storage::Size == (detail::lie_info<_Ts>::lie_size + ...))
+)
+class BundleBase
+{
 private:
+
+  using _Scalar = std::common_type_t<typename _Ts::Scalar ...>;
+  static_assert(
+    (std::is_same_v<_Scalar, typename _Ts::Scalar> && ...),
+    "Bundle members must have the same Scalar type"
+  );
+
   _Storage s_;
 
   /* friend with other storage types */
-  template<typename OtherScalar, MappableStorageLike OS, template<typename> typename... Gs>
-  requires(((LieGroup<Gs<OtherScalar>> || StaticRnLike<Gs<OtherScalar>>)&&... && true)
-         && (OS::Size == (detail::lie_info<Gs<OtherScalar>>::lie_size + ...))
-         && std::is_same_v<typename OS::Scalar, OtherScalar>)
+  template<MappableStorageLike OS, typename... _OTs>
+  requires(
+     ((LieGroup<_OTs> || StaticRnLike<_OTs>)&&... && true)
+     && (OS::Size == (detail::lie_info<_OTs>::lie_size + ...))
+  )
   friend class BundleBase;
 
-  static constexpr std::array<Eigen::Index, sizeof...(_Gs)>
-    RepSizes{detail::lie_info<_Gs<_Scalar>>::lie_size...},
-    Dofs{detail::lie_info<_Gs<_Scalar>>::lie_dof...},
-    Dims{detail::lie_info<_Gs<_Scalar>>::lie_dim...},
-    ActDims{detail::lie_info<_Gs<_Scalar>>::lie_actdim...};
+  static constexpr std::array<Eigen::Index, sizeof...(_Ts)>
+    RepSizes{detail::lie_info<_Ts>::lie_size...},
+    Dofs{detail::lie_info<_Ts>::lie_dof...},
+    Dims{detail::lie_info<_Ts>::lie_dim...},
+    ActDims{detail::lie_info<_Ts>::lie_actdim...};
 
   static constexpr auto RepSizesPsum = meta::array_psum(RepSizes);
   static constexpr auto DofsPsum     = meta::array_psum(Dofs);
@@ -77,22 +91,52 @@ public:
 
   // CONSTRUCTOR AND OPERATOR BOILERPLATE
 
-  SMOOTH_BUNDLE_BOILERPLATE(BundleBase)
+  SMOOTH_BOILERPLATE(BundleBase)
+
+  using PlainObject = BundleBase<DefaultStorage<Scalar, RepSize>, _Ts...>;
+
+  template<typename NewScalar>
+  using CastType = BundleBase<
+    DefaultStorage<Scalar, RepSize>,
+    typename detail::lie_info<_Ts>::template CastType<NewScalar> ...
+  >;
+
+  template<MappableStorageLike NewStorage>
+  using NewStorageType = BundleBase<NewStorage, _Ts ...>;
+
+  /* copy constructor from other storage */
+  template<StorageLike OS>
+  requires ModifiableStorageLike<Storage>
+  BundleBase(const NewStorageType<OS> & o)
+  {
+    meta::static_for<RepSize>([&](auto i) { s_[i] = o.coeffs()[i]; });
+  }
+
+  /* copy assignment from other storage */
+  template<StorageLike OS>
+  requires ModifiableStorageLike<Storage>
+  BundleBase & operator=(const NewStorageType<OS> & o)
+  {
+    meta::static_for<RepSize>([&](auto i) { s_[i] = o.s_[i]; });
+    return *this;
+  }
+
+  SMOOTH_COMMON_API(BundleBase)
 
   // BUNDLE-SPECIFIC API
 
   template<std::size_t Idx>
-  using PartType = std::tuple_element_t<Idx, std::tuple<_Gs<_Scalar>...>>;
+  using PartType = std::tuple_element_t<Idx, std::tuple<_Ts...>>;
 
   /**
    * @brief Construct from components
    */
   template<typename... S>
   explicit BundleBase(S &&... args)
-  requires ModifiableStorageLike<Storage> && (sizeof...(S) == sizeof...(_Gs))
-    && std::conjunction_v<std::is_assignable<_Gs<_Scalar>, S>...>
+  requires ModifiableStorageLike<Storage> && (sizeof...(S) == sizeof...(_Ts))
+    && std::conjunction_v<std::is_assignable<_Ts, S>...>
   {
-    meta::static_for<sizeof...(_Gs)>(
+    meta::static_for<sizeof...(_Ts)>(
       [&](auto i) { part<i>() = std::get<i>(std::forward_as_tuple(args...)); });
   }
 
@@ -118,7 +162,7 @@ public:
 
   void setIdentity() requires ModifiableStorageLike<Storage>
   {
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       if constexpr (StaticRnLike<PartType<i>>) {
         part<i>().setZero();
       } else {
@@ -129,7 +173,7 @@ public:
 
   void setRandom() requires ModifiableStorageLike<Storage>
   {
-    meta::static_for<sizeof...(_Gs)>([&](auto i) { part<i>().setRandom(); });
+    meta::static_for<sizeof...(_Ts)>([&](auto i) { part<i>().setRandom(); });
   }
 
   /**
@@ -139,7 +183,7 @@ public:
   {
     MatrixGroup ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
       static constexpr std::size_t dim_len = std::get<i>(Dims);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -161,7 +205,7 @@ public:
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     Vector ret;
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t actdim_beg = std::get<i>(ActDimsPsum);
       static constexpr std::size_t actdim_len = std::get<i>(ActDims);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -178,11 +222,11 @@ public:
   /**
    * @brief Group composition
    */
-  template<typename OS, template<typename> typename... _OGs>
-  PlainObject operator*(const BundleBase<Scalar, OS, _OGs...> & r) const
+  template<StorageLike OS>
+  PlainObject operator*(const NewStorageType<OS> & r) const
   {
     PlainObject ret;
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       if constexpr (StaticRnLike<PartType<i>>) {
         ret.template part<i>() = part<i>() + r.template part<i>();
       } else {
@@ -198,7 +242,7 @@ public:
   PlainObject inverse() const
   {
     PlainObject ret;
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       if constexpr (StaticRnLike<PartType<i>>) {
         ret.template part<i>() = -part<i>();
       } else {
@@ -214,7 +258,7 @@ public:
   Tangent log() const
   {
     Tangent ret;
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -233,7 +277,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -255,7 +299,7 @@ public:
   requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
   {
     PlainObject ret;
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -276,7 +320,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -298,7 +342,7 @@ public:
   {
     MatrixGroup ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
@@ -323,7 +367,7 @@ public:
   requires(Derived::RowsAtCompileTime == Dim && Derived::ColsAtCompileTime == Dim)
   {
     Tangent ret;
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
@@ -349,7 +393,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -371,7 +415,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Gs)>([&](auto i) {
+    meta::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -385,14 +429,13 @@ public:
   }
 };
 
-template<typename _Scalar, template<typename> typename ... _Gs>
-requires((LieGroup<_Gs<_Scalar>> || StaticRnLike<_Gs<_Scalar>>)&&... && true)
+// Typedef for bundle with regular storage
+template<typename ... _Ts>
+requires((LieGroup<_Ts> || StaticRnLike<_Ts>) &&... && true)
 using Bundle = BundleBase<
-  _Scalar,
-  DefaultStorage<_Scalar, (detail::lie_info<_Gs<_Scalar>>::lie_size + ...)>,
-  _Gs...
+  DefaultStorage<std::common_type_t<typename _Ts::Scalar ...>, (detail::lie_info<_Ts>::lie_size + ...)>,
+  _Ts...
 >;
-
 }  // namespace smooth
 
 #endif  // SMOOTH__BUNDLE_HPP_

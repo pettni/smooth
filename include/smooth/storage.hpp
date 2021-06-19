@@ -86,7 +86,7 @@ struct map_dispatcher;
 template<LieGroup G>
 struct map_dispatcher<G>
 {
-  using type = change_storage_t<G, MappedStorage<typename G::Scalar, G::RepSize>>;
+  using type = typename G::template NewStorageType<MappedStorage<typename G::Scalar, G::RepSize>>;
 };
 
 /**
@@ -95,7 +95,7 @@ struct map_dispatcher<G>
 template<LieGroup G>
 struct map_dispatcher<const G>
 {
-  using type = change_storage_t<G, const MappedStorage<typename G::Scalar, G::RepSize>>;
+  using type = typename G::template NewStorageType<const MappedStorage<typename G::Scalar, G::RepSize>>;
 };
 
 /**

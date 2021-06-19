@@ -80,7 +80,7 @@ requires(const M & m1, M & m2, const Eigen::Matrix<typename M::Scalar, M::SizeAt
 {
   {m1.size()}->std::convertible_to<Eigen::Index>;             // degrees of freedom at runtime
   {m1 + a}->std::convertible_to<typename M::PlainObject>;
-  {m2 += a}->std::convertible_to<typename M::PlainObject>;
+  // {m2 += a}->std::convertible_to<typename M::PlainObject>;
   {m1 - m2}->std::convertible_to<Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1>>;
   {m1.template cast<float>()};
 };

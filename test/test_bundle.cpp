@@ -11,7 +11,7 @@ using namespace smooth;
 
 TEST(Bundle, Static)
 {
-  using bundle_t = Bundle<double, SE2, SE3, R2, SO2, SO3>;
+  using bundle_t = Bundle<SE2d, SE3d, T2d, SO2d, SO3d>;
 
   static_assert(bundle_t::RepSize == 19);
   static_assert(bundle_t::Dof == 15);
@@ -26,15 +26,15 @@ TEST(Bundle, Static)
 
   static_assert(
     std::is_same_v<
-      change_storage<bundle_t, MappedStorage<double, 19>>::type,
-      BundleBase<double, MappedStorage<double, 19>, SE2, SE3, R2, SO2, SO3>
+      bundle_t::NewStorageType<MappedStorage<double, 19>>,
+      BundleBase<MappedStorage<double, 19>, SE2d, SE3d, T2d, SO2d, SO3d>
     >
   );
 
   static_assert(
     std::is_same_v<
-      change_storage<bundle_t, const MappedStorage<double, 19>>::type,
-      BundleBase<double, const MappedStorage<double, 19>, SE2, SE3, R2, SO2, SO3>
+      bundle_t::NewStorageType<const MappedStorage<double, 19>>,
+      BundleBase<const MappedStorage<double, 19>, SE2d, SE3d, T2d, SO2d, SO3d>
     >
   );
 }
@@ -43,7 +43,7 @@ TEST(Bundle, Construct)
 {
   std::srand(5);
 
-  using mybundle = Bundle<double, SO2, SO3, R3>;
+  using mybundle = Bundle<SO2d, SO3d, T3d>;
 
   auto so2 = SO2d::Random();
   auto so3 = SO3d::Random();
@@ -61,21 +61,20 @@ TEST(Bundle, Construct)
   ASSERT_TRUE(m.isApprox(b.matrix_group().bottomRightCorner<4, 4>()));
 }
 
-template<typename Scalar>
-using SubBundle = Bundle<Scalar, SO3, R3>;
+using SubBundle = Bundle<SO3d, T3d>;
 
 TEST(Bundle, BundleOfBundle)
 {
   std::srand(5);
 
-  using MetaBundle = Bundle<double, SO2, SubBundle, SE2>;
+  using MetaBundle = Bundle<SO2d, SubBundle, SE2d>;
 
   auto so2 = SO2d::Random();
   auto so3 = SO3d::Random();
   auto e3 = Eigen::Vector3d::Random().eval();
   auto se2 = SE2d::Random();
 
-  SubBundle<double> sb(so3, e3);
+  SubBundle sb(so3, e3);
   MetaBundle mb(std::move(so2), std::move(sb), std::move(se2));
 
   ASSERT_TRUE(mb.part<1>().part<0>().isApprox(so3));
