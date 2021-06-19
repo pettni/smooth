@@ -15,16 +15,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04]
-        build_type: [Release, Debug]
+        build_type: [Debug]
         compiler: [
          {
           "cc": "gcc",
           "cxx": "g++"
-         },
-         {
-          "cc": "clang",
-          "cxx": "clang++"
          }
+         # {
+         #  "cc": "clang",
+         #  "cxx": "clang++"
+         # }
         ]
 
     steps:
@@ -34,7 +34,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends \
-        libeigen3-dev
+        libeigen3-dev \
+        libgtest-dev
 
     - name: Configure CMake
       run: |
