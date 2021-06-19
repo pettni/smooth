@@ -42,7 +42,7 @@ public:
   template<typename NewScalar>
   auto cast() const
   {
-    using CastT = decltype(M{}.template cast<NewScalar>())::PlainObject;
+    using CastT = typename decltype(M{}.template cast<NewScalar>())::PlainObject;
     ManifoldVector<CastT, Allocator> ret(vector_size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
       return x.template cast<NewScalar>();

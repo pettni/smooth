@@ -32,6 +32,10 @@ class SE2 : public LieGroupBase<SE2<_Scalar, _Storage>, 4>
 private:
   _Storage s_;
 
+  template<typename Scalar, StorageLike OS>
+  requires(OS::Size == 4 && std::is_same_v<typename OS::Scalar, Scalar>)
+  friend class SE2;
+
 public:
   // REQUIRED CONSTANTS
 
