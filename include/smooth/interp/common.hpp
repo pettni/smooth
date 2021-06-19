@@ -2,6 +2,7 @@
 #define INTERP__COMMON_HPP_
 
 #include "smooth/concepts.hpp"
+#include "smooth/meta.hpp"
 
 
 namespace smooth

@@ -32,6 +32,10 @@ class SO3 : public LieGroupBase<SO3<_Scalar, _Storage>, 4>
 private:
   _Storage s_;
 
+  template<typename Scalar, StorageLike OS>
+  requires(OS::Size == 4 && std::is_same_v<typename OS::Scalar, Scalar>)
+  friend class SO3;
+
 public:
   // REQUIRED CONSTANTS
 

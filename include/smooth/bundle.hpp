@@ -49,6 +49,13 @@ requires(((LieGroup<_Gs<_Scalar>> || StaticRnLike<_Gs<_Scalar>>)&&... && true)
 private:
   _Storage s_;
 
+  /* friend with other storage types */
+  template<typename OtherScalar, MappableStorageLike OS, template<typename> typename... Gs>
+  requires(((LieGroup<Gs<OtherScalar>> || StaticRnLike<Gs<OtherScalar>>)&&... && true)
+         && (OS::Size == (detail::lie_info<Gs<OtherScalar>>::lie_size + ...))
+         && std::is_same_v<typename OS::Scalar, OtherScalar>)
+  friend class BundleBase;
+
   static constexpr std::array<Eigen::Index, sizeof...(_Gs)>
     RepSizes{detail::lie_info<_Gs<_Scalar>>::lie_size...},
     Dofs{detail::lie_info<_Gs<_Scalar>>::lie_dof...},
@@ -379,6 +386,7 @@ public:
 };
 
 template<typename _Scalar, template<typename> typename ... _Gs>
+requires((LieGroup<_Gs<_Scalar>> || StaticRnLike<_Gs<_Scalar>>)&&... && true)
 using Bundle = BundleBase<
   _Scalar,
   DefaultStorage<_Scalar, (detail::lie_info<_Gs<_Scalar>>::lie_size + ...)>,

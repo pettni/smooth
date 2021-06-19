@@ -123,10 +123,13 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
 {
   using G = std::ranges::range_value_t<Rg>;
 
-  auto [tmin, tmax] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
+  auto [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
+
+  const double tmin = *tmin_ptr;
+  const double tmax = *tmax_ptr;
 
   const std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));
-  const std::size_t NumPts  = K + static_cast<std::size_t>((*tmax - *tmin + dt) / dt);
+  const std::size_t NumPts  = K + static_cast<std::size_t>((tmax - tmin + dt) / dt);
 
   constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BSPLINE, double, K>().transpose();
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
@@ -143,8 +146,8 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
     auto g_iter = std::ranges::begin(gg);
 
     for (auto i = 0u; i != NumData; ++t_iter, ++g_iter, ++i) {
-      const int64_t istar = static_cast<int64_t>((*t_iter - *tmin) / dt);
-      const double u      = (*t_iter - *tmin - istar * dt) / dt;
+      const int64_t istar = static_cast<int64_t>((*t_iter - tmin) / dt);
+      const double u      = (*t_iter - tmin - istar * dt) / dt;
 
       Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_vali_pts;
       auto g_spline = cspline_eval<K, G>(
@@ -174,7 +177,7 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
   auto t_iter = std::ranges::begin(tt);
   auto g_iter = std::ranges::begin(gg);
   for (auto i = 0u; i != NumPts; ++i) {
-    const double t_target = *tmin + (i - static_cast<double>(K + 1) / 2) * dt;
+    const double t_target = tmin + (i - static_cast<double>(K + 1) / 2) * dt;
     while (t_iter + 1 < std::ranges::end(tt)
            && std::abs(t_target - *(t_iter + 1)) < std::abs(t_target - *t_iter)) {
       ++t_iter;
@@ -186,7 +189,7 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
   // fit to data
   minimize<diff::Type::ANALYTIC>(f, ctrl_pts);
 
-  return BSpline<K, G>(*tmin, dt, std::move(ctrl_pts));
+  return BSpline<K, G>(tmin, dt, std::move(ctrl_pts));
 }
 
 }  // namespace smooth

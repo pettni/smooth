@@ -26,7 +26,8 @@ namespace smooth {
   Eigen::Index size() const { return Dof; };                                               \
   /* constructor for storage that takes an argument */                                     \
   template<typename S>                                                                     \
-  explicit X(S && s) requires std::is_constructible_v<Storage, S> : s_(std::forward<S>(s)) \
+  requires std::is_constructible_v<Storage, S> \
+  explicit X(S && s) : s_(std::forward<S>(s)) \
   {                                                                                        \
   }
 
@@ -49,35 +50,28 @@ namespace smooth {
     return *this;                                                                \
   }                                                                              \
   /* friend with base */                                                         \
-  friend class LieGroupBase<X<Scalar, Storage>, RepSize>;                        \
-  /* friend with other storage types */                                          \
-  template<typename OtherScalar, StorageLike OS>                                 \
-  requires std::is_same_v<Scalar, OtherScalar> friend class X;
+  friend class LieGroupBase<X<Scalar, Storage>, RepSize>;
 
 // Bundle requires slightly different macro due to more template args
-#define SMOOTH_BUNDLE_BOILERPLATE(X)                                                        \
-  SMOOTH_BOILERPLATE(X)                                                                     \
-  using PlainObject = X<Scalar, DefaultStorage<Scalar, RepSize>, _Gs...>;                   \
-  /* copy constructor from other storage */                                                 \
-  template<StorageLike OS>                                                                  \
-  X(const X<Scalar, OS, _Gs...> & o)                                                        \
-  requires ModifiableStorageLike<Storage>                                                   \
-  {                                                                                         \
-    meta::static_for<RepSize>([&](auto i) { s_[i] = o.coeffs()[i]; });                      \
-  }                                                                                         \
-  /* copy assignment from other storage */                                                  \
-  template<StorageLike OS>                                                                  \
-  X & operator=(const X<Scalar, OS, _Gs...> & o) requires ModifiableStorageLike<Storage>    \
-  {                                                                                         \
-    meta::static_for<RepSize>([&](auto i) { s_[i] = o.s_[i]; });                            \
-    return *this;                                                                           \
-  }                                                                                         \
-  /* friend with base */                                                                    \
-  friend class LieGroupBase<X<Scalar, Storage, _Gs...>, RepSize>;                           \
-  /* friend with other storage types */                                                     \
-  template<typename OtherScalar, MappableStorageLike OS, template<typename> typename... Gs> \
-  requires std::is_same_v<Scalar, OtherScalar> friend class X;
-
+#define SMOOTH_BUNDLE_BOILERPLATE(X)                                                     \
+  SMOOTH_BOILERPLATE(X)                                                                  \
+  using PlainObject = X<Scalar, DefaultStorage<Scalar, RepSize>, _Gs...>;                \
+  /* copy constructor from other storage */                                              \
+  template<StorageLike OS>                                                               \
+  X(const X<Scalar, OS, _Gs...> & o)                                                     \
+  requires ModifiableStorageLike<Storage>                                                \
+  {                                                                                      \
+    meta::static_for<RepSize>([&](auto i) { s_[i] = o.coeffs()[i]; });                   \
+  }                                                                                      \
+  /* copy assignment from other storage */                                               \
+  template<StorageLike OS>                                                               \
+  X & operator=(const X<Scalar, OS, _Gs...> & o) requires ModifiableStorageLike<Storage> \
+  {                                                                                      \
+    meta::static_for<RepSize>([&](auto i) { s_[i] = o.s_[i]; });                         \
+    return *this;                                                                        \
+  }                                                                                      \
+  /* friend with base */                                                                 \
+  friend class LieGroupBase<X<Scalar, Storage, _Gs...>, RepSize>;
 }  // namespace smooth
 
 #endif  // SMOOTH__MACRO_HPP_
