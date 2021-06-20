@@ -67,10 +67,7 @@ using GroupsToTest = ::testing::Types<smooth::SO2d,
   smooth::SE3d,
   smooth::Bundle<smooth::SO3d, smooth::T4d, smooth::SE2d>>;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wgnu-zero-variadic-macro-arguments"
 TYPED_TEST_SUITE(Spline, GroupsToTest);
-#pragma GCC diagnostic pop
 
 TYPED_TEST(Spline, BSplineConstant)
 {

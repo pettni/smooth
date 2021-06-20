@@ -15,15 +15,15 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04]
-        build_type: [Debug]
+        build_type: [Debug, Release]
         compiler: [
          {
-          "cc": "gcc",
-          "cxx": "g++"
+          "cc": "/usr/bin/gcc-10",
+          "cxx": "/usr/bin/g++-10"
          }
          # {
-         #  "cc": "clang",
-         #  "cxx": "clang++"
+         #  "cc": "/usr/bin/clang-11",
+         #  "cxx": "/usr/bin/clang++-11"
          # }
         ]
 
@@ -34,6 +34,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends \
+        libboost-dev \
+        libceres-dev \
         libeigen3-dev \
         libgtest-dev
 
@@ -48,9 +50,46 @@ jobs:
 
     - name: Build
       working-directory: ${{ github.workspace }}/build
-      run: make -j2
+      run: make -j8
 
     - name: Test
       working-directory: ${{ github.workspace }}/build
       run: make test
 
+  codecov:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+        g++-10 \
+        lcov \
+        libeigen3-dev \
+        libgtest-dev
+
+    - name: Configure CMake
+      run: |
+        cmake -B ${{ github.workspace }}/build \
+        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_C_COMPILER=/usr/bin/gcc-10 \
+        -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 \
+        -DBUILD_TESTING=ON \
+        -DBUILD_EXAMPLES=OFF
+
+    - name: Build
+      working-directory: ${{ github.workspace }}/build
+      run: make -j8
+
+    - name: Test
+      working-directory: ${{ github.workspace }}/build
+      run: make test
+
+    - name: Analyze coverage
+      working-directory: ${{ github.workspace }}
+      run: |
+        lcov -c --no-external --directory include -d build/CMakeFiles -o lcov.info
+        genhtml lcov.info -o out
