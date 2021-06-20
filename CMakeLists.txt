@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.15)
 project(smooth VERSION 0.0.1)
 
+include(CTest)
+include(GoogleTest)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-option(BUILD_TESTING "Build the tests." ON)
-option(BUILD_EXAMPLES "Build the examples." ON)
-option(CODE_COVERAGE "Code coverage for tests." OFF)
+option(BUILD_EXAMPLES "Build the examples." OFF)
 
 find_package(Eigen3 REQUIRED)
 
@@ -24,6 +25,14 @@ target_link_libraries(smooth
 INTERFACE
   Eigen3::Eigen
 )
+
+# ---------------------------------------------------------------------------------------
+# EXAMPLES
+# ---------------------------------------------------------------------------------------
+
+if(BUILD_EXAMPLES)
+  add_subdirectory(examples)
+endif()
 
 # ---------------------------------------------------------------------------------------
 # INSTALLATION
@@ -49,7 +58,7 @@ install(
 # CMAKE CONFIGURATION
 # ---------------------------------------------------------------------------------------
 
-set(export_dest_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
+set(export_dest_dir ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # Generate TARGETS files
 install(
@@ -81,19 +90,14 @@ install(
   DESTINATION  ${export_dest_dir}
 )
 
-if(BUILD_EXAMPLES)
-  add_subdirectory(examples)
-endif()
-
 # ---------------------------------------------------------------------------------------
 # TESTING
 # ---------------------------------------------------------------------------------------
 
 if(BUILD_TESTING)
-  enable_testing()
-
-  include(GoogleTest)
   find_package(GTest REQUIRED)
+
+  add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
   # CORE TESTS
 
@@ -105,36 +109,28 @@ if(BUILD_TESTING)
     test/test_se2.cpp
     test/test_se3.cpp
   )
-  target_compile_options(${PROJECT_NAME}_tests PRIVATE -Wall -Wextra -Wpedantic)
   target_link_libraries(${PROJECT_NAME}_tests PRIVATE smooth GTest::Main)
   gtest_discover_tests(${PROJECT_NAME}_tests)
 
-  add_executable(test_manifold_vector
-    test/test_manifold_vector.cpp
-  )
-  target_compile_options(test_manifold_vector PRIVATE -Wall -Wextra -Wpedantic)
+  add_executable(test_manifold_vector test/test_manifold_vector.cpp)
   target_link_libraries(test_manifold_vector PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_manifold_vector)
 
   # ALGO TESTS
 
   add_executable(test_spline test/test_spline.cpp)
-  target_compile_options(test_spline PRIVATE -Wall -Wextra -Wpedantic)
   target_link_libraries(test_spline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_spline)
 
   add_executable(test_diff test/test_diff.cpp)
-  target_compile_options(test_diff PRIVATE -Wall -Wextra -Wpedantic)
   target_link_libraries(test_diff PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_diff)
 
   add_executable(test_nls test/test_nls.cpp)
-  target_compile_options(test_nls PRIVATE -Wall -Wextra -Wpedantic)
   target_link_libraries(test_nls PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_nls)
 
   add_executable(test_nlreg test/test_nlreg.cpp)
-  target_compile_options(test_nlreg PRIVATE -Wall -Wextra -Wpedantic)
   target_link_libraries(test_nlreg PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_nlreg)
 
@@ -143,7 +139,6 @@ if(BUILD_TESTING)
   find_package(Boost QUIET)
   if(Boost_FOUND)
     add_executable(test_odeint test/test_odeint.cpp)
-    target_compile_options(test_odeint PRIVATE -Wall -Wextra -Wpedantic)
     target_link_libraries(test_odeint PRIVATE smooth Boost::headers GTest::Main)
     gtest_discover_tests(test_odeint)
   else()
@@ -153,7 +148,6 @@ if(BUILD_TESTING)
   find_package(Ceres QUIET)
   if(Ceres_FOUND)
     add_executable(test_ceres test/test_ceres.cpp)
-    target_compile_options(test_ceres PRIVATE -Wall -Wextra -Wpedantic)
     target_link_libraries(test_ceres PRIVATE smooth ${CERES_LIBRARIES} GTest::Main)
     gtest_discover_tests(test_ceres)
   else()
@@ -163,7 +157,6 @@ if(BUILD_TESTING)
   find_package(geometry_msgs QUIET)
   if(geometry_msgs_FOUND)
     add_executable(test_ros test/test_ros.cpp)
-    target_compile_options(test_ros PRIVATE -Wall -Wextra -Wpedantic)
     target_include_directories(test_ros PRIVATE ${geometry_msgs_INCLUDE_DIRS})
     target_link_libraries(test_ros PRIVATE smooth GTest::Main)
     gtest_discover_tests(test_ros)
@@ -177,34 +170,5 @@ if(BUILD_TESTING)
     target_link_libraries(test_diff PRIVATE autodiff::autodiff)
   else()
     message(WARNING "autodiff not found, disabling autodiff tests")
-  endif()
-
-  # -------------------------------------------------------------------------------------
-  # TEST COVERAGE
-  # -------------------------------------------------------------------------------------
-
-  if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    target_compile_options(${PROJECT_NAME}_tests PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(${PROJECT_NAME}_tests PRIVATE --coverage)
-    target_compile_options(test_odeint PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(test_odeint PRIVATE --coverage)
-    target_compile_options(test_ceres PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(test_ceres PRIVATE --coverage)
-    target_compile_options(test_ros PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(test_ros PRIVATE --coverage)
-    target_compile_options(test_bspline PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(test_bspline PRIVATE --coverage)
-    target_compile_options(test_diff PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(test_diff PRIVATE --coverage)
-    target_compile_options(test_nls PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(test_nls PRIVATE --coverage)
-    target_compile_options(test_nlreg PRIVATE -O0 -g --coverage -fno-inline -fno-inline-small-functions -fno-default-inline)
-    target_link_libraries(test_nlreg PRIVATE --coverage)
-
-    add_custom_target(testcov
-      COMMAND lcov -c --include ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/\\* -d ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles -o ${PROJECT_NAME}_testcov.info
-      COMMAND genhtml ${PROJECT_NAME}_testcov.info -o out
-      COMMAND echo "Open file://${CMAKE_CURRENT_BINARY_DIR}/out/index.html in a browser to view results"
-    )
   endif()
 endif()
