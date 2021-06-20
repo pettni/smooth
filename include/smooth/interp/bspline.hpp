@@ -48,8 +48,7 @@ public:
    */
   BSpline(double t0, double dt, std::vector<G, Eigen::aligned_allocator<G>> && ctrl_pts)
       : t0_(t0), dt_(dt), ctrl_pts_(std::move(ctrl_pts))
-  {
-  }
+  {}
 
   /**
    * @brief As above but for any range
@@ -59,8 +58,13 @@ public:
     double dt,
     const R & ctrl_pts) requires std::is_same_v<std::ranges::range_value_t<R>, G>
       : t0_(t0), dt_(dt), ctrl_pts_(std::ranges::begin(ctrl_pts), std::ranges::end(ctrl_pts))
-  {
-  }
+  {}
+
+  BSpline(const BSpline &) = default;
+  BSpline(BSpline &&) = default;
+  BSpline & operator=(const BSpline &) = default;
+  BSpline & operator=(BSpline &&) = default;
+  ~BSpline() = default;
 
   double dt() const { return dt_; }
 
@@ -119,7 +123,8 @@ private:
 template<std::size_t K, std::ranges::range Rt, std::ranges::range Rg>
   requires(LieGroup<std::ranges::range_value_t<Rg>>)
   && std::is_same_v<std::ranges::range_value_t<Rt>, double>
-BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg & gg, double dt)
+BSpline<K, std::ranges::range_value_t<Rg>>
+fit_bspline(const Rt & tt, const Rg & gg, double dt)
 {
   using G = std::ranges::range_value_t<Rg>;
 

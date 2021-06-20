@@ -60,7 +60,8 @@ public:
    */
   template<typename Derived>
   SO3(const Eigen::QuaternionBase<Derived> & q)
-  requires ModifiableStorageLike<Storage>&& std::is_same_v<typename Derived::Scalar, Scalar>
+  requires ModifiableStorageLike<Storage>
+    && std::is_same_v<typename Derived::Scalar, Scalar>
   {
     quat() = q.normalized();
   }
@@ -90,7 +91,7 @@ public:
    * @brief Return a quaternion by copy for constant storage
    */
   Eigen::Quaternion<Scalar> quat() const
-  requires(!MappableStorageLike<Storage>)
+  requires (!MappableStorageLike<Storage>)
   {
     return Eigen::Quaternion<Scalar>(s_[3], s_[0], s_[1], s_[2]);
   }

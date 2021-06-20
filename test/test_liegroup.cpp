@@ -4,33 +4,28 @@
 
 #include <sstream>
 
-#include "smooth/so2.hpp"
-#include "smooth/so3.hpp"
+#include "smooth/bundle.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
-#include "smooth/bundle.hpp"
-
+#include "smooth/so2.hpp"
+#include "smooth/so3.hpp"
 
 template<smooth::LieGroup G>
-class LieGroupInterface : public ::testing::Test
-{};
+class LieGroupInterface : public ::testing::Test {
+};
 
-using GroupsToTest = ::testing::Types<
-  smooth::SO2f,
+using GroupsToTest = ::testing::Types<smooth::SO2f,
   smooth::SO3f,
   smooth::SE2f,
   smooth::SE3f,
-  smooth::Bundle<
-    smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
-    smooth::T2d, smooth::T4d
-  >
->;
+  smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d, smooth::T2d, smooth::T4d>>;
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 
 template<smooth::LieGroup T>
 void test()
-{}
+{
+}
 
 TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
 {
@@ -76,15 +71,21 @@ TYPED_TEST(LieGroupInterface, Constructors)
   }
 }
 
+TYPED_TEST(LieGroupInterface, Size)
+{
+  auto g = TypeParam::Random();
+  ASSERT_EQ(g.size(), TypeParam::Dof);
+}
+
 TYPED_TEST(LieGroupInterface, Action)
 {
   std::srand(5);
 
   for (auto i = 0u; i != 10; ++i) {
-    auto g = TypeParam::Random();
+    auto g                               = TypeParam::Random();
     const typename TypeParam::Vector vec = TypeParam::Vector::Random();
-    typename TypeParam::Vector vec_p = g * vec;
-    typename TypeParam::Vector vec_copy = g.inverse() * vec_p;
+    typename TypeParam::Vector vec_p     = g * vec;
+    typename TypeParam::Vector vec_copy  = g.inverse() * vec_p;
 
     ASSERT_TRUE(vec_copy.isApprox(vec));
   }
@@ -94,7 +95,7 @@ TYPED_TEST(LieGroupInterface, DataAccess)
 {
   std::srand(5);
 
-  TypeParam g1 = TypeParam::Random();
+  TypeParam g1       = TypeParam::Random();
   const TypeParam g2 = TypeParam::Random();
 
   smooth::Map<TypeParam> m1(g1.data());
@@ -103,7 +104,8 @@ TYPED_TEST(LieGroupInterface, DataAccess)
   ASSERT_TRUE(m1.isApprox(g1));
   ASSERT_TRUE(m2.isApprox(g2));
 
-  smooth::Map<TypeParam> m1p(m1.data()); smooth::Map<const TypeParam> m2p(m2.data());
+  smooth::Map<TypeParam> m1p(m1.data());
+  smooth::Map<const TypeParam> m2p(m2.data());
 
   ASSERT_TRUE(m1p.isApprox(g1));
   ASSERT_TRUE(m2p.isApprox(g2));
@@ -118,7 +120,7 @@ TYPED_TEST(LieGroupInterface, Operators)
 
     const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
 
-    TypeParam gp = g + a;
+    TypeParam gp   = g + a;
     TypeParam gp_t = g * TypeParam::exp(a);
     ASSERT_TRUE(gp.isApprox(gp_t));
 
@@ -141,7 +143,7 @@ TYPED_TEST(LieGroupInterface, Cast)
 
   TypeParam g = TypeParam::Random();
 
-  const auto g_float = g.template cast<float>();
+  const auto g_float  = g.template cast<float>();
   const auto g_double = g.template cast<double>();
   static_cast<void>(g_float);
   static_cast<void>(g_double);
@@ -167,25 +169,19 @@ TYPED_TEST(LieGroupInterface, Copying)
   g1.setRandom();
   m1 = g1;
   ASSERT_TRUE(m1.isApprox(g1));
-  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
-    ASSERT_DOUBLE_EQ(m1.coeffs()[i], a1[i]);
-  }
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(m1.coeffs()[i], a1[i]); }
 
   // map to map
   m1.setRandom();
   m2 = m1;
   ASSERT_TRUE(m2.isApprox(m1));
-  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
-    ASSERT_DOUBLE_EQ(m1.coeffs()[i], a2[i]);
-  }
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(m1.coeffs()[i], a2[i]); }
 
   // map to group
   m1.setRandom();
   g1 = m1;
   ASSERT_TRUE(g1.isApprox(m1));
-  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
-    ASSERT_DOUBLE_EQ(g1.coeffs()[i], a1[i]);
-  }
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(g1.coeffs()[i], a1[i]); }
 
   // move group to group
   {
@@ -214,8 +210,8 @@ TYPED_TEST(LieGroupInterface, Inverse)
   const auto g_id = TypeParam::Identity();
   ASSERT_TRUE((g_id * g_id).isApprox(g_id));
   for (auto i = 0u; i != 10; ++i) {
-    const auto g = TypeParam::Random();
-    const auto ginv = g.inverse();
+    const auto g      = TypeParam::Random();
+    const auto ginv   = g.inverse();
     const auto g_ginv = g * ginv;
     ASSERT_TRUE(g_ginv.isApprox(g_id));
     ASSERT_TRUE(g.matrix_group().inverse().isApprox(g.inverse().matrix_group()));
@@ -227,7 +223,7 @@ TYPED_TEST(LieGroupInterface, LogAndExp)
   std::srand(5);
 
   // identity <-> zero
-  const auto g_id = TypeParam::Identity();
+  const auto g_id  = TypeParam::Identity();
   const auto exp_0 = TypeParam::exp(TypeParam::Tangent::Zero());
   ASSERT_TRUE(g_id.isApprox(exp_0));
   const auto log_id = g_id.log();
@@ -235,9 +231,9 @@ TYPED_TEST(LieGroupInterface, LogAndExp)
 
   // test some random ones
   for (auto i = 0u; i != 10; ++i) {
-    const auto g = TypeParam::Random();
-    const auto log = g.log();
-    const auto g_copy = TypeParam::exp(log);
+    const auto g        = TypeParam::Random();
+    const auto log      = g.log();
+    const auto g_copy   = TypeParam::exp(log);
     const auto log_copy = g_copy.log();
 
     // check that exp o log = Id, log o exp = Id
@@ -260,12 +256,13 @@ TYPED_TEST(LieGroupInterface, Ad)
   std::srand(5);
 
   for (auto i = 0u; i != 10; ++i) {
-    const auto g = TypeParam::Random();
+    const auto g                        = TypeParam::Random();
     const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
 
     // check that Ad a = (G \hat a G^{-1})^\vee
     const auto b1 = (g.Ad() * a).eval();
-    const auto b2 = TypeParam::vee(g.matrix_group() * TypeParam::hat(a) * g.inverse().matrix_group());
+    const auto b2 =
+      TypeParam::vee(g.matrix_group() * TypeParam::hat(a) * g.inverse().matrix_group());
     ASSERT_TRUE(b1.isApprox(b2));
   }
 }
@@ -293,8 +290,8 @@ TYPED_TEST(LieGroupInterface, HatAndVee)
   for (auto i = 0u; i != 10; ++i) {
     const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
 
-    const auto hat = TypeParam::hat(a);
-    const auto vee = TypeParam::vee(hat);
+    const auto hat  = TypeParam::hat(a);
+    const auto vee  = TypeParam::vee(hat);
     const auto hat2 = TypeParam::hat(vee);
 
     ASSERT_TRUE(a.isApprox(vee));
@@ -307,7 +304,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
   std::srand(5);
 
   // test zero vector
-  const auto dr_exp_0 = TypeParam::dr_exp(TypeParam::Tangent::Zero());
+  const auto dr_exp_0     = TypeParam::dr_exp(TypeParam::Tangent::Zero());
   const auto dr_exp_inv_0 = TypeParam::dr_expinv(TypeParam::Tangent::Zero());
 
   ASSERT_TRUE(dr_exp_0.isApprox(TypeParam::TangentMap::Identity()));
@@ -318,8 +315,8 @@ TYPED_TEST(LieGroupInterface, Jacobians)
   // check that they are each others inverses
   for (auto i = 0u; i != 10; ++i) {
     const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
-    const auto dr_exp_a = TypeParam::dr_exp(a);
-    const auto dr_expinv_a = TypeParam::dr_expinv(a);
+    const auto dr_exp_a                 = TypeParam::dr_exp(a);
+    const auto dr_expinv_a              = TypeParam::dr_expinv(a);
 
     const auto M1 = (dr_exp_a * dr_expinv_a).eval();
     const auto M2 = (dr_expinv_a * dr_exp_a).eval();
@@ -336,11 +333,11 @@ TYPED_TEST(LieGroupInterface, Jacobians)
 
   // check infinitesimal step for exp (right)
   for (auto i = 0; i != 10; ++i) {
-    const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
+    const typename TypeParam::Tangent a  = TypeParam::Tangent::Random();
     const typename TypeParam::Tangent da = 1e-4 * TypeParam::Tangent::Random();
 
-    const auto dr_exp = TypeParam::dr_exp(a);
-    const auto g_exact = TypeParam::exp(a + da);
+    const auto dr_exp   = TypeParam::dr_exp(a);
+    const auto g_exact  = TypeParam::exp(a + da);
     const auto g_approx = TypeParam::exp(a) * TypeParam::exp(dr_exp * da);
 
     ASSERT_TRUE(g_approx.isApprox(g_exact, eps));
@@ -348,11 +345,11 @@ TYPED_TEST(LieGroupInterface, Jacobians)
 
   // check infinitesimal step for exp (left)
   for (auto i = 0; i != 10; ++i) {
-    const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
+    const typename TypeParam::Tangent a  = TypeParam::Tangent::Random();
     const typename TypeParam::Tangent da = 1e-4 * TypeParam::Tangent::Random();
 
-    const auto dl_exp = TypeParam::dl_exp(a);
-    const auto g_exact = TypeParam::exp(da + a);
+    const auto dl_exp   = TypeParam::dl_exp(a);
+    const auto g_exact  = TypeParam::exp(da + a);
     const auto g_approx = TypeParam::exp(dl_exp * da) * TypeParam::exp(a);
 
     ASSERT_TRUE(g_approx.isApprox(g_exact, eps));
@@ -360,10 +357,10 @@ TYPED_TEST(LieGroupInterface, Jacobians)
 
   // check infinitesimal step for log (right)
   for (auto i = 0u; i != 10; ++i) {
-    const auto g = TypeParam::Random();
+    const auto g                         = TypeParam::Random();
     const typename TypeParam::Tangent dg = 1e-4 * TypeParam::Tangent::Random();
 
-    const auto a_exact = (g * TypeParam::exp(dg)).log().eval();
+    const auto a_exact  = (g * TypeParam::exp(dg)).log().eval();
     const auto a_approx = (g.log() + TypeParam::dr_expinv(g.log()) * dg).eval();
 
     ASSERT_TRUE(a_exact.isApprox(a_approx, eps));
@@ -371,10 +368,10 @@ TYPED_TEST(LieGroupInterface, Jacobians)
 
   // check infinitesimal step for log (left)
   for (auto i = 0u; i != 10; ++i) {
-    const auto g = TypeParam::Random();
+    const auto g                         = TypeParam::Random();
     const typename TypeParam::Tangent dg = 1e-4 * TypeParam::Tangent::Random();
 
-    const auto a_exact = (TypeParam::exp(dg) * g).log().eval();
+    const auto a_exact  = (TypeParam::exp(dg) * g).log().eval();
     const auto a_approx = (TypeParam::dl_expinv(g.log()) * dg + g.log()).eval();
 
     ASSERT_TRUE(a_exact.isApprox(a_approx, eps));

@@ -68,7 +68,7 @@ public:
    * @brief Access const SO2 part
    */
   Map<const SO2<Scalar>> so2() const
-  requires ModifiableStorageLike<Storage>
+  requires MappableStorageLike<Storage>
   {
     return Map<const SO2<Scalar>>(s_.data() + 2);
   }
@@ -86,22 +86,22 @@ public:
    * @brief Access SO2 part by copy
    */
   SO2<Scalar> so2() const
-  requires ConstStorageLike<Storage>
+  requires (!MappableStorageLike<Storage>)
   {
     return SO2<Scalar>(s_[2], s_[3]);
   }
 
   /**
-   * @brief Access const E2 part
+   * @brief Access const T2 part
    */
   Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>> translation() const
-  requires ModifiableStorageLike<Storage>
+  requires MappableStorageLike<Storage>
   {
     return Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>>(s_.data());
   }
 
   /**
-   * @brief Access E2 part
+   * @brief Access T2 part
    */
   Eigen::Map<Eigen::Matrix<Scalar, 2, 1>> translation()
   requires ModifiableStorageLike<Storage>
@@ -110,10 +110,10 @@ public:
   }
 
   /**
-   * @brief Access E2 part by copy
+   * @brief Access T2 part by copy
    */
   Eigen::Matrix<Scalar, 2, 1> translation() const
-  requires ConstStorageLike<Storage>
+  requires (!MappableStorageLike<Storage>)
   {
     return Eigen::Matrix<Scalar, 2, 1>(s_[0], s_[1]);
   }

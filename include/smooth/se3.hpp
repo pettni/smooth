@@ -67,29 +67,32 @@ public:
   /**
    * @brief Access const SO3 part
    */
-  Map<const SO3<Scalar>> so3() const requires MappableStorageLike<Storage>
+  Map<const SO3<Scalar>> so3() const
+  requires MappableStorageLike<Storage>
   {
     return Map<const SO3<Scalar>>(s_.data() + 3);
   }
 
   /**
-   * @brief Access SO2 part
+   * @brief Access SO3 part
    */
-  Map<SO3<Scalar>> so3() requires ModifiableStorageLike<Storage>
+  Map<SO3<Scalar>> so3()
+  requires ModifiableStorageLike<Storage>
   {
     return Map<SO3<Scalar>>(s_.data() + 3);
   }
 
   /**
-   * @brief Access SO2 part by copy
+   * @brief Access SO3 part by copy
    */
-  SO3<Scalar> so3() const requires(!MappableStorageLike<Storage>)
+  SO3<Scalar> so3() const
+  requires (!MappableStorageLike<Storage>)
   {
     return SO3<Scalar>(Eigen::Quaternion<Scalar>(s_[6], s_[3], s_[4], s_[5]));
   }
 
   /**
-   * @brief Access const E3 part
+   * @brief Access const T3 part
    */
   Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>> translation() const
   requires MappableStorageLike<Storage>
@@ -98,7 +101,7 @@ public:
   }
 
   /**
-   * @brief Access E3 part
+   * @brief Access T3 part
    */
   Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> translation()
   requires ModifiableStorageLike<Storage>
@@ -107,10 +110,10 @@ public:
   }
 
   /**
-   * @brief Access E3 part by copy
+   * @brief Access T3 part by copy
    */
   Eigen::Matrix<Scalar, 3, 1> translation() const
-  requires(!MappableStorageLike<Storage>)
+  requires (!MappableStorageLike<Storage>)
   {
     return Eigen::Matrix<Scalar, 3, 1>(s_[0], s_[1], s_[2]);
   }
