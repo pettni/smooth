@@ -73,7 +73,7 @@ TYPED_TEST(Spline, BSplineConstant)
 {
   std::srand(5);
 
-  smooth::meta::static_for<6>([](auto k) {
+  smooth::utils::static_for<6>([](auto k) {
     static constexpr uint32_t K = k + 1;
 
     std::vector<TypeParam> ctrl_pts;

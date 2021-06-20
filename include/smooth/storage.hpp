@@ -28,54 +28,60 @@ public:
   using Scalar                       = _Scalar;
   static constexpr Eigen::Index Size = N;
 
-  MappedStorage(const Scalar * a_in) : a(a_in) {}
+  MappedStorage(Scalar * a_in) : a(a_in) {}
+
+  // copy construction is not allowed
+  MappedStorage(const MappedStorage & o) = delete;
 
   // copy must copy underlying data
-  MappedStorage(const MappedStorage & o)
-  {
-    memcpy(const_cast<Scalar *>(a), o.a, N * sizeof(_Scalar));
-  }
   MappedStorage & operator=(const MappedStorage & o)
   {
-    memcpy(const_cast<Scalar *>(a), o.a, N * sizeof(_Scalar));
+    memcpy(a, o.a, N * sizeof(_Scalar));
     return *this;
   }
 
   // for moving we move pointer
-  MappedStorage(MappedStorage &&) = default;
+  MappedStorage(MappedStorage &&)             = default;
   MappedStorage & operator=(MappedStorage &&) = default;
-  ~MappedStorage()                            = default;
 
-  Scalar & operator[](int i) { return const_cast<Scalar &>(a[i]); }
+  // memory is not managed
+  ~MappedStorage() = default;
+
+  Scalar & operator[](int i) { return a[i]; }
   const Scalar & operator[](int i) const { return a[i]; }
-  Scalar * data() { return const_cast<Scalar *>(a); }
+  Scalar * data() { return a; }
   const Scalar * data() const { return a; }
 
 private:
-  const Scalar * a;
+  Scalar * const a;
 };
 
-/**
- * @brief Change storage type of a Lie Group type
- */
-template<LieGroup G, typename NewStorage>
-struct change_storage;
+template<typename _Scalar, std::size_t N>
+class ConstMappedStorage {
+public:
+  using Scalar                       = _Scalar;
+  static constexpr Eigen::Index Size = N;
 
-template<template<typename, typename, template<typename> typename...> typename _G,
-  typename _Scalar,
-  typename _NewStorage,
-  template<typename, std::size_t>
-  typename _Storage,
-  std::size_t Size,
-  template<typename>
-  typename... _Ts>
-struct change_storage<_G<_Scalar, _Storage<_Scalar, Size>, _Ts...>, _NewStorage>
-{
-  using type = _G<_Scalar, _NewStorage, _Ts...>;
+  ConstMappedStorage(const Scalar * a_in) : a(a_in) {}
+
+  // can not modify
+  ConstMappedStorage(const ConstMappedStorage & o) = delete;
+  ConstMappedStorage & operator=(const ConstMappedStorage & o) = delete;
+
+  // for moving we move pointer
+  ConstMappedStorage(ConstMappedStorage &&)             = default;
+  ConstMappedStorage & operator=(ConstMappedStorage &&) = default;
+
+  // memory is not managed
+  ~ConstMappedStorage()                            = default;
+
+  const Scalar & operator[](int i) const { return a[i]; }
+  const Scalar * data() const { return a; }
+
+private:
+  const Scalar * const a;
 };
 
-template<LieGroup G, typename NewScalar>
-using change_storage_t = typename change_storage<G, NewScalar>::type;
 
 template<typename T>
 struct map_dispatcher;
@@ -95,14 +101,14 @@ struct map_dispatcher<G>
 template<LieGroup G>
 struct map_dispatcher<const G>
 {
-  using type = typename G::template NewStorageType<const MappedStorage<typename G::Scalar, G::RepSize>>;
+  using type = typename G::template NewStorageType<ConstMappedStorage<typename G::Scalar, G::RepSize>>;
 };
 
 /**
  * @brief Use regular Eigen map as map for En
  */
-template<typename G>
-requires(std::is_base_of_v<Eigen::EigenBase<G>, G>) struct map_dispatcher<G>
+template<RnLike G>
+struct map_dispatcher<G>
 {
   using type = Eigen::Map<G>;
 };
@@ -110,8 +116,8 @@ requires(std::is_base_of_v<Eigen::EigenBase<G>, G>) struct map_dispatcher<G>
 /**
  * @brief Use regular Eigen map as map for En
  */
-template<typename G>
-requires(std::is_base_of_v<Eigen::EigenBase<G>, G>) struct map_dispatcher<const G>
+template<RnLike G>
+struct map_dispatcher<const G>
 {
   using type = Eigen::Map<const G>;
 };

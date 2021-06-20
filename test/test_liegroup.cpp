@@ -37,7 +37,7 @@ TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
   // check that groups satisfy LieGroup concept
   test<TypeParam>();
   test<smooth::Map<TypeParam>>();
-  test<smooth::Map<const TypeParam>>();
+  test<const smooth::Map<TypeParam>>();
 }
 
 TYPED_TEST(LieGroupInterface, Constructors)

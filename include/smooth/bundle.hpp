@@ -4,7 +4,7 @@
 #include "common.hpp"
 #include "concepts.hpp"
 #include "macro.hpp"
-#include "meta.hpp"
+#include "utils.hpp"
 #include "storage.hpp"
 
 namespace smooth {
@@ -51,7 +51,6 @@ requires ((LieGroup<_Ts> || StaticRnLike<_Ts>) &&... && true)
 class BundleBase
 {
 private:
-
   _Storage s_;
 
   /* friend with other storage types */
@@ -66,10 +65,10 @@ private:
     Dims{detail::lie_info<_Ts>::lie_dim...},
     ActDims{detail::lie_info<_Ts>::lie_actdim...};
 
-  static constexpr auto RepSizesPsum = meta::array_psum(RepSizes);
-  static constexpr auto DofsPsum     = meta::array_psum(Dofs);
-  static constexpr auto DimsPsum     = meta::array_psum(Dims);
-  static constexpr auto ActDimsPsum  = meta::array_psum(ActDims);
+  static constexpr auto RepSizesPsum = utils::array_psum(RepSizes);
+  static constexpr auto DofsPsum     = utils::array_psum(Dofs);
+  static constexpr auto DimsPsum     = utils::array_psum(Dims);
+  static constexpr auto ActDimsPsum  = utils::array_psum(ActDims);
 
 public:
   // REQUIRED CONSTANTS
@@ -118,7 +117,7 @@ public:
     && std::conjunction_v<std::is_assignable<_Ts, S>...>
   explicit BundleBase(S &&... args)
   {
-    meta::static_for<sizeof...(_Ts)>(
+    utils::static_for<sizeof...(_Ts)>(
       [&](auto i) { part<i>() = std::get<i>(std::forward_as_tuple(args...)); }
     );
   }
@@ -145,7 +144,7 @@ public:
 
   void setIdentity() requires ModifiableStorageLike<Storage>
   {
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       if constexpr (StaticRnLike<PartType<i>>) {
         part<i>().setZero();
       } else {
@@ -156,7 +155,7 @@ public:
 
   void setRandom() requires ModifiableStorageLike<Storage>
   {
-    meta::static_for<sizeof...(_Ts)>([&](auto i) { part<i>().setRandom(); });
+    utils::static_for<sizeof...(_Ts)>([&](auto i) { part<i>().setRandom(); });
   }
 
   /**
@@ -166,7 +165,7 @@ public:
   {
     MatrixGroup ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
       static constexpr std::size_t dim_len = std::get<i>(Dims);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -188,7 +187,7 @@ public:
   Vector operator*(const Eigen::MatrixBase<Derived> & x) const
   {
     Vector ret;
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t actdim_beg = std::get<i>(ActDimsPsum);
       static constexpr std::size_t actdim_len = std::get<i>(ActDims);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -209,7 +208,7 @@ public:
   PlainObject operator*(const NewStorageType<OS> & r) const
   {
     PlainObject ret;
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       if constexpr (StaticRnLike<PartType<i>>) {
         ret.template part<i>() = part<i>() + r.template part<i>();
       } else {
@@ -225,7 +224,7 @@ public:
   PlainObject inverse() const
   {
     PlainObject ret;
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       if constexpr (StaticRnLike<PartType<i>>) {
         ret.template part<i>() = -part<i>();
       } else {
@@ -241,7 +240,7 @@ public:
   Tangent log() const
   {
     Tangent ret;
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -260,7 +259,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -282,7 +281,7 @@ public:
   static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
   {
     PlainObject ret;
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -303,7 +302,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -325,7 +324,7 @@ public:
   {
     MatrixGroup ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
@@ -350,7 +349,7 @@ public:
   static Tangent vee(const Eigen::MatrixBase<Derived> & A)
   {
     Tangent ret;
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
@@ -376,7 +375,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {
@@ -398,7 +397,7 @@ public:
   {
     TangentMap ret;
     ret.setZero();
-    meta::static_for<sizeof...(_Ts)>([&](auto i) {
+    utils::static_for<sizeof...(_Ts)>([&](auto i) {
       static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
       static constexpr std::size_t dof_len = std::get<i>(Dofs);
       if constexpr (StaticRnLike<PartType<i>>) {

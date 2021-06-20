@@ -7,7 +7,7 @@
 
 #include "smooth/concepts.hpp"
 #include "smooth/manifold_vector.hpp"
-#include "smooth/meta.hpp"
+#include "smooth/utils.hpp"
 #include "smooth/nls.hpp"
 
 #include "common.hpp"

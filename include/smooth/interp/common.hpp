@@ -2,7 +2,7 @@
 #define INTERP__COMMON_HPP_
 
 #include "smooth/concepts.hpp"
-#include "smooth/meta.hpp"
+#include "smooth/utils.hpp"
 
 
 namespace smooth
@@ -14,16 +14,16 @@ namespace detail
 {
 
 template<typename Scalar, std::size_t K>
-constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
+constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
 {
-  ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> ret;
+  ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> ret;
   if constexpr (K == 0) {
     ret[0][0] = 1;
     return ret;
   } else {
     constexpr auto coeff_mat_km1 = bspline_coefmat<Scalar, K - 1>();
-    ::smooth::meta::StaticMatrix<Scalar, K + 1, K> low, high;
-    ::smooth::meta::StaticMatrix<Scalar, K, K + 1> left, right;
+    ::smooth::utils::StaticMatrix<Scalar, K + 1, K> low, high;
+    ::smooth::utils::StaticMatrix<Scalar, K, K + 1> left, right;
 
     for (std::size_t i = 0; i != K; ++i) {
       for (std::size_t j = 0; j != K; ++j) {
@@ -45,16 +45,16 @@ constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
 }
 
 template<typename Scalar, std::size_t N>
-constexpr ::smooth::meta::StaticMatrix<Scalar, N + 1, N + 1> bezier_coefmat()
+constexpr ::smooth::utils::StaticMatrix<Scalar, N + 1, N + 1> bezier_coefmat()
 {
-  ::smooth::meta::StaticMatrix<Scalar, N + 1, N + 1> ret;
+  ::smooth::utils::StaticMatrix<Scalar, N + 1, N + 1> ret;
   if constexpr (N == 0) {
     ret[0][0] = 1;
     return ret;
   } else {
     constexpr auto coeff_mat_km1 = bezier_coefmat<Scalar, N - 1>();
-    ::smooth::meta::StaticMatrix<Scalar, N + 1, N> low, high;
-    ::smooth::meta::StaticMatrix<Scalar, N, N + 1> left, right;
+    ::smooth::utils::StaticMatrix<Scalar, N + 1, N> low, high;
+    ::smooth::utils::StaticMatrix<Scalar, N, N + 1> left, right;
 
     for (std::size_t i = 0; i != N; ++i) {
       for (std::size_t j = 0; j != N; ++j) {
@@ -75,9 +75,9 @@ constexpr ::smooth::meta::StaticMatrix<Scalar, N + 1, N + 1> bezier_coefmat()
 }
 
 template<CSplineType Type, typename Scalar, std::size_t K>
-constexpr ::smooth::meta::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
+constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
 {
-  ::smooth::meta::StaticMatrix<Scalar, K+1, K+1> M;
+  ::smooth::utils::StaticMatrix<Scalar, K+1, K+1> M;
   if constexpr (Type == CSplineType::BEZIER) {
     M = bezier_coefmat<double, K>();
   }

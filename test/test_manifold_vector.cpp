@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <sstream>
+
 #include "smooth/common.hpp"
 #include "smooth/manifold_vector.hpp"
 #include "smooth/so3.hpp"
@@ -20,11 +22,19 @@ TEST(ManifoldVector, Static)
 TEST(ManifoldVector, Construct)
 {
   using M = smooth::ManifoldVector<smooth::SO3d>;
-  M m;
+  M m1, m2;
 
-  m.push_back(smooth::SO3d::Random());
-  m.push_back(smooth::SO3d::Random());
-  m.push_back(smooth::SO3d::Random());
+  m1.push_back(smooth::SO3d::Random());
+  m1.push_back(smooth::SO3d::Random());
+  m1.push_back(smooth::SO3d::Random());
+
+  m2.push_back(smooth::SO3d::Random());
+  m2.push_back(smooth::SO3d::Random());
+  m2.push_back(smooth::SO3d::Random());
+
+  auto log = m2 - m1;
+
+  ASSERT_EQ(log.size(), 9);
 }
 
 TEST(ManifoldVector, Optimize)
@@ -52,3 +62,18 @@ TEST(ManifoldVector, Optimize)
     ASSERT_LE(x.log().norm(), 1e-5);
   }
 }
+
+TEST(ManifoldVector, print)
+{
+  using M = smooth::ManifoldVector<smooth::SO3d>;
+  M m;
+
+  m.push_back(smooth::SO3d::Random());
+  m.push_back(smooth::SO3d::Random());
+  m.push_back(smooth::SO3d::Random());
+
+  std::stringstream ss;
+  ss << m << std::endl;
+  ASSERT_GE(ss.str().size(), 0);
+}
+

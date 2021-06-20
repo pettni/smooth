@@ -1,7 +1,7 @@
 #ifndef SMOOTH__MACRO_HPP_
 #define SMOOTH__MACRO_HPP_
 
-#include "meta.hpp"
+#include "utils.hpp"
 
 namespace smooth {
 
@@ -26,9 +26,6 @@ namespace smooth {
   using Vector      = Eigen::Matrix<Scalar, ActDim, 1>;                              \
   using MatrixGroup = Eigen::Matrix<Scalar, Dim, Dim>;                               \
                                                                                      \
-  /* required to satisfy manifold concept */                                         \
-  static constexpr Eigen::Index SizeAtCompileTime = Dof;                             \
-                                                                                     \
   X()                        = default;                                              \
   X(const X & o)             = default;                                              \
   X(X && o)                  = default;                                              \
@@ -36,28 +33,43 @@ namespace smooth {
   X & operator=(X && o)      = default;                                              \
   ~X()                       = default;                                              \
                                                                                      \
-  /* degrees of freedom at runtime */                                                \
+  /**                                                                                \
+   * @brief Degrees of freedom at compile time                                       \
+   */                                                                                \
+  static constexpr Eigen::Index SizeAtCompileTime = Dof;                             \
+                                                                                     \
+  /**                                                                                \
+   * @brief Degrees of freedom at runtime                                            \
+   */                                                                                \
   Eigen::Index size() const { return Dof; };                                         \
                                                                                      \
-  /* constructor for storage that takes an argument */                               \
+  /**                                                                                \
+   * @brief Constructor for storage                                                  \
+   */                                                                                \
   template<typename S>                                                               \
-  requires std::is_constructible_v<Storage, S> explicit X(S && s)                    \
+  requires std::is_constructible_v<Storage, S>                                       \
+  explicit X(S && s)                                                                 \
   : s_(std::forward<S>(s))                                                           \
   {}                                                                                 \
                                                                                      \
-  /* copy constructor from other storage */                                          \
+  /**                                                                                \
+   * @brief Copy constructor from other storage                                      \
+   */                                                                                \
   template<StorageLike OS>                                                           \
   requires ModifiableStorageLike<Storage>                                            \
   X(const NewStorageType<OS> & o)                                                    \
   {                                                                                  \
-    meta::static_for<RepSize>([&](auto i) { s_[i] = o.coeffs()[i]; });               \
+    utils::static_for<RepSize>([&](auto i) { s_[i] = o.coeffs()[i]; });              \
   }                                                                                  \
-  /* copy assignment from other storage */                                           \
+                                                                                     \
+  /**                                                                                \
+   * @brief Copy assignment from other storage                                       \
+   */                                                                                \
   template<StorageLike OS>                                                           \
   requires ModifiableStorageLike<Storage>                                            \
   X & operator=(const NewStorageType<OS> & o)                                        \
   {                                                                                  \
-    meta::static_for<RepSize>([&](auto i) { s_[i] = o.s_[i]; });                     \
+    utils::static_for<RepSize>([&](auto i) { s_[i] = o.s_[i]; });                    \
     return *this;                                                                    \
   }                                                                                  \
                                                                                      \
@@ -94,7 +106,7 @@ namespace smooth {
   ) const                                                                            \
   {                                                                                  \
     double n1_sq{0}, n2_sq{0}, n12_sq{0};                                            \
-    meta::static_for<RepSize>([&](auto i) {                                          \
+    utils::static_for<RepSize>([&](auto i) {                                         \
       n1_sq += coeffs()[i] * coeffs()[i];                                            \
       n2_sq += o.coeffs()[i] * o.coeffs()[i];                                        \
       n12_sq += (coeffs()[i] - o.coeffs()[i]) * (coeffs()[i] - o.coeffs()[i]);       \
@@ -102,11 +114,14 @@ namespace smooth {
     return std::sqrt(n12_sq) <= eps * std::min(std::sqrt(n1_sq), std::sqrt(n2_sq));  \
   }                                                                                  \
                                                                                      \
+  /**                                                                                \
+   * @brief Cast to different scalar type                                            \
+   */                                                                                \
   template<typename NewScalar>                                                       \
   CastType<NewScalar> cast() const                                                   \
   {                                                                                  \
     CastType<NewScalar> ret;                                                         \
-    meta::static_for<RepSize>(                                                       \
+    utils::static_for<RepSize>(                                                      \
       [&](auto i) {                                                                  \
         ret.coeffs()[i] = static_cast<NewScalar>(coeffs()[i]);                       \
       });                                                                            \
@@ -190,7 +205,7 @@ namespace smooth {
   template<typename TangentDerived>                                                  \
   static TangentMap dl_exp(const Eigen::MatrixBase<TangentDerived> & t)              \
   {                                                                                  \
-    return (exp(t).Ad() * dr_exp(t)).eval();                                         \
+    return exp(t).Ad() * dr_exp(t);                                                  \
   }                                                                                  \
                                                                                      \
   /**                                                                                \
@@ -199,7 +214,7 @@ namespace smooth {
   template<typename TangentDerived>                                                  \
   static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & t)           \
   {                                                                                  \
-    return (-ad(t) + dr_expinv(t)).eval();                                           \
+    return -ad(t) + dr_expinv(t);                                                    \
   }
 
 }  // namespace smooth

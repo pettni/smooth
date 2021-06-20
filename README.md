@@ -126,9 +126,6 @@ Planned:
 
 * [ ] Bezier curve evaluation and fitting (`interp/bezier.hpp`)
 * [ ] Lie group means (`mean.hpp`)
-* [ ] IMU pre-integration
-* [ ] Trajectory-tracking PD controller
-* [ ] Model-predictive control
 
 Algorithms also work with regular ```Eigen``` types.
 
@@ -153,10 +150,10 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 ## Book
 
 - [x] reorganize dynamics: bring in system linearization and Magnus expansion
-- [ ] clean up parameterization vs matrix groups stuff
+- [ ] clean up parameterization vs matrix groups stuff, use consistent X / x
 - Work out missing parts
   - [ ] Probability theory
-  - [ ] Equivariance
+  - [/] Equivariance
   - [ ] Numerical Integration
   - [ ] Estimation
 - Make readable
@@ -188,6 +185,5 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 - [ ] implement approximate cubic Bezier spline fitting via sparse solving
 - [ ] pass options in NLS
 - [ ] ceres autodiff
-- [ ] Optimize NLS: experiment with direct ways for solving sparse LS
-- [ ] Set up Gitlab CI
+- [ ] Option to use suitesparse for NLS factorization
 
