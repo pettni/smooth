@@ -1,5 +1,7 @@
 # smooth: Lie Theory for Robotics (C++20 library and book)
 
+[![build_and_test](https://github.com/pettni/lie/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/pettni/lie/actions/workflows/build_and_test.yml) [![codecov](https://codecov.io/gh/pettni/lie/branch/master/graph/badge.svg?token=M2S4HO9ZIG)](https://codecov.io/gh/pettni/lie)
+
 <img src="/media/ode.png" width="300">  <img src="/media/bspline.png" width="300">
 
 Do you want to do any of the following on a Lie group (or learn the theory)?

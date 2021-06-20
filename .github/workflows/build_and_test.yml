@@ -57,6 +57,8 @@ jobs:
       run: make test
 
   codecov:
+    needs: [build]
+
     runs-on: ubuntu-latest
 
     steps:
