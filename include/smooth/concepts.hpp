@@ -67,7 +67,6 @@ concept ConstStorageLike = StorageLike<S>&& !ModifiableStorageLike<S>;
  * - M::SizeAtCompileTime tangent space dimension (compile time, -1 if dynamic)
  * - M.size() : tangent space dimension (runtime)
  * - M + T -> M : geodesic addition
- * - M += T : in-place geodesic addition
  * - M - M -> T : inverse of geodesic addition (in practice only used for infinitesimal values)
  *
  * Where T = Eigen::Matrix<Scalar, SizeAtCompileTime, 1> is the tangent type
@@ -80,13 +79,12 @@ requires
   typename M::PlainObject;
   {M::SizeAtCompileTime}->std::convertible_to<Eigen::Index>;  // degrees of freedom at compile time
 } &&
-requires(const M & m1, M & m2, const Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1> & a)
+requires(const M & m1, const M & m2, const Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1> & a)
 {
   {m1.size()}->std::convertible_to<Eigen::Index>;             // degrees of freedom at runtime
   {m1 + a}->std::convertible_to<typename M::PlainObject>;
-  // {m2 += a}->std::convertible_to<typename M::PlainObject>;  // TODO(pettni) what's the problem with this??
   {m1 - m2}->std::convertible_to<Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1>>;
-  {m1.template cast<float>()};
+  {m1.template cast<double>()};
 };
 
 template<typename T>
@@ -99,45 +97,32 @@ template<typename T>
 concept StaticRnLike = RnLike<T> && T::RowsAtCompileTime >= 1;
 
 /**
- * @brief A (matrix) Lie Group is a smooth manifold that can be represented
- * as a subset of GL(F, c)
+ * @brief A Lie Group is a smooth manifold that is also a group.
+ * This concept requires the exp and log maps, and the upper and
+ * lowercase adjoints
  */
 template<typename G>
 concept LieGroup = Manifold<G> &&
 // static constants
 requires {
-  typename G::Tangent;
-  {G::RepSize}->std::convertible_to<Eigen::Index>;  // representation size
   {G::Dof}->std::convertible_to<Eigen::Index>;      // degrees of freedom
-  {G::Dim}->std::convertible_to<Eigen::Index>;      // matrix dimension
-  {G::ActDim}->std::convertible_to<Eigen::Index>;   // dimension of space of which group act on
 } &&
-(G::RepSize >= 1) &&
 (G::Dof >= 1) &&
-(G::Dim >= 1) &&
-(G::ActDim >= 1) &&
 (G::SizeAtCompileTime == G::Dof) &&
-(std::is_same_v<typename G::Tangent, Eigen::Matrix<typename G::Scalar, G::Dof, 1>>) &&
 // member methods
-requires(const G & g1, const G & g2, const Eigen::Matrix<typename G::Scalar, G::ActDim, 1> & v)
+requires(const G & g1, const G & g2)
 {
-  {g1.template cast<double>()};
-  {g1.template cast<float>()};
   {g1.inverse()}->std::convertible_to<typename G::PlainObject>;
   {g1 * g2}->std::convertible_to<typename G::PlainObject>;
-  {g1 * v}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::ActDim, 1>>;
   {g1.log()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
-  {g1.matrix_group()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
   {g1.Ad()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
 } &&
 // static methods
 requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
 {
   {G::Identity()}->std::convertible_to<typename G::PlainObject>;
-  {G::Random()}->std::convertible_to<typename G::PlainObject>;
   {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
   {G::ad(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
-  {G::hat(a)}->std::convertible_to<typename G::MatrixGroup>;
 };
 
 } // namespace smooth

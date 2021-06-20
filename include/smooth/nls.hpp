@@ -10,7 +10,7 @@
 
 #include "smooth/concepts.hpp"
 #include "smooth/diff.hpp"
-#include "smooth/meta.hpp"
+#include "smooth/utils.hpp"
 
 namespace smooth {
 
@@ -309,7 +309,7 @@ auto tuple_plus(
   std::tuple<_Wrt &...> & wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
 {
   const std::array<Eigen::Index, sizeof...(_Wrt)> sizes{std::get<Idx>(wrt).size()...};
-  const auto sizes_psum = meta::array_psum(sizes);
+  const auto sizes_psum = utils::array_psum(sizes);
 
   return std::tuple<std::decay_t<_Wrt>...>(
     std::get<Idx>(wrt)

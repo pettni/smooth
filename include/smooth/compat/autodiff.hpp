@@ -10,7 +10,6 @@
 #define SMOOTH_DIFF_AUTODIFF
 
 #include "smooth/common.hpp"
-#include "smooth/meta.hpp"
 
 namespace smooth::diff {
 
