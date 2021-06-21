@@ -10,7 +10,8 @@ namespace smooth {
   X(const X &) = default;               \
   X(X &&)      = default;               \
   X & operator=(const X & o) = default; \
-  X & operator=(X && o) = default;
+  X & operator=(X && o) = default;      \
+  ~X()                  = default;
 
 #define SMOOTH_INHERIT_TYPEDEFS                 \
   using Base::Dof;                              \
@@ -44,8 +45,8 @@ public:
 
   // Assignment operator
   template<typename OtherDerived>
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
-  Derived & operator=(const LieGroup<OtherDerived> & o)
+  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl> Derived & operator=(
+    const LieGroup<OtherDerived> & o)
   {
     static_cast<Derived &>(*this).coeffs() = static_cast<const OtherDerived &>(o).coeffs();
     return static_cast<Derived &>(*this);

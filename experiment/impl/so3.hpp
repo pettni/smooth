@@ -18,15 +18,13 @@ public:
 
   static void setIdentity(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
   {
-    g_out << 0, 0, 0, 1;
+    g_out << Scalar(0), Scalar(0), Scalar(0), Scalar(1);
   }
 
   static void setRandom(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
   {
     g_out = Eigen::Quaternion<Scalar>::UnitRandom().coeffs();
-    if (g_out[3] < 0) {
-      for (auto i = 0u; i != 4; ++i) { g_out[i] *= -1; }
-    }
+    if (g_out[3] < 0) { g_out *= Scalar(-1); }
   }
 
   template<typename Derived1, typename Derived2>
@@ -43,7 +41,8 @@ public:
   static void inverse(
     const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
   {
-    g_out << -g_in(0), -g_in(1), -g_in(2), g_in(3);
+    Eigen::Map<const Eigen::Quaternion<Scalar>> q(static_cast<const Derived &>(g_in).data());
+    g_out = q.inverse().coeffs();
   }
 
   template<typename Derived>
