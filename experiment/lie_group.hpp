@@ -5,20 +5,56 @@
 
 namespace smooth {
 
-#define SMOOTH_GROUP_CONSTUCTORS(X)     \
-  X()          = default;               \
-  X(const X &) = default;               \
-  X(X &&)      = default;               \
-  X & operator=(const X & o) = default; \
-  X & operator=(X && o) = default;      \
-  ~X()                  = default;
-
 #define SMOOTH_INHERIT_TYPEDEFS                 \
   using Base::Dof;                              \
   using Base::RepSize;                          \
   using Scalar        = typename Base::Scalar;  \
   using Tangent       = typename Base::Tangent; \
-  using Base::operator=;
+  using Base::operator=;                        \
+  using Base::operator*;
+
+#define SMOOTH_GROUP_API(X)                          \
+public:                                              \
+  SMOOTH_INHERIT_TYPEDEFS                            \
+  X()          = default;                            \
+  X(const X &) = default;                            \
+  X(X &&)      = default;                            \
+  X & operator=(const X &) = default;                \
+  X & operator=(X &&) = default;                     \
+  ~X()                = default;                     \
+  template<typename OtherDerived>                    \
+                                                     \
+  X(const X##Base<OtherDerived> & o)                 \
+  {                                                  \
+    coeffs() = o.coeffs();                           \
+  }                                                  \
+  using Storage = Eigen::Matrix<Scalar, RepSize, 1>; \
+                                                     \
+  Storage & coeffs() { return coeffs_; }             \
+                                                     \
+  const Storage & coeffs() const { return coeffs_; } \
+                                                     \
+private:                                             \
+  Storage coeffs_;
+
+#define SMOOTH_MAP_API(X)                                        \
+public:                                                          \
+  SMOOTH_INHERIT_TYPEDEFS                                        \
+  X(Scalar * p) : coeffs_(p) {}                                  \
+  X(const X &) = default;                                        \
+  X(X &&)      = default;                                        \
+  X & operator=(const X &) = default;                            \
+  X & operator=(X &&) = default;                                 \
+  ~X()                = default;                                 \
+                                                                 \
+  using Storage = Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>>; \
+                                                                 \
+  Storage & coeffs() { return coeffs_; }                         \
+                                                                 \
+  const Storage & coeffs() const { return coeffs_; }             \
+                                                                 \
+private:                                                         \
+  Storage coeffs_;
 
 template<typename T>
 struct lie_traits
@@ -69,6 +105,8 @@ public:
   // Group API
 
   void setIdentity() { Impl::setIdentity(coeffs()); }
+
+  void setRandom() { Impl::setRandom(coeffs()); }
 
   template<typename OtherDerived>
   PlainObject<Scalar> operator*(const LieGroup<OtherDerived> & o) const

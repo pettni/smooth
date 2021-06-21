@@ -25,12 +25,18 @@ public:
   template<std::size_t Idx>
   using PartType = typename lie_traits<Derived>::template PartPlainObject<Idx>;
 
+  /**
+   * @brief Access part no Idx of bundle
+   */
   template<std::size_t Idx>
   Eigen::Map<PartType<Idx>> part()
   {
     return Eigen::Map<PartType<Idx>>(Base::data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
+  /**
+   * @brief Const access part no Idx of bundle
+   */
   template<std::size_t Idx>
   Eigen::Map<const PartType<Idx>> part() const
   {
@@ -38,7 +44,7 @@ public:
   }
 };
 
-template<typename... Gs>
+template<typename... _Gs>
 class Bundle;
 
 // STORAGE TYPE TRAITS
@@ -62,25 +68,23 @@ struct lie_traits<Bundle<_Gs...>>
 
 // STORAGE TYPE
 
-template<typename... Gs>
-class Bundle : public BundleBase<Bundle<Gs...>>
+template<typename... _Gs>
+class Bundle : public BundleBase<Bundle<_Gs...>>
 {
-  using Base = BundleBase<Bundle<Gs...>>;
-
+  using Base = BundleBase<Bundle<_Gs...>>;
+  SMOOTH_GROUP_API(Bundle)
 public:
-  SMOOTH_GROUP_CONSTUCTORS(Bundle)
-  SMOOTH_INHERIT_TYPEDEFS
-
-  // REQUIRED API
-
-  using Storage = Eigen::Matrix<Scalar, RepSize, 1>;
-
-  Storage & coeffs() { return coeffs_; }
-
-  const Storage & coeffs() const { return coeffs_; }
-
-private:
-  Storage coeffs_;
+  /**
+   * @brief Construct bundle from parts
+   */
+  template<typename... S>
+  requires(std::is_assignable_v<_Gs, S> &&...)
+  Bundle(S &&... gs)
+  {
+    auto tpl = std::forward_as_tuple(gs...);
+    utils::static_for<sizeof...(_Gs)>(
+      [this, &tpl](auto i) { Base::template part<i>() = std::get<i>(tpl); });
+  }
 };
 
 }  // namespace smooth
@@ -88,7 +92,8 @@ private:
 // MAP TYPE TRAITS
 
 template<typename... _Gs>
-struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>> : public lie_traits<Bundle<_Gs...>>
+struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
+    : public lie_traits<smooth::Bundle<_Gs...>>
 {};
 
 // MAP TYPE
@@ -98,22 +103,7 @@ class Eigen::Map<smooth::Bundle<_Gs...>>
     : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
 {
   using Base = smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>;
-
-public:
-  SMOOTH_INHERIT_TYPEDEFS
-
-  Map(Scalar * p) : coeffs_(p) {}
-
-  // REQUIRED API
-
-  using Storage = Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>>;
-
-  Storage & coeffs() { return coeffs_; }
-
-  const Storage & coeffs() const { return coeffs_; }
-
-private:
-  Storage coeffs_;
+  SMOOTH_MAP_API(Map)
 };
 
 #endif  // BUNDLE_HPP_

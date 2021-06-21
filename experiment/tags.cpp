@@ -21,12 +21,17 @@ void test(G g)
   // test maps
   std::array<double, G::RepSize> d1, d2;
   Eigen::Map<G> gm1(d1.data()), gm2(d2.data());
-  gm1 = g;
-  gm2 = gm1;
-  G g2;
-  g2 = gm2;
+  gm1 = g;    // storage to map
+  gm2 = gm1;  // map to map
+  G g2, g3;
+  g2 = gm2;   // map to storage
+  g3 = g2;    // storage to storage
 
-  std::cout << "copy circle " << g2.coeffs().isApprox(g.coeffs()) << std::endl;
+  G g4(g), g5(gm1);  // copy construct from storage and map
+
+  std::cout << "copy circle " << g3.coeffs().isApprox(g.coeffs()) << std::endl;
+  std::cout << "copy circle " << g4.coeffs().isApprox(g.coeffs()) << std::endl;
+  std::cout << "copy circle " << g5.coeffs().isApprox(g.coeffs()) << std::endl;
 
   Eigen::Map<const Eigen::Matrix<double, G::RepSize, 1>> mm(g2.data());
   std::cout << "map of maps " << mm.transpose() << std::endl;
@@ -34,10 +39,10 @@ void test(G g)
   // set identity
   g.setIdentity();
 
-  G g3 = g2.inverse();
-  std::cout << "inverse " << (g2 * g3).coeffs().isApprox(g.coeffs()) << std::endl;
+  G g6 = g2.inverse();
+  std::cout << "inverse " << (g2 * g6).coeffs().isApprox(g.coeffs()) << std::endl;
 
-  auto x = g3.Ad();
+  auto x = g6.Ad();
   std::cout << x << std::endl;
 }
 
@@ -59,6 +64,13 @@ int main()
   b.part<3>().setRandom();
   std::cout << "TESTING BUNDLE" << std::endl;
   test(b);
+
+  SO3d g_in;
+  g_in.setRandom();
+  T4d v_in(1, 2, 3, 4);
+
+  MyBundle b2(g_in, g_in, v_in, 2 * v_in);
+  std::cout << b2 << std::endl;
 
   return 0;
 }
