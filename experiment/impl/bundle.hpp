@@ -17,19 +17,20 @@ struct BundleImpl
 
   static constexpr std::array<Eigen::Index, sizeof...(Impl)> RepSizes{Impl::RepSize...};
   static constexpr std::array<Eigen::Index, sizeof...(Impl)> Dofs{Impl::Dof...};
+  static constexpr std::array<Eigen::Index, sizeof...(Impl)> Dims{Impl::Dim...};
 
   static constexpr auto RepSizesPsum = smooth::utils::array_psum(RepSizes);
   static constexpr auto DofsPsum     = smooth::utils::array_psum(Dofs);
-
-  // REQUIRED CONSTANTS
+  static constexpr auto DimsPsum     = smooth::utils::array_psum(Dims);
 
   template<std::size_t Idx>
   using PartImpl = std::tuple_element_t<Idx, std::tuple<Impl...>>;
 
   static constexpr auto RepSize = RepSizesPsum.back();
   static constexpr auto Dof     = DofsPsum.back();
+  static constexpr auto Dim     = DimsPsum.back();
 
-  DEFINE_REFS
+  SMOOTH_DEFINE_REFS
 
   static void setIdentity(GRefOut g_out)
   {
@@ -44,6 +45,16 @@ struct BundleImpl
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
       PartImpl<i>::setRandom(
         g_out.template segment<std::get<i>(RepSizes)>(std::get<i>(RepSizesPsum)));
+    });
+  }
+
+  static void matrix(GRefIn g_in, MRefOut m_out)
+  {
+    m_out.setZero();
+    smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
+      PartImpl<i>::matrix(g_in.template segment<std::get<i>(RepSizes)>(std::get<i>(RepSizesPsum)),
+        m_out.template block<std::get<i>(Dims), std::get<i>(Dims)>(
+          std::get<i>(DimsPsum), std::get<i>(DimsPsum)));
     });
   }
 
@@ -90,6 +101,33 @@ struct BundleImpl
         g_out.template segment<std::get<i>(RepSizes)>(std::get<i>(RepSizesPsum)));
     });
   }
+
+  static void hat(TRefIn & a_in, MRefOut A_out)
+  {
+    A_out.setZero();
+    smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
+      PartImpl<i>::hat(
+        a_in.template segment<std::get<i>(Dofs)>(std::get<i>(DofsPsum)),
+        A_out.template block<std::get<i>(Dims), std::get<i>(Dims)>(std::get<i>(DimsPsum), std::get<i>(DimsPsum))
+      );
+    });
+  }
+
+  static void vee(MRefIn & A_in, TRefOut a_out)
+  {
+    smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
+      PartImpl<i>::vee(
+        A_in.template block<std::get<i>(Dims), std::get<i>(Dims)>(std::get<i>(DimsPsum), std::get<i>(DimsPsum)),
+        a_out.template segment<std::get<i>(Dofs)>(std::get<i>(DofsPsum))
+      );
+    });
+  }
+
+  static void ad(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
+
+  static void dr_exp(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
+
+  static void dr_expinv(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
 };
 
 }  // namespace smooth

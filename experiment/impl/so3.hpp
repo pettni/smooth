@@ -13,10 +13,11 @@ class SO3Impl
 public:
   using Scalar = _Scalar;
 
-  static constexpr Eigen::Index Dof     = 3;
   static constexpr Eigen::Index RepSize = 4;
+  static constexpr Eigen::Index Dim     = 3;
+  static constexpr Eigen::Index Dof     = 3;
 
-  DEFINE_REFS
+  SMOOTH_DEFINE_REFS
 
   static void setIdentity(GRefOut g_out) { g_out << Scalar(0), Scalar(0), Scalar(0), Scalar(1); }
 
@@ -24,6 +25,12 @@ public:
   {
     g_out = Eigen::Quaternion<Scalar>::UnitRandom().coeffs();
     if (g_out[3] < 0) { g_out *= Scalar(-1); }
+  }
+
+  static void matrix(GRefIn g_in, MRefOut m_out)
+  {
+    Eigen::Map<const Eigen::Quaternion<Scalar>> q(g_in.data());
+    m_out = q.toRotationMatrix();
   }
 
   static void composition(GRefIn g_in1, GRefIn g_in2, GRefOut g_out)
@@ -82,6 +89,35 @@ public:
     }
 
     g_out << A * a_in.x(), A * a_in.y(), A * a_in.z(), B;
+  }
+
+  static void hat(TRefIn a_in, MRefOut A_out)
+  {
+    A_out << Scalar(0), -a_in(2), a_in(1),
+          a_in(2), Scalar(0), -a_in(0),
+          -a_in(1), a_in(0), Scalar(0);
+  }
+
+  static void vee(MRefIn A_in, TRefOut a_out)
+  {
+    a_out << (A_in(2, 1) - A_in(1, 2)) / Scalar(2),
+          (A_in(0, 2) - A_in(2, 0)) / Scalar(2),
+          (A_in(1, 0) - A_in(0, 1)) / Scalar(2);
+  }
+
+  static void ad(TRefIn a_in, TMapRefOut A_out)
+  {
+    A_out.setZero();
+  }
+
+  static void dr_exp(TRefIn a_in, TMapRefOut A_out)
+  {
+    A_out.setZero();
+  }
+
+  static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
+  {
+    A_out.setZero();
   }
 };
 

@@ -109,4 +109,19 @@ class Eigen::Map<smooth::SO3<_Scalar>> : public smooth::SO3Base<Eigen::Map<smoot
   SMOOTH_MAP_API(Map)
 };
 
+// CONST MAP TYPE TRAITS
+
+template<typename Scalar>
+struct smooth::lie_traits<Eigen::Map<const smooth::SO3<Scalar>>> : public lie_traits<smooth::SO3<Scalar>>
+{};
+
+// CONST MAP TYPE
+
+template<typename _Scalar>
+class Eigen::Map<const smooth::SO3<_Scalar>> : public smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>
+{
+  using Base = typename smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>::Base;
+  SMOOTH_CONST_MAP_API(Map)
+};
+
 #endif  // SO3_HPP_

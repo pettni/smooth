@@ -42,9 +42,22 @@ void test(G g)
   G g6 = g2.inverse();
   std::cout << "inverse " << (g2 * g6).coeffs().isApprox(g.coeffs()) << std::endl;
 
-  auto x = g6.Ad();
-  std::cout << x << std::endl;
+  typename G::TangentMap x = g6.Ad();
+
+  g6 += G::Tangent::UnitX();
+
+  // matrix
+  typename G::Matrix M = g6.matrix();
+
+  // hat/vee
+  typename G::Tangent a = G::Tangent::Random();
+
+  typename G::Matrix A = G::hat(a);
+  typename G::Tangent a2 = G::vee(A);
+
+  std::cout << "hat/vee " << a2.isApprox(a) << std::endl;
 }
+
 
 int main()
 {

@@ -5,7 +5,7 @@ namespace smooth {
 
 static constexpr double eps2 = 1e-8;
 
-#define DEFINE_REFS                                                             \
+#define SMOOTH_DEFINE_REFS                                                      \
   using GRefIn  = const Eigen::Ref<const Eigen::Matrix<Scalar, RepSize, 1>> &;  \
   using GRefOut = Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>>;                \
                                                                                 \
@@ -13,7 +13,10 @@ static constexpr double eps2 = 1e-8;
   using TRefOut = Eigen::Ref<Eigen::Matrix<Scalar, Dof, 1>>;                    \
                                                                                 \
   using TMapRefIn  = const Eigen::Ref<const Eigen::Matrix<Scalar, Dof, Dof>> &; \
-  using TMapRefOut = Eigen::Ref<Eigen::Matrix<Scalar, Dof, Dof>>;
+  using TMapRefOut = Eigen::Ref<Eigen::Matrix<Scalar, Dof, Dof>>;               \
+                                                                                \
+  using MRefIn  = const Eigen::Ref<const Eigen::Matrix<Scalar, Dim, Dim>> &;    \
+  using MRefOut = Eigen::Ref<Eigen::Matrix<Scalar, Dim, Dim>>;
 
 }  // namespace smooth
 
