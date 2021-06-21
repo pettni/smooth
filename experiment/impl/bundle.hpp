@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 
 #include "../../include/smooth/utils.hpp"
+#include "common.hpp"
 
 namespace smooth {
 
@@ -28,7 +29,9 @@ struct BundleImpl
   static constexpr auto RepSize = RepSizesPsum.back();
   static constexpr auto Dof     = DofsPsum.back();
 
-  static void setIdentity(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  DEFINE_REFS
+
+  static void setIdentity(GRefOut g_out)
   {
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
       PartImpl<i>::setIdentity(
@@ -36,7 +39,7 @@ struct BundleImpl
     });
   }
 
-  static void setRandom(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void setRandom(GRefOut g_out)
   {
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
       PartImpl<i>::setRandom(
@@ -44,10 +47,7 @@ struct BundleImpl
     });
   }
 
-  template<typename Derived1, typename Derived2>
-  static void composition(const Eigen::MatrixBase<Derived1> & g_in1,
-    const Eigen::MatrixBase<Derived2> & g_in2,
-    Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void composition(GRefIn g_in1, GRefIn g_in2, GRefOut g_out)
   {
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
       PartImpl<i>::composition(
@@ -57,9 +57,7 @@ struct BundleImpl
     });
   }
 
-  template<typename Derived>
-  static void inverse(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void inverse(GRefIn g_in, GRefOut g_out)
   {
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
       PartImpl<i>::inverse(g_in.template segment<std::get<i>(RepSizes)>(std::get<i>(RepSizesPsum)),
@@ -67,9 +65,7 @@ struct BundleImpl
     });
   }
 
-  template<typename Derived>
-  static void log(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, Dof, 1>> a_out)
+  static void log(GRefIn g_in, TRefOut a_out)
   {
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
       PartImpl<i>::log(g_in.template segment<std::get<i>(RepSizes)>(std::get<i>(RepSizesPsum)),
@@ -77,9 +73,7 @@ struct BundleImpl
     });
   }
 
-  template<typename Derived>
-  static void Ad(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, Dof, Dof>> A_out)
+  static void Ad(GRefIn g_in, TMapRefOut A_out)
   {
     A_out.setZero();
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
@@ -89,9 +83,7 @@ struct BundleImpl
     });
   }
 
-  template<typename Derived>
-  static void exp(
-    const Eigen::MatrixBase<Derived> & a_in, Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void exp(TRefIn a_in, GRefOut g_out)
   {
     smooth::utils::static_for<sizeof...(Impl)>([&](auto i) {
       PartImpl<i>::exp(a_in.template segment<std::get<i>(Dofs)>(std::get<i>(DofsPsum)),

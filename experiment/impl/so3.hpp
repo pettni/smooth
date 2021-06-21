@@ -16,46 +16,30 @@ public:
   static constexpr Eigen::Index Dof     = 3;
   static constexpr Eigen::Index RepSize = 4;
 
-  static void setIdentity(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
-  {
-    g_out << Scalar(0), Scalar(0), Scalar(0), Scalar(1);
-  }
+  DEFINE_REFS
 
-  static void setRandom(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void setIdentity(GRefOut g_out) { g_out << Scalar(0), Scalar(0), Scalar(0), Scalar(1); }
+
+  static void setRandom(GRefOut g_out)
   {
     g_out = Eigen::Quaternion<Scalar>::UnitRandom().coeffs();
     if (g_out[3] < 0) { g_out *= Scalar(-1); }
   }
 
-  template<typename Derived1, typename Derived2>
-  static void composition(const Eigen::MatrixBase<Derived1> & g_in1,
-    const Eigen::MatrixBase<Derived2> & g_in2,
-    Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void composition(GRefIn g_in1, GRefIn g_in2, GRefOut g_out)
   {
-    Eigen::Map<const Eigen::Quaternion<Scalar>> q1(static_cast<const Derived1 &>(g_in1).data());
-    Eigen::Map<const Eigen::Quaternion<Scalar>> q2(static_cast<const Derived2 &>(g_in2).data());
+    Eigen::Map<const Eigen::Quaternion<Scalar>> q1(g_in1.data());
+    Eigen::Map<const Eigen::Quaternion<Scalar>> q2(g_in2.data());
     g_out = (q1 * q2).coeffs();
   }
 
-  template<typename Derived>
-  static void inverse(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void inverse(GRefIn g_in, GRefOut g_out)
   {
-    Eigen::Map<const Eigen::Quaternion<Scalar>> q(static_cast<const Derived &>(g_in).data());
+    Eigen::Map<const Eigen::Quaternion<Scalar>> q(g_in.data());
     g_out = q.inverse().coeffs();
   }
 
-  template<typename Derived>
-  static void Ad(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, Dof, Dof>> A_out)
-  {
-    Eigen::Map<const Eigen::Quaternion<Scalar>> q(static_cast<const Derived &>(g_in).data());
-    A_out = q.toRotationMatrix();
-  }
-
-  template<typename Derived>
-  static void log(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, Dof, 1>> a_out)
+  static void log(GRefIn g_in, TRefOut a_out)
   {
     using std::atan2, std::sqrt;
     const Scalar xyz2 = g_in[0] * g_in[0] + g_in[1] * g_in[1] + g_in[2] * g_in[2];
@@ -68,12 +52,18 @@ public:
       Scalar xyz = sqrt(xyz2);
       phi        = Scalar(2) * atan2(xyz, g_in[3]) / xyz;
     }
-    a_out = phi * Eigen::Matrix<Scalar, 3, 1>(g_in[0], g_in[1], g_in[2]);
+
+    a_out << g_in[0], g_in[1], g_in[2];
+    a_out *= phi;
   }
 
-  template<typename Derived>
-  static void exp(
-    const Eigen::MatrixBase<Derived> & a_in, Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
+  static void Ad(GRefIn g_in, TMapRefOut A_out)
+  {
+    Eigen::Map<const Eigen::Quaternion<Scalar>> q(g_in.data());
+    A_out = q.toRotationMatrix();
+  }
+
+  static void exp(TRefIn a_in, GRefOut g_out)
   {
     using std::sqrt, std::cos, std::sin;
 
@@ -91,7 +81,7 @@ public:
       B               = cos(th / Scalar(2));
     }
 
-    g_out = Eigen::Matrix<Scalar, RepSize, 1>(A * a_in.x(), A * a_in.y(), A * a_in.z(), B);
+    g_out << A * a_in.x(), A * a_in.y(), A * a_in.z(), B;
   }
 };
 

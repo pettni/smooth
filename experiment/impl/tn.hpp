@@ -5,6 +5,8 @@
 
 #include <Eigen/Core>
 
+#include "common.hpp"
+
 namespace smooth {
 
 template<int N, typename _Scalar>
@@ -15,45 +17,21 @@ struct TnImpl
   static constexpr Eigen::Index Dof     = N;
   static constexpr Eigen::Index RepSize = N;
 
-  static void setIdentity(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out) { g_out.setZero(); }
+  DEFINE_REFS
 
-  static void setRandom(Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out) { g_out.setRandom(); }
+  static void setIdentity(GRefOut g_out) { g_out.setZero(); }
 
-  template<typename Derived1, typename Derived2>
-  static void composition(const Eigen::MatrixBase<Derived1> & g_in1,
-    const Eigen::MatrixBase<Derived2> & g_in2,
-    Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
-  {
-    g_out = g_in1 + g_in2;
-  }
+  static void setRandom(GRefOut g_out) { g_out.setRandom(); }
 
-  template<typename Derived>
-  static void inverse(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
-  {
-    g_out = -g_in;
-  }
+  static void composition(GRefIn g_in1, GRefIn g_in2, GRefOut g_out) { g_out = g_in1 + g_in2; }
 
-  template<typename Derived>
-  static void log(
-    const Eigen::MatrixBase<Derived> & g_in, Eigen::Ref<Eigen::Matrix<Scalar, Dof, 1>> a_out)
-  {
-    a_out = g_in;
-  }
+  static void inverse(GRefIn g_in, GRefOut g_out) { g_out = -g_in; }
 
-  template<typename Derived>
-  static void Ad(
-    const Eigen::MatrixBase<Derived> &, Eigen::Ref<Eigen::Matrix<Scalar, Dof, Dof>> A_out)
-  {
-    A_out.setZero();
-  }
+  static void log(GRefIn g_in, TRefOut a_out) { a_out = g_in; }
 
-  template<typename Derived>
-  static void exp(
-    const Eigen::MatrixBase<Derived> & a_in, Eigen::Ref<Eigen::Matrix<Scalar, RepSize, 1>> g_out)
-  {
-    g_out = a_in;
-  }
+  static void Ad(GRefIn, TMapRefOut A_out) { A_out.setZero(); }
+
+  static void exp(TRefIn & a_in, GRefOut g_out) { g_out = a_in; }
 };
 
 }  // namespace smooth
