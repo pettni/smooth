@@ -1,66 +1,119 @@
-#include "../include/smooth/utils.hpp"
+#ifndef BUNDLE_HPP_
+#define BUNDLE_HPP_
+
+#include "impl/bundle.hpp"
 #include "lie_group.hpp"
 
-template<typename... Tags>
-class BundleTag {};
+namespace smooth {
 
-template<typename... Tags>
-struct lie_impl<BundleTag<Tags...>>
+// CRTP BASE
+
+template<typename Derived>
+class BundleBase : public LieGroup<Derived>
 {
-  static constexpr std::array<Eigen::Index, sizeof...(Tags)>
-    RepSizes{lie_impl<Tags>::RepSize...},
-    Dofs{lie_impl<Tags>::Dof...};
+protected:
+  using Base = LieGroup<Derived>;
+  using Impl = typename lie_traits<Derived>::Impl;
 
-  static constexpr auto RepSizesPsum = smooth::utils::array_psum(RepSizes);
-  static constexpr auto DofsPsum     = smooth::utils::array_psum(Dofs);
+  BundleBase() = default;
 
-  // REQUIRED CONSTANTS
+public:
+  SMOOTH_INHERIT_TYPEDEFS
+
+  // BUNDLE API
 
   template<std::size_t Idx>
-  using PartTag = std::tuple_element_t<Idx, std::tuple<Tags...>>;
+  using PartType = typename lie_traits<Derived>::template PartPlainObject<Idx>;
 
-  static constexpr auto RepSize = RepSizesPsum.back();
-  static constexpr auto Dof     = DofsPsum.back();
-
-  template<typename Derived>
-  static void exp(
-    const Eigen::MatrixBase<Derived> & a,
-    Eigen::Ref<Eigen::Array<typename Derived::Scalar, RepSize, 1>> c
-  )
+  template<std::size_t Idx>
+  Eigen::Map<PartType<Idx>> part()
   {
-    smooth::utils::static_for<sizeof...(Tags)>([&] (auto i) {
-        static constexpr std::size_t dofbeg = std::get<i>(DofsPsum);
-        static constexpr std::size_t doflen = std::get<i>(Dofs);
-        static constexpr std::size_t cofbeg = std::get<i>(RepSizesPsum);
-        static constexpr std::size_t coflen= std::get<i>(RepSizes);
-        lie_impl<PartTag<i>>::exp(
-            a.template segment<doflen>(dofbeg),
-            c.template segment<coflen>(cofbeg)
-        );
-    });
+    return Eigen::Map<PartType<Idx>>(Base::data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
-  template<typename Derived>
-  static void log(
-    const Eigen::ArrayBase<Derived> & c,
-    Eigen::Ref<Eigen::Matrix<typename Derived::Scalar, Dof, 1>> a)
+  template<std::size_t Idx>
+  Eigen::Map<const PartType<Idx>> part() const
   {
-    smooth::utils::static_for<sizeof...(Tags)>([&] (auto i) {
-        static constexpr std::size_t dofbeg = std::get<i>(DofsPsum);
-        static constexpr std::size_t doflen = std::get<i>(Dofs);
-        static constexpr std::size_t cofbeg = std::get<i>(RepSizesPsum);
-        static constexpr std::size_t coflen= std::get<i>(RepSizes);
-        lie_impl<PartTag<i>>::log(
-            c.template segment<coflen>(cofbeg),
-            a.template segment<doflen>(dofbeg)
-        );
-    });
+    return Eigen::Map<const PartType<Idx>>(Base::data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 };
 
-template<typename Scalar, typename... Tags>
-class Bundle : public LieGroup<Scalar, BundleTag<Tags...>>
+template<typename... Gs>
+class Bundle;
+
+// STORAGE TYPE TRAITS
+
+template<typename... _Gs>
+struct lie_traits<Bundle<_Gs...>>
 {
-  using Base = LieGroup<Scalar, BundleTag<Tags...>>;
+  using Impl   = BundleImpl<typename lie_traits<_Gs>::Impl...>;
+  using Scalar = std::common_type_t<typename lie_traits<_Gs>::Scalar...>;
+
+  static_assert((std::is_same_v<Scalar, typename lie_traits<_Gs>::Scalar> && ...),
+    "Scalar type must be identical");
+
+  template<typename NewScalar>
+  using PlainObject = Bundle<typename lie_traits<_Gs>::template PlainObject<NewScalar>...>;
+
+  template<std::size_t Idx>
+  using PartPlainObject = typename lie_traits<
+    std::tuple_element_t<Idx, std::tuple<_Gs...>>>::template PlainObject<Scalar>;
 };
 
+// STORAGE TYPE
+
+template<typename... Gs>
+class Bundle : public BundleBase<Bundle<Gs...>>
+{
+  using Base = BundleBase<Bundle<Gs...>>;
+
+public:
+  SMOOTH_GROUP_CONSTUCTORS(Bundle)
+  SMOOTH_INHERIT_TYPEDEFS
+
+  // REQUIRED API
+
+  using Storage = Eigen::Matrix<Scalar, RepSize, 1>;
+
+  Storage & coeffs() { return coeffs_; }
+
+  const Storage & coeffs() const { return coeffs_; }
+
+private:
+  Storage coeffs_;
+};
+
+}  // namespace smooth
+
+// MAP TYPE TRAITS
+
+template<typename... _Gs>
+struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>> : public lie_traits<Bundle<_Gs...>>
+{};
+
+// MAP TYPE
+
+template<typename... _Gs>
+class Eigen::Map<smooth::Bundle<_Gs...>>
+    : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
+{
+  using Base = smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>;
+
+public:
+  SMOOTH_INHERIT_TYPEDEFS
+
+  Map(Scalar * p) : coeffs_(p) {}
+
+  // REQUIRED API
+
+  using Storage = Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>>;
+
+  Storage & coeffs() { return coeffs_; }
+
+  const Storage & coeffs() const { return coeffs_; }
+
+private:
+  Storage coeffs_;
+};
+
+#endif  // BUNDLE_HPP_

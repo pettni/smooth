@@ -27,11 +27,15 @@ BinPackParameters: false
 BreakBeforeBraces: Custom
 BraceWrapping:
     AfterCaseLabel: false
+    AfterClass: true
     AfterEnum: false
     AfterFunction: true
     AfterNamespace: false
     AfterStruct: true
     BeforeElse: false
+    SplitEmptyFunction: false
+    SplitEmptyRecord: false
+    SplitEmptyNamespace: false
 
 BreakBeforeBinaryOperators: NonAssignment
 # BreakBeforeConceptDeclarations: true

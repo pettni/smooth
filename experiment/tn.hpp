@@ -1,33 +1,24 @@
+#ifndef TN_HPP_
+#define TN_HPP_
+
+#include "impl/tn.hpp"
 #include "lie_group.hpp"
 
-template<Eigen::Index N>
-class TnTag {};
+namespace smooth {
 
-template<Eigen::Index N>
-struct lie_impl<TnTag<N>>
+template<int _N, typename _Scalar>
+using Tn = Eigen::Matrix<_Scalar, _N, 1>;
+
+template<int _N, typename _Scalar>
+struct lie_traits<Tn<_N, _Scalar>>
 {
-  static constexpr Eigen::Index Dof     = N;
-  static constexpr Eigen::Index RepSize = N;
+  using Impl   = TnImpl<_N, _Scalar>;
+  using Scalar = _Scalar;
 
-  template<typename Derived>
-  static void log(
-      const Eigen::ArrayBase<Derived> & s,
-      Eigen::Ref<Eigen::Matrix<typename Derived::Scalar, N, 1>> a
-  )
-  {
-    a = s;
-  }
-
-  template<typename Derived>
-  static void exp(
-    const Eigen::MatrixBase<Derived> & a,
-    Eigen::Ref<Eigen::Array<typename Derived::Scalar, N, 1>> s
-  )
-  {
-    s = a;
-  }
+  template<typename NewScalar>
+  using PlainObject = Eigen::Matrix<NewScalar, _N, 1>;
 };
 
-template<Eigen::Index N, typename Scalar>
-using T = LieGroup<Scalar, TnTag<N>>;
+}  // namespace smooth
 
+#endif  // TN_HPP_

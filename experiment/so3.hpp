@@ -1,94 +1,115 @@
+#ifndef SO3_HPP_
+#define SO3_HPP_
+
+#include <Eigen/Core>
+#include <Eigen/Geometry>
+
+#include "impl/so3.hpp"
 #include "lie_group.hpp"
 
-class SO3Tag
-{};
+namespace smooth {
 
-static constexpr double eps2 = 1e-8;
+// CRTP BASE
 
-template<>
-struct lie_impl<SO3Tag>
+template<typename Derived>
+class SO3Base : public LieGroup<Derived>
 {
-  static constexpr Eigen::Index Dof     = 3;
-  static constexpr Eigen::Index RepSize = 4;
+protected:
+  using Base = LieGroup<Derived>;
+  SO3Base()  = default;
 
-  template<typename Derived>
-  static void exp(
-    const Eigen::MatrixBase<Derived> & a,
-    Eigen::Ref<Eigen::Array<typename Derived::Scalar, RepSize, 1>> s
-  )
-  {
-    using Scalar = typename Derived::Scalar;
-    using std::sqrt, std::cos, std::sin;
-
-    const Scalar th2 = a.squaredNorm();
-
-    Scalar A, B;
-    if (th2 < Scalar(eps2)) {
-      // https://www.wolframalpha.com/input/?i=series+sin%28x%2F2%29%2Fx+at+x%3D0
-      A = Scalar(1) / Scalar(2) - th2 / Scalar(48);
-      // https://www.wolframalpha.com/input/?i=series+cos%28x%2F2%29+at+x%3D0
-      B = Scalar(1) - th2 / Scalar(8);
-    } else {
-      const Scalar th = sqrt(th2);
-      A               = sin(th / Scalar(2)) / th;
-      B               = cos(th / Scalar(2));
-    }
-
-    s = Eigen::Matrix<Scalar, RepSize, 1>(B, A * a.x(), A * a.y(), A * a.z());
-  }
-
-  template<typename Derived>
-  static void log(
-    const Eigen::ArrayBase<Derived> & s,
-    Eigen::Ref<Eigen::Matrix<typename Derived::Scalar, Dof, 1>> a
-  )
-  {
-    using Scalar = typename Derived::Scalar;
-
-    using std::atan2, std::sqrt;
-    const Scalar xyz2 = s[0] * s[0] + s[1] * s[1] + s[2] * s[2];
-
-    Scalar phi;
-    if (xyz2 < Scalar(eps2)) {
-      // https://www.wolframalpha.com/input/?i=series+atan%28y%2Fx%29+%2F+y+at+y%3D0
-      phi = Scalar(2) / s[3] - Scalar(2) * xyz2 / (Scalar(3) * s[3] * s[3] * s[3]);
-    } else {
-      Scalar xyz = sqrt(xyz2);
-      phi        = Scalar(2) * atan2(xyz, s[3]) / xyz;
-    }
-    a = phi * Eigen::Matrix<Scalar, 3, 1>(s[0], s[1], s[2]);
-  }
-};
-
-template<typename Scalar, typename Coeffs = Eigen::Array<Scalar, 4, 1>>
-class SO3: public LieGroup<Scalar, SO3Tag, Coeffs>
-{
 public:
-  using Base = LieGroup<Scalar, SO3Tag>;
-  using Base::operator=;
+  SMOOTH_INHERIT_TYPEDEFS
 
-  SO3() = default;
-
-  template<typename C>
-  SO3(C && c)
-  : Base(std::forward<C>(c)) {}
-
-  SO3(const Eigen::Quaternion<Scalar> & quat) { Base::c_.coeffs() = quat.coeffs(); }
+  // SO3 API
 
   Eigen::Map<Eigen::Quaternion<Scalar>> & quat()
   {
-    return Eigen::Map<Eigen::Quaternion<Scalar>>(Base::c_.data());
+    return Eigen::Map<Eigen::Quaternion<Scalar>>(Base::coeffs().data());
   }
 
   Eigen::Map<const Eigen::Quaternion<Scalar>> & quat() const
   {
-    return Eigen::Map<Eigen::Quaternion<Scalar>>(Base::c_.data());
+    return Eigen::Map<const Eigen::Quaternion<Scalar>>(Base::coeffs().data());
   }
 };
 
-template<typename Scalar>
-using SO3Map = SO3<Scalar, Eigen::Map<Eigen::Array<Scalar, 4, 1>>>;
+// STORAGE TYPE TRAITS
 
 template<typename Scalar>
-using SO3ConstMap = SO3<Scalar, Eigen::Map<const Eigen::Array<Scalar, 4, 1>>>;
+class SO3;
 
+template<typename _Scalar>
+struct lie_traits<SO3<_Scalar>>
+{
+  using Impl   = SO3Impl<_Scalar>;
+  using Scalar = _Scalar;
+
+  template<typename NewScalar>
+  using PlainObject = SO3<NewScalar>;
+};
+
+// STORAGE TYPE
+
+template<typename _Scalar>
+class SO3 : public SO3Base<SO3<_Scalar>>
+{
+  using Base = typename SO3Base<SO3<_Scalar>>::Base;
+
+public:
+  SMOOTH_GROUP_CONSTUCTORS(SO3)
+  SMOOTH_INHERIT_TYPEDEFS
+
+  // REQUIRED API
+
+  using Storage = Eigen::Matrix<Scalar, RepSize, 1>;
+
+  Storage & coeffs() { return coeffs_; }
+
+  const Storage & coeffs() const { return coeffs_; }
+
+  // SO3 API
+
+  // Construct from quaternion
+  template<typename Derived>
+  SO3(const Eigen::QuaternionBase<Derived> & quat) : coeffs_(quat.coeffs())
+  {}
+
+private:
+  friend Base;
+  Storage coeffs_;
+};
+
+}  // namespace smooth
+
+// MAP TYPE TRAITS
+
+template<typename Scalar>
+struct smooth::lie_traits<Eigen::Map<smooth::SO3<Scalar>>> : public lie_traits<smooth::SO3<Scalar>>
+{};
+
+// MAP TYPE
+
+template<typename _Scalar>
+class Eigen::Map<smooth::SO3<_Scalar>> : public smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>
+{
+  using Base = typename smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>::Base;
+
+public:
+  SMOOTH_INHERIT_TYPEDEFS
+
+  Map(Scalar * p) : coeffs_(p) {}
+
+  // REQUIRED API
+
+  using Storage = Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>>;
+
+  Storage & coeffs() { return coeffs_; }
+
+  const Storage & coeffs() const { return coeffs_; }
+
+private:
+  Storage coeffs_;
+};
+
+#endif  // SO3_HPP_

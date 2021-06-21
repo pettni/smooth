@@ -3,91 +3,127 @@
 
 #include <Eigen/Core>
 
-template<typename Tag>
-struct lie_impl;
+namespace smooth {
 
-template<
-  typename Scalar,
-  typename Tag,
-  typename Coeffs = Eigen::Array<Scalar, lie_impl<Tag>::RepSize, 1>
->
-class LieGroup {
-  using traits = lie_impl<Tag>;
+#define SMOOTH_GROUP_CONSTUCTORS(X)     \
+  X()          = default;               \
+  X(const X &) = default;               \
+  X(X &&)      = default;               \
+  X & operator=(const X & o) = default; \
+  X & operator=(X && o) = default;
 
-  template<typename __Scalar, typename __Tag, typename __Storage>
-  friend class LieGroup;
+#define SMOOTH_INHERIT_TYPEDEFS                 \
+  using Base::Dof;                              \
+  using Base::RepSize;                          \
+  using Scalar        = typename Base::Scalar;  \
+  using Tangent       = typename Base::Tangent; \
+  using Base::operator=;
+
+template<typename T>
+struct lie_traits
+{};
+
+template<typename Derived>
+class LieGroup
+{
+protected:
+  LieGroup()   = default;
+  using traits = lie_traits<Derived>;
+  using Impl   = typename traits::Impl;
 
 public:
-  static constexpr Eigen::Index RepSize = traits::RepSize;
-  static constexpr Eigen::Index Dof     = traits::Dof;
+  static constexpr Eigen::Index RepSize = Impl::RepSize;
+  static constexpr Eigen::Index Dof     = Impl::Dof;
 
-  using Tangent = Eigen::Matrix<Scalar, Dof, 1>;
+  using Scalar     = typename traits::Scalar;
+  using Tangent    = Eigen::Matrix<Scalar, Dof, 1>;
+  using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
 
-  // Constructors
+  template<typename NewScalar>
+  using PlainObject = typename traits::template PlainObject<NewScalar>;
 
-  template<typename OtherCoeffs>
-  LieGroup(const LieGroup<Scalar, Tag, OtherCoeffs> & o)
+  // Assignment operator
+  template<typename OtherDerived>
+  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  Derived & operator=(const LieGroup<OtherDerived> & o)
   {
-    c_ = o.c_;
+    static_cast<Derived &>(*this).coeffs() = static_cast<const OtherDerived &>(o).coeffs();
+    return static_cast<Derived &>(*this);
   }
 
-  template<typename OtherCoeffs>
-  LieGroup & operator=(const LieGroup<Scalar, Tag, OtherCoeffs> & o)
-  {
-    c_ = o.c_;
-    return *this;
-  }
+  // Coefficient access
 
-  // Access coefficients
+  // access coefficients
+  auto & coeffs() { return static_cast<Derived &>(*this).coeffs(); }
 
-  Coeffs & coeffs()
-  {
-    return c_;
-  }
+  // access const coefficients
+  const auto & coeffs() const { return static_cast<const Derived &>(*this).coeffs(); }
 
-  const Coeffs & coeffs() const
-  {
-    return c_;
-  }
+  // access coefficients
+  Scalar * data() { return coeffs().data(); }
+
+  // access const coefficients
+  const Scalar * data() const { return coeffs().data(); }
 
   // Group API
 
-  template<typename NewScalar>
-  LieGroup<NewScalar, Tag> cast() const
+  void setIdentity() { Impl::setIdentity(coeffs()); }
+
+  template<typename OtherDerived>
+  PlainObject<Scalar> operator*(const LieGroup<OtherDerived> & o) const
   {
-    LieGroup<NewScalar, Tag> ret;
-    for (auto i = 0u; i != RepSize; ++i) { ret.c_[i] = static_cast<NewScalar>(c_[i]); }
+    PlainObject<Scalar> ret;
+    Impl::composition(coeffs(), o.coeffs(), ret.coeffs());
+    return ret;
+  }
+
+  template<typename NewScalar>
+  PlainObject<NewScalar> cast() const
+  {
+    PlainObject<NewScalar> ret;
+    ret.coeffs() = coeffs().template cast<NewScalar>();
+    return ret;
+  }
+
+  PlainObject<Scalar> inverse() const
+  {
+    PlainObject<Scalar> ret;
+    Impl::inverse(coeffs(), ret.coeffs());
     return ret;
   }
 
   Tangent log() const
   {
     Tangent ret;
-    traits::log(c_, ret);
+    Impl::log(coeffs(), ret);
+    return ret;
+  }
+
+  TangentMap Ad() const
+  {
+    TangentMap ret;
+    Impl::Ad(coeffs(), ret);
     return ret;
   }
 
   // Tangent API
 
   template<typename TangentDerived>
-  static LieGroup exp(const Eigen::MatrixBase<TangentDerived> & a)
+  static PlainObject<Scalar> exp(const Eigen::MatrixBase<TangentDerived> & a)
   {
-    LieGroup<Scalar, Tag> ret;
-    traits::exp(a, ret.c_);
+    PlainObject<Scalar> ret;
+    Impl::exp(a, ret.coeffs());
     return ret;
   }
-
-protected:
-  Coeffs c_;
 };
 
-template<typename Stream, typename G>
-Stream & operator<<(Stream & s, const G & g)
+template<typename Stream, typename Derived>
+Stream & operator<<(Stream & s, const LieGroup<Derived> & g)
 {
-  for (auto i = 0; i != G::RepSize; ++i) {
-    s << g.coeffs()[i] << " ";
-  }
+  for (auto i = 0; i != Derived::RepSize; ++i) { s << g.coeffs()[i] << " "; }
   return s;
 }
 
-#endif // !LIE_GROUP_HPP_
+}  // namespace smooth
+
+#endif  // LIE_GROUP_HPP_
