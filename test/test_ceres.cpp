@@ -5,7 +5,7 @@
 #include "smooth/so3.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
-#include "smooth/storage.hpp"
+#include "smooth/tn.hpp"
 #include "smooth/compat/ceres.hpp"
 
 

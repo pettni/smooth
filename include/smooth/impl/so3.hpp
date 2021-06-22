@@ -15,6 +15,14 @@ namespace smooth {
  * Group:    qx qy qz qw  (same as Eigen quaternion)
  * Tangent:  wx wy wz
  *
+ * Matrix form
+ * ===========
+ *
+ * [ R T ]
+ * [ 0 1 ]
+
+ * where R ∈ SO(3) and T ∈ R3
+ *
  * Constraints
  * ===========
  * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1

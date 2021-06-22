@@ -1,226 +1,94 @@
-#ifndef SMOOTH__SO2_HPP_
-#define SMOOTH__SO2_HPP_
+#ifndef SO2_HPP_
+#define SO2_HPP_
 
-#include "common.hpp"
-#include "concepts.hpp"
+#include <Eigen/Core>
+
+#include <complex>
+
+#include "impl/so2.hpp"
+#include "lie_group.hpp"
 #include "macro.hpp"
-#include "storage.hpp"
 
+namespace smooth {
 
-namespace smooth
+// CRTP BASE
+
+template<typename Derived>
+class SO2Base : public LieGroupBase<Derived>
 {
-
-/**
- * @brief SO2 Lie Group
- *
- * Memory layout
- * =============
- * Group:    qz qw
- * Tangent:  wz
- *
- * Constraints
- * ===========
- * Group:   qz * qz + qw * qw = 1
- * Tangent: -pi < wz <= pi
- */
-template<typename _Scalar, StorageLike _Storage = DefaultStorage<_Scalar, 2>>
-requires(_Storage::Size== 2 && std::is_same_v<typename _Storage::Scalar, _Scalar>)
-class SO2
-{
-private:
-  _Storage s_;
-
-  template<typename Scalar, StorageLike OS>
-  requires(OS::Size == 2 && std::is_same_v<typename OS::Scalar, Scalar>)
-  friend class SO2;
+protected:
+  using Base = LieGroupBase<Derived>;
+  SO2Base()  = default;
 
 public:
-  // REQUIRED CONSTANTS
-
-  static constexpr int RepSize = 2;
-  static constexpr int Dof = 1;
-  static constexpr int Dim = 2;
-  static constexpr int ActDim = 2;
-
-  // REQUIRED TYPES
-
-  SMOOTH_COMMON_TYPES(SO2)
-
-  // COMMON API
-
-  SMOOTH_COMMON_API(SO2)
-
-  // SO2-SPECIFIC API
+  SMOOTH_INHERIT_TYPEDEFS
 
   /**
-   * @brief Construct from coefficients
-   *
-   * @param qz sine of angle
-   * @param qw cosine of angle
+   * Complex number (U(1)) representation
    */
-  SO2(const Scalar & qz, const Scalar & qw)
-  requires ModifiableStorageLike<Storage>
+  std::complex<Scalar> u1() const
   {
-    using std::sqrt;
-    const Scalar n = sqrt(qz * qz + qw * qw);
-    s_[0] = qz / n;
-    s_[1] = qw / n;
+    return std::complex<Scalar>(Base::coeffs().y(), Base::coeffs().x());
+  }
+
+  /**
+   * Angle represetation
+   */
+  Scalar angle() const { return Base::log().x(); }
+
+  /**
+   * Rotation action on 2D vector
+   */
+  template<typename EigenDerived>
+  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
+  {
+    return Base::matrix() * v;
+  }
+};
+
+// STORAGE TYPE TRAITS
+
+template<typename _Scalar>
+class SO2;
+
+template<typename _Scalar>
+struct lie_traits<SO2<_Scalar>>
+{
+  static constexpr bool is_mutable = true;
+
+  using Impl   = SO2Impl<_Scalar>;
+  using Scalar = _Scalar;
+
+  template<typename NewScalar>
+  using PlainObject = SO2<NewScalar>;
+};
+
+// STORAGE TYPE
+
+template<typename _Scalar>
+class SO2 : public SO2Base<SO2<_Scalar>>
+{
+  using Base = SO2Base<SO2<_Scalar>>;
+  SMOOTH_GROUP_API(SO2)
+public:
+  /**
+   * @brief Construct from complex number
+   */
+  template<typename Derived>
+  SO2(const std::complex<Scalar> & c)
+  {
+    coeffs_.x() = c.im;
+    coeffs_.y() = c.re;
   }
 
   /**
    * @brief Construct from angle
    */
-  static SO2 rot(const Scalar & angle)
-  requires ModifiableStorageLike<Storage>
-  {
-    return exp(Tangent(angle));
-  }
-
-  /**
-   * @brief Rotation angle in interval (-pi, pi]
-   */
-  Scalar angle() const
-  {
-    return log()(0);
-  }
-
-  // REQUIRED GROUP API
-
-public:
-  /**
-   * @brief Set to identity element
-   */
-  void setIdentity() requires ModifiableStorageLike<Storage>
-  {
-    s_[0] = Scalar(0); s_[1] = Scalar(1);
-  }
-
-  /**
-   * @brief Set to a random element
-   */
-  void setRandom()
-  requires ModifiableStorageLike<Storage>
-  {
-    using std::sin, std::cos;
-    const Scalar u = Eigen::internal::template random_impl<Scalar>::run(0, 2 * M_PI);
-    s_[0] = sin(u); s_[1] = cos(u);
-  }
-
-  /**
-   * @brief Matrix lie group element
-   */
-  MatrixGroup matrix_group() const
-  {
-    return (MatrixGroup() << s_[1], -s_[0], s_[0], s_[1]).finished();
-  }
-
-  /**
-   * @brief Group action
-   */
-  template<typename Derived>
-  Vector operator*(const Eigen::MatrixBase<Derived> & x) const
-  {
-    return matrix_group() * x;
-  }
-
-  /**
-   * @brief Group composition
-   */
-  template<StorageLike OS>
-  PlainObject operator*(const SO2<Scalar, OS> & r) const
-  {
-    return PlainObject(s_[0] * r.s_[1] + s_[1] * r.s_[0], s_[1] * r.s_[1] - s_[0] * r.s_[0]);
-  }
-
-  /**
-   * @brief Group inverse
-   */
-  PlainObject inverse() const
-  {
-    return PlainObject(-s_[0], s_[1]);
-  }
-
-  /**
-   * @brief Group logarithm
-   */
-  Tangent log() const
-  {
-    using std::atan2;
-    return Tangent(atan2(s_[0], s_[1]));
-  }
-
-  /**
-   * @brief Group adjoint
-   */
-  TangentMap Ad() const
-  {
-    return TangentMap::Identity();
-  }
-
-  // REQUIRED TANGENT API
-
-  /**
-   * @brief Group exponential
-   */
-  template<typename Derived>
-  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
+  explicit SO2(const Scalar & angle)
   {
     using std::cos, std::sin;
-    return PlainObject(sin(a.x()), cos(a.x()));
-  }
-
-  /**
-   * @brief Algebra adjoint
-   */
-  template<typename Derived>
-  static TangentMap ad(const Eigen::MatrixBase<Derived> &)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  {
-    return TangentMap::Zero();
-  }
-
-  /**
-   * @brief Algebra hat
-   */
-  template<typename Derived>
-  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  {
-    return (MatrixGroup() <<
-           Scalar(0), -a.x(),
-           a.x(), Scalar(0)
-    ).finished();
-  }
-
-  /**
-   * @brief Algebra vee
-   */
-  template<typename Derived>
-  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
-  requires(Derived::RowsAtCompileTime == Dim && Derived::ColsAtCompileTime == Dim)
-  {
-    return (Tangent() << A.coeff(1, 0) - A.coeff(0, 1)).finished() / Scalar(2);
-  }
-
-  /**
-   * @brief Right jacobian of the exponential map
-   */
-  template<typename Derived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> &)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  {
-    return TangentMap::Identity();
-  }
-
-  /**
-   * @brief Inverse of the right jacobian of the exponential map
-   */
-  template<typename Derived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> &)
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  {
-    return TangentMap::Identity();
+    coeffs_.x() = sin(angle);
+    coeffs_.y() = cos(angle);
   }
 };
 
@@ -229,4 +97,40 @@ using SO2d = SO2<double>;
 
 }  // namespace smooth
 
-#endif  // SMOOTH__SO2_HPP_
+// MAP TYPE TRAITS
+
+template<typename Scalar>
+struct smooth::lie_traits<Eigen::Map<smooth::SO2<Scalar>>>
+  : public lie_traits<smooth::SO2<Scalar>>
+{};
+
+// MAP TYPE
+
+template<typename _Scalar>
+class Eigen::Map<smooth::SO2<_Scalar>>
+  : public smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>
+{
+  using Base = smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>;
+  SMOOTH_MAP_API(Map)
+};
+
+// CONST MAP TYPE TRAITS
+
+template<typename Scalar>
+struct smooth::lie_traits<Eigen::Map<const smooth::SO2<Scalar>>>
+  : public lie_traits<smooth::SO2<Scalar>>
+{
+  static constexpr bool is_mutable = false;
+};
+
+// CONST MAP TYPE
+
+template<typename _Scalar>
+class Eigen::Map<const smooth::SO2<_Scalar>>
+  : public smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>
+{
+  using Base = smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>;
+  SMOOTH_CONST_MAP_API(Map)
+};
+
+#endif  // SO2_HPP_

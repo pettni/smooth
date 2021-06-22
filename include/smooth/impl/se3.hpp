@@ -16,6 +16,11 @@ namespace smooth {
  * Group:    x y z qx qy qz qw
  * Tangent:  vx vy vz Ωx Ωy Ωz
  *
+ * Matrix form
+ * ===========
+ *
+ * 3x3 rotation matrix
+ *
  * Constraints
  * ===========
  * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
@@ -129,7 +134,7 @@ public:
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
 
-  static Eigen::Matrix<Scalar, 3, 3> calculate_q(const Eigen::Ref<Eigen::Matrix<Scalar, 3, 1>> & a)
+  static Eigen::Matrix<Scalar, 3, 3> calculate_q(TRefIn a)
   {
     using std::abs, std::sqrt, std::cos, std::sin;
 
@@ -150,7 +155,7 @@ public:
       C = (th - sTh - th * th2 / Scalar(6)) / (th_4 * th);
     }
 
-    const Eigen::Matrix<Scalar, 3, 3> V, W;
+    Eigen::Matrix<Scalar, 3, 3> V, W;
     SO3Impl<Scalar>::hat(a.template head<3>(), V);
     SO3Impl<Scalar>::hat(a.template tail<3>(), W);
 
@@ -164,7 +169,7 @@ public:
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)
   {
     SO3Impl<Scalar>::dr_exp(a_in.template tail<3>(), A_out.template topLeftCorner<3, 3>());
-    A_out.template topRightCorner<3, 3>()    = calculate_q(a_in);
+    A_out.template topRightCorner<3, 3>()    = calculate_q(-a_in);
     A_out.template bottomRightCorner<3, 3>() = A_out.template topLeftCorner<3, 3>();
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
@@ -173,7 +178,7 @@ public:
   {
     SO3Impl<Scalar>::dr_expinv(a_in.template tail<3>(), A_out.template topLeftCorner<3, 3>());
     A_out.template topRightCorner<3, 3>() = -A_out.template topLeftCorner<3, 3>()
-                                          * calculate_q(a_in)
+                                          * calculate_q(-a_in)
                                           * A_out.template topLeftCorner<3, 3>();
     A_out.template bottomRightCorner<3, 3>() = A_out.template topLeftCorner<3, 3>();
     A_out.template bottomLeftCorner<3, 3>().setZero();

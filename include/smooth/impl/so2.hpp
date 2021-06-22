@@ -15,6 +15,12 @@ namespace smooth {
  * Group:    qz qw
  * Tangent:  wz
  *
+ * Matrix form
+ * ===========
+ *
+ * [ qw -qz ]
+ * [ qz  qw ]
+ *
  * Constraints
  * ===========
  * Group:   qz * qz + qw * qw = 1

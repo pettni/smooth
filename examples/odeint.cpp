@@ -3,6 +3,7 @@
 #include <matplot/matplot.h>
 
 #include "smooth/so3.hpp"
+#include "smooth/tn.hpp"
 #include "smooth/bundle.hpp"
 #include "smooth/compat/odeint.hpp"
 

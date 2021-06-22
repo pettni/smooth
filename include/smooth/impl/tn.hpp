@@ -9,6 +9,22 @@
 
 namespace smooth {
 
+/**
+ * @brief T(n) Lie Group represented as Rn
+ *
+ * Memory layout
+ * =============
+ * Group:    x1 x2 ... xn
+ * Tangent:  v1 v2 ... vn
+ *
+ * Matrix form
+ * ===========
+ *
+ * [ I T ]
+ * [ 0 1 ]
+ *
+ * where T = [x1 ... xn]'
+ */
 template<int N, typename _Scalar>
 struct TnImpl
 {
@@ -35,7 +51,7 @@ struct TnImpl
 
   static void log(GRefIn g_in, TRefOut a_out) { a_out = g_in; }
 
-  static void Ad(GRefIn, TMapRefOut A_out) { A_out.setZero(); }
+  static void Ad(GRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
 
   static void exp(TRefIn a_in, GRefOut g_out) { g_out = a_in; }
 
@@ -49,9 +65,9 @@ struct TnImpl
 
   static void ad(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
 
-  static void dr_exp(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
+  static void dr_exp(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
 
-  static void dr_expinv(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
+  static void dr_expinv(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
 };
 
 }  // namespace smooth

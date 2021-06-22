@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <type_traits>
 
-#include "smooth/common.hpp"
+#include "concepts.hpp"
 
 namespace smooth::diff {
 

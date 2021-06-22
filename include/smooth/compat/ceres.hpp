@@ -4,7 +4,6 @@
 #include <ceres/autodiff_local_parameterization.h>
 
 #include "smooth/concepts.hpp"
-#include "smooth/storage.hpp"
 
 
 namespace smooth
@@ -18,9 +17,9 @@ struct ParameterizationFunctor
   {
     using GScalar = decltype(G().template cast<Scalar>());
 
-    smooth::Map<const GScalar> mx(x);
+    Eigen::Map<const GScalar> mx(x);
     Eigen::Map<const typename GScalar::Tangent> mdelta(delta);
-    smooth::Map<GScalar> mx_plus_delta(x_plus_delta);
+    Eigen::Map<GScalar> mx_plus_delta(x_plus_delta);
 
     mx_plus_delta = mx + mdelta;
     return true;
