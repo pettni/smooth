@@ -12,27 +12,27 @@ namespace smooth {
   using Base::operator=;                        \
   using Base::operator*;
 
-#define SMOOTH_GROUP_API(X)                              \
-public:                                                  \
-  SMOOTH_INHERIT_TYPEDEFS                                \
-  X()          = default;                                \
-  X(const X &) = default;                                \
-  X(X &&)      = default;                                \
-  X & operator=(const X &) = default;                    \
-  X & operator=(X &&) = default;                         \
-  ~X()                = default;                         \
-  template<typename OtherDerived>                        \
-                                                         \
-  X(const X##Base<OtherDerived> & o)                     \
-  {                                                      \
-    coeffs() = o.coeffs();                               \
-  }                                                      \
-  using Storage = Eigen::Matrix<Scalar, RepSize, 1>;     \
-                                                         \
-  Storage & coeffs() { return coeffs_; }                 \
-  const Storage & coeffs() const { return coeffs_; }     \
-                                                         \
-private:                                                 \
+#define SMOOTH_GROUP_API(X)                          \
+public:                                              \
+  SMOOTH_INHERIT_TYPEDEFS                            \
+  X()          = default;                            \
+  X(const X &) = default;                            \
+  X(X &&)      = default;                            \
+  X & operator=(const X &) = default;                \
+  X & operator=(X &&) = default;                     \
+  ~X()                = default;                     \
+  template<typename OtherDerived>                    \
+                                                     \
+  X(const X##Base<OtherDerived> & o)                 \
+  {                                                  \
+    coeffs() = o.coeffs();                           \
+  }                                                  \
+  using Storage = Eigen::Matrix<Scalar, RepSize, 1>; \
+                                                     \
+  Storage & coeffs() { return coeffs_; }             \
+  const Storage & coeffs() const { return coeffs_; } \
+                                                     \
+private:                                             \
   Storage coeffs_;
 
 #define SMOOTH_MAP_API(X)                                        \

@@ -1,5 +1,5 @@
-#ifndef BUNDLE_IMPL_HPP_
-#define BUNDLE_IMPL_HPP_
+#ifndef SMOOTH__IMPL__BUNDLE_HPP_
+#define SMOOTH__IMPL__BUNDLE_HPP_
 
 #include <array>
 
@@ -174,4 +174,4 @@ struct BundleImpl
 
 }  // namespace smooth
 
-#endif  // BUNDLE_IMPL_HPP_
+#endif  // SMOOTH__IMPL__BUNDLE_HPP_

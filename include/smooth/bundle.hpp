@@ -1,8 +1,8 @@
-#ifndef BUNDLE_HPP_
-#define BUNDLE_HPP_
+#ifndef SMOOTH__BUNDLE_HPP_
+#define SMOOTH__BUNDLE_HPP_
 
 #include "impl/bundle.hpp"
-#include "lie_group.hpp"
+#include "lie_group_base.hpp"
 #include "macro.hpp"
 
 namespace smooth {
@@ -128,4 +128,4 @@ class Eigen::Map<const smooth::Bundle<_Gs...>>
   using Base = smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>;
   SMOOTH_CONST_MAP_API(Map)
 };
-#endif  // BUNDLE_HPP_
+#endif  // SMOOTH__BUNDLE_HPP_

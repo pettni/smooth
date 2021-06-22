@@ -1,8 +1,8 @@
-#ifndef TN_HPP_
-#define TN_HPP_
+#ifndef SMOOTH__TN_HPP_
+#define SMOOTH__TN_HPP_
 
 #include "impl/tn.hpp"
-#include "lie_group.hpp"
+#include "lie_group_base.hpp"
 
 namespace smooth {
 
@@ -19,35 +19,35 @@ struct lie_traits<Tn<_N, _Scalar>>
   using PlainObject = Eigen::Matrix<NewScalar, _N, 1>;
 };
 
-template<typename Scalar>
-using T1 = Tn<1, Scalar>;
+template<typename _Scalar>
+using T1 = Tn<1, _Scalar>;
 
-template<typename Scalar>
-using T2 = Tn<2, Scalar>;
+template<typename _Scalar>
+using T2 = Tn<2, _Scalar>;
 
-template<typename Scalar>
-using T3 = Tn<3, Scalar>;
+template<typename _Scalar>
+using T3 = Tn<3, _Scalar>;
 
-template<typename Scalar>
-using T4 = Tn<4, Scalar>;
+template<typename _Scalar>
+using T4 = Tn<4, _Scalar>;
 
-template<typename Scalar>
-using T5 = Tn<5, Scalar>;
+template<typename _Scalar>
+using T5 = Tn<5, _Scalar>;
 
-template<typename Scalar>
-using T6 = Tn<6, Scalar>;
+template<typename _Scalar>
+using T6 = Tn<6, _Scalar>;
 
-template<typename Scalar>
-using T7 = Tn<7, Scalar>;
+template<typename _Scalar>
+using T7 = Tn<7, _Scalar>;
 
-template<typename Scalar>
-using T8 = Tn<8, Scalar>;
+template<typename _Scalar>
+using T8 = Tn<8, _Scalar>;
 
-template<typename Scalar>
-using T9 = Tn<9, Scalar>;
+template<typename _Scalar>
+using T9 = Tn<9, _Scalar>;
 
-template<typename Scalar>
-using T10 = Tn<10, Scalar>;
+template<typename _Scalar>
+using T10 = Tn<10, _Scalar>;
 
 using T1f  = T1<float>;
 using T2f  = T2<float>;
@@ -73,4 +73,4 @@ using T10d = T10<double>;
 
 }  // namespace smooth
 
-#endif  // TN_HPP_
+#endif  // SMOOTH__TN_HPP_

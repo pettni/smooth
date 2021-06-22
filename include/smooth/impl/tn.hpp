@@ -1,7 +1,5 @@
-#ifndef IMPL__TN_HPP_
-#define IMPL__TN_HPP_
-
-#include <array>
+#ifndef SMOOTH__IMPL__TN_HPP_
+#define SMOOTH__IMPL__TN_HPP_
 
 #include <Eigen/Core>
 
@@ -72,4 +70,4 @@ struct TnImpl
 
 }  // namespace smooth
 
-#endif  // IMPL__TN_HPP_
+#endif  // SMOOTH__IMPL__TN_HPP_

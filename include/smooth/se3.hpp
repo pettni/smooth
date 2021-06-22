@@ -1,12 +1,12 @@
-#ifndef SE3_HPP_
-#define SE3_HPP_
+#ifndef SMOOTH__SE3_HPP_
+#define SMOOTH__SE3_HPP_
 
 #include <Eigen/Core>
 
 #include <complex>
 
 #include "impl/se3.hpp"
-#include "lie_group.hpp"
+#include "lie_group_base.hpp"
 #include "macro.hpp"
 #include "so3.hpp"
 
@@ -14,11 +14,11 @@ namespace smooth {
 
 // CRTP BASE
 
-template<typename Derived>
-class SE3Base : public LieGroupBase<Derived>
+template<typename _Derived>
+class SE3Base : public LieGroupBase<_Derived>
 {
 protected:
-  using Base = LieGroupBase<Derived>;
+  using Base = LieGroupBase<_Derived>;
   SE3Base()  = default;
 
 public:
@@ -30,7 +30,7 @@ public:
   Eigen::Map<SO3<Scalar>> so3()
   requires is_mutable
   {
-    return Eigen::Map<SO3<Scalar>>(static_cast<Derived &>(*this).data() + 3);
+    return Eigen::Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3);
   }
 
   /**
@@ -38,7 +38,7 @@ public:
    */
   Eigen::Map<const SO3<Scalar>> so3() const
   {
-    return Eigen::Map<const SO3<Scalar>>(static_cast<const Derived &>(*this).data() + 3);
+    return Eigen::Map<const SO3<Scalar>>(static_cast<const _Derived &>(*this).data() + 3);
   }
 
   /**
@@ -47,7 +47,7 @@ public:
   Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> t3()
   requires is_mutable
   {
-    return Eigen::Map<Eigen::Matrix<Scalar, 3, 1>>(static_cast<Derived &>(*this).data());
+    return Eigen::Map<Eigen::Matrix<Scalar, 3, 1>>(static_cast<_Derived &>(*this).data());
   }
 
   /**
@@ -56,7 +56,7 @@ public:
   Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>> t3() const
   {
     return Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>>(
-      static_cast<const Derived &>(*this).data());
+      static_cast<const _Derived &>(*this).data());
   }
 
   /**
@@ -112,14 +112,16 @@ using SE3d = SE3<double>;
 
 // MAP TYPE TRAITS
 
-template<typename Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::SE3<Scalar>>> : public lie_traits<smooth::SE3<Scalar>>
+template<typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<smooth::SE3<_Scalar>>>
+  : public lie_traits<smooth::SE3<_Scalar>>
 {};
 
 // MAP TYPE
 
 template<typename _Scalar>
-class Eigen::Map<smooth::SE3<_Scalar>> : public smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>
+class Eigen::Map<smooth::SE3<_Scalar>>
+  : public smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>
 {
   using Base = smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>;
   SMOOTH_MAP_API(Map)
@@ -127,9 +129,9 @@ class Eigen::Map<smooth::SE3<_Scalar>> : public smooth::SE3Base<Eigen::Map<smoot
 
 // CONST MAP TYPE TRAITS
 
-template<typename Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::SE3<Scalar>>>
-    : public lie_traits<smooth::SE3<Scalar>>
+template<typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<const smooth::SE3<_Scalar>>>
+  : public lie_traits<smooth::SE3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -138,10 +140,10 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SE3<Scalar>>>
 
 template<typename _Scalar>
 class Eigen::Map<const smooth::SE3<_Scalar>>
-    : public smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>
+  : public smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>
 {
   using Base = smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>;
   SMOOTH_CONST_MAP_API(Map)
 };
 
-#endif  // SE3_HPP_
+#endif  // SMOOTH__SE3_HPP_

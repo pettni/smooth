@@ -1,23 +1,23 @@
-#ifndef SO2_HPP_
-#define SO2_HPP_
+#ifndef SMOOTH__SO2_HPP_
+#define SMOOTH__SO2_HPP_
 
 #include <Eigen/Core>
 
 #include <complex>
 
 #include "impl/so2.hpp"
-#include "lie_group.hpp"
+#include "lie_group_base.hpp"
 #include "macro.hpp"
 
 namespace smooth {
 
 // CRTP BASE
 
-template<typename Derived>
-class SO2Base : public LieGroupBase<Derived>
+template<typename _Derived>
+class SO2Base : public LieGroupBase<_Derived>
 {
 protected:
-  using Base = LieGroupBase<Derived>;
+  using Base = LieGroupBase<_Derived>;
   SO2Base()  = default;
 
 public:
@@ -74,7 +74,7 @@ public:
   /**
    * @brief Construct from complex number
    */
-  template<typename Derived>
+  template<typename _Derived>
   SO2(const std::complex<Scalar> & c)
   {
     coeffs_.x() = c.im;
@@ -99,9 +99,9 @@ using SO2d = SO2<double>;
 
 // MAP TYPE TRAITS
 
-template<typename Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::SO2<Scalar>>>
-  : public lie_traits<smooth::SO2<Scalar>>
+template<typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<smooth::SO2<_Scalar>>>
+  : public lie_traits<smooth::SO2<_Scalar>>
 {};
 
 // MAP TYPE
@@ -116,9 +116,9 @@ class Eigen::Map<smooth::SO2<_Scalar>>
 
 // CONST MAP TYPE TRAITS
 
-template<typename Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::SO2<Scalar>>>
-  : public lie_traits<smooth::SO2<Scalar>>
+template<typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<const smooth::SO2<_Scalar>>>
+  : public lie_traits<smooth::SO2<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -133,4 +133,4 @@ class Eigen::Map<const smooth::SO2<_Scalar>>
   SMOOTH_CONST_MAP_API(Map)
 };
 
-#endif  // SO2_HPP_
+#endif  // SMOOTH__SO2_HPP_

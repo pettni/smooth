@@ -3,8 +3,8 @@
 
 // clang-format off
 #include <Eigen/Core>
-#include <autodiff/forward/forward.hpp>
 #include <autodiff/forward/eigen.hpp>
+#include <autodiff/forward/forward.hpp>
 // clang-format on
 
 #define SMOOTH_DIFF_AUTODIFF

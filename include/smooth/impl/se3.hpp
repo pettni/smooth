@@ -1,5 +1,5 @@
-#ifndef SE3IMPL_HPP_
-#define SE3IMPL_HPP_
+#ifndef SMOOTH__IMPL__SE3_HPP_
+#define SMOOTH__IMPL__SE3_HPP_
 
 #include <Eigen/Core>
 
@@ -187,4 +187,4 @@ public:
 
 }  // namespace smooth
 
-#endif  // SE3IMPL_HPP_
+#endif  // SMOOTH__IMPL__SE3_HPP_

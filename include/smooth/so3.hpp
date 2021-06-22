@@ -1,22 +1,22 @@
-#ifndef SO3_HPP_
-#define SO3_HPP_
+#ifndef SMOOTH__SO3_HPP_
+#define SMOOTH__SO3_HPP_
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
 #include "impl/so3.hpp"
-#include "lie_group.hpp"
+#include "lie_group_base.hpp"
 #include "macro.hpp"
 
 namespace smooth {
 
 // CRTP BASE
 
-template<typename Derived>
-class SO3Base : public LieGroupBase<Derived>
+template<typename _Derived>
+class SO3Base : public LieGroupBase<_Derived>
 {
 protected:
-  using Base = LieGroupBase<Derived>;
+  using Base = LieGroupBase<_Derived>;
   SO3Base()  = default;
 
 public:
@@ -27,7 +27,7 @@ public:
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> quat()
   {
-    return Eigen::Map<Eigen::Quaternion<Scalar>>(static_cast<Derived &>(*this).data());
+    return Eigen::Map<Eigen::Quaternion<Scalar>>(static_cast<_Derived &>(*this).data());
   }
 
   /**
@@ -35,7 +35,7 @@ public:
    */
   Eigen::Map<const Eigen::Quaternion<Scalar>> quat() const
   {
-    return Eigen::Map<const Eigen::Quaternion<Scalar>>(static_cast<const Derived &>(*this).data());
+    return Eigen::Map<const Eigen::Quaternion<Scalar>>(static_cast<const _Derived &>(*this).data());
   }
 
   /**
@@ -102,8 +102,9 @@ using SO3d = SO3<double>;
 
 // MAP TYPE TRAITS
 
-template<typename Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::SO3<Scalar>>> : public lie_traits<smooth::SO3<Scalar>>
+template<typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<smooth::SO3<_Scalar>>>
+  : public lie_traits<smooth::SO3<_Scalar>>
 {};
 
 // MAP TYPE
@@ -118,9 +119,9 @@ class Eigen::Map<smooth::SO3<_Scalar>>
 
 // CONST MAP TYPE TRAITS
 
-template<typename Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::SO3<Scalar>>>
-  : public lie_traits<smooth::SO3<Scalar>>
+template<typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<const smooth::SO3<_Scalar>>>
+  : public lie_traits<smooth::SO3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -135,4 +136,4 @@ class Eigen::Map<const smooth::SO3<_Scalar>>
   SMOOTH_CONST_MAP_API(Map)
 };
 
-#endif  // SO3_HPP_
+#endif  // SMOOTH__SO3_HPP_
