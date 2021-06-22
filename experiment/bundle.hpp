@@ -106,4 +106,20 @@ class Eigen::Map<smooth::Bundle<_Gs...>>
   SMOOTH_MAP_API(Map)
 };
 
+// CONST MAP TYPE TRAITS
+
+template<typename... _Gs>
+struct smooth::lie_traits<const Eigen::Map<smooth::Bundle<_Gs...>>>
+    : public lie_traits<smooth::Bundle<_Gs...>>
+{};
+
+// CONST MAP TYPE
+
+template<typename... _Gs>
+class Eigen::Map<const smooth::Bundle<_Gs...>>
+    : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
+{
+  using Base = smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>;
+  SMOOTH_CONST_MAP_API(Map)
+};
 #endif  // BUNDLE_HPP_

@@ -5,6 +5,9 @@
 
 #include "bundle.hpp"
 #include "so3.hpp"
+#include "so2.hpp"
+#include "se2.hpp"
+#include "se3.hpp"
 #include "tn.hpp"
 
 template<typename G>
@@ -61,29 +64,35 @@ void test(G g)
 
 int main()
 {
+  using SO2d     = smooth::SO2<double>;
   using SO3d     = smooth::SO3<double>;
   using T4d      = smooth::Tn<4, double>;
-  using MyBundle = smooth::Bundle<SO3d, SO3d, T4d, T4d>;
+  using MyBundle = smooth::Bundle<SO3d, SO3d, T4d, T4d, SO2d>;
 
-  SO3d g(Eigen::Quaterniond(1, 2, 3, 4).normalized());
+  std::cout << "TESTING SO2" << std::endl;
+  SO2d so2;
+  so2.setRandom();
+  test(so2);
 
   std::cout << "TESTING SO3" << std::endl;
-  test(g);
+  SO3d so3;
+  so3.setRandom();
+  test(so3);
 
-  MyBundle b;
-  b.part<0>() = SO3d(Eigen::Quaterniond::UnitRandom());
-  b.part<1>() = SO3d(Eigen::Quaterniond::UnitRandom());
-  b.part<2>().setRandom();
-  b.part<3>().setRandom();
+  std::cout << "TESTING SE2" << std::endl;
+  smooth::SE2<double> se2;
+  se2.setRandom();
+  test(se2);
+
+  std::cout << "TESTING SE3" << std::endl;
+  smooth::SE3<double> se3;
+  se3.setRandom();
+  test(se3);
+
   std::cout << "TESTING BUNDLE" << std::endl;
+  MyBundle b;
+  b.setRandom();
   test(b);
-
-  SO3d g_in;
-  g_in.setRandom();
-  T4d v_in(1, 2, 3, 4);
-
-  MyBundle b2(g_in, g_in, v_in, 2 * v_in);
-  std::cout << b2 << std::endl;
 
   return 0;
 }

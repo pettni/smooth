@@ -7,6 +7,19 @@
 
 namespace smooth {
 
+/**
+ * @brief SO3 Lie Group represented as S3
+ *
+ * Memory layout
+ * =============
+ * Group:    qx qy qz qw  (same as Eigen quaternion)
+ * Tangent:  wx wy wz
+ *
+ * Constraints
+ * ===========
+ * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
+ * Tangent: -pi < wx, wy, wz <= pi
+ */
 template<typename _Scalar>
 class SO3Impl
 {
@@ -93,31 +106,59 @@ public:
 
   static void hat(TRefIn a_in, MRefOut A_out)
   {
-    A_out << Scalar(0), -a_in(2), a_in(1),
-          a_in(2), Scalar(0), -a_in(0),
-          -a_in(1), a_in(0), Scalar(0);
+    A_out << Scalar(0), -a_in(2), a_in(1), a_in(2), Scalar(0), -a_in(0), -a_in(1), a_in(0),
+      Scalar(0);
   }
 
   static void vee(MRefIn A_in, TRefOut a_out)
   {
-    a_out << (A_in(2, 1) - A_in(1, 2)) / Scalar(2),
-          (A_in(0, 2) - A_in(2, 0)) / Scalar(2),
-          (A_in(1, 0) - A_in(0, 1)) / Scalar(2);
+    a_out << (A_in(2, 1) - A_in(1, 2)) / Scalar(2), (A_in(0, 2) - A_in(2, 0)) / Scalar(2),
+      (A_in(1, 0) - A_in(0, 1)) / Scalar(2);
   }
 
-  static void ad(TRefIn a_in, TMapRefOut A_out)
-  {
-    A_out.setZero();
-  }
+  static void ad(TRefIn a_in, TMapRefOut A_out) { hat(a_in, A_out); }
 
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)
   {
-    A_out.setZero();
+    using std::sqrt, std::sin, std::cos;
+    const Scalar th2 = a_in.squaredNorm();
+
+    Scalar A, B;
+    if (th2 < Scalar(eps2)) {
+      // https://www.wolframalpha.com/input/?i=series+%281-cos+x%29+%2F+x%5E2+at+x%3D0
+      A = Scalar(1) / Scalar(2) - th2 / Scalar(24);
+      // https://www.wolframalpha.com/input/?i=series+%28x+-+sin%28x%29%29+%2F+x%5E3+at+x%3D0
+      B = Scalar(1) / Scalar(6) - th2 / Scalar(120);
+    } else {
+      const Scalar th = sqrt(th2);
+      A               = (Scalar(1) - cos(th)) / th2;
+      B               = (th - sin(th)) / (th2 * th);
+    }
+
+    using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
+    TangentMap ad_a;
+    ad(a_in, ad_a);
+    A_out = TangentMap::Identity() - A * ad_a + B * ad_a * ad_a;
   }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
   {
-    A_out.setZero();
+    using std::sqrt, std::sin, std::cos;
+    const Scalar th2 = a_in.squaredNorm();
+
+    Scalar A;
+    if (th2 < Scalar(eps2)) {
+      // https://www.wolframalpha.com/input/?i=series+1%2Fx%5E2-%281%2Bcos+x%29%2F%282*x*sin+x%29+at+x%3D0
+      A = Scalar(1) / Scalar(12) + th2 / Scalar(720);
+    } else {
+      const Scalar th = sqrt(th2);
+      A               = Scalar(1) / th2 - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th));
+    }
+
+    using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
+    TangentMap ad_a;
+    ad(a_in, ad_a);
+    A_out = TangentMap::Identity() + ad_a / Scalar(2) + A * ad_a * ad_a;
   }
 };
 
