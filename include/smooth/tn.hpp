@@ -6,6 +6,28 @@
 
 namespace smooth {
 
+/**
+ * @brief T(n) Lie Group represented as Rn
+ *
+ * Memory layout
+ * =============
+ * Group:    x1 x2 ... xn
+ * Tangent:  v1 v2 ... vn
+ *
+ * Lie group Matrix form
+ * =====================
+ *
+ * [ I T ]
+ * [ 0 1 ]
+ *
+ * Lie algebra Matrix form
+ * =====================
+ *
+ * [ 0 V ]
+ * [ 0 0 ]
+ *
+ * where V = [v1 ... vn]'
+ */
 template<int _N, typename _Scalar>
 using Tn = Eigen::Matrix<_Scalar, _N, 1>;
 

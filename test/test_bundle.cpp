@@ -41,6 +41,13 @@ TEST(Bundle, Construct)
   ASSERT_TRUE(b.part<1>().isApprox(so3));
   ASSERT_TRUE(b.part<2>().isApprox(e3));
 
+  const mybundle b_const(so2, so3, e3);
+
+  ASSERT_TRUE(b.isApprox(b_const));
+  ASSERT_TRUE(b_const.part<0>().isApprox(so2));
+  ASSERT_TRUE(b_const.part<1>().isApprox(so3));
+  ASSERT_TRUE(b_const.part<2>().isApprox(e3));
+
   Eigen::Matrix4d m;
   m.setIdentity();
   m.topRightCorner<3, 1>() = e3;

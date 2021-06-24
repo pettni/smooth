@@ -7,25 +7,6 @@
 
 namespace smooth {
 
-/**
- * @brief SO2 Lie Group represented as U(1)
- *
- * Memory layout
- * =============
- * Group:    qz qw
- * Tangent:  wz
- *
- * Matrix form
- * ===========
- *
- * [ qw -qz ]
- * [ qz  qw ]
- *
- * Constraints
- * ===========
- * Group:   qz * qz + qw * qw = 1
- * Tangent: -pi < wz <= pi
- */
 template<typename _Scalar>
 class SO2Impl
 {

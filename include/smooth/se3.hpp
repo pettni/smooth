@@ -14,6 +14,35 @@ namespace smooth {
 
 // CRTP BASE
 
+/**
+ * @brief SE3 Lie Group represented as S3 ⋉ R3
+ *
+ * Memory layout
+ * =============
+ * Group:    x y z qx qy qz qw
+ * Tangent:  vx vy vz Ωx Ωy Ωz
+ *
+ * Lie group Matrix form
+ * =====================
+ *
+ * [ R T ]
+ * [ 0 1 ]
+ *
+ * where R ∈ SO(3) and T ∈ R3
+ *
+ * Lie algebra Matrix form
+ * =======================
+ *
+ * [  0 -Ωz  Ωy vx]
+ * [  Ωz  0 -Ωx vy]
+ * [ -Ωy Ωx   0 vz]
+ * [   0  0   0  1]
+ *
+ * Constraints
+ * ===========
+ * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
+ * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
+ */
 template<typename _Derived>
 class SE3Base : public LieGroupBase<_Derived>
 {

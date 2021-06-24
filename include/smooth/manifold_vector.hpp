@@ -30,14 +30,14 @@ public:
   ~ManifoldVector()                               = default;
 
   /**
-   * Forwarding constructor to std::vector
+   * Forwarding constructor to std::vector.
    */
   template<typename... Ts>
   ManifoldVector(Ts &&... ts) : Base(std::forward<Ts>(ts)...)
   {}
 
   /**
-   * @brief Cast to different scalar type
+   * @brief Cast to different scalar type.
    */
   template<typename NewScalar>
   auto cast() const
@@ -51,12 +51,12 @@ public:
   }
 
   /**
-   * @brief Size of vector
+   * @brief Size of vector.
    */
   std::size_t vector_size() const { return Base::size(); }
 
   /**
-   * @brief Runtime degrees of freedom
+   * @brief Runtime degrees of freedom.
    */
   Eigen::Index size() const
   {
@@ -70,7 +70,7 @@ public:
   }
 
   /**
-   * @brief In-place addition
+   * @brief In-place addition.
    */
   template<typename Derived>
   PlainObject & operator+=(const Eigen::MatrixBase<Derived> & a)
@@ -85,7 +85,7 @@ public:
   }
 
   /**
-   * @brief Addition
+   * @brief Addition.
    */
   template<typename Derived>
   PlainObject operator+(const Eigen::MatrixBase<Derived> & a) const
@@ -96,7 +96,7 @@ public:
   }
 
   /**
-   * @brief Subtraction
+   * @brief Subtraction.
    */
   Eigen::Matrix<Scalar, -1, 1> operator-(const PlainObject & o) const
   {
