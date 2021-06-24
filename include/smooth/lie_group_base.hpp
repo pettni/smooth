@@ -34,10 +34,12 @@ public:
 
   using PlainObject = PlainObjectCast<Scalar>;
 
-  // Assignment operator
+  /**
+   * Assignment operation from other storage type.
+   */
   template<typename OtherDerived>
-  requires is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl> Derived & operator=(
-    const LieGroupBase<OtherDerived> & o)
+  requires is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  Derived & operator=(const LieGroupBase<OtherDerived> & o)
   {
     coeffs() = static_cast<const OtherDerived &>(o).coeffs();
     return static_cast<Derived &>(*this);
@@ -46,51 +48,53 @@ public:
   // Required sizes
 
   /**
-   * Static size (degrees of freedom)
+   * Static size (degrees of freedom).
    */
   static constexpr Eigen::Index SizeAtCompileTime = Dof;
 
   /**
-   * Dynamic size (degrees of freedom)
+   * Dynamic size (degrees of freedom).
    */
   Eigen::Index size() const { return Dof; }
 
   // Coefficient and raw data access
 
   /**
-   * @brief Accessc coefficients
+   * @brief Access coefficients.
    */
   auto & coeffs() requires is_mutable { return static_cast<Derived &>(*this).coeffs(); }
 
   /**
-   * @brief Const accessc coefficients
+   * @brief Const access coefficients.
    */
   const auto & coeffs() const { return static_cast<const Derived &>(*this).coeffs(); }
 
   /**
-   * @brief Access raw pointer
+   * @brief Access raw pointer.
    */
   Scalar * data() requires is_mutable { return static_cast<Derived &>(*this).coeffs().data(); }
 
   /**
-   * @brief Const access raw pointer
+   * @brief Const access raw pointer.
    */
   const Scalar * data() const { return static_cast<const Derived &>(*this).coeffs().data(); }
 
   // Group API
 
   /**
-   * @brief Set to identity
+   * @brief Set to group identity element.
    */
   void setIdentity() { Impl::setIdentity(coeffs()); }
 
   /**
-   * @brief Set to a random element
+   * @brief Set to a random element.
+   *
+   * Set the seed with std::srand(unsigned).
    */
   void setRandom() { Impl::setRandom(coeffs()); }
 
   /**
-   * @brief Construct the identity element
+   * @brief Construct the identity element.
    */
   static PlainObject Identity()
   {
@@ -100,9 +104,9 @@ public:
   }
 
   /**
-   * @brief Construct a random element
+   * @brief Construct a random element.
    *
-   * Set the seed with std::srand(unsigned)
+   * Set the seed with std::srand(unsigned).
    */
   static PlainObject Random()
   {
@@ -112,7 +116,7 @@ public:
   }
 
   /**
-   * @brief Return as matrix Lie group
+   * @brief Return as matrix Lie group element.
    */
   Matrix matrix() const
   {
@@ -121,10 +125,11 @@ public:
     return ret;
   }
   /**
-   * @brief Check if (approximately) equal to other element
+   * @brief Check if (approximately) equal to other element `o`.
    */
   template<typename OtherDerived>
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl> bool isApprox(
+  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  bool isApprox(
     const LieGroupBase<OtherDerived> & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
@@ -132,7 +137,7 @@ public:
   }
 
   /**
-   * @brief Cast to different scalar type
+   * @brief Cast to different scalar type.
    */
   template<typename NewScalar>
   PlainObjectCast<NewScalar> cast() const
@@ -143,11 +148,11 @@ public:
   }
 
   /**
-   * @brief Group binary operation
+   * @brief Group binary composition operation.
    */
   template<typename OtherDerived>
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl> PlainObject operator*(
-    const LieGroupBase<OtherDerived> & o) const
+  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  PlainObject operator*(const LieGroupBase<OtherDerived> & o) const
   {
     PlainObject ret;
     Impl::composition(coeffs(), o.coeffs(), ret.coeffs());
@@ -155,18 +160,18 @@ public:
   }
 
   /**
-   * @brief Inplace group binary operation
+   * @brief Inplace group binary composition operation.
    */
   template<typename OtherDerived>
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl> Derived & operator*=(
-    const LieGroupBase<OtherDerived> & o)
+  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  Derived & operator*=(const LieGroupBase<OtherDerived> & o)
   {
     coeffs() = (*this * o).coeffs();
     return static_cast<Derived &>(*this);
   }
 
   /**
-   * @brief Group inverse operation
+   * @brief Group inverse operation.
    */
   PlainObject inverse() const
   {
@@ -176,7 +181,7 @@ public:
   }
 
   /**
-   * @brief Lie group logarithm
+   * @brief Lie group logarithm.
    */
   Tangent log() const
   {
@@ -186,7 +191,9 @@ public:
   }
 
   /**
-   * @brief Lie group adjoint
+   * @brief Lie group adjoint.
+   *
+   * Ad_X a := ( X hat(a) X.inverse() ).vee()
    */
   TangentMap Ad() const
   {
@@ -196,7 +203,7 @@ public:
   }
 
   /**
-   * @brief Right-plus
+   * @brief Right-plus.
    *
    * g + a := g * exp(a)
    */
@@ -207,7 +214,7 @@ public:
   }
 
   /**
-   * @brief Inplace right-plus
+   * @brief Inplace right-plus.
    */
   template<typename TangentDerived>
   Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
@@ -217,13 +224,13 @@ public:
   }
 
   /**
-   * @brief Overload operator- for right-minus
+   * @brief Right-minus.
    *
    * g1 - g2 := (g2.inverse() * g1).log()
    */
   template<typename OtherDerived>
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl> Tangent operator-(
-    const LieGroupBase<OtherDerived> & o) const
+  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  Tangent operator-(const LieGroupBase<OtherDerived> & o) const
   {
     return (o.inverse() * *this).log();
   }
@@ -231,7 +238,7 @@ public:
   // Tangent API
 
   /**
-   * @brief Liegroup exponential map
+   * @brief Lie group exponential map.
    */
   template<typename TangentDerived>
   static PlainObject exp(const Eigen::MatrixBase<TangentDerived> & a)
@@ -242,7 +249,10 @@ public:
   }
 
   /**
-   * @brief Lie algebra hat
+   * @brief Lie algebra hat.
+   *
+   * Maps a Dofx1 Rn parameterization of a matrix Lie algebra element
+   * to the corresponding matrix Lie algebra element.
    */
   template<typename TangentDerived>
   static Matrix hat(const Eigen::MatrixBase<TangentDerived> & a)
@@ -253,7 +263,9 @@ public:
   }
 
   /**
-   * @brief Lie alebra vee
+   * @brief Lie alebra vee.
+   *
+   * Maps a matrix Lie algebra element to its Rn parameterization.
    */
   template<typename MatrixDerived>
   static Tangent vee(const Eigen::MatrixBase<MatrixDerived> & A)
@@ -264,9 +276,9 @@ public:
   }
 
   /**
-   * @brief Lie algebra adjoint
+   * @brief Lie algebra adjoint.
    *
-   * ad_a b := [a, b]
+   * ad_a b := [a, b].
    */
   template<typename TangentDerived>
   static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
@@ -277,9 +289,9 @@ public:
   }
 
   /**
-   * @brief Lie algebra bracket
+   * @brief Lie algebra bracket.
    *
-   * [a, b] := vee( hat(a) hat(b) - hat(b) hat(a) )
+   * [a, b] := vee( hat(a) hat(b) - hat(b) hat(a) ).
    */
   template<typename TangentDerived1, typename TangentDerived2>
   static Tangent lie_bracket(
@@ -288,7 +300,7 @@ public:
     return ad(a1) * a2;
   }
   /**
-   * @brief Right jacobian of the exponential map
+   * @brief Right jacobian of the exponential map.
    */
   template<typename TangentDerived>
   static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
@@ -299,7 +311,7 @@ public:
   }
 
   /**
-   * @brief Inverse of right jacobian of the exponential map
+   * @brief Inverse of right jacobian of the exponential map.
    */
   template<typename TangentDerived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
@@ -310,7 +322,7 @@ public:
   }
 
   /**
-   * @brief Left jacobian of the exponential map
+   * @brief Left jacobian of the exponential map.
    */
   template<typename TangentDerived>
   static TangentMap dl_exp(const Eigen::MatrixBase<TangentDerived> & a)
@@ -319,7 +331,7 @@ public:
   }
 
   /**
-   * @brief Inverse of left jacobian of the exponential map
+   * @brief Inverse of left jacobian of the exponential map.
    */
   template<typename TangentDerived>
   static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & a)
@@ -328,6 +340,10 @@ public:
   }
 };
 
+
+/**
+ * @brief Stream operator for Lie groups that ouputs the coefficients.
+ */
 template<typename Stream, typename Derived>
 Stream & operator<<(Stream & s, const LieGroupBase<Derived> & g)
 {

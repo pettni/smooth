@@ -15,13 +15,19 @@ namespace smooth {
  * Group:    x1 x2 ... xn
  * Tangent:  v1 v2 ... vn
  *
- * Matrix form
- * ===========
+ * Lie group Matrix form
+ * =====================
  *
  * [ I T ]
  * [ 0 1 ]
  *
- * where T = [x1 ... xn]'
+ * Lie algebra Matrix form
+ * =====================
+ *
+ * [ 0 V ]
+ * [ 0 0 ]
+ *
+ * where V = [v1 ... vn]'
  */
 template<int N, typename _Scalar>
 struct TnImpl

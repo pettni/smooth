@@ -83,7 +83,8 @@ public:
    * @brief Construct bundle from parts
    */
   template<typename... S>
-  requires(std::is_assignable_v<_Gs, S> &&...) Bundle(S &&... gs)
+  requires(std::is_assignable_v<_Gs, S> &&...)
+  Bundle(S &&... gs)
   {
     auto tpl = std::forward_as_tuple(gs...);
     utils::static_for<sizeof...(_Gs)>(

@@ -4,8 +4,8 @@
 
 #include <sstream>
 
-#include "smooth/concepts.hpp"
 #include "smooth/bundle.hpp"
+#include "smooth/concepts.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
@@ -13,8 +13,8 @@
 #include "smooth/tn.hpp"
 
 template<smooth::LieGroup G>
-class LieGroupInterface : public ::testing::Test {
-};
+class LieGroupInterface : public ::testing::Test
+{};
 
 using GroupsToTest = ::testing::Types<smooth::SO2f,
   smooth::SO3f,
@@ -26,8 +26,7 @@ TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 
 template<smooth::LieGroup T>
 void test()
-{
-}
+{}
 
 TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
 {
@@ -41,35 +40,50 @@ TYPED_TEST(LieGroupInterface, Constructors)
 {
   std::srand(5);
 
-  // un-initialized
+  // group construction
   TypeParam g;
   g.setRandom();
 
-  // map
+  // map construction
   std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1;
   Eigen::Map<TypeParam> m1(a1.data());
   Eigen::Map<const TypeParam> m2(a1.data());
   m1.setRandom();
   ASSERT_TRUE(m1.isApprox(m2));
 
-  // copy constructor from group
+  // group -> group copy constructor
   TypeParam g_copy(g);
   ASSERT_TRUE(g_copy.isApprox(g));
 
-  // copy constructor from map
   std::array<typename TypeParam::Scalar, TypeParam::RepSize> a;
-  Eigen::Map<TypeParam> m(a.data());
-  m.setRandom();
-  TypeParam m_copy(m);
-  ASSERT_TRUE(m_copy.isApprox(m));
 
-  // move contructor
+  // map -> group copy constructor
+  {
+    Eigen::Map<TypeParam> m(a.data());
+    m = g;
+    TypeParam m_copy(m);
+    ASSERT_TRUE(m_copy.isApprox(g));
+  }
+
+  // group->group move contructor
   {
     TypeParam g1, g2;
     g1.setRandom();
     g2 = g1;
     TypeParam g3(std::move(g1));
     ASSERT_TRUE(g3.isApprox(g2));
+  }
+
+  // map -> map move constructor
+  {
+    TypeParam g1;
+    g1.setRandom();
+
+    Eigen::Map<TypeParam> m1(a.data());
+    m1 = g1;
+    Eigen::Map<TypeParam> m2(std::move(m1));
+
+    ASSERT_TRUE(m2.isApprox(g1));
   }
 }
 
@@ -104,7 +118,7 @@ TYPED_TEST(LieGroupInterface, Operators)
   std::srand(5);
 
   for (auto i = 0u; i != 10; ++i) {
-    const TypeParam g = TypeParam::Random();
+    const TypeParam g                   = TypeParam::Random();
     const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
 
     TypeParam gp1 = g + a;
@@ -168,14 +182,28 @@ TYPED_TEST(LieGroupInterface, Copying)
   g1 = m1;
   ASSERT_TRUE(g1.isApprox(m1));
   for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(g1.coeffs()[i], a1[i]); }
+}
+
+TYPED_TEST(LieGroupInterface, Moving)
+{
+  TypeParam g = TypeParam::Random();
+  std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1, a2;
 
   // move group to group
   {
-    TypeParam g1, g2, g3;
-    g1.setRandom();
-    g2 = g1;
-    g3 = std::move(g1);
-    ASSERT_TRUE(g3.isApprox(g2));
+    TypeParam g1, g2;
+    g1 = g;
+    g2 = std::move(g1);
+    ASSERT_TRUE(g2.isApprox(g));
+  }
+
+  // move map to map
+  {
+    Eigen::Map<TypeParam> m1(a1.data()), m2(a2.data());
+    m1 = g;
+
+    m2 = std::move(m1);
+    ASSERT_TRUE(m2.isApprox(g));
   }
 }
 
@@ -247,8 +275,7 @@ TYPED_TEST(LieGroupInterface, Ad)
 
     // check that Ad a = (G \hat a G^{-1})^\vee
     const auto b1 = (g.Ad() * a).eval();
-    const auto b2 =
-      TypeParam::vee(g.matrix() * TypeParam::hat(a) * g.inverse().matrix());
+    const auto b2 = TypeParam::vee(g.matrix() * TypeParam::hat(a) * g.inverse().matrix());
     ASSERT_TRUE(b1.isApprox(b2));
   }
 }
@@ -264,8 +291,10 @@ TYPED_TEST(LieGroupInterface, ad)
 
     // check that ad_a b = [a, b] = ( hat(a) * hat(b) - hat(b) * hat(a) )^\vee
     const auto c1 = (TypeParam::ad(a) * b).eval();
-    const auto c2 = TypeParam::vee(A * B - B * A);
+    const auto c2 = TypeParam::lie_bracket(a, b);
+    const auto c3 = TypeParam::vee(A * B - B * A);
     ASSERT_TRUE(c1.isApprox(c2));
+    ASSERT_TRUE(c1.isApprox(c3));
   }
 }
 

@@ -8,24 +8,6 @@
 
 namespace smooth {
 
-/**
- * @brief SE3 Lie Group represented as S3 ⋉ R3
- *
- * Memory layout
- * =============
- * Group:    x y z qx qy qz qw
- * Tangent:  vx vy vz Ωx Ωy Ωz
- *
- * Matrix form
- * ===========
- *
- * 3x3 rotation matrix
- *
- * Constraints
- * ===========
- * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
- * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
- */
 template<typename _Scalar>
 class SE3Impl
 {

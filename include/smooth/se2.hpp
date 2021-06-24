@@ -14,6 +14,33 @@ namespace smooth {
 
 // CRTP BASE
 
+/**
+ * @brief SE2 Lie Group represented as U(1) ⋉ R2
+ *
+ * Memory layout
+ * =============
+ * Group:    x y qz qw
+ * Tangent:  vx vy Ωz
+ *
+ * Lie group Matrix form
+ * =====================
+ *
+ * [ qw -qz  x ]
+ * [ qz  qw  y ]
+ * [  0   0  1 ]
+ *
+ * Lie algebra matrix form
+ * =======================
+ *
+ * [  0 -Ωz  vx ]
+ * [ Ωz   0  vy ]
+ * [  0   0  1  ]
+ *
+ * Constraints
+ * ===========
+ * Group:   qz * qz + qw * qw = 1
+ * Tangent: -pi < wz <= pi
+ */
 template<typename _Derived>
 class SE2Base : public LieGroupBase<_Derived>
 {
