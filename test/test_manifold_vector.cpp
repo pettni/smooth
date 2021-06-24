@@ -36,6 +36,20 @@ TEST(ManifoldVector, Construct)
   ASSERT_EQ(log.size(), 9);
 }
 
+TEST(ManifoldVector, Cast)
+{
+  using M = smooth::ManifoldVector<smooth::SO3d>;
+  M m1;
+
+  m1.push_back(smooth::SO3d::Random());
+  m1.push_back(smooth::SO3d::Random());
+  m1.push_back(smooth::SO3d::Random());
+
+  auto m1_cast = m1.cast<float>();
+
+  ASSERT_EQ(m1_cast.size(), 9);
+}
+
 TEST(ManifoldVector, Optimize)
 {
   auto f = [] (const auto & var) {

@@ -74,6 +74,9 @@ requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
   {G::ad(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
 };
 
+template<typename G>
+concept LieGroupLike = LieGroup<G> || StaticRnLike<G>;
+
 } // namespace smooth
 
 #endif  // SMOOTH__CONCEPTS_HPP_

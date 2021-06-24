@@ -51,6 +51,7 @@ public:
    * @brief Access quaterion
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> quat()
+  requires is_mutable
   {
     return Eigen::Map<Eigen::Quaternion<Scalar>>(static_cast<_Derived &>(*this).data());
   }

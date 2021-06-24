@@ -74,44 +74,6 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
  Eigen::Map<const G> m_g(mem.data());
  ```
 
-## Concepts
-
-### Manifold
-
-Implementations: - ManifoldVector<Manifold>
-
-Algorithms: - differentiation
-            - optimization
-
-
-### Rn > Manifold
-
-Implementations: - Static Eigen vectors
-                 - Dynamic Eigen vectors
-
-
-### StaticRn > Rn
-
-Implementations: - Static Eigen vectors
-
-
-### LieGroup > Manifold
-
-Implementations: - SO2, SO3, SE2, SE3
-                 - Bundle<LieGroup | StaticRn>
-
-Algorithms: - splines
-            - integration
-            - linearization
-
-## Which types to use
-
-Dynamics / control / filtering : Bundle<LieGroup | StaticRn>
-
-Calibration : LieGroup | Bunndle<LieGroup>
-
-Optimization: ManifoldVector<Manifold> ...
-
 
 ## Algorithms
 
@@ -126,7 +88,7 @@ Planned:
 * [ ] Bezier curve evaluation and fitting (`interp/bezier.hpp`)
 * [ ] Lie group means (`mean.hpp`)
 
-Algorithms also work with regular ```Eigen``` types.
+Algorithms can also be made to work with regular ```Eigen``` types via the Bundle type.
 
 
 ## Compatibility
@@ -181,10 +143,6 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Library
 
-- [ ] finish crtp structure
-  - [x] make all tests pass
-  - [x] tests for all group-specific interfaces
-  - [ ] make cpp17-compatible
 - [ ] implement approximate cubic Bezier spline fitting via sparse solving
 - [ ] pass options in NLS
 - [ ] ceres autodiff

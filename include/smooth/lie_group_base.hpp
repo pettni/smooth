@@ -84,14 +84,14 @@ public:
   /**
    * @brief Set to group identity element.
    */
-  void setIdentity() { Impl::setIdentity(coeffs()); }
+  void setIdentity() requires is_mutable { Impl::setIdentity(coeffs()); }
 
   /**
    * @brief Set to a random element.
    *
    * Set the seed with std::srand(unsigned).
    */
-  void setRandom() { Impl::setRandom(coeffs()); }
+  void setRandom() requires is_mutable { Impl::setRandom(coeffs()); }
 
   /**
    * @brief Construct the identity element.
@@ -124,6 +124,7 @@ public:
     Impl::matrix(coeffs(), ret);
     return ret;
   }
+
   /**
    * @brief Check if (approximately) equal to other element `o`.
    */
@@ -163,7 +164,7 @@ public:
    * @brief Inplace group binary composition operation.
    */
   template<typename OtherDerived>
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  requires is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
   Derived & operator*=(const LieGroupBase<OtherDerived> & o)
   {
     coeffs() = (*this * o).coeffs();
@@ -217,6 +218,7 @@ public:
    * @brief Inplace right-plus.
    */
   template<typename TangentDerived>
+  requires is_mutable
   Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
   {
     *this *= exp(t);

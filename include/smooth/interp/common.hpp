@@ -2,6 +2,7 @@
 #define INTERP__COMMON_HPP_
 
 #include "smooth/concepts.hpp"
+#include "smooth/lie_group_base.hpp"
 #include "smooth/utils.hpp"
 
 
@@ -109,8 +110,8 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
-template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
-requires(std::is_same_v<std::ranges::range_value_t<Range>, typename G::Tangent>)
+template<std::size_t K, LieGroupLike G, std::ranges::range Range, typename Derived>
+requires(std::is_same_v<std::ranges::range_value_t<Range>, Eigen::Matrix<typename G::Scalar, G::SizeAtCompileTime, 1>>)
 G cspline_eval(
     const G & g_0,
     const Range & diff_points,
