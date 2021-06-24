@@ -24,6 +24,11 @@ public:
   SMOOTH_INHERIT_TYPEDEFS
 
   /**
+   * Angle represetation
+   */
+  Scalar angle() const { return Base::log().x(); }
+
+  /**
    * Complex number (U(1)) representation
    */
   std::complex<Scalar> u1() const
@@ -32,15 +37,10 @@ public:
   }
 
   /**
-   * Angle represetation
-   */
-  Scalar angle() const { return Base::log().x(); }
-
-  /**
    * Rotation action on 2D vector
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
+  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return Base::matrix() * v;
   }
@@ -72,16 +72,6 @@ class SO2 : public SO2Base<SO2<_Scalar>>
   SMOOTH_GROUP_API(SO2)
 public:
   /**
-   * @brief Construct from complex number
-   */
-  template<typename _Derived>
-  SO2(const std::complex<Scalar> & c)
-  {
-    coeffs_.x() = c.im;
-    coeffs_.y() = c.re;
-  }
-
-  /**
    * @brief Construct from angle
    */
   explicit SO2(const Scalar & angle)
@@ -89,6 +79,15 @@ public:
     using std::cos, std::sin;
     coeffs_.x() = sin(angle);
     coeffs_.y() = cos(angle);
+  }
+
+  /**
+   * @brief Construct from complex number
+   */
+  SO2(const std::complex<Scalar> & c)
+  {
+    coeffs_.x() = c.imag();
+    coeffs_.y() = c.real();
   }
 };
 
@@ -101,14 +100,13 @@ using SO2d = SO2<double>;
 
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<smooth::SO2<_Scalar>>>
-  : public lie_traits<smooth::SO2<_Scalar>>
+    : public lie_traits<smooth::SO2<_Scalar>>
 {};
 
 // MAP TYPE
 
 template<typename _Scalar>
-class Eigen::Map<smooth::SO2<_Scalar>>
-  : public smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>
+class Eigen::Map<smooth::SO2<_Scalar>> : public smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>
 {
   using Base = smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>;
   SMOOTH_MAP_API(Map)
@@ -118,7 +116,7 @@ class Eigen::Map<smooth::SO2<_Scalar>>
 
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<const smooth::SO2<_Scalar>>>
-  : public lie_traits<smooth::SO2<_Scalar>>
+    : public lie_traits<smooth::SO2<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -127,7 +125,7 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SO2<_Scalar>>>
 
 template<typename _Scalar>
 class Eigen::Map<const smooth::SO2<_Scalar>>
-  : public smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>
+    : public smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>
 {
   using Base = smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>;
   SMOOTH_CONST_MAP_API(Map)

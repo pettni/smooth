@@ -6,32 +6,50 @@
 
 TEST(SO3, Quaternion)
 {
-  // test ordered quaternion
-  Eigen::Quaterniond qq;
-  qq.setFromTwoVectors(Eigen::Vector3d::UnitX(), Eigen::Vector3d::UnitZ());
-  smooth::SO3d g(qq);
-  ASSERT_TRUE(g.quat().isApprox(qq));
+  for (auto i = 0u; i != 5; ++i) {
+    auto g1       = smooth::SO3d::Random();
+    const auto g2 = smooth::SO3d::Random();
 
-  const smooth::SO3d g_const(qq);
-  ASSERT_TRUE(g_const.quat().isApprox(qq));
+    const auto g_prod = smooth::SO3d(g1.quat() * g2.quat());
 
-  std::array<double, 4> d;
-  for (auto i = 0u; i != 4; ++i) { d[i] = g.coeffs()[i]; }
-  const Eigen::Map<const smooth::SO3d> g_map(d.data());
-  ASSERT_TRUE(g_map.quat().isApprox(qq));
+    ASSERT_TRUE(g_prod.isApprox(g1 * g2));
+  }
 
-  auto euler = qq.toRotationMatrix().eulerAngles(2, 1, 0);
-  ASSERT_TRUE(euler.isApprox(g.eulerAngles()));
-  ASSERT_TRUE(euler.isApprox(g_const.eulerAngles()));
+  for (auto i = 0u; i != 5; ++i) {
+    smooth::SO3d g1, g2;
+    g1.quat() = Eigen::Quaterniond::UnitRandom();
+    g2.quat() = Eigen::Quaterniond::UnitRandom();
+
+    const auto g_prod = smooth::SO3d(g1.quat() * g2.quat());
+
+    ASSERT_TRUE(g_prod.isApprox(g1 * g2));
+  }
 }
 
-TEST(SO3, Map2Map)
+TEST(SO3, Eulerangles)
 {
-  std::array<double, 4> a1, a2;
-  Eigen::Map<smooth::SO3d> m1(a1.data()), m2(a2.data());
+  double ang = 0.345;
+  smooth::SO3d g1(Eigen::Quaterniond(std::cos(ang / 2), std::sin(ang / 2), 0, 0));
+  ASSERT_EQ(g1.eulerAngles().z(), ang);
 
-  m1.setRandom();
-  m2 = m1;
+  smooth::SO3d g2(Eigen::Quaterniond(std::cos(ang / 2), 0, std::sin(ang / 2), 0));
+  ASSERT_EQ(g2.eulerAngles().y(), ang);
 
-  ASSERT_TRUE(m1.isApprox(m2));
+  smooth::SO3d g3(Eigen::Quaterniond(std::cos(ang / 2), 0, 0, std::sin(ang / 2)));
+  ASSERT_EQ(g3.eulerAngles().x(), ang);
 }
+
+TEST(SO3, Action)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    Eigen::Quaterniond q= Eigen::Quaterniond::UnitRandom();
+    smooth::SO3d g(q);
+
+    Eigen::Vector3d v = Eigen::Vector3d::Random();
+
+    ASSERT_TRUE((g * v).isApprox(q * v));
+    ASSERT_TRUE((g * v).isApprox(g.quat() * v));
+    ASSERT_TRUE((g * v).isApprox(g.matrix() * v));
+  }
+}
+

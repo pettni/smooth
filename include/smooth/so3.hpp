@@ -56,7 +56,7 @@ public:
    * Rotation action on 3D vector
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
+  Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return quat() * v;
   }

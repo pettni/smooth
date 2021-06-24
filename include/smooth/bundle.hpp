@@ -97,14 +97,14 @@ public:
 
 template<typename... _Gs>
 struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
-    : public lie_traits<smooth::Bundle<_Gs...>>
+  : public lie_traits<smooth::Bundle<_Gs...>>
 {};
 
 // MAP TYPE
 
 template<typename... _Gs>
 class Eigen::Map<smooth::Bundle<_Gs...>>
-    : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
+  : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
 {
   using Base = smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>;
   SMOOTH_MAP_API(Map)
@@ -114,7 +114,7 @@ class Eigen::Map<smooth::Bundle<_Gs...>>
 
 template<typename... _Gs>
 struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
-    : public lie_traits<smooth::Bundle<_Gs...>>
+  : public lie_traits<smooth::Bundle<_Gs...>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -123,7 +123,7 @@ struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
 
 template<typename... _Gs>
 class Eigen::Map<const smooth::Bundle<_Gs...>>
-    : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>
+  : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>
 {
   using Base = smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>;
   SMOOTH_CONST_MAP_API(Map)

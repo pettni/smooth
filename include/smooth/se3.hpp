@@ -65,7 +65,7 @@ public:
   template<typename EigenDerived>
   Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
   {
-    return so3().matrix() * v + t3();
+    return so3() * v + t3();
   }
 };
 

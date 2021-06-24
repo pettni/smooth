@@ -63,9 +63,9 @@ public:
    * Tranformation action on 2D vector
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
+  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
-    return so2().matrix() * v + t2();
+    return so2() * v + t2();
   }
 };
 

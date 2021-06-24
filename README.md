@@ -183,7 +183,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 - [ ] finish crtp structure
   - [x] make all tests pass
-  - [ ] tests for all group-specific interfaces
+  - [x] tests for all group-specific interfaces
   - [ ] make cpp17-compatible
 - [ ] implement approximate cubic Bezier spline fitting via sparse solving
 - [ ] pass options in NLS
