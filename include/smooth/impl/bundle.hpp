@@ -40,9 +40,9 @@ struct BundleImpl
   template<std::size_t Idx>
   using PartImpl = std::tuple_element_t<Idx, std::tuple<GsImpl...>>;
 
-  static constexpr auto RepSize = RepSizesPsum.back();
-  static constexpr auto Dof     = DofsPsum.back();
-  static constexpr auto Dim     = DimsPsum.back();
+  static constexpr Eigen::Index RepSize = RepSizesPsum.back();
+  static constexpr Eigen::Index Dof     = DofsPsum.back();
+  static constexpr Eigen::Index Dim     = DimsPsum.back();
 
   SMOOTH_DEFINE_REFS
 

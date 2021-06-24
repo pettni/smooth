@@ -1,6 +1,7 @@
 #ifndef SMOOTH__BUNDLE_HPP_
 #define SMOOTH__BUNDLE_HPP_
 
+#include "concepts.hpp"
 #include "impl/bundle.hpp"
 #include "lie_group_base.hpp"
 #include "macro.hpp"
@@ -31,6 +32,7 @@ public:
    */
   template<std::size_t Idx>
   Eigen::Map<PartType<Idx>> part()
+  requires is_mutable
   {
     return Eigen::Map<PartType<Idx>>(
       static_cast<Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
@@ -47,12 +49,12 @@ public:
   }
 };
 
-template<typename... _Gs>
+template<LieGroupLike... _Gs>
 class Bundle;
 
 // STORAGE TYPE TRAITS
 
-template<typename... _Gs>
+template<LieGroupLike... _Gs>
 struct lie_traits<Bundle<_Gs...>>
 {
   static constexpr bool is_mutable = true;
@@ -73,7 +75,7 @@ struct lie_traits<Bundle<_Gs...>>
 
 // STORAGE TYPE
 
-template<typename... _Gs>
+template<LieGroupLike... _Gs>
 class Bundle : public BundleBase<Bundle<_Gs...>>
 {
   using Base = BundleBase<Bundle<_Gs...>>;
@@ -96,14 +98,14 @@ public:
 
 // MAP TYPE TRAITS
 
-template<typename... _Gs>
+template<smooth::LieGroupLike... _Gs>
 struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
   : public lie_traits<smooth::Bundle<_Gs...>>
 {};
 
 // MAP TYPE
 
-template<typename... _Gs>
+template<smooth::LieGroupLike... _Gs>
 class Eigen::Map<smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
 {
@@ -113,7 +115,7 @@ class Eigen::Map<smooth::Bundle<_Gs...>>
 
 // CONST MAP TYPE TRAITS
 
-template<typename... _Gs>
+template<smooth::LieGroupLike... _Gs>
 struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
   : public lie_traits<smooth::Bundle<_Gs...>>
 {
@@ -122,11 +124,12 @@ struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
 
 // CONST MAP TYPE
 
-template<typename... _Gs>
+template<smooth::LieGroupLike... _Gs>
 class Eigen::Map<const smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>
 {
   using Base = smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>;
   SMOOTH_CONST_MAP_API(Map)
 };
+
 #endif  // SMOOTH__BUNDLE_HPP_

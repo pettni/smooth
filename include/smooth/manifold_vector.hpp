@@ -8,7 +8,16 @@
 
 namespace smooth {
 
-// TODO ugly with different size()
+/**
+ * std::vector-based container to treat a collection
+ *   (m1, m2, ..., mk) ∈ M x M x ... x M
+ * of manifold elements as a single manifold element.
+ *
+ * WARNING calling size() on a ManifoldVector returns
+ * the degrees of freedom of M x M x ... x M, NOT the
+ * number of elements in the vector. For the latter,
+ * call vector_size().
+ */
 template<Manifold M, template<typename> typename Allocator = std::allocator>
 class ManifoldVector : public std::vector<M, Allocator<M>>
 {
@@ -43,7 +52,8 @@ public:
   auto cast() const
   {
     using CastT = typename decltype(M{}.template cast<NewScalar>())::PlainObject;
-    ManifoldVector<CastT, Allocator> ret(vector_size());
+    ManifoldVector<CastT, Allocator> ret;
+    ret.reserve(vector_size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
       return x.template cast<NewScalar>();
     });
@@ -51,7 +61,7 @@ public:
   }
 
   /**
-   * @brief Size of vector.
+   * @brief Number of elements in ManifoldVector.
    */
   std::size_t vector_size() const { return Base::size(); }
 

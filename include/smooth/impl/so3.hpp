@@ -7,6 +7,31 @@
 
 namespace smooth {
 
+/**
+ * @brief SO3 Lie Group represented as S3
+ *
+ * Memory layout
+ * =============
+ * Group:    qx qy qz qw  (same as Eigen quaternion)
+ * Tangent:  wx wy wz
+ *
+ * Lie group Matrix form
+ * =====================
+ *
+ * 3x3 rotation matrix
+ *
+ * Lie algebra Matrix form
+ * =====================
+ *
+ * [  0 -Ωz  Ωy ]
+ * [  Ωz  0 -Ωx ]
+ * [ -Ωy Ωx   0 ]
+ *
+ * Constraints
+ * ===========
+ * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
+ * Tangent: -pi < Ωx, Ωy, Ωz <= pi
+ */
 template<typename _Scalar>
 class SO3Impl
 {
