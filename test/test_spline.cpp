@@ -7,6 +7,7 @@
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
+#include "smooth/tn.hpp"
 
 TEST(Coefmat, Bspline)
 {
@@ -57,8 +58,8 @@ TEST(Coefmat, Bezier)
 }
 
 template<smooth::LieGroup G>
-class Spline : public ::testing::Test {
-};
+class Spline : public ::testing::Test
+{};
 
 using GroupsToTest = ::testing::Types<smooth::SO2d,
   smooth::SO3d,
@@ -106,10 +107,8 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 
     TypeParam g0 = TypeParam::Random();
 
-    std::vector<
-      typename TypeParam::Tangent,
-      Eigen::aligned_allocator<typename TypeParam::Tangent>
-    > diff_vec;
+    std::vector<typename TypeParam::Tangent, Eigen::aligned_allocator<typename TypeParam::Tangent>>
+      diff_vec;
     for (auto i = 0u; i != K; ++i) { diff_vec.push_back(TypeParam::Tangent::Zero()); }
 
     constexpr auto Mstatic =

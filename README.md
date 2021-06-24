@@ -36,7 +36,7 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 ## Group algebra examples
 
  ```
- using G = smooth::SO3d;    // or SO2d, SE2d, SE3d, Bundle<double, SO3, E3> etc...
+ using G = smooth::SO3d;    // or SO2d, SE2d, SE3d, Bundle<SO3d, T3d> etc...
  using Tangent = typename G::Tangent;
 
  // construct a random group element and a random tangent element
@@ -69,11 +69,10 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
  typename G::Vector v = G::Vector::Random();
  auto v_trans = g * v;
 
- // memory mapping like Eigen::Map
+ // memory mapping using Eigen::Map
  std::array<double, G::lie_size> mem;
- smooth::Map<const G> m_g(mem.data());
+ Eigen::Map<const G> m_g(mem.data());
  ```
-
 
 ## Concepts
 
@@ -182,6 +181,10 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Library
 
+- [ ] finish crtp structure
+  - [x] make all tests pass
+  - [x] tests for all group-specific interfaces
+  - [ ] make cpp17-compatible
 - [ ] implement approximate cubic Bezier spline fitting via sparse solving
 - [ ] pass options in NLS
 - [ ] ceres autodiff

@@ -9,7 +9,7 @@
 
 #define SMOOTH_DIFF_AUTODIFF
 
-#include "smooth/common.hpp"
+#include "smooth/concepts.hpp"
 
 namespace smooth::diff {
 

@@ -1,12 +1,13 @@
 #include <gtest/gtest.h>
 
+#include "smooth/compat/ceres.hpp"
+
 #include "smooth/bundle.hpp"
-#include "smooth/so2.hpp"
-#include "smooth/so3.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
-#include "smooth/storage.hpp"
-#include "smooth/compat/ceres.hpp"
+#include "smooth/so2.hpp"
+#include "smooth/so3.hpp"
+#include "smooth/tn.hpp"
 
 
 template<smooth::LieGroup G>

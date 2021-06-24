@@ -5,6 +5,7 @@
 #include "smooth/so3.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
+#include "smooth/tn.hpp"
 
 
 using namespace smooth;
@@ -16,27 +17,12 @@ TEST(Bundle, Static)
   static_assert(bundle_t::RepSize == 19);
   static_assert(bundle_t::Dof == 15);
   static_assert(bundle_t::Dim == 15);
-  static_assert(bundle_t::ActDim == 12);
 
   static_assert(std::is_same_v<bundle_t::PartType<0>, SE2d>);
   static_assert(std::is_same_v<bundle_t::PartType<1>, SE3d>);
   static_assert(std::is_same_v<bundle_t::PartType<2>, Eigen::Vector2d>);
   static_assert(std::is_same_v<bundle_t::PartType<3>, SO2d>);
   static_assert(std::is_same_v<bundle_t::PartType<4>, SO3d>);
-
-  static_assert(
-    std::is_same_v<
-      bundle_t::NewStorageType<MappedStorage<double, 19>>,
-      BundleBase<MappedStorage<double, 19>, SE2d, SE3d, T2d, SO2d, SO3d>
-    >
-  );
-
-  static_assert(
-    std::is_same_v<
-      bundle_t::NewStorageType<const MappedStorage<double, 19>>,
-      BundleBase<const MappedStorage<double, 19>, SE2d, SE3d, T2d, SO2d, SO3d>
-    >
-  );
 }
 
 TEST(Bundle, Construct)
@@ -58,7 +44,7 @@ TEST(Bundle, Construct)
   Eigen::Matrix4d m;
   m.setIdentity();
   m.topRightCorner<3, 1>() = e3;
-  ASSERT_TRUE(m.isApprox(b.matrix_group().bottomRightCorner<4, 4>()));
+  ASSERT_TRUE(m.isApprox(b.matrix().bottomRightCorner<4, 4>()));
 }
 
 using SubBundle = Bundle<SO3d, T3d>;

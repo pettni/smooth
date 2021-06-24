@@ -1,5 +1,5 @@
-#ifndef SMOOTH__LIE_VECTOR_HPP_
-#define SMOOTH__LIE_VECTOR_HPP_
+#ifndef SMOOTH__MANIFOLD_VECTOR_HPP_
+#define SMOOTH__MANIFOLD_VECTOR_HPP_
 
 #include <Eigen/Sparse>
 #include <numeric>
@@ -10,7 +10,8 @@ namespace smooth {
 
 // TODO ugly with different size()
 template<Manifold M, template<typename> typename Allocator = std::allocator>
-class ManifoldVector : public std::vector<M, Allocator<M>> {
+class ManifoldVector : public std::vector<M, Allocator<M>>
+{
 private:
   using Base = std::vector<M, Allocator<M>>;
 
@@ -33,8 +34,7 @@ public:
    */
   template<typename... Ts>
   ManifoldVector(Ts &&... ts) : Base(std::forward<Ts>(ts)...)
-  {
-  }
+  {}
 
   /**
    * @brief Cast to different scalar type
@@ -132,4 +132,4 @@ Stream & operator<<(Stream & s, const smooth::ManifoldVector<M, Allocator> & g)
   return s;
 }
 
-#endif  // SMOOTH__LIE_VECTOR_HPP_
+#endif  // SMOOTH__MANIFOLD_VECTOR_HPP_

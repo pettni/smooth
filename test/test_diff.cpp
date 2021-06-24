@@ -84,7 +84,7 @@ void run_exp_test()
 
   auto [f, jac] = smooth::diff::dr<dm>(
     [](auto var) {
-      return TypeParam::template CastType<typename decltype(var)::Scalar>::exp(var);
+      return TypeParam::template PlainObjectCast<typename decltype(var)::Scalar>::exp(var);
     }, a);
 
   static_assert(decltype(jac)::RowsAtCompileTime == TypeParam::Dof, "Error");
