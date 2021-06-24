@@ -121,7 +121,7 @@ private:
  * @param dt distance between spline control points
  */
 template<std::size_t K, std::ranges::range Rt, std::ranges::range Rg>
-  requires(LieGroup<std::ranges::range_value_t<Rg>>)
+requires(LieGroup<std::ranges::range_value_t<Rg>>)
   && std::is_same_v<std::ranges::range_value_t<Rt>, double>
 BSpline<K, std::ranges::range_value_t<Rg>>
 fit_bspline(const Rt & tt, const Rg & gg, double dt)

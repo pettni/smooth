@@ -1,423 +1,131 @@
 #ifndef SMOOTH__BUNDLE_HPP_
 #define SMOOTH__BUNDLE_HPP_
 
-#include "common.hpp"
-#include "concepts.hpp"
+#include "impl/bundle.hpp"
+#include "lie_group_base.hpp"
 #include "macro.hpp"
-#include "utils.hpp"
-#include "storage.hpp"
 
 namespace smooth {
 
-namespace detail {
+// CRTP BASE
 
-template<typename T>
-struct lie_info;
-
-template<LieGroup G>
-struct lie_info<G>
+template<typename Derived>
+class BundleBase : public LieGroupBase<Derived>
 {
-  static constexpr Eigen::Index lie_size   = G::RepSize;
-  static constexpr Eigen::Index lie_dof    = G::Dof;
-  static constexpr Eigen::Index lie_dim    = G::Dim;
-  static constexpr Eigen::Index lie_actdim = G::ActDim;
+protected:
+  using Base = LieGroupBase<Derived>;
+  using Impl = typename lie_traits<Derived>::Impl;
 
-  template<typename NewScalar>
-  using CastType = typename G::template CastType<NewScalar>;
-};
-
-template<StaticRnLike G>
-struct lie_info<G>
-{
-  static constexpr Eigen::Index lie_size   = G::SizeAtCompileTime;
-  static constexpr Eigen::Index lie_dof    = G::SizeAtCompileTime;
-  static constexpr Eigen::Index lie_dim    = lie_size == -1 ? Eigen::Index(-1) : G::SizeAtCompileTime + 1;
-  static constexpr Eigen::Index lie_actdim = G::SizeAtCompileTime;
-
-  template<typename NewScalar>
-  using CastType = Eigen::Matrix<NewScalar, G::SizeAtCompileTime, 1>;
-};
-
-}  // namespace detail
-
-/**
- * @brief Bundle of multiple Lie types that can be treated as a single Lie group
- *
- * Bundle members can also be Eigen vectors by including Tn in the template argument list.
- */
-template<MappableStorageLike _Storage, typename ... _Ts>
-requires ((LieGroup<_Ts> || StaticRnLike<_Ts>) &&... && true)
-   && (_Storage::Size == (detail::lie_info<_Ts>::lie_size + ...))
-class BundleBase
-{
-private:
-  _Storage s_;
-
-  /* friend with other storage types */
-  template<MappableStorageLike OS, typename... _OTs>
-  requires ((LieGroup<_OTs> || StaticRnLike<_OTs>)&&... && true)
-     && (OS::Size == (detail::lie_info<_OTs>::lie_size + ...))
-  friend class BundleBase;
-
-  static constexpr std::array<Eigen::Index, sizeof...(_Ts)>
-    RepSizes{detail::lie_info<_Ts>::lie_size...},
-    Dofs{detail::lie_info<_Ts>::lie_dof...},
-    Dims{detail::lie_info<_Ts>::lie_dim...},
-    ActDims{detail::lie_info<_Ts>::lie_actdim...};
-
-  static constexpr auto RepSizesPsum = utils::array_psum(RepSizes);
-  static constexpr auto DofsPsum     = utils::array_psum(Dofs);
-  static constexpr auto DimsPsum     = utils::array_psum(Dims);
-  static constexpr auto ActDimsPsum  = utils::array_psum(ActDims);
+  BundleBase() = default;
 
 public:
-  // REQUIRED CONSTANTS
+  SMOOTH_INHERIT_TYPEDEFS
 
-  static constexpr auto RepSize = RepSizesPsum.back();
-  static constexpr auto Dof     = DofsPsum.back();
-  static constexpr auto Dim     = DimsPsum.back();
-  static constexpr auto ActDim  = ActDimsPsum.back();
-
-  // REQUIRED TYPES
-
-  using Scalar = std::common_type_t<typename _Ts::Scalar ...>;
-  using Storage = _Storage;
-
-  static_assert(
-    (std::is_same_v<Scalar, typename _Ts::Scalar> && ...),
-    "Bundle members must have the same Scalar type"
-  );
-
-  using PlainObject = BundleBase<DefaultStorage<Scalar, RepSize>, _Ts...>;
-
-  template<typename NewScalar>
-  using CastType = BundleBase<
-    DefaultStorage<Scalar, RepSize>,
-    typename detail::lie_info<_Ts>::template CastType<NewScalar> ...
-  >;
-
-  template<MappableStorageLike NewStorage>
-  using NewStorageType = BundleBase<NewStorage, _Ts ...>;
-
-  // CONSTRUCTOR AND OPERATOR BOILERPLATE
-
-  SMOOTH_COMMON_API(BundleBase)
-
-  // BUNDLE-SPECIFIC API
+  // BUNDLE API
 
   template<std::size_t Idx>
-  using PartType = std::tuple_element_t<Idx, std::tuple<_Ts...>>;
+  using PartType = typename lie_traits<Derived>::template PartPlainObject<Idx>;
 
   /**
-   * @brief Construct from components
+   * @brief Access part no Idx of bundle
    */
-  template<typename... S>
-  requires ModifiableStorageLike<Storage>
-    && (sizeof...(S) == sizeof...(_Ts))
-    && std::conjunction_v<std::is_assignable<_Ts, S>...>
-  explicit BundleBase(S &&... args)
+  template<std::size_t Idx>
+  Eigen::Map<PartType<Idx>> part()
   {
-    utils::static_for<sizeof...(_Ts)>(
-      [&](auto i) { part<i>() = std::get<i>(std::forward_as_tuple(args...)); }
-    );
+    return Eigen::Map<PartType<Idx>>(
+      static_cast<Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
   /**
-   * @brief Access parts via map
+   * @brief Const access part no Idx of bundle
    */
-  template<std::size_t I>
-  Map<PartType<I>> part() requires ModifiableStorageLike<Storage>
+  template<std::size_t Idx>
+  Eigen::Map<const PartType<Idx>> part() const
   {
-    return Map<PartType<I>>(s_.data() + std::get<I>(RepSizesPsum));
-  }
-
-  /**
-   * @brief Access parts via const map
-   */
-  template<std::size_t I>
-  Map<const PartType<I>> part() const
-  {
-    return Map<const PartType<I>>(s_.data() + std::get<I>(RepSizesPsum));
-  }
-
-  // REQUIRED API
-
-  void setIdentity() requires ModifiableStorageLike<Storage>
-  {
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      if constexpr (StaticRnLike<PartType<i>>) {
-        part<i>().setZero();
-      } else {
-        part<i>().setIdentity();
-      }
-    });
-  }
-
-  void setRandom() requires ModifiableStorageLike<Storage>
-  {
-    utils::static_for<sizeof...(_Ts)>([&](auto i) { part<i>().setRandom(); });
-  }
-
-  /**
-   * @brief Matrix lie group element
-   */
-  MatrixGroup matrix_group() const
-  {
-    MatrixGroup ret;
-    ret.setZero();
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
-      static constexpr std::size_t dim_len = std::get<i>(Dims);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template block<dim_len, dim_len>(dim_beg, dim_beg).setIdentity();
-        ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
-          .template topRightCorner<PartType<i>::SizeAtCompileTime, 1>() = part<i>();
-      } else {
-        ret.template block<dim_len, dim_len>(dim_beg, dim_beg) = part<i>().matrix_group();
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Group action
-   */
-  template<typename Derived>
-  requires(Derived::SizeAtCompileTime == ActDim)
-  Vector operator*(const Eigen::MatrixBase<Derived> & x) const
-  {
-    Vector ret;
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t actdim_beg = std::get<i>(ActDimsPsum);
-      static constexpr std::size_t actdim_len = std::get<i>(ActDims);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template segment<actdim_len>(actdim_beg) =
-          part<i>() + x.template segment<actdim_len>(actdim_beg);
-      } else {
-        ret.template segment<actdim_len>(actdim_beg) =
-          part<i>() * x.template segment<actdim_len>(actdim_beg);
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Group composition
-   */
-  template<StorageLike OS>
-  PlainObject operator*(const NewStorageType<OS> & r) const
-  {
-    PlainObject ret;
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template part<i>() = part<i>() + r.template part<i>();
-      } else {
-        ret.template part<i>() = part<i>() * r.template part<i>();
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Group inverse
-   */
-  PlainObject inverse() const
-  {
-    PlainObject ret;
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template part<i>() = -part<i>();
-      } else {
-        ret.template part<i>() = part<i>().inverse();
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Group logarithm
-   */
-  Tangent log() const
-  {
-    Tangent ret;
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template segment<dof_len>(dof_beg) = part<i>();
-      } else {
-        ret.template segment<dof_len>(dof_beg) = part<i>().log();
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Group adjoint
-   */
-  TangentMap Ad() const
-  {
-    TangentMap ret;
-    ret.setZero();
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
-      } else {
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg) = part<i>().Ad();
-      }
-    });
-    return ret;
-  }
-
-  // REQUIRED TANGENT API
-
-  /**
-   * @brief Group exponential
-   */
-  template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  static PlainObject exp(const Eigen::MatrixBase<Derived> & a)
-  {
-    PlainObject ret;
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template part<i>() = a.template segment<dof_len>(dof_beg);
-      } else {
-        ret.template part<i>() = PartType<i>::exp(a.template segment<dof_len>(dof_beg));
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Algebra adjoint
-   */
-  template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  static TangentMap ad(const Eigen::MatrixBase<Derived> & a)
-  {
-    TangentMap ret;
-    ret.setZero();
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        // ad is zero
-      } else {
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
-          PartType<i>::ad(a.template segment<dof_len>(dof_beg));
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Algebra hat
-   */
-  template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  static MatrixGroup hat(const Eigen::MatrixBase<Derived> & a)
-  {
-    MatrixGroup ret;
-    ret.setZero();
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
-      static constexpr std::size_t dim_len = std::get<i>(Dims);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template block<dim_len, dim_len>(dim_beg, dim_beg)
-          .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>() =
-          a.template segment<dof_len>(dof_beg);
-      } else {
-        ret.template block<dim_len, dim_len>(dim_beg, dim_beg) =
-          PartType<i>::hat(a.template segment<dof_len>(dof_beg));
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Algebra vee
-   */
-  template<typename Derived>
-  requires(Derived::RowsAtCompileTime == Dim && Derived::ColsAtCompileTime == Dim)
-  static Tangent vee(const Eigen::MatrixBase<Derived> & A)
-  {
-    Tangent ret;
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      static constexpr std::size_t dim_beg = std::get<i>(DimsPsum);
-      static constexpr std::size_t dim_len = std::get<i>(Dims);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template segment<dof_len>(dof_beg) =
-          A.template block<dim_len, dim_len>(dim_beg, dim_beg)
-            .template topRightCorner<PartType<i>::RowsAtCompileTime, 1>();
-      } else {
-        ret.template segment<dof_len>(dof_beg) =
-          PartType<i>::vee(A.template block<dim_len, dim_len>(dim_beg, dim_beg));
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Right jacobian of the exponential map
-   */
-  template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  static TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
-  {
-    TangentMap ret;
-    ret.setZero();
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
-      } else {
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
-          PartType<i>::dr_exp(a.template segment<dof_len>(dof_beg));
-      }
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Inverse of the right jacobian of the exponential map
-   */
-  template<typename Derived>
-  requires(Derived::IsVectorAtCompileTime == 1 && Derived::SizeAtCompileTime == Dof)
-  static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
-  {
-    TangentMap ret;
-    ret.setZero();
-    utils::static_for<sizeof...(_Ts)>([&](auto i) {
-      static constexpr std::size_t dof_beg = std::get<i>(DofsPsum);
-      static constexpr std::size_t dof_len = std::get<i>(Dofs);
-      if constexpr (StaticRnLike<PartType<i>>) {
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg).setIdentity();
-      } else {
-        ret.template block<dof_len, dof_len>(dof_beg, dof_beg) =
-          PartType<i>::dr_expinv(a.template segment<dof_len>(dof_beg));
-      }
-    });
-    return ret;
+    return Eigen::Map<const PartType<Idx>>(
+      static_cast<const Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 };
 
-// Typedef for bundle with regular storage
-template<typename ... _Ts>
-requires((LieGroup<_Ts> || StaticRnLike<_Ts>) &&... && true)
-using Bundle = BundleBase<
-  DefaultStorage<std::common_type_t<typename _Ts::Scalar ...>, (detail::lie_info<_Ts>::lie_size + ...)>,
-  _Ts...
->;
+template<typename... _Gs>
+class Bundle;
+
+// STORAGE TYPE TRAITS
+
+template<typename... _Gs>
+struct lie_traits<Bundle<_Gs...>>
+{
+  static constexpr bool is_mutable = true;
+
+  using Impl   = BundleImpl<typename lie_traits<_Gs>::Impl...>;
+  using Scalar = std::common_type_t<typename lie_traits<_Gs>::Scalar...>;
+
+  static_assert((std::is_same_v<Scalar, typename lie_traits<_Gs>::Scalar> && ...),
+    "Scalar type must be identical");
+
+  template<typename NewScalar>
+  using PlainObject = Bundle<typename lie_traits<_Gs>::template PlainObject<NewScalar>...>;
+
+  template<std::size_t Idx>
+  using PartPlainObject = typename lie_traits<
+    std::tuple_element_t<Idx, std::tuple<_Gs...>>>::template PlainObject<Scalar>;
+};
+
+// STORAGE TYPE
+
+template<typename... _Gs>
+class Bundle : public BundleBase<Bundle<_Gs...>>
+{
+  using Base = BundleBase<Bundle<_Gs...>>;
+  SMOOTH_GROUP_API(Bundle)
+public:
+  /**
+   * @brief Construct bundle from parts
+   */
+  template<typename... S>
+  requires(std::is_assignable_v<_Gs, S> &&...) Bundle(S &&... gs)
+  {
+    auto tpl = std::forward_as_tuple(gs...);
+    utils::static_for<sizeof...(_Gs)>(
+      [this, &tpl](auto i) { Base::template part<i>() = std::get<i>(tpl); });
+  }
+};
+
 }  // namespace smooth
 
+// MAP TYPE TRAITS
+
+template<typename... _Gs>
+struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
+  : public lie_traits<smooth::Bundle<_Gs...>>
+{};
+
+// MAP TYPE
+
+template<typename... _Gs>
+class Eigen::Map<smooth::Bundle<_Gs...>>
+  : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
+{
+  using Base = smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>;
+  SMOOTH_MAP_API(Map)
+};
+
+// CONST MAP TYPE TRAITS
+
+template<typename... _Gs>
+struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
+  : public lie_traits<smooth::Bundle<_Gs...>>
+{
+  static constexpr bool is_mutable = false;
+};
+
+// CONST MAP TYPE
+
+template<typename... _Gs>
+class Eigen::Map<const smooth::Bundle<_Gs...>>
+  : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>
+{
+  using Base = smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>;
+  SMOOTH_CONST_MAP_API(Map)
+};
 #endif  // SMOOTH__BUNDLE_HPP_

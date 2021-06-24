@@ -14,13 +14,13 @@ namespace smooth {
  * @brief Bezier curve on [0, 1]
  */
 template<std::size_t N, LieGroup G>
-class Bezier {
+class Bezier
+{
 public:
   Bezier() : g0_(G::Identity()) { vs_.fill(G::Tangent::Zero()); }
 
   Bezier(G && g0, std::array<typename G::Tangent, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs))
-  {
-  }
+  {}
 
   template<std::ranges::range Rv>
   Bezier(const G & g0, const Rv & rv) : g0_(g0)
@@ -53,21 +53,20 @@ private:
  * @brief Curve consisting of Bezier segments
  */
 template<std::size_t N, LieGroup G>
-class PiecewiseBezier {
+class PiecewiseBezier
+{
 public:
   PiecewiseBezier() : knots_{0, 1}, segments_{Bezier<N, G>{}} {}
 
   PiecewiseBezier(std::vector<double> && knots, std::vector<Bezier<N, G>> && segments)
       : knots_(std::move(knots)), segments_(std::move(segments))
-  {
-  }
+  {}
 
   template<std::ranges::range Rt, std::ranges::range Rs>
   PiecewiseBezier(const Rt & knots, const Rs & segments)
       : knots_(std::ranges::begin(knots), std::ranges::end(knots)),
         segments_(std::ranges::begin(segments), std::ranges::end(segments))
-  {
-  }
+  {}
 
   PiecewiseBezier(const PiecewiseBezier &) = default;
   PiecewiseBezier(PiecewiseBezier &&)      = default;
@@ -107,8 +106,7 @@ private:
 template<std::ranges::range Rt, std::ranges::range Rg>
 PiecewiseBezier<2, std::ranges::range_value_t<Rg>>
 fit_quadratic_bezier(
-  const Rt & tt, const Rg & gg, typename std::ranges::range_value_t<Rg>::Tangent v0
-)
+  const Rt & tt, const Rg & gg, typename std::ranges::range_value_t<Rg>::Tangent v0)
 {
   using G = std::ranges::range_value_t<Rg>;
   using V = typename G::Tangent;

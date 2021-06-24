@@ -1,5 +1,5 @@
-#ifndef SMOOTH__OPTIM__LM_HPP_
-#define SMOOTH__OPTIM__LM_HPP_
+#ifndef SMOOTH__NLS_HPP_
+#define SMOOTH__NLS_HPP_
 
 #include <Eigen/Dense>
 #include <Eigen/Jacobi>
@@ -445,4 +445,4 @@ void minimize(_F && f, _Wrt &&... wrt)
 
 }  // namespace smooth
 
-#endif  // SMOOTH__OPTIM__LM_HPP_
+#endif  // SMOOTH__NLS_HPP_

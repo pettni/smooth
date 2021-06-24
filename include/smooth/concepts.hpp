@@ -9,57 +9,6 @@
 namespace smooth
 {
 
-/**********************
- *  STORAGE CONCEPTS  *
- **********************/
-
-/**
- * @brief Storage concept: requires operator[] to access one of N values
- *
- * @tparam S storage type
- * @tparam Scalar scalar type
- * @tparam N number of scalars in storage
- */
-template<typename S>
-concept StorageLike = requires {
-  typename S::Scalar;
-  {S::Size}->std::convertible_to<Eigen::Index>;
-} &&
-requires(const S & s, int i) {
-  {s[i]}->std::convertible_to<typename S::Scalar>;
-};
-
-/**
- * @brief Storage that can be mapped
- */
-template<typename S>
-concept MappableStorageLike = StorageLike<S>&&
-  requires(const S & s) {
-  {s.data()}->std::same_as<const typename S::Scalar *>;
-};
-
-/**
- * @brief Storage that can be both mapped and modified
- */
-template<typename S>
-concept ModifiableStorageLike =
-  MappableStorageLike<S>&&
-  requires(S & s, int i) {
-  {s.data()}->std::same_as<typename S::Scalar *>;
-  {s[i]}->std::convertible_to<typename S::Scalar &>;
-};
-
-/**
- * @brief Storage that is not modifiable
- */
-template<typename S>
-concept ConstStorageLike = StorageLike<S>&& !ModifiableStorageLike<S>;
-
-
-/********************
- *  SPACE CONCEPTS  *
- ********************/
-
 /**
  * @brief A (smooth) manifold M requires the following
  *

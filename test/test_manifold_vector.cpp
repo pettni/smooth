@@ -2,7 +2,6 @@
 
 #include <sstream>
 
-#include "smooth/common.hpp"
 #include "smooth/manifold_vector.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/nls.hpp"
