@@ -80,12 +80,12 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 Available:
 
 * [x] Tangent space differentiation (`diff.hpp`)
+* [x] Bezier curve evaluation and fitting (`interp/bezier.hpp`)
 * [x] B-spline evaluation and fitting (`interp/bspline.hpp`)
 * [x] Non-linear least squares optimization (`nls.hpp`)
 
 Planned:
 
-* [ ] Bezier curve evaluation and fitting (`interp/bezier.hpp`)
 * [ ] Lie group means (`mean.hpp`)
 
 Algorithms can also be made to work with regular ```Eigen``` types via the Bundle type.
@@ -143,8 +143,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Library
 
-- [ ] implement approximate cubic Bezier spline fitting via sparse solving
 - [ ] pass options in NLS
 - [ ] ceres autodiff
-- [ ] Option to use suitesparse for NLS factorization
+- [ ] Option to use suitesparse for sparse solving
 

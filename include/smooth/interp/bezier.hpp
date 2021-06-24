@@ -1,7 +1,12 @@
 #ifndef SMOOTH__INTERP__BEZIER_HPP_
 #define SMOOTH__INTERP__BEZIER_HPP_
 
+#include <iostream>
 #include <ranges>
+
+#include <Eigen/QR>
+#include <Eigen/Sparse>
+#include <Eigen/SparseQR>
 
 #include "smooth/concepts.hpp"
 #include "smooth/utils.hpp"
@@ -108,6 +113,11 @@ PiecewiseBezier<2, std::ranges::range_value_t<Rg>>
 fit_quadratic_bezier(
   const Rt & tt, const Rg & gg, typename std::ranges::range_value_t<Rg>::Tangent v0)
 {
+  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2)
+  {
+    throw std::runtime_error("Not enough points");
+  }
+
   using G = std::ranges::range_value_t<Rg>;
   using V = typename G::Tangent;
 
@@ -137,6 +147,169 @@ fit_quadratic_bezier(
   }
   knots[NumSegments] = tt[NumSegments];
   return PiecewiseBezier<2, G>(std::move(knots), std::move(segments));
+}
+
+/**
+ * @brief Fit a cubic bezier curve to data
+ *
+ * The curve passes through the data points
+ *
+ * NOTE: May result in oscillatory behavior
+ *
+ * @param tt times
+ * @param gg values
+ * @param v0 initial velocity
+ */
+template<std::ranges::range Rt, std::ranges::range Rg>
+PiecewiseBezier<3, std::ranges::range_value_t<Rg>>
+fit_cubic_bezier(
+  const Rt & tt, const Rg & gg, typename std::ranges::range_value_t<Rg>::Tangent v0)
+{
+  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2)
+  {
+    throw std::runtime_error("Not enough points");
+  }
+
+  using G = std::ranges::range_value_t<Rg>;
+  using V = typename G::Tangent;
+  using Scalar = typename G::Scalar;
+
+  // number of intervals
+  std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
+
+  std::size_t NumVars = G::Dof * 3 * N;
+
+  Eigen::SparseMatrix<typename G::Scalar> lhs;
+  lhs.resize(NumVars, NumVars);
+  Eigen::Matrix<int, -1, 1> nnz = Eigen::Matrix<int, -1, 1>::Constant(NumVars, 3 * G::Dof);
+  nnz.head(G::Dof).setConstant(2 * G::Dof);
+  nnz.tail(G::Dof).setConstant(2 * G::Dof);
+  lhs.reserve(nnz);
+
+  Eigen::Matrix<typename G::Scalar, -1, 1> rhs = Eigen::Matrix<typename G::Scalar, -1, 1>::Zero(NumVars);
+
+  // variable layout:
+  //
+  // [ v_{1, 0}; v_{2, 0}; v_{3, 0}; v_{1, 1}; v_{2, 1}; v_{3, 1}; ...]
+  //
+  // where v_ji is a Dof-length vector
+
+  const auto idx = [&] (int j, int i) {
+    return 3 * G::Dof * i + G::Dof * (j - 1);
+  };
+
+  std::size_t row_counter = 0;
+
+  //// LEFT END POINT  ////
+
+  // zero second derivative at start:
+  // v_{1, 0} = v_{2, 0}
+  std::size_t v10_start = idx(1, 0);
+  std::size_t v20_start = idx(2, 0);
+
+  for (auto n = 0u; n != G::Dof; ++n) {
+    lhs.insert(row_counter + n, v10_start + n) = 1;
+    lhs.insert(row_counter + n, v20_start + n) = -1;
+  }
+
+  row_counter += G::Dof;
+
+  //// INTERIOR END POINT  ////
+
+  for (auto i = 0u; i != N - 1; ++i) {
+    const std::size_t v1i_start = idx(1, i);
+    const std::size_t v2i_start = idx(2, i);
+    const std::size_t v3i_start = idx(3, i);
+
+    const std::size_t v1ip_start = idx(1, i + 1);
+    const std::size_t v2ip_start = idx(2, i + 1);
+
+    // segment lengths
+    const Scalar Ti = tt[i+1] - tt[i];
+    const Scalar Tip = tt[i+2] - tt[i + 1];
+
+    // pass through control points
+    // v_{1, i} + v_{2, i} + v_{3, i} = x_{i+1} - x_i
+    for (auto n = 0u; n != G::Dof; ++n) {
+      lhs.insert(row_counter + n, v1i_start + n) = 1;
+      lhs.insert(row_counter + n, v2i_start + n) = 1;
+      lhs.insert(row_counter + n, v3i_start + n) = 1;
+    }
+    rhs.segment(row_counter, G::Dof) = gg[i + 1] - gg[i];
+    row_counter += G::Dof;
+
+    // velocity continuity
+    // v_{3, i} = v_{1, i+1}
+    for (auto n = 0u; n != G::Dof; ++n) {
+      lhs.insert(row_counter + n, v3i_start + n) = 1 * Tip;
+      lhs.insert(row_counter + n, v1ip_start + n) = -1 * Ti;
+    }
+    row_counter += G::Dof;
+
+    // acceleration continuity (approximate for Lie groups)
+    // v_{2, i} - v_{3, i} = v_{2, i+1} - v_{1, i+1}
+    for (auto n = 0u; n != G::Dof; ++n) {
+      lhs.insert(row_counter + n, v2i_start + n) = 1 * (Tip * Tip);
+      lhs.insert(row_counter + n, v3i_start + n) = -1 * (Tip * Tip);
+      lhs.insert(row_counter + n, v1ip_start + n) = 1 * (Ti * Ti);
+      lhs.insert(row_counter + n, v2ip_start + n) = -1 * (Ti * Ti);
+    }
+    row_counter += G::Dof;
+  }
+
+  //// RIGHT END POINT  ////
+
+  const std::size_t v1_nm_start = idx(1, N - 1);
+  const std::size_t v2_nm_start = idx(2, N - 1);
+  const std::size_t v3_nm_start = idx(3, N - 1);
+
+  // end at last control point
+  // v_{1, n-1} + v_{2, n-1} v_{3, n-1} = x_{n} - x_{n-1}
+  for (auto n = 0u; n != G::Dof; ++n) {
+    lhs.insert(row_counter + n, v1_nm_start + n) = 1;
+    lhs.insert(row_counter + n, v2_nm_start + n) = 1;
+    lhs.insert(row_counter + n, v3_nm_start + n) = 1;
+  }
+  rhs.segment(row_counter, G::Dof) = gg[N] - gg[N - 1];
+  row_counter += G::Dof;
+
+  // zero second derivative at end:
+  // v_{2, n-1} = v_{3, n-1}
+  for (auto n = 0u; n != G::Dof; ++n) {
+    lhs.insert(row_counter + n, v2_nm_start + n) = 1;
+    lhs.insert(row_counter + n, v3_nm_start + n) = -1;
+  }
+
+  //// DONE ////
+
+  lhs.makeCompressed();
+
+  //// SOLVE SPARSE SYSTEM ////
+
+  Eigen::SparseQR<decltype(lhs), Eigen::COLAMDOrdering<int>> solver(lhs);
+  Eigen::VectorXd result = solver.solve(rhs);
+
+  //// EXTRACT SOLUTION SPLINE ////
+
+  std::vector<double> knots(N + 1);
+  std::vector<Bezier<3, G>> segments(N);
+
+  for (auto i = 0u; i != N; ++i)
+  {
+    std::size_t v1i_start = idx(1, i);
+    std::size_t v3i_start = idx(3, i);
+
+    V v1 = result.template segment<G::Dof>(v1i_start);
+    V v3 = result.template segment<G::Dof>(v3i_start);
+    V v2 = (G::exp(-v1) * gg[i].inverse() * gg[i+1] * G::exp(-v3)).log();  // compute v2 for interpolation
+
+    knots[i] = tt[i];
+    segments[i] = Bezier<3, G>(gg[i], std::array<V, 3>{v1, v2, v3});
+  }
+
+  knots[N] = tt[N];
+
+  return PiecewiseBezier<3, G>(std::move(knots), std::move(segments));
 }
 
 }  // namespace smooth
