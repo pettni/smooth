@@ -11,6 +11,9 @@ option(BUILD_EXAMPLES "Build the examples." OFF)
 
 find_package(Eigen3 REQUIRED)
 
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindCHOLMOD.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/FindSPQR.cmake)
+
 # ---------------------------------------------------------------------------------------
 # TARGETS
 # ---------------------------------------------------------------------------------------

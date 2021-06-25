@@ -3,7 +3,6 @@
 
 #include <ranges>
 
-#include <Eigen/QR>
 #include <Eigen/Sparse>
 #include <Eigen/SparseQR>
 
