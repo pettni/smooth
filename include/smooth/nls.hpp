@@ -208,10 +208,16 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
   const auto nm_rest = n - nm_min;
 
   // calculate qr decomposition of J
-  using QrType = std::conditional_t<is_sparse,
+  std::conditional_t<is_sparse,
     Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<int>>,
-    Eigen::ColPivHouseholderQR<MatrixT>>;
-  QrType J_qr(J);
+    Eigen::ColPivHouseholderQR<MatrixT>> J_qr;
+
+  if constexpr (is_sparse) {
+    // sparse solver is not very good for close-to-singular matrices
+    // J_qr.setPivotThreshold(1e-1);
+  }
+
+  J_qr.compute(J);
 
   // calculate size n Qt_r
   Eigen::Matrix<double, N, 1> Qt_r(n);

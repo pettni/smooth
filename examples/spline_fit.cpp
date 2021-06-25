@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "smooth/interp/bspline.hpp"
 #include "smooth/interp/bezier.hpp"
 #include "smooth/so3.hpp"

@@ -2,8 +2,6 @@
 
 #include "smooth/so3.hpp"
 
-#include <iostream>
-
 TEST(SO3, Quaternion)
 {
   for (auto i = 0u; i != 5; ++i) {
