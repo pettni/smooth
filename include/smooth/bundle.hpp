@@ -10,20 +10,24 @@ namespace smooth {
 
 // CRTP BASE
 
+/**
+ * @brief CRTP base of Bundle lie group.
+ */
 template<typename Derived>
 class BundleBase : public LieGroupBase<Derived>
 {
 protected:
-  using Base = LieGroupBase<Derived>;
-  using Impl = typename lie_traits<Derived>::Impl;
+  using Base = LieGroupBase<Derived>;  //!< Base class
+  using Impl = typename lie_traits<Derived>::Impl;  //!< Implementation
 
-  BundleBase() = default;
+  BundleBase() = default;  //!< Hide constructor to prevent direct instantiation
 
 public:
-  SMOOTH_INHERIT_TYPEDEFS
+  SMOOTH_INHERIT_TYPEDEFS;
 
-  // BUNDLE API
-
+  /**
+   * @brief Type of element in Bundle.
+   */
   template<std::size_t Idx>
   using PartType = typename lie_traits<Derived>::template PartPlainObject<Idx>;
 
@@ -54,6 +58,7 @@ class Bundle;
 
 // STORAGE TYPE TRAITS
 
+// \cond
 template<LieGroupLike... _Gs>
 struct lie_traits<Bundle<_Gs...>>
 {
@@ -72,14 +77,22 @@ struct lie_traits<Bundle<_Gs...>>
   using PartPlainObject = typename lie_traits<
     std::tuple_element_t<Idx, std::tuple<_Gs...>>>::template PlainObject<Scalar>;
 };
+// \endcond
 
 // STORAGE TYPE
 
+/**
+ * @brief Storage implementation of Bundle lie group.
+ *
+ * @see BundleBase for details.
+ */
 template<LieGroupLike... _Gs>
 class Bundle : public BundleBase<Bundle<_Gs...>>
 {
-  using Base = BundleBase<Bundle<_Gs...>>;
-  SMOOTH_GROUP_API(Bundle)
+  using Base = BundleBase<Bundle<_Gs...>>;  //! Base class
+
+  SMOOTH_GROUP_API(Bundle);
+
 public:
   /**
    * @brief Construct bundle from parts
@@ -110,7 +123,8 @@ class Eigen::Map<smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
 {
   using Base = smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>;
-  SMOOTH_MAP_API(Map)
+
+  SMOOTH_MAP_API(Map);
 };
 
 // CONST MAP TYPE TRAITS
@@ -129,7 +143,8 @@ class Eigen::Map<const smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>
 {
   using Base = smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>;
-  SMOOTH_CONST_MAP_API(Map)
+
+  SMOOTH_CONST_MAP_API(Map);
 };
 
 #endif  // SMOOTH__BUNDLE_HPP_

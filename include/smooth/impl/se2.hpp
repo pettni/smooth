@@ -9,31 +9,42 @@
 namespace smooth {
 
 /**
- * @brief SE2 Lie Group represented as U(1) ⋉ R2
+ * @brief SE2 Lie Group represented as \f$ \mathbb{U}(1) \times \mathbb{R}^2 \f$.
  *
  * Memory layout
  * =============
- * Group:    x y qz qw
- * Tangent:  vx vy Ωz
+ * - Group:    \f$ \mathbf{x} = [x, y, q_z, q_w] \f$
+ * - Tangent:  \f$ \mathbf{a} = [v_x, v_y, \omega_z] \f$
  *
- * Lie group Matrix form
+ * Constraints
+ * ===========
+ * Group:   \f$qz * qz + qw * qw = 1 \f$
+ * Tangent: \f$ -pi < wz <= pi \f$
+ *
+ * Lie group matrix form
  * =====================
  *
- * [ qw -qz  x ]
- * [ qz  qw  y ]
- * [  0   0  1 ]
+ * \f[
+ * \mathbf{X} =
+ * \begin{bmatrix}
+ *  qw & -qz &  x \\
+ *  qz &  qw &  y \\
+ *   0 &   0 &  1
+ * \end{bmatrix}
+ * \f]
+ *
  *
  * Lie algebra matrix form
  * =======================
  *
- * [  0 -Ωz  vx ]
- * [ Ωz   0  vy ]
- * [  0   0  1  ]
- *
- * Constraints
- * ===========
- * Group:   qz * qz + qw * qw = 1
- * Tangent: -pi < wz <= pi
+ * \f[
+ * \mathbf{a}^\wedge =
+ * \begin{bmatrix}
+ *   0 & -\omega_z &  v_x \\
+ *  \omega_z &   0 &  v_y \\
+ *   0 &   0 &  1
+ * \end{bmatrix}
+ * \f]
  */
 template<typename _Scalar>
 class SE2Impl

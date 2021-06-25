@@ -20,14 +20,32 @@ template<std::size_t N, LieGroup G>
 class Bezier
 {
 public:
+  /**
+   * @brief Default constructor creates a constant curve on [0, 1] equal to identity.
+   */
   Bezier() : g0_(G::Identity()) { vs_.fill(G::Tangent::Zero()); }
 
   Bezier(G && g0, std::array<typename G::Tangent, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs))
   {}
 
+  /**
+   * @brief Create curve from parameter values.
+   *
+   * @param g0 starting value
+   * @param rv differences [v_1, ..., v_n] between control points
+   *
+   * The curve is defined by
+   *
+   *  g(t) = g0 * exp(B_1(t) v_1) * ... exp(B_N(t) v_N)
+   *
+   * where v_i = g_i - g_{i-1}.
+   */
   template<std::ranges::range Rv>
   Bezier(const G & g0, const Rv & rv) : g0_(g0)
   {
+    if (std::ranges::size(rv) != N) {
+      throw std::runtime_error("Wrong number of control points");
+    }
     std::copy(std::ranges::begin(rv), std::ranges::end(rv), vs_.begin());
   }
 

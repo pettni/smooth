@@ -62,12 +62,14 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
   class Eigen::Map<DATATYPE> : public BASETYPE<Eigen::Map<DATATYPE>>                 \
   {                                                                                  \
     using Base = BASETYPE<Eigen::Map<DATATYPE>>;                                     \
+                                                                                     \
   public:                                                                            \
-    SMOOTH_INHERIT_TYPEDEFS                                                          \
+    SMOOTH_INHERIT_TYPEDEFS;                                                         \
     Map(DATATYPE & msg) : coeffs_(reinterpret_cast<double *>(&msg)) {}               \
     using Storage = Eigen::Map<Eigen::Matrix<double, RepSize, 1>>;                   \
     Storage & coeffs() { return coeffs_; }                                           \
     const Storage & coeffs() const { return coeffs_; }                               \
+                                                                                     \
   private:                                                                           \
     Storage coeffs_;                                                                 \
   };                                                                                 \
@@ -82,17 +84,21 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
   class Eigen::Map<const DATATYPE> : public BASETYPE<Eigen::Map<const DATATYPE>>     \
   {                                                                                  \
     using Base = BASETYPE<Eigen::Map<const DATATYPE>>;                               \
+                                                                                     \
   public:                                                                            \
-    SMOOTH_INHERIT_TYPEDEFS                                                          \
+    SMOOTH_INHERIT_TYPEDEFS;                                                         \
     Map(const DATATYPE & msg) : coeffs_(reinterpret_cast<const double *>(&msg)) {}   \
     using Storage = Eigen::Map<const Eigen::Matrix<double, RepSize, 1>>;             \
     const Storage & coeffs() const { return coeffs_; }                               \
+                                                                                     \
   private:                                                                           \
     Storage coeffs_;                                                                 \
-  };
+  };                                                                                 \
+                                                                                     \
+  static_assert(true, "")
 
-CREATE_MAPS(geometry_msgs::msg::Quaternion, smooth::SO3d, smooth::SO3Base)
-CREATE_MAPS(geometry_msgs::msg::Pose, smooth::SE3d, smooth::SE3Base)
-CREATE_MAPS(geometry_msgs::msg::Transform, smooth::SE3d, smooth::SE3Base)
+CREATE_MAPS(geometry_msgs::msg::Quaternion, smooth::SO3d, smooth::SO3Base);
+CREATE_MAPS(geometry_msgs::msg::Pose, smooth::SE3d, smooth::SE3Base);
+CREATE_MAPS(geometry_msgs::msg::Transform, smooth::SE3d, smooth::SE3Base);
 
 #endif  // SMOOTH__COMPAT__ROS_HPP_

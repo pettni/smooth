@@ -3,6 +3,7 @@ compile_commands.json
 .auctex-auto
 
 build
+doc
 .cache
 .clangd
 .vscode

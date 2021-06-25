@@ -11,45 +11,59 @@
 
 namespace smooth {
 
+// \cond
 template<typename Scalar>
 class SO3;
-
-// CRTP BASE
+// \endcond
 
 /**
- * @brief SO2 Lie Group represented as U(1)
+ * @brief CRTP base of SO2 Lie group represented as \f$ \mathbb{U}(1) \f$.
  *
  * Memory layout
- * =============
- * Group:    qz qw
- * Tangent:  Ωz
+ * -------------
  *
- * Lie group Matrix form
- * =====================
- *
- * [ qw -qz ]
- * [ qz  qw ]
- *
- * Lie algebra Matrix form
- * =======================
- *
- * [  0 -Ωz ]
- * [ Ωz   0 ]
+ * - Group:    \f$ \mathbf{x} = [q_z, q_w] \f$
+ * - Tangent:  \f$ \mathbf{a} = [\omega_z] \f$
  *
  * Constraints
- * ===========
- * Group:   qz * qz + qw * qw = 1
- * Tangent: -pi < Ωz <= pi
+ * -----------
+ *
+ * Group:   \f$q_z^2 + q_w^2 = 1 \f$
+ * Tangent: \f$ -\pi < \omega_z <= \pi \f$
+ *
+ * Lie group matrix form
+ * ---------------------
+ *
+ * \f[
+ * \mathbf{X} =
+ * \begin{bmatrix}
+ *  q_w & -q_z \\
+ *  q_z &  q_w 
+ * \end{bmatrix}
+ * \f]
+ *
+ *
+ * Lie algebra matrix form
+ * -----------------------
+ *
+ * \f[
+ * \mathbf{a}^\wedge =
+ * \begin{bmatrix}
+ *   0 & -\omega_z \\
+ *  \omega_z &   0 \\
+ * \end{bmatrix}
+ * \f]
  */
 template<typename _Derived>
 class SO2Base : public LieGroupBase<_Derived>
 {
 protected:
-  using Base = LieGroupBase<_Derived>;
+  using Base = LieGroupBase<_Derived>;  //!< Base class
   SO2Base()  = default;
 
 public:
-  SMOOTH_INHERIT_TYPEDEFS
+
+  SMOOTH_INHERIT_TYPEDEFS;
 
   /**
    * @brief Angle represetation.
@@ -89,9 +103,12 @@ public:
 
 // STORAGE TYPE TRAITS
 
+// \cond
 template<typename _Scalar>
 class SO2;
+// \endcond
 
+// \cond
 template<typename _Scalar>
 struct lie_traits<SO2<_Scalar>>
 {
@@ -103,22 +120,27 @@ struct lie_traits<SO2<_Scalar>>
   template<typename NewScalar>
   using PlainObject = SO2<NewScalar>;
 };
+// \endcond
 
-// STORAGE TYPE
-
+/**
+ * @brief Storage implementation of SO2 Lie group.
+ * 
+ * @see SO2Base for memory layout.
+ */
 template<typename _Scalar>
 class SO2 : public SO2Base<SO2<_Scalar>>
 {
   using Base = SO2Base<SO2<_Scalar>>;
-  SMOOTH_GROUP_API(SO2)
+  SMOOTH_GROUP_API(SO2);
+
 public:
   /**
-   * @brief Construct from underlying representation.
+   * @brief Construct from coefficients.
    *
-   * Incoming arguments are normalized to ensure group constraint.
+   * @param qz sine of rotation angle
+   * @param qw cosine of rotation angle
    *
-   * @param qz sine of angle
-   * @param qw cosine of angle
+   * @note Inputs are are normalized to ensure group constraint.
    */
   SO2(const Scalar & qz, const Scalar & qw)
   {
@@ -129,6 +151,8 @@ public:
 
   /**
    * @brief Construct from angle.
+   *
+   * @param angle angle of rotation (radians).
    */
   explicit SO2(const Scalar & angle)
   {
@@ -139,6 +163,10 @@ public:
 
   /**
    * @brief Construct from complex number.
+   *
+   * @param c complex number.
+   *
+   * @warning c must have unit norm.
    */
   SO2(const std::complex<Scalar> & c)
   {
@@ -147,44 +175,50 @@ public:
   }
 };
 
-using SO2f = SO2<float>;
-using SO2d = SO2<double>;
+using SO2f = SO2<float>;  //! SO2 with float
+using SO2d = SO2<double>;  //! SO2 with double
 
 }  // namespace smooth
 
-// MAP TYPE TRAITS
-
+// \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<smooth::SO2<_Scalar>>>
     : public lie_traits<smooth::SO2<_Scalar>>
 {};
+// \endcond
 
-// MAP TYPE
-
+/**
+ * @brief Memory mapping of SO2 Lie group.
+ * 
+ * @see SO2Base for memory layout.
+ */
 template<typename _Scalar>
 class Eigen::Map<smooth::SO2<_Scalar>> : public smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>
 {
   using Base = smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>;
-  SMOOTH_MAP_API(Map)
+  SMOOTH_MAP_API(Map);
 };
 
-// CONST MAP TYPE TRAITS
-
+// \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<const smooth::SO2<_Scalar>>>
     : public lie_traits<smooth::SO2<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
+// \endcond
 
-// CONST MAP TYPE
-
+/**
+ * @brief Const memory mapping of SO2 Lie group.
+ * 
+ * @see SO2Base for memory layout.
+ */
 template<typename _Scalar>
 class Eigen::Map<const smooth::SO2<_Scalar>>
     : public smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>
 {
   using Base = smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>;
-  SMOOTH_CONST_MAP_API(Map)
+  SMOOTH_CONST_MAP_API(Map);
 };
 
 #endif  // SMOOTH__SO2_HPP_

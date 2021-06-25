@@ -10,8 +10,10 @@
 
 namespace smooth {
 
+// \cond
 template<typename Scalar>
 class SO2;
+// \endcond
 
 // CRTP BASE
 
@@ -48,7 +50,8 @@ protected:
   SO3Base()  = default;
 
 public:
-  SMOOTH_INHERIT_TYPEDEFS
+
+  SMOOTH_INHERIT_TYPEDEFS;
 
   /**
    * @brief Access quaterion
@@ -127,7 +130,9 @@ template<typename _Scalar>
 class SO3 : public SO3Base<SO3<_Scalar>>
 {
   using Base = SO3Base<SO3<_Scalar>>;
-  SMOOTH_GROUP_API(SO3)
+
+  SMOOTH_GROUP_API(SO3);
+
 public:
   /**
    * @brief Construct from quaternion.
@@ -156,7 +161,9 @@ class Eigen::Map<smooth::SO3<_Scalar>>
   : public smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>
 {
   using Base = smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>;
-  SMOOTH_MAP_API(Map)
+
+  SMOOTH_MAP_API(Map);
+
 };
 
 // CONST MAP TYPE TRAITS
@@ -175,7 +182,9 @@ class Eigen::Map<const smooth::SO3<_Scalar>>
   : public smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>
 {
   using Base = smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>;
-  SMOOTH_CONST_MAP_API(Map)
+
+  SMOOTH_CONST_MAP_API(Map);
+
 };
 
 #endif  // SMOOTH__SO3_HPP_
