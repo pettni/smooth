@@ -10,6 +10,9 @@
 
 namespace smooth {
 
+template<typename Scalar>
+class SO2;
+
 // CRTP BASE
 
 /**
@@ -57,7 +60,7 @@ public:
   }
 
   /**
-   * @brief Access const quaterion
+   * @brief Access const quaterion.
    */
   Eigen::Map<const Eigen::Quaternion<Scalar>> quat() const
   {
@@ -65,12 +68,13 @@ public:
   }
 
   /**
-   * @brief Return euler angles
+   * @brief Return euler angles.
+   *
    * @param i1, i2, i3 euler angle axis convention (0=x, 1=y, 2=z).
    *        Default values correspond to ZYX rotation.
    *
    * Returned angles a1, a2, a3 are s.t. rotation is described by
-   * Rot_i1(a1) * Rot_i2(a2) * Rot_i3(a3)
+   * Rot_i1(a1) * Rot_i2(a2) * Rot_i3(a3),
    */
   Eigen::Matrix<Scalar, 3, 1> eulerAngles(
     Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
@@ -79,12 +83,24 @@ public:
   }
 
   /**
-   * Rotation action on 3D vector
+   * @brief Rotation action on 3D vector.
+   *
+   * @param v 3D vector to rotate
    */
   template<typename EigenDerived>
   Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return quat() * v;
+  }
+
+  /**
+   * @brief Project to SO2.
+   *
+   * This keeps the "z"/yaw component of the rotation.
+   */
+  SO2<Scalar> project_so2() const
+  {
+    return SO2<Scalar>(eulerAngles(0, 1, 2).z());
   }
 };
 
@@ -114,7 +130,7 @@ class SO3 : public SO3Base<SO3<_Scalar>>
   SMOOTH_GROUP_API(SO3)
 public:
   /**
-   * @brief Construct from quaternion
+   * @brief Construct from quaternion.
    */
   template<typename Derived>
   SO3(const Eigen::QuaternionBase<Derived> & quat) : coeffs_(quat.normalized().coeffs())

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 
 TEST(SO3, Quaternion)
@@ -51,3 +52,13 @@ TEST(SO3, Action)
   }
 }
 
+TEST(SO3, ProjectLift)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    const smooth::SO3d g = smooth::SO3d::Random();
+    const auto so2 = g.project_so2();
+    const auto so3 = so2.lift_so3();
+
+    ASSERT_NEAR(g.eulerAngles(0, 1, 2).z(), so3.eulerAngles(0, 1, 2).z(), 1e-6);
+  }
+}

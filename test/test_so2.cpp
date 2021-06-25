@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "smooth/so2.hpp"
+#include "smooth/so3.hpp"
 
 TEST(SO2, Angle)
 {
@@ -35,5 +36,16 @@ TEST(SO2, Action)
 
     ASSERT_TRUE(ex_rot.isApprox(g1.matrix().col(0)));
     ASSERT_TRUE(ey_rot.isApprox(g1.matrix().col(1)));
+  }
+}
+
+TEST(SO2, LiftProject)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    const smooth::SO2d g = smooth::SO2d::Random();
+    const auto so3 = g.lift_so3();
+    const auto so2 = so3.project_so2();
+
+    ASSERT_TRUE(so2.isApprox(g, 1e-6));
   }
 }

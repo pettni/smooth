@@ -11,6 +11,9 @@
 
 namespace smooth {
 
+template<typename Scalar>
+class SO3;
+
 // CRTP BASE
 
 /**
@@ -49,12 +52,12 @@ public:
   SMOOTH_INHERIT_TYPEDEFS
 
   /**
-   * Angle represetation
+   * @brief Angle represetation.
    */
   Scalar angle() const { return Base::log().x(); }
 
   /**
-   * Complex number (U(1)) representation
+   * @brief Complex number (U(1)) representation.
    */
   std::complex<Scalar> u1() const
   {
@@ -62,12 +65,25 @@ public:
   }
 
   /**
-   * Rotation action on 2D vector
+   * @brief Rotation action on 2D vector.
    */
   template<typename EigenDerived>
   Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return Base::matrix() * v;
+  }
+
+  /**
+   * @brief Lift to SO3.
+   *
+   * Rotation of SO2 is embedded in SO3 as a rotation around the z axis.
+   */
+  SO3<Scalar> lift_so3() const
+  {
+    using std::cos, std::sin;
+
+    const Scalar yaw = Base::log().x();
+    return SO3<Scalar>(Eigen::Quaternion<Scalar>(cos(yaw / 2), 0, 0, sin(yaw / 2)));
   }
 };
 
@@ -97,7 +113,22 @@ class SO2 : public SO2Base<SO2<_Scalar>>
   SMOOTH_GROUP_API(SO2)
 public:
   /**
-   * @brief Construct from angle
+   * @brief Construct from underlying representation.
+   *
+   * Incoming arguments are normalized to ensure group constraint.
+   *
+   * @param qz sine of angle
+   * @param qw cosine of angle
+   */
+  SO2(const Scalar & qz, const Scalar & qw)
+  {
+    const Scalar n = sqrt(qw * qw + qz * qz);
+    coeffs_.x() = qz / n;
+    coeffs_.y() = qw / n;
+  }
+
+  /**
+   * @brief Construct from angle.
    */
   explicit SO2(const Scalar & angle)
   {
@@ -107,7 +138,7 @@ public:
   }
 
   /**
-   * @brief Construct from complex number
+   * @brief Construct from complex number.
    */
   SO2(const std::complex<Scalar> & c)
   {

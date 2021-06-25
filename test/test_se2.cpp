@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "smooth/se2.hpp"
+#include "smooth/se3.hpp"
 
 TEST(SE2, Parts)
 {
@@ -35,4 +36,15 @@ TEST(SE2, Action)
   Eigen::Vector2d w(5, 5);
 
   ASSERT_TRUE((tr * w).isApprox(Eigen::Vector2d(6, 7)));
+}
+
+TEST(SE2, LiftProject)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    const smooth::SE2d g = smooth::SE2d::Random();
+    const auto se3 = g.lift_se3();
+    const auto se2 = se3.project_se2();
+
+    ASSERT_TRUE(se2.isApprox(g, 1e-6));
+  }
 }
