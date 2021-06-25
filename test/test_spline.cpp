@@ -8,6 +8,7 @@
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/tn.hpp"
+#include "smooth/diff.hpp"
 
 TEST(Coefmat, Bspline)
 {
@@ -129,6 +130,60 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
   });
 }
 
+TEST(Spline, DerivBspline)
+{
+  smooth::SO3d g0 = smooth::SO3d::Random();
+
+  std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> diff_pts;
+  diff_pts.push_back(Eigen::Vector3d::Random());
+  diff_pts.push_back(Eigen::Vector3d::Random());
+  diff_pts.push_back(Eigen::Vector3d::Random());
+
+  constexpr auto Mstatic =
+    smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>().transpose();
+  Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(Mstatic[0].data());
+
+  Eigen::Vector3d vel;
+
+  for (double u = 0.1; u < 0.99; u += 0.1) {
+    smooth::cspline_eval<3>(g0, diff_pts, M, u, vel);
+
+    auto g1 = smooth::cspline_eval<3, smooth::SO3d>(g0, diff_pts, M, u - 1e-4);
+    auto g2 = smooth::cspline_eval<3, smooth::SO3d>(g0, diff_pts, M, u + 1e-4);
+
+    Eigen::Vector3d df = (g2 - g1) / 2e-4;
+
+    ASSERT_TRUE(df.isApprox(vel, 1e-4));
+  }
+}
+
+TEST(Spline, DerivBezier)
+{
+  smooth::SO3d g0 = smooth::SO3d::Random();
+
+  std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> diff_pts;
+  diff_pts.push_back(Eigen::Vector3d::Random());
+  diff_pts.push_back(Eigen::Vector3d::Random());
+  diff_pts.push_back(Eigen::Vector3d::Random());
+
+  constexpr auto Mstatic =
+    smooth::detail::cum_coefmat<smooth::CSplineType::BEZIER, double, 3>().transpose();
+  Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(Mstatic[0].data());
+
+  Eigen::Vector3d vel;
+
+  for (double u = 0.1; u < 0.99; u += 0.1) {
+    smooth::cspline_eval<3>(g0, diff_pts, M, u, vel);
+
+    auto g1 = smooth::cspline_eval<3, smooth::SO3d>(g0, diff_pts, M, u - 1e-4);
+    auto g2 = smooth::cspline_eval<3, smooth::SO3d>(g0, diff_pts, M, u + 1e-4);
+
+    Eigen::Vector3d df = (g2 - g1) / 2e-4;
+
+    ASSERT_TRUE(df.isApprox(vel, 1e-4));
+  }
+}
+
 TEST(Spline, BSplineConstructors)
 {
   std::srand(5);
@@ -237,4 +292,82 @@ TEST(Spline, BSplineFit)
   gg.push_back(smooth::SO3d::Random());
 
   auto bspline = smooth::fit_bspline<3>(tt, gg, 1);
+}
+
+TEST(Spline, Bezier2Fit)
+{
+  std::vector<double> tt;
+  std::vector<smooth::SO3d> gg;
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+
+  auto spline = smooth::fit_quadratic_bezier(tt, gg, Eigen::Vector3d::Zero());
+
+  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+
+  // check continuity of derivative
+  for (auto tt = 2.5; tt < 6; ++tt)
+  {
+    Eigen::Vector3d va, vb;
+    spline.eval(tt - 1e-5, va);
+    spline.eval(tt + 1e-5, vb);
+    ASSERT_TRUE(va.isApprox(vb, 1e-3));
+  }
+}
+
+TEST(Spline, Bezier3Fit)
+{
+  std::vector<double> tt;
+  std::vector<smooth::SO3d> gg;
+
+  std::srand(10);
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+
+  auto spline = smooth::fit_cubic_bezier(tt, gg);
+
+  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+
+  // check continuity of derivative
+  for (auto t_test = 2.5; t_test < 6; ++t_test)
+  {
+    Eigen::Vector3d va, vb;
+    spline.eval(t_test - 1e-5, va);
+    spline.eval(t_test + 1e-5, vb);
+    ASSERT_TRUE(va.isApprox(vb, 1e-3));
+  }
 }

@@ -1,7 +1,6 @@
 #ifndef SMOOTH__INTERP__BEZIER_HPP_
 #define SMOOTH__INTERP__BEZIER_HPP_
 
-#include <iostream>
 #include <ranges>
 
 #include <Eigen/QR>
@@ -39,14 +38,16 @@ public:
   Bezier & operator=(Bezier &&) = default;
   ~Bezier()                     = default;
 
-  G eval(double t_in) const
+  G eval(double t_in,
+    std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
+    std::optional<Eigen::Ref<typename G::Tangent>> acc = {}) const
   {
     double t = std::clamp<double>(t_in, 0, 1);
 
     constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BEZIER, double, N>().transpose();
     Eigen::Map<const Eigen::Matrix<double, N + 1, N + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
-    return cspline_eval<N>(g0_, vs_, M, t);
+    return cspline_eval<N>(g0_, vs_, M, t, vel, acc);
   }
 
 private:
@@ -83,13 +84,24 @@ public:
 
   double t_max() const { return knots_.back(); }
 
-  G eval(double t) const
+  G eval(double t,
+    std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
+    std::optional<Eigen::Ref<typename G::Tangent>> acc = {}) const
   {
     // find index TODO binary search
     std::size_t istar = 0;
     while (istar + 2 < knots_.size() && knots_[istar + 1] <= t) { ++istar; }
-    const double u = (t - knots_[istar]) / (knots_[istar + 1] - knots_[istar]);
-    return segments_[istar].eval(u);
+
+    double T = knots_[istar + 1] - knots_[istar];
+
+    const double u = (t - knots_[istar]) / T;
+
+    G g = segments_[istar].eval(u, vel, acc);
+
+    if (vel.has_value()) { vel.value() /= T; }
+    if (acc.has_value()) { acc.value() /= (T * T); }
+
+    return g;
   }
 
 private:
@@ -158,12 +170,10 @@ fit_quadratic_bezier(
  *
  * @param tt times
  * @param gg values
- * @param v0 initial velocity
  */
 template<std::ranges::range Rt, std::ranges::range Rg>
 PiecewiseBezier<3, std::ranges::range_value_t<Rg>>
-fit_cubic_bezier(
-  const Rt & tt, const Rg & gg, typename std::ranges::range_value_t<Rg>::Tangent v0)
+fit_cubic_bezier(const Rt & tt, const Rg & gg)
 {
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2)
   {
@@ -251,8 +261,8 @@ fit_cubic_bezier(
     for (auto n = 0u; n != G::Dof; ++n) {
       lhs.insert(row_counter + n, v2i_start + n) = 1 * (Tip * Tip);
       lhs.insert(row_counter + n, v3i_start + n) = -1 * (Tip * Tip);
-      lhs.insert(row_counter + n, v1ip_start + n) = 1 * (Ti * Ti);
-      lhs.insert(row_counter + n, v2ip_start + n) = -1 * (Ti * Ti);
+      lhs.insert(row_counter + n, v1ip_start + n) = -1 * (Ti * Ti);
+      lhs.insert(row_counter + n, v2ip_start + n) = 1 * (Ti * Ti);
     }
     row_counter += G::Dof;
   }
@@ -296,15 +306,18 @@ fit_cubic_bezier(
 
   for (auto i = 0u; i != N; ++i)
   {
-    std::size_t v1i_start = idx(1, i);
-    std::size_t v3i_start = idx(3, i);
+    const std::size_t v1i_start = idx(1, i);
+    const std::size_t v3i_start = idx(3, i);
 
     V v1 = result.template segment<G::Dof>(v1i_start);
     V v3 = result.template segment<G::Dof>(v3i_start);
     V v2 = (G::exp(-v1) * gg[i].inverse() * gg[i+1] * G::exp(-v3)).log();  // compute v2 for interpolation
 
     knots[i] = tt[i];
-    segments[i] = Bezier<3, G>(gg[i], std::array<V, 3>{v1, v2, v3});
+    segments[i] = Bezier<3, G>(
+        gg[i],
+        std::array<V, 3>{std::move(v1), std::move(v2), std::move(v3)}
+    );
   }
 
   knots[N] = tt[N];
