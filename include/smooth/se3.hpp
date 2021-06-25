@@ -12,6 +12,9 @@
 
 namespace smooth {
 
+template<typename Scalar>
+class SE2;
+
 // CRTP BASE
 
 /**
@@ -95,6 +98,14 @@ public:
   Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
   {
     return so3() * v + t3();
+  }
+
+  /**
+   * @brief Project to SE2.
+   */
+  SE2<Scalar> project_se2() const
+  {
+    return SE2<Scalar>(so3().project_so2(), t3().template head<2>());
   }
 };
 

@@ -24,7 +24,7 @@ Matrices on this form have several interesting properties. First of all, for $\b
   \begin{subequations}
     \begin{align}
       \label{eq:so3_pow3}
-      \hat \a \hat \b \hat \a            & = - (\a \cdot \b)  \hat \a,                                                                                     \\
+      \hat \a \hat \b \hat \a            & = - (\a \cdot \b)  \hat \a,                                                                                                          \\
       \label{eq:so3_hat_neg}
       \hat {\a} \symbf{b}                & = - \hat {\symbf b} \a,                                                                                                              \\
       \a \cdot (\hat{\symbf b} \symbf c) & = \symbf b \cdot (\hat{\symbf c} \a),                                                                                                \\
@@ -236,9 +236,9 @@ Since this is a linear mapping in $u_x, u_y, u_z$ we can identify $\bq$ with a m
 \begin{equation}
   \label{eq:quat_to_so3}
   \bR(\bq) = \begin{bmatrix}
-    (1 - 2(q_y^2 + q_z^2)) & 2(q_x q_y - q_w q_z)    & 2( q_x q_z + q_w q_y ) \\
-    2(q_x q_y + q_w q_z)   & (1 - 2 (q_x^2 + q_z^2)) & 2( q_y q_z-q_w q_x)    \\
-    2 (q_x q_z  - q_w q_y) & 2 (q_w q_x + q_y q_z)   & (1 - 2(q_x^2 + q_y^2))
+    1 - 2(q_y^2 + q_z^2)   & 2(q_x q_y - q_w q_z)  & 2( q_x q_z + q_w q_y ) \\
+    2(q_x q_y + q_w q_z)   & 1 - 2 (q_x^2 + q_z^2) & 2( q_y q_z-q_w q_x)    \\
+    2 (q_x q_z  - q_w q_y) & 2 (q_w q_x + q_y q_z) & 1 - 2(q_x^2 + q_y^2)
   \end{bmatrix},
 \end{equation}
 which is a mapping from $\Sthree$ to $\SOthree$. However, the mapping is not one-to-one since both $\bq$ and $-\bq$ map to the same rotation matrix: $\bR(\bq) = \bR(-\bq)$. This is what is meant when saying that $\Sthree$ forms a \emph{double cover} of $\SOthree$.
