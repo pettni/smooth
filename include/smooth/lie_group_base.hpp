@@ -9,29 +9,45 @@ template<typename T>
 struct lie_traits
 {};
 
+/**
+ * @brief CRTP base for Lie group types
+ */
 template<typename Derived>
 class LieGroupBase
 {
 protected:
   LieGroupBase() = default;
+
+  //! CRTP traits
   using traits   = lie_traits<Derived>;
+
+  //! Group-specific Lie group implementation
   using Impl     = typename traits::Impl;
 
-public:
-  static constexpr Eigen::Index RepSize = Impl::RepSize;
-  static constexpr Eigen::Index Dof     = Impl::Dof;
-  static constexpr Eigen::Index Dim     = Impl::Dim;
-
-  static constexpr bool is_mutable = traits::is_mutable;
-
-  using Scalar     = typename traits::Scalar;
-  using Tangent    = Eigen::Matrix<Scalar, Dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
-  using Matrix     = Eigen::Matrix<Scalar, Dim, Dim>;
-
+  //! Plain return type
   template<typename NewScalar>
   using PlainObjectCast = typename traits::template PlainObject<NewScalar>;
 
+  //! True if underlying storage supports modification
+  static constexpr bool is_mutable = traits::is_mutable;
+
+public:
+  //! Number of scalars in internal representation.
+  static constexpr Eigen::Index RepSize = Impl::RepSize;
+  //! Degrees of freedom of manifold (equal to tangent space dimension).
+  static constexpr Eigen::Index Dof     = Impl::Dof;
+  //! Side of Lie group matrix representation.
+  static constexpr Eigen::Index Dim     = Impl::Dim;
+
+  //! Scalar type
+  using Scalar     = typename traits::Scalar;
+  //! Lie group matrix type
+  using Matrix     = Eigen::Matrix<Scalar, Dim, Dim>;
+  //! Lie group parameterized tangent type
+  using Tangent    = Eigen::Matrix<Scalar, Dof, 1>;
+  //! Matrix representing map between tangent elements
+  using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
+  //! Plain return type
   using PlainObject = PlainObjectCast<Scalar>;
 
   /**
@@ -48,12 +64,12 @@ public:
   // Required sizes
 
   /**
-   * Static size (degrees of freedom).
+   * @brief Static size (degrees of freedom).
    */
   static constexpr Eigen::Index SizeAtCompileTime = Dof;
 
   /**
-   * Dynamic size (degrees of freedom).
+   * @brief Dynamic size (degrees of freedom).
    */
   Eigen::Index size() const { return Dof; }
 
@@ -183,6 +199,8 @@ public:
 
   /**
    * @brief Lie group logarithm.
+   *
+   * @return tangent logarithm element.
    */
   Tangent log() const
   {
@@ -194,7 +212,7 @@ public:
   /**
    * @brief Lie group adjoint.
    *
-   * Ad_X a := ( X hat(a) X.inverse() ).vee()
+   * @return Matrix \f$ \mathbf{Ad}_\mathbf{X} \f$ s.t.  \f$ \mathbf{Ad_X} \mathbf{a} = ( \mathbf{X} \mathbf{a}^\wedge \mathbf{X}^{-1} )^\vee \f$
    */
   TangentMap Ad() const
   {
@@ -206,7 +224,7 @@ public:
   /**
    * @brief Right-plus.
    *
-   * g + a := g * exp(a)
+   * @return \f$ \mathbf{x} \oplus \mathbf{a} = \mathbf{x} \exp(\mathbf{a}) \f$
    */
   template<typename TangentDerived>
   PlainObject operator+(const Eigen::MatrixBase<TangentDerived> & t) const
@@ -215,7 +233,9 @@ public:
   }
 
   /**
-   * @brief Inplace right-plus.
+   * @brief Inplace right-plus: \f$ \mathbf{x} \leftarrow \mathbf{x} \exp(\mathbf{a}) \f$.
+   *
+   * @return Reference to this
    */
   template<typename TangentDerived>
   requires is_mutable
@@ -251,7 +271,7 @@ public:
   }
 
   /**
-   * @brief Lie algebra hat.
+   * @brief Lie algebra hat map.
    *
    * Maps a Dofx1 Rn parameterization of a matrix Lie algebra element
    * to the corresponding matrix Lie algebra element.
@@ -265,7 +285,7 @@ public:
   }
 
   /**
-   * @brief Lie alebra vee.
+   * @brief Lie alebra vee map.
    *
    * Maps a matrix Lie algebra element to its Rn parameterization.
    */
@@ -280,7 +300,7 @@ public:
   /**
    * @brief Lie algebra adjoint.
    *
-   * ad_a b := [a, b].
+   * @return Matrix \f$ \mathbf{ad}_\mathbf{a} \f$ s.t. \f$ \mathbf{ad}_\mathbf{a} \mathbf{b} = [\mathbf{a}, \mathbf{b}] \f$
    */
   template<typename TangentDerived>
   static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
@@ -292,8 +312,9 @@ public:
 
   /**
    * @brief Lie algebra bracket.
-   *
-   * [a, b] := vee( hat(a) hat(b) - hat(b) hat(a) ).
+   * \f[
+   * [ \mathbf{a}, \mathbf{b}] = \left( \mathbf{a}^\wedge \mathbf{b}^\wedge - \mathbf{b}^\wedge \mathbf{a}^\wedge \right)^\vee.
+   * \f]
    */
   template<typename TangentDerived1, typename TangentDerived2>
   static Tangent lie_bracket(

@@ -29,7 +29,7 @@ int main(int argc, char const * argv[])
     data_t.push_back(data_t.back() + (1 + i % 2) * dt);
   }
 
-  auto bspline = smooth::fit_bspline<K>(data_t, data_g, 2);
+  auto bspline = smooth::fit_bspline<K>(data_t, data_g, 2.5 * dt);
   auto bezier3 = smooth::fit_cubic_bezier(data_t, data_g);
 
   auto tvec = matplot::linspace(bspline.t_min(), bspline.t_max(), 1000);

@@ -173,7 +173,10 @@ fit_bspline(const Rt & tt, const Rg & gg, double dt)
 
     Jac.makeCompressed();
 
-    return std::make_pair(std::move(ret), std::move(Jac));
+    // return std::make_pair(std::move(ret), std::move(Jac));
+
+    // Use dense solver for now...
+    return std::make_pair(std::move(ret), Eigen::MatrixXd(Jac));
   };
 
   // create optimization variable

@@ -54,7 +54,8 @@ protected:
   SE3Base()  = default;
 
 public:
-  SMOOTH_INHERIT_TYPEDEFS
+
+  SMOOTH_INHERIT_TYPEDEFS;
 
   /**
    * Access SO(3) part
@@ -132,7 +133,9 @@ template<typename _Scalar>
 class SE3 : public SE3Base<SE3<_Scalar>>
 {
   using Base = SE3Base<SE3<_Scalar>>;
-  SMOOTH_GROUP_API(SE3)
+
+  SMOOTH_GROUP_API(SE3);
+
 public:
   /**
    * @brief Construct from SO3 and translation
@@ -164,7 +167,8 @@ class Eigen::Map<smooth::SE3<_Scalar>>
   : public smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>
 {
   using Base = smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>;
-  SMOOTH_MAP_API(Map)
+
+  SMOOTH_MAP_API(Map);
 };
 
 // CONST MAP TYPE TRAITS
@@ -183,7 +187,8 @@ class Eigen::Map<const smooth::SE3<_Scalar>>
   : public smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>
 {
   using Base = smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>;
-  SMOOTH_CONST_MAP_API(Map)
+
+  SMOOTH_CONST_MAP_API(Map);
 };
 
 #endif  // SMOOTH__SE3_HPP_

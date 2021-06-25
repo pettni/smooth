@@ -52,7 +52,7 @@ protected:
   SE2Base()  = default;
 
 public:
-  SMOOTH_INHERIT_TYPEDEFS
+  SMOOTH_INHERIT_TYPEDEFS;
 
   /**
    * Access SO(2) part
@@ -130,7 +130,9 @@ template<typename _Scalar>
 class SE2 : public SE2Base<SE2<_Scalar>>
 {
   using Base = SE2Base<SE2<_Scalar>>;
-  SMOOTH_GROUP_API(SE2)
+
+  SMOOTH_GROUP_API(SE2);
+
 public:
   /**
    * @brief Construct from SO2 and translation
@@ -143,8 +145,8 @@ public:
   }
 };
 
-using SE2f = SE2<float>;
-using SE2d = SE2<double>;
+using SE2f = SE2<float>;  //! SE2 with float
+using SE2d = SE2<double>;  //! SE2 with double
 
 }  // namespace smooth
 
@@ -162,7 +164,8 @@ class Eigen::Map<smooth::SE2<_Scalar>>
   : public smooth::SE2Base<Eigen::Map<smooth::SE2<_Scalar>>>
 {
   using Base = smooth::SE2Base<Eigen::Map<smooth::SE2<_Scalar>>>;
-  SMOOTH_MAP_API(Map)
+
+  SMOOTH_MAP_API(Map);
 };
 
 // CONST MAP TYPE TRAITS
@@ -181,7 +184,8 @@ class Eigen::Map<const smooth::SE2<_Scalar>>
   : public smooth::SE2Base<Eigen::Map<const smooth::SE2<_Scalar>>>
 {
   using Base = smooth::SE2Base<Eigen::Map<const smooth::SE2<_Scalar>>>;
-  SMOOTH_CONST_MAP_API(Map)
+
+  SMOOTH_CONST_MAP_API(Map);
 };
 
 #endif  // SMOOTH__SE2_HPP_

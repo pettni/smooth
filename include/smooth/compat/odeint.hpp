@@ -10,7 +10,9 @@ namespace smooth
 {
 
 /**
- * @brief boost::odeint Butcher tableaus are evaluated by weighted
+ * @brief Stepper operations for Manifold types.
+ *
+ * boost::odeint Butcher tableaus are evaluated by weighted
  * calculations of the form y = Σ_{i=1}^n alpha_i x_i which are generically
  * implemented.
  *
@@ -100,12 +102,13 @@ struct lie_operations
 
 }  // namespace smooth
 
-// Specialize internal boost trait to use the above operations for Lie
-// group types.
+/**
+ * @brief SFINAE dispatcher for Manifold types.
+ */
 template<::smooth::Manifold G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
-  using operations_type = ::smooth::lie_operations;
+  using operations_type = ::smooth::lie_operations;  //!< Dispatch operations type.
 };
 
 #endif  // SMOOTH__COMPAT__ODEINT_HPP_
