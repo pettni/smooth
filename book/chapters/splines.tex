@@ -177,7 +177,7 @@ This information can be used in two ways.
 \begin{itemize}
   \item Interpolation: $\x_{a, i} = \x_{i}$ and $\x_{a, i} \exp(\symbf v_{1}) \exp(\symbf v_{2})\exp(\symbf v_{3})= \x_{i+1}$, for $i = 0, \ldots, n-1$,
   \item First derivative continuity: $\symbf v_{3, i} = \symbf v_{1, i+1}$ for $i = 0, \ldots, n-2$,
-  \item Second derivative continuity: $\bAd_{\exp(-\symbf v_{3, i})} \symbf v_{2, i} - \symbf v_{3, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1}$ for $i = 0, \ldots, n-2$,
+  \item Second derivative continuity: $\symbf v_{3, i} - \bAd_{\exp(-\symbf v_{3, i})} \symbf v_{2, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1}$ for $i = 0, \ldots, n-2$,
   \item Zero second derivative at start: $\symbf v_{2, 0} - \symbf v_{1, 0} = 0$, and at end: $\bAd_{\exp(-\symbf v_{3, n-1})} \symbf v_{2, n-1} - \symbf v_{3, n-1} = 0$.
 \end{itemize}
 The variables $\x_{a, i}, \x_{b, i}$ can be eliminated to end up with the following system of equations for $\symbf v_{j, i}$:
@@ -188,7 +188,7 @@ The variables $\x_{a, i}, \x_{b, i}$ can be eliminated to end up with the follow
      & \bAd_{\exp(-\symbf v_{3, n-1})}\symbf v_{2, n-1} = \symbf v_{3, n-1},                                                                \\
      & \exp (\symbf v_{1, i}) \exp (\symbf v_{2, i}) \exp (\symbf v_{3, i}) = \x_{i}^{-1} \x_{i+1},                      & \quad i = 0, \ldots, n-1, \\
      & \symbf v_{3, i} = \symbf v_{1, i+1},                                                                     & \quad i = 0, \ldots, n-2, \\
-     & \bAd_{\exp(-\symbf v_{3, i})} \symbf v_{2, i} - \symbf v_{3, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1}, & \quad i = 0, \ldots, n-2. \\
+     & \symbf v_{3, i} - \bAd_{\exp(-\symbf v_{3, i})} \symbf v_{2, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1}, & \quad i = 0, \ldots, n-2. \\
   \end{aligned}
 \end{equation}
 For Euclidean space this is a linear system of equations and is therefore straightforward to solve, but on Lie groups this is no longer possible due to nonlinearities. To find an interpolating spline we therefore either have to solve a nonlinear system of equations, or give up the strict requirement on continuity of the second-order derivatives. The following simple algorithm is of the latter kind:
@@ -201,7 +201,7 @@ For Euclidean space this is a linear system of equations and is therefore straig
              & \symbf v_{2, n-1} = \symbf v_{3, n-1},                                                                           \\
              & \symbf v_{1, i} + \symbf v_{2, i} + \symbf v_{3, i} = \log\left(\x_{i}^{-1} \x_{i+1} \right), & \quad i = 0, \ldots, n-1, \\
              & \symbf v_{3, i} = \symbf v_{1, i+1},                                                 & \quad i = 0, \ldots, n-2, \\
-             & \symbf v_{2, i} - \symbf v_{3, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1},           & \quad i = 0, \ldots, n-2. \\
+             & \symbf v_{3, i} - \symbf v_{2, i} = \symbf v_{2, i+1} - \symbf v_{1, i+1},           & \quad i = 0, \ldots, n-2. \\
           \end{aligned}
         \end{equation}
   \item Set $\symbf v_{2, i} = \log \left( \exp(-\symbf v_{1, i}) x_{i}^{-1} x_{i+1} \exp(-\symbf v_{3, i}) \right )$ for $i = 0, \ldots, n-1$.

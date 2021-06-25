@@ -366,6 +366,13 @@ void minimize(_F && f, _Wrt &&... wrt_in)
     d = J.colwise().stableNorm().transpose();
   }
 
+  // ensure scaling parameters are non-zero
+  for (auto i = 0u; i != d.size(); ++i) {
+    if (d[i] == 0) {
+      d[i] = 1;
+    }
+  }
+
   double r_norm = r.stableNorm();
   double Delta  = 100. * d.stableNorm();  // TODO for Rn arguments we should multiply with norm(x)
 
@@ -429,11 +436,15 @@ void minimize(_F && f, _Wrt &&... wrt_in)
     //// CHECK FOR CONVERGENCE ////
 
     // function tolerance
-    if (std::abs(act_red) < ftol && pred_red < ftol && rho <= 2.) { break; }
+    if (std::abs(act_red) < ftol && pred_red < ftol && rho <= 2.) {
+      break;
+    }
 
     // parameter tolerance
     // TODO: a.size() should be norm(x)
-    if (Da_norm < ptol * a.size()) { break; }
+    if (Da_norm < ptol * a.size()) {
+      break;
+    }
   }
 }
 
