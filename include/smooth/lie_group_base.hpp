@@ -5,12 +5,14 @@
 
 namespace smooth {
 
+// \cond
 template<typename T>
 struct lie_traits
 {};
+// \endcond
 
 /**
- * @brief CRTP base for Lie group types
+ * @brief Base class for Lie group types
  */
 template<typename Derived>
 class LieGroupBase
@@ -54,7 +56,9 @@ public:
    * Assignment operation from other storage type.
    */
   template<typename OtherDerived>
+  // \cond
   requires is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  // \endcond
   Derived & operator=(const LieGroupBase<OtherDerived> & o)
   {
     coeffs() = static_cast<const OtherDerived &>(o).coeffs();
@@ -78,7 +82,11 @@ public:
   /**
    * @brief Access coefficients.
    */
-  auto & coeffs() requires is_mutable { return static_cast<Derived &>(*this).coeffs(); }
+  auto & coeffs()
+  // \cond
+  requires is_mutable
+  // \endcond
+  { return static_cast<Derived &>(*this).coeffs(); }
 
   /**
    * @brief Const access coefficients.
@@ -88,7 +96,13 @@ public:
   /**
    * @brief Access raw pointer.
    */
-  Scalar * data() requires is_mutable { return static_cast<Derived &>(*this).coeffs().data(); }
+  Scalar * data()
+  // \cond
+  requires is_mutable
+  // \endcond
+  {
+    return static_cast<Derived &>(*this).coeffs().data();
+  }
 
   /**
    * @brief Const access raw pointer.
@@ -100,14 +114,26 @@ public:
   /**
    * @brief Set to group identity element.
    */
-  void setIdentity() requires is_mutable { Impl::setIdentity(coeffs()); }
+  void setIdentity()
+  // \cond
+  requires is_mutable
+  // \endcond
+  {
+    Impl::setIdentity(coeffs());
+  }
 
   /**
    * @brief Set to a random element.
    *
    * Set the seed with std::srand(unsigned).
    */
-  void setRandom() requires is_mutable { Impl::setRandom(coeffs()); }
+  void setRandom()
+  // \cond
+  requires is_mutable
+  // \endcond
+  {
+    Impl::setRandom(coeffs());
+  }
 
   /**
    * @brief Construct the identity element.
@@ -145,7 +171,9 @@ public:
    * @brief Check if (approximately) equal to other element `o`.
    */
   template<typename OtherDerived>
+  // \cond
   requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  // \endcond
   bool isApprox(
     const LieGroupBase<OtherDerived> & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
@@ -168,7 +196,9 @@ public:
    * @brief Group binary composition operation.
    */
   template<typename OtherDerived>
+  // \cond
   requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  // \endcond
   PlainObject operator*(const LieGroupBase<OtherDerived> & o) const
   {
     PlainObject ret;
@@ -180,7 +210,9 @@ public:
    * @brief Inplace group binary composition operation.
    */
   template<typename OtherDerived>
+  // \cond
   requires is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  // \endcond
   Derived & operator*=(const LieGroupBase<OtherDerived> & o)
   {
     coeffs() = (*this * o).coeffs();
@@ -238,7 +270,9 @@ public:
    * @return Reference to this
    */
   template<typename TangentDerived>
+  // \cond
   requires is_mutable
+  // \endcond
   Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
   {
     *this *= exp(t);
@@ -251,7 +285,9 @@ public:
    * g1 - g2 := (g2.inverse() * g1).log()
    */
   template<typename OtherDerived>
+  // \cond
   requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
+  // \endcond
   Tangent operator-(const LieGroupBase<OtherDerived> & o) const
   {
     return (o.inverse() * *this).log();

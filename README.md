@@ -2,15 +2,15 @@
 
 [![build_and_test](https://github.com/pettni/lie/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/pettni/lie/actions/workflows/build_and_test.yml) [![codecov](https://codecov.io/gh/pettni/lie/branch/master/graph/badge.svg?token=M2S4HO9ZIG)](https://codecov.io/gh/pettni/lie)
 
-<img src="/media/ode.png" width="300">  <img src="/media/bspline.png" width="300">
+<img src="media/ode.png" width="300">  <img src="media/bspline.png" width="300">
 
 Do you want to do any of the following on a Lie group (or learn the theory)?
 
- * [x] Algebraic manipulation and analytic tangent space derivatives (example code below)
- * [x] Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
- * [x] Automatic differentiation
- * [x] Optimization
- * [x] Interpolation (right figure shows a B-spline of order 5 on SO(3), see `examples/bspline.cpp`)
+ * Algebraic manipulation and analytic tangent space derivatives (example code below)
+ * Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
+ * Automatic differentiation
+ * Optimization
+ * Interpolation (right figure shows a B-spline of order 5 on SO(3), see `examples/bspline.cpp`)
 
 Then this project may be of interest. **Currently in development**, the goal is to
 facilitate the use of Lie theory for robotics practitioners.
@@ -23,10 +23,10 @@ The following common lie groups are implemented:
  * A Bundle type to treat Lie group products G = G\_1 x ... x G\_n as a single Lie group. The Bundle type also supports R(n) components as Eigen vectors
 
 These additional groups may or may not be implemented in the future:
-  - The "IMU group" SE\_2(3)
-  - Orthogonal matrices of any dimension: SO(n)
-  - Unitary matrices of any dimension: SU(n)
-  - A "dynamic collection" type that exposes the Lie group interface for an `std::ranges::range` container
+ * The "IMU group" SE\_2(3)
+ * Orthogonal matrices of any dimension: SO(n)
+ * Unitary matrices of any dimension: SU(n)
+ * A "dynamic collection" type that exposes the Lie group interface for an `std::ranges::range` container
 
 The guiding principles for `smooth` are **brevity, reliability and compatability**. The end goal is a **book** that describes theory and algorithms, and a **library** with high-quality implementations, and with a strong mapping between the two so that the book serves as a manual of the library.
 
@@ -35,7 +35,7 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 
 ## Group algebra examples
 
- ```
+ ```cpp
  using G = smooth::SO3d;    // or SO2d, SE2d, SE3d, Bundle<SO3d, T3d> etc...
  using Tangent = typename G::Tangent;
 
@@ -79,14 +79,14 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 
 Available:
 
-* [x] Tangent space differentiation (`diff.hpp`)
-* [x] Bezier curve evaluation and fitting (`interp/bezier.hpp`)
-* [x] B-spline evaluation and fitting (`interp/bspline.hpp`)
-* [x] Non-linear least squares optimization (`nls.hpp`)
+* Tangent space differentiation ([`diff.hpp`](diff_8hpp_source.html))
+* Bezier curve evaluation and fitting ([`interp/bezier.hpp`](bezier_8hpp_source.html))
+* B-spline evaluation and fitting (`interp/bspline.hpp`)
+* Non-linear least squares optimization (`nls.hpp`)
 
 Planned:
 
-* [ ] Lie group means (`mean.hpp`)
+* Lie group means (`mean.hpp`)
 
 Algorithms can also be made to work with regular ```Eigen``` types via the Bundle type.
 
@@ -95,10 +95,10 @@ Algorithms can also be made to work with regular ```Eigen``` types via the Bundl
 
 Utility headers for interfacing with adjacent software are provided in `smooth/compat`
 
-* [x] Automatic differentiation in tangent space using [autodiff](https://autodiff.github.io/)
-* [x] Zero-copy memory mapping of [ROS/ROS2](https://www.ros.org/) message types
-* [x] Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization
-* [x] Numerical integration using [`boost::odeint`](https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html)
+* Automatic differentiation in tangent space using [autodiff](https://autodiff.github.io/)
+* Zero-copy memory mapping of [ROS/ROS2](https://www.ros.org/) message types
+* Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization
+* Numerical integration using [`boost::odeint`](https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html)
 
 
 ## Related projects
