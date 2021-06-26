@@ -1,6 +1,11 @@
 #ifndef SMOOTH__NLS_HPP_
 #define SMOOTH__NLS_HPP_
 
+/**
+ * @file
+ * @brief Non-linear least squares optimization on Lie groups.
+ */
+
 #include <Eigen/Dense>
 #include <Eigen/Jacobi>
 #include <Eigen/QR>
@@ -11,8 +16,8 @@
 
 #include "concepts.hpp"
 #include "diff.hpp"
-#include "internal/utils.hpp"
 #include "internal/lmpar.hpp"
+#include "internal/utils.hpp"
 
 namespace smooth {
 
@@ -35,8 +40,6 @@ struct NlsOptions
  *
  * @param f residuals to minimize
  * @param wrt arguments to f
- *
- * TODO add optional verbosity, termination conditions, parameters, output
  */
 template<diff::Type difftype, typename _F, typename _Wrt>
 void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
@@ -60,20 +63,18 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 
   // ensure scaling parameters are non-zero
   for (auto i = 0u; i != d.size(); ++i) {
-    if (d[i] == 0) {
-      d[i] = 1;
-    }
+    if (d[i] == 0) { d[i] = 1; }
   }
 
   double r_norm = r.stableNorm();
-  double Delta  = 100. * d.stableNorm();  // TODO for Rn arguments we should multiply with norm(x)
+  double Delta = 100. * d.stableNorm();  //!< \todo for Rn arguments we should multiply with norm(x)
 
   for (auto i = 0u; i != opts.max_iter; ++i) {
     // calculate step a via LM parameter algorithm
     const auto [lambda, a] = detail::lmpar(J, d, r, Delta);
 
     // evaluate function and jacobian at x + a
-    auto x_plus_a = utils::tuple_plus(x, a, std::make_index_sequence<std::tuple_size_v<_Wrt>>{});
+    auto x_plus_a               = utils::tuple_plus(x, a);
     const auto [r_cand, J_cand] = diff::dr<difftype>(f, x_plus_a);
 
     const double r_cand_norm = r_cand.stableNorm();
@@ -121,24 +122,17 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
     }
 
     //// PRINT STATUS ////
-    // \todo Pretty-print solver steps
-    if (opts.verbosity > 0)
-    {
-      std::cout << "Step " << i << ": " << r.sum() << std::endl;
-    }
+    /// \todo Pretty-print solver steps
+    if (opts.verbosity > 0) { std::cout << "Step " << i << ": " << r.sum() << std::endl; }
 
     //// CHECK FOR CONVERGENCE ////
 
     // function tolerance
-    if (std::abs(act_red) < opts.ftol && pred_red < opts.ftol && rho <= 2.) {
-      break;
-    }
+    if (std::abs(act_red) < opts.ftol && pred_red < opts.ftol && rho <= 2.) { break; }
 
     // parameter tolerance
     // \todo a.size() should be norm(x) for non-angle states
-    if (Da_norm < opts.ptol * a.size()) {
-      break;
-    }
+    if (Da_norm < opts.ptol * a.size()) { break; }
   }
 }
 

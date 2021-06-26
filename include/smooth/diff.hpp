@@ -1,6 +1,11 @@
 #ifndef SMOOTH__DIFF_HPP_
 #define SMOOTH__DIFF_HPP_
 
+/**
+ * @file
+ * @brief Differentiation on Lie groups.
+ */
+
 #include <Eigen/Core>
 #include <type_traits>
 
