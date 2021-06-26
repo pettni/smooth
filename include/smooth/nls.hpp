@@ -7,8 +7,6 @@
  */
 
 #include <Eigen/Dense>
-#include <Eigen/Jacobi>
-#include <Eigen/QR>
 #include <Eigen/Sparse>
 
 #include <iostream>

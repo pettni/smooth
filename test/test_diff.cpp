@@ -4,6 +4,10 @@
 #include "smooth/compat/autodiff.hpp"
 #endif
 
+#ifdef ENABLE_CERESDIFF_TESTS
+#include "smooth/compat/ceres.hpp"
+#endif
+
 #include "smooth/diff.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
@@ -123,6 +127,20 @@ TYPED_TEST(DiffTest, composition_autodiff)
 }
 
 TYPED_TEST(DiffTest, exp_autodiff) { run_exp_test<smooth::diff::Type::AUTODIFF, TypeParam>(); }
+#endif
+
+#ifdef ENABLE_CERESDIFF_TESTS
+TYPED_TEST(DiffTest, rminus_ceres)
+{
+  run_rminus_test<smooth::diff::Type::CERES, TypeParam>();
+}
+
+TYPED_TEST(DiffTest, composition_ceres)
+{
+  run_composition_test<smooth::diff::Type::CERES, TypeParam>();
+}
+
+TYPED_TEST(DiffTest, exp_ceres) { run_exp_test<smooth::diff::Type::CERES, TypeParam>(); }
 #endif
 
 TEST(Differentiation, Dynamic)

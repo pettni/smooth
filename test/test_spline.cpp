@@ -304,6 +304,9 @@ TEST(Spline, BezierConstruct)
   std::vector<smooth::Bezier<3, smooth::SO3d>> bb(3);
 
   auto spline = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
+  auto spline_moved = std::move(spline);
+
+  static_cast<void>(spline_moved);
 }
 
 TYPED_TEST(Spline, Bezier1Fit)
