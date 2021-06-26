@@ -17,14 +17,18 @@ struct lie_traits
 template<typename Derived>
 class LieGroupBase
 {
+  Derived & derived() { return static_cast<Derived &>(*this); }
+
+  const Derived & cderived() const { return static_cast<const Derived &>(*this); }
+
 protected:
   LieGroupBase() = default;
 
   //! CRTP traits
-  using traits   = lie_traits<Derived>;
+  using traits = lie_traits<Derived>;
 
   //! Group-specific Lie group implementation
-  using Impl     = typename traits::Impl;
+  using Impl = typename traits::Impl;
 
   //! Plain return type
   template<typename NewScalar>
@@ -37,16 +41,16 @@ public:
   //! Number of scalars in internal representation.
   static constexpr Eigen::Index RepSize = Impl::RepSize;
   //! Degrees of freedom of manifold (equal to tangent space dimension).
-  static constexpr Eigen::Index Dof     = Impl::Dof;
+  static constexpr Eigen::Index Dof = Impl::Dof;
   //! Side of Lie group matrix representation.
-  static constexpr Eigen::Index Dim     = Impl::Dim;
+  static constexpr Eigen::Index Dim = Impl::Dim;
 
   //! Scalar type
-  using Scalar     = typename traits::Scalar;
+  using Scalar = typename traits::Scalar;
   //! Lie group matrix type
-  using Matrix     = Eigen::Matrix<Scalar, Dim, Dim>;
+  using Matrix = Eigen::Matrix<Scalar, Dim, Dim>;
   //! Lie group parameterized tangent type
-  using Tangent    = Eigen::Matrix<Scalar, Dof, 1>;
+  using Tangent = Eigen::Matrix<Scalar, Dof, 1>;
   //! Matrix representing map between tangent elements
   using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
   //! Plain return type
@@ -61,11 +65,11 @@ public:
   // \endcond
   Derived & operator=(const LieGroupBase<OtherDerived> & o)
   {
-    coeffs() = static_cast<const OtherDerived &>(o).coeffs();
-    return static_cast<Derived &>(*this);
+    derived().coeffs() = static_cast<const OtherDerived &>(o).coeffs();
+    return derived();
   }
 
-  // Required sizes
+  // Group API
 
   /**
    * @brief Static size (degrees of freedom).
@@ -77,63 +81,17 @@ public:
    */
   Eigen::Index size() const { return Dof; }
 
-  // Coefficient and raw data access
-
-  /**
-   * @brief Access coefficients.
-   */
-  auto & coeffs()
-  // \cond
-  requires is_mutable
-  // \endcond
-  { return static_cast<Derived &>(*this).coeffs(); }
-
-  /**
-   * @brief Const access coefficients.
-   */
-  const auto & coeffs() const { return static_cast<const Derived &>(*this).coeffs(); }
-
-  /**
-   * @brief Access raw pointer.
-   */
-  Scalar * data()
-  // \cond
-  requires is_mutable
-  // \endcond
-  {
-    return static_cast<Derived &>(*this).coeffs().data();
-  }
-
-  /**
-   * @brief Const access raw pointer.
-   */
-  const Scalar * data() const { return static_cast<const Derived &>(*this).coeffs().data(); }
-
-  // Group API
-
   /**
    * @brief Set to group identity element.
    */
-  void setIdentity()
-  // \cond
-  requires is_mutable
-  // \endcond
-  {
-    Impl::setIdentity(coeffs());
-  }
+  void setIdentity() { Impl::setIdentity(derived().coeffs()); }
 
   /**
    * @brief Set to a random element.
    *
    * Set the seed with std::srand(unsigned).
    */
-  void setRandom()
-  // \cond
-  requires is_mutable
-  // \endcond
-  {
-    Impl::setRandom(coeffs());
-  }
+  void setRandom() { Impl::setRandom(derived().coeffs()); }
 
   /**
    * @brief Construct the identity element.
@@ -163,7 +121,7 @@ public:
   Matrix matrix() const
   {
     Matrix ret;
-    Impl::matrix(coeffs(), ret);
+    Impl::matrix(cderived().coeffs(), ret);
     return ret;
   }
 
@@ -176,9 +134,10 @@ public:
   // \endcond
   bool isApprox(
     const LieGroupBase<OtherDerived> & o,
-    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
+    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()
+  ) const
   {
-    return coeffs().isApprox(o.coeffs(), eps);
+    return cderived().coeffs().isApprox(static_cast<const OtherDerived &>(o).coeffs(), eps);
   }
 
   /**
@@ -188,7 +147,7 @@ public:
   PlainObjectCast<NewScalar> cast() const
   {
     PlainObjectCast<NewScalar> ret;
-    ret.coeffs() = coeffs().template cast<NewScalar>();
+    ret.coeffs() = cderived().coeffs().template cast<NewScalar>();
     return ret;
   }
 
@@ -202,7 +161,8 @@ public:
   PlainObject operator*(const LieGroupBase<OtherDerived> & o) const
   {
     PlainObject ret;
-    Impl::composition(coeffs(), o.coeffs(), ret.coeffs());
+    Impl::composition(
+      cderived().coeffs(), static_cast<const OtherDerived &>(o).coeffs(), ret.coeffs());
     return ret;
   }
 
@@ -215,8 +175,8 @@ public:
   // \endcond
   Derived & operator*=(const LieGroupBase<OtherDerived> & o)
   {
-    coeffs() = (*this * o).coeffs();
-    return static_cast<Derived &>(*this);
+    derived().coeffs() = (*this * o).coeffs();
+    return derived();
   }
 
   /**
@@ -225,7 +185,7 @@ public:
   PlainObject inverse() const
   {
     PlainObject ret;
-    Impl::inverse(coeffs(), ret.coeffs());
+    Impl::inverse(cderived().coeffs(), ret.coeffs());
     return ret;
   }
 
@@ -237,19 +197,20 @@ public:
   Tangent log() const
   {
     Tangent ret;
-    Impl::log(coeffs(), ret);
+    Impl::log(cderived().coeffs(), ret);
     return ret;
   }
 
   /**
    * @brief Lie group adjoint.
    *
-   * @return Matrix \f$ \mathbf{Ad}_\mathbf{X} \f$ s.t.  \f$ \mathbf{Ad_X} \mathbf{a} = ( \mathbf{X} \mathbf{a}^\wedge \mathbf{X}^{-1} )^\vee \f$
+   * @return Matrix \f$ \mathbf{Ad}_\mathbf{X} \f$ s.t.  \f$ \mathbf{Ad_X} \mathbf{a} = ( \mathbf{X}
+   * \mathbf{a}^\wedge \mathbf{X}^{-1} )^\vee \f$
    */
   TangentMap Ad() const
   {
     TangentMap ret;
-    Impl::Ad(coeffs(), ret);
+    Impl::Ad(cderived().coeffs(), ret);
     return ret;
   }
 
@@ -273,10 +234,11 @@ public:
   // \cond
   requires is_mutable
   // \endcond
-  Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & t)
+  Derived &
+  operator+=(const Eigen::MatrixBase<TangentDerived> & t)
   {
     *this *= exp(t);
-    return static_cast<Derived &>(*this);
+    return derived();
   }
 
   /**
@@ -336,7 +298,8 @@ public:
   /**
    * @brief Lie algebra adjoint.
    *
-   * @return Matrix \f$ \mathbf{ad}_\mathbf{a} \f$ s.t. \f$ \mathbf{ad}_\mathbf{a} \mathbf{b} = [\mathbf{a}, \mathbf{b}] \f$
+   * @return Matrix \f$ \mathbf{ad}_\mathbf{a} \f$ s.t. \f$ \mathbf{ad}_\mathbf{a} \mathbf{b} =
+   * [\mathbf{a}, \mathbf{b}] \f$
    */
   template<typename TangentDerived>
   static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
@@ -349,8 +312,8 @@ public:
   /**
    * @brief Lie algebra bracket.
    * \f[
-   * [ \mathbf{a}, \mathbf{b}] = \left( \mathbf{a}^\wedge \mathbf{b}^\wedge - \mathbf{b}^\wedge \mathbf{a}^\wedge \right)^\vee.
-   * \f]
+   * [ \mathbf{a}, \mathbf{b}] = \left( \mathbf{a}^\wedge \mathbf{b}^\wedge - \mathbf{b}^\wedge
+   * \mathbf{a}^\wedge \right)^\vee. \f]
    */
   template<typename TangentDerived1, typename TangentDerived2>
   static Tangent lie_bracket(
@@ -399,14 +362,15 @@ public:
   }
 };
 
-
 /**
  * @brief Stream operator for Lie groups that ouputs the coefficients.
  */
 template<typename Stream, typename Derived>
 Stream & operator<<(Stream & s, const LieGroupBase<Derived> & g)
 {
-  for (auto i = 0; i != Derived::RepSize; ++i) { s << g.coeffs()[i] << " "; }
+  for (auto i = 0; i != Derived::RepSize; ++i) {
+    s << static_cast<const Derived &>(g).coeffs()[i] << " ";
+  }
   return s;
 }
 
