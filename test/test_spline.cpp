@@ -291,7 +291,18 @@ TEST(Spline, BSplineFit)
   gg.push_back(smooth::SO3d::Random());
   gg.push_back(smooth::SO3d::Random());
 
-  auto bspline = smooth::fit_bspline<3>(tt, gg, 1);
+  auto spline = smooth::fit_bspline<3>(tt, gg, 1);
+
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_GE(spline.t_max(), 6);
+}
+
+TEST(Spline, BezierConstruct)
+{
+  std::vector<double> tt{1, 2, 3};
+  std::vector<smooth::Bezier<3, smooth::SO3d>> bb(3);
+
+  auto spline = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
 }
 
 TEST(Spline, Bezier2Fit)
@@ -314,6 +325,9 @@ TEST(Spline, Bezier2Fit)
   gg.push_back(smooth::SO3d::Random());
 
   auto spline = smooth::fit_quadratic_bezier(tt, gg, Eigen::Vector3d::Zero());
+
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
@@ -355,6 +369,9 @@ TEST(Spline, Bezier3Fit)
 
   auto spline = smooth::fit_cubic_bezier(tt, gg);
 
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
+
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
@@ -370,4 +387,13 @@ TEST(Spline, Bezier3Fit)
     spline.eval(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
+}
+
+TEST(Spline, BezierTooShort)
+{
+  std::vector<double> tt;
+  std::vector<smooth::SO3d> gg;
+
+  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg, Eigen::Vector3d::Zero()), std::runtime_error);
+  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::runtime_error);
 }
