@@ -5,6 +5,7 @@
 #include <type_traits>
 
 #include "concepts.hpp"
+#include "internal/utils.hpp"
 
 namespace smooth {
 
@@ -18,33 +19,29 @@ namespace diff {
 namespace detail {
 
 /**
- * @brief Numerical differentiation in tangent space
+ * @brief Numerical differentiation in tangent space.
  *
  * @param f function to differentiate
- * @param wrt... function arguments
- * @return pair( f(wrt...), dr f_(wrt...) )
+ * @param x reference tuple of function arguments
+ * @return pair( f(x...), dr f_(x...) )
  */
-template<typename _F, typename... _Wrt>
-  requires (Manifold<std::decay_t<_Wrt>> &&...)
-  && (Manifold<std::invoke_result_t<_F, _Wrt...>>)
-auto dr_numerical(_F && f, _Wrt &&... wrt)
+template<typename _F, typename _Wrt>
+auto dr_numerical(_F && f, _Wrt && x)
 {
-  using Result = std::invoke_result_t<_F, _Wrt...>;
+  using Result = decltype(std::apply(f, x));
   using Scalar = typename Result::Scalar;
 
   // static sizes
-  static constexpr Eigen::Index Nx =
-    std::min<Eigen::Index>({std::decay_t<_Wrt>::SizeAtCompileTime...}) == -1
-      ? -1
-      : (std::decay_t<_Wrt>::SizeAtCompileTime + ...);
+  static constexpr Eigen::Index Nx = utils::tuple_dof<std::decay_t<_Wrt>>::value;
   static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
-  auto val = f(wrt...);
+  auto val = std::apply(f, x);
 
   // dynamic sizes
-  Eigen::Index nx = (wrt.size() + ... + 0);
+  Eigen::Index nx = std::apply(
+    []<typename... Args>(Args && ... args) { return (args.size() + ...); }, x);
   Eigen::Index ny = val.size();
 
   // output variable
@@ -52,9 +49,11 @@ auto dr_numerical(_F && f, _Wrt &&... wrt)
 
   Eigen::Index index_pos = 0;
 
-  const auto f_iter = [&](auto && w) {
-    static constexpr Eigen::Index Nx_j = std::decay_t<decltype(w)>::SizeAtCompileTime;
-    const int nx_j                     = w.size();
+  utils::static_for<std::tuple_size_v<std::decay_t<_Wrt>>>([&](auto i) {
+    static constexpr Eigen::Index Nx_j =
+      std::decay_t<std::tuple_element_t<i, std::decay_t<_Wrt>>>::SizeAtCompileTime;
+    auto & w       = std::get<i>(x);
+    const int nx_j = w.size();
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
       if constexpr (RnLike<std::decay_t<decltype(w)>>) {
@@ -63,13 +62,11 @@ auto dr_numerical(_F && f, _Wrt &&... wrt)
         if (eps_j == 0.) { eps_j = eps; }
       }
       w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
-      jac.col(index_pos + j) = (f(wrt...) - val) / eps_j;
+      jac.col(index_pos + j) = (std::apply(f, x) - val) / eps_j;
       w += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
     }
     index_pos += nx_j;
-  };
-
-  (f_iter(wrt), ...);
+  });
 
   return std::make_pair(val, jac);
 }
@@ -100,35 +97,35 @@ enum class Type { NUMERICAL, AUTODIFF, CERES, ANALYTIC, DEFAULT };
  * @tparam dm differentiation method to use
  *
  * @param f function to differentiate
- * @param wrt... function arguments
- * @return pair( f(wrt...), dr f_(wrt...) )
+ * @param x... function arguments
+ * @return pair( f(x...), dr f_(x...) )
  */
-template<Type dm, typename _F, typename... _Wrt>
-auto dr(_F && f, _Wrt &&... wrt)
+template<Type dm, typename _F, typename _Wrt>
+auto dr(_F && f, _Wrt && x)
 {
   if constexpr (dm == Type::NUMERICAL) {
-    return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(x));
   } else if constexpr (dm == Type::AUTODIFF) {
 #ifdef SMOOTH_DIFF_AUTODIFF
-    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(x));
 #else
     static_assert(dm != Type::AUTODIFF, "compat/autodiff.hpp header not included");
 #endif
   } else if constexpr (dm == Type::CERES) {
 #ifdef SMOOTH_DIFF_CERES
-    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(x));
 #else
     static_assert(dm != Type::CERES, "compat/ceres.hpp header not included");
 #endif
   } else if constexpr (dm == Type::ANALYTIC) {
-    return f(std::forward<_Wrt>(wrt)...);
+    return std::apply(f, std::forward<_Wrt>(x));
   } else if constexpr (dm == Type::DEFAULT) {
 #ifdef SMOOTH_DIFF_AUTODIFF
-    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(x));
 #elif SMOOTH_DIFF_CERES
-    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(x));
 #else
-    return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+    return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(x));
 #endif
   }
 }
@@ -137,13 +134,13 @@ auto dr(_F && f, _Wrt &&... wrt)
  * @brief Differentiation in local tangent space using default method
  *
  * @param f function to differentiate
- * @param wrt... function arguments
- * @return pair( f(wrt...), dr f_(wrt...) )
+ * @param x... function arguments
+ * @return pair( f(x...), dr f_(x...) )
  */
-template<typename _F, typename... _Wrt>
-auto dr(_F && f, _Wrt &&... wrt)
+template<typename _F, typename _Wrt>
+auto dr(_F && f, _Wrt && x)
 {
-  return dr<Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
+  return dr<Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(x));
 }
 
 }  // namespace diff

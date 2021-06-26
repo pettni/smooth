@@ -301,21 +301,6 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
   return std::make_pair(alpha, std::move(x));
 }
 
-/**
- * @brief Add an eigen tangent vector to a tuple of variables
- */
-template<typename Derived, typename... _Wrt, std::size_t... Idx>
-auto tuple_plus(
-  std::tuple<_Wrt &...> & wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
-{
-  const std::array<Eigen::Index, sizeof...(_Wrt)> sizes{std::get<Idx>(wrt).size()...};
-  const auto sizes_psum = utils::array_psum(sizes);
-
-  return std::tuple<std::decay_t<_Wrt>...>(
-    std::get<Idx>(wrt)
-    + a.template segment<std::decay_t<_Wrt>::SizeAtCompileTime>(sizes_psum[Idx], sizes[Idx])...);
-}
-
 }  // namespace smooth::detail
 
 #endif  // SMOOTH__INTERNAL__LMPAR_HPP_

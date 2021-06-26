@@ -143,7 +143,6 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Library
 
-- [ ] wrt for differentiation
 - [ ] Direct sparse solving of least-squares (no lmpar)
 - [ ] ceres autodiff
 

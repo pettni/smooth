@@ -11,8 +11,8 @@
 using namespace smooth;
 
 template<smooth::LieGroup G>
-class DiffTest : public ::testing::Test {
-};
+class DiffTest : public ::testing::Test
+{};
 
 using GroupsToTest = testing::Types<smooth::SO2d, smooth::SE2d, smooth::SO3d, smooth::SE3d>;
 
@@ -26,10 +26,13 @@ void run_rminus_test()
   g2.setRandom();
 
   auto [f1, jac1] = smooth::diff::dr<dm>(
-    [&g2](auto v1) { return v1 - g2.template cast<typename decltype(v1)::Scalar>(); }, g1);
+    [&g2](auto v1) { return v1 - g2.template cast<typename decltype(v1)::Scalar>(); },
+    smooth::wrt(g1));
   auto [f2, jac2] = smooth::diff::dr<dm>(
-    [&g1](auto v2) { return g1.template cast<typename decltype(v2)::Scalar>() - v2; }, g2);
-  auto [f3, jac3] = smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 - v2; }, g1, g2);
+    [&g1](auto v2) { return g1.template cast<typename decltype(v2)::Scalar>() - v2; },
+    smooth::wrt(g2));
+  auto [f3, jac3] =
+    smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 - v2; }, smooth::wrt(g1, g2));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::Dof, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == TypeParam::Dof, "Error");
@@ -58,8 +61,7 @@ void run_composition_test()
   g1.setRandom();
   g2.setRandom();
 
-  auto [f1, jac1] =
-    smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 * v2; }, g1, g2);
+  auto [f1, jac1] = smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 * v2; }, smooth::wrt(g1, g2));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::Dof, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == 2 * TypeParam::Dof, "Error");
@@ -85,7 +87,8 @@ void run_exp_test()
   auto [f, jac] = smooth::diff::dr<dm>(
     [](auto var) {
       return TypeParam::template PlainObjectCast<typename decltype(var)::Scalar>::exp(var);
-    }, a);
+    },
+    smooth::wrt(a));
 
   static_assert(decltype(jac)::RowsAtCompileTime == TypeParam::Dof, "Error");
   static_assert(decltype(jac)::ColsAtCompileTime == TypeParam::Dof, "Error");
@@ -128,7 +131,7 @@ TEST(Differentiation, Dynamic)
   v.setRandom();
 
   auto [f1, jac1] =
-    smooth::diff::dr<smooth::diff::Type::NUMERICAL>([](auto v1) { return (2 * v1).eval(); }, v);
+    smooth::diff::dr<smooth::diff::Type::NUMERICAL>([](auto v1) { return (2 * v1).eval(); }, smooth::wrt(v));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == -1, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == -1, "Error");
@@ -152,7 +155,7 @@ TEST(Differentiation, Mixed)
       ret << 2. * v1(1), 2. * v1(0);
       return ret;
     },
-    v);
+    smooth::wrt(v));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == -1, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == 3, "Error");

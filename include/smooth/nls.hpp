@@ -42,12 +42,7 @@ template<diff::Type difftype, typename _F, typename _Wrt>
 void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 {
   // evaluate residuals and jacobian at initial point
-  auto [r, J] = std::apply(
-    [&]<typename... Var>(Var && ... var) {
-      return diff::dr<difftype>(f, std::forward<Var>(var)...);
-    },
-    x
-  );
+  auto [r, J] = diff::dr<difftype>(f, x);
 
   // extract some properties from jacobian
   static constexpr bool is_sparse =
@@ -78,13 +73,8 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
     const auto [lambda, a] = detail::lmpar(J, d, r, Delta);
 
     // evaluate function and jacobian at x + a
-    auto x_plus_a = detail::tuple_plus(x, a, std::make_index_sequence<std::tuple_size_v<_Wrt>>{});
-    const auto [r_cand, J_cand] = std::apply(
-      [&]<typename... Var>(Var && ... var) {
-        return diff::dr<difftype>(f, std::forward<Var>(var)...);
-      },
-      x_plus_a
-    );
+    auto x_plus_a = utils::tuple_plus(x, a, std::make_index_sequence<std::tuple_size_v<_Wrt>>{});
+    const auto [r_cand, J_cand] = diff::dr<difftype>(f, x_plus_a);
 
     const double r_cand_norm = r_cand.stableNorm();
     const double Da_norm     = d.cwiseProduct(a).stableNorm();
