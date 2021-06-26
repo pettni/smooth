@@ -60,3 +60,4 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
     ASSERT_TRUE(param_plus.isApprox(param + jac * b, 1e-6));
   }
 }
+

@@ -2,6 +2,7 @@
 #define SMOOTH__INTERNAL__LMPAR_HPP_
 
 #include <Eigen/Core>
+#include <Eigen/Jacobi>
 #include <Eigen/QR>
 #include <Eigen/Sparse>
 #include <Eigen/SparseQR>

@@ -97,7 +97,7 @@ T(n) of translations that is isomorphic to Rn with addition.
 
 Utility headers for interfacing with adjacent software are provided in `smooth/compat`
 
-* Automatic differentiation in tangent space using [autodiff](https://autodiff.github.io/)
+* Automatic differentiation in tangent space using [autodiff](https://autodiff.github.io/) or [Ceres](http://ceres-solver.org)
 * Zero-copy memory mapping of [ROS/ROS2](https://www.ros.org/) message types
 * Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization
 * Numerical integration using [`boost::odeint`](https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html)
@@ -146,5 +146,4 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 ## Library
 
 - [ ] Direct sparse solving of least-squares (no lmpar)
-- [ ] ceres autodiff
 
