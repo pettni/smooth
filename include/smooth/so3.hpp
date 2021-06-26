@@ -5,8 +5,8 @@
 #include <Eigen/Geometry>
 
 #include "impl/so3.hpp"
+#include "internal/macro.hpp"
 #include "lie_group_base.hpp"
-#include "macro.hpp"
 
 namespace smooth {
 

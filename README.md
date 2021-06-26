@@ -143,12 +143,7 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
 
 ## Library
 
-- [ ] Better sparse solvers
-  - Eigen SparseQR seems crappy for bspline fitting
-  1. Use SPQR from suitesparse in current framework: similar problems
-  2. Use LDLT to solve full problem J' J x = -J' r
-     - do this directly with a given lambda = 1 / D
-     - do this inside of lmpar...
-- [ ] pass options in NLS
+- [ ] wrt for differentiation
+- [ ] Direct sparse solving of least-squares (no lmpar)
 - [ ] ceres autodiff
 

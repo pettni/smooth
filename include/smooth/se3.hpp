@@ -6,8 +6,8 @@
 #include <complex>
 
 #include "impl/se3.hpp"
+#include "internal/macro.hpp"
 #include "lie_group_base.hpp"
-#include "macro.hpp"
 #include "so3.hpp"
 
 namespace smooth {

@@ -6,8 +6,15 @@
 
 #include "concepts.hpp"
 
-namespace smooth::diff {
+namespace smooth {
 
+template<typename... _Args>
+auto wrt(_Args &&... args)
+{
+  return std::forward_as_tuple(std::forward<_Args>(args)...);
+}
+
+namespace diff {
 namespace detail {
 
 /**
@@ -139,6 +146,7 @@ auto dr(_F && f, _Wrt &&... wrt)
   return dr<Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(wrt)...);
 }
 
-}  // namespace smooth::diff
+}  // namespace diff
+}  // namespace smooth
 
 #endif  // SMOOTH__DIFF_HPP_
