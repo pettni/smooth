@@ -35,6 +35,9 @@ namespace detail {
  * @param f function to differentiate
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
+ *
+ * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * the Manifold concept.
  */
 template<typename _F, typename _Wrt>
 auto dr_numerical(_F && f, _Wrt && x)
@@ -105,6 +108,9 @@ enum class Type { NUMERICAL, AUTODIFF, CERES, ANALYTIC, DEFAULT };
  * @param f function to differentiate
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
+ *
+ * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * the Manifold concept.
  */
 template<Type dm, typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)
@@ -142,6 +148,9 @@ auto dr(_F && f, _Wrt && x)
  * @param f function to differentiate
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
+ *
+ * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * the Manifold concept.
  */
 template<typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)
