@@ -3,13 +3,13 @@
 
 /**
  * @file
- * @brief Bezier splines on Lie groups.
+ * @brief bezier splines on lie groups.
  */
 
 #include <ranges>
 
 #include <Eigen/Sparse>
-#include <Eigen/SparseQR>
+#include <Eigen/SparseLU>
 
 #include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
@@ -58,25 +58,24 @@ public:
    * @note Range value type of \p Rv must be the tangent type of \p G.
    */
   template<std::ranges::range Rv>
-  requires std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>
-  Bezier(const G & g0, const Rv & vs) : g0_(g0)
+  requires std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent> Bezier(
+    const G & g0, const Rv & vs)
+      : g0_(g0)
   {
-    if (std::ranges::size(vs) != N) {
-      throw std::runtime_error("Wrong number of control points");
-    }
+    if (std::ranges::size(vs) != N) { throw std::runtime_error("Wrong number of control points"); }
     std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_.begin());
   }
 
   /// @brief Copy constructor
   Bezier(const Bezier &) = default;
   /// @brief Move constructor
-  Bezier(Bezier &&)      = default;
+  Bezier(Bezier &&) = default;
   /// @brief Copy assignment
   Bezier & operator=(const Bezier &) = default;
   /// @brief Move assignment
   Bezier & operator=(Bezier &&) = default;
   /// @brief Destructor
-  ~Bezier()                     = default;
+  ~Bezier() = default;
 
   /**
    * @brief Evalauate Bezier curve.
@@ -149,13 +148,13 @@ public:
   /// @brief Copy constructor
   PiecewiseBezier(const PiecewiseBezier &) = default;
   /// @brief Move constructor
-  PiecewiseBezier(PiecewiseBezier &&)      = default;
+  PiecewiseBezier(PiecewiseBezier &&) = default;
   /// @brief Copy assignment
   PiecewiseBezier & operator=(const PiecewiseBezier &) = default;
   /// @brief Move assignment
   PiecewiseBezier & operator=(PiecewiseBezier &&) = default;
   /// @brief Destructor
-  ~PiecewiseBezier()                              = default;
+  ~PiecewiseBezier() = default;
 
   /// @brief Minimal time where curve is defined.
   double t_min() const { return knots_.front(); }
@@ -175,7 +174,8 @@ public:
     std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
     std::optional<Eigen::Ref<typename G::Tangent>> acc = {}) const
   {
-    // find index TODO binary search
+    /// find index
+    /// \todo binary search
     std::size_t istar = 0;
     while (istar + 2 < knots_.size() && knots_[istar + 1] <= t) { ++istar; }
 
@@ -197,15 +197,52 @@ private:
 };
 
 /**
+ * @brief Fit a linear PiecewiseBezier curve to data.
+ *
+ * The resulting curve passes through the data points and has piecewise
+ * constant velocity.
+ * 
+ * \warning Result has discontinuous derivatives at knot points
+ * 
+ * @tparam Rt, Rg range types
+ * @param tt interpolation times
+ * @param gg interpolation values
+ */
+template<std::ranges::range Rt, std::ranges::range Rg>
+PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & tt, const Rg & gg)
+{
+  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
+    throw std::runtime_error("Not enough points");
+  }
+
+  using G = std::ranges::range_value_t<Rg>;
+  using V = typename G::Tangent;
+
+  const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
+
+  std::vector<Bezier<1, G>> segments(N);
+
+  auto it_g = std::ranges::begin(gg);
+  auto it_t = std::ranges::begin(tt);
+
+  for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
+    segments[i] = Bezier<1, G>(*it_g, std::array<V, 1>{(*(it_g + 1) - *it_g)});
+  }
+
+  auto take_view = tt | std::views::take(N + 1);
+  std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
+
+  return PiecewiseBezier<1, G>(std::move(knots), std::move(segments));
+}
+
+/**
  * @brief Fit a quadratic PiecewiseBezier curve to data.
  *
  * The resulting curve passes through the data points and has
  * continuous derivatives.
  *
- * \warning May result in oscillatory behavior since second derivative
+ * \warning Result may exhibit oscillatory behavior since second derivative
  * is free.
- *
- * \todo Use proper range API.
  *
  * @tparam Rt, Rg range types
  * @param tt interpolation times
@@ -213,43 +250,43 @@ private:
  * @param v0 initial velocity
  */
 template<std::ranges::range Rt, std::ranges::range Rg>
-PiecewiseBezier<2, std::ranges::range_value_t<Rg>>
-fit_quadratic_bezier(
-  const Rt & tt, const Rg & gg, typename std::ranges::range_value_t<Rg>::Tangent v0)
+PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
 {
-  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2)
-  {
+  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
 
   using G = std::ranges::range_value_t<Rg>;
   using V = typename G::Tangent;
 
-  std::size_t NumSegments = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
+  const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
-  std::vector<double> knots(NumSegments + 1);
-  std::vector<Bezier<2, G>> segments(NumSegments);
+  std::vector<Bezier<2, G>> segments(N);
 
-  for (auto i = 0u; i != NumSegments; ++i) {
-    const G & ga = gg[i];
-    const G & gb = gg[i + 1];
+  auto it_g = std::ranges::begin(gg);
+  auto it_t = std::ranges::begin(tt);
 
-    const double dt = tt[i + 1] - tt[i];
+  V v0 = (*(it_g + 1) - *it_g) / (*(it_t + 1) - *it_t);
+
+  for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
+    const double dt = *(it_t + 1) - *it_t;
 
     // scaled velocity
     const V va = v0 * dt;
 
     // create segment
     const V v1 = va / 2;
-    const V v2 = (G::exp(-va / 2) * ga.inverse() * gb).log();
+    const V v2 = (G::exp(-va / 2) * it_g->inverse() * *(it_g + 1)).log();
 
-    knots[i]    = tt[i];
-    segments[i] = Bezier<2, G>(G(ga), std::array<V, 2>{v1, v2});
+    segments[i] = Bezier<2, G>(*it_g, std::array<V, 2>{v1, v2});
 
     // unscaled end velocity for interval
     v0 = v2 * 2 / dt;
   }
-  knots[NumSegments] = tt[NumSegments];
+
+  auto take_view = tt | std::views::take(N + 1);
+  std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
+
   return PiecewiseBezier<2, G>(std::move(knots), std::move(segments));
 }
 
@@ -259,38 +296,35 @@ fit_quadratic_bezier(
  * The resulting curve passes through the data points, has continuous first
  * derivatives, and approximately continuous second derivatives.
  *
- * \todo Use proper range API.
- *
  * @tparam Rt, Rg range types
  * @param tt interpolation times
  * @param gg interpolation values
  */
 template<std::ranges::range Rt, std::ranges::range Rg>
-PiecewiseBezier<3, std::ranges::range_value_t<Rg>>
-fit_cubic_bezier(const Rt & tt, const Rg & gg)
+PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & tt, const Rg & gg)
 {
-  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2)
-  {
+  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
 
-  using G = std::ranges::range_value_t<Rg>;
-  using V = typename G::Tangent;
+  using G      = std::ranges::range_value_t<Rg>;
+  using V      = typename G::Tangent;
   using Scalar = typename G::Scalar;
 
   // number of intervals
-  std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
+  const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
   std::size_t NumVars = G::Dof * 3 * N;
 
   Eigen::SparseMatrix<typename G::Scalar> lhs;
   lhs.resize(NumVars, NumVars);
-  Eigen::Matrix<int, -1, 1> nnz = Eigen::Matrix<int, -1, 1>::Constant(NumVars, 3 * G::Dof);
-  nnz.head(G::Dof).setConstant(2 * G::Dof);
-  nnz.tail(G::Dof).setConstant(2 * G::Dof);
+  Eigen::Matrix<int, -1, 1> nnz = Eigen::Matrix<int, -1, 1>::Constant(NumVars, 3);
+  nnz.head(G::Dof).setConstant(2);
+  nnz.tail(G::Dof).setConstant(2);
   lhs.reserve(nnz);
 
-  Eigen::Matrix<typename G::Scalar, -1, 1> rhs = Eigen::Matrix<typename G::Scalar, -1, 1>::Zero(NumVars);
+  Eigen::Matrix<typename G::Scalar, -1, 1> rhs(NumVars);
+  rhs.setZero();
 
   // variable layout:
   //
@@ -298,9 +332,7 @@ fit_cubic_bezier(const Rt & tt, const Rg & gg)
   //
   // where v_ji is a Dof-length vector
 
-  const auto idx = [&] (int j, int i) {
-    return 3 * G::Dof * i + G::Dof * (j - 1);
-  };
+  const auto idx = [&](int j, int i) { return 3 * G::Dof * i + G::Dof * (j - 1); };
 
   std::size_t row_counter = 0;
 
@@ -308,19 +340,20 @@ fit_cubic_bezier(const Rt & tt, const Rg & gg)
 
   // zero second derivative at start:
   // v_{1, 0} = v_{2, 0}
-  std::size_t v10_start = idx(1, 0);
-  std::size_t v20_start = idx(2, 0);
-
+  const std::size_t v10_start = idx(1, 0);
+  const std::size_t v20_start = idx(2, 0);
   for (auto n = 0u; n != G::Dof; ++n) {
     lhs.insert(row_counter + n, v10_start + n) = 1;
     lhs.insert(row_counter + n, v20_start + n) = -1;
   }
-
   row_counter += G::Dof;
 
   //// INTERIOR END POINT  ////
 
-  for (auto i = 0u; i != N - 1; ++i) {
+  auto it_t = std::ranges::begin(tt);
+  auto it_g = std::ranges::begin(gg);
+
+  for (auto i = 0u; i + 1 < N; ++i, ++it_t, ++it_g) {
     const std::size_t v1i_start = idx(1, i);
     const std::size_t v2i_start = idx(2, i);
     const std::size_t v3i_start = idx(3, i);
@@ -329,8 +362,8 @@ fit_cubic_bezier(const Rt & tt, const Rg & gg)
     const std::size_t v2ip_start = idx(2, i + 1);
 
     // segment lengths
-    const Scalar Ti = tt[i+1] - tt[i];
-    const Scalar Tip = tt[i+2] - tt[i + 1];
+    const Scalar Ti  = *(it_t + 1) - *it_t;
+    const Scalar Tip = *(it_t + 2) - *(it_t + 1);
 
     // pass through control points
     // v_{1, i} + v_{2, i} + v_{3, i} = x_{i+1} - x_i
@@ -339,13 +372,13 @@ fit_cubic_bezier(const Rt & tt, const Rg & gg)
       lhs.insert(row_counter + n, v2i_start + n) = 1;
       lhs.insert(row_counter + n, v3i_start + n) = 1;
     }
-    rhs.segment(row_counter, G::Dof) = gg[i + 1] - gg[i];
+    rhs.segment(row_counter, G::Dof) = *(it_g + 1) - *(it_g);
     row_counter += G::Dof;
 
     // velocity continuity
     // v_{3, i} = v_{1, i+1}
     for (auto n = 0u; n != G::Dof; ++n) {
-      lhs.insert(row_counter + n, v3i_start + n) = 1 * Tip;
+      lhs.insert(row_counter + n, v3i_start + n)  = 1 * Tip;
       lhs.insert(row_counter + n, v1ip_start + n) = -1 * Ti;
     }
     row_counter += G::Dof;
@@ -353,8 +386,8 @@ fit_cubic_bezier(const Rt & tt, const Rg & gg)
     // acceleration continuity (approximate for Lie groups)
     // v_{2, i} - v_{3, i} = v_{2, i+1} - v_{1, i+1}
     for (auto n = 0u; n != G::Dof; ++n) {
-      lhs.insert(row_counter + n, v2i_start + n) = 1 * (Tip * Tip);
-      lhs.insert(row_counter + n, v3i_start + n) = -1 * (Tip * Tip);
+      lhs.insert(row_counter + n, v2i_start + n)  = 1 * (Tip * Tip);
+      lhs.insert(row_counter + n, v3i_start + n)  = -1 * (Tip * Tip);
       lhs.insert(row_counter + n, v1ip_start + n) = -1 * (Ti * Ti);
       lhs.insert(row_counter + n, v2ip_start + n) = 1 * (Ti * Ti);
     }
@@ -374,7 +407,7 @@ fit_cubic_bezier(const Rt & tt, const Rg & gg)
     lhs.insert(row_counter + n, v2_nm_start + n) = 1;
     lhs.insert(row_counter + n, v3_nm_start + n) = 1;
   }
-  rhs.segment(row_counter, G::Dof) = gg[N] - gg[N - 1];
+  rhs.segment(row_counter, G::Dof) = *(it_g + 1) - *it_g;
   row_counter += G::Dof;
 
   // zero second derivative at end:
@@ -384,37 +417,38 @@ fit_cubic_bezier(const Rt & tt, const Rg & gg)
     lhs.insert(row_counter + n, v3_nm_start + n) = -1;
   }
 
-  //// DONE ////
-
+  //// DONE FILLING SPARSE MATRIX ////
+  
   lhs.makeCompressed();
 
-  //// SOLVE SPARSE SYSTEM ////
+  //// SOLVE SYSTEM ////
 
-  Eigen::SparseQR<decltype(lhs), Eigen::COLAMDOrdering<int>> solver(lhs);
+  Eigen::SparseLU<decltype(lhs), Eigen::COLAMDOrdering<int>> solver(lhs);
   Eigen::VectorXd result = solver.solve(rhs);
 
-  //// EXTRACT SOLUTION SPLINE ////
+  //// EXTRACT SOLUTION ////
 
-  std::vector<double> knots(N + 1);
-  std::vector<Bezier<3, G>> segments(N);
+  std::vector<Bezier<3, G>> segments;
+  segments.reserve(N);
 
-  for (auto i = 0u; i != N; ++i)
-  {
+  it_g = std::ranges::begin(gg);
+
+  for (auto i = 0u; i != N; ++i, ++it_g) {
     const std::size_t v1i_start = idx(1, i);
     const std::size_t v3i_start = idx(3, i);
 
     V v1 = result.template segment<G::Dof>(v1i_start);
     V v3 = result.template segment<G::Dof>(v3i_start);
-    V v2 = (G::exp(-v1) * gg[i].inverse() * gg[i+1] * G::exp(-v3)).log();  // compute v2 for interpolation
+    // re-compute v2 to compensate for linearization
+    // this ensures points are interpolated, but the cost is
+    // potential non-continuity of the second derivative
+    V v2 = (G::exp(-v1) * it_g->inverse() * *(it_g + 1) * G::exp(-v3)).log();
 
-    knots[i] = tt[i];
-    segments[i] = Bezier<3, G>(
-        gg[i],
-        std::array<V, 3>{std::move(v1), std::move(v2), std::move(v3)}
-    );
+    segments.emplace_back(*it_g, std::array<V, 3>{std::move(v1), std::move(v2), std::move(v3)});
   }
 
-  knots[N] = tt[N];
+  auto take_view = tt | std::views::take(N + 1);
+  std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
 
   return PiecewiseBezier<3, G>(std::move(knots), std::move(segments));
 }
