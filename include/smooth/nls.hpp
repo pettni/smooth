@@ -3,7 +3,7 @@
 
 /**
  * @file
- * @brief Non-linear least squares optimization on Lie groups.
+ * @brief Non-linear least squares optimization on Manifolds.
  */
 
 #include <Eigen/Dense>
@@ -47,6 +47,9 @@ struct NlsOptions
  * @param f residuals to minimize
  * @param x reference tuple of arguments to f
  * @param opts solver options
+ *
+ * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * the Manifold concept.
  */
 template<diff::Type Diff, typename _F, typename _Wrt>
 void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
@@ -74,7 +77,7 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
   }
 
   double r_norm = r.stableNorm();
-  double Delta = 100. * d.stableNorm();  // \todo for Rn arguments we should multiply with norm(x)
+  double Delta = 100. * d.stableNorm();  // TODO for Rn arguments we should multiply with norm(x)
 
   for (auto i = 0u; i != opts.max_iter; ++i) {
     // calculate step a via LM parameter algorithm
@@ -130,7 +133,7 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 
     //// PRINT STATUS ////
     
-    // \todo Pretty-print solver steps
+    // TODO Pretty-print solver steps
     if (opts.verbosity > 0) { std::cout << "Step " << i << ": " << r.sum() << std::endl; }
 
     //// CHECK FOR CONVERGENCE ////
@@ -139,7 +142,7 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
     if (std::abs(act_red) < opts.ftol && pred_red < opts.ftol && rho <= 2.) { break; }
 
     // parameter tolerance
-    // \todo a.size() should be norm(x) for non-angle states
+    // TODO a.size() should be norm(x) for non-angle states
     if (Da_norm < opts.ptol * a.size()) { break; }
   }
 }
@@ -154,6 +157,9 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
  * @param f residuals to minimize
  * @param x reference tuple of arguments to f
  * @param opts solver options
+ *
+ * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * the Manifold concept.
  */
 template<typename _F, typename _Wrt>
 void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})

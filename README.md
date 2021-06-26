@@ -89,7 +89,8 @@ Planned:
 
 * Lie group means (`mean.hpp`)
 
-Algorithms can also be made to work with regular ```Eigen``` types via the Bundle type.
+Algorithms also work with regular ```Eigen``` types that are interpreted the Lie group
+T(n) of translations that is isomorphic to Rn with addition.
 
 
 ## Compatibility
