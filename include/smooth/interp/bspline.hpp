@@ -12,7 +12,7 @@
 
 #include "smooth/concepts.hpp"
 #include "smooth/manifold_vector.hpp"
-#include "smooth/utils.hpp"
+#include "smooth/internal/utils.hpp"
 #include "smooth/nls.hpp"
 
 #include "common.hpp"
@@ -248,7 +248,7 @@ fit_bspline(const Rt & tt, const Rg & gg, double dt)
 
   // fit to data
   static_cast<void>(f);
-  minimize<diff::Type::ANALYTIC>(f, ctrl_pts);
+  minimize<diff::Type::ANALYTIC>(f, smooth::wrt(ctrl_pts));
 
   return BSpline<K, G>(t0, dt, std::move(ctrl_pts));
 }

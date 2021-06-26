@@ -12,7 +12,7 @@
 #include <Eigen/SparseQR>
 
 #include "smooth/concepts.hpp"
-#include "smooth/utils.hpp"
+#include "smooth/internal/utils.hpp"
 
 #include "common.hpp"
 

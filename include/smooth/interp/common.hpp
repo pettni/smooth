@@ -3,7 +3,7 @@
 
 #include "smooth/concepts.hpp"
 #include "smooth/lie_group_base.hpp"
-#include "smooth/utils.hpp"
+#include "smooth/internal/utils.hpp"
 
 
 namespace smooth

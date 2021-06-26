@@ -5,7 +5,7 @@
 
 #include <Eigen/Core>
 
-#include "../utils.hpp"
+#include "smooth/internal/utils.hpp"
 #include "common.hpp"
 
 using std::get;

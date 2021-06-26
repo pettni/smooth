@@ -2,9 +2,9 @@
 #define SMOOTH__BUNDLE_HPP_
 
 #include "concepts.hpp"
+#include "internal/macro.hpp"
 #include "impl/bundle.hpp"
 #include "lie_group_base.hpp"
-#include "macro.hpp"
 
 namespace smooth {
 

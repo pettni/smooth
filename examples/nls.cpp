@@ -22,7 +22,7 @@ int main()
 {
   MyFunctor f;
   auto g = smooth::SO3d::Random();
-  smooth::minimize(f, g);
+  smooth::minimize(f, smooth::wrt(g));
 
   return EXIT_SUCCESS;
 }

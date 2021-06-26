@@ -69,7 +69,7 @@ TEST(ManifoldVector, Optimize)
   m.push_back(smooth::SO3d::Random());
   m.push_back(smooth::SO3d::Random());
 
-  smooth::minimize(f, m);
+  smooth::minimize(f, smooth::wrt(m));
 
   for (auto x : m) {
     ASSERT_LE(x.log().norm(), 1e-5);

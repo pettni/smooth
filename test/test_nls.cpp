@@ -240,7 +240,11 @@ TEST(NLS, MultipleArgsStatic)
     return ret;
   };
 
-  smooth::minimize(f, g1, g2);
+  smooth::NlsOptions opts;
+  opts.ftol = 1e-12;
+  opts.ptol = 1e-12;
+
+  smooth::minimize(f, smooth::wrt(g1, g2), opts);
 
   ASSERT_TRUE(g1.inverse().isApprox(g2, 1e-6));
 }
@@ -258,7 +262,11 @@ TEST(NLS, MultipleArgsDynamic)
     return ret;
   };
 
-  smooth::minimize(f, g1, g2);
+  smooth::NlsOptions opts;
+  opts.ftol = 1e-12;
+  opts.ptol = 1e-12;
+
+  smooth::minimize(f, smooth::wrt(g1, g2), opts);
 
   ASSERT_TRUE(g1.inverse().isApprox(g2, 1e-6));
 }
@@ -277,7 +285,7 @@ TEST(NLS, MixedArgs)
     return ret;
   };
 
-  smooth::minimize(f, g1, v);
+  smooth::minimize(f, smooth::wrt(g1, v));
 
   auto g1_plus_v = g1 + v.head<3>();
   ASSERT_TRUE(g1_plus_v.isApprox(g0, 1e-6));
@@ -337,11 +345,11 @@ TEST(NLS, AnalyticSparse)
   auto g3c = g3;
 
   // solve sparse
-  smooth::minimize<smooth::diff::Type::ANALYTIC>(f, g1, g2, g3);
+  smooth::minimize<smooth::diff::Type::ANALYTIC>(f, smooth::wrt(g1, g2, g3));
 
   // solve with default
   smooth::minimize<smooth::diff::Type::DEFAULT>(
-    [&](auto... var) { return std::get<0>(f(var...)); }, g1c, g2c, g3c);
+    [&](auto... var) { return std::get<0>(f(var...)); }, smooth::wrt(g1c, g2c, g3c));
 
   ASSERT_TRUE(g1.isApprox(g1c, 1e-5));
   ASSERT_TRUE(g2.isApprox(g2c, 1e-5));
