@@ -69,6 +69,8 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     using Storage = Eigen::Map<Eigen::Matrix<double, RepSize, 1>>;                   \
     Storage & coeffs() { return coeffs_; }                                           \
     const Storage & coeffs() const { return coeffs_; }                               \
+    Scalar * data() { return coeffs_.data(); }                                       \
+    const Scalar * data() const { return coeffs_.data(); }                           \
                                                                                      \
   private:                                                                           \
     Storage coeffs_;                                                                 \
@@ -90,6 +92,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     Map(const DATATYPE & msg) : coeffs_(reinterpret_cast<const double *>(&msg)) {}   \
     using Storage = Eigen::Map<const Eigen::Matrix<double, RepSize, 1>>;             \
     const Storage & coeffs() const { return coeffs_; }                               \
+    const Scalar * data() const { return coeffs_.data(); }                           \
                                                                                      \
   private:                                                                           \
     Storage coeffs_;                                                                 \

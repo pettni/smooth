@@ -59,8 +59,6 @@ class SE2;
  * \end{bmatrix}
  * \f]
  */
-// CRTP BASE
-
 template<typename _Derived>
 class SE3Base : public LieGroupBase<_Derived>
 {

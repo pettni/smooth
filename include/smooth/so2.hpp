@@ -40,7 +40,7 @@ class SO3;
  * \mathbf{X} =
  * \begin{bmatrix}
  *  q_w & -q_z \\
- *  q_z &  q_w 
+ *  q_z &  q_w
  * \end{bmatrix}
  * \f]
  *
@@ -62,10 +62,9 @@ class SO2Base : public LieGroupBase<_Derived>
   using Base = LieGroupBase<_Derived>;
 
 protected:
-  SO2Base()  = default;
+  SO2Base() = default;
 
 public:
-
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
@@ -78,7 +77,8 @@ public:
    */
   std::complex<Scalar> u1() const
   {
-    return std::complex<Scalar>(Base::coeffs().y(), Base::coeffs().x());
+    return std::complex<Scalar>(static_cast<const _Derived &>(*this).coeffs().y(),
+      static_cast<const _Derived &>(*this).coeffs().x());
   }
 
   /**
@@ -127,7 +127,7 @@ struct lie_traits<SO2<_Scalar>>
 
 /**
  * @brief Storage implementation of SO2 Lie group.
- * 
+ *
  * @see SO2Base for memory layout.
  */
 template<typename _Scalar>
@@ -150,8 +150,8 @@ public:
     using std::sqrt;
 
     const Scalar n = sqrt(qw * qw + qz * qz);
-    coeffs_.x() = qz / n;
-    coeffs_.y() = qw / n;
+    coeffs_.x()    = qz / n;
+    coeffs_.y()    = qw / n;
   }
 
   /**
@@ -179,12 +179,12 @@ public:
     using std::sqrt;
 
     const Scalar n = sqrt(c.imag() * c.imag() + c.real() * c.real());
-    coeffs_.x() = c.imag() / n;
-    coeffs_.y() = c.real() / n;
+    coeffs_.x()    = c.imag() / n;
+    coeffs_.y()    = c.real() / n;
   }
 };
 
-using SO2f = SO2<float>;  ///< SO2 with float scalar representation
+using SO2f = SO2<float>;   ///< SO2 with float scalar representation
 using SO2d = SO2<double>;  ///< SO2 with double scalar representation
 
 }  // namespace smooth
@@ -198,7 +198,7 @@ struct smooth::lie_traits<Eigen::Map<smooth::SO2<_Scalar>>>
 
 /**
  * @brief Memory mapping of SO2 Lie group.
- * 
+ *
  * @see SO2Base for memory layout.
  */
 template<typename _Scalar>
@@ -220,7 +220,7 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SO2<_Scalar>>>
 
 /**
  * @brief Const memory mapping of SO2 Lie group.
- * 
+ *
  * @see SO2Base for memory layout.
  */
 template<typename _Scalar>

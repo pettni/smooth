@@ -51,8 +51,7 @@ auto dr_numerical(_F && f, _Wrt && x)
   auto val = std::apply(f, x);
 
   // dynamic sizes
-  Eigen::Index nx = std::apply(
-    []<typename... Args>(Args && ... args) { return (args.size() + ...); }, x);
+  Eigen::Index nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
   Eigen::Index ny = val.size();
 
   // output variable

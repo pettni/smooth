@@ -49,62 +49,57 @@ constexpr std::array<T, L + 1> array_psum(const std::array<T, L> & x)
   return ret;
 }
 
-/////////////////////
-// SUMMATION UTILS //
-/////////////////////
+///////////////////////
+// TUPLE STATE UTILS //
+///////////////////////
 
 template<typename Tuple>
 struct tuple_dof
 {};
 
+/**
+ * @brief Compile-time size of a tuple of variables.
+ *
+ * If at least one variable is dynamically sized (size -1), this returns -1.
+ */
 template<typename... Wrt>
 struct tuple_dof<std::tuple<Wrt...>>
 {
-  static constexpr Eigen::Index value =
-    std::min<Eigen::Index>({std::decay_t<Wrt>::SizeAtCompileTime...}) == -1
-      ? -1
-      : (std::decay_t<Wrt>::SizeAtCompileTime + ...);
+  static constexpr int value = std::min<int>({std::decay_t<Wrt>::SizeAtCompileTime...}) == -1
+                               ? std::min<int>({std::decay_t<Wrt>::SizeAtCompileTime...})
+                               : (std::decay_t<Wrt>::SizeAtCompileTime + ...);
 };
 
-template<typename Scalar, typename... _Wrt, std::size_t... _Idx>
-auto tuple_cast(const std::tuple<_Wrt...> & wrt, std::index_sequence<_Idx...>)
-{
-  using RetType = std::tuple<
-    typename std::decay_t<decltype(std::decay_t<_Wrt>{}.template cast<Scalar>())>::PlainObject...>;
-  return RetType(std::get<_Idx>(wrt).template cast<Scalar>()...);
-}
-
+/**
+ * @brief Cast a tuple of variables to a new scalar type.
+ */
 template<typename Scalar, typename... _Wrt>
 auto tuple_cast(const std::tuple<_Wrt...> & wrt)
 {
-  return tuple_cast<Scalar>(wrt, std::make_index_sequence<sizeof...(_Wrt)>{});
+  std::tuple<
+    typename std::decay_t<decltype(std::decay_t<_Wrt>{}.template cast<Scalar>())>::PlainObject...>
+    ret;
+  static_for<sizeof...(_Wrt)>(
+    [&](auto i) { std::get<i>(ret) = std::get<i>(wrt).template cast<Scalar>(); });
+  return ret;
 }
 
 /**
- * @brief Add an eigen tangent vector to a tuple of variables
- *
- * \todo Do this in a single function without index seq
- */
-template<typename Derived, typename... _Wrt, std::size_t... Idx>
-auto tuple_plus(const std::tuple<_Wrt...> & wrt,
-  const Eigen::MatrixBase<Derived> & a,
-  std::index_sequence<Idx...>)
-{
-  const std::array<Eigen::Index, sizeof...(_Wrt)> sizes{std::get<Idx>(wrt).size()...};
-  const auto sizes_psum = array_psum(sizes);
-
-  return std::tuple<std::decay_t<_Wrt>...>(
-    std::get<Idx>(wrt)
-    + a.template segment<std::decay_t<_Wrt>::SizeAtCompileTime>(sizes_psum[Idx], sizes[Idx])...);
-}
-
-/**
- * @brief Add an eigen tangent vector to a tuple of variables
+ * @brief Add a tangent vector to a tuple of variables.
  */
 template<typename Derived, typename... _Wrt>
 auto tuple_plus(const std::tuple<_Wrt...> & wrt, const Eigen::MatrixBase<Derived> & a)
 {
-  return tuple_plus(wrt, a, std::make_index_sequence<sizeof...(_Wrt)>{});
+  std::tuple<typename std::decay_t<_Wrt>::PlainObject...> ret;
+  std::size_t i_beg = 0;
+  static_for<sizeof...(_Wrt)>([&](auto i) {
+    constexpr auto i_size =
+      std::tuple_element_t<i, std::tuple<std::decay_t<_Wrt>...>>::SizeAtCompileTime;
+    std::size_t i_len = std::get<i>(wrt).size();
+    std::get<i>(ret)  = std::get<i>(wrt) + a.template segment<i_size>(i_beg, i_len);
+    i_beg += i_len;
+  });
+  return ret;
 }
 
 /////////////////////////////////
