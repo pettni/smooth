@@ -8,31 +8,43 @@
 
 namespace smooth {
 
-// CRTP BASE
-
 /**
- * @brief CRTP base of Bundle lie group.
+ * @brief Base class for Bundle lie groups.
+ *
+ * Represents a direct product \f$ G_1 \times \ldots G_n \f$ between a
+ * collection \f$ G_1, \ldots, G_n \f$ of Lie groups.
+ *
+ * Elements of the bundle are of the form \f$ (g_1, \ldots g_n) \f$, and
+ * operations are performed element-wise, i.e. group composition is
+ * \f[
+ *   (g_1, \ldots, g_n) \circ (g_1', \ldots, g_n') = (g_1 \circ g_1', \ldots, g_n \circ g_n').
+ * \f]
+ *
+ * The tangent space dimension is the sum of the tangent space dimension of the
+ * member types, and similary for the reprenstation size and the matrix dimension.
  */
 template<typename Derived>
 class BundleBase : public LieGroupBase<Derived>
 {
-protected:
-  using Base = LieGroupBase<Derived>;  //!< Base class
-  using Impl = typename lie_traits<Derived>::Impl;  //!< Implementation
+  using Base = LieGroupBase<Derived>;
+  using Impl = typename lie_traits<Derived>::Impl;
 
-  BundleBase() = default;  //!< Hide constructor to prevent direct instantiation
+protected:
+
+  BundleBase() = default;
 
 public:
+
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
-   * @brief Type of element in Bundle.
+   * @brief Type of element in Bundle..
    */
   template<std::size_t Idx>
   using PartType = typename lie_traits<Derived>::template PartPlainObject<Idx>;
 
   /**
-   * @brief Access part no Idx of bundle
+   * @brief Access part no Idx of bundle.
    */
   template<std::size_t Idx>
   Eigen::Map<PartType<Idx>> part()
@@ -43,7 +55,7 @@ public:
   }
 
   /**
-   * @brief Const access part no Idx of bundle
+   * @brief Const access part no Idx of bundle.
    */
   template<std::size_t Idx>
   Eigen::Map<const PartType<Idx>> part() const
@@ -53,10 +65,10 @@ public:
   }
 };
 
+// \cond
 template<LieGroupLike... _Gs>
 class Bundle;
-
-// STORAGE TYPE TRAITS
+// \endcond
 
 // \cond
 template<LieGroupLike... _Gs>
@@ -79,8 +91,6 @@ struct lie_traits<Bundle<_Gs...>>
 };
 // \endcond
 
-// STORAGE TYPE
-
 /**
  * @brief Storage implementation of Bundle lie group.
  *
@@ -89,7 +99,7 @@ struct lie_traits<Bundle<_Gs...>>
 template<LieGroupLike... _Gs>
 class Bundle : public BundleBase<Bundle<_Gs...>>
 {
-  using Base = BundleBase<Bundle<_Gs...>>;  //! Base class
+  using Base = BundleBase<Bundle<_Gs...>>;
 
   SMOOTH_GROUP_API(Bundle);
 
@@ -109,15 +119,18 @@ public:
 
 }  // namespace smooth
 
-// MAP TYPE TRAITS
-
+// \cond
 template<smooth::LieGroupLike... _Gs>
 struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
   : public lie_traits<smooth::Bundle<_Gs...>>
 {};
+// \endcond
 
-// MAP TYPE
-
+/**
+ * @brief Memory mapping of bundle Lie group.
+ *
+ * @see BundleBase for details.
+ */
 template<smooth::LieGroupLike... _Gs>
 class Eigen::Map<smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
@@ -127,17 +140,20 @@ class Eigen::Map<smooth::Bundle<_Gs...>>
   SMOOTH_MAP_API(Map);
 };
 
-// CONST MAP TYPE TRAITS
-
+// \cond
 template<smooth::LieGroupLike... _Gs>
 struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
   : public lie_traits<smooth::Bundle<_Gs...>>
 {
   static constexpr bool is_mutable = false;
 };
+// \endcond
 
-// CONST MAP TYPE
-
+/**
+ * @brief Const memory mapping of bundle Lie group.
+ *
+ * @see BundleBase for details.
+ */
 template<smooth::LieGroupLike... _Gs>
 class Eigen::Map<const smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>

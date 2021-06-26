@@ -52,8 +52,9 @@ class SO2;
 template<typename _Derived>
 class SO3Base : public LieGroupBase<_Derived>
 {
+  using Base = LieGroupBase<_Derived>;
+
 protected:
-  using Base = LieGroupBase<_Derived>;  //!< Base class
   SO3Base()  = default;
 
 public:
@@ -106,6 +107,8 @@ public:
    * @brief Project to SO2.
    *
    * This keeps the yaw/z axis component of the rotation.
+   *
+   * \note SO2 header must be included.
    */
   SO2<Scalar> project_so2() const
   {
@@ -159,8 +162,8 @@ public:
   {}
 };
 
-using SO3f = SO3<float>;  //! SO3 with float scalar representation
-using SO3d = SO3<double>;  //! SO3 with double scalar representation
+using SO3f = SO3<float>;  ///< SO3 with float scalar representation
+using SO3d = SO3<double>;  ///< SO3 with double scalar representation
 
 }  // namespace smooth
 

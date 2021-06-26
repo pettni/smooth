@@ -36,42 +36,43 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 ## Group algebra examples
 
  ```cpp
- using G = smooth::SO3d;    // or SO2d, SE2d, SE3d, Bundle<SO3d, T3d> etc...
- using Tangent = typename G::Tangent;
+ // Also works with other types: SO2d, SE2d, SE3d, Bundle<SO3d, T3d> etc...
+
+ using Tangent = typename smooth::SO3d::Tangent;
 
  // construct a random group element and a random tangent element
- G g = G::Random();
+ smooth::SO3d g = smooth::SO3d::Random();
  Tangent a = Tangent::Random();
 
  // lie group exponential
- auto exp_a = G::exp(a);
+ auto exp_a = smooth::SO3d::exp(a);
 
  // lie group logarithm
  auto g_log = g.log();
 
  // lie algebra hat and vee maps
- auto a_hat = G::hat(a);
- auto a_hat_vee = G::vee(a_hat);
+ auto a_hat = smooth::SO3d::hat(a);
+ auto a_hat_vee = smooth::SO3d::vee(a_hat);
 
  // group adjoint
  auto Ad_g = g.Ad();
 
  // lie algebra adjoint
- auto ad_a = G::ad(a);
+ auto ad_a = smooth::SO3d::ad(a);
 
  // derivatives of the exponential map
- auto dr_exp_v = G::dr_exp(a);   // right derivative
- auto dl_exp_v = G::dl_exp(a);   // left derivative
- auto dr_expinv_v = G::dr_expinv(a);   // inverse of right derivative
- auto dl_expinv_v = G::dl_expinv(a);   // inverse of left derivative
+ auto dr_exp_v = smooth::SO3d::dr_exp(a);   // right derivative
+ auto dl_exp_v = smooth::SO3d::dl_exp(a);   // left derivative
+ auto dr_expinv_v = smooth::SO3d::dr_expinv(a);   // inverse of right derivative
+ auto dl_expinv_v = smooth::SO3d::dl_expinv(a);   // inverse of left derivative
 
  // group action
- typename G::Vector v = G::Vector::Random();
- auto v_trans = g * v;
+ Eigen::Vector3d v = Eigen::Vector3d::Random();
+ auto v_transformed = g * v;
 
  // memory mapping using Eigen::Map
- std::array<double, G::lie_size> mem;
- Eigen::Map<const G> m_g(mem.data());
+ std::array<double, smooth::SO3d::lie_size> mem;
+ Eigen::Map<const smooth::SO3d> m_g(mem.data());
  ```
 
 
@@ -79,8 +80,8 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 
 Available:
 
-* Tangent space differentiation ([`diff.hpp`](diff_8hpp_source.html))
-* Bezier curve evaluation and fitting ([`interp/bezier.hpp`](bezier_8hpp_source.html))
+* Tangent space differentiation (`diff.hpp`)
+* Bezier curve evaluation and fitting (`interp/bezier.hpp`)
 * B-spline evaluation and fitting (`interp/bspline.hpp`)
 * Non-linear least squares optimization (`nls.hpp`)
 

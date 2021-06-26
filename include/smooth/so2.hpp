@@ -59,8 +59,9 @@ class SO3;
 template<typename _Derived>
 class SO2Base : public LieGroupBase<_Derived>
 {
+  using Base = LieGroupBase<_Derived>;
+
 protected:
-  using Base = LieGroupBase<_Derived>;  //!< Base class
   SO2Base()  = default;
 
 public:
@@ -93,6 +94,8 @@ public:
    * @brief Lift to SO3.
    *
    * Rotation of SO2 is embedded in SO3 as a rotation around the z axis.
+   *
+   * \note SO3 header must be included.
    */
   SO3<Scalar> lift_so3() const
   {
@@ -102,8 +105,6 @@ public:
     return SO3<Scalar>(Eigen::Quaternion<Scalar>(cos(yaw / 2), 0, 0, sin(yaw / 2)));
   }
 };
-
-// STORAGE TYPE TRAITS
 
 // \cond
 template<typename _Scalar>
@@ -183,8 +184,8 @@ public:
   }
 };
 
-using SO2f = SO2<float>;  //! SO2 with float scalar representation
-using SO2d = SO2<double>;  //! SO2 with double scalar representation
+using SO2f = SO2<float>;  ///< SO2 with float scalar representation
+using SO2d = SO2<double>;  ///< SO2 with double scalar representation
 
 }  // namespace smooth
 

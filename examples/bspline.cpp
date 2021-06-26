@@ -1,3 +1,7 @@
+/**
+ * @file bspline.cpp B-spline example.
+ */
+
 #include "smooth/interp/bspline.hpp"
 #include "smooth/so3.hpp"
 
@@ -8,6 +12,9 @@ using std::views::transform;
 using matplot::plot;
 
 
+/**
+ * @brief Define and plot a B-spline on \f$ \mathbb{SO}(3)\f$.
+ */
 int main(int argc, char const * argv[])
 {
   std::srand(5);
