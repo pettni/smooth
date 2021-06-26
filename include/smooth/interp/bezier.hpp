@@ -1,6 +1,11 @@
 #ifndef SMOOTH__INTERP__BEZIER_HPP_
 #define SMOOTH__INTERP__BEZIER_HPP_
 
+/**
+ * @file
+ * @brief Bezier splines on Lie groups.
+ */
+
 #include <ranges>
 
 #include <Eigen/Sparse>
@@ -14,7 +19,16 @@
 namespace smooth {
 
 /**
- * @brief Bezier curve on [0, 1]
+ * @brief Bezier curve on [0, 1].
+ * @tparam N Polonimial degree of curve.
+ * @tparam G Lie group type.
+ *
+ * The curve is defined by
+ * \f[
+ *  g(t) = g_0 * \exp(\tilde B_1(t) v_1) * ... \exp(\tilde B_N(t) v_N)
+ * \f]
+ * where \f$\tilde B_i(t)\f$ are cumulative Bernstein basis functions and
+ * \f$v_i = g_i \ominus g_{i-1}\f$ are the control point differences.
  */
 template<std::size_t N, LieGroup G>
 class Bezier
@@ -25,36 +39,55 @@ public:
    */
   Bezier() : g0_(G::Identity()) { vs_.fill(G::Tangent::Zero()); }
 
+  /**
+   * @brief Create curve from rvalue parameter values.
+   *
+   * @param g0 starting value
+   * @param vs differences [v_1, ..., v_n] between control points
+   */
   Bezier(G && g0, std::array<typename G::Tangent, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs))
   {}
 
   /**
    * @brief Create curve from parameter values.
    *
+   * @tparam Rv range containing control point differences
    * @param g0 starting value
-   * @param rv differences [v_1, ..., v_n] between control points
+   * @param vs differences [v_1, ..., v_n] between control points
    *
-   * The curve is defined by
-   *
-   *  g(t) = g0 * exp(B_1(t) v_1) * ... exp(B_N(t) v_N)
-   *
-   * where v_i = g_i - g_{i-1}.
+   * @note Range value type of \p Rv must be the tangent type of \p G.
    */
   template<std::ranges::range Rv>
-  Bezier(const G & g0, const Rv & rv) : g0_(g0)
+  requires std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>
+  Bezier(const G & g0, const Rv & vs) : g0_(g0)
   {
-    if (std::ranges::size(rv) != N) {
+    if (std::ranges::size(vs) != N) {
       throw std::runtime_error("Wrong number of control points");
     }
-    std::copy(std::ranges::begin(rv), std::ranges::end(rv), vs_.begin());
+    std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_.begin());
   }
 
+  /// @brief Copy constructor
   Bezier(const Bezier &) = default;
+  /// @brief Move constructor
   Bezier(Bezier &&)      = default;
+  /// @brief Copy assignment
   Bezier & operator=(const Bezier &) = default;
+  /// @brief Move assignment
   Bezier & operator=(Bezier &&) = default;
+  /// @brief Destructor
   ~Bezier()                     = default;
 
+  /**
+   * @brief Evalauate Bezier curve.
+   *
+   * @param[in] t_in time point to evaluate at
+   * @param[out] vel output body velocity at evaluation time
+   * @param[out] acc output body acceleration at evaluation time
+   * @return spline value at time t
+   *
+   * @note Input \p t_in is clamped to interval [0, 1]
+   */
   G eval(double t_in,
     std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
     std::optional<Eigen::Ref<typename G::Tangent>> acc = {}) const
@@ -73,34 +106,71 @@ private:
 };
 
 /**
- * @brief Curve consisting of Bezier segments
+ * @brief Piecewise curve built from Bezier segments.
+ *
+ * The curve is given by
+ * \f[
+ *  \mathbf{x}(t) = p_i \left( \frac{t - t_i}{t_{i+1} - t_{i}} \right)
+ * \f]
+ * for \f$ t \in [t_i, t_{i+1}]\f$
+ * where \f$p_i\f$ is a Bezier curve on \f$[0, 1]\f$.
  */
 template<std::size_t N, LieGroup G>
 class PiecewiseBezier
 {
 public:
+  /**
+   * @brief Default constructor creates a constant curve defined on [0, 1] equal to identity.
+   */
   PiecewiseBezier() : knots_{0, 1}, segments_{Bezier<N, G>{}} {}
 
+  /**
+   * @brief Create a PiecewiseBezier from knot times and Bezier segments.
+   *
+   * @param knots points \f$ t_i \f$
+   * @param segments Bezier curves \f$ p_i \f$
+   */
   PiecewiseBezier(std::vector<double> && knots, std::vector<Bezier<N, G>> && segments)
       : knots_(std::move(knots)), segments_(std::move(segments))
   {}
 
+  /**
+   * @brief Create a PiecewiseBezier from knot times and Bezier segments.
+   *
+   * @param knots points \f$ t_i \f$
+   * @param segments Bezier curves \f$ p_i \f$
+   */
   template<std::ranges::range Rt, std::ranges::range Rs>
   PiecewiseBezier(const Rt & knots, const Rs & segments)
       : knots_(std::ranges::begin(knots), std::ranges::end(knots)),
         segments_(std::ranges::begin(segments), std::ranges::end(segments))
   {}
 
+  /// @brief Copy constructor
   PiecewiseBezier(const PiecewiseBezier &) = default;
+  /// @brief Move constructor
   PiecewiseBezier(PiecewiseBezier &&)      = default;
+  /// @brief Copy assignment
   PiecewiseBezier & operator=(const PiecewiseBezier &) = default;
+  /// @brief Move assignment
   PiecewiseBezier & operator=(PiecewiseBezier &&) = default;
+  /// @brief Destructor
   ~PiecewiseBezier()                              = default;
 
+  /// @brief Minimal time where curve is defined.
   double t_min() const { return knots_.front(); }
 
+  /// @brief Maximal time where curve is defined.
   double t_max() const { return knots_.back(); }
 
+  /**
+   * @brief Evalauate PiecewiseBezier curve.
+   *
+   * @param[in] t time point to evaluate at
+   * @param[out] vel output body velocity at evaluation time
+   * @param[out] acc output body acceleration at evaluation time
+   * @return curve value at time t
+   */
   G eval(double t,
     std::optional<Eigen::Ref<typename G::Tangent>> vel = {},
     std::optional<Eigen::Ref<typename G::Tangent>> acc = {}) const
@@ -127,14 +197,19 @@ private:
 };
 
 /**
- * @brief Fit a quadratic bezier curve to data
+ * @brief Fit a quadratic PiecewiseBezier curve to data.
  *
- * The curve passes through the data points
+ * The resulting curve passes through the data points and has
+ * continuous derivatives.
  *
- * NOTE: May result in oscillatory behavior
+ * \warning May result in oscillatory behavior since second derivative
+ * is free.
  *
- * @param tt times
- * @param gg values
+ * \todo Use proper range API.
+ *
+ * @tparam Rt, Rg range types
+ * @param tt interpolation times
+ * @param gg interpolation values
  * @param v0 initial velocity
  */
 template<std::ranges::range Rt, std::ranges::range Rg>
@@ -179,14 +254,16 @@ fit_quadratic_bezier(
 }
 
 /**
- * @brief Fit a cubic bezier curve to data
+ * @brief Fit a cubic PiecewiseBezier curve to data.
  *
- * The curve passes through the data points
+ * The resulting curve passes through the data points, has continuous first
+ * derivatives, and approximately continuous second derivatives.
  *
- * NOTE: May result in oscillatory behavior
+ * \todo Use proper range API.
  *
- * @param tt times
- * @param gg values
+ * @tparam Rt, Rg range types
+ * @param tt interpolation times
+ * @param gg interpolation values
  */
 template<std::ranges::range Rt, std::ranges::range Rg>
 PiecewiseBezier<3, std::ranges::range_value_t<Rg>>

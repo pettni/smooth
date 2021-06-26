@@ -15,38 +15,45 @@ template<typename Scalar>
 class SO2;
 // \endcond
 
-// CRTP BASE
-
 /**
- * @brief SO3 Lie Group represented as S3
+ * @brief Base class for SO3 Lie group types
+ *
+ * Internally represented as a member of \f$ \mathbb{S}^3 \f$ (unit quaternions).
  *
  * Memory layout
- * =============
- * Group:    qx qy qz qw  (same as Eigen quaternion)
- * Tangent:  wx wy wz
+ * -------------
  *
- * Lie group Matrix form
- * =====================
+ * - Group:    \f$ \mathbf{x} = [q_x, q_y, q_z, q_w] \f$ (same as Eigen quaternion).
+ * - Tangent:  \f$ \mathbf{a} = [\omega_x, \omega_y, \omega_z] \f$
+ *
+ * Constraints
+ * -----------
+ *
+ * - Group:   \f$q_x^2 + q_y^2 + q_z^2 + q_w^2 = 1 \f$
+ * - Tangent: \f$ -\pi < \omega_x, \omega_y, \omega_z \leq \pi \f$
+ *
+ * Lie group matrix form
+ * ---------------------
  *
  * 3x3 rotation matrix
  *
- * Lie algebra Matrix form
- * =====================
+ * Lie algebra matrix form
+ * -----------------------
  *
- * [  0 -Ωz  Ωy ]
- * [  Ωz  0 -Ωx ]
- * [ -Ωy Ωx   0 ]
- *
- * Constraints
- * ===========
- * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
- * Tangent: -pi < Ωx, Ωy, Ωz <= pi
+ * \f[
+ * \mathbf{a}^\wedge =
+ * \begin{bmatrix}
+ *   0 & -\omega_z & \omega_y \\
+ *  \omega_z &   0 & -\omega_x \\
+ *  -\omega_y &   \omega_x & 0 \\
+ * \end{bmatrix}
+ * \f]
  */
 template<typename _Derived>
 class SO3Base : public LieGroupBase<_Derived>
 {
 protected:
-  using Base = LieGroupBase<_Derived>;
+  using Base = LieGroupBase<_Derived>;  //!< Base class
   SO3Base()  = default;
 
 public:
@@ -54,7 +61,7 @@ public:
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
-   * @brief Access quaterion
+   * @brief Access quaterion.
    */
   Eigen::Map<Eigen::Quaternion<Scalar>> quat()
   requires is_mutable
@@ -73,22 +80,21 @@ public:
   /**
    * @brief Return euler angles.
    *
-   * @param i1, i2, i3 euler angle axis convention (0=x, 1=y, 2=z).
+   * @param i1, i2, i3 euler angle axis convention (\f$0=x, 1=y, 2=z\f$).
    *        Default values correspond to ZYX rotation.
    *
    * Returned angles a1, a2, a3 are s.t. rotation is described by
-   * Rot_i1(a1) * Rot_i2(a2) * Rot_i3(a3),
+   * \f$ Rot_{i_1}(a_1) * Rot_{i_2}(a_2) * Rot_{i_3}(a_3). \f$
+   * where \f$ Rot_i(a) \f$ rotates an angle \f$a\f$ around the \f$i\f$:th axis.
    */
-  Eigen::Matrix<Scalar, 3, 1> eulerAngles(
-    Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
+  Eigen::Matrix<Scalar, 3, 1>
+  eulerAngles(Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
   {
     return quat().toRotationMatrix().eulerAngles(i1, i2, i3);
   }
 
   /**
    * @brief Rotation action on 3D vector.
-   *
-   * @param v 3D vector to rotate
    */
   template<typename EigenDerived>
   Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
@@ -99,7 +105,7 @@ public:
   /**
    * @brief Project to SO2.
    *
-   * This keeps the "z"/yaw component of the rotation.
+   * This keeps the yaw/z axis component of the rotation.
    */
   SO2<Scalar> project_so2() const
   {
@@ -109,9 +115,12 @@ public:
 
 // STORAGE TYPE TRAITS
 
+// \cond
 template<typename _Scalar>
 class SO3;
+// \endcond
 
+// \cond
 template<typename _Scalar>
 struct lie_traits<SO3<_Scalar>>
 {
@@ -123,9 +132,13 @@ struct lie_traits<SO3<_Scalar>>
   template<typename NewScalar>
   using PlainObject = SO3<NewScalar>;
 };
+// \endcond
 
-// STORAGE TYPE
-
+/**
+ * @brief Storage implementation of SO3 Lie group.
+ *
+ * @see SO3Base for group API.
+ */
 template<typename _Scalar>
 class SO3 : public SO3Base<SO3<_Scalar>>
 {
@@ -136,26 +149,34 @@ class SO3 : public SO3Base<SO3<_Scalar>>
 public:
   /**
    * @brief Construct from quaternion.
+   *
+   * @param quat Eigen quaternion.
+   *
+   * @note Input is normalized inside constructor.
    */
   template<typename Derived>
   SO3(const Eigen::QuaternionBase<Derived> & quat) : coeffs_(quat.normalized().coeffs())
   {}
 };
 
-using SO3f = SO3<float>;
-using SO3d = SO3<double>;
+using SO3f = SO3<float>;  //! SO3 with float scalar representation
+using SO3d = SO3<double>;  //! SO3 with double scalar representation
 
 }  // namespace smooth
 
-// MAP TYPE TRAITS
 
+// \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<smooth::SO3<_Scalar>>>
   : public lie_traits<smooth::SO3<_Scalar>>
 {};
+// \endcond
 
-// MAP TYPE
-
+/**
+ * @brief Memory mapping of SO3 Lie group.
+ *
+ * @see SO3Base for group API.
+ */
 template<typename _Scalar>
 class Eigen::Map<smooth::SO3<_Scalar>>
   : public smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>
@@ -163,20 +184,22 @@ class Eigen::Map<smooth::SO3<_Scalar>>
   using Base = smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>;
 
   SMOOTH_MAP_API(Map);
-
 };
 
-// CONST MAP TYPE TRAITS
-
+// \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<const smooth::SO3<_Scalar>>>
   : public lie_traits<smooth::SO3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
+// \endcond
 
-// CONST MAP TYPE
-
+/**
+ * @brief Const memory mapping of SO3 Lie group.
+ *
+ * @see SO3Base for group API.
+ */
 template<typename _Scalar>
 class Eigen::Map<const smooth::SO3<_Scalar>>
   : public smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>
@@ -184,7 +207,6 @@ class Eigen::Map<const smooth::SO3<_Scalar>>
   using Base = smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>;
 
   SMOOTH_CONST_MAP_API(Map);
-
 };
 
 #endif  // SMOOTH__SO3_HPP_

@@ -106,12 +106,12 @@ public:                                                                \
   using Storage = Eigen::Map<const Eigen::Matrix<Scalar, RepSize, 1>>; \
                                                                        \
   /*! Const access underlying Eigen::Map */                            \
-  const Storage & coeffs() const { return coeffs_; }
-
-private:
-Storage coeffs_;
-
-static_assert(true, "")
+  const Storage & coeffs() const { return coeffs_; }                   \
+                                                                       \
+private:                                                               \
+  Storage coeffs_;                                                     \
+                                                                       \
+  static_assert(true, "")
 
 }  // namespace smooth
 

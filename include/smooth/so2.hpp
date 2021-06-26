@@ -17,7 +17,9 @@ class SO3;
 // \endcond
 
 /**
- * @brief CRTP base of SO2 Lie group represented as \f$ \mathbb{U}(1) \f$.
+ * @brief Base class for SO2 Lie group types.
+ *
+ * Internally represented as \f$\mathbb{U}(1)\f$ (complex numbers).
  *
  * Memory layout
  * -------------
@@ -28,8 +30,8 @@ class SO3;
  * Constraints
  * -----------
  *
- * Group:   \f$q_z^2 + q_w^2 = 1 \f$
- * Tangent: \f$ -\pi < \omega_z <= \pi \f$
+ * - Group:   \f$q_z^2 + q_w^2 = 1 \f$
+ * - Tangent: \f$ -\pi < \omega_z \leq \pi \f$
  *
  * Lie group matrix form
  * ---------------------
@@ -144,6 +146,8 @@ public:
    */
   SO2(const Scalar & qz, const Scalar & qw)
   {
+    using std::sqrt;
+
     const Scalar n = sqrt(qw * qw + qz * qz);
     coeffs_.x() = qz / n;
     coeffs_.y() = qw / n;
@@ -157,6 +161,7 @@ public:
   explicit SO2(const Scalar & angle)
   {
     using std::cos, std::sin;
+
     coeffs_.x() = sin(angle);
     coeffs_.y() = cos(angle);
   }
@@ -166,17 +171,20 @@ public:
    *
    * @param c complex number.
    *
-   * @warning c must have unit norm.
+   * @note Input is normalized to ensure group constraint.
    */
   SO2(const std::complex<Scalar> & c)
   {
-    coeffs_.x() = c.imag();
-    coeffs_.y() = c.real();
+    using std::sqrt;
+
+    const Scalar n = sqrt(c.imag() * c.imag() + c.real() * c.real());
+    coeffs_.x() = c.imag() / n;
+    coeffs_.y() = c.real() / n;
   }
 };
 
-using SO2f = SO2<float>;  //! SO2 with float
-using SO2d = SO2<double>;  //! SO2 with double
+using SO2f = SO2<float>;  //! SO2 with float scalar representation
+using SO2d = SO2<double>;  //! SO2 with double scalar representation
 
 }  // namespace smooth
 
@@ -196,6 +204,7 @@ template<typename _Scalar>
 class Eigen::Map<smooth::SO2<_Scalar>> : public smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>
 {
   using Base = smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>;
+
   SMOOTH_MAP_API(Map);
 };
 
@@ -218,6 +227,7 @@ class Eigen::Map<const smooth::SO2<_Scalar>>
     : public smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>
 {
   using Base = smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>;
+
   SMOOTH_CONST_MAP_API(Map);
 };
 
