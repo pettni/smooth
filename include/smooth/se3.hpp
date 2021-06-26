@@ -15,59 +15,73 @@ namespace smooth {
 template<typename Scalar>
 class SE2;
 
-// CRTP BASE
-
 /**
- * @brief SE3 Lie Group represented as S3 ⋉ R3
+ * @brief Base class for SE3 Lie group types.
+ *
+ * Internally represented as \f$\mathbb{S}^3 \times \mathbb{R}^3\f$.
  *
  * Memory layout
- * =============
- * Group:    x y z qx qy qz qw
- * Tangent:  vx vy vz Ωx Ωy Ωz
+ * -------------
  *
- * Lie group Matrix form
- * =====================
- *
- * [ R T ]
- * [ 0 1 ]
- *
- * where R ∈ SO(3) and T ∈ R3
- *
- * Lie algebra Matrix form
- * =======================
- *
- * [  0 -Ωz  Ωy vx]
- * [  Ωz  0 -Ωx vy]
- * [ -Ωy Ωx   0 vz]
- * [   0  0   0  1]
+ * - Group:    \f$ \mathbf{x} = [x, y, z, q_x, q_y, q_z, q_w] \f$
+ * - Tangent:  \f$ \mathbf{a} = [v_x, v_y, v_z, \omega_x, \omega_y, \omega_z] \f$
  *
  * Constraints
- * ===========
- * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
- * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
+ * -----------
+ *
+ * - Group:   \f$q_x^2 + q_y^2 + q_z^2 + q_w^2 = 1 \f$
+ * - Tangent: \f$ -\pi < \omega_x, \omega_y, \omega_z \leq \pi \f$
+ *
+ * Lie group matrix form
+ * ---------------------
+ *
+ * \f[
+ * \mathbf{X} =
+ * \begin{bmatrix}
+ *   R & T \\
+ *   0 & 1
+ * \end{bmatrix}
+ * \f]
+ *
+ * where \f$R\f$ is a 3x3 rotation matrix and \f$ T = [x, y, z]^T \f$.
+ *
+ *
+ * Lie algebra matrix form
+ * -----------------------
+ *
+ * \f[
+ * \mathbf{a}^\wedge =
+ * \begin{bmatrix}
+ *   0 & -\omega_z & \omega_y & v_x \\
+ *  \omega_z &   0 & -\omega_x & v_y \\
+ *  -\omega_y &  \omega_x & 0 v_y \\
+ *  0 & 0 & 0 & 0
+ * \end{bmatrix}
+ * \f]
  */
+// CRTP BASE
+
 template<typename _Derived>
 class SE3Base : public LieGroupBase<_Derived>
 {
-protected:
   using Base = LieGroupBase<_Derived>;
-  SE3Base()  = default;
+
+protected:
+  SE3Base() = default;
 
 public:
-
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
-   * Access SO(3) part
+   * @brief Access SO(3) part.
    */
-  Eigen::Map<SO3<Scalar>> so3()
-  requires is_mutable
+  Eigen::Map<SO3<Scalar>> so3() requires is_mutable
   {
     return Eigen::Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3);
   }
 
   /**
-   * Const access SO(3) part
+   * @brief Const access SO(3) part.
    */
   Eigen::Map<const SO3<Scalar>> so3() const
   {
@@ -75,16 +89,15 @@ public:
   }
 
   /**
-   * Access T(3) part
+   * @brief Access T(3) part.
    */
-  Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> t3()
-  requires is_mutable
+  Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> t3() requires is_mutable
   {
     return Eigen::Map<Eigen::Matrix<Scalar, 3, 1>>(static_cast<_Derived &>(*this).data());
   }
 
   /**
-   * Const access T(3) part
+   * @brief Const access T(3) part.
    */
   Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>> t3() const
   {
@@ -93,7 +106,7 @@ public:
   }
 
   /**
-   * Tranformation action on 3D vector
+   * @brief Tranformation action on 3D vector.
    */
   template<typename EigenDerived>
   Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
@@ -103,6 +116,8 @@ public:
 
   /**
    * @brief Project to SE2.
+   *
+   * \note SE2 header must be included.
    */
   SE2<Scalar> project_se2() const
   {
@@ -110,11 +125,12 @@ public:
   }
 };
 
-// STORAGE TYPE TRAITS
-
+// \cond
 template<typename _Scalar>
 class SE3;
+// \endcond
 
+// \cond
 template<typename _Scalar>
 struct lie_traits<SE3<_Scalar>>
 {
@@ -126,9 +142,13 @@ struct lie_traits<SE3<_Scalar>>
   template<typename NewScalar>
   using PlainObject = SE3<NewScalar>;
 };
+// \endcond
 
-// STORAGE TYPE
-
+/**
+ * @brief Storage implementation of SE3 Lie group.
+ *
+ * @see SE3Base for memory layout.
+ */
 template<typename _Scalar>
 class SE3 : public SE3Base<SE3<_Scalar>>
 {
@@ -138,7 +158,10 @@ class SE3 : public SE3Base<SE3<_Scalar>>
 
 public:
   /**
-   * @brief Construct from SO3 and translation
+   * @brief Construct from SO3 and translation.
+   *
+   * @param so3 orientation component.
+   * @param t3 translation component.
    */
   template<typename SO3Derived, typename T3Derived>
   SE3(const SO3Base<SO3Derived> & so3, const Eigen::MatrixBase<T3Derived> & t3)
@@ -148,43 +171,48 @@ public:
   }
 };
 
-using SE3f = SE3<float>;
-using SE3d = SE3<double>;
+using SE3f = SE3<float>;   ///< SE3 with float
+using SE3d = SE3<double>;  ///< SE3 with double
 
 }  // namespace smooth
 
-// MAP TYPE TRAITS
-
+// \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<smooth::SE3<_Scalar>>>
-  : public lie_traits<smooth::SE3<_Scalar>>
+    : public lie_traits<smooth::SE3<_Scalar>>
 {};
+// \endcond
 
-// MAP TYPE
-
+/**
+ * @brief Memory mapping of SE3 Lie group.
+ *
+ * @see SE3Base for memory layout.
+ */
 template<typename _Scalar>
-class Eigen::Map<smooth::SE3<_Scalar>>
-  : public smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>
+class Eigen::Map<smooth::SE3<_Scalar>> : public smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>
 {
   using Base = smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>;
 
   SMOOTH_MAP_API(Map);
 };
 
-// CONST MAP TYPE TRAITS
-
+// \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<const smooth::SE3<_Scalar>>>
-  : public lie_traits<smooth::SE3<_Scalar>>
+    : public lie_traits<smooth::SE3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
+// \endcond
 
-// CONST MAP TYPE
-
+/**
+ * @brief Const memory mapping of SE3 Lie group.
+ *
+ * @see SE3Base for memory layout.
+ */
 template<typename _Scalar>
 class Eigen::Map<const smooth::SE3<_Scalar>>
-  : public smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>
+    : public smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>
 {
   using Base = smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>;
 

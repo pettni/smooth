@@ -14,6 +14,12 @@
 
 namespace smooth {
 
+/**
+ * @brief Grouping of function arguments.
+ *
+ * A tuple of references is created from the input arguments,
+ * which is the expected format in e.g. dr() and minimize().
+ */
 template<typename... _Args>
 auto wrt(_Args &&... args)
 {
@@ -28,7 +34,7 @@ namespace detail {
  *
  * @param f function to differentiate
  * @param x reference tuple of function arguments
- * @return pair( f(x...), dr f_(x...) )
+ * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
 template<typename _F, typename _Wrt>
 auto dr_numerical(_F && f, _Wrt && x)
@@ -79,20 +85,16 @@ auto dr_numerical(_F && f, _Wrt && x)
 }  // namespace detail
 
 /**
- * @brief Available differentiation methods
+ * @brief Differentiation methods
  *
- * NUMERICAL calculates numerical (forward) derivatives
- *
- * AUTODIFF uses the autodiff (autodiff.github.io) library and requires the
+ * - \p NUMERICAL calculates numerical (forward) derivatives
+ * - \p AUTODIFF uses the autodiff (https://autodiff.github.io) library and requires the
  * autodiff compatability header
- *
- * CERES uses the Ceres (ceres-solver.org) built-in autodiff and requires the
+ * - \p CERES uses the Ceres (http://ceres-solver.org) built-in autodiff and requires the
  * Ceres compatability header
- *
- * ANALYTIC is meant for hand-coded derivatives, and requires that
- * the function returns a pair [f(x), dr f_x]
- *
- * DEFAULT selects from a priority list based on availability
+ * - \p ANALYTIC is meant for hand-coded derivatives, and requires that
+ * the function returns a pair \f$( f(x), \mathrm{d}^r f_x )\f$
+ * - \p DEFAULT selects from a priority list based on availability
  */
 enum class Type { NUMERICAL, AUTODIFF, CERES, ANALYTIC, DEFAULT };
 
@@ -102,8 +104,8 @@ enum class Type { NUMERICAL, AUTODIFF, CERES, ANALYTIC, DEFAULT };
  * @tparam dm differentiation method to use
  *
  * @param f function to differentiate
- * @param x... function arguments
- * @return pair( f(x...), dr f_(x...) )
+ * @param x reference tuple of function arguments
+ * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
 template<Type dm, typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)
@@ -139,8 +141,8 @@ auto dr(_F && f, _Wrt && x)
  * @brief Differentiation in local tangent space using default method
  *
  * @param f function to differentiate
- * @param x... function arguments
- * @return pair( f(x...), dr f_(x...) )
+ * @param x reference tuple of function arguments
+ * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
 template<typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)

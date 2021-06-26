@@ -247,7 +247,6 @@ PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & 
  * @tparam Rt, Rg range types
  * @param tt interpolation times
  * @param gg interpolation values
- * @param v0 initial velocity
  */
 template<std::ranges::range Rt, std::ranges::range Rg>
 PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(const Rt & tt, const Rg & gg)

@@ -835,10 +835,13 @@ INPUT                  = README.md \
                          include/smooth/interp/bspline.hpp \
                          include/smooth/lie_group_base.hpp \
                          include/smooth/nls.hpp \
+                         include/smooth/bundle.hpp \
                          include/smooth/se2.hpp \
                          include/smooth/se3.hpp \
                          include/smooth/so2.hpp \
-                         include/smooth/so3.hpp
+                         include/smooth/so3.hpp \
+                         examples/bspline.cpp \
+                         examples/odeint.cpp
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1517,7 +1520,7 @@ GENERATE_TREEVIEW      = NO
 # Minimum value: 0, maximum value: 20, default value: 4.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-ENUM_VALUES_PER_LINE   = 4
+ENUM_VALUES_PER_LINE   = 6
 
 # If the treeview is enabled (see GENERATE_TREEVIEW) then this tag can be used
 # to set the initial width (in pixels) of the frame in which the tree is shown.

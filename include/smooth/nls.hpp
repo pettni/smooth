@@ -21,6 +21,9 @@
 
 namespace smooth {
 
+/**
+ * @brief Solver options.
+ */
 struct NlsOptions
 {
   /// relative parameter tolerance for convergence
@@ -36,16 +39,20 @@ struct NlsOptions
 /**
  * @brief Find a minimum of the non-linear least-squares problem
  *
- *  \min_{wrt...} \sum_i \| f(wrt...)_i \|^2
+ * \f[
+ *  \min_{x} \sum_i \| f(x)_i \|^2
+ * \f]
  *
+ * @tparam Diff differentiation method to use in solver
  * @param f residuals to minimize
- * @param wrt arguments to f
+ * @param x reference tuple of arguments to f
+ * @param opts solver options
  */
-template<diff::Type difftype, typename _F, typename _Wrt>
+template<diff::Type Diff, typename _F, typename _Wrt>
 void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 {
   // evaluate residuals and jacobian at initial point
-  auto [r, J] = diff::dr<difftype>(f, x);
+  auto [r, J] = diff::dr<Diff>(f, x);
 
   // extract some properties from jacobian
   static constexpr bool is_sparse =
@@ -67,7 +74,7 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
   }
 
   double r_norm = r.stableNorm();
-  double Delta = 100. * d.stableNorm();  //!< \todo for Rn arguments we should multiply with norm(x)
+  double Delta = 100. * d.stableNorm();  // \todo for Rn arguments we should multiply with norm(x)
 
   for (auto i = 0u; i != opts.max_iter; ++i) {
     // calculate step a via LM parameter algorithm
@@ -75,7 +82,7 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 
     // evaluate function and jacobian at x + a
     auto x_plus_a               = utils::tuple_plus(x, a);
-    const auto [r_cand, J_cand] = diff::dr<difftype>(f, x_plus_a);
+    const auto [r_cand, J_cand] = diff::dr<Diff>(f, x_plus_a);
 
     const double r_cand_norm = r_cand.stableNorm();
     const double Da_norm     = d.cwiseProduct(a).stableNorm();
@@ -122,7 +129,8 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
     }
 
     //// PRINT STATUS ////
-    /// \todo Pretty-print solver steps
+    
+    // \todo Pretty-print solver steps
     if (opts.verbosity > 0) { std::cout << "Step " << i << ": " << r.sum() << std::endl; }
 
     //// CHECK FOR CONVERGENCE ////
@@ -136,10 +144,21 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
   }
 }
 
+/**
+ * @brief Find a minimum of the non-linear least-squares problem
+ *
+ * \f[
+ *  \min_{x} \sum_i \| f(x)_i \|^2
+ * \f]
+ *
+ * @param f residuals to minimize
+ * @param x reference tuple of arguments to f
+ * @param opts solver options
+ */
 template<typename _F, typename _Wrt>
-void minimize(_F && f, _Wrt && wrt, const NlsOptions & opts = NlsOptions{})
+void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 {
-  minimize<diff::Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(wrt), opts);
+  minimize<diff::Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(x), opts);
 }
 
 }  // namespace smooth

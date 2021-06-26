@@ -7,9 +7,9 @@ namespace smooth {
   using Base::is_mutable;                       \
   using Base::Dof;                              \
   using Base::RepSize;                          \
-  /*! Scalar type */                            \
+  /*! Scalar type. */                            \
   using Scalar = typename Base::Scalar;         \
-  /*! Tangent type */                           \
+  /*! Tangent type (Eigen column vector of length Dof). */     \
   using Tangent       = typename Base::Tangent; \
   using Base::operator=;                        \
   using Base::operator*;                        \
@@ -19,7 +19,7 @@ namespace smooth {
 #define SMOOTH_GROUP_API(X)                          \
 public:                                              \
   SMOOTH_INHERIT_TYPEDEFS;                           \
-  /*! Construct uninitialized object */              \
+  /**< Construct uninitialized object */              \
   X() = default;                                     \
   /*! Copy constructor */                            \
   X(const X &) = default;                            \
