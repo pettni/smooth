@@ -15,6 +15,7 @@
 #include "concepts.hpp"
 #include "diff.hpp"
 #include "internal/lmpar.hpp"
+#include "internal/lmpar_sparse.hpp"
 #include "internal/utils.hpp"
 
 namespace smooth {
@@ -79,7 +80,13 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 
   for (auto i = 0u; i != opts.max_iter; ++i) {
     // calculate step a via LM parameter algorithm
-    const auto [lambda, a] = detail::lmpar(J, d, r, Delta);
+    Eigen::Matrix<double, Nx, 1> a(nx);
+    double lambda;
+    if constexpr (is_sparse) {
+      std::tie(lambda, a) = detail::lmpar_sparse(J, d, r, Delta);
+    } else {
+      std::tie(lambda, a) = detail::lmpar(J, d, r, Delta);
+    }
 
     // evaluate function and jacobian at x + a
     auto x_plus_a               = utils::tuple_plus(x, a);

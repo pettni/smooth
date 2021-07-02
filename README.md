@@ -142,8 +142,3 @@ Two similar projects that have served as inspiration for `smooth` are [`manif`](
     - [ ] PGO / marginalization
     - [ ] Splines
 
-
-## Library
-
-- [ ] Direct sparse solving of least-squares (no lmpar)
-

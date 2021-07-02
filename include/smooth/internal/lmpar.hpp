@@ -175,7 +175,7 @@ Eigen::Matrix<double, N, 1> solve_ls(
  *   \| [J; sqrt(lambda) * diag(d)] x  +  [r ; 0] \|^2
  *
  * then either
- *  * lambda = 0 AND \|diag(d) * x\| <= 0.1 Delta
+ *  * lambda = 0 AND \|diag(d) * x\| <= 1.1 Delta
  *    OR
  *  * lambda > 0 AND 0.9 Delta <= \|diag(d) * x\| <= 1.1 Delta
  *
@@ -183,7 +183,10 @@ Eigen::Matrix<double, N, 1> solve_ls(
  * @param d vector size Nx1 (static/dynamic sizes supported)
  * @param r vector size Mx1 (static/dynamic sizes supported)
  * @param Delta scalar
- * @return pair(lambda, x) where x is solves the least-squares problem for lambda
+ * @return pair(lambda, x) where x solves the least-squares problem for lambda
+ *
+ * \note The sparse QR decomposition is numerically unstable for ill-conditioned matrices.
+ * Consider using lmpar_sparse instead.
  */
 template<int N, int M, typename MatrixT>
 std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,

@@ -225,8 +225,6 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
 
     Jac.makeCompressed();
 
-    // TODO use sparse matrix when we have a decent sparse solver
-    // return std::make_pair(std::move(ret), std::move(Jac));
     return std::make_pair(std::move(ret), Eigen::MatrixXd(Jac));
   };
 
