@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['max_5fiter_251',['max_iter',['../structsmooth_1_1NlsOptions.html#a06c4fc89ef3f55eb82e8147a7a94b18a',1,'smooth::NlsOptions']]]
+  ['liegroup_315',['LieGroup',['../concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716',1,'smooth']]],
+  ['liegrouplike_316',['LieGroupLike',['../concepts_8hpp.html#a9079aabd9139784886d6bd58fa46611b',1,'smooth']]]
 ];

@@ -73,10 +73,12 @@ var menudata={children:[
 {text:"i",url:"functions_type.html#index_i"},
 {text:"m",url:"functions_type.html#index_m"},
 {text:"p",url:"functions_type.html#index_p"},
+{text:"r",url:"functions_type.html#index_r"},
 {text:"s",url:"functions_type.html#index_s"},
 {text:"t",url:"functions_type.html#index_t"}]}]}]},
 {text:"Files",url:"files.html",children:[
 {text:"File List",url:"files.html"},
 {text:"File Members",url:"globals.html",children:[
 {text:"All",url:"globals.html"},
-{text:"Functions",url:"globals_func.html"}]}]}]}
+{text:"Functions",url:"globals_func.html"},
+{text:"Macros",url:"globals_defs.html"}]}]}]}

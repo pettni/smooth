@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['repsize_253',['RepSize',['../classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'smooth::LieGroupBase::RepSize()'],['../classsmooth_1_1BundleBase.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'smooth::BundleBase::RepSize()'],['../classEigen_1_1Map_3_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'Eigen::Map&lt; smooth::Bundle&lt; _Gs... &gt; &gt;::RepSize()'],['../classEigen_1_1Map_3_01const_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'Eigen::Map&lt; const smooth::Bundle&lt; _Gs... &gt; &gt;::RepSize()']]]
+  ['ptol_320',['ptol',['../structsmooth_1_1NlsOptions.html#a92f2e5ae898b3f1156403ca9dc1f93b5',1,'smooth::NlsOptions']]]
 ];

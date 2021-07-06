@@ -1,0 +1,5 @@
+<map id="Eigen::Map&lt; geometry_msgs::msg::Transform &gt;" name="Eigen::Map&lt; geometry_msgs::msg::Transform &gt;">
+<area shape="rect" id="node1" title="Memory map a ROS message as Lie group type." alt="" coords="5,199,173,240"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="5,95,173,151"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="12,5,167,47"/>
+</map>

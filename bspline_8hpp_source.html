@@ -84,7 +84,7 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;Eigen/Sparse&gt;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;smooth/concepts.hpp&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="concepts_8hpp.html">smooth/concepts.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;smooth/internal/utils.hpp&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;smooth/manifold_vector.hpp&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="nls_8hpp.html">smooth/nls.hpp</a>&quot;</span></div>
@@ -217,7 +217,7 @@ $(function() {
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  };</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  <span class="comment">// create optimization variable</span></div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  ManifoldVector&lt;G, Eigen::aligned_allocator&gt; ctrl_pts(NumPts);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  <a class="code" href="classsmooth_1_1ManifoldVector.html">ManifoldVector&lt;G, Eigen::aligned_allocator&gt;</a> ctrl_pts(NumPts);</div>
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;  <span class="comment">// create initial guess</span></div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;  <span class="keyword">auto</span> t_iter = std::ranges::begin(tt);</div>
@@ -260,6 +260,8 @@ $(function() {
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_ada04c985428d4e87f1e562f885ae180d"><div class="ttname"><a href="classsmooth_1_1BSpline.html#ada04c985428d4e87f1e562f885ae180d">smooth::BSpline::operator=</a></div><div class="ttdeci">BSpline &amp; operator=(const BSpline &amp;)=default</div><div class="ttdoc">Copy assignment.</div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_aff8fc5758965dfc3b0adeca623c8da8e"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aff8fc5758965dfc3b0adeca623c8da8e">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline(double t0, double dt, std::vector&lt; G, Eigen::aligned_allocator&lt; G &gt;&gt; &amp;&amp;ctrl_pts)</div><div class="ttdoc">Create a BSpline.</div><div class="ttdef"><b>Definition:</b> bspline.hpp:66</div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_aff97d3ad8af39601d44e69e0c9878f28"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aff97d3ad8af39601d44e69e0c9878f28">smooth::BSpline::t_min</a></div><div class="ttdeci">double t_min() const</div><div class="ttdoc">Minimal time for which spline is defined.</div><div class="ttdef"><b>Definition:</b> bspline.hpp:101</div></div>
+<div class="ttc" id="aclasssmooth_1_1ManifoldVector_html"><div class="ttname"><a href="classsmooth_1_1ManifoldVector.html">smooth::ManifoldVector</a></div><div class="ttdef"><b>Definition:</b> manifold_vector.hpp:25</div></div>
+<div class="ttc" id="aconcepts_8hpp_html"><div class="ttname"><a href="concepts_8hpp.html">concepts.hpp</a></div></div>
 <div class="ttc" id="adiff_8hpp_html_a73c425effecf4a85064d2f433c1b80ca"><div class="ttname"><a href="diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca">smooth::wrt</a></div><div class="ttdeci">auto wrt(_Args &amp;&amp;... args)</div><div class="ttdoc">Grouping of function arguments.</div><div class="ttdef"><b>Definition:</b> diff.hpp:24</div></div>
 <div class="ttc" id="anls_8hpp_html"><div class="ttname"><a href="nls_8hpp.html">nls.hpp</a></div><div class="ttdoc">Non-linear least squares optimization on Manifolds.</div></div>
 <div class="ttc" id="astructsmooth_1_1NlsOptions_html"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html">smooth::NlsOptions</a></div><div class="ttdoc">Solver options.</div><div class="ttdef"><b>Definition:</b> nls.hpp:27</div></div>
