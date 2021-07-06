@@ -1,6 +1,11 @@
 #ifndef SMOOTH__COMPAT__ODEINT_HPP_
 #define SMOOTH__COMPAT__ODEINT_HPP_
 
+/**
+ * @file
+ * @brief boost::odeint compatability header.
+ */
+
 #include <boost/numeric/odeint/algebra/operations_dispatcher.hpp>
 
 #include "smooth/concepts.hpp"
@@ -29,11 +34,16 @@ namespace smooth
  */
 struct lie_operations
 {
+  /**
+   * @brief Variadic scale_sum implementation.
+   */
   template<typename ... Fac>
   struct scale_sum
   {
+    //! Storage for scale sum weights.
     const std::tuple<Fac ...> m_alpha;
 
+    //! Constructor for scale sum.
     scale_sum(Fac ... alpha)
     : m_alpha(alpha ...)
     {
@@ -42,6 +52,7 @@ struct lie_operations
       }
     }
 
+    //! Helper for scaled addition operation.
     template<typename ... Ts, std::size_t ... Is>
     auto helper(std::index_sequence<Is...>, const Ts & ... as)
     {
@@ -49,6 +60,7 @@ struct lie_operations
       return ((std::get<Is + 1>(m_alpha) * as) + ...);
     }
 
+    //! Scaled addition operation.
     template<Manifold T1, Manifold T2, typename ... Ts>
     requires std::is_same_v<T1, T2>&&
     std::conjunction_v<std::is_same<typename T1::Tangent, Ts>...>
@@ -57,9 +69,11 @@ struct lie_operations
       y = x + helper(std::make_index_sequence<sizeof...(Ts)>(), as...);
     }
 
+    //! Required typedef.
     using result_type = void;
   };
 
+  // \cond
   template<typename Fac1, typename Fac2 = Fac1>
   using scale_sum2 = scale_sum<Fac1, Fac2>;
 
@@ -98,6 +112,7 @@ struct lie_operations
 
   template<typename Fac1, typename Fac2 = Fac1, typename Fac3 = Fac2, typename Fac4 = Fac3, typename Fac5 = Fac4, typename Fac6 = Fac5, typename Fac7 = Fac6, typename Fac8 = Fac7, typename Fac9 = Fac8, typename Fac10 = Fac9, typename Fac11 = Fac10, typename Fac12 = Fac11, typename Fac13 = Fac12, typename Fac14 = Fac13>
   using scale_sum14 = scale_sum<Fac1, Fac2, Fac3, Fac4, Fac5, Fac6, Fac7, Fac8, Fac9, Fac10, Fac11, Fac12, Fac13, Fac14>;
+  // \endcond
 };
 
 }  // namespace smooth
@@ -105,10 +120,12 @@ struct lie_operations
 /**
  * @brief SFINAE dispatcher for Manifold types.
  */
-template<::smooth::Manifold G>
+// \cond
+template<smooth::Manifold G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
-  using operations_type = ::smooth::lie_operations;  //!< Dispatch operations type.
+  using operations_type = ::smooth::lie_operations;
 };
+// \endcond
 
 #endif  // SMOOTH__COMPAT__ODEINT_HPP_

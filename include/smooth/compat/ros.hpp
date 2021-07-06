@@ -1,6 +1,11 @@
 #ifndef SMOOTH__COMPAT__ROS_HPP_
 #define SMOOTH__COMPAT__ROS_HPP_
 
+/**
+ * @file
+ * @brief ROS message compatablity header.
+ */
+
 #include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/transform.hpp>
 
@@ -53,45 +58,80 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
 
 // generic
 
+//! Map message DATATYPE as implementation LIETYPE with CRTP base BASETYPE
 #define CREATE_MAPS(DATATYPE, LIETYPE, BASETYPE)                                     \
+  /* \cond */                                                                        \
   template<>                                                                         \
   struct smooth::lie_traits<Eigen::Map<DATATYPE>> : public lie_traits<LIETYPE>       \
   {};                                                                                \
+  /* \endcond */                                                                     \
                                                                                      \
+  /**                                                                                \
+   * @brief Memory map a ROS message as Lie group type.                              \
+   */                                                                                \
   template<>                                                                         \
   class Eigen::Map<DATATYPE> : public BASETYPE<Eigen::Map<DATATYPE>>                 \
   {                                                                                  \
     using Base = BASETYPE<Eigen::Map<DATATYPE>>;                                     \
                                                                                      \
   public:                                                                            \
+    /* \cond */                                                                      \
     SMOOTH_INHERIT_TYPEDEFS;                                                         \
+    /* \endcond */                                                                   \
+                                                                                     \
+    /**                                                                              \
+     * @brief Map message as Lie type                                                \
+     *                                                                               \
+     * @param msg ROS message                                                        \
+     **/                                                                             \
     Map(DATATYPE & msg) : coeffs_(reinterpret_cast<double *>(&msg)) {}               \
+    /*! Underlying storage is Eigen::Map */                                          \
     using Storage = Eigen::Map<Eigen::Matrix<double, RepSize, 1>>;                   \
+    /*! Access underlying Eigen::Map */                                              \
     Storage & coeffs() { return coeffs_; }                                           \
+    /*! Const access underlying Eigen::Map */                                        \
     const Storage & coeffs() const { return coeffs_; }                               \
+    /*! Access raw pointer */                                                        \
     Scalar * data() { return coeffs_.data(); }                                       \
+    /*! Const access raw pointer */                                                  \
     const Scalar * data() const { return coeffs_.data(); }                           \
                                                                                      \
   private:                                                                           \
     Storage coeffs_;                                                                 \
   };                                                                                 \
                                                                                      \
+  /* \cond */                                                                        \
   template<>                                                                         \
   struct smooth::lie_traits<Eigen::Map<const DATATYPE>> : public lie_traits<LIETYPE> \
   {                                                                                  \
     static constexpr bool is_mutable = false;                                        \
   };                                                                                 \
+  /* \endcond */                                                                     \
                                                                                      \
+  /**                                                                                \
+   * @brief Const memory map a ROS message as Lie group type.                        \
+   */                                                                                \
   template<>                                                                         \
   class Eigen::Map<const DATATYPE> : public BASETYPE<Eigen::Map<const DATATYPE>>     \
   {                                                                                  \
     using Base = BASETYPE<Eigen::Map<const DATATYPE>>;                               \
                                                                                      \
   public:                                                                            \
+    /* \cond */                                                                      \
     SMOOTH_INHERIT_TYPEDEFS;                                                         \
+    /* \endcond */                                                                   \
+                                                                                     \
+    /**                                                                              \
+     * @brief Const map message as Lie type                                          \
+     *                                                                               \
+     * @param msg ROS message                                                        \
+     **/                                                                             \
     Map(const DATATYPE & msg) : coeffs_(reinterpret_cast<const double *>(&msg)) {}   \
+    /*! Underlying storage is Eigen const Map */                                     \
     using Storage = Eigen::Map<const Eigen::Matrix<double, RepSize, 1>>;             \
+    /*! Access underlying Eigen::Map */                                              \
     const Storage & coeffs() const { return coeffs_; }                               \
+    /*! Access raw pointer */                                                        \
     const Scalar * data() const { return coeffs_.data(); }                           \
                                                                                      \
   private:                                                                           \

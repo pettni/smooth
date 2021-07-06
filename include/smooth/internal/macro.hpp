@@ -96,7 +96,7 @@ private:                                                         \
 public:                                                                \
   SMOOTH_INHERIT_TYPEDEFS;                                             \
   /**                                                                  \
-   * @brief Map memory as Lie type                                     \
+   * @brief Const map memory as Lie type                               \
    *                                                                   \
    * @param p pointer to memory                                        \
    **/                                                                 \

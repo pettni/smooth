@@ -1,6 +1,10 @@
 #ifndef SMOOTH__CONCEPTS_HPP_
 #define SMOOTH__CONCEPTS_HPP_
 
+/**
+ * @file concepts.hpp Library concept definitions.
+ */
+
 #include <concepts>
 
 #include <Eigen/Core>
@@ -10,7 +14,7 @@ namespace smooth
 {
 
 /**
- * @brief A (smooth) manifold M requires the following
+ * @brief A concept defining a (smooth) manifold.
  *
  * - M::Scalar scalar type
  * - M::SizeAtCompileTime tangent space dimension (compile time, -1 if dynamic)
@@ -36,19 +40,25 @@ requires(const M & m1, const M & m2, const Eigen::Matrix<typename M::Scalar, M::
   {m1.template cast<double>()};
 };
 
+/**
+ * @brief Type that is an Eigen vector.
+ */
 template<typename T>
 concept RnLike = Manifold<T> &&
 std::is_base_of_v<Eigen::MatrixBase<T>, T> &&
 T::IsVectorAtCompileTime == 1 &&
 T::ColsAtCompileTime == 1;
 
+/**
+ * @brief Type that is a RnLike with size known at compile-time.
+ */
 template<typename T>
 concept StaticRnLike = RnLike<T> && T::RowsAtCompileTime >= 1;
 
 /**
- * @brief A Lie Group is a smooth manifold that is also a group.
- * This concept requires the exp and log maps, and the upper and
- * lowercase adjoints
+ * @brief Lie group concept.
+ *
+ * Requires the exp and log maps, and the upper and lowercase adjoints.
  */
 template<typename G>
 concept LieGroup = Manifold<G> &&
@@ -74,6 +84,9 @@ requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
   {G::ad(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
 };
 
+/**
+ * @brief Type that is either a LieGroup or StaticRnLike.
+ */
 template<typename G>
 concept LieGroupLike = LieGroup<G> || StaticRnLike<G>;
 

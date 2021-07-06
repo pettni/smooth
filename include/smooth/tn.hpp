@@ -1,45 +1,63 @@
 #ifndef SMOOTH__TN_HPP_
 #define SMOOTH__TN_HPP_
 
+/**
+ * @file
+ * @brief Lie group of translations.
+ */
+
 #include "impl/tn.hpp"
 #include "lie_group_base.hpp"
 
 namespace smooth {
 
 /**
- * @brief T(n) Lie Group represented as Rn
+ * @brief Eigen type as \f$T(n)\f$ Lie Group.
  *
  * Memory layout
- * =============
- * Group:    x1 x2 ... xn
- * Tangent:  v1 v2 ... vn
+ * -------------
+ * - Group:    \f$ \mathbf{t} = [x_1, \ldots, x_n] \f$
+ * - Tangent:  \f$ \mathbf{v} = [v_1, \ldots, v_n] \f$
  *
  * Lie group Matrix form
- * =====================
+ * ---------------------
  *
- * [ I T ]
- * [ 0 1 ]
+ * \f[
+ * \mathbf{X} =
+ * \begin{bmatrix}
+ *  I & \mathbf{t} \\
+ *  0 & 1
+ * \end{bmatrix}
+ * \f]
  *
  * Lie algebra Matrix form
- * =====================
+ * -----------------------
  *
- * [ 0 V ]
- * [ 0 0 ]
- *
- * where V = [v1 ... vn]'
+ * \f[
+ * \mathbf{v}^\wedge =
+ * \begin{bmatrix}
+ *  0 & \mathbf{v} \\
+ *  0 & 0
+ * \end{bmatrix}
+ * \f]
  */
 template<int _N, typename _Scalar>
 using Tn = Eigen::Matrix<_Scalar, _N, 1>;
 
+// \cond
 template<int _N, typename _Scalar>
 struct lie_traits<Tn<_N, _Scalar>>
 {
-  using Impl   = TnImpl<_N, _Scalar>;
+  //! Lie group operations
+  using Impl = TnImpl<_N, _Scalar>;
+  //! Scalar type
   using Scalar = _Scalar;
 
+  //! Plain return type.
   template<typename NewScalar>
   using PlainObject = Eigen::Matrix<NewScalar, _N, 1>;
 };
+// \endcond
 
 template<typename _Scalar>
 using T1 = Tn<1, _Scalar>;

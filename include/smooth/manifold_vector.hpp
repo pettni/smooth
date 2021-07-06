@@ -9,11 +9,13 @@
 namespace smooth {
 
 /**
- * std::vector-based container to treat a collection
- *   (m1, m2, ..., mk) ∈ M x M x ... x M
- * of manifold elements as a single manifold element.
+ * \p std::vector based container to treat a collection
+ * \f[
+ *   m = (m_1, m_2, ..., m_k) \in M \times M \times ... \times M
+ * \f]
+ * of Manifold elements as a single Manifold element \f$m\f$.
  *
- * WARNING calling size() on a ManifoldVector returns
+ * \warning calling size() on a ManifoldVector returns
  * the degrees of freedom of M x M x ... x M, NOT the
  * number of elements in the vector. For the latter,
  * call vector_size().
@@ -25,16 +27,22 @@ private:
   using Base = std::vector<M, Allocator<M>>;
 
 public:
+  //! Degrees of freedom of manifold (equal to tangent space dimentsion)
   static constexpr Eigen::Index SizeAtCompileTime = -1;
-
+  //! Plain return type
   using PlainObject = ManifoldVector<M, Allocator>;
-
+  //! Scalar type
   using Scalar = typename M::Scalar;
 
+  //! Default constructor of empty ManifoldVector
   ManifoldVector()                         = default;
+  //! Copy constructor
   ManifoldVector(const ManifoldVector & o) = default;
+  //! Move constructor
   ManifoldVector(ManifoldVector && o)      = default;
+  //! Copy assignment operator
   ManifoldVector & operator=(const ManifoldVector & o) = default;
+  //! Move assignment operator
   ManifoldVector & operator=(ManifoldVector && o) = default;
   ~ManifoldVector()                               = default;
 
@@ -67,6 +75,8 @@ public:
 
   /**
    * @brief Runtime degrees of freedom.
+   *
+   * Sum of the degrees of freedom of constituent elements.
    */
   Eigen::Index size() const
   {
@@ -81,6 +91,8 @@ public:
 
   /**
    * @brief In-place addition.
+   *
+   * \note It must hold that size() == a.size()
    */
   template<typename Derived>
   PlainObject & operator+=(const Eigen::MatrixBase<Derived> & a)
@@ -96,6 +108,8 @@ public:
 
   /**
    * @brief Addition.
+   *
+   * \note It must hold that size() == a.size()
    */
   template<typename Derived>
   PlainObject operator+(const Eigen::MatrixBase<Derived> & a) const
@@ -107,6 +121,8 @@ public:
 
   /**
    * @brief Subtraction.
+   *
+   * \note It must hold that size() == o.size()
    */
   Eigen::Matrix<Scalar, -1, 1> operator-(const PlainObject & o) const
   {

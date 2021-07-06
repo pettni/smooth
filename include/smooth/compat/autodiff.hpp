@@ -1,6 +1,11 @@
 #ifndef SMOOTH__COMPAT__AUTODIFF_HPP_
 #define SMOOTH__COMPAT__AUTODIFF_HPP_
 
+/**
+ * @file
+ * @brief autodiff compatability header.
+ */
+
 // clang-format off
 #include <Eigen/Core>
 #include <autodiff/forward/forward.hpp>
@@ -15,11 +20,11 @@
 namespace smooth::diff {
 
 /**
- * @brief Automatic differentiation in tangent space
+ * @brief Automatic differentiation in tangent space using the autodiff library.
  *
  * @param f function to differentiate
- * @param X function arguments as tuple x...
- * @return pair( f(x...), dr f_(x...) )
+ * @param x reference tuple of function arguments
+ * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
 template<typename _F, typename _Wrt>
 auto dr_autodiff(_F && f, _Wrt && x)

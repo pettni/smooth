@@ -1,10 +1,13 @@
-# smooth: Lie Theory for Robotics (C++20 library and book)
+# smooth: Lie Theory for Robotics
 
-[![build_and_test](https://github.com/pettni/lie/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/pettni/lie/actions/workflows/build_and_test.yml) [![codecov](https://codecov.io/gh/pettni/lie/branch/master/graph/badge.svg?token=M2S4HO9ZIG)](https://codecov.io/gh/pettni/lie)
+[![CI Build and Test][ci-shield]][ci-link]
+[![Code coverage][cov-shield]][cov-link]
+[![Documentation][doc-shield]][doc-link]
+[![License][license-shield]][license-link]
 
 <img src="media/ode.png" width="300">  <img src="media/bspline.png" width="300">
 
-Do you want to do any of the following on a Lie group (or learn the theory)?
+Do you want to do things like this on a Lie group?
 
  * Algebraic manipulation and analytic tangent space derivatives (example code below)
  * Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
@@ -15,7 +18,7 @@ Do you want to do any of the following on a Lie group (or learn the theory)?
 Then this project may be of interest. **Currently in development**, the goal is to
 facilitate the use of Lie theory for robotics practitioners.
 
-The following common lie groups are implemented:
+The following common Lie groups are implemented:
  * SO(2) with complex number (S(1)) memory representation
  * SO(3) with quaternion (S(3)) memory representation
  * SE(2)
@@ -26,11 +29,10 @@ These additional groups may or may not be implemented in the future:
  * The "IMU group" SE\_2(3)
  * Orthogonal matrices of any dimension: SO(n)
  * Unitary matrices of any dimension: SU(n)
- * A "dynamic collection" type that exposes the Lie group interface for an `std::ranges::range` container
 
-The guiding principles for `smooth` are **brevity, reliability and compatability**. The end goal is a **book** that describes theory and algorithms, and a **library** with high-quality implementations, and with a strong mapping between the two so that the book serves as a manual of the library.
+The guiding principles for `smooth` are **brevity, reliability and compatability**.
 
-*Since the project is currently under development, expect poor structure in the book, and API changes in the library.*
+*Since the project is currently under development, breaking changes should be expected.*
 
 
 ## Group algebra examples
@@ -76,21 +78,41 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
  ```
 
 
+## Concepts and Types
+
+These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
+
+* ```Manifold```: type that supports ```operator+()```, ```operator-()```
+  * Example: ```smooth::ManifoldVector<Manifold>``` from ```manifold_vector.hpp``` which is convenient for optimizaiton over dynamic numbers of ```Manifold```s
+  * Algorithms: Differentiation, optimization, averaging
+
+* ```RnLike```: a ```Manifold``` that is an ```Eigen``` vector type
+  * Example: ```Eigen::VectorXd```
+
+* ```StaticRnLike```: an ```RnLike``` whose size is known at compile-time
+  * Example: ```Eigen::Vector3d```
+
+* ```LieGroup```: a ```Manifold``` that also supports Lie group operations
+  * Example: ```smooth::SO3d```
+  * Example: ```smooth::Bundle<LieGroupLike ...>```
+  * Algorithms: Numerical integration
+
+* ```LieGroupLike```: a type that is either ```StaticRnLike``` or a ```LieGroup```
+  * Algorithms: Splines
+
+
 ## Algorithms
 
 Available:
 
-* Tangent space differentiation (`diff.hpp`)
-* Bezier curve evaluation and fitting (`interp/bezier.hpp`)
-* B-spline evaluation and fitting (`interp/bspline.hpp`)
-* Non-linear least squares optimization (`nls.hpp`)
+* Tangent space differentiation on ```Manifold``` (`diff.hpp`)
+* Non-linear least squares optimization on ```Manifold``` (`nls.hpp`)
+* Bezier curve evaluation and fitting on ```LieGroupLike```  (`interp/bezier.hpp`)
+* B-spline evaluation and fitting on ```LieGroupLike``` (`interp/bspline.hpp`)
 
 Planned:
 
-* Lie group means (`mean.hpp`)
-
-Algorithms also work with regular ```Eigen``` types that are interpreted the Lie group
-T(n) of translations that is isomorphic to Rn with addition.
+* Average on ```Manifold```
 
 
 ## Compatibility
@@ -107,38 +129,19 @@ Utility headers for interfacing with adjacent software are provided in `smooth/c
 
 Two similar projects that have served as inspiration for `smooth` are [`manif`](https://github.com/artivis/manif/), which also has an accompanying paper, and [`Sophus`](https://github.com/strasdat/Sophus/). Certain design decisions are different in `smooth`: jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which greatly facilitates control and estimation tasks, and is written in C++20 which enables cleaner code as well as saner compiler error messages.
 
+<!-- MARKDOWN LINKS AND IMAGES -->
+[ci-shield]: https://img.shields.io/github/workflow/status/pettni/smooth/build_and_test/master?style=flat-square
+[ci-link]: https://github.com/pettni/lie/actions/workflows/build_and_test.yml
 
-# Next steps
+[cov-shield]: https://img.shields.io/codecov/c/gh/pettni/smooth/master?style=flat-square
+[cov-link]: https://codecov.io/gh/pettni/smooth
 
-## Book
+[doc-shield]: https://img.shields.io/static/v1?label=&message=Documentation&color=orange&style=flat-square
+[doc-link]: https://pettni.github.io/smooth
 
-- [x] reorganize dynamics: bring in system linearization and Magnus expansion
-- [ ] clean up parameterization vs matrix groups stuff, use consistent X / x
-- Work out missing parts
-  - [ ] Probability theory
-  - [/] Equivariance
-  - [ ] Numerical Integration
-  - [ ] Estimation
-- Make readable
-  - Part 1:
-    - [ ] Introduction
-    - [ ] Lie Groups
-    - [ ] Lie Algebras
-    - [ ] Exponential map
-    - [/] Derivatives
-    - [ ] Dynamical Systems
-    - [ ] Equivariance
-  - Part 2:
-    - [x] Classical groups
-    - [x] SO2
-    - [x] SO3
-    - [/] SE2
-    - [/] SE3
-  - Part 3:
-    - [ ] Numerical integration
-    - [ ] Control
-    - [ ] Estimation
-    - [ ] NLS
-    - [ ] PGO / marginalization
-    - [ ] Splines
+[license-shield]: https://img.shields.io/github/license/pettni/smooth.svg?style=flat-square
+[license-link]: https://github.com/pettni/smooth/blob/master/LICENSE
+
+[license-shield]: https://img.shields.io/github/license/pettni/smooth.svg?style=flat-square
+[license-link]: https://github.com/pettni/smooth/blob/master/LICENSE
 
