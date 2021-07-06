@@ -106,16 +106,21 @@ TEST(Optimization, LmPar)
     Eigen::VectorXd dd = d;
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
-    // solve sparse
+    // solve sparse1
     Eigen::SparseMatrix<double> Jsp;
-    Jsp              = J.sparseView();
-    auto [par3, xsp] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+    Jsp               = J.sparseView();
+    auto [par3, xsp1] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+
+    // solve sparse2
+    auto [par4, xsp2] = smooth::detail::lmpar_sparse(Jsp, dd, rd, Delta);
 
     // check equality of static and dynamic
     ASSERT_NEAR(par1, par2, 1e-10);
     ASSERT_NEAR(par1, par3, 1e-10);
+    ASSERT_NEAR(par1, par4, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
-    ASSERT_TRUE(x.isApprox(xsp));
+    ASSERT_TRUE(x.isApprox(xsp1));
+    ASSERT_TRUE(x.isApprox(xsp2));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
@@ -156,14 +161,19 @@ TEST(Optimization, LmParSmall)
 
     // solve sparse
     Eigen::SparseMatrix<double> Jsp;
-    Jsp              = J.sparseView();
-    auto [par3, xsp] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+    Jsp               = J.sparseView();
+    auto [par3, xsp1] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+
+    // solve sparse2
+    auto [par4, xsp2] = smooth::detail::lmpar_sparse(Jsp, dd, rd, Delta);
 
     // check equality of static and dynamic
     ASSERT_NEAR(par1, par2, 1e-10);
     ASSERT_NEAR(par1, par3, 1e-10);
+    ASSERT_NEAR(par1, par4, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
-    ASSERT_TRUE(x.isApprox(xsp));
+    ASSERT_TRUE(x.isApprox(xsp1));
+    ASSERT_TRUE(x.isApprox(xsp2));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
@@ -203,16 +213,19 @@ TEST(Optimization, LmParSing)
     Eigen::VectorXd dd = d;
     auto [par2, xd]    = smooth::detail::lmpar<-1, -1>(Jd, dd, rd, Delta);
 
-    // solve sparse
+    // solve sparse1
     Eigen::SparseMatrix<double> Jsp;
-    Jsp              = J.sparseView();
-    auto [par3, xsp] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+    Jsp               = J.sparseView();
+    auto [par3, xsp1] = smooth::detail::lmpar<-1, -1>(Jsp, dd, rd, Delta);
+
+    // solve sparse2
+    auto [par4, xsp2] = smooth::detail::lmpar_sparse(Jsp, dd, rd, Delta);
 
     // check equality of static and dynamic
     ASSERT_NEAR(par1, par2, 1e-10);
     ASSERT_NEAR(par1, par3, 1e-10);
     ASSERT_TRUE(x.isApprox(xd));
-    ASSERT_TRUE(x.isApprox(xsp));
+    ASSERT_TRUE(x.isApprox(xsp1));
 
     // check that x solves resulting problem
     Eigen::ColPivHouseholderQR<decltype(J)> J_qr(J);
@@ -224,6 +237,12 @@ TEST(Optimization, LmParSing)
     bool cond1 = (par1 == 0) && (d.asDiagonal() * x).norm() <= 1.1 * Delta;
     bool cond2 = (par1 > 0) && std::abs((d.asDiagonal() * x).norm() - Delta) <= 0.1 * Delta;
     ASSERT_TRUE(cond1 || cond2);
+
+    // don't expect sparse2 to be equal
+    // check that parameter satisfies conditions
+    bool cond3 = (par4 == 0) && (d.asDiagonal() * xsp2).norm() <= 1.1 * Delta;
+    bool cond4 = (par4 > 0) && std::abs((d.asDiagonal() * xsp2).norm() - Delta) <= 0.1 * Delta;
+    ASSERT_TRUE(cond3 || cond4);
   }
 }
 

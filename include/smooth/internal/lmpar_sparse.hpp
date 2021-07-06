@@ -30,33 +30,34 @@ std::tuple<Eigen::Matrix<double, N, 1>, double, double> calc_phi(const MatrixT &
 {
   const auto n = J.cols();
 
-  Eigen::SparseMatrix<double> lhs(n, n);
-  lhs = J.transpose() * J;
+  Eigen::SparseMatrix<double> lhs = J.transpose() * J;
 
+  lhs.reserve(Eigen::VectorXd::Ones(n));
   if (alpha > 0) {
     for (auto i = 0u; i != n; ++i) { lhs.coeffRef(i, i) += alpha * d(i) * d(i); }
   }
+  lhs.makeCompressed();
 
   Eigen::SimplicialLDLT<Eigen::SparseMatrix<double>> ldlt;
   ldlt.compute(lhs);
 
-  // calculate q
-  Eigen::Matrix<double, N, 1> x = ldlt.solve(-J.transpose() * r);
-  Eigen::Matrix<double, N, 1> q = -d.cwiseProduct(x);
-
-  // calculate phi
-  double q_norm = q.stableNorm();
-  double phi    = q_norm - Delta;
-
-  if (q_norm == 0) {
-    return std::make_tuple(x, phi, 0);  // derivative doesn't matter here
+  if (ldlt.info()) {
+    // computation failed, add small diagonal to ensure positive definiteness
+    for (auto i = 0u; i != n; ++i) { lhs.coeffRef(i, i) += Eigen::NumTraits<double>::epsilon(); }
+    ldlt.compute(lhs);
   }
 
-  // calculate dphi
-  Eigen::Matrix<double, N, 1> d_q = d.cwiseProduct(q);
-  Eigen::Matrix<double, N, 1> y   = ldlt.solve(d_q);
+  // calculate q
+  const Eigen::Matrix<double, N, 1> x = ldlt.solve(-J.transpose() * r);
+  const Eigen::Matrix<double, N, 1> q = -d.cwiseProduct(x);
 
-  Eigen::Matrix<double, 1, 1> dphi = -d_q.transpose() * y / q_norm;
+  // calculate phi
+  const double phi = q.stableNorm() - Delta;
+
+  // calculate dphi
+  const Eigen::Matrix<double, N, 1> d_q  = d.cwiseProduct(q);
+  const Eigen::Matrix<double, N, 1> y    = ldlt.solve(d_q);
+  const Eigen::Matrix<double, 1, 1> dphi = -d.cwiseProduct(q.normalized()).transpose() * y;
 
   return std::make_tuple(x, phi, dphi(0));
 }
