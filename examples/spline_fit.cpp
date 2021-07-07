@@ -1,5 +1,5 @@
-#include "smooth/interp/bspline.hpp"
-#include "smooth/interp/bezier.hpp"
+#include "smooth/spline/bspline.hpp"
+#include "smooth/spline/bezier.hpp"
 #include "smooth/so3.hpp"
 
 #include "matplot/matplot.h"

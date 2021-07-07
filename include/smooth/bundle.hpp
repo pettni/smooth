@@ -2,9 +2,9 @@
 #define SMOOTH__BUNDLE_HPP_
 
 #include "concepts.hpp"
+#include "internal/bundle.hpp"
+#include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
-#include "impl/bundle.hpp"
-#include "lie_group_base.hpp"
 
 namespace smooth {
 
@@ -23,11 +23,11 @@ namespace smooth {
  * The tangent space dimension is the sum of the tangent space dimension of the
  * member types, and similary for the reprenstation size and the matrix dimension.
  */
-template<typename Derived>
-class BundleBase : public LieGroupBase<Derived>
+template<typename _Derived>
+class BundleBase : public LieGroupBase<_Derived>
 {
-  using Base = LieGroupBase<Derived>;
-  using Impl = typename lie_traits<Derived>::Impl;
+  using Base = LieGroupBase<_Derived>;
+  using Impl = typename lie_traits<_Derived>::Impl;
 
 protected:
 
@@ -41,7 +41,7 @@ public:
    * @brief Type of element in Bundle..
    */
   template<std::size_t Idx>
-  using PartType = typename lie_traits<Derived>::template PartPlainObject<Idx>;
+  using PartType = typename lie_traits<_Derived>::template PartPlainObject<Idx>;
 
   /**
    * @brief Access part no Idx of bundle.
@@ -51,7 +51,7 @@ public:
   requires is_mutable
   {
     return Eigen::Map<PartType<Idx>>(
-      static_cast<Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
+      static_cast<_Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
   /**
@@ -61,7 +61,7 @@ public:
   Eigen::Map<const PartType<Idx>> part() const
   {
     return Eigen::Map<const PartType<Idx>>(
-      static_cast<const Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
+      static_cast<const _Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 };
 

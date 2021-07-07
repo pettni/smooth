@@ -2,8 +2,8 @@
 
 #include "smooth/bundle.hpp"
 #include "smooth/diff.hpp"
-#include "smooth/interp/bezier.hpp"
-#include "smooth/interp/bspline.hpp"
+#include "smooth/spline/bezier.hpp"
+#include "smooth/spline/bspline.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"

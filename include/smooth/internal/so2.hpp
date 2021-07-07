@@ -7,6 +7,29 @@
 
 namespace smooth {
 
+/**
+ * @brief SO(2) Lie Group represented as C^1
+ *
+ * Memory layout
+ * -------------
+ * Group:    qz qw
+ * Tangent:  Ωz
+ *
+ * Lie group Matrix form
+ * ---------------------
+ * [ qw -qz ]
+ * [ qz  qw ]
+ *
+ * Lie algebra Matrix form
+ * -----------------------
+ * [ 0 -Ωz ]
+ * [ Ωz  0 ]
+ *
+ * Constraints
+ * -----------
+ * Group:   qz * qz + qw * qw = 1
+ * Tangent: -pi < Ωz <= pi
+ */
 template<typename _Scalar>
 class SO2Impl
 {
@@ -17,7 +40,7 @@ public:
   static constexpr Eigen::Index Dim     = 2;
   static constexpr Eigen::Index Dof     = 1;
 
-  SMOOTH_DEFINE_REFS
+  SMOOTH_DEFINE_REFS;
 
   static void setIdentity(GRefOut g_out) { g_out << Scalar(0), Scalar(1); }
 

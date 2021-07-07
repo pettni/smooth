@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "smooth/nls.hpp"
+#include "smooth/optim.hpp"
 
 #include "nlreg_data.hpp"
 

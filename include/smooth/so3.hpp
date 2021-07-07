@@ -4,9 +4,9 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "impl/so3.hpp"
+#include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
-#include "lie_group_base.hpp"
+#include "internal/so3.hpp"
 
 namespace smooth {
 

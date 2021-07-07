@@ -44,7 +44,7 @@ struct BundleImpl
   static constexpr Eigen::Index Dof     = DofsPsum.back();
   static constexpr Eigen::Index Dim     = DimsPsum.back();
 
-  SMOOTH_DEFINE_REFS
+  SMOOTH_DEFINE_REFS;
 
   static void setIdentity(GRefOut g_out)
   {

@@ -9,31 +9,29 @@
 namespace smooth {
 
 /**
- * @brief SE3 Lie Group represented as S3 ⋉ R3
+ * @brief SE(3) Lie Group represented as S^3 ⋉ R^3
  *
  * Memory layout
- * =============
+ * -------------
  * Group:    x y z qx qy qz qw
  * Tangent:  vx vy vz Ωx Ωy Ωz
  *
  * Lie group Matrix form
- * =====================
- *
+ * ---------------------
  * [ R T ]
  * [ 0 1 ]
  *
  * where R ∈ SO(3) and T ∈ R3
  *
  * Lie algebra Matrix form
- * =======================
- *
+ * -----------------------
  * [  0 -Ωz  Ωy vx]
  * [  Ωz  0 -Ωx vy]
  * [ -Ωy Ωx   0 vz]
- * [   0  0   0  1]
+ * [   0  0   0  0]
  *
  * Constraints
- * ===========
+ * -----------
  * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
  * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
  */
@@ -47,7 +45,7 @@ public:
   static constexpr Eigen::Index Dim     = 4;
   static constexpr Eigen::Index Dof     = 6;
 
-  SMOOTH_DEFINE_REFS
+  SMOOTH_DEFINE_REFS;
 
   static void setIdentity(GRefOut g_out)
   {

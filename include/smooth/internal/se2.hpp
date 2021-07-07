@@ -9,42 +9,29 @@
 namespace smooth {
 
 /**
- * @brief SE2 Lie Group represented as \f$ \mathbb{U}(1) \times \mathbb{R}^2 \f$.
+ * @brief SE(2) Lie Group represented as C^1 ⋉ R^2
  *
  * Memory layout
- * =============
- * - Group:    \f$ \mathbf{x} = [x, y, q_z, q_w] \f$
- * - Tangent:  \f$ \mathbf{a} = [v_x, v_y, \omega_z] \f$
+ * -------------
+ * Group:    x y qz qw
+ * Tangent:  vx vy Ωz
+ *
+ * Lie group Matrix form
+ * ---------------------
+ * [ qw -qz x ]
+ * [ qz  qw y ]
+ * [  0   0 1 ]
+ *
+ * Lie algebra Matrix form
+ * -----------------------
+ * [ 0 -Ωz vx ]
+ * [ Ωz  0 vy ]
+ * [  0  0  0 ]
  *
  * Constraints
- * ===========
- * Group:   \f$qz * qz + qw * qw = 1 \f$
- * Tangent: \f$ -pi < wz <= pi \f$
- *
- * Lie group matrix form
- * =====================
- *
- * \f[
- * \mathbf{X} =
- * \begin{bmatrix}
- *  qw & -qz &  x \\
- *  qz &  qw &  y \\
- *   0 &   0 &  1
- * \end{bmatrix}
- * \f]
- *
- *
- * Lie algebra matrix form
- * =======================
- *
- * \f[
- * \mathbf{a}^\wedge =
- * \begin{bmatrix}
- *   0 & -\omega_z &  v_x \\
- *  \omega_z &   0 &  v_y \\
- *   0 &   0 &  1
- * \end{bmatrix}
- * \f]
+ * -----------
+ * Group:   qz * qz + qw * qw = 1
+ * Tangent: -pi < Ωz <= pi
  */
 template<typename _Scalar>
 class SE2Impl
@@ -56,7 +43,7 @@ public:
   static constexpr Eigen::Index Dim     = 3;
   static constexpr Eigen::Index Dof     = 3;
 
-  SMOOTH_DEFINE_REFS
+  SMOOTH_DEFINE_REFS;
 
   static void setIdentity(GRefOut g_out) { g_out << Scalar(0), Scalar(0), Scalar(0), Scalar(1); }
 

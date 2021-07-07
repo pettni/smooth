@@ -2,7 +2,7 @@
 
 #include <Eigen/Sparse>
 
-#include "smooth/nls.hpp"
+#include "smooth/optim.hpp"
 #include "smooth/so3.hpp"
 
 template<int N, int M>

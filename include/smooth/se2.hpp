@@ -5,9 +5,9 @@
 
 #include <complex>
 
-#include "impl/se2.hpp"
+#include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
-#include "lie_group_base.hpp"
+#include "internal/se2.hpp"
 #include "so2.hpp"
 
 namespace smooth {

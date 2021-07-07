@@ -2,7 +2,7 @@
  * @file bspline.cpp B-spline example.
  */
 
-#include "smooth/interp/bspline.hpp"
+#include "smooth/spline/bspline.hpp"
 #include "smooth/so3.hpp"
 
 #include "matplot/matplot.h"

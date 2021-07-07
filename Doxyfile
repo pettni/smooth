@@ -839,11 +839,11 @@ INPUT                  = README.md \
                          include/smooth/compat/ceres.hpp \
                          include/smooth/compat/odeint.hpp \
                          include/smooth/compat/ros.hpp \
-                         include/smooth/interp/bezier.hpp \
-                         include/smooth/interp/bspline.hpp \
-                         include/smooth/lie_group_base.hpp \
+                         include/smooth/spline/bezier.hpp \
+                         include/smooth/spline/bspline.hpp \
+                         include/smooth/internal/lie_group_base.hpp \
                          include/smooth/manifold_vector.hpp \
-                         include/smooth/nls.hpp \
+                         include/smooth/optim.hpp \
                          include/smooth/se2.hpp \
                          include/smooth/se3.hpp \
                          include/smooth/so2.hpp \

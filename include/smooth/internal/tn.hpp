@@ -8,22 +8,20 @@
 namespace smooth {
 
 /**
- * @brief T(n) Lie Group represented as Rn
+ * @brief T(n) Lie Group represented as R^n
  *
  * Memory layout
- * =============
+ * -------------
  * Group:    x1 x2 ... xn
  * Tangent:  v1 v2 ... vn
  *
  * Lie group Matrix form
- * =====================
- *
+ * ---------------------
  * [ I T ]
  * [ 0 1 ]
  *
  * Lie algebra Matrix form
- * =====================
- *
+ * -----------------------
  * [ 0 V ]
  * [ 0 0 ]
  *
@@ -38,7 +36,7 @@ struct TnImpl
   static constexpr Eigen::Index Dof     = N;
   static constexpr Eigen::Index RepSize = N;
 
-  SMOOTH_DEFINE_REFS
+  SMOOTH_DEFINE_REFS;
 
   static void setIdentity(GRefOut g_out) { g_out.setZero(); }
 

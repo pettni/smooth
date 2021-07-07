@@ -2,12 +2,11 @@
 
 [![CI Build and Test][ci-shield]][ci-link]
 [![Code coverage][cov-shield]][cov-link]
-[![Documentation][doc-shield]][doc-link]
 [![License][license-shield]][license-link]
 
 <img src="media/ode.png" width="300">  <img src="media/bspline.png" width="300">
 
-Do you want to do things like this on a Lie group?
+In robotics it is often convenient to work in non-Euclidean manifolds. **Lie groups** are a class of manifolds that due to their symmetry are easy to work with, and are also good models for many robotic systems. The objective of this header-only library is to make it easy to use Lie groups in robotics software, by enabling things such as:
 
  * Algebraic manipulation and analytic tangent space derivatives (example code below)
  * Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
@@ -15,15 +14,12 @@ Do you want to do things like this on a Lie group?
  * Optimization
  * Interpolation (right figure shows a B-spline of order 5 on SO(3), see `examples/bspline.cpp`)
 
-Then this project may be of interest. **Currently in development**, the goal is to
-facilitate the use of Lie theory for robotics practitioners.
-
 The following common Lie groups are implemented:
- * SO(2) with complex number (S(1)) memory representation
- * SO(3) with quaternion (S(3)) memory representation
- * SE(2)
- * SE(3)
- * A Bundle type to treat Lie group products G = G\_1 x ... x G\_n as a single Lie group. The Bundle type also supports R(n) components as Eigen vectors
+ * smooth::SO2 with complex number (S(1)) memory representation
+ * smooth::SO3 with quaternion (S(3)) memory representation
+ * smooth::SE2
+ * smooth::SE3
+ * A smooth::Bundle type to treat Lie group products G = G\_1 x ... x G\_n as a single Lie group. The Bundle type also supports R(n) components as Eigen vectors
 
 These additional groups may or may not be implemented in the future:
  * The "IMU group" SE\_2(3)
@@ -34,6 +30,31 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 
 *Since the project is currently under development, breaking changes should be expected.*
 
+## Getting started
+
+1. Clone the repository and install it
+```zsh
+git clone https://github.com/pettni/smooth.git
+cd smooth
+mkdir build && cd build
+
+# The compiler must support C++20. Build tests and/or examples as desired
+cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF
+make -j8
+sudo make install
+```
+
+Alternatively, if using ROS or ROS2 just clone the folder into a catkin/colcon workspace.
+
+2. To utilize `smooth` in your own project, include this in your `CMakeLists.txt`
+```cmake
+find_package(smooth)
+
+add_executable(my_executable main.cpp)
+target_link_libraries(my_executable smooth::smooth)
+```
+
+3. Check out the [Documentation][doc-link] and the [`examples`](https://github.com/pettni/smooth/tree/master/examples).
 
 ## Group algebra examples
 
@@ -106,9 +127,9 @@ These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implement
 Available:
 
 * Tangent space differentiation on ```Manifold``` (`diff.hpp`)
-* Non-linear least squares optimization on ```Manifold``` (`nls.hpp`)
-* Bezier curve evaluation and fitting on ```LieGroupLike```  (`interp/bezier.hpp`)
-* B-spline evaluation and fitting on ```LieGroupLike``` (`interp/bspline.hpp`)
+* Non-linear least squares optimization on ```Manifold``` (`optim.hpp`)
+* Bezier curve evaluation and fitting on ```LieGroupLike```  (`spline/bezier.hpp`)
+* B-spline evaluation and fitting on ```LieGroupLike``` (`spline/bspline.hpp`)
 
 Planned:
 
@@ -130,17 +151,13 @@ Utility headers for interfacing with adjacent software are provided in `smooth/c
 Two similar projects that have served as inspiration for `smooth` are [`manif`](https://github.com/artivis/manif/), which also has an accompanying paper, and [`Sophus`](https://github.com/strasdat/Sophus/). Certain design decisions are different in `smooth`: jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which greatly facilitates control and estimation tasks, and is written in C++20 which enables cleaner code as well as saner compiler error messages.
 
 <!-- MARKDOWN LINKS AND IMAGES -->
+[doc-link]: https://pettni.github.io/smooth
+
 [ci-shield]: https://img.shields.io/github/workflow/status/pettni/smooth/build_and_test/master?style=flat-square
 [ci-link]: https://github.com/pettni/lie/actions/workflows/build_and_test.yml
 
 [cov-shield]: https://img.shields.io/codecov/c/gh/pettni/smooth/master?style=flat-square
 [cov-link]: https://codecov.io/gh/pettni/smooth
-
-[doc-shield]: https://img.shields.io/static/v1?label=&message=Documentation&color=orange&style=flat-square
-[doc-link]: https://pettni.github.io/smooth
-
-[license-shield]: https://img.shields.io/github/license/pettni/smooth.svg?style=flat-square
-[license-link]: https://github.com/pettni/smooth/blob/master/LICENSE
 
 [license-shield]: https://img.shields.io/github/license/pettni/smooth.svg?style=flat-square
 [license-link]: https://github.com/pettni/smooth/blob/master/LICENSE

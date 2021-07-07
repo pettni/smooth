@@ -3,8 +3,8 @@
 #include <sstream>
 
 #include "smooth/manifold_vector.hpp"
+#include "smooth/optim.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/nls.hpp"
 
 template<smooth::Manifold M>
 void test(const M &)

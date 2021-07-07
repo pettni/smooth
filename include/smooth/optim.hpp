@@ -1,5 +1,5 @@
-#ifndef SMOOTH__NLS_HPP_
-#define SMOOTH__NLS_HPP_
+#ifndef SMOOTH__OPTIM_HPP_
+#define SMOOTH__OPTIM_HPP_
 
 /**
  * @file
@@ -174,4 +174,4 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
 
 }  // namespace smooth
 
-#endif  // SMOOTH__NLS_HPP_
+#endif  // SMOOTH__OPTIM_HPP_

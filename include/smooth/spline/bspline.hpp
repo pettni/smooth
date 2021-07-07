@@ -13,7 +13,7 @@
 #include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
 #include "smooth/manifold_vector.hpp"
-#include "smooth/nls.hpp"
+#include "smooth/optim.hpp"
 
 #include "common.hpp"
 

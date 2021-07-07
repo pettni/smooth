@@ -2,8 +2,8 @@
 #define INTERP__COMMON_HPP_
 
 #include "smooth/concepts.hpp"
+#include "smooth/internal/lie_group_base.hpp"
 #include "smooth/internal/utils.hpp"
-#include "smooth/lie_group_base.hpp"
 
 namespace smooth {
 
