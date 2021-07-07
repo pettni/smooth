@@ -24,5 +24,5 @@ var searchData=
   ['matrix_79',['matrix',['../classsmooth_1_1LieGroupBase.html#a5c378bc1f9e1f2b3d46ee030ac223e0a',1,'smooth::LieGroupBase']]],
   ['matrix_80',['Matrix',['../classsmooth_1_1LieGroupBase.html#abff41124555fe53be6ec9a231c33d9cf',1,'smooth::LieGroupBase']]],
   ['max_5fiter_81',['max_iter',['../structsmooth_1_1NlsOptions.html#a06c4fc89ef3f55eb82e8147a7a94b18a',1,'smooth::NlsOptions']]],
-  ['minimize_82',['minimize',['../nls_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c',1,'smooth::minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const NlsOptions &amp;opts=NlsOptions{})'],['../nls_8hpp.html#a4696e38b76c51454f42a87c41155b364',1,'smooth::minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const NlsOptions &amp;opts=NlsOptions{})']]]
+  ['minimize_82',['minimize',['../optim_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c',1,'smooth::minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const NlsOptions &amp;opts=NlsOptions{})'],['../optim_8hpp.html#a4696e38b76c51454f42a87c41155b364',1,'smooth::minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const NlsOptions &amp;opts=NlsOptions{})']]]
 ];

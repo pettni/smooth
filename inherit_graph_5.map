@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="5,801,160,842"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="5,765,160,806"/>
 <area shape="rect" id="node2" href="$classsmooth_1_1BundleBase.html" title=" " alt="" coords="246,5,397,61"/>
 <area shape="rect" id="node4" href="$classsmooth_1_1BundleBase.html" title=" " alt="" coords="251,85,392,126"/>
 <area shape="rect" id="node6" href="$classsmooth_1_1BundleBase.html" title=" " alt="" coords="226,149,417,205"/>
@@ -21,7 +21,6 @@
 <area shape="rect" id="node38" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="208,1321,435,1362"/>
 <area shape="rect" id="node40" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="234,1385,409,1441"/>
 <area shape="rect" id="node42" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="230,1465,413,1521"/>
-<area shape="rect" id="node44" href="$classsmooth_1_1BundleBase.html" title="Base class for Bundle lie groups." alt="" coords="251,1545,392,1586"/>
 <area shape="rect" id="node3" href="$classEigen_1_1Map_3_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Memory mapping of bundle Lie group." alt="" coords="505,13,644,54"/>
 <area shape="rect" id="node5" href="$classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group." alt="" coords="496,92,653,119"/>
 <area shape="rect" id="node7" href="$classEigen_1_1Map_3_01const_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Const memory mapping of bundle Lie group." alt="" coords="487,157,662,198"/>

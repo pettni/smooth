@@ -288,24 +288,24 @@ class smooth::SE2Base&lt; _Derived &gt;</h3>
 
 <p>Base class for <a class="el" href="classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group.">SE2</a> Lie group types. </p>
 <p>Internally represented as \(\mathbb{U}(1) \times \mathbb{R}^2\).</p>
-<h2><a class="anchor" id="autotoc_md6"></a>
+<h2><a class="anchor" id="autotoc_md7"></a>
 Memory layout</h2>
 <ul>
 <li>Group: \( \mathbf{x} = [x, y, q_z, q_w] \)</li>
 <li>Tangent: \( \mathbf{a} = [v_x, v_y, \omega_z] \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md7"></a>
+<h2><a class="anchor" id="autotoc_md8"></a>
 Constraints</h2>
 <ul>
 <li>Group: \(q_z^2 + q_w^2 = 1 \)</li>
 <li>Tangent: \( -\pi &lt; \omega_z \leq \pi \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md9"></a>
 Lie group matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{X} = \begin{bmatrix} q_w &amp; -q_z &amp; x \\ q_z &amp; q_w &amp; y \\ 0 &amp; 0 &amp; 1 \end{bmatrix} \]
 </p>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md10"></a>
 Lie algebra matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{a}^\wedge = \begin{bmatrix} 0 &amp; -\omega_z &amp; v_x \\ \omega_z &amp; 0 &amp; v_y \\ 0 &amp; 0 &amp; 0 \end{bmatrix} \]

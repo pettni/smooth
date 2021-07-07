@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>smooth: include/smooth/nls.hpp Source File</title>
+<title>smooth: include/smooth/optim.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,11 +74,11 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">nls.hpp</div>  </div>
+<div class="title">optim.hpp</div>  </div>
 </div><!--header-->
 <div class="contents">
-<a href="nls_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SMOOTH__NLS_HPP_</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define SMOOTH__NLS_HPP_</span></div>
+<a href="optim_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef SMOOTH__OPTIM_HPP_</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define SMOOTH__OPTIM_HPP_</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;Eigen/Dense&gt;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;Eigen/Sparse&gt;</span></div>
@@ -103,7 +103,7 @@ $(function() {
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;};</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">template</span>&lt;diff::Type Diff, <span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="nls_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">   54</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="nls_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">minimize</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x, <span class="keyword">const</span> <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a> &amp; opts = <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a>{})</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="optim_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">   54</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="optim_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">minimize</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x, <span class="keyword">const</span> <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a> &amp; opts = <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a>{})</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="comment">// evaluate residuals and jacobian at initial point</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keyword">auto</span> [r, J] = diff::dr&lt;Diff&gt;(f, x);</div>
@@ -202,22 +202,22 @@ $(function() {
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;}</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
-<div class="line"><a name="l00170"></a><span class="lineno"><a class="line" href="nls_8hpp.html#a4696e38b76c51454f42a87c41155b364">  170</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="nls_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">minimize</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x, <span class="keyword">const</span> <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a> &amp; opts = <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a>{})</div>
+<div class="line"><a name="l00170"></a><span class="lineno"><a class="line" href="optim_8hpp.html#a4696e38b76c51454f42a87c41155b364">  170</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="optim_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">minimize</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x, <span class="keyword">const</span> <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a> &amp; opts = <a class="code" href="structsmooth_1_1NlsOptions.html">NlsOptions</a>{})</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;{</div>
 <div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  minimize&lt;diff::Type::DEFAULT&gt;(std::forward&lt;_F&gt;(f), std::forward&lt;_Wrt&gt;(x), opts);</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;}  <span class="comment">// namespace smooth</span></div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__NLS_HPP_</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__OPTIM_HPP_</span></div>
 <div class="ttc" id="aconcepts_8hpp_html"><div class="ttname"><a href="concepts_8hpp.html">concepts.hpp</a></div></div>
 <div class="ttc" id="adiff_8hpp_html"><div class="ttname"><a href="diff_8hpp.html">diff.hpp</a></div><div class="ttdoc">Differentiation on Lie groups.</div></div>
-<div class="ttc" id="anls_8hpp_html_a63b8c1c9cac285b7f706c3eb4c8cd88c"><div class="ttname"><a href="nls_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">smooth::minimize</a></div><div class="ttdeci">void minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const NlsOptions &amp;opts=NlsOptions{})</div><div class="ttdoc">Find a minimum of the non-linear least-squares problem.</div><div class="ttdef"><b>Definition:</b> nls.hpp:54</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html">smooth::NlsOptions</a></div><div class="ttdoc">Solver options.</div><div class="ttdef"><b>Definition:</b> nls.hpp:27</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a06c4fc89ef3f55eb82e8147a7a94b18a"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a06c4fc89ef3f55eb82e8147a7a94b18a">smooth::NlsOptions::max_iter</a></div><div class="ttdeci">std::size_t max_iter</div><div class="ttdoc">maximum number of iterations</div><div class="ttdef"><b>Definition:</b> nls.hpp:33</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a386cbad14a7998f66597518e98f27cda"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a386cbad14a7998f66597518e98f27cda">smooth::NlsOptions::verbosity</a></div><div class="ttdeci">int verbosity</div><div class="ttdoc">solver verbosity level</div><div class="ttdef"><b>Definition:</b> nls.hpp:35</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a92f2e5ae898b3f1156403ca9dc1f93b5"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a92f2e5ae898b3f1156403ca9dc1f93b5">smooth::NlsOptions::ptol</a></div><div class="ttdeci">double ptol</div><div class="ttdoc">relative parameter tolerance for convergence</div><div class="ttdef"><b>Definition:</b> nls.hpp:29</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html_adb0d9b883b5e7d8145b5955bf9684c73"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#adb0d9b883b5e7d8145b5955bf9684c73">smooth::NlsOptions::ftol</a></div><div class="ttdeci">double ftol</div><div class="ttdoc">relative function tolerance for convergence</div><div class="ttdef"><b>Definition:</b> nls.hpp:31</div></div>
+<div class="ttc" id="aoptim_8hpp_html_a63b8c1c9cac285b7f706c3eb4c8cd88c"><div class="ttname"><a href="optim_8hpp.html#a63b8c1c9cac285b7f706c3eb4c8cd88c">smooth::minimize</a></div><div class="ttdeci">void minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const NlsOptions &amp;opts=NlsOptions{})</div><div class="ttdoc">Find a minimum of the non-linear least-squares problem.</div><div class="ttdef"><b>Definition:</b> optim.hpp:54</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html">smooth::NlsOptions</a></div><div class="ttdoc">Solver options.</div><div class="ttdef"><b>Definition:</b> optim.hpp:27</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a06c4fc89ef3f55eb82e8147a7a94b18a"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a06c4fc89ef3f55eb82e8147a7a94b18a">smooth::NlsOptions::max_iter</a></div><div class="ttdeci">std::size_t max_iter</div><div class="ttdoc">maximum number of iterations</div><div class="ttdef"><b>Definition:</b> optim.hpp:33</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a386cbad14a7998f66597518e98f27cda"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a386cbad14a7998f66597518e98f27cda">smooth::NlsOptions::verbosity</a></div><div class="ttdeci">int verbosity</div><div class="ttdoc">solver verbosity level</div><div class="ttdef"><b>Definition:</b> optim.hpp:35</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a92f2e5ae898b3f1156403ca9dc1f93b5"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a92f2e5ae898b3f1156403ca9dc1f93b5">smooth::NlsOptions::ptol</a></div><div class="ttdeci">double ptol</div><div class="ttdoc">relative parameter tolerance for convergence</div><div class="ttdef"><b>Definition:</b> optim.hpp:29</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html_adb0d9b883b5e7d8145b5955bf9684c73"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#adb0d9b883b5e7d8145b5955bf9684c73">smooth::NlsOptions::ftol</a></div><div class="ttdeci">double ftol</div><div class="ttdoc">relative function tolerance for convergence</div><div class="ttdef"><b>Definition:</b> optim.hpp:31</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

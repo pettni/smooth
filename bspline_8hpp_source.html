@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>smooth: include/smooth/interp/bspline.hpp Source File</title>
+<title>smooth: include/smooth/spline/bspline.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_d6362dfbf190d9c340ed1c5eed93e115.html">smooth</a></li><li class="navelem"><a class="el" href="dir_12d7ff540eb0c31dcce6024d082ae2e7.html">interp</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_d6362dfbf190d9c340ed1c5eed93e115.html">smooth</a></li><li class="navelem"><a class="el" href="dir_9e2fd4a460ba6c33fd7db0b4096daf6d.html">spline</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -87,7 +87,7 @@ $(function() {
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="concepts_8hpp.html">smooth/concepts.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;smooth/internal/utils.hpp&quot;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;smooth/manifold_vector.hpp&quot;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="nls_8hpp.html">smooth/nls.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="optim_8hpp.html">smooth/optim.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;common.hpp&quot;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
@@ -263,11 +263,11 @@ $(function() {
 <div class="ttc" id="aclasssmooth_1_1ManifoldVector_html"><div class="ttname"><a href="classsmooth_1_1ManifoldVector.html">smooth::ManifoldVector</a></div><div class="ttdef"><b>Definition:</b> manifold_vector.hpp:25</div></div>
 <div class="ttc" id="aconcepts_8hpp_html"><div class="ttname"><a href="concepts_8hpp.html">concepts.hpp</a></div></div>
 <div class="ttc" id="adiff_8hpp_html_a73c425effecf4a85064d2f433c1b80ca"><div class="ttname"><a href="diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca">smooth::wrt</a></div><div class="ttdeci">auto wrt(_Args &amp;&amp;... args)</div><div class="ttdoc">Grouping of function arguments.</div><div class="ttdef"><b>Definition:</b> diff.hpp:24</div></div>
-<div class="ttc" id="anls_8hpp_html"><div class="ttname"><a href="nls_8hpp.html">nls.hpp</a></div><div class="ttdoc">Non-linear least squares optimization on Manifolds.</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html">smooth::NlsOptions</a></div><div class="ttdoc">Solver options.</div><div class="ttdef"><b>Definition:</b> nls.hpp:27</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a06c4fc89ef3f55eb82e8147a7a94b18a"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a06c4fc89ef3f55eb82e8147a7a94b18a">smooth::NlsOptions::max_iter</a></div><div class="ttdeci">std::size_t max_iter</div><div class="ttdoc">maximum number of iterations</div><div class="ttdef"><b>Definition:</b> nls.hpp:33</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a92f2e5ae898b3f1156403ca9dc1f93b5"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a92f2e5ae898b3f1156403ca9dc1f93b5">smooth::NlsOptions::ptol</a></div><div class="ttdeci">double ptol</div><div class="ttdoc">relative parameter tolerance for convergence</div><div class="ttdef"><b>Definition:</b> nls.hpp:29</div></div>
-<div class="ttc" id="astructsmooth_1_1NlsOptions_html_adb0d9b883b5e7d8145b5955bf9684c73"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#adb0d9b883b5e7d8145b5955bf9684c73">smooth::NlsOptions::ftol</a></div><div class="ttdeci">double ftol</div><div class="ttdoc">relative function tolerance for convergence</div><div class="ttdef"><b>Definition:</b> nls.hpp:31</div></div>
+<div class="ttc" id="aoptim_8hpp_html"><div class="ttname"><a href="optim_8hpp.html">optim.hpp</a></div><div class="ttdoc">Non-linear least squares optimization on Manifolds.</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html">smooth::NlsOptions</a></div><div class="ttdoc">Solver options.</div><div class="ttdef"><b>Definition:</b> optim.hpp:27</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a06c4fc89ef3f55eb82e8147a7a94b18a"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a06c4fc89ef3f55eb82e8147a7a94b18a">smooth::NlsOptions::max_iter</a></div><div class="ttdeci">std::size_t max_iter</div><div class="ttdoc">maximum number of iterations</div><div class="ttdef"><b>Definition:</b> optim.hpp:33</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html_a92f2e5ae898b3f1156403ca9dc1f93b5"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#a92f2e5ae898b3f1156403ca9dc1f93b5">smooth::NlsOptions::ptol</a></div><div class="ttdeci">double ptol</div><div class="ttdoc">relative parameter tolerance for convergence</div><div class="ttdef"><b>Definition:</b> optim.hpp:29</div></div>
+<div class="ttc" id="astructsmooth_1_1NlsOptions_html_adb0d9b883b5e7d8145b5955bf9684c73"><div class="ttname"><a href="structsmooth_1_1NlsOptions.html#adb0d9b883b5e7d8145b5955bf9684c73">smooth::NlsOptions::ftol</a></div><div class="ttdeci">double ftol</div><div class="ttdoc">relative function tolerance for convergence</div><div class="ttdef"><b>Definition:</b> optim.hpp:31</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

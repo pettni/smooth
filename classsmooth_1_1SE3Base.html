@@ -288,25 +288,25 @@ class smooth::SE3Base&lt; _Derived &gt;</h3>
 
 <p>Base class for <a class="el" href="classsmooth_1_1SE3.html" title="Storage implementation of SE3 Lie group.">SE3</a> Lie group types. </p>
 <p>Internally represented as \(\mathbb{S}^3 \times \mathbb{R}^3\).</p>
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md11"></a>
 Memory layout</h2>
 <ul>
 <li>Group: \( \mathbf{x} = [x, y, z, q_x, q_y, q_z, q_w] \)</li>
 <li>Tangent: \( \mathbf{a} = [v_x, v_y, v_z, \omega_x, \omega_y, \omega_z] \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Constraints</h2>
 <ul>
 <li>Group: \(q_x^2 + q_y^2 + q_z^2 + q_w^2 = 1 \)</li>
 <li>Tangent: \( -\pi &lt; \omega_x, \omega_y, \omega_z \leq \pi \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md12"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Lie group matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{X} = \begin{bmatrix} R &amp; T \\ 0 &amp; 1 \end{bmatrix} \]
 </p>
 <p>where \(R\) is a 3x3 rotation matrix and \( T = [x, y, z]^T \).</p>
-<h2><a class="anchor" id="autotoc_md13"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 Lie algebra matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{a}^\wedge = \begin{bmatrix} 0 &amp; -\omega_z &amp; \omega_y &amp; v_x \\ \omega_z &amp; 0 &amp; -\omega_x &amp; v_y \\ -\omega_y &amp; \omega_x &amp; 0 v_y \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{bmatrix} \]

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>smooth: include/smooth/lie_group_base.hpp Source File</title>
+<title>smooth: include/smooth/internal/lie_group_base.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_d6362dfbf190d9c340ed1c5eed93e115.html">smooth</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_d6362dfbf190d9c340ed1c5eed93e115.html">smooth</a></li><li class="navelem"><a class="el" href="dir_dbc7d55223aef706171f0fe920b5e68e.html">internal</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -107,7 +107,7 @@ $(function() {
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NewScalar&gt;</div>
 <div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classsmooth_1_1LieGroupBase.html#a111812b412d0ba85ab79cdd6c1b856a5">   35</a></span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1LieGroupBase.html#a111812b412d0ba85ab79cdd6c1b856a5">PlainObjectCast</a> = <span class="keyword">typename</span> traits::template <a class="code" href="classsmooth_1_1LieGroupBase.html#a3fa503f35690e9c5b538fea863700042">PlainObject&lt;NewScalar&gt;</a>;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classEigen_1_1Map_3_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html#a4da93204442eb7a91e11d39c465f9dc3">   38</a></span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> <a class="code" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">is_mutable</a> = traits::is_mutable;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">   38</a></span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> <a class="code" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">is_mutable</a> = traits::is_mutable;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977">   42</a></span>&#160;  <span class="keyword">static</span> constexpr Eigen::Index <a class="code" href="classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977">RepSize</a> = Impl::RepSize;</div>

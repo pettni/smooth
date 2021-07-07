@@ -1,5 +1,5 @@
-<map id="include/smooth/interp/bezier.hpp" name="include/smooth/interp/bezier.hpp">
-<area shape="rect" id="node1" title="bezier splines on lie groups." alt="" coords="276,5,423,47"/>
+<map id="include/smooth/spline/bezier.hpp" name="include/smooth/spline/bezier.hpp">
+<area shape="rect" id="node1" title="bezier splines on lie groups." alt="" coords="275,5,423,47"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,95,67,121"/>
 <area shape="rect" id="node3" title=" " alt="" coords="91,95,189,121"/>
 <area shape="rect" id="node4" title=" " alt="" coords="213,95,331,121"/>
