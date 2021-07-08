@@ -210,7 +210,7 @@ Eigen::Matrix<double, N, 1> solve_ls(
  * @param Delta scalar
  * @return pair(lambda, x) where x solves the least-squares problem for lambda
  *
- * \note The sparse QR decomposition is numerically unstable for ill-conditioned matrices.
+ * @note The sparse QR decomposition is numerically unstable for ill-conditioned matrices.
  * Consider using lmpar_sparse instead.
  */
 template<int N, int M, typename MatrixT>

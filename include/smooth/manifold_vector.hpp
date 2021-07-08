@@ -40,10 +40,10 @@ namespace smooth {
  * \f]
  * of Manifold elements as a single Manifold element \f$m\f$.
  *
- * \warning calling size() on a ManifoldVector returns
- * the degrees of freedom of M x M x ... x M, NOT the
+ * @warning calling `size()` on a `ManifoldVector` returns
+ * the degrees of freedom of \f$M \times M \times \ldots \times M\f$, NOT the
  * number of elements in the vector. For the latter,
- * call vector_size().
+ * use `vector_size()`.
  */
 template<Manifold M, template<typename> typename Allocator = std::allocator>
 class ManifoldVector : public std::vector<M, Allocator<M>>
@@ -117,7 +117,7 @@ public:
   /**
    * @brief In-place addition.
    *
-   * \note It must hold that size() == a.size()
+   * @note It must hold that size() == a.size()
    */
   template<typename Derived>
   PlainObject & operator+=(const Eigen::MatrixBase<Derived> & a)
@@ -134,7 +134,7 @@ public:
   /**
    * @brief Addition.
    *
-   * \note It must hold that size() == a.size()
+   * @note It must hold that `size() == a.size()`
    */
   template<typename Derived>
   PlainObject operator+(const Eigen::MatrixBase<Derived> & a) const
@@ -147,7 +147,7 @@ public:
   /**
    * @brief Subtraction.
    *
-   * \note It must hold that size() == o.size()
+   * @note It must hold that `size() == o.size()`
    */
   Eigen::Matrix<Scalar, -1, 1> operator-(const PlainObject & o) const
   {

@@ -140,7 +140,7 @@ public:
   /**
    * @brief Project to SE2.
    *
-   * \note SE2 header must be included.
+   * @note SE2 header must be included.
    */
   SE2<Scalar> project_se2() const
   {

@@ -79,7 +79,7 @@ class LieGroupParameterization
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
- * \note There is potential to improve thie speed of this by reducing casting.
+ * @note There is potential to improve thie speed of this by reducing casting.
  * The ceres Jet type supports binary operations with e.g. double, but currently
  * the Lie operations require everything to have a uniform scalar type. Enabling
  * + and - for different scalars would thus save some casts.

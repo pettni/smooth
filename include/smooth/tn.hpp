@@ -39,7 +39,7 @@ namespace smooth {
 /**
  * @brief Eigen type as \f$T(n)\f$ Lie Group.
  *
- * \note Tn is a typedef for an Eigen column vector and therefore does not
+ * @note Tn is a typedef for an Eigen column vector and therefore does not
  * have the Lie group API from LieGroupBase.
  * lie_traits<Tn<N, Scalar>> defines the operations corresponding to the Lie group \f$T(n)\f$.
  *

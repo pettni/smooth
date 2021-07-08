@@ -120,7 +120,7 @@ public:
    *
    * Rotation of SO2 is embedded in SO3 as a rotation around the z axis.
    *
-   * \note SO3 header must be included.
+   * @note SO3 header must be included.
    */
   SO3<Scalar> lift_so3() const
   {

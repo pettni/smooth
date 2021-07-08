@@ -222,7 +222,7 @@ private:
  * The resulting curve passes through the data points and has piecewise
  * constant velocity.
  *
- * \warning Result has discontinuous derivatives at knot points
+ * @warning Result has discontinuous derivatives at knot points
  *
  * @tparam Rt, Rg range types
  * @param tt interpolation times
@@ -261,7 +261,7 @@ PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & 
  * The resulting curve passes through the data points and has
  * continuous derivatives.
  *
- * \warning Result may exhibit oscillatory behavior since second derivative
+ * @warning Result may exhibit oscillatory behavior since second derivative
  * is free.
  *
  * @tparam Rt, Rg range types

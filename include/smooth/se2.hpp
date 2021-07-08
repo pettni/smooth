@@ -140,7 +140,7 @@ public:
   /**
    * @brief Lift to SE3.
    *
-   * \note SE3 header must be included.
+   * @note SE3 header must be included.
    */
   SE3<Scalar> lift_se3() const
   {

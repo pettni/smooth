@@ -133,7 +133,7 @@ public:
    *
    * This keeps the yaw/z axis component of the rotation.
    *
-   * \note SO2 header must be included.
+   * @note SO2 header must be included.
    */
   SO2<Scalar> project_so2() const
   {
