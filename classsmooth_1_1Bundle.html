@@ -111,7 +111,7 @@ Public Types</h2></td></tr>
 <tr class="memitem:a792a3ec3e9633da5c498c063b547446e inherit pub_types_classsmooth_1_1BundleBase"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#a792a3ec3e9633da5c498c063b547446e">Tangent</a> = typename <a class="el" href="classsmooth_1_1LieGroupBase.html#ad453e6272e0911a08c0f619082ab42e9">Base::Tangent</a></td></tr>
 <tr class="separator:a792a3ec3e9633da5c498c063b547446e inherit pub_types_classsmooth_1_1BundleBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18c9895025213dbaced9cb6c15aa541f inherit pub_types_classsmooth_1_1BundleBase"><td class="memItemLeft" align="right" valign="top"><a id="a18c9895025213dbaced9cb6c15aa541f"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f">PartType</a> = typename lie_traits&lt; <a class="el" href="classsmooth_1_1Bundle.html">Bundle</a>&lt; _Gs... &gt; &gt;::template PartPlainObject&lt; Idx &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f">PartType</a> = typename <a class="el" href="structsmooth_1_1lie__traits.html">lie_traits</a>&lt; <a class="el" href="classsmooth_1_1Bundle.html">Bundle</a>&lt; _Gs... &gt; &gt;::template PartPlainObject&lt; Idx &gt;</td></tr>
 <tr class="memdesc:a18c9895025213dbaced9cb6c15aa541f inherit pub_types_classsmooth_1_1BundleBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of element in Bundle.. <br /></td></tr>
 <tr class="separator:a18c9895025213dbaced9cb6c15aa541f inherit pub_types_classsmooth_1_1BundleBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classsmooth_1_1LieGroupBase"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classsmooth_1_1LieGroupBase')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase&lt; Derived &gt;</a></td></tr>
@@ -305,7 +305,7 @@ static constexpr Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"
 <tr class="separator:ab49025aac6fb6b4e026413818dea2346 inherit pub_static_attribs_classsmooth_1_1LieGroupBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_types_classsmooth_1_1LieGroupBase"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classsmooth_1_1LieGroupBase')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase&lt; Derived &gt;</a></td></tr>
 <tr class="memitem:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top"><a id="a5bf3a0c88531891fe7f0209202429668"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupBase.html#a5bf3a0c88531891fe7f0209202429668">traits</a> = lie_traits&lt; Derived &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupBase.html#a5bf3a0c88531891fe7f0209202429668">traits</a> = <a class="el" href="structsmooth_1_1lie__traits.html">lie_traits</a>&lt; Derived &gt;</td></tr>
 <tr class="memdesc:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">CRTP traits. <br /></td></tr>
 <tr class="separator:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55f732e687efa0c2b44c3174f1e620fb inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top"><a id="a55f732e687efa0c2b44c3174f1e620fb"></a>
@@ -329,6 +329,8 @@ class smooth::Bundle&lt; _Gs &gt;</h3>
 
 <p>Storage implementation of <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a> lie group. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1BundleBase.html" title="Base class for Bundle lie groups.">BundleBase</a> for details. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00125">125</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a00f76238800285d908a26fc7a22da6f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00f76238800285d908a26fc7a22da6f0">&#9670;&nbsp;</a></span>Scalar</h2>
@@ -344,6 +346,8 @@ template&lt;LieGroupLike... _Gs&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Scalar type. </p>
+
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -362,6 +366,8 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Underlying storage is an Eigen matrix </p>
 
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a066200be93a615f35fa3ea83c7a02477"></a>
@@ -378,6 +384,8 @@ template&lt;LieGroupLike... _Gs&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Tangent type (Eigen column vector of length Dof). </p>
+
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -497,6 +505,8 @@ template&lt;typename OtherDerived &gt; </div>
 </div><div class="memdoc">
 <p>Copy assignment from other storage type </p>
 
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -526,6 +536,8 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Access underlying Eigen::Matrix </p>
 
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+
 </div>
 </div>
 <a id="aa8574758672c8ee228e58574f477ad16"></a>
@@ -553,6 +565,8 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Const access underlying Eigen::Matrix </p>
+
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -582,6 +596,8 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Access raw pointer </p>
 
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a5cbac3a9ce67840b2630b74dd4b7ec66"></a>
@@ -609,6 +625,8 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Const access raw pointer </p>
+
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>

@@ -260,7 +260,7 @@ static constexpr Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"
 <tr class="separator:ab49025aac6fb6b4e026413818dea2346 inherit pub_static_attribs_classsmooth_1_1LieGroupBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_types_classsmooth_1_1LieGroupBase"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classsmooth_1_1LieGroupBase')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase&lt; _Derived &gt;</a></td></tr>
 <tr class="memitem:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top"><a id="a5bf3a0c88531891fe7f0209202429668"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupBase.html#a5bf3a0c88531891fe7f0209202429668">traits</a> = lie_traits&lt; _Derived &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupBase.html#a5bf3a0c88531891fe7f0209202429668">traits</a> = <a class="el" href="structsmooth_1_1lie__traits.html">lie_traits</a>&lt; _Derived &gt;</td></tr>
 <tr class="memdesc:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">CRTP traits. <br /></td></tr>
 <tr class="separator:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55f732e687efa0c2b44c3174f1e620fb inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top"><a id="a55f732e687efa0c2b44c3174f1e620fb"></a>
@@ -303,7 +303,9 @@ Lie algebra matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{a}^\wedge = \begin{bmatrix} 0 &amp; -\omega_z &amp; \omega_y \\ \omega_z &amp; 0 &amp; -\omega_x \\ -\omega_y &amp; \omega_x &amp; 0 \\ \end{bmatrix} \]
 </p>
- </div><h2 class="groupheader">Member Typedef Documentation</h2>
+ 
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00078">78</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="abd551c0936e31ba3a9cff6e54bfa188b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abd551c0936e31ba3a9cff6e54bfa188b">&#9670;&nbsp;</a></span>Scalar</h2>
 
@@ -318,6 +320,8 @@ template&lt;typename _Derived &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Scalar type. </p>
+
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00087">87</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>
@@ -335,6 +339,8 @@ template&lt;typename _Derived &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Tangent type (Eigen column vector of length Dof). </p>
+
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00087">87</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>
@@ -390,6 +396,8 @@ template&lt;typename _Derived &gt; </div>
 </dl>
 <p>Returned angles a1, a2, a3 are s.t. rotation is described by \( Rot_{i_1}(a_1) * Rot_{i_2}(a_2) * Rot_{i_3}(a_3). \) where \( Rot_i(a) \) rotates an angle \(a\) around the \(i\):th axis. </p>
 
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00117">117</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a6f3c75514b62fa02e09575314b235f3a"></a>
@@ -420,6 +428,8 @@ template&lt;typename _Derived &gt; </div>
 <p>Project to <a class="el" href="classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group.">SO2</a>. </p>
 <p>This keeps the yaw/z axis component of the rotation.</p>
 <dl class="section note"><dt>Note</dt><dd><a class="el" href="classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group.">SO2</a> header must be included. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00138">138</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>

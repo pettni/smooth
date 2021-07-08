@@ -312,7 +312,7 @@ static constexpr Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"
 <tr class="separator:ab49025aac6fb6b4e026413818dea2346 inherit pub_static_attribs_classsmooth_1_1LieGroupBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_types_classsmooth_1_1LieGroupBase"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classsmooth_1_1LieGroupBase')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase&lt; Derived &gt;</a></td></tr>
 <tr class="memitem:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top"><a id="a5bf3a0c88531891fe7f0209202429668"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupBase.html#a5bf3a0c88531891fe7f0209202429668">traits</a> = lie_traits&lt; Derived &gt;</td></tr>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupBase.html#a5bf3a0c88531891fe7f0209202429668">traits</a> = <a class="el" href="structsmooth_1_1lie__traits.html">lie_traits</a>&lt; Derived &gt;</td></tr>
 <tr class="memdesc:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="mdescLeft">&#160;</td><td class="mdescRight">CRTP traits. <br /></td></tr>
 <tr class="separator:a5bf3a0c88531891fe7f0209202429668 inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55f732e687efa0c2b44c3174f1e620fb inherit pro_types_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top"><a id="a55f732e687efa0c2b44c3174f1e620fb"></a>
@@ -336,6 +336,8 @@ class smooth::SO2&lt; _Scalar &gt;</h3>
 
 <p>Storage implementation of <a class="el" href="classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group.">SO2</a> Lie group. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1SO2Base.html" title="Base class for SO2 Lie group types.">SO2Base</a> for memory layout. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00159">159</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a8e377e1d0077bddc58001d503875848b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8e377e1d0077bddc58001d503875848b">&#9670;&nbsp;</a></span>Scalar</h2>
@@ -351,6 +353,8 @@ template&lt;typename _Scalar &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Scalar type. </p>
+
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
 
 </div>
 </div>
@@ -369,6 +373,8 @@ template&lt;typename _Scalar &gt; </div>
 </div><div class="memdoc">
 <p>Underlying storage is an Eigen matrix </p>
 
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a94ef7fefbf38fa5fcbd993ab9942cf8b"></a>
@@ -385,6 +391,8 @@ template&lt;typename _Scalar &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Tangent type (Eigen column vector of length Dof). </p>
+
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
 
 </div>
 </div>
@@ -504,6 +512,8 @@ template&lt;typename OtherDerived &gt; </div>
 </div><div class="memdoc">
 <p>Copy assignment from other storage type </p>
 
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a04b5796cd0145f134d12a7ee552e2d00"></a>
@@ -552,6 +562,8 @@ template&lt;typename _Scalar &gt; </div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Inputs are are normalized to ensure group constraint. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00173">173</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a3da13bc6d9e31a20e35af2ac6fb6fd66"></a>
@@ -587,6 +599,8 @@ template&lt;typename _Scalar &gt; </div>
   </table>
   </dd>
 </dl>
+
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00187">187</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
 
 </div>
 </div>
@@ -625,6 +639,8 @@ template&lt;typename _Scalar &gt; </div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Input is normalized to ensure group constraint. </dd></dl>
 
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00202">202</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -654,6 +670,8 @@ template&lt;typename _Scalar &gt; </div>
 </div><div class="memdoc">
 <p>Access underlying Eigen::Matrix </p>
 
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
+
 </div>
 </div>
 <a id="af0f5d2837ecf7f9bb70495c4ce5ebf90"></a>
@@ -681,6 +699,8 @@ template&lt;typename _Scalar &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Const access underlying Eigen::Matrix </p>
+
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
 
 </div>
 </div>
@@ -710,6 +730,8 @@ template&lt;typename _Scalar &gt; </div>
 </div><div class="memdoc">
 <p>Access raw pointer </p>
 
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
+
 </div>
 </div>
 <a id="a02709795d55be2c85ac36ddd326f09c4"></a>
@@ -737,6 +759,8 @@ template&lt;typename _Scalar &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Const access raw pointer </p>
+
+<p class="definition">Definition at line <a class="el" href="so2_8hpp_source.html#l00162">162</a> of file <a class="el" href="so2_8hpp_source.html">so2.hpp</a>.</p>
 
 </div>
 </div>
