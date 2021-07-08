@@ -33,7 +33,9 @@ The guiding principles for `smooth` are **brevity, reliability and compatability
 
 ## Getting started
 
-1. Clone the repository and install it
+### Download and Build
+
+Clone the repository and install it
 ```zsh
 git clone https://github.com/pettni/smooth.git
 cd smooth
@@ -46,13 +48,15 @@ make -j8
 sudo make install
 ```
 
-Alternatively, if using ROS or ROS2 just clone the folder into a catkin/[colcon](https://colcon.readthedocs.io/en/released/) workspace and build the
+Alternatively, if using ROS or ROS2 just clone `smooth` into a catkin/[colcon](https://colcon.readthedocs.io/en/released/) workspace source folder and build the
 workspace with a compiler that supports C++20. Example with colcon:
 ```zsh
 colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10
 ```
 
-2. To utilize `smooth` in your own project, include this in your `CMakeLists.txt`
+### Use with cmake
+
+To utilize `smooth` in your own project, include this in your `CMakeLists.txt`
 ```cmake
 find_package(smooth)
 
@@ -60,7 +64,9 @@ add_executable(my_executable main.cpp)
 target_link_libraries(my_executable smooth::smooth)
 ```
 
-3. Check out the [Documentation][doc-link] and the [`examples`](https://github.com/pettni/smooth/tree/master/examples).
+### Explore the API
+
+Check out the [Documentation][doc-link] and the [`examples`](https://github.com/pettni/smooth/tree/master/examples).
 
 
 ## Group algebra examples
