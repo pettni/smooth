@@ -1,3 +1,28 @@
+// smooth: Lie Theory for Robotics
+// https://github.com/pettni/smooth
+//
+// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+//
+// Copyright (c) 2021 Petter Nilsson
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 #ifndef SMOOTH__CONCEPTS_HPP_
 #define SMOOTH__CONCEPTS_HPP_
 
@@ -16,13 +41,13 @@ namespace smooth
 /**
  * @brief A concept defining a (smooth) manifold.
  *
- * - M::Scalar scalar type
- * - M::SizeAtCompileTime tangent space dimension (compile time, -1 if dynamic)
- * - M.size() : tangent space dimension (runtime)
- * - M + T -> M : geodesic addition
- * - M - M -> T : inverse of geodesic addition (in practice only used for infinitesimal values)
+ * - `M::Scalar` scalar type
+ * - `M::SizeAtCompileTime` tangent space dimension (compile time, -1 if dynamic)
+ * - `M.size()` : tangent space dimension (runtime)
+ * - `M + T -> M` : geodesic addition
+ * - `M - M -> T` : inverse of geodesic addition (in practice only used for infinitesimal values)
  *
- * Where T = Eigen::Matrix<Scalar, SizeAtCompileTime, 1> is the tangent type
+ * Where `T = Eigen::Matrix<Scalar, SizeAtCompileTime, 1>` is the tangent type
  */
 template<typename M>
 concept Manifold =
@@ -48,12 +73,6 @@ concept RnLike = Manifold<T> &&
 std::is_base_of_v<Eigen::MatrixBase<T>, T> &&
 T::IsVectorAtCompileTime == 1 &&
 T::ColsAtCompileTime == 1;
-
-/**
- * @brief Type that is a RnLike with size known at compile-time.
- */
-template<typename T>
-concept StaticRnLike = RnLike<T> && T::RowsAtCompileTime >= 1;
 
 /**
  * @brief Lie group concept.
@@ -85,10 +104,25 @@ requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
 };
 
 /**
- * @brief Type that is either a LieGroup or StaticRnLike.
+ * @brief Type trait that maps a type to Lie group operations.
+ *
+ * Required members:
+ *  - `typename Impl`: Lie group operations
+ *  - `typename Scalar`: Scalar type (\p float, \p double, ...)
+ *  - `typename template<NewScalar> PlainObject`: Default return type
+ */
+template<typename T>
+struct lie_traits;
+
+/**
+ * @brief Type for which \p lie_traits is properly specialized.
  */
 template<typename G>
-concept LieGroupLike = LieGroup<G> || StaticRnLike<G>;
+concept LieGroupLike = requires
+{
+  typename lie_traits<G>::Impl;
+  typename lie_traits<G>::Scalar;
+};
 
 } // namespace smooth
 

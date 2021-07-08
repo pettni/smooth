@@ -6,7 +6,7 @@
 
 <img src="media/ode.png" width="300">  <img src="media/bspline.png" width="300">
 
-In robotics it is often convenient to work in non-Euclidean manifolds. **Lie groups** are a class of manifolds that due to their symmetry are easy to work with, and are also good models for many robotic systems. The objective of this header-only library is to make it easy to use Lie groups in robotics software, by enabling things such as:
+In robotics it is often convenient to work in non-Euclidean manifolds. [Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that due to their symmetry are easy to work with, and are also good models for many robotic systems. The objective of this header-only C++20 library is to make it easy to use Lie groups in robotics software, by enabling things such as:
 
  * Algebraic manipulation and analytic tangent space derivatives (example code below)
  * Numerical integration (left figure shows the solution of an ODE on SO(3) x R(3), see `examples/odeint.cpp`)
@@ -28,7 +28,8 @@ These additional groups may or may not be implemented in the future:
 
 The guiding principles for `smooth` are **brevity, reliability and compatability**.
 
-*Since the project is currently under development, breaking changes should be expected.*
+*This project is currently being developed, breaking changes should be expected.*
+
 
 ## Getting started
 
@@ -38,13 +39,18 @@ git clone https://github.com/pettni/smooth.git
 cd smooth
 mkdir build && cd build
 
-# The compiler must support C++20. Build tests and/or examples as desired
+# Specify a C++20-compatible compiler if your default does not support C++20.
+# Build tests and/or examples as desired.
 cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF
 make -j8
 sudo make install
 ```
 
-Alternatively, if using ROS or ROS2 just clone the folder into a catkin/colcon workspace.
+Alternatively, if using ROS or ROS2 just clone the folder into a catkin/[colcon](https://colcon.readthedocs.io/en/released/) workspace and build the
+workspace with a compiler that supports C++20. Example with colcon:
+```zsh
+colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10
+```
 
 2. To utilize `smooth` in your own project, include this in your `CMakeLists.txt`
 ```cmake
@@ -55,6 +61,7 @@ target_link_libraries(my_executable smooth::smooth)
 ```
 
 3. Check out the [Documentation][doc-link] and the [`examples`](https://github.com/pettni/smooth/tree/master/examples).
+
 
 ## Group algebra examples
 
@@ -103,37 +110,26 @@ target_link_libraries(my_executable smooth::smooth)
 
 These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
 
-* ```Manifold```: type that supports ```operator+()```, ```operator-()```
-  * Example: ```smooth::ManifoldVector<Manifold>``` from ```manifold_vector.hpp``` which is convenient for optimizaiton over dynamic numbers of ```Manifold```s
-  * Algorithms: Differentiation, optimization, averaging
+* `Manifold`: type that supports `operator+()`, `operator-()`
+  * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp` which is convenient for optimizaiton over dynamic numbers of `Manifold`s
 
-* ```RnLike```: a ```Manifold``` that is an ```Eigen``` vector type
-  * Example: ```Eigen::VectorXd```
+* `RnLike`: a `Manifold` that is an `Eigen` vector type
+  * Example: `Eigen::VectorXd`
 
-* ```StaticRnLike```: an ```RnLike``` whose size is known at compile-time
-  * Example: ```Eigen::Vector3d```
+* `LieGroup`: a `Manifold` that also supports Lie group operations
+  * Example: `smooth::SO3d`
+  * Example: `smooth::Bundle<LieGroupLike ...>`
 
-* ```LieGroup```: a ```Manifold``` that also supports Lie group operations
-  * Example: ```smooth::SO3d```
-  * Example: ```smooth::Bundle<LieGroupLike ...>```
-  * Algorithms: Numerical integration
-
-* ```LieGroupLike```: a type that is either ```StaticRnLike``` or a ```LieGroup```
-  * Algorithms: Splines
+* `LieGroupLike`: a type for which `lie_traits` is specialized
+  * Example: All `LieGroup`, all `RnLike` with size known at compile-time
 
 
 ## Algorithms
 
-Available:
-
-* Tangent space differentiation on ```Manifold``` (`diff.hpp`)
-* Non-linear least squares optimization on ```Manifold``` (`optim.hpp`)
-* Bezier curve evaluation and fitting on ```LieGroupLike```  (`spline/bezier.hpp`)
-* B-spline evaluation and fitting on ```LieGroupLike``` (`spline/bspline.hpp`)
-
-Planned:
-
-* Average on ```Manifold```
+* Tangent space differentiation on `Manifold` (`diff.hpp`)
+* Non-linear least squares optimization on `Manifold` (`optim.hpp`)
+* Bezier curve evaluation and fitting on `LieGroupLike`  (`spline/bezier.hpp`)
+* B-spline evaluation and fitting on `LieGroupLike` (`spline/bspline.hpp`)
 
 
 ## Compatibility
@@ -148,7 +144,7 @@ Utility headers for interfacing with adjacent software are provided in `smooth/c
 
 ## Related projects
 
-Two similar projects that have served as inspiration for `smooth` are [`manif`](https://github.com/artivis/manif/), which also has an accompanying paper, and [`Sophus`](https://github.com/strasdat/Sophus/). Certain design decisions are different in `smooth`: jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which greatly facilitates control and estimation tasks, and is written in C++20 which enables cleaner code as well as saner compiler error messages.
+Two similar projects that have served as inspiration for `smooth` are [`manif`](https://github.com/artivis/manif/), which also has an accompanying paper, and [`Sophus`](https://github.com/strasdat/Sophus/). Certain design decisions are different in `smooth`: jacobians are with respect to the tangent space as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which facilitates control and estimation tasks, as well as additional utilities such as differentiation, optimization, and splines. Finally `smooth` is written in C++20 and leverages modern features such as [concepts](https://en.cppreference.com/w/cpp/language/constraints) and [ranges](https://en.cppreference.com/w/cpp/ranges).
 
 <!-- MARKDOWN LINKS AND IMAGES -->
 [doc-link]: https://pettni.github.io/smooth
