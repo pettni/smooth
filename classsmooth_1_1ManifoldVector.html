@@ -169,7 +169,7 @@ class smooth::ManifoldVector&lt; M, Allocator &gt;</h3>
 \[ m = (m_1, m_2, ..., m_k) \in M \times M \times ... \times M \]
 </p>
 <p> of Manifold elements as a single Manifold element \(m\).</p>
-<dl class="section warning"><dt>Warning</dt><dd>calling <a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> on a <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a> returns the degrees of freedom of M x M x ... x M, NOT the number of elements in the vector. For the latter, call <a class="el" href="classsmooth_1_1ManifoldVector.html#a769841932d348ba04e8e78a87631cf00" title="Number of elements in ManifoldVector.">vector_size()</a>. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>calling <code><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a></code> on a <code><a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a></code> returns the degrees of freedom of \(M \times M \times \ldots \times M\), NOT the number of elements in the vector. For the latter, use <code><a class="el" href="classsmooth_1_1ManifoldVector.html#a769841932d348ba04e8e78a87631cf00" title="Number of elements in ManifoldVector.">vector_size()</a></code>. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00049">49</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
@@ -236,7 +236,7 @@ template&lt;typename Derived &gt; </div>
 </div><div class="memdoc">
 
 <p>Addition. </p>
-<dl class="section note"><dt>Note</dt><dd>It must hold that <a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> == a.size() </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>It must hold that <code><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> == a.size()</code> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00140">140</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 
@@ -304,7 +304,7 @@ template&lt;Manifold M, template&lt; typename &gt; typename Allocator = std::all
 </div><div class="memdoc">
 
 <p>Subtraction. </p>
-<dl class="section note"><dt>Note</dt><dd>It must hold that <a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> == o.size() </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>It must hold that <code><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> == o.size()</code> </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00152">152</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 
