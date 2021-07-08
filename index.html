@@ -99,8 +99,9 @@ $(function() {
 <p><em>This project is currently being developed, breaking changes should be expected.</em></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Getting started</h1>
-<ol type="1">
-<li>Clone the repository and install it <div class="fragment"><div class="line">git clone https://github.com/pettni/smooth.git</div>
+<h2><a class="anchor" id="autotoc_md2"></a>
+Download and Build</h2>
+<p>Clone the repository and install it </p><div class="fragment"><div class="line">git clone https://github.com/pettni/smooth.git</div>
 <div class="line">cd smooth</div>
 <div class="line">mkdir build &amp;&amp; cd build</div>
 <div class="line"> </div>
@@ -109,18 +110,17 @@ Getting started</h1>
 <div class="line">cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF</div>
 <div class="line">make -j8</div>
 <div class="line">sudo make install</div>
-</div><!-- fragment --></li>
-</ol>
-<p>Alternatively, if using ROS or ROS2 just clone the folder into a catkin/<a href="https://colcon.readthedocs.io/en/released/">colcon</a> workspace and build the workspace with a compiler that supports C++20. Example with colcon: </p><div class="fragment"><div class="line">colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10</div>
-</div><!-- fragment --><ol type="1">
-<li>To utilize <code>smooth</code> in your own project, include this in your <code>CMakeLists.txt</code> <div class="fragment"><div class="line">find_package(smooth)</div>
+</div><!-- fragment --><p>Alternatively, if using ROS or ROS2 just clone <code>smooth</code> into a catkin/<a href="https://colcon.readthedocs.io/en/released/">colcon</a> workspace source folder and build the workspace with a compiler that supports C++20. Example with colcon: </p><div class="fragment"><div class="line">colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
+Use with cmake</h2>
+<p>To utilize <code>smooth</code> in your own project, include this in your <code>CMakeLists.txt</code> </p><div class="fragment"><div class="line">find_package(smooth)</div>
 <div class="line"> </div>
 <div class="line">add_executable(my_executable main.cpp)</div>
 <div class="line">target_link_libraries(my_executable smooth::smooth)</div>
-</div><!-- fragment --></li>
-<li>Check out the <a href="https://pettni.github.io/smooth">Documentation</a> and the <a href="https://github.com/pettni/smooth/tree/master/examples"><code>examples</code></a>.</li>
-</ol>
-<h1><a class="anchor" id="autotoc_md2"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
+Explore the API</h2>
+<p>Check out the <a href="https://pettni.github.io/smooth">Documentation</a> and the <a href="https://github.com/pettni/smooth/tree/master/examples"><code>examples</code></a>.</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Group algebra examples</h1>
 <div class="fragment"><div class="line"><span class="comment">// Also works with other types: SO2d, SE2d, SE3d, Bundle&lt;SO3d, T3d&gt; etc...</span></div>
 <div class="line"> </div>
@@ -172,7 +172,7 @@ Group algebra examples</h1>
 <div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_affb405319b0c006dcfabbf1a961224a7"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::LieGroupBase::Random</a></div><div class="ttdeci">static PlainObject Random()</div><div class="ttdoc">Construct a random element.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00132">lie_group_base.hpp:132</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1SO3_html"><div class="ttname"><a href="classsmooth_1_1SO3.html">smooth::SO3</a></div><div class="ttdoc">Storage implementation of SO3 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="so3_8hpp_source.html#l00171">so3.hpp:172</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1SO3_html_a091c6e1a369ee0ce07296ec4d07464f6"><div class="ttname"><a href="classsmooth_1_1SO3.html#a091c6e1a369ee0ce07296ec4d07464f6">smooth::SO3::Tangent</a></div><div class="ttdeci">typename Base::Tangent Tangent</div><div class="ttdef"><b>Definition:</b> <a href="so3_8hpp_source.html#l00175">so3.hpp:175</a></div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md3"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
 Concepts and Types</h1>
 <p>These <a href="https://en.cppreference.com/w/cpp/concepts">C++20 concepts</a> are implemented in <code><a class="el" href="concepts_8hpp.html">concepts.hpp</a></code>.</p>
 <ul>
@@ -194,7 +194,7 @@ Concepts and Types</h1>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
 Algorithms</h1>
 <ul>
 <li>Tangent space differentiation on <code>Manifold</code> (<code><a class="el" href="diff_8hpp.html" title="Differentiation on Lie groups.">diff.hpp</a></code>)</li>
@@ -202,7 +202,7 @@ Algorithms</h1>
 <li>Bezier curve evaluation and fitting on <code>LieGroupLike</code> (<code><a class="el" href="bezier_8hpp.html" title="bezier splines on lie groups.">spline/bezier.hpp</a></code>)</li>
 <li>B-spline evaluation and fitting on <code>LieGroupLike</code> (<code><a class="el" href="bspline_8hpp.html" title="B-splines on Lie groups.">spline/bspline.hpp</a></code>)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Compatibility</h1>
 <p>Utility headers for interfacing with adjacent software are provided in <code>smooth/compat</code></p>
 <ul>
@@ -211,7 +211,7 @@ Compatibility</h1>
 <li>Local parameterization for <a href="http://ceres-solver.org/">Ceres</a> on-manifold optimization</li>
 <li>Numerical integration using <a href="https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html"><code>boost::odeint</code></a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Related projects</h1>
 <p>Two similar projects that have served as inspiration for <code>smooth</code> are <a href="https://github.com/artivis/manif/"><code>manif</code></a>, which also has an accompanying paper, and <a href="https://github.com/strasdat/Sophus/"><code>Sophus</code></a>. Certain design decisions are different in <code>smooth</code>: jacobians are with respect to the tangent space as in <code>manif</code>, but the tangent types are Eigen vectors like in <code>Sophus</code>. This library also includes the Bundle type which facilitates control and estimation tasks, as well as additional utilities such as differentiation, optimization, and splines. Finally <code>smooth</code> is written in C++20 and leverages modern features such as <a href="https://en.cppreference.com/w/cpp/language/constraints">concepts</a> and <a href="https://en.cppreference.com/w/cpp/ranges">ranges</a>. </p>
 </div></div><!-- PageDoc -->

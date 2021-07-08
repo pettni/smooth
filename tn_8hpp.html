@@ -267,18 +267,18 @@ template&lt;int _N, typename _Scalar &gt; </div>
 
 <p>Eigen type as \(T(n)\) Lie Group. </p>
 <dl class="section note"><dt>Note</dt><dd>Tn is a typedef for an Eigen column vector and therefore does not have the Lie group API from LieGroupBase. lie_traits&lt;Tn&lt;N, Scalar&gt;&gt; defines the operations corresponding to the Lie group \(T(n)\).</dd></dl>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<h2><a class="anchor" id="autotoc_md26"></a>
 Memory layout</h2>
 <ul>
 <li>Group: \( \mathbf{t} = [x_1, \ldots, x_n] \)</li>
 <li>Tangent: \( \mathbf{v} = [v_1, \ldots, v_n] \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md24"></a>
+<h2><a class="anchor" id="autotoc_md27"></a>
 Lie group Matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{X} = \begin{bmatrix} I &amp; \mathbf{t} \\ 0 &amp; 1 \end{bmatrix} \]
 </p>
-<h2><a class="anchor" id="autotoc_md25"></a>
+<h2><a class="anchor" id="autotoc_md28"></a>
 Lie algebra Matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{v}^\wedge = \begin{bmatrix} 0 &amp; \mathbf{v} \\ 0 &amp; 0 \end{bmatrix} \]
