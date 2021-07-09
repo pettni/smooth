@@ -107,11 +107,8 @@ Include dependency graph for ceres.hpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1ParameterizationFunctor.html">smooth::ParameterizationFunctor&lt; G &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Functor defining on-manifold plus for a Lie group type in Ceres format.  <a href="structsmooth_1_1ParameterizationFunctor.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupParameterization.html">smooth::LieGroupParameterization&lt; G &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Define a parameterization using <a class="el" href="structsmooth_1_1ParameterizationFunctor.html" title="Functor defining on-manifold plus for a Lie group type in Ceres format.">ParameterizationFunctor</a> and automatic differentiation.  <a href="classsmooth_1_1LieGroupParameterization.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1CeresLocalParameterization.html">smooth::CeresLocalParameterization&lt; G &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameterization for on-manifold optimization with Ceres.  <a href="classsmooth_1_1CeresLocalParameterization.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -162,13 +159,9 @@ template&lt;typename _F , typename _Wrt &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>There is potential to improve thie speed of this by reducing casting. The ceres Jet type supports binary operations with e.g. double, but currently the Lie operations require everything to have a uniform scalar type. Enabling<ul>
-<li>and - for different scalars would thus save some casts. </li>
-</ul>
-</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ceres_8hpp_source.html#l00088">88</a> of file <a class="el" href="ceres_8hpp_source.html">ceres.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ceres_8hpp_source.html#l00082">82</a> of file <a class="el" href="ceres_8hpp_source.html">ceres.hpp</a>.</p>
 
 </div>
 </div>

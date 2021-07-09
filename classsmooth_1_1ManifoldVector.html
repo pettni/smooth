@@ -83,13 +83,16 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
+<p><code>std::vector</code> based Manifold container.  
+ <a href="classsmooth_1_1ManifoldVector.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for smooth::ManifoldVector&lt; M, Allocator &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsmooth_1_1ManifoldVector__inherit__graph.png" border="0" usemap="#asmooth_1_1ManifoldVector_3_01M_00_01Allocator_01_4_inherit__map" alt="Inheritance graph"/></div>
 <map name="asmooth_1_1ManifoldVector_3_01M_00_01Allocator_01_4_inherit__map" id="asmooth_1_1ManifoldVector_3_01M_00_01Allocator_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,95,164,136"/>
+<area shape="rect" title="std::vector based Manifold container." alt="" coords="5,95,164,136"/>
 <area shape="rect" title=" " alt="" coords="20,5,149,47"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
@@ -109,7 +112,7 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae5b4bdb7894336557da92c7e3d74102b"><td class="memItemLeft" align="right" valign="top"><a id="ae5b4bdb7894336557da92c7e3d74102b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1ManifoldVector.html#ae5b4bdb7894336557da92c7e3d74102b">ManifoldVector</a> ()=default</td></tr>
-<tr class="memdesc:ae5b4bdb7894336557da92c7e3d74102b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor of empty <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>. <br /></td></tr>
+<tr class="memdesc:ae5b4bdb7894336557da92c7e3d74102b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor of empty <a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">ManifoldVector</a>. <br /></td></tr>
 <tr class="separator:ae5b4bdb7894336557da92c7e3d74102b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2cb25d7432416420cd99f703a7a05b1"><td class="memItemLeft" align="right" valign="top"><a id="ad2cb25d7432416420cd99f703a7a05b1"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1ManifoldVector.html#ad2cb25d7432416420cd99f703a7a05b1">ManifoldVector</a> (const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a> &amp;o)=default</td></tr>
@@ -137,7 +140,7 @@ template&lt;typename NewScalar &gt; </td></tr>
 <tr class="separator:a6430e5c0a158ecc6a98bb35f9bd89589"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a769841932d348ba04e8e78a87631cf00"><td class="memItemLeft" align="right" valign="top"><a id="a769841932d348ba04e8e78a87631cf00"></a>
 std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1ManifoldVector.html#a769841932d348ba04e8e78a87631cf00">vector_size</a> () const</td></tr>
-<tr class="memdesc:a769841932d348ba04e8e78a87631cf00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of elements in <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>. <br /></td></tr>
+<tr class="memdesc:a769841932d348ba04e8e78a87631cf00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of elements in <a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">ManifoldVector</a>. <br /></td></tr>
 <tr class="separator:a769841932d348ba04e8e78a87631cf00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af30c08e4ea5186a708d19b63bbef2f1a"><td class="memItemLeft" align="right" valign="top">Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a">size</a> () const</td></tr>
 <tr class="memdesc:af30c08e4ea5186a708d19b63bbef2f1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Runtime degrees of freedom.  <a href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a">More...</a><br /></td></tr>
@@ -165,13 +168,14 @@ static constexpr Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"
 <div class="textblock"><h3>template&lt;Manifold M, template&lt; typename &gt; typename Allocator = std::allocator&gt;<br />
 class smooth::ManifoldVector&lt; M, Allocator &gt;</h3>
 
-<p><code>std::vector</code> based container to treat a collection </p><p class="formulaDsp">
+<p><code>std::vector</code> based Manifold container. </p>
+<p>Convenient to treat a collection </p><p class="formulaDsp">
 \[ m = (m_1, m_2, ..., m_k) \in M \times M \times ... \times M \]
 </p>
 <p> of Manifold elements as a single Manifold element \(m\).</p>
-<dl class="section warning"><dt>Warning</dt><dd>calling <code><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a></code> on a <code><a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a></code> returns the degrees of freedom of \(M \times M \times \ldots \times M\), NOT the number of elements in the vector. For the latter, use <code><a class="el" href="classsmooth_1_1ManifoldVector.html#a769841932d348ba04e8e78a87631cf00" title="Number of elements in ManifoldVector.">vector_size()</a></code>. </dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>calling <code><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a></code> on a <code><a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">ManifoldVector</a></code> returns the degrees of freedom of \(M \times M \times \ldots \times M\), NOT the number of elements in the vector. For the latter, use <code><a class="el" href="classsmooth_1_1ManifoldVector.html#a769841932d348ba04e8e78a87631cf00" title="Number of elements in ManifoldVector.">vector_size()</a></code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00049">49</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00051">51</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5652d76a4d5ad9398760dd5e51ca3c07"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5652d76a4d5ad9398760dd5e51ca3c07">&#9670;&nbsp;</a></span>ManifoldVector()</h2>
@@ -202,7 +206,7 @@ template&lt;typename... Ts&gt; </div>
 </div><div class="memdoc">
 <p>Forwarding constructor to std::vector. </p>
 
-<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00078">78</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00080">80</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 
 </div>
 </div>
@@ -238,7 +242,7 @@ template&lt;typename Derived &gt; </div>
 <p>Addition. </p>
 <dl class="section note"><dt>Note</dt><dd>It must hold that <code><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> == a.size()</code> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00140">140</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00142">142</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 
 </div>
 </div>
@@ -273,7 +277,7 @@ template&lt;typename Derived &gt; </div>
 <p>In-place addition. </p>
 <dl class="section note"><dt>Note</dt><dd>It must hold that <a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> == a.size() </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00123">123</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00125">125</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 
 </div>
 </div>
@@ -306,7 +310,7 @@ template&lt;Manifold M, template&lt; typename &gt; typename Allocator = std::all
 <p>Subtraction. </p>
 <dl class="section note"><dt>Note</dt><dd>It must hold that <code><a class="el" href="classsmooth_1_1ManifoldVector.html#af30c08e4ea5186a708d19b63bbef2f1a" title="Runtime degrees of freedom.">size()</a> == o.size()</code> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00152">152</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00154">154</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 
 </div>
 </div>
@@ -338,7 +342,7 @@ template&lt;Manifold M, template&lt; typename &gt; typename Allocator = std::all
 <p>Runtime degrees of freedom. </p>
 <p>Sum of the degrees of freedom of constituent elements. </p>
 
-<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00106">106</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00108">108</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
 
 </div>
 </div>

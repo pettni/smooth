@@ -1,5 +1,5 @@
 <map id="Eigen::Map&lt; geometry_msgs::msg::Quaternion &gt;" name="Eigen::Map&lt; geometry_msgs::msg::Quaternion &gt;">
-<area shape="rect" id="node1" title="Memory map a ROS message as Lie group type." alt="" coords="5,199,177,240"/>
+<area shape="rect" id="node1" title="Memory mapping of ROS message as Lie group type." alt="" coords="5,199,177,240"/>
 <area shape="rect" id="node2" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="6,95,177,151"/>
 <area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="14,5,169,47"/>
 </map>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>smooth: smooth::ParameterizationFunctor&lt; G &gt; Struct Template Reference</title>
+<title>smooth: smooth::BoostOdeintOps Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,40 +69,38 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>smooth</b></li><li class="navelem"><a class="el" href="structsmooth_1_1ParameterizationFunctor.html">ParameterizationFunctor</a></li>  </ul>
+<li class="navelem"><b>smooth</b></li><li class="navelem"><a class="el" href="structsmooth_1_1BoostOdeintOps.html">BoostOdeintOps</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="structsmooth_1_1ParameterizationFunctor-members.html">List of all members</a>  </div>
+<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle">
-<div class="title">smooth::ParameterizationFunctor&lt; G &gt; Struct Template Reference</div>  </div>
+<div class="title">smooth::BoostOdeintOps Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Functor defining on-manifold plus for a Lie group type in Ceres format.  
- <a href="structsmooth_1_1ParameterizationFunctor.html#details">More...</a></p>
+<p><code>boost::odeint</code> Stepper operations for Manifold types.  
+ <a href="structsmooth_1_1BoostOdeintOps.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="ceres_8hpp_source.html">ceres.hpp</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="odeint_8hpp_source.html">odeint.hpp</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:ad91d33e90c5264797af5fa6aa395a88f"><td class="memTemplParams" colspan="2"><a id="ad91d33e90c5264797af5fa6aa395a88f"></a>
-template&lt;typename Scalar &gt; </td></tr>
-<tr class="memitem:ad91d33e90c5264797af5fa6aa395a88f"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structsmooth_1_1ParameterizationFunctor.html#ad91d33e90c5264797af5fa6aa395a88f">operator()</a> (const Scalar *x, const Scalar *delta, Scalar *x_plus_delta) const</td></tr>
-<tr class="memdesc:ad91d33e90c5264797af5fa6aa395a88f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plus operation. <br /></td></tr>
-<tr class="separator:ad91d33e90c5264797af5fa6aa395a88f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1BoostOdeintOps_1_1scale__sum.html">scale_sum</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Variadic <a class="el" href="structsmooth_1_1BoostOdeintOps_1_1scale__sum.html" title="Variadic scale_sum implementation.">scale_sum</a> implementation.  <a href="structsmooth_1_1BoostOdeintOps_1_1scale__sum.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;LieGroup G&gt;<br />
-struct smooth::ParameterizationFunctor&lt; G &gt;</h3>
+<div class="textblock"><p><code>boost::odeint</code> Stepper operations for Manifold types. </p>
+<p><code>boost::odeint</code> Butcher tableaus are evaluated by weighted calculations of the form y = Σ_{i=1}^n alpha_i x_i which are generically implemented.</p>
+<p>However, for the special case of butcher tableaus it holds that alpha_1 = 1, and furthermore x_1 is always of the state type while x_2 ... x_n are of the derivative type. The scale sum can therefore be generalized to the Lie group case as</p>
+<p>y = x_1 * exp(Σ_{i=2}^n alpha_i x_i)</p>
+<p>The methods below inject those calculations into boost:odeint to enable numerical integration on Lie groups. For succintness we implement a single method using variadic templates. </p>
 
-<p>Functor defining on-manifold plus for a Lie group type in Ceres format. </p>
-
-<p class="definition">Definition at line <a class="el" href="ceres_8hpp_source.html#l00048">48</a> of file <a class="el" href="ceres_8hpp_source.html">ceres.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="odeint_8hpp_source.html#l00060">60</a> of file <a class="el" href="odeint_8hpp_source.html">odeint.hpp</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/smooth/compat/<a class="el" href="ceres_8hpp_source.html">ceres.hpp</a></li>
+<li>include/smooth/compat/<a class="el" href="odeint_8hpp_source.html">odeint.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

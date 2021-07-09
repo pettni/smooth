@@ -1,5 +1,6 @@
 <map id="include/smooth/optim.hpp" name="include/smooth/optim.hpp">
-<area shape="rect" id="node1" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="5,5,176,32"/>
-<area shape="rect" id="node2" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="17,80,165,121"/>
-<area shape="rect" id="node3" href="$bspline_8cpp.html" title=" " alt="" coords="17,169,164,196"/>
+<area shape="rect" id="node1" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="81,5,252,32"/>
+<area shape="rect" id="node2" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="93,80,241,121"/>
+<area shape="rect" id="node3" href="$bspline_8cpp.html" title=" " alt="" coords="5,169,152,196"/>
+<area shape="rect" id="node4" href="$spline__fit_8cpp_source.html" title=" " alt="" coords="177,169,333,196"/>
 </map>

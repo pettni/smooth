@@ -27,19 +27,19 @@
 <area shape="rect" id="node9" href="$classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group." alt="" coords="494,236,655,263"/>
 <area shape="rect" id="node11" href="$classEigen_1_1Map_3_01const_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE2 Lie group." alt="" coords="487,301,662,342"/>
 <area shape="rect" id="node13" href="$classEigen_1_1Map_3_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE2 Lie group." alt="" coords="505,373,644,414"/>
-<area shape="rect" id="node15" href="$classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Memory map a ROS message as Lie group type." alt="" coords="491,445,659,486"/>
+<area shape="rect" id="node15" href="$classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="491,445,659,486"/>
 <area shape="rect" id="node17" href="$classEigen_1_1Map_3_01const_01smooth_1_1SE3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE3 Lie group." alt="" coords="487,525,662,566"/>
-<area shape="rect" id="node19" href="$classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Memory map a ROS message as Lie group type." alt="" coords="500,605,649,646"/>
-<area shape="rect" id="node21" href="$classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Const memory map a ROS message as Lie group type." alt="" coords="483,685,667,726"/>
-<area shape="rect" id="node23" href="$classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Const memory map a ROS message as Lie group type." alt="" coords="483,765,667,806"/>
+<area shape="rect" id="node19" href="$classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="500,605,649,646"/>
+<area shape="rect" id="node21" href="$classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="483,685,667,726"/>
+<area shape="rect" id="node23" href="$classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="483,765,667,806"/>
 <area shape="rect" id="node25" href="$classEigen_1_1Map_3_01smooth_1_1SE3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE3 Lie group." alt="" coords="505,837,644,878"/>
 <area shape="rect" id="node27" href="$classsmooth_1_1SE3.html" title="Storage implementation of SE3 Lie group." alt="" coords="494,909,655,936"/>
 <area shape="rect" id="node29" href="$classEigen_1_1Map_3_01const_01smooth_1_1SO2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO2 Lie group." alt="" coords="487,974,662,1015"/>
 <area shape="rect" id="node31" href="$classEigen_1_1Map_3_01smooth_1_1SO2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO2 Lie group." alt="" coords="505,1046,644,1087"/>
 <area shape="rect" id="node33" href="$classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group." alt="" coords="493,1119,656,1145"/>
-<area shape="rect" id="node35" href="$classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Memory map a ROS message as Lie group type." alt="" coords="489,1183,661,1225"/>
+<area shape="rect" id="node35" href="$classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="489,1183,661,1225"/>
 <area shape="rect" id="node37" href="$classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group." alt="" coords="493,1263,656,1289"/>
 <area shape="rect" id="node39" href="$classEigen_1_1Map_3_01smooth_1_1SO3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO3 Lie group." alt="" coords="505,1321,644,1362"/>
 <area shape="rect" id="node41" href="$classEigen_1_1Map_3_01const_01smooth_1_1SO3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO3 Lie group." alt="" coords="487,1393,662,1434"/>
-<area shape="rect" id="node43" href="$classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Const memory map a ROS message as Lie group type." alt="" coords="483,1473,667,1514"/>
+<area shape="rect" id="node43" href="$classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="483,1473,667,1514"/>
 </map>

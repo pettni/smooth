@@ -74,7 +74,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">tn.hpp File Reference</div>  </div>
 </div><!--header-->
@@ -111,10 +112,6 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a6904304e732594b48e83692489e10b27"><td class="memTemplParams" colspan="2">template&lt;int _N, typename _Scalar &gt; </td></tr>
-<tr class="memitem:a6904304e732594b48e83692489e10b27"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="tn_8hpp.html#a6904304e732594b48e83692489e10b27">smooth::Tn</a> = Eigen::Matrix&lt; _Scalar, _N, 1 &gt;</td></tr>
-<tr class="memdesc:a6904304e732594b48e83692489e10b27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eigen type as \(T(n)\) Lie Group.  <a href="tn_8hpp.html#a6904304e732594b48e83692489e10b27">More...</a><br /></td></tr>
-<tr class="separator:a6904304e732594b48e83692489e10b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac93038b03faca771654ceee3b22d6706"><td class="memTemplParams" colspan="2"><a id="ac93038b03faca771654ceee3b22d6706"></a>
 template&lt;typename _Scalar &gt; </td></tr>
 <tr class="memitem:ac93038b03faca771654ceee3b22d6706"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="tn_8hpp.html#ac93038b03faca771654ceee3b22d6706">smooth::T1</a> = Tn&lt; 1, _Scalar &gt;</td></tr>
@@ -245,14 +242,21 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tn_
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tn_8hpp.html#a6dc03191218433f644903f4a5589513b">smooth::T10d</a> = T10&lt; double &gt;</td></tr>
 <tr class="memdesc:a6dc03191218433f644903f4a5589513b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ten-dimensional double vector. <br /></td></tr>
 <tr class="separator:a6dc03191218433f644903f4a5589513b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a4362daaf2707a8d226cc8ad1b392dd82"><td class="memTemplParams" colspan="2">template&lt;int _N, typename _Scalar &gt; </td></tr>
+<tr class="memitem:a4362daaf2707a8d226cc8ad1b392dd82"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="tn_8hpp.html#a4362daaf2707a8d226cc8ad1b392dd82">smooth::requires</a> (_N &gt; 0) using Tn</td></tr>
+<tr class="memdesc:a4362daaf2707a8d226cc8ad1b392dd82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Eigen type as \(T(n)\) Lie Group.  <a href="tn_8hpp.html#a4362daaf2707a8d226cc8ad1b392dd82">More...</a><br /></td></tr>
+<tr class="separator:a4362daaf2707a8d226cc8ad1b392dd82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Lie group of translations. </p>
 
 <p class="definition">Definition in file <a class="el" href="tn_8hpp_source.html">tn.hpp</a>.</p>
-</div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="a6904304e732594b48e83692489e10b27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6904304e732594b48e83692489e10b27">&#9670;&nbsp;</a></span>Tn</h2>
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a4362daaf2707a8d226cc8ad1b392dd82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4362daaf2707a8d226cc8ad1b392dd82">&#9670;&nbsp;</a></span>requires()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -260,32 +264,44 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="tn_
 template&lt;int _N, typename _Scalar &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="tn_8hpp.html#a6904304e732594b48e83692489e10b27">smooth::Tn</a> = typedef Eigen::Matrix&lt;_Scalar, _N, 1&gt;</td>
+          <td class="memname">smooth::requires </td>
+          <td>(</td>
+          <td class="paramtype">_N&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">0&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Eigen type as \(T(n)\) Lie Group. </p>
 <dl class="section note"><dt>Note</dt><dd>Tn is a typedef for an Eigen column vector and therefore does not have the Lie group API from LieGroupBase. lie_traits&lt;Tn&lt;N, Scalar&gt;&gt; defines the operations corresponding to the Lie group \(T(n)\).</dd></dl>
-<h2><a class="anchor" id="autotoc_md26"></a>
+<h2><a class="anchor" id="autotoc_md30"></a>
 Memory layout</h2>
 <ul>
 <li>Group: \( \mathbf{t} = [x_1, \ldots, x_n] \)</li>
 <li>Tangent: \( \mathbf{v} = [v_1, \ldots, v_n] \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md27"></a>
+<h2><a class="anchor" id="autotoc_md31"></a>
 Lie group Matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{X} = \begin{bmatrix} I &amp; \mathbf{t} \\ 0 &amp; 1 \end{bmatrix} \]
 </p>
-<h2><a class="anchor" id="autotoc_md28"></a>
+<h2><a class="anchor" id="autotoc_md32"></a>
 Lie algebra Matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{v}^\wedge = \begin{bmatrix} 0 &amp; \mathbf{v} \\ 0 &amp; 0 \end{bmatrix} \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="tn_8hpp_source.html#l00074">74</a> of file <a class="el" href="tn_8hpp_source.html">tn.hpp</a>.</p>
-
 </div>
 </div>
 </div><!-- contents -->

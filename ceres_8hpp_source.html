@@ -115,78 +115,83 @@ $(function() {
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">namespace </span>smooth {</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">template</span>&lt;LieGroup G&gt;</div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="structsmooth_1_1ParameterizationFunctor.html">   48</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structsmooth_1_1ParameterizationFunctor.html">ParameterizationFunctor</a></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Scalar&gt;</div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structsmooth_1_1ParameterizationFunctor.html#ad91d33e90c5264797af5fa6aa395a88f">   54</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="structsmooth_1_1ParameterizationFunctor.html#ad91d33e90c5264797af5fa6aa395a88f">operator()</a>(<span class="keyword">const</span> Scalar * x, <span class="keyword">const</span> Scalar * delta, Scalar * x_plus_delta)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">using</span> GScalar = decltype(G().<span class="keyword">template</span> cast&lt;Scalar&gt;());</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    Eigen::Map&lt;const GScalar&gt; mx(x);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    Eigen::Map&lt;const typename GScalar::Tangent&gt; mdelta(delta);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    Eigen::Map&lt;GScalar&gt; mx_plus_delta(x_plus_delta);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    mx_plus_delta = mx + mdelta;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;};</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keyword">template</span>&lt;LieGroup G&gt;</div>
-<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="classsmooth_1_1LieGroupParameterization.html">   71</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1LieGroupParameterization.html">LieGroupParameterization</a></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    : <span class="keyword">public</span> ceres::AutoDiffLocalParameterization&lt;ParameterizationFunctor&lt;G&gt;, G::RepSize, G::Dof&gt;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;{};</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">   88</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">dr_ceres</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x)</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="keyword">using</span> Result = decltype(std::apply(f, x));</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="keyword">using</span> Scalar = <span class="keyword">typename</span> Result::Scalar;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> fval = std::apply(f, x);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keyword">static</span> constexpr Eigen::Index Nx = utils::tuple_dof&lt;_Wrt&gt;::value;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> nx = std::apply([](<span class="keyword">auto</span> &amp;&amp;... args) { <span class="keywordflow">return</span> (args.size() + ...); }, x);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keyword">static</span> constexpr Eigen::Index Ny = Result::SizeAtCompileTime;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> ny                    = fval.size();</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  Eigen::Matrix&lt;Scalar, Nx, 1&gt; a(nx);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  a.setZero();</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, 1&gt; b(ny);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, Nx, (Nx == 1) ? Eigen::ColMajor : Eigen::RowMajor&gt; jac(ny, nx);</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <span class="keyword">const</span> Scalar * prms[1] = {a.data()};</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="keywordtype">double</span> ** jac_rows     = <span class="keyword">new</span> <span class="keywordtype">double</span> *[ny];</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0; i &lt; ny; i++) { jac_rows[i] = jac.row(i).data(); }</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> f_deriv = [&amp;]&lt;<span class="keyword">typename</span> T&gt;(<span class="keyword">const</span> T * in, T * out) {</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    Eigen::Map&lt;const Eigen::Matrix&lt;T, Nx, 1&gt;&gt; m_in(in, nx);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    Eigen::Map&lt;Eigen::Matrix&lt;T, Ny, 1&gt;&gt; m_out(out, ny);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    m_out =</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;      std::apply(f, utils::tuple_plus(utils::tuple_cast&lt;T&gt;(x), m_in)) - fval.template cast&lt;T&gt;();</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  };</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  ceres::internal::AutoDifferentiate&lt;Result::SizeAtCompileTime,</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    ceres::internal::StaticParameterDims&lt;Nx&gt;&gt;(f_deriv, prms, b.size(), b.data(), jac_rows);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, Nx&gt; jac_ret = jac;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keywordflow">return</span> std::make_pair(fval, jac_ret);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;}</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;}  <span class="comment">// namespace smooth</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__COMPAT__CERES_HPP_</span></div>
-<div class="ttc" id="aceres_8hpp_html_a85da13459d0f5147a5a0475ebce263c0"><div class="ttname"><a href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">smooth::dr_ceres</a></div><div class="ttdeci">auto dr_ceres(_F &amp;&amp;f, _Wrt &amp;&amp;x)</div><div class="ttdoc">Automatic differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="ceres_8hpp_source.html#l00088">ceres.hpp:88</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupParameterization_html"><div class="ttname"><a href="classsmooth_1_1LieGroupParameterization.html">smooth::LieGroupParameterization</a></div><div class="ttdoc">Define a parameterization using ParameterizationFunctor and automatic differentiation.</div><div class="ttdef"><b>Definition:</b> <a href="ceres_8hpp_source.html#l00071">ceres.hpp:73</a></div></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment">// \cond</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">template</span>&lt;LieGroup G&gt;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">struct </span>CeresParameterizationFunctor</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;{</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Scalar&gt;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keywordtype">bool</span> operator()(<span class="keyword">const</span> Scalar * x, <span class="keyword">const</span> Scalar * delta, Scalar * x_plus_delta)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">using</span> GScalar = decltype(G().<span class="keyword">template</span> cast&lt;Scalar&gt;());</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    Eigen::Map&lt;const GScalar&gt; mx(x);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    Eigen::Map&lt;const typename GScalar::Tangent&gt; mdelta(delta);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    Eigen::Map&lt;GScalar&gt; mx_plus_delta(x_plus_delta);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    mx_plus_delta = mx + mdelta;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;};</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment">// \endcond</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">template</span>&lt;LieGroup G&gt;</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classsmooth_1_1CeresLocalParameterization.html">   70</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1CeresLocalParameterization.html">CeresLocalParameterization</a></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    : <span class="keyword">public</span> ceres::AutoDiffLocalParameterization&lt;CeresParameterizationFunctor&lt;G&gt;, G::RepSize, G::Dof&gt;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;{};</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
+<div class="line"><a name="l00082"></a><span class="lineno"><a class="line" href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">   82</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">dr_ceres</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x)</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;{</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="comment">// There is potential to improve thie speed of this by reducing casting.</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="comment">// The ceres Jet type supports binary operations with e.g. double, but currently</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// the Lie operations require everything to have a uniform scalar type. Enabling</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="comment">// + and - for different scalars would thus save some casts.</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="keyword">using</span> Result = decltype(std::apply(f, x));</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="keyword">using</span> Scalar = <span class="keyword">typename</span> Result::Scalar;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> fval = std::apply(f, x);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keyword">static</span> constexpr Eigen::Index Nx = utils::tuple_dof&lt;_Wrt&gt;::value;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> nx = std::apply([](<span class="keyword">auto</span> &amp;&amp;... args) { <span class="keywordflow">return</span> (args.size() + ...); }, x);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="keyword">static</span> constexpr Eigen::Index Ny = Result::SizeAtCompileTime;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> ny                    = fval.size();</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  Eigen::Matrix&lt;Scalar, Nx, 1&gt; a(nx);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  a.setZero();</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, 1&gt; b(ny);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, Nx, (Nx == 1) ? Eigen::ColMajor : Eigen::RowMajor&gt; jac(ny, nx);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="keyword">const</span> Scalar * prms[1] = {a.data()};</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <span class="keywordtype">double</span> ** jac_rows     = <span class="keyword">new</span> <span class="keywordtype">double</span> *[ny];</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0; i &lt; ny; i++) { jac_rows[i] = jac.row(i).data(); }</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> f_deriv = [&amp;]&lt;<span class="keyword">typename</span> T&gt;(<span class="keyword">const</span> T * in, T * out) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    Eigen::Map&lt;const Eigen::Matrix&lt;T, Nx, 1&gt;&gt; m_in(in, nx);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    Eigen::Map&lt;Eigen::Matrix&lt;T, Ny, 1&gt;&gt; m_out(out, ny);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    m_out =</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      std::apply(f, utils::tuple_plus(utils::tuple_cast&lt;T&gt;(x), m_in)) - fval.template cast&lt;T&gt;();</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  };</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  ceres::internal::AutoDifferentiate&lt;Result::SizeAtCompileTime,</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    ceres::internal::StaticParameterDims&lt;Nx&gt;&gt;(f_deriv, prms, b.size(), b.data(), jac_rows);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, Nx&gt; jac_ret = jac;</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="keywordflow">return</span> std::make_pair(fval, jac_ret);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__COMPAT__CERES_HPP_</span></div>
+<div class="ttc" id="aceres_8hpp_html_a85da13459d0f5147a5a0475ebce263c0"><div class="ttname"><a href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">smooth::dr_ceres</a></div><div class="ttdeci">auto dr_ceres(_F &amp;&amp;f, _Wrt &amp;&amp;x)</div><div class="ttdoc">Automatic differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="ceres_8hpp_source.html#l00082">ceres.hpp:82</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1CeresLocalParameterization_html"><div class="ttname"><a href="classsmooth_1_1CeresLocalParameterization.html">smooth::CeresLocalParameterization</a></div><div class="ttdoc">Parameterization for on-manifold optimization with Ceres.</div><div class="ttdef"><b>Definition:</b> <a href="ceres_8hpp_source.html#l00070">ceres.hpp:72</a></div></div>
 <div class="ttc" id="aconcepts_8hpp_html"><div class="ttname"><a href="concepts_8hpp.html">concepts.hpp</a></div></div>
-<div class="ttc" id="astructsmooth_1_1ParameterizationFunctor_html"><div class="ttname"><a href="structsmooth_1_1ParameterizationFunctor.html">smooth::ParameterizationFunctor</a></div><div class="ttdoc">Functor defining on-manifold plus for a Lie group type in Ceres format.</div><div class="ttdef"><b>Definition:</b> <a href="ceres_8hpp_source.html#l00048">ceres.hpp:49</a></div></div>
-<div class="ttc" id="astructsmooth_1_1ParameterizationFunctor_html_ad91d33e90c5264797af5fa6aa395a88f"><div class="ttname"><a href="structsmooth_1_1ParameterizationFunctor.html#ad91d33e90c5264797af5fa6aa395a88f">smooth::ParameterizationFunctor::operator()</a></div><div class="ttdeci">bool operator()(const Scalar *x, const Scalar *delta, Scalar *x_plus_delta) const</div><div class="ttdoc">Plus operation.</div><div class="ttdef"><b>Definition:</b> <a href="ceres_8hpp_source.html#l00054">ceres.hpp:54</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
