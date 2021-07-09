@@ -80,7 +80,7 @@ TEST(NlReg, Kirby2Static)
     return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
   };
 
-  smooth::NlsOptions opts;
+  smooth::MinimizeOptions opts;
   opts.ftol = 1e-12;
   opts.ptol = 1e-12;
 
@@ -102,7 +102,7 @@ TEST(NlReg, Kirby2Dynamic)
     return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
   };
 
-  smooth::NlsOptions opts;
+  smooth::MinimizeOptions opts;
   opts.ftol = 1e-12;
   opts.ptol = 1e-12;
 

@@ -71,6 +71,7 @@ namespace smooth {
  * \f]
  */
 template<int _N, typename _Scalar>
+requires (_N > 0)
 using Tn = Eigen::Matrix<_Scalar, _N, 1>;
 
 // \cond

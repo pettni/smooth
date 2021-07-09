@@ -270,7 +270,7 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
   }
 
   // fit to data with loose convergence criteria
-  NlsOptions opts;
+  MinimizeOptions opts;
   opts.ftol = 1e-3;
   opts.ptol = 1e-3;
   opts.max_iter = 10;

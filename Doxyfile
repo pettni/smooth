@@ -831,6 +831,7 @@ WARN_LOGFILE           =
 
 INPUT                  = README.md \
                          examples/bspline.cpp \
+                         examples/spline_fit.cpp \
                          examples/odeint.cpp \
                          include/smooth/bundle.hpp \
                          include/smooth/concepts.hpp \

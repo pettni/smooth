@@ -24,3 +24,5 @@ target_link_libraries(odeint smooth matplot)
 add_executable(nls nls.cpp)
 target_link_libraries(nls smooth)
 
+add_executable(snippets snippets.cpp)
+target_link_libraries(snippets smooth)

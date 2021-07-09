@@ -91,9 +91,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
   {};                                                                                \
   /* \endcond */                                                                     \
                                                                                      \
-  /**                                                                                \
-   * @brief Memory map a ROS message as Lie group type.                              \
-   */                                                                                \
+  /*! @brief Memory mapping of ROS message as Lie group type. */                                 \
   template<>                                                                         \
   class Eigen::Map<DATATYPE> : public BASETYPE<Eigen::Map<DATATYPE>>                 \
   {                                                                                  \
@@ -104,11 +102,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     SMOOTH_INHERIT_TYPEDEFS;                                                         \
     /* \endcond */                                                                   \
                                                                                      \
-    /**                                                                              \
-     * @brief Map message as Lie type                                                \
-     *                                                                               \
-     * @param msg ROS message                                                        \
-     **/                                                                             \
+    /*! Map message as Lie group type. */                                            \
     Map(DATATYPE & msg) : coeffs_(reinterpret_cast<double *>(&msg)) {}               \
     /*! Underlying storage is Eigen::Map */                                          \
     using Storage = Eigen::Map<Eigen::Matrix<double, RepSize, 1>>;                   \
@@ -133,9 +127,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
   };                                                                                 \
   /* \endcond */                                                                     \
                                                                                      \
-  /**                                                                                \
-   * @brief Const memory map a ROS message as Lie group type.                        \
-   */                                                                                \
+  /*! @brief Const memory mapping of ROS message as Lie group type. */                                 \
   template<>                                                                         \
   class Eigen::Map<const DATATYPE> : public BASETYPE<Eigen::Map<const DATATYPE>>     \
   {                                                                                  \
@@ -146,11 +138,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     SMOOTH_INHERIT_TYPEDEFS;                                                         \
     /* \endcond */                                                                   \
                                                                                      \
-    /**                                                                              \
-     * @brief Const map message as Lie type                                          \
-     *                                                                               \
-     * @param msg ROS message                                                        \
-     **/                                                                             \
+    /*! Const map message as Lie group type. */                                      \
     Map(const DATATYPE & msg) : coeffs_(reinterpret_cast<const double *>(&msg)) {}   \
     /*! Underlying storage is Eigen const Map */                                     \
     using Storage = Eigen::Map<const Eigen::Matrix<double, RepSize, 1>>;             \

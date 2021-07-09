@@ -40,9 +40,9 @@ namespace smooth
 {
 
 /**
- * @brief Stepper operations for Manifold types.
+ * @brief \p boost::odeint Stepper operations for Manifold types.
  *
- * boost::odeint Butcher tableaus are evaluated by weighted
+ * \p boost::odeint Butcher tableaus are evaluated by weighted
  * calculations of the form y = Σ_{i=1}^n alpha_i x_i which are generically
  * implemented.
  *
@@ -57,7 +57,7 @@ namespace smooth
  * numerical integration on Lie groups. For succintness we implement a single
  * method using variadic templates.
  */
-struct lie_operations
+struct BoostOdeintOps
 {
   /**
    * @brief Variadic scale_sum implementation.
@@ -73,7 +73,7 @@ struct lie_operations
     : m_alpha(alpha ...)
     {
       if (std::get<0>(m_alpha) != std::tuple_element_t<0, std::tuple<Fac...>>(1)) {
-        throw std::runtime_error("lie_operations only valid for alpha1 = 1");
+        throw std::runtime_error("BoostOdeintOps only valid for alpha1 = 1");
       }
     }
 
@@ -149,7 +149,7 @@ struct lie_operations
 template<smooth::Manifold G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
-  using operations_type = ::smooth::lie_operations;
+  using operations_type = ::smooth::BoostOdeintOps;
 };
 // \endcond
 

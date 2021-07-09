@@ -110,7 +110,7 @@ public:
   /**
    * @brief Set to a random element.
    *
-   * Set the seed with std::srand(unsigned).
+   * Set the seed with \p std::srand(unsigned).
    */
   void setRandom() { Impl::setRandom(derived().coeffs()); }
 
@@ -127,7 +127,7 @@ public:
   /**
    * @brief Construct a random element.
    *
-   * Set the seed with std::srand(unsigned).
+   * Set the seed with \p std::srand(unsigned).
    */
   static PlainObject Random()
   {
@@ -137,7 +137,7 @@ public:
   }
 
   /**
-   * @brief Return as matrix Lie group element.
+   * @brief Return as matrix Lie group element in \f$ \mathbb{R}^{\mathtt{dim} \times \mathtt{dim}} \f$.
    */
   Matrix matrix() const
   {
@@ -238,16 +238,16 @@ public:
   /**
    * @brief Right-plus.
    *
-   * @return \f$ \mathbf{x} \oplus \mathbf{a} = \mathbf{x} \exp(\mathbf{a}) \f$
+   * @return \f$ \mathbf{x} \oplus \mathbf{a} = \mathbf{x} \circ \exp(\mathbf{a}) \f$
    */
   template<typename TangentDerived>
-  PlainObject operator+(const Eigen::MatrixBase<TangentDerived> & t) const
+  PlainObject operator+(const Eigen::MatrixBase<TangentDerived> & a) const
   {
-    return *this * exp(t);
+    return *this * exp(a);
   }
 
   /**
-   * @brief Inplace right-plus: \f$ \mathbf{x} \leftarrow \mathbf{x} \exp(\mathbf{a}) \f$.
+   * @brief Inplace right-plus: \f$ \mathbf{x} \leftarrow \mathbf{x} \circ \exp(\mathbf{a}) \f$.
    *
    * @return Reference to this
    */
@@ -256,24 +256,28 @@ public:
   requires is_mutable
   // \endcond
   Derived &
-  operator+=(const Eigen::MatrixBase<TangentDerived> & t)
+  operator+=(const Eigen::MatrixBase<TangentDerived> & a)
   {
-    *this *= exp(t);
+    *this *= exp(a);
     return derived();
   }
 
   /**
    * @brief Right-minus.
    *
-   * g1 - g2 := (g2.inverse() * g1).log()
+   * @return Tangent space element \f$ \mathbf{a} \f$ such that \f$ \mathbf{this} = \mathbf{xo} \oplus \mathbf{a} \f$.
+   *
+   * \f[
+   *   \mathbf{x}_1 \ominus \mathbf{x}_2 := \log(\mathbf{x}_2^{-1} \circ \mathbf{x}_1)
+   * \f]
    */
   template<typename OtherDerived>
   // \cond
   requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
   // \endcond
-  Tangent operator-(const LieGroupBase<OtherDerived> & o) const
+  Tangent operator-(const LieGroupBase<OtherDerived> & xo) const
   {
-    return (o.inverse() * *this).log();
+    return (xo.inverse() * *this).log();
   }
 
   // Tangent API
@@ -292,8 +296,10 @@ public:
   /**
    * @brief Lie algebra hat map.
    *
-   * Maps a Dofx1 Rn parameterization of a matrix Lie algebra element
-   * to the corresponding matrix Lie algebra element.
+   * Maps a parameterization \f$ a \in \mathbb{R}^\mathtt{dof} \f$ a matrix Lie algebra element
+   * to the corresponding matrix Lie algebra element \f$ A \in \mathbb{R}^{\mathtt{dim} \times \mathtt{dim}} \f$.
+   *
+   * @see vee for the inverse of hat
    */
   template<typename TangentDerived>
   static Matrix hat(const Eigen::MatrixBase<TangentDerived> & a)
@@ -306,7 +312,10 @@ public:
   /**
    * @brief Lie alebra vee map.
    *
-   * Maps a matrix Lie algebra element to its Rn parameterization.
+   * Maps a matrix Lie algebra element \f$ A \in \mathbb{R}^{\texttt{dim} \times \mathtt{dim}} \f$
+   * to the corresponding parameterization \f$ a \in \mathbb{R}^\mathtt{dof} \f$.
+   *
+   * @see hat for the inverse of vee
    */
   template<typename MatrixDerived>
   static Tangent vee(const Eigen::MatrixBase<MatrixDerived> & A)
@@ -332,18 +341,21 @@ public:
 
   /**
    * @brief Lie algebra bracket.
+   *
    * \f[
    * [ \mathbf{a}, \mathbf{b}] = \left( \mathbf{a}^\wedge \mathbf{b}^\wedge - \mathbf{b}^\wedge
    * \mathbf{a}^\wedge \right)^\vee. \f]
    */
   template<typename TangentDerived1, typename TangentDerived2>
   static Tangent lie_bracket(
-    const Eigen::MatrixBase<TangentDerived1> & a1, const Eigen::MatrixBase<TangentDerived2> & a2)
+    const Eigen::MatrixBase<TangentDerived1> & a, const Eigen::MatrixBase<TangentDerived2> & b)
   {
-    return ad(a1) * a2;
+    return ad(a) * b;
   }
   /**
    * @brief Right jacobian of the exponential map.
+   *
+   * @return \f$ \mathrm{d}^r \exp_a \f$
    */
   template<typename TangentDerived>
   static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
@@ -355,6 +367,8 @@ public:
 
   /**
    * @brief Inverse of right jacobian of the exponential map.
+   *
+   * @return \f$ \left( \mathrm{d}^r \exp_a \right)^{-1} \f$
    */
   template<typename TangentDerived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
@@ -366,6 +380,8 @@ public:
 
   /**
    * @brief Left jacobian of the exponential map.
+   *
+   * @return \f$ \mathrm{d}^l \exp_a \f$
    */
   template<typename TangentDerived>
   static TangentMap dl_exp(const Eigen::MatrixBase<TangentDerived> & a)
@@ -375,6 +391,8 @@ public:
 
   /**
    * @brief Inverse of left jacobian of the exponential map.
+   *
+   * @return \f$ \left( \mathrm{d}^l \exp_a \right)^{-1} \f$
    */
   template<typename TangentDerived>
   static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & a)

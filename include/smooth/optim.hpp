@@ -46,9 +46,9 @@
 namespace smooth {
 
 /**
- * @brief Solver options.
+ * @brief Optimization options.
  */
-struct NlsOptions
+struct MinimizeOptions
 {
   /// relative parameter tolerance for convergence
   double ptol{1e-6};
@@ -67,7 +67,7 @@ struct NlsOptions
  *  \min_{x} \sum_i \| f(x)_i \|^2
  * \f]
  *
- * @tparam Diff differentiation method to use in solver
+ * @tparam Diff differentiation method to use in solver (see diff::Type in diff.hpp)
  * @param f residuals to minimize
  * @param x reference tuple of arguments to f
  * @param opts solver options
@@ -76,7 +76,7 @@ struct NlsOptions
  * the Manifold concept.
  */
 template<diff::Type Diff, typename _F, typename _Wrt>
-void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
+void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions{})
 {
   // evaluate residuals and jacobian at initial point
   auto [r, J] = diff::dr<Diff>(f, x);
@@ -192,7 +192,7 @@ void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
  * the Manifold concept.
  */
 template<typename _F, typename _Wrt>
-void minimize(_F && f, _Wrt && x, const NlsOptions & opts = NlsOptions{})
+void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions{})
 {
   minimize<diff::Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(x), opts);
 }

@@ -284,7 +284,7 @@ TEST(NLS, MultipleArgsStatic)
     return ret;
   };
 
-  smooth::NlsOptions opts;
+  smooth::MinimizeOptions opts;
   opts.ftol = 1e-12;
   opts.ptol = 1e-12;
 
@@ -306,7 +306,7 @@ TEST(NLS, MultipleArgsDynamic)
     return ret;
   };
 
-  smooth::NlsOptions opts;
+  smooth::MinimizeOptions opts;
   opts.ftol = 1e-12;
   opts.ptol = 1e-12;
 

@@ -35,8 +35,8 @@ using namespace smooth;
 
 TEST(OdeInt, Construct)
 {
-  ASSERT_NO_THROW(smooth::lie_operations::scale_sum2<double>(1., 2.));
-  ASSERT_THROW(smooth::lie_operations::scale_sum2<double>(2., 2.), std::runtime_error);
+  ASSERT_NO_THROW(smooth::BoostOdeintOps::scale_sum2<double>(1., 2.));
+  ASSERT_THROW(smooth::BoostOdeintOps::scale_sum2<double>(2., 2.), std::runtime_error);
 }
 
 TEST(OdeInt, Euler)

@@ -48,7 +48,7 @@ TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest);
 
 TYPED_TEST(CeresLocalParam, ComputeRandom)
 {
-  smooth::LieGroupParameterization<TypeParam> lgp;
+  smooth::CeresLocalParameterization<TypeParam> param;
 
   static constexpr uint32_t p = TypeParam::RepSize;
   static constexpr uint32_t n = TypeParam::Dof;
@@ -56,8 +56,8 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
   using ParamsT = Eigen::Matrix<double, p, 1>;
 
   // check that local parameterization gives expected sizes
-  ASSERT_EQ(lgp.LocalSize(), n);
-  ASSERT_EQ(lgp.GlobalSize(), p);
+  ASSERT_EQ(param.LocalSize(), n);
+  ASSERT_EQ(param.GlobalSize(), p);
 
 
   for (std::size_t i = 0; i != 10; ++i) {
@@ -69,12 +69,12 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
     TypeParam gp_ceres;
 
     // compute plus
-    lgp.Plus(g.data(), b.data(), gp_ceres.data());
+    param.Plus(g.data(), b.data(), gp_ceres.data());
     ASSERT_TRUE(gp.isApprox(gp_ceres));
 
     // compute jacobian from local parameterization
     Eigen::Matrix<double, p, n, (n > 1) ? Eigen::RowMajor : Eigen::ColMajor> jac;
-    lgp.ComputeJacobian(g.data(), jac.data());
+    param.ComputeJacobian(g.data(), jac.data());
 
     // expect vee(hat(g) + b) \approx g + jac * b
     // where  hat(g) maps from parameters to the group

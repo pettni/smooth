@@ -34,7 +34,9 @@
 namespace smooth {
 
 /**
- * \p std::vector based container to treat a collection
+ * @brief \p std::vector based Manifold container.
+ *
+ * Convenient to treat a collection
  * \f[
  *   m = (m_1, m_2, ..., m_k) \in M \times M \times ... \times M
  * \f]

@@ -66,15 +66,6 @@ requires(const M & m1, const M & m2, const Eigen::Matrix<typename M::Scalar, M::
 };
 
 /**
- * @brief Type that is an Eigen vector.
- */
-template<typename T>
-concept RnLike = Manifold<T> &&
-std::is_base_of_v<Eigen::MatrixBase<T>, T> &&
-T::IsVectorAtCompileTime == 1 &&
-T::ColsAtCompileTime == 1;
-
-/**
  * @brief Lie group concept.
  *
  * Requires the exp and log maps, and the upper and lowercase adjoints.

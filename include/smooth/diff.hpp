@@ -51,6 +51,7 @@ auto wrt(_Args &&... args)
   return std::forward_as_tuple(std::forward<_Args>(args)...);
 }
 
+// differentiation module
 namespace diff {
 namespace detail {
 
@@ -92,9 +93,12 @@ auto dr_numerical(_F && f, _Wrt && x)
       std::decay_t<std::tuple_element_t<i, std::decay_t<_Wrt>>>::SizeAtCompileTime;
     auto & w       = std::get<i>(x);
     const int nx_j = w.size();
+
+    using W = std::decay_t<decltype(w)>;
+
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
-      if constexpr (RnLike<std::decay_t<decltype(w)>>) {
+      if constexpr (std::is_base_of_v<Eigen::MatrixBase<W>, W>) {
         // scale step size if we are in Rn
         eps_j *= abs(w[j]);
         if (eps_j == 0.) { eps_j = eps; }
@@ -112,18 +116,16 @@ auto dr_numerical(_F && f, _Wrt && x)
 }  // namespace detail
 
 /**
+ * @enum smooth::diff::Type
  * @brief Differentiation methods
- *
- * - \p NUMERICAL calculates numerical (forward) derivatives
- * - \p AUTODIFF uses the autodiff (https://autodiff.github.io) library and requires the
- * autodiff compatability header
- * - \p CERES uses the Ceres (http://ceres-solver.org) built-in autodiff and requires the
- * Ceres compatability header
- * - \p ANALYTIC is meant for hand-coded derivatives, and requires that
- * the function returns a pair \f$( f(x), \mathrm{d}^r f_x )\f$
- * - \p DEFAULT selects from a priority list based on availability
  */
-enum class Type { NUMERICAL, AUTODIFF, CERES, ANALYTIC, DEFAULT };
+enum class Type {
+  NUMERICAL,   ///< Numerical (forward) derivatives
+  AUTODIFF,    ///< Uses the autodiff (https://autodiff.github.io) library; requires  \p compat/autodiff.hpp
+  CERES,       ///< Uses the Ceres (http://ceres-solver.org) built-in autodiff; requires \p compat/ceres.hpp
+  ANALYTIC,    ///< Hand-coded derivative, requires that function returns \p std::pair \f$(f(x), \mathrm{d}^r f_x) \f$
+  DEFAULT      ///< Automatically select type based on availability
+};
 
 /**
  * @brief Differentiation in local tangent space (right derivative)
