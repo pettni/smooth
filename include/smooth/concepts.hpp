@@ -108,12 +108,6 @@ struct lie_traits;
 /**
  * @brief Type for which \p lie_traits is properly specialized.
  */
-template<typename G>
-concept LieGroupLike = requires
-{
-  typename lie_traits<G>::Impl;
-  typename lie_traits<G>::Scalar;
-};
 
 } // namespace smooth
 

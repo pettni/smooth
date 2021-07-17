@@ -1,3 +1,13 @@
+RESTRUCTURE TODOs
+
+* [ ] Remove LieGroupLike concept
+* [x] Add LieGroup Tn class
+  - Tn is the LieGroup
+  - Rn are Eigen vectors
+* [x] Rename t2() / t3() etc to r2() / r3() since they return Eigen maps
+* [ ] Revert spline stuff by assuming LieGroup
+* [ ] Update readme to reflect changes
+
 # smooth: Lie Theory for Robotics
 
 [![CI Build and Test][ci-shield]][ci-link]
@@ -21,6 +31,7 @@ The following common Lie groups are implemented:
  * smooth::SO3 with quaternion ![](https://latex.codecogs.com/png.latex?\mathbb{S}^3) memory representation
  * smooth::SE2
  * smooth::SE3
+ * smooth::Tn<int>
  * A smooth::Bundle type to treat Lie group products ![](https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n) as a single Lie group. The Bundle type also supports regular Eigen vectors as ![](https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)) components
 
 The guiding principles for `smooth` are **brevity, reliability and compatability**. 
@@ -117,17 +128,12 @@ These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implement
 
 * `LieGroup`: a `Manifold` that also supports Lie group operations
   * Example: `smooth::SO3d`
-  * Example: `smooth::Bundle<LieGroupLike ...>`
-
-* `LieGroupLike`: a type for which `lie_traits` is properly specialized
-  * Example: All `LieGroup` implementations in `smooth`, `Eigen` vectors with size known at compile-time
-
-`LieGroupLike` is used to define Lie group operations for third-party types, as done for Eigen vectors in tn.hpp. 
-
-Implementing algorithms for `LieGroupLike` is less convenient than for `LieGroup`, but makes them compatible with more types. Algorithms included in `smooth`, as well as the Bundle type, are all implemented for `LieGroupLike` which makes them compatible with Eigen vectors.
+  * Example: `smooth::Bundle<LieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
 
 
 ## Algorithms
+
+Algorithms for `LieGroup` types can be used on regular Euclidean spaces via the `smooth::Tn` type.
 
 ### Tangent space differentiation
 
@@ -189,14 +195,14 @@ smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 
 ### Bezier curve evaluation and fitting
 
-Available for `LieGroupLike` types, see spline/bezier.hpp.
+Available for `LieGroup` types, see spline/bezier.hpp.
 
 Bezier splines are piecewise defined via [Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through the control points. See examples/spline_fit.cpp for usage.
 
 
 ### B-spline evaluation and fitting
 
-Available for `LieGroupLike` types, see spline/bspline.hpp.
+Available for `LieGroup` types, see spline/bspline.hpp.
 
 B-splines have local support and generally do not pass through the control points. See examples/bspline.cpp and examples/spline_fit.cpp for usage.
 

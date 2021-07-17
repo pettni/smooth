@@ -90,6 +90,14 @@ public:
   }
 };
 
+/// Concept that is fulfilled by LieGroup or Eigen types
+template<typename G>
+concept LieGroupLike = requires
+{
+  typename lie_traits<G>::Impl;
+  typename lie_traits<G>::Scalar;
+};
+
 // \cond
 template<LieGroupLike... _Gs>
 class Bundle;

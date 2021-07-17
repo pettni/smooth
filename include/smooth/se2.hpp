@@ -112,17 +112,17 @@ public:
   }
 
   /**
-   * @brief Access T(2) part.
+   * @brief Access R2 part.
    */
-  Eigen::Map<Eigen::Matrix<Scalar, 2, 1>> t2() requires is_mutable
+  Eigen::Map<Eigen::Matrix<Scalar, 2, 1>> r2() requires is_mutable
   {
     return Eigen::Map<Eigen::Matrix<Scalar, 2, 1>>(static_cast<_Derived &>(*this).data());
   }
 
   /**
-   * @brief Const access T(2) part.
+   * @brief Const access R2 part.
    */
-  Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>> t2() const
+  Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>> r2() const
   {
     return Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>>(
       static_cast<const _Derived &>(*this).data());
@@ -134,7 +134,7 @@ public:
   template<typename EigenDerived>
   Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
-    return so2() * v + t2();
+    return so2() * v + r2();
   }
 
   /**
@@ -145,7 +145,7 @@ public:
   SE3<Scalar> lift_se3() const
   {
     return SE3<Scalar>(
-      so2().lift_so3(), Eigen::Matrix<Scalar, 3, 1>(t2().x(), t2().y(), Scalar(0)));
+      so2().lift_so3(), Eigen::Matrix<Scalar, 3, 1>(r2().x(), r2().y(), Scalar(0)));
   }
 };
 
@@ -182,16 +182,16 @@ class SE2 : public SE2Base<SE2<_Scalar>>
 
 public:
   /**
-   * @brief Construct from SO2 and translation.
+   * @brief Construct from SO2 and R2. 
    *
    * @param so2 orientation component.
-   * @param t2 translation component.
+   * @param r2 translation component.
    */
   template<typename SO2Derived, typename T2Derived>
-  SE2(const SO2Base<SO2Derived> & so2, const Eigen::MatrixBase<T2Derived> & t2)
+  SE2(const SO2Base<SO2Derived> & so2, const Eigen::MatrixBase<T2Derived> & r2)
   {
     Base::so2() = so2;
-    Base::t2()  = t2;
+    Base::r2()  = r2;
   }
 };
 

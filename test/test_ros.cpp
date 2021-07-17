@@ -33,7 +33,7 @@ template<smooth::LieGroup G>
 void test(G)
 {}
 
-TEST(Ros, LieGroupLike)
+TEST(Ros, LieGroup)
 {
   geometry_msgs::msg::Quaternion msg3;
   geometry_msgs::msg::Pose msg4;
