@@ -119,9 +119,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#a1f6ccaf20f16cbf7de590022a0897f0d">~Bezier</a> ()=default</td></tr>
 <tr class="memdesc:a1f6ccaf20f16cbf7de590022a0897f0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
 <tr class="separator:a1f6ccaf20f16cbf7de590022a0897f0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18636aaea092264a3206160ab1fe3b81"><td class="memItemLeft" align="right" valign="top">G&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#a18636aaea092264a3206160ab1fe3b81">eval</a> (double t_in, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}) const</td></tr>
-<tr class="memdesc:a18636aaea092264a3206160ab1fe3b81"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evalauate <a class="el" href="classsmooth_1_1Bezier.html" title="Bezier curve on [0, 1].">Bezier</a> curve.  <a href="classsmooth_1_1Bezier.html#a18636aaea092264a3206160ab1fe3b81">More...</a><br /></td></tr>
-<tr class="separator:a18636aaea092264a3206160ab1fe3b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0ed04788c168d0dd3020655149bdfd9"><td class="memItemLeft" align="right" valign="top">G&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#aa0ed04788c168d0dd3020655149bdfd9">eval</a> (double t, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}) const</td></tr>
+<tr class="memdesc:aa0ed04788c168d0dd3020655149bdfd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate <a class="el" href="classsmooth_1_1Bezier.html" title="Bezier curve on [0, 1].">Bezier</a> curve.  <a href="classsmooth_1_1Bezier.html#aa0ed04788c168d0dd3020655149bdfd9">More...</a><br /></td></tr>
+<tr class="separator:aa0ed04788c168d0dd3020655149bdfd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;std::size_t N, LieGroup G&gt;<br />
@@ -250,8 +250,8 @@ template&lt;std::ranges::range Rv&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a18636aaea092264a3206160ab1fe3b81"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18636aaea092264a3206160ab1fe3b81">&#9670;&nbsp;</a></span>eval()</h2>
+<a id="aa0ed04788c168d0dd3020655149bdfd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0ed04788c168d0dd3020655149bdfd9">&#9670;&nbsp;</a></span>eval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -265,7 +265,7 @@ template&lt;std::size_t N, LieGroup G&gt; </div>
           <td class="memname">G <a class="el" href="classsmooth_1_1Bezier.html">smooth::Bezier</a>&lt; N, G &gt;::eval </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>t_in</em>, </td>
+          <td class="paramname"><em>t</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -292,17 +292,17 @@ template&lt;std::size_t N, LieGroup G&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Evalauate <a class="el" href="classsmooth_1_1Bezier.html" title="Bezier curve on [0, 1].">Bezier</a> curve. </p>
+<p>Evaluate <a class="el" href="classsmooth_1_1Bezier.html" title="Bezier curve on [0, 1].">Bezier</a> curve. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">t_in</td><td>time point to evaluate at </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">t</td><td>time point to evaluate at </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">vel</td><td>output body velocity at evaluation time </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">acc</td><td>output body acceleration at evaluation time </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>spline value at time t</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Input <code>t_in</code> is clamped to interval [0, 1] </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Input <code>t</code> is clamped to interval [0, 1] </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00113">113</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 

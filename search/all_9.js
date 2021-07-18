@@ -23,8 +23,8 @@ var searchData=
   ['map_3c_20smooth_3a_3aso2_3c_20_5fscalar_20_3e_20_3e_82',['Map&lt; smooth::SO2&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1SO2_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
   ['map_3c_20smooth_3a_3aso3_3c_20_5fscalar_20_3e_20_3e_83',['Map&lt; smooth::SO3&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1SO3_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
   ['map_3c_20smooth_3a_3atn_3c_20n_2c_20_5fscalar_20_3e_20_3e_84',['Map&lt; smooth::Tn&lt; N, _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1Tn_3_01N_00_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['matrix_85',['matrix',['../classsmooth_1_1LieGroupBase.html#a5c378bc1f9e1f2b3d46ee030ac223e0a',1,'smooth::LieGroupBase']]],
-  ['matrix_86',['Matrix',['../classsmooth_1_1LieGroupBase.html#abff41124555fe53be6ec9a231c33d9cf',1,'smooth::LieGroupBase']]],
+  ['matrix_85',['Matrix',['../classsmooth_1_1LieGroupBase.html#abff41124555fe53be6ec9a231c33d9cf',1,'smooth::LieGroupBase']]],
+  ['matrix_86',['matrix',['../classsmooth_1_1LieGroupBase.html#a5c378bc1f9e1f2b3d46ee030ac223e0a',1,'smooth::LieGroupBase']]],
   ['max_5fiter_87',['max_iter',['../structsmooth_1_1MinimizeOptions.html#a06c8794ce3e364e0f14b3055d5cef01b',1,'smooth::MinimizeOptions']]],
   ['minimize_88',['minimize',['../optim_8hpp.html#af178cd6078aacc223a42016bce92794d',1,'smooth::minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})'],['../optim_8hpp.html#abdcda4a51f33784c03a0e09852d8e8fa',1,'smooth::minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})']]],
   ['minimizeoptions_89',['MinimizeOptions',['../structsmooth_1_1MinimizeOptions.html',1,'smooth']]]

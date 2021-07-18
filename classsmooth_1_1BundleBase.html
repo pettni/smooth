@@ -98,14 +98,18 @@ Inheritance diagram for smooth::BundleBase&lt; _Derived &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:abe9d912bbac1d1cb502405986dc0b01e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#abe9d912bbac1d1cb502405986dc0b01e">Scalar</a> = typename <a class="el" href="classsmooth_1_1LieGroupBase.html#aa04ee7456d0e216d1765bc3d254f1605">Base::Scalar</a></td></tr>
+<tr class="memitem:abe9d912bbac1d1cb502405986dc0b01e"><td class="memItemLeft" align="right" valign="top"><a id="abe9d912bbac1d1cb502405986dc0b01e"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#abe9d912bbac1d1cb502405986dc0b01e">Scalar</a> = typename <a class="el" href="classsmooth_1_1LieGroupBase.html#aa04ee7456d0e216d1765bc3d254f1605">Base::Scalar</a></td></tr>
+<tr class="memdesc:abe9d912bbac1d1cb502405986dc0b01e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scalar type. <br /></td></tr>
 <tr class="separator:abe9d912bbac1d1cb502405986dc0b01e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a792a3ec3e9633da5c498c063b547446e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#a792a3ec3e9633da5c498c063b547446e">Tangent</a> = typename <a class="el" href="classsmooth_1_1LieGroupBase.html#ad453e6272e0911a08c0f619082ab42e9">Base::Tangent</a></td></tr>
+<tr class="memitem:a792a3ec3e9633da5c498c063b547446e"><td class="memItemLeft" align="right" valign="top"><a id="a792a3ec3e9633da5c498c063b547446e"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#a792a3ec3e9633da5c498c063b547446e">Tangent</a> = typename <a class="el" href="classsmooth_1_1LieGroupBase.html#ad453e6272e0911a08c0f619082ab42e9">Base::Tangent</a></td></tr>
+<tr class="memdesc:a792a3ec3e9633da5c498c063b547446e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tangent type (Eigen column vector of length Dof). <br /></td></tr>
 <tr class="separator:a792a3ec3e9633da5c498c063b547446e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18c9895025213dbaced9cb6c15aa541f"><td class="memTemplParams" colspan="2"><a id="a18c9895025213dbaced9cb6c15aa541f"></a>
 template&lt;std::size_t Idx&gt; </td></tr>
 <tr class="memitem:a18c9895025213dbaced9cb6c15aa541f"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f">PartType</a> = typename <a class="el" href="structsmooth_1_1lie__traits.html">lie_traits</a>&lt; _Derived &gt;::template PartPlainObject&lt; Idx &gt;</td></tr>
-<tr class="memdesc:a18c9895025213dbaced9cb6c15aa541f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of element in <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a>.. <br /></td></tr>
+<tr class="memdesc:a18c9895025213dbaced9cb6c15aa541f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of element in <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a>. <br /></td></tr>
 <tr class="separator:a18c9895025213dbaced9cb6c15aa541f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classsmooth_1_1LieGroupBase"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classsmooth_1_1LieGroupBase')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase&lt; _Derived &gt;</a></td></tr>
 <tr class="memitem:aa04ee7456d0e216d1765bc3d254f1605 inherit pub_types_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top"><a id="aa04ee7456d0e216d1765bc3d254f1605"></a>
@@ -131,15 +135,15 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac33afa9d25f798500fbf777af09a0654"><td class="memTemplParams" colspan="2"><a id="ac33afa9d25f798500fbf777af09a0654"></a>
+<tr class="memitem:a33a77b5a9fcec73266441d7c551ea327"><td class="memTemplParams" colspan="2"><a id="a33a77b5a9fcec73266441d7c551ea327"></a>
 template&lt;std::size_t Idx&gt; </td></tr>
-<tr class="memitem:ac33afa9d25f798500fbf777af09a0654"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Map&lt; <a class="el" href="classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f">PartType</a>&lt; Idx &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#ac33afa9d25f798500fbf777af09a0654">part</a> () requires <a class="el" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">is_mutable</a></td></tr>
-<tr class="memdesc:ac33afa9d25f798500fbf777af09a0654"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access part no Idx of bundle. <br /></td></tr>
-<tr class="separator:ac33afa9d25f798500fbf777af09a0654"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33a77b5a9fcec73266441d7c551ea327"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Map&lt; <a class="el" href="classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f">PartType</a>&lt; Idx &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#a33a77b5a9fcec73266441d7c551ea327">part</a> ()</td></tr>
+<tr class="memdesc:a33a77b5a9fcec73266441d7c551ea327"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access part no Idx of <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a>. <br /></td></tr>
+<tr class="separator:a33a77b5a9fcec73266441d7c551ea327"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad18cb7dd0461561b7c444659a8e028d7"><td class="memTemplParams" colspan="2"><a id="ad18cb7dd0461561b7c444659a8e028d7"></a>
 template&lt;std::size_t Idx&gt; </td></tr>
 <tr class="memitem:ad18cb7dd0461561b7c444659a8e028d7"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Map&lt; const <a class="el" href="classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f">PartType</a>&lt; Idx &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BundleBase.html#ad18cb7dd0461561b7c444659a8e028d7">part</a> () const</td></tr>
-<tr class="memdesc:ad18cb7dd0461561b7c444659a8e028d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Const access part no Idx of bundle. <br /></td></tr>
+<tr class="memdesc:ad18cb7dd0461561b7c444659a8e028d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Const access part no Idx of <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a>. <br /></td></tr>
 <tr class="separator:ad18cb7dd0461561b7c444659a8e028d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classsmooth_1_1LieGroupBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classsmooth_1_1LieGroupBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase&lt; _Derived &gt;</a></td></tr>
 <tr class="memitem:abbe727795eeecc4bfcc34586799a71ef inherit pub_methods_classsmooth_1_1LieGroupBase"><td class="memItemLeft" align="right" valign="top">_Derived &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1LieGroupBase.html#abbe727795eeecc4bfcc34586799a71ef">operator=</a> (const <a class="el" href="classsmooth_1_1LieGroupBase.html">LieGroupBase</a>&lt; OtherDerived &gt; &amp;o)</td></tr>
@@ -275,52 +279,13 @@ class smooth::BundleBase&lt; _Derived &gt;</h3>
 
 <p>Base class for <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a> lie groups. </p>
 <p>Represents a direct product \(G_1 \times \ldots G_n \) between a collection \(G_1, \ldots, G_n \) of Lie groups.</p>
-<p>Elements of the bundle are of the form \( (g_1, \ldots g_n) \), and operations are performed element-wise, i.e. group composition is </p><p class="formulaDsp">
+<p>Elements of the <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a> are of the form \( (g_1, \ldots g_n) \), and operations are performed element-wise, i.e. group composition is </p><p class="formulaDsp">
 \[ (g_1, \ldots, g_n) \circ (g_1&#39;, \ldots, g_n&#39;) = (g_1 \circ g_1&#39;, \ldots, g_n \circ g_n&#39;). \]
 </p>
 <p>The tangent space dimension is the sum of the tangent space dimension of the member types, and similary for the reprenstation size and the matrix dimension. </p>
 
 <p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00070">70</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
-</div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="abe9d912bbac1d1cb502405986dc0b01e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe9d912bbac1d1cb502405986dc0b01e">&#9670;&nbsp;</a></span>Scalar</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename _Derived &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="classsmooth_1_1BundleBase.html">smooth::BundleBase</a>&lt; _Derived &gt;::<a class="el" href="classsmooth_1_1BundleBase.html#abe9d912bbac1d1cb502405986dc0b01e">Scalar</a> =  typename <a class="el" href="classsmooth_1_1LieGroupBase.html#aa04ee7456d0e216d1765bc3d254f1605">Base::Scalar</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Scalar type. </p>
-
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00081">81</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a792a3ec3e9633da5c498c063b547446e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a792a3ec3e9633da5c498c063b547446e">&#9670;&nbsp;</a></span>Tangent</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename _Derived &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="classsmooth_1_1BundleBase.html">smooth::BundleBase</a>&lt; _Derived &gt;::<a class="el" href="classsmooth_1_1BundleBase.html#a792a3ec3e9633da5c498c063b547446e">Tangent</a> =  typename <a class="el" href="classsmooth_1_1LieGroupBase.html#ad453e6272e0911a08c0f619082ab42e9">Base::Tangent</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Tangent type (Eigen column vector of length Dof). </p>
-
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00081">81</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>include/smooth/<a class="el" href="bundle_8hpp_source.html">bundle.hpp</a></li>
 </ul>
 </div><!-- contents -->

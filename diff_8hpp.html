@@ -142,11 +142,11 @@ Functions</h2></td></tr>
 <tr class="separator:ae11b794882474895dfb63908923c0cf0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3f072cfea26c99e6234d87d1e7f588d"><td class="memTemplParams" colspan="2">template&lt;Type dm, typename _F , typename _Wrt &gt; </td></tr>
 <tr class="memitem:ae3f072cfea26c99e6234d87d1e7f588d"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#ae3f072cfea26c99e6234d87d1e7f588d">smooth::diff::dr</a> (_F &amp;&amp;f, _Wrt &amp;&amp;x)</td></tr>
-<tr class="memdesc:ae3f072cfea26c99e6234d87d1e7f588d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Differentiation in local tangent space (right derivative)  <a href="diff_8hpp.html#ae3f072cfea26c99e6234d87d1e7f588d">More...</a><br /></td></tr>
+<tr class="memdesc:ae3f072cfea26c99e6234d87d1e7f588d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Differentiation in tangent space.  <a href="diff_8hpp.html#ae3f072cfea26c99e6234d87d1e7f588d">More...</a><br /></td></tr>
 <tr class="separator:ae3f072cfea26c99e6234d87d1e7f588d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85284b9fd2ecf3be17684bafd377810a"><td class="memTemplParams" colspan="2">template&lt;typename _F , typename _Wrt &gt; </td></tr>
 <tr class="memitem:a85284b9fd2ecf3be17684bafd377810a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#a85284b9fd2ecf3be17684bafd377810a">smooth::diff::dr</a> (_F &amp;&amp;f, _Wrt &amp;&amp;x)</td></tr>
-<tr class="memdesc:a85284b9fd2ecf3be17684bafd377810a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Differentiation in local tangent space using default method.  <a href="diff_8hpp.html#a85284b9fd2ecf3be17684bafd377810a">More...</a><br /></td></tr>
+<tr class="memdesc:a85284b9fd2ecf3be17684bafd377810a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Differentiation in tangent space using default method.  <a href="diff_8hpp.html#a85284b9fd2ecf3be17684bafd377810a">More...</a><br /></td></tr>
 <tr class="separator:a85284b9fd2ecf3be17684bafd377810a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -219,7 +219,7 @@ template&lt;Type dm, typename _F , typename _Wrt &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Differentiation in local tangent space (right derivative) </p>
+<p>Differentiation in tangent space. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">dm</td><td>differentiation method to use</td></tr>
@@ -234,7 +234,7 @@ template&lt;Type dm, typename _F , typename _Wrt &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
-<p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
+<dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00148">148</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
@@ -268,7 +268,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Differentiation in local tangent space using default method. </p>
+<p>Differentiation in tangent space using default method. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>function to differentiate </td></tr>
@@ -277,7 +277,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
-<p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
+<dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00188">188</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
@@ -320,7 +320,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
-<p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
+<dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00070">70</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
@@ -345,7 +345,7 @@ template&lt;typename... _Args&gt; </div>
 </div><div class="memdoc">
 
 <p>Grouping of function arguments. </p>
-<p>A tuple of references is created from the input arguments, which is the expected format in e.g. <a class="el" href="diff_8hpp.html#a85284b9fd2ecf3be17684bafd377810a" title="Differentiation in local tangent space using default method.">dr()</a> and <a class="el" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d" title="Find a minimum of the non-linear least-squares problem.">minimize()</a>. </p>
+<p>A tuple of references is created from the input arguments, which is the expected format in e.g. <a class="el" href="diff_8hpp.html#a85284b9fd2ecf3be17684bafd377810a" title="Differentiation in tangent space using default method.">dr()</a> and <a class="el" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d" title="Find a minimum of the non-linear least-squares problem.">minimize()</a>. </p>
 
 <p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00050">50</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
