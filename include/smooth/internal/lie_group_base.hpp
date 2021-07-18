@@ -28,9 +28,18 @@
 
 #include <Eigen/Core>
 
-#include "smooth/concepts.hpp"
-
 namespace smooth {
+
+/**
+ * @brief Type trait that maps a type to Lie group operations.
+ *
+ * Required members:
+ *  - `typename Impl`: Lie group operations
+ *  - `typename Scalar`: Scalar type (\p float, \p double, ...)
+ *  - `typename template<NewScalar> PlainObject`: Default return type
+ */
+template<typename T>
+struct lie_traits;
 
 /**
  * @brief Base class for Lie group types

@@ -36,6 +36,7 @@
 
 #include "concepts.hpp"
 #include "internal/utils.hpp"
+#include "tn.hpp"
 
 namespace smooth {
 
@@ -68,7 +69,7 @@ namespace detail {
 template<typename _F, typename _Wrt>
 auto dr_numerical(_F && f, _Wrt && x)
 {
-  using Result = decltype(std::apply(f, x));
+  using Result = typename decltype(std::apply(f, x))::PlainObject;
   using Scalar = typename Result::Scalar;
 
   // static sizes
@@ -77,7 +78,7 @@ auto dr_numerical(_F && f, _Wrt && x)
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
-  auto val = std::apply(f, x);
+  const Result val = std::apply(f, x);
 
   // dynamic sizes
   Eigen::Index nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
@@ -101,6 +102,10 @@ auto dr_numerical(_F && f, _Wrt && x)
       if constexpr (std::is_base_of_v<Eigen::MatrixBase<W>, W>) {
         // scale step size if we are in Rn
         eps_j *= abs(w[j]);
+        if (eps_j == 0.) { eps_j = eps; }
+      } else if constexpr (std::is_base_of_v<smooth::TnBase<W>, W>) {
+        // or Tn
+        eps_j *= abs(w.rn()[j]);
         if (eps_j == 0.) { eps_j = eps; }
       }
       w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
@@ -161,7 +166,7 @@ auto dr(_F && f, _Wrt && x)
   } else if constexpr (dm == Type::DEFAULT) {
 #ifdef SMOOTH_DIFF_AUTODIFF
     return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(x));
-#elif SMOOTH_DIFF_CERES
+#elif defined SMOOTH_DIFF_CERES
     return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(x));
 #else
     return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(x));

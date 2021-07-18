@@ -104,20 +104,33 @@ if(BUILD_TESTING)
 
   # CORE TESTS
 
-  add_executable(${PROJECT_NAME}_tests
-    test/test_liegroup.cpp
-    test/test_bundle.cpp
-    test/test_so2.cpp
-    test/test_so3.cpp
-    test/test_se2.cpp
-    test/test_se3.cpp
-  )
-  target_link_libraries(${PROJECT_NAME}_tests PRIVATE smooth GTest::Main)
-  gtest_discover_tests(${PROJECT_NAME}_tests)
+  add_executable(test_lie_api test/test_liegroup.cpp)
+  target_link_libraries(test_lie_api PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_lie_api)
 
-  add_executable(test_manifold_vector test/test_manifold_vector.cpp)
-  target_link_libraries(test_manifold_vector PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_manifold_vector)
+  add_executable(test_tn test/test_tn.cpp)
+  target_link_libraries(test_tn PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_tn)
+
+  add_executable(test_so2 test/test_so2.cpp)
+  target_link_libraries(test_so2 PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_so2)
+
+  add_executable(test_so3 test/test_so3.cpp)
+  target_link_libraries(test_so3 PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_so3)
+
+  add_executable(test_se2 test/test_se2.cpp)
+  target_link_libraries(test_se2 PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_se2)
+
+  add_executable(test_se3 test/test_se3.cpp)
+  target_link_libraries(test_se3 PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_se3)
+
+  add_executable(test_bundle test/test_bundle.cpp)
+  target_link_libraries(test_bundle PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_bundle)
 
   # ALGO TESTS
 
@@ -141,7 +154,7 @@ if(BUILD_TESTING)
 
   find_package(Boost QUIET)
   find_package(Ceres 2 QUIET)
-  find_package(autodiff QUIET)
+  find_package(autodiff 0.6 QUIET)
   find_package(geometry_msgs QUIET)
 
   if(autodiff_FOUND)

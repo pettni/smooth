@@ -74,10 +74,12 @@ template<typename G>
 concept LieGroup = Manifold<G> &&
 // static constants
 requires {
-  {G::Dof}->std::convertible_to<Eigen::Index>;      // degrees of freedom
+  typename G::Tangent;
+  {G::Dof}->std::convertible_to<Eigen::Index>;
 } &&
 (G::Dof >= 1) &&
 (G::SizeAtCompileTime == G::Dof) &&
+(G::Tangent::SizeAtCompileTime == G::Dof) &&
 // member methods
 requires(const G & g1, const G & g2)
 {
@@ -92,27 +94,6 @@ requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
   {G::Identity()}->std::convertible_to<typename G::PlainObject>;
   {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
   {G::ad(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
-};
-
-/**
- * @brief Type trait that maps a type to Lie group operations.
- *
- * Required members:
- *  - `typename Impl`: Lie group operations
- *  - `typename Scalar`: Scalar type (\p float, \p double, ...)
- *  - `typename template<NewScalar> PlainObject`: Default return type
- */
-template<typename T>
-struct lie_traits;
-
-/**
- * @brief Type for which \p lie_traits is properly specialized.
- */
-template<typename G>
-concept LieGroupLike = requires
-{
-  typename lie_traits<G>::Impl;
-  typename lie_traits<G>::Scalar;
 };
 
 } // namespace smooth

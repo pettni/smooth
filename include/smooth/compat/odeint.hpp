@@ -146,7 +146,7 @@ struct BoostOdeintOps
  * @brief SFINAE dispatcher for Manifold types.
  */
 // \cond
-template<smooth::Manifold G>
+template<smooth::LieGroup G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
   using operations_type = ::smooth::BoostOdeintOps;

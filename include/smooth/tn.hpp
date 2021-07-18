@@ -26,22 +26,16 @@
 #ifndef SMOOTH__TN_HPP_
 #define SMOOTH__TN_HPP_
 
-/**
- * @file
- * @brief Lie group of translations.
- */
+#include <Eigen/Core>
 
 #include "internal/lie_group_base.hpp"
+#include "internal/macro.hpp"
 #include "internal/tn.hpp"
 
 namespace smooth {
 
 /**
- * @brief Eigen type as \f$T(n)\f$ Lie Group.
- *
- * @note Tn is a typedef for an Eigen column vector and therefore does not
- * have the Lie group API from LieGroupBase.
- * lie_traits<Tn<N, Scalar>> defines the operations corresponding to the Lie group \f$T(n)\f$.
+ * @brief Lie group \f$\mathbb{T}(n)\f$ of \f$n\f$-dimensional translations.
  *
  * Memory layout
  * -------------
@@ -56,7 +50,7 @@ namespace smooth {
  * \begin{bmatrix}
  *  I & \mathbf{t} \\
  *  0 & 1
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{n+1 \times n+1}
  * \f]
  *
  * Lie algebra Matrix form
@@ -67,110 +61,181 @@ namespace smooth {
  * \begin{bmatrix}
  *  0 & \mathbf{v} \\
  *  0 & 0
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{n+1 \times n+1}
  * \f]
  */
-template<int _N, typename _Scalar>
-requires (_N > 0)
-using Tn = Eigen::Matrix<_Scalar, _N, 1>;
+template<typename _Derived>
+class TnBase : public LieGroupBase<_Derived>
+{
+  using Base = LieGroupBase<_Derived>;
+
+protected:
+  TnBase() = default;
+
+public:
+  SMOOTH_INHERIT_TYPEDEFS;
+
+  /**
+   * @brief Euclidean vector (Rn) representation.
+   */
+  Eigen::Map<Eigen::Matrix<Scalar, Dof, 1>> rn() requires is_mutable
+  {
+    return Eigen::Map<Eigen::Matrix<Scalar, Dof, 1>>(static_cast<_Derived &>(*this).data());
+  }
+
+  /**
+   * @brief Euclidean vector (Rn) representation.
+   */
+  Eigen::Map<const Eigen::Matrix<Scalar, Dof, 1>> rn() const
+  {
+    return Eigen::Map<const Eigen::Matrix<Scalar, Dof, 1>>(
+      static_cast<const _Derived &>(*this).data());
+  }
+
+  /**
+   * @brief Translation action on Rn vector.
+   */
+  template<typename EigenDerived>
+  Eigen::Matrix<Scalar, Dof, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
+  {
+    return rn() + v;
+  }
+};
 
 // \cond
-template<int _N, typename _Scalar>
-struct lie_traits<Tn<_N, _Scalar>>
+template<int N, typename _Scalar>
+requires(N > 0) class Tn;
+// \endcond
+
+// \cond
+template<int N, typename _Scalar>
+struct lie_traits<Tn<N, _Scalar>>
 {
-  //! Lie group operations
-  using Impl = TnImpl<_N, _Scalar>;
-  //! Scalar type
+  static constexpr bool is_mutable = true;
+
+  using Impl   = TnImpl<N, _Scalar>;
   using Scalar = _Scalar;
 
-  //! Plain return type.
   template<typename NewScalar>
-  using PlainObject = Eigen::Matrix<NewScalar, _N, 1>;
+  using PlainObject = Tn<N, NewScalar>;
 };
 // \endcond
 
-//! One-dimensional vector.
-template<typename _Scalar>
-using T1 = Tn<1, _Scalar>;
+/**
+ * @brief Storage implementation of Tn Lie group.
+ *
+ * @see TnBase for memory layout.
+ */
+template<int N, typename _Scalar>
+// \cond
+requires(N > 0)
+  // \endcond
+  class Tn : public TnBase<Tn<N, _Scalar>>
+{
+  using Base = TnBase<Tn<N, _Scalar>>;
+  SMOOTH_GROUP_API(Tn);
 
-//! Two-dimensional vector.
-template<typename _Scalar>
-using T2 = Tn<2, _Scalar>;
+public:
+  /**
+   * @brief Construct from Eigen vector.
+   *
+   * @param rn Eigen vector.
+   */
+  template<typename Derived>
+  Tn(const Eigen::MatrixBase<Derived> & rn) : coeffs_(rn)
+  {}
+};
 
-//! Three-dimensional vector.
-template<typename _Scalar>
-using T3 = Tn<3, _Scalar>;
+}  // namespace smooth
 
-//! Four-dimensional vector.
-template<typename _Scalar>
-using T4 = Tn<4, _Scalar>;
+// \cond
+template<int N, typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<smooth::Tn<N, _Scalar>>>
+    : public lie_traits<smooth::Tn<N, _Scalar>>
+{};
+// \endcond
 
-//! Five-dimensional vector.
-template<typename _Scalar>
-using T5 = Tn<5, _Scalar>;
+/**
+ * @brief Memory mapping of Tn Lie group.
+ *
+ * @see TnBase for memory layout.
+ */
+template<int N, typename _Scalar>
+class Eigen::Map<smooth::Tn<N, _Scalar>> : public smooth::TnBase<Eigen::Map<smooth::Tn<N, _Scalar>>>
+{
+  using Base = smooth::TnBase<Eigen::Map<smooth::Tn<N, _Scalar>>>;
 
-//! Six-dimensional vector.
-template<typename _Scalar>
-using T6 = Tn<6, _Scalar>;
+  SMOOTH_MAP_API(Map);
+};
 
-//! Seven-dimensional vector.
-template<typename _Scalar>
-using T7 = Tn<7, _Scalar>;
+// \cond
+template<int N, typename _Scalar>
+struct smooth::lie_traits<Eigen::Map<const smooth::Tn<N, _Scalar>>>
+    : public lie_traits<smooth::Tn<N, _Scalar>>
+{
+  static constexpr bool is_mutable = false;
+};
+// \endcond
 
-//! Eight-dimensional vector.
-template<typename _Scalar>
-using T8 = Tn<8, _Scalar>;
+/**
+ * @brief Const memory mapping of Tn Lie group.
+ *
+ * @see TnBase for memory layout.
+ */
+template<int N, typename _Scalar>
+class Eigen::Map<const smooth::Tn<N, _Scalar>>
+    : public smooth::TnBase<Eigen::Map<const smooth::Tn<N, _Scalar>>>
+{
+  using Base = smooth::TnBase<Eigen::Map<const smooth::Tn<N, _Scalar>>>;
 
-//! Nine-dimensional vector.
-template<typename _Scalar>
-using T9 = Tn<9, _Scalar>;
+  SMOOTH_CONST_MAP_API(Map);
+};
 
-//! Ten-dimensional vector.
-template<typename _Scalar>
-using T10 = Tn<10, _Scalar>;
+namespace smooth {
+// \cond
+template<typename Scalar>
+using T1 = Tn<1, Scalar>;
+template<typename Scalar>
+using T2 = Tn<2, Scalar>;
+template<typename Scalar>
+using T3 = Tn<3, Scalar>;
+template<typename Scalar>
+using T4 = Tn<4, Scalar>;
+template<typename Scalar>
+using T5 = Tn<5, Scalar>;
+template<typename Scalar>
+using T6 = Tn<6, Scalar>;
+template<typename Scalar>
+using T7 = Tn<7, Scalar>;
+template<typename Scalar>
+using T8 = Tn<8, Scalar>;
+template<typename Scalar>
+using T9 = Tn<9, Scalar>;
+template<typename Scalar>
+using T10 = Tn<10, Scalar>;
 
-//! One-dimensional float vector.
 using T1f  = T1<float>;
-//! Two-dimensional float vector.
 using T2f  = T2<float>;
-//! Three-dimensional float vector.
 using T3f  = T3<float>;
-//! Four-dimensional float vector.
 using T4f  = T4<float>;
-//! Five-dimensional float vector.
 using T5f  = T5<float>;
-//! Six-dimensional float vector.
 using T6f  = T6<float>;
-//! Seven-dimensional float vector.
 using T7f  = T7<float>;
-//! Eight-dimensional float vector.
 using T8f  = T8<float>;
-//! Nine-dimensional float vector.
 using T9f  = T9<float>;
-//! Ten-dimensional float vector.
 using T10f = T10<float>;
 
-//! One-dimensional double vector.
 using T1d  = T1<double>;
-//! Two-dimensional double vector.
 using T2d  = T2<double>;
-//! Three-dimensional double vector.
 using T3d  = T3<double>;
-//! Four-dimensional double vector.
 using T4d  = T4<double>;
-//! Five-dimensional double vector.
 using T5d  = T5<double>;
-//! Six-dimensional double vector.
 using T6d  = T6<double>;
-//! Seven-dimensional double vector.
 using T7d  = T7<double>;
-//! Eight-dimensional double vector.
 using T8d  = T8<double>;
-//! Nine-dimensional double vector.
 using T9d  = T9<double>;
-//! Ten-dimensional double vector.
 using T10d = T10<double>;
-
+// \endcond
 }  // namespace smooth
 
 #endif  // SMOOTH__TN_HPP_

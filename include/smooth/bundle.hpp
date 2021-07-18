@@ -30,14 +30,32 @@
 #include "internal/bundle.hpp"
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
+#include "internal/tn.hpp"
 
 namespace smooth {
+
+// \cond
+// Specializing lie_traits for Eigen vectors makes it possible to use
+// Eigen vectors in the bundle
+template<int _N, typename _Scalar>
+struct lie_traits<Eigen::Matrix<_Scalar, _N, 1>>
+{
+  //! Lie group operations
+  using Impl = TnImpl<_N, _Scalar>;
+  //! Scalar type
+  using Scalar = _Scalar;
+
+  //! Plain return type.
+  template<typename NewScalar>
+  using PlainObject = Eigen::Matrix<NewScalar, _N, 1>;
+};
+// \endcond
 
 /**
  * @brief Base class for Bundle lie groups.
  *
- * Represents a direct product \f$ G_1 \times \ldots G_n \f$ between a
- * collection \f$ G_1, \ldots, G_n \f$ of Lie groups.
+ * Represents a direct product \f$G_1 \times \ldots G_n \f$ between a
+ * collection \f$G_1, \ldots, G_n \f$ of Lie groups.
  *
  * Elements of the bundle are of the form \f$ (g_1, \ldots g_n) \f$, and
  * operations are performed element-wise, i.e. group composition is
@@ -90,13 +108,21 @@ public:
   }
 };
 
+/// Type for which lie_traits is properly specified. 
+template<typename T>
+concept LieImplemented = requires
+{
+  typename lie_traits<T>::Scalar;
+  typename lie_traits<T>::Impl;
+};
+
 // \cond
-template<LieGroupLike... _Gs>
+template<LieImplemented... _Gs>
 class Bundle;
 // \endcond
 
 // \cond
-template<LieGroupLike... _Gs>
+template<LieImplemented... _Gs>
 struct lie_traits<Bundle<_Gs...>>
 {
   static constexpr bool is_mutable = true;
@@ -121,7 +147,7 @@ struct lie_traits<Bundle<_Gs...>>
  *
  * @see BundleBase for details.
  */
-template<LieGroupLike... _Gs>
+template<LieImplemented... _Gs>
 class Bundle : public BundleBase<Bundle<_Gs...>>
 {
   using Base = BundleBase<Bundle<_Gs...>>;
@@ -145,7 +171,7 @@ public:
 }  // namespace smooth
 
 // \cond
-template<smooth::LieGroupLike... _Gs>
+template<smooth::LieImplemented... _Gs>
 struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
   : public lie_traits<smooth::Bundle<_Gs...>>
 {};
@@ -156,7 +182,7 @@ struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
  *
  * @see BundleBase for details.
  */
-template<smooth::LieGroupLike... _Gs>
+template<smooth::LieImplemented... _Gs>
 class Eigen::Map<smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
 {
@@ -166,7 +192,7 @@ class Eigen::Map<smooth::Bundle<_Gs...>>
 };
 
 // \cond
-template<smooth::LieGroupLike... _Gs>
+template<smooth::LieImplemented... _Gs>
 struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
   : public lie_traits<smooth::Bundle<_Gs...>>
 {
@@ -179,7 +205,7 @@ struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
  *
  * @see BundleBase for details.
  */
-template<smooth::LieGroupLike... _Gs>
+template<smooth::LieImplemented... _Gs>
 class Eigen::Map<const smooth::Bundle<_Gs...>>
   : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>
 {

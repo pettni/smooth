@@ -109,13 +109,12 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
   return M;
 }
 
-template<typename G>
-using OptTangent =
-  std::optional<Eigen::Ref<Eigen::Matrix<typename G::Scalar, lie_traits<G>::Impl::Dof, 1>>>;
+template<LieGroup G>
+using OptTangent = std::optional<Eigen::Ref<typename G::Tangent>>;
 
-template<typename G, std::size_t K>
-using OptJacobian = std::optional<Eigen::Ref<
-  Eigen::Matrix<typename G::Scalar, lie_traits<G>::Impl::Dof, lie_traits<G>::Impl::Dof *(K + 1)>>>;
+template<LieGroup G, std::size_t K>
+using OptJacobian =
+  std::optional<Eigen::Ref<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof *(K + 1)>>>;
 
 }  // namespace detail
 
@@ -135,7 +134,7 @@ using OptJacobian = std::optional<Eigen::Ref<
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
-template<std::size_t K, typename G, std::ranges::range Range, typename Derived>
+template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
 G cspline_eval(const G & g_0,
   const Range & diff_points,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
@@ -149,12 +148,7 @@ G cspline_eval(const G & g_0,
                              + ", got " + std::to_string(std::ranges::size(diff_points)));
   }
 
-  using Scalar  = typename G::Scalar;
-  using Impl    = typename lie_traits<G>::Impl;
-  using Tangent = Eigen::Matrix<Scalar, Impl::Dof, 1>;
-
-  static constexpr auto RepSize = Impl::RepSize;
-  static constexpr auto Dof     = Impl::Dof;
+  using Scalar = typename G::Scalar;
 
   Eigen::Matrix<Scalar, 1, K + 1> uvec, duvec, d2uvec;
 
@@ -176,86 +170,49 @@ G cspline_eval(const G & g_0,
   }
 
   G g = g_0;
-  Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>> g_map(g.data());
-
   for (std::size_t j = 1; const auto & v : diff_points) {
     const Scalar Btilde = uvec.dot(cum_coef_mat.row(j));
-
-    // g *= exp(Btilde * v)
-    Eigen::Matrix<Scalar, RepSize, 1> tmp1, tmp2;
-    Impl::exp(Btilde * v, tmp1);  // tmp1 holds exp(Btilde v)
-    Impl::composition(g_map, tmp1, tmp2);  // tmp2 holds g * exp(Btilde v)
-    g_map = tmp2;
+    g *= G::exp(Btilde * v);
 
     if (vel.has_value() || acc.has_value()) {
       const Scalar dBtilde = duvec.dot(cum_coef_mat.row(j));
-
-      Eigen::Matrix<Scalar, Dof, Dof> Ad;
-      Impl::inverse(tmp1, tmp2);  // tmp2 holds exp(-Btilde v)
-      Impl::Ad(tmp2, Ad);
-
+      const auto Ad        = G::exp(-Btilde * v).Ad();
       vel.value().applyOnTheLeft(Ad);
       vel.value() += dBtilde * v;
 
       if (acc.has_value()) {
         const Scalar d2Btilde = d2uvec.dot(cum_coef_mat.row(j));
         acc.value().applyOnTheLeft(Ad);
-
-        Eigen::Matrix<Scalar, Dof, Dof> ad;
-        Impl::ad(vel.value(), ad);
-
-        acc.value() += dBtilde * ad * v + d2Btilde * v;
+        acc.value() += dBtilde * G::ad(vel.value()) * v + d2Btilde * v;
       }
     }
     ++j;
   }
 
   if (der.has_value()) {
-    G z2inv;
-    // set z2inv to identity
-    Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>> z2inv_coeffs(z2inv.data());
-    Impl::setIdentity(z2inv_coeffs);
+    G z2inv = G::Identity();
 
     der.value().setZero();
 
     for (int j = K; j >= 0; --j) {
       if (j != K) {
-        const Scalar Btilde_jp = uvec.dot(cum_coef_mat.row(j + 1));
-        const Tangent & vjp    = *(std::ranges::begin(diff_points) + j);
-        const Tangent sjp      = Btilde_jp * vjp;
+        const Scalar Btilde_jp          = uvec.dot(cum_coef_mat.row(j + 1));
+        const typename G::Tangent & vjp = *(std::ranges::begin(diff_points) + j);
+        const typename G::Tangent sjp   = Btilde_jp * vjp;
 
-        Eigen::Matrix<Scalar, Dof, Dof> z2inv_Ad, ad_vjp, dr_exp_sjp, dr_expinv_vjp, dl_expinv_vjp;
-        Impl::Ad(z2inv_coeffs, z2inv_Ad);
-        Impl::dr_exp(sjp, dr_exp_sjp);
-        Impl::ad(vjp, ad_vjp);
-        Impl::dr_expinv(vjp, dr_expinv_vjp);
+        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) -=
+          Btilde_jp * z2inv.Ad() * G::dr_exp(sjp) * G::dl_expinv(vjp);
 
-        der.value().template block<Dof, Dof>(0, j * Dof) -=
-          Btilde_jp * z2inv_Ad * dr_exp_sjp * (-ad_vjp + dr_expinv_vjp);
-
-        // z2inv *= exp(-sjp)
-        Eigen::Matrix<Scalar, RepSize, 1> tmp1, tmp2;
-        Impl::exp(-sjp, tmp1);  // tmp1 holds exp(-sjp)
-        Impl::composition(z2inv_coeffs, tmp1, tmp2);
-        z2inv_coeffs = tmp2;  // tmp2 holds z2inv * exp(-sjp)
+        z2inv *= G::exp(-sjp);
       }
 
       const Scalar Btilde_j = uvec.dot(cum_coef_mat.row(j));
       if (j != 0) {
-        const Tangent & vj = *(std::ranges::begin(diff_points) + j - 1);
-        Eigen::Matrix<Scalar, Dof, Dof> z2inv_Ad, dr_exp_sj, dr_expinv_vj;
-
-        Impl::Ad(z2inv_coeffs, z2inv_Ad);
-        Impl::dr_exp(Btilde_j * vj, dr_exp_sj);
-        Impl::dr_expinv(vj, dr_expinv_vj);
-
-        der.value().template block<Dof, Dof>(0, j * Dof) +=
-          Btilde_j * z2inv_Ad * dr_exp_sj * dr_expinv_vj;
+        const typename G::Tangent & vj = *(std::ranges::begin(diff_points) + j - 1);
+        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) +=
+          Btilde_j * z2inv.Ad() * G::dr_exp(Btilde_j * vj) * G::dr_expinv(vj);
       } else {
-        Eigen::Matrix<Scalar, Dof, Dof> z2inv_Ad;
-
-        Impl::Ad(z2inv_coeffs, z2inv_Ad);
-        der.value().template block<Dof, Dof>(0, j * Dof) += Btilde_j * z2inv_Ad;
+        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) += Btilde_j * z2inv.Ad();
       }
     }
   }
@@ -279,7 +236,7 @@ G cspline_eval(const G & g_0,
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives w.r.t. the K+1 control points
  */
-template<std::size_t K, typename G, std::ranges::range Range, typename Derived>
+template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
 G cspline_eval(const Range & ctrl_points,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
   typename G::Scalar u,
@@ -296,7 +253,7 @@ G cspline_eval(const Range & ctrl_points,
   auto b1 = std::begin(ctrl_points);
   auto b2 = std::begin(ctrl_points) + 1;
 
-  std::array<Eigen::Matrix<typename G::Scalar, lie_traits<G>::Impl::Dof, 1>, K> diff_pts;
+  std::array<typename G::Tangent, K> diff_pts;
   for (auto i = 0u; i != K; ++i) {
     diff_pts[i] = *b2 - *b1;
     ++b1;

@@ -73,7 +73,7 @@ namespace smooth {
  * which aligns control points with the maximum of the corresponding
  * basis function.
  */
-template<std::size_t K, typename G>
+template<std::size_t K, LieGroup G>
 class BSpline
 {
 public:
@@ -196,13 +196,10 @@ private:
 template<std::size_t K, std::ranges::range Rt, std::ranges::range Rg>
 BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg & gg, double dt)
 {
-  static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Only doubles supported");
+  static_assert(LieGroup<std::ranges::range_value_t<Rg>>, "Rg value type is LieGroup");
+  static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");
 
-  using G                   = std::ranges::range_value_t<Rg>;
-  using Scalar              = typename G::Scalar;
-  using Impl                = typename lie_traits<G>::Impl;
-  static constexpr auto Dof = Impl::Dof;
-  using Tangent             = Eigen::Matrix<Scalar, Dof, 1>;
+  using G = std::ranges::range_value_t<Rg>;
 
   auto [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
 
@@ -216,11 +213,11 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
   auto f = [&](const auto & var) {
-    Eigen::VectorXd ret(Dof * NumData);
+    Eigen::VectorXd ret(G::Dof * NumData);
 
     Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;
-    Jac.resize(Dof * NumData, Dof * NumPts);
-    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(Dof * NumData, Dof * (K + 1)));
+    Jac.resize(G::Dof * NumData, G::Dof * NumPts);
+    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(G::Dof * NumData, G::Dof * (K + 1)));
 
     auto t_iter = std::ranges::begin(tt);
     auto g_iter = std::ranges::begin(gg);
@@ -229,21 +226,20 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
       const int64_t istar = static_cast<int64_t>((*t_iter - t0) / dt);
       const double u      = (*t_iter - t0 - istar * dt) / dt;
 
-      Eigen::Matrix<double, Dof, (K + 1) * Dof> d_vali_pts;
+      Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_vali_pts;
       auto g_spline = cspline_eval<K, G>(
         var | std::views::drop(istar) | std::views::take(K + 1), M, u, {}, {}, d_vali_pts);
 
-      const Tangent resi = g_spline - *g_iter;
+      const typename G::Tangent resi = g_spline - *g_iter;
 
-      ret.segment<Dof>(i * Dof) = resi;
+      ret.segment<G::Dof>(i * G::Dof) = resi;
 
-      Eigen::Matrix<double, Dof, Dof> d_resi_vali;
-      Impl::dr_expinv(resi, d_resi_vali);
-      const Eigen::Matrix<double, Dof, (K + 1) * Dof> d_resi_pts = d_resi_vali * d_vali_pts;
+      const Eigen::Matrix<double, G::Dof, G::Dof> d_resi_vali          = G::dr_expinv(resi);
+      const Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_resi_pts = d_resi_vali * d_vali_pts;
 
-      for (auto r = 0u; r != Dof; ++r) {
-        for (auto c = 0u; c != Dof * (K + 1); ++c) {
-          Jac.insert(i * Dof + r, istar * Dof + c) = d_resi_pts(r, c);
+      for (auto r = 0u; r != G::Dof; ++r) {
+        for (auto c = 0u; c != G::Dof * (K + 1); ++c) {
+          Jac.insert(i * G::Dof + r, istar * G::Dof + c) = d_resi_pts(r, c);
         }
       }
     }
@@ -271,8 +267,8 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
 
   // fit to data with loose convergence criteria
   MinimizeOptions opts;
-  opts.ftol = 1e-3;
-  opts.ptol = 1e-3;
+  opts.ftol     = 1e-3;
+  opts.ptol     = 1e-3;
   opts.max_iter = 10;
   minimize<diff::Type::ANALYTIC>(f, smooth::wrt(ctrl_pts), opts);
 

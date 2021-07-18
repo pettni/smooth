@@ -43,7 +43,8 @@ template<smooth::LieGroup G>
 class DiffTest : public ::testing::Test
 {};
 
-using GroupsToTest = testing::Types<smooth::SO2d, smooth::SE2d, smooth::SO3d, smooth::SE3d>;
+using GroupsToTest =
+  testing::Types<smooth::T2d, smooth::SO2d, smooth::SE2d, smooth::SO3d, smooth::SE3d>;
 
 TYPED_TEST_SUITE(DiffTest, GroupsToTest);
 
@@ -90,7 +91,8 @@ void run_composition_test()
   g1.setRandom();
   g2.setRandom();
 
-  auto [f1, jac1] = smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 * v2; }, smooth::wrt(g1, g2));
+  auto [f1, jac1] =
+    smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 * v2; }, smooth::wrt(g1, g2));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::Dof, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == 2 * TypeParam::Dof, "Error");
@@ -155,10 +157,7 @@ TYPED_TEST(DiffTest, exp_autodiff) { run_exp_test<smooth::diff::Type::AUTODIFF, 
 #endif
 
 #ifdef ENABLE_CERESDIFF_TESTS
-TYPED_TEST(DiffTest, rminus_ceres)
-{
-  run_rminus_test<smooth::diff::Type::CERES, TypeParam>();
-}
+TYPED_TEST(DiffTest, rminus_ceres) { run_rminus_test<smooth::diff::Type::CERES, TypeParam>(); }
 
 TYPED_TEST(DiffTest, composition_ceres)
 {
@@ -173,8 +172,8 @@ TEST(Differentiation, Dynamic)
   Eigen::VectorXd v(3);
   v.setRandom();
 
-  auto [f1, jac1] =
-    smooth::diff::dr<smooth::diff::Type::NUMERICAL>([](auto v1) { return (2 * v1).eval(); }, smooth::wrt(v));
+  auto [f1, jac1] = smooth::diff::dr<smooth::diff::Type::NUMERICAL>(
+    [](auto v1) { return (2 * v1).eval(); }, smooth::wrt(v));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == -1, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == -1, "Error");
@@ -213,3 +212,45 @@ TEST(Differentiation, Mixed)
   diag(1, 0) = 2;
   ASSERT_TRUE(jac1.isApprox(diag, 1e-5));
 }
+
+template<int Nx, int Ny, smooth::diff::Type DiffType>
+void test_linear(double prec = 1e-10)
+{
+  for (auto it = 0u; it != 10; ++it) {
+    smooth::Tn<Nx, double> t = smooth::Tn<Nx, double>::Random();
+
+    Eigen::Matrix<double, Ny, Nx> H = Eigen::Matrix<double, Ny, Nx>::Random();
+    Eigen::Matrix<double, Ny, 1> h  = Eigen::Matrix<double, Ny, 1>::Random();
+
+    auto f = [&H, &h](const auto & var) { return H * var.rn() + h; };
+
+    const auto [fval, dr_f] = smooth::diff::dr<DiffType>(f, smooth::wrt(t));
+    ASSERT_TRUE(fval.isApprox(f(t)));
+    ASSERT_TRUE(dr_f.isApprox(H, prec));
+  }
+}
+
+TEST(Differentiation, LinearNumerical)
+{
+  test_linear<3, 3, smooth::diff::Type::NUMERICAL>(1e-6);
+  test_linear<3, 10, smooth::diff::Type::NUMERICAL>(1e-6);
+  test_linear<10, 3, smooth::diff::Type::NUMERICAL>(1e-6);
+}
+
+#ifdef ENABLE_AUTODIFF_TESTS
+TEST(Differentiation, LinearAutodiff)
+{
+  test_linear<3, 3, smooth::diff::Type::AUTODIFF>();
+  test_linear<3, 10, smooth::diff::Type::AUTODIFF>();
+  test_linear<10, 3, smooth::diff::Type::AUTODIFF>();
+}
+#endif
+
+#ifdef ENABLE_CERESDIFF_TESTS
+TEST(Differentiation, LinearCeres)
+{
+  test_linear<3, 3, smooth::diff::Type::CERES>();
+  test_linear<3, 10, smooth::diff::Type::CERES>();
+  test_linear<10, 3, smooth::diff::Type::CERES>();
+}
+#endif

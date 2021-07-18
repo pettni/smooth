@@ -41,11 +41,13 @@ template<smooth::LieGroup G>
 class LieGroupInterface : public ::testing::Test
 {};
 
-using GroupsToTest = ::testing::Types<smooth::SO2f,
+using GroupsToTest = ::testing::Types<
+  smooth::T3f,
+  smooth::SO2f,
   smooth::SO3f,
   smooth::SE2f,
   smooth::SE3f,
-  smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d, smooth::T2d, smooth::T4d>>;
+  smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d, smooth::SE3d, smooth::T4d>>;
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 

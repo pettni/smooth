@@ -66,7 +66,7 @@ class SO3;
  * \begin{bmatrix}
  *  q_w & -q_z \\
  *  q_z &  q_w
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{2 \times 2}
  * \f]
  *
  *
@@ -78,7 +78,7 @@ class SO3;
  * \begin{bmatrix}
  *   0 & -\omega_z \\
  *  \omega_z &   0 \\
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{2 \times 2}
  * \f]
  */
 template<typename _Derived>

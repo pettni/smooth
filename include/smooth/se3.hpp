@@ -65,7 +65,7 @@ class SE2;
  * \begin{bmatrix}
  *   R & T \\
  *   0 & 1
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{4 \times 4}
  * \f]
  *
  * where \f$R\f$ is a 3x3 rotation matrix and \f$ T = [x, y, z]^T \f$.
@@ -81,7 +81,7 @@ class SE2;
  *  \omega_z &   0 & -\omega_x & v_y \\
  *  -\omega_y &  \omega_x & 0 v_y \\
  *  0 & 0 & 0 & 0
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{4 \times 4}
  * \f]
  */
 template<typename _Derived>
@@ -112,17 +112,17 @@ public:
   }
 
   /**
-   * @brief Access T(3) part.
+   * @brief Access R3 part.
    */
-  Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> t3() requires is_mutable
+  Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> r3() requires is_mutable
   {
     return Eigen::Map<Eigen::Matrix<Scalar, 3, 1>>(static_cast<_Derived &>(*this).data());
   }
 
   /**
-   * @brief Const access T(3) part.
+   * @brief Const access R3 part.
    */
-  Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>> t3() const
+  Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>> r3() const
   {
     return Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>>(
       static_cast<const _Derived &>(*this).data());
@@ -134,7 +134,7 @@ public:
   template<typename EigenDerived>
   Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
   {
-    return so3() * v + t3();
+    return so3() * v + r3();
   }
 
   /**
@@ -144,7 +144,7 @@ public:
    */
   SE2<Scalar> project_se2() const
   {
-    return SE2<Scalar>(so3().project_so2(), t3().template head<2>());
+    return SE2<Scalar>(so3().project_so2(), r3().template head<2>());
   }
 };
 
@@ -184,13 +184,13 @@ public:
    * @brief Construct from SO3 and translation.
    *
    * @param so3 orientation component.
-   * @param t3 translation component.
+   * @param r3 translation component.
    */
   template<typename SO3Derived, typename T3Derived>
-  SE3(const SO3Base<SO3Derived> & so3, const Eigen::MatrixBase<T3Derived> & t3)
+  SE3(const SO3Base<SO3Derived> & so3, const Eigen::MatrixBase<T3Derived> & r3)
   {
     Base::so3() = so3;
-    Base::t3()  = t3;
+    Base::r3()  = r3;
   }
 };
 

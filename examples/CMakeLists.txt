@@ -21,6 +21,9 @@ target_link_libraries(spline_fit smooth matplot)
 add_executable(odeint odeint.cpp)
 target_link_libraries(odeint smooth matplot)
 
+add_executable(odeint_diff odeint_diff.cpp)
+target_link_libraries(odeint_diff smooth matplot)
+
 add_executable(nls nls.cpp)
 target_link_libraries(nls smooth)
 

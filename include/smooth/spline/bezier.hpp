@@ -46,7 +46,7 @@ namespace smooth {
 /**
  * @brief Bezier curve on [0, 1].
  * @tparam N Polonimial degree of curve.
- * @tparam G Lie group type.
+ * @tparam G LieGroup type.
  *
  * The curve is defined by
  * \f[
@@ -55,16 +55,14 @@ namespace smooth {
  * where \f$\tilde B_i(t)\f$ are cumulative Bernstein basis functions and
  * \f$v_i = g_i \ominus g_{i-1}\f$ are the control point differences.
  */
-template<std::size_t N, typename G>
+template<std::size_t N, LieGroup G>
 class Bezier
 {
-  using Tangent = Eigen::Matrix<typename G::Scalar, lie_traits<G>::Impl::Dof, 1>;
-
 public:
   /**
    * @brief Default constructor creates a constant curve on [0, 1] equal to identity.
    */
-  Bezier() : g0_(G::Identity()) { vs_.fill(Tangent::Zero()); }
+  Bezier() : g0_(G::Identity()) { vs_.fill(G::Tangent::Zero()); }
 
   /**
    * @brief Create curve from rvalue parameter values.
@@ -72,7 +70,8 @@ public:
    * @param g0 starting value
    * @param vs differences [v_1, ..., v_n] between control points
    */
-  Bezier(G && g0, std::array<Tangent, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs)) {}
+  Bezier(G && g0, std::array<typename G::Tangent, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs))
+  {}
 
   /**
    * @brief Create curve from parameter values.
@@ -123,7 +122,7 @@ public:
 
 private:
   G g0_;
-  std::array<Tangent, N> vs_;
+  std::array<typename G::Tangent, N> vs_;
 };
 
 /**
@@ -136,7 +135,7 @@ private:
  * for \f$ t \in [t_i, t_{i+1}]\f$
  * where \f$p_i\f$ is a Bezier curve on \f$[0, 1]\f$.
  */
-template<std::size_t N, typename G>
+template<std::size_t N, LieGroup G>
 class PiecewiseBezier
 {
 public:
@@ -234,9 +233,7 @@ PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & 
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
-
   using G = std::ranges::range_value_t<Rg>;
-  using V = Eigen::Matrix<typename G::Scalar, lie_traits<G>::Impl::Dof, 1>;
 
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
@@ -246,7 +243,7 @@ PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & 
   auto it_t = std::ranges::begin(tt);
 
   for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
-    segments[i] = Bezier<1, G>(*it_g, std::array<V, 1>{(*(it_g + 1) - *it_g)});
+    segments[i] = Bezier<1, G>(*it_g, std::array<typename G::Tangent, 1>{(*(it_g + 1) - *it_g)});
   }
 
   auto take_view = tt | std::views::take(N + 1);
@@ -275,12 +272,7 @@ PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
-
-  using G      = std::ranges::range_value_t<Rg>;
-  using Scalar = typename G::Scalar;
-  using V      = Eigen::Matrix<typename G::Scalar, lie_traits<G>::Impl::Dof, 1>;
-  using Impl   = typename lie_traits<G>::Impl;
-
+  using G             = std::ranges::range_value_t<Rg>;
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
   std::vector<Bezier<2, G>> segments(N);
@@ -288,28 +280,19 @@ PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(
   auto it_g = std::ranges::begin(gg);
   auto it_t = std::ranges::begin(tt);
 
-  V v0 = (*(it_g + 1) - *it_g) / (*(it_t + 1) - *it_t);
+  typename G::Tangent v0 = (*(it_g + 1) - *it_g) / (*(it_t + 1) - *it_t);
 
   for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
     const double dt = *(it_t + 1) - *it_t;
 
     // scaled velocity
-    const V va = v0 * dt;
+    const typename G::Tangent va = v0 * dt;
 
     // create segment
-    const V v1 = va / 2;
+    const typename G::Tangent v1 = va / 2;
+    const typename G::Tangent v2 = *(it_g + 1) - (*it_g * G::exp(va / 2));
 
-    Eigen::Map<const Eigen::Matrix<Scalar, Impl::RepSize, 1>> g_map(it_g->data());
-    Eigen::Matrix<Scalar, Impl::RepSize, 1> tmp1, tmp2;
-
-    Impl::exp(va / 2, tmp1);               // tmp1 holds exp(va / 2)
-    Impl::composition(g_map, tmp1, tmp2);  // tmp2 holds g * exp(va / 2)
-
-    Eigen::Map<const G> g_tmp2(tmp2.data());
-
-    const V v2 = *(it_g + 1) - g_tmp2;
-
-    segments[i] = Bezier<2, G>(*it_g, std::array<V, 2>{v1, v2});
+    segments[i] = Bezier<2, G>(*it_g, std::array<typename G::Tangent, 2>{v1, v2});
 
     // unscaled end velocity for interval
     v0 = v2 * 2 / dt;
@@ -337,25 +320,21 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
-
-  using G      = std::ranges::range_value_t<Rg>;
-  using Scalar = typename G::Scalar;
-  using V      = Eigen::Matrix<typename G::Scalar, lie_traits<G>::Impl::Dof, 1>;
-  using Impl   = typename lie_traits<G>::Impl;
+  using G = std::ranges::range_value_t<Rg>;
 
   // number of intervals
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
-  std::size_t NumVars = Impl::Dof * 3 * N;
+  std::size_t NumVars = G::Dof * 3 * N;
 
-  Eigen::SparseMatrix<Scalar> lhs;
+  Eigen::SparseMatrix<typename G::Scalar> lhs;
   lhs.resize(NumVars, NumVars);
   Eigen::Matrix<int, -1, 1> nnz = Eigen::Matrix<int, -1, 1>::Constant(NumVars, 3);
-  nnz.head(Impl::Dof).setConstant(2);
-  nnz.tail(Impl::Dof).setConstant(2);
+  nnz.head(G::Dof).setConstant(2);
+  nnz.tail(G::Dof).setConstant(2);
   lhs.reserve(nnz);
 
-  Eigen::Matrix<Scalar, -1, 1> rhs(NumVars);
+  Eigen::Matrix<typename G::Scalar, -1, 1> rhs(NumVars);
   rhs.setZero();
 
   // variable layout:
@@ -364,7 +343,7 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
   //
   // where v_ji is a Dof-length vector
 
-  const auto idx = [&](int j, int i) { return 3 * Impl::Dof * i + Impl::Dof * (j - 1); };
+  const auto idx = [&](int j, int i) { return 3 * G::Dof * i + G::Dof * (j - 1); };
 
   std::size_t row_counter = 0;
 
@@ -374,11 +353,11 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
   // v_{1, 0} = v_{2, 0}
   const std::size_t v10_start = idx(1, 0);
   const std::size_t v20_start = idx(2, 0);
-  for (auto n = 0u; n != Impl::Dof; ++n) {
+  for (auto n = 0u; n != G::Dof; ++n) {
     lhs.insert(row_counter + n, v10_start + n) = 1;
     lhs.insert(row_counter + n, v20_start + n) = -1;
   }
-  row_counter += Impl::Dof;
+  row_counter += G::Dof;
 
   //// INTERIOR END POINT  ////
 
@@ -394,36 +373,36 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
     const std::size_t v2ip_start = idx(2, i + 1);
 
     // segment lengths
-    const Scalar Ti  = *(it_t + 1) - *it_t;
-    const Scalar Tip = *(it_t + 2) - *(it_t + 1);
+    const typename G::Scalar Ti  = *(it_t + 1) - *it_t;
+    const typename G::Scalar Tip = *(it_t + 2) - *(it_t + 1);
 
     // pass through control points
     // v_{1, i} + v_{2, i} + v_{3, i} = x_{i+1} - x_i
-    for (auto n = 0u; n != Impl::Dof; ++n) {
+    for (auto n = 0u; n != G::Dof; ++n) {
       lhs.insert(row_counter + n, v1i_start + n) = 1;
       lhs.insert(row_counter + n, v2i_start + n) = 1;
       lhs.insert(row_counter + n, v3i_start + n) = 1;
     }
-    rhs.segment(row_counter, Impl::Dof) = *(it_g + 1) - *(it_g);
-    row_counter += Impl::Dof;
+    rhs.segment(row_counter, G::Dof) = *(it_g + 1) - *(it_g);
+    row_counter += G::Dof;
 
     // velocity continuity
     // v_{3, i} = v_{1, i+1}
-    for (auto n = 0u; n != Impl::Dof; ++n) {
+    for (auto n = 0u; n != G::Dof; ++n) {
       lhs.insert(row_counter + n, v3i_start + n)  = 1 * Tip;
       lhs.insert(row_counter + n, v1ip_start + n) = -1 * Ti;
     }
-    row_counter += Impl::Dof;
+    row_counter += G::Dof;
 
     // acceleration continuity (approximate for Lie groups)
     // v_{2, i} - v_{3, i} = v_{2, i+1} - v_{1, i+1}
-    for (auto n = 0u; n != Impl::Dof; ++n) {
+    for (auto n = 0u; n != G::Dof; ++n) {
       lhs.insert(row_counter + n, v2i_start + n)  = 1 * (Tip * Tip);
       lhs.insert(row_counter + n, v3i_start + n)  = -1 * (Tip * Tip);
       lhs.insert(row_counter + n, v1ip_start + n) = -1 * (Ti * Ti);
       lhs.insert(row_counter + n, v2ip_start + n) = 1 * (Ti * Ti);
     }
-    row_counter += Impl::Dof;
+    row_counter += G::Dof;
   }
 
   //// RIGHT END POINT  ////
@@ -434,17 +413,17 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
 
   // end at last control point
   // v_{1, n-1} + v_{2, n-1} v_{3, n-1} = x_{n} - x_{n-1}
-  for (auto n = 0u; n != Impl::Dof; ++n) {
+  for (auto n = 0u; n != G::Dof; ++n) {
     lhs.insert(row_counter + n, v1_nm_start + n) = 1;
     lhs.insert(row_counter + n, v2_nm_start + n) = 1;
     lhs.insert(row_counter + n, v3_nm_start + n) = 1;
   }
-  rhs.segment(row_counter, Impl::Dof) = *(it_g + 1) - *it_g;
-  row_counter += Impl::Dof;
+  rhs.segment(row_counter, G::Dof) = *(it_g + 1) - *it_g;
+  row_counter += G::Dof;
 
   // zero second derivative at end:
   // v_{2, n-1} = v_{3, n-1}
-  for (auto n = 0u; n != Impl::Dof; ++n) {
+  for (auto n = 0u; n != G::Dof; ++n) {
     lhs.insert(row_counter + n, v2_nm_start + n) = 1;
     lhs.insert(row_counter + n, v3_nm_start + n) = -1;
   }
@@ -469,27 +448,15 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
     const std::size_t v1i_start = idx(1, i);
     const std::size_t v3i_start = idx(3, i);
 
-    V v1 = result.template segment<Impl::Dof>(v1i_start);
-    V v3 = result.template segment<Impl::Dof>(v3i_start);
+    typename G::Tangent v1 = result.template segment<G::Dof>(v1i_start);
+    typename G::Tangent v3 = result.template segment<G::Dof>(v3i_start);
     // re-compute v2 to compensate for linearization
     // this ensures points are interpolated, but the cost is
     // potential non-continuity of the second derivative
-    Eigen::Map<const Eigen::Matrix<Scalar, Impl::RepSize, 1>> g_map(it_g->data());
-    Eigen::Map<const Eigen::Matrix<Scalar, Impl::RepSize, 1>> gp_map((it_g + 1)->data());
+    typename G::Tangent v2 = *(it_g + 1) * G::exp(-v3) - *(it_g)*G::exp(v1);
 
-    Eigen::Matrix<Scalar, Impl::RepSize, 1> tmp1, tmp2, tmp3;
-
-    Impl::exp(v1, tmp1);                    // tmp1 holds exp(v1)
-    Impl::composition(g_map, tmp1, tmp2);   // tmp2 holds g * exp(v1)
-    Impl::exp(-v3, tmp1);                   // tmp1 holds exp(-v3)
-    Impl::composition(gp_map, tmp1, tmp3);  // tmp3 holds gp * exp(-v3)
-
-    Eigen::Map<const G> g_tmp2(tmp2.data());
-    Eigen::Map<const G> g_tmp3(tmp3.data());
-
-    V v2 = g_tmp3 - g_tmp2;
-
-    segments.emplace_back(*it_g, std::array<V, 3>{std::move(v1), std::move(v2), std::move(v3)});
+    segments.emplace_back(
+      *it_g, std::array<typename G::Tangent, 3>{std::move(v1), std::move(v2), std::move(v3)});
   }
 
   auto take_view = tt | std::views::take(N + 1);
