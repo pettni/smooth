@@ -199,7 +199,7 @@ smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 Available for `LieGroup` types, see spline/bezier.hpp.
 
 Bezier splines are piecewise defined via
-Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through
+[Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through
 the control points. See examples/spline_fit.cpp for usage.
 
 
