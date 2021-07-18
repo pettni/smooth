@@ -154,7 +154,7 @@ if(BUILD_TESTING)
 
   find_package(Boost QUIET)
   find_package(Ceres 2 QUIET)
-  find_package(autodiff QUIET)
+  find_package(autodiff 0.6 QUIET)
   find_package(geometry_msgs QUIET)
 
   if(autodiff_FOUND)

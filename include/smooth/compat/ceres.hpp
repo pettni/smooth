@@ -65,7 +65,8 @@ struct CeresParameterizationFunctor
  */
 template<LieGroup G>
 class CeresLocalParameterization
-    : public ceres::AutoDiffLocalParameterization<CeresParameterizationFunctor<G>, G::RepSize, G::Dof>
+    : public ceres::
+        AutoDiffLocalParameterization<CeresParameterizationFunctor<G>, G::RepSize, G::Dof>
 {};
 
 /**
@@ -78,15 +79,14 @@ class CeresLocalParameterization
 template<typename _F, typename _Wrt>
 auto dr_ceres(_F && f, _Wrt && x)
 {
-
   // There is potential to improve thie speed of this by reducing casting.
   // The ceres Jet type supports binary operations with e.g. double, but currently
   // the Lie operations require everything to have a uniform scalar type. Enabling
   // plus and minus for different scalars would thus save some casts.
-  using Result = decltype(std::apply(f, x));
+  using Result = typename decltype(std::apply(f, x))::PlainObject;
   using Scalar = typename Result::Scalar;
 
-  const auto fval = std::apply(f, x);
+  const Result fval = std::apply(f, x);
 
   static constexpr Eigen::Index Nx = utils::tuple_dof<_Wrt>::value;
   const auto nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
