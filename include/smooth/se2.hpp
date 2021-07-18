@@ -68,7 +68,7 @@ class SE3;
  *  q_w & -q_z & x \\
  *  q_z &  q_w & y \\
  *  0   &    0 & 1
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{3 \times 3}
  * \f]
  *
  *
@@ -81,7 +81,7 @@ class SE3;
  *   0 & -\omega_z & v_x \\
  *  \omega_z &   0 & v_y \\
  *  0 & 0 & 0
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{3 \times 3}
  * \f]
  */
 template<typename _Derived>

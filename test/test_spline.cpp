@@ -87,7 +87,7 @@ template<typename G>
 class Spline : public ::testing::Test
 {};
 
-using GroupsToTest = ::testing:: Types<Eigen::Vector2d, smooth::SO3d>;
+using GroupsToTest = ::testing:: Types<smooth::T2d, smooth::SO3d>;
 
 TYPED_TEST_SUITE(Spline, GroupsToTest);
 
@@ -263,7 +263,7 @@ TEST(Spline, BSplineDerivT1)
   auto g0 = smooth::cspline_eval<3, smooth::Bundle<smooth::T1d>>(c1, M, u, {}, {}, jac);
 
   Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
-  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>()(0) += eps(i); }
+  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>().rn()(0) += eps(i); }
 
   // expect gp \approx g0 + jac * eps
   auto gp       = g0 + (jac * eps);
@@ -399,7 +399,7 @@ TYPED_TEST(Spline, Bezier2Fit)
 
   // check continuity of derivative
   for (auto tt = 2.5; tt < 6; ++tt) {
-    Eigen::Matrix<double, smooth::lie_traits<TypeParam>::Impl::Dof, 1> va, vb;
+    typename TypeParam::Tangent va, vb;
     spline.eval(tt - 1e-5, va);
     spline.eval(tt + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
@@ -441,7 +441,7 @@ TYPED_TEST(Spline, Bezier3Fit)
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
-    Eigen::Matrix<double, smooth::lie_traits<TypeParam>::Impl::Dof, 1> va, vb;
+    typename TypeParam::Tangent va, vb;
     spline.eval(t_test - 1e-5, va);
     spline.eval(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));

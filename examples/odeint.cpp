@@ -51,7 +51,7 @@ using std::views::transform;
  */
 int main(int argc, char const * argv[])
 {
-  using state_t = smooth::Bundle<smooth::SO3d, smooth::T3d>;
+  using state_t = smooth::Bundle<smooth::SO3d, Eigen::Vector3d>;
   using deriv_t = typename state_t::Tangent;
 
   std::srand(5);

@@ -1,13 +1,3 @@
-RESTRUCTURE TODOs
-
-* [ ] Remove LieGroupLike concept
-* [x] Add LieGroup Tn class
-  - Tn is the LieGroup
-  - Rn are Eigen vectors
-* [x] Rename t2() / t3() etc to r2() / r3() since they return Eigen maps
-* [ ] Revert spline stuff by assuming LieGroup
-* [ ] Update readme to reflect changes
-
 # smooth: Lie Theory for Robotics
 
 [![CI Build and Test][ci-shield]][ci-link]
@@ -16,9 +6,15 @@ RESTRUCTURE TODOs
 
 <img src="media/ode.png" width="300">  <img src="media/bspline.png" width="300">
 
-*This project is currently being developed---breaking changes and bugs should be expected. If you are looking for something stable and established, check out [manif][manif-link] and [Sophus][sophus-link].*
+*This project is currently being developed---breaking changes and bugs should be expected.
+If you are looking for something stable and established, check out
+[manif][manif-link] and [Sophus][sophus-link].*
 
-In robotics it is often convenient to work in non-Euclidean manifolds. [Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are easy to work with due to their symmetries, and that are also good models for many robotic systems. The objective of this header-only C++20 library is to facilitate Lie groups in robotics software, by enabling:
+In robotics it is often convenient to work in non-Euclidean manifolds.
+[Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are 
+easy to work with due to their symmetries, and that are also good models for many robotic
+systems. The objective of this header-only C++20 library is to facilitate Lie groups in
+robotics software, by enabling:
 
  * Algebraic manipulation
  * Automatic differentiation
@@ -27,11 +23,11 @@ In robotics it is often convenient to work in non-Euclidean manifolds. [Lie grou
  * Optimization
 
 The following common Lie groups are implemented:
- * smooth::SO2 with complex number ![](https://latex.codecogs.com/png.latex?\mathbb{C}(1)) memory representation
- * smooth::SO3 with quaternion ![](https://latex.codecogs.com/png.latex?\mathbb{S}^3) memory representation
- * smooth::SE2
- * smooth::SE3
- * smooth::Tn<int>
+ * smooth::Tn: n-dimensional translations
+ * smooth::SO2: two-dimensional rotations with complex number ![](https://latex.codecogs.com/png.latex?\mathbb{C}(1)) memory representation
+ * smooth::SO3: three-dimensional rotations with quaternion ![](https://latex.codecogs.com/png.latex?\mathbb{S}^3) memory representation
+ * smooth::SE2: two-dimensional rigid motions
+ * smooth::SE3: three-dimensional rigid motions
  * A smooth::Bundle type to treat Lie group products ![](https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n) as a single Lie group. The Bundle type also supports regular Eigen vectors as ![](https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)) components
 
 The guiding principles for `smooth` are **brevity, reliability and compatability**. 
@@ -54,7 +50,8 @@ make -j8
 sudo make install
 ```
 
-Alternatively, if using ROS or ROS2 just clone `smooth` into a catkin/[colcon](https://colcon.readthedocs.io/en/released/) workspace source folder and build the
+Alternatively, if using ROS or ROS2 just clone `smooth` into a
+catkin/[colcon](https://colcon.readthedocs.io/en/released/) workspace source folder and build the
 workspace with a compiler that supports C++20. Example with colcon:
 ```bash
 colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10
@@ -124,10 +121,11 @@ These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implement
 
 * `Manifold`: type that supports `operator+()` (geodesic addition), `operator-()` (geodesic subtraction)
   * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp` which is convenient for optimizaiton over dynamic numbers of `Manifold`s
-  * Example: `Eigen::Matrix`
+  * Example: `Eigen::Matrix3d`
+  * Example: `Eigen::MatrixXf`
 
 * `LieGroup`: a `Manifold` that also supports Lie group operations
-  * Example: `smooth::SO3d`
+  * Example: `smooth::SO3<float>`
   * Example: `smooth::Bundle<LieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
 
 
@@ -172,9 +170,12 @@ auto [fval, J] = smooth::diff::dr(f, smooth::wrt(g1, g2));
 
 Available for `Manifold` types, see optim.hpp.
 
-The minimize() function implements a Levenberg-Marquardt trust-region procedure to find a local minimum. All derivatives and computations are done in the tangent space as opposed to e.g. Ceres which uses derivatives w.r.t. the parameterization.
+The minimize() function implements a Levenberg-Marquardt trust-region procedure to find
+a local minimum.  All derivatives and computations are done in the tangent space as opposed
+to e.g. Ceres which uses derivatives w.r.t. the parameterization.
 
-A sparse solver is implemented, but it is currently only available when analytical derivatives are provided.
+A sparse solver is implemented, but it is currently only available when analytical
+derivatives are provided.
 
 Example: Calculate ![](https://latex.codecogs.com/png.latex?\mathrm{argmin}_{g_1}&space;\log(g_1&space;\circ&space;g_2))
 
@@ -197,14 +198,17 @@ smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 
 Available for `LieGroup` types, see spline/bezier.hpp.
 
-Bezier splines are piecewise defined via [Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through the control points. See examples/spline_fit.cpp for usage.
+Bezier splines are piecewise defined via
+Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through
+the control points. See examples/spline_fit.cpp for usage.
 
 
 ### B-spline evaluation and fitting
 
 Available for `LieGroup` types, see spline/bspline.hpp.
 
-B-splines have local support and generally do not pass through the control points. See examples/bspline.cpp and examples/spline_fit.cpp for usage.
+B-splines have local support and generally do not pass through the control points.
+See examples/bspline.cpp and examples/spline_fit.cpp for usage.
 
 
 ## Compatibility
@@ -219,7 +223,15 @@ These utility headers for interfacing with adjacent software are included.
 
 ## Related Projects
 
-Two projects that have served as inspiration for `smooth` are [`manif`][manif-link]---which also has an accompanying [paper][manif-paper-link] that is a great practical introduction to Lie theory---and [`Sophus`][sophus-link]. Certain design decisions are different in `smooth`: derivatives are with respect to tangent elements as in `manif`, but the tangent types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which facilitates control and estimation tasks, as well as utilities such as differentiation, optimization, and splines. Finally `smooth` is written in C++20 and leverages modern features such as [concepts](https://en.cppreference.com/w/cpp/language/constraints) and [ranges](https://en.cppreference.com/w/cpp/ranges).
+Two projects that have served as inspiration for `smooth` are [`manif`][manif-link]---which
+also has an accompanying [paper][manif-paper-link] that is a great practical introduction to
+Lie theory---and [`Sophus`][sophus-link]. Certain design decisions are different in
+`smooth`: derivatives are with respect to tangent elements as in `manif`, but the tangent
+types are Eigen vectors like in `Sophus`. This library also includes the Bundle type which
+facilitates control and estimation tasks, as well as utilities such as differentiation,
+optimization, and splines. Finally `smooth` is written in C++20 and leverages modern
+features such as [concepts](https://en.cppreference.com/w/cpp/language/constraints) and
+[ranges](https://en.cppreference.com/w/cpp/ranges).
 
 
 <!-- MARKDOWN LINKS AND IMAGES -->

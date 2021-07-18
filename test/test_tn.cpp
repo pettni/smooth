@@ -25,13 +25,23 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/tn_new.hpp"
+#include "smooth/tn.hpp"
 
-TEST(Tn, Parts)
+TEST(Tn, Constructor)
+{
+  Eigen::Vector3d v = Eigen::Vector3d::Random();
+  smooth::Tn<3, double> t3(v);
+  const smooth::Tn<3, double> ct3(v);
+
+  ASSERT_TRUE(v.isApprox(t3.rn()));
+  ASSERT_TRUE(v.isApprox(ct3.rn()));
+}
+
+TEST(Tn, Action)
 {
   Eigen::Vector3d v = Eigen::Vector3d::Random();
   smooth::Tn<3, double> t3(v);
 
-  ASSERT_TRUE(v.isApprox(t3.rn()));
+  ASSERT_TRUE((t3 * v).isApprox(2 * v));
 }
 

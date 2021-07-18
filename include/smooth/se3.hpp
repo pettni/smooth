@@ -65,7 +65,7 @@ class SE2;
  * \begin{bmatrix}
  *   R & T \\
  *   0 & 1
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{4 \times 4}
  * \f]
  *
  * where \f$R\f$ is a 3x3 rotation matrix and \f$ T = [x, y, z]^T \f$.
@@ -81,7 +81,7 @@ class SE2;
  *  \omega_z &   0 & -\omega_x & v_y \\
  *  -\omega_y &  \omega_x & 0 v_y \\
  *  0 & 0 & 0 & 0
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{4 \times 4}
  * \f]
  */
 template<typename _Derived>

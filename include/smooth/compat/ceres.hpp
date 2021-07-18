@@ -45,9 +45,6 @@ namespace smooth {
 template<LieGroup G>
 struct CeresParameterizationFunctor
 {
-  /**
-   * @brief Plus operation.
-   */
   template<typename Scalar>
   bool operator()(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const
   {
@@ -85,7 +82,7 @@ auto dr_ceres(_F && f, _Wrt && x)
   // There is potential to improve thie speed of this by reducing casting.
   // The ceres Jet type supports binary operations with e.g. double, but currently
   // the Lie operations require everything to have a uniform scalar type. Enabling
-  // + and - for different scalars would thus save some casts.
+  // plus and minus for different scalars would thus save some casts.
   using Result = decltype(std::apply(f, x));
   using Scalar = typename Result::Scalar;
 

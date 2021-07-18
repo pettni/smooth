@@ -37,7 +37,7 @@ using namespace smooth;
 
 TEST(Bundle, Static)
 {
-  using bundle_t = Bundle<SE2d, SE3d, T2d, SO2d, SO3d>;
+  using bundle_t = Bundle<SE2d, SE3d, Eigen::Vector2d, SO2d, SO3d>;
 
   static_assert(bundle_t::RepSize == 19);
   static_assert(bundle_t::Dof == 15);
@@ -54,7 +54,7 @@ TEST(Bundle, Construct)
 {
   std::srand(5);
 
-  using mybundle = Bundle<SO2d, SO3d, T3d>;
+  using mybundle = Bundle<SO2d, SO3d, Eigen::Vector3d>;
 
   auto so2 = SO2d::Random();
   auto so3 = SO3d::Random();
@@ -79,7 +79,7 @@ TEST(Bundle, Construct)
   ASSERT_TRUE(m.isApprox(b.matrix().bottomRightCorner<4, 4>()));
 }
 
-using SubBundle = Bundle<SO3d, T3d>;
+using SubBundle = Bundle<SO3d, Eigen::Vector3d>;
 
 TEST(Bundle, BundleOfBundle)
 {

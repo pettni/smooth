@@ -71,7 +71,7 @@ class SO2;
  *   0 & -\omega_z & \omega_y \\
  *  \omega_z &   0 & -\omega_x \\
  *  -\omega_y &   \omega_x & 0 \\
- * \end{bmatrix}
+ * \end{bmatrix} \in \mathbb{R}^{3 \times 3}
  * \f]
  */
 template<typename _Derived>
