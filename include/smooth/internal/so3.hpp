@@ -38,7 +38,7 @@ namespace smooth {
  * Memory layout
  * -------------
  * Group:    qx qy qz qw  (same as Eigen quaternion)
- * Tangent:  wx wy wz
+ * Tangent:  Ωx Ωy Ωz
  *
  * Lie group Matrix form
  * ---------------------

@@ -45,6 +45,8 @@ namespace smooth {
  * [ I T ]
  * [ 0 1 ]
  *
+ * where T = [x1 ... xn]'
+ *
  * Lie algebra Matrix form
  * -----------------------
  * [ 0 V ]

@@ -28,51 +28,48 @@
 
 namespace smooth {
 
-#define SMOOTH_INHERIT_TYPEDEFS                            \
-  using Base::is_mutable;                                  \
-  using Base::Dof;                                         \
-  using Base::RepSize;                                     \
-  /*! Scalar type. */                                      \
-  using Scalar = typename Base::Scalar;                    \
-  /*! Tangent type (Eigen column vector of length Dof). */ \
-  using Tangent       = typename Base::Tangent;            \
-  using Base::operator=;                                   \
-  using Base::operator*;                                   \
-                                                           \
+#define SMOOTH_INHERIT_TYPEDEFS                                   \
+  using Base::is_mutable;                                         \
+  using Base::Dof;                                                \
+  using Base::RepSize;                                            \
+  /*! @brief Scalar type. */                                      \
+  using Scalar = typename Base::Scalar;                           \
+  /*! @brief Tangent type (Eigen column vector of length Dof). */ \
+  using Tangent       = typename Base::Tangent;                   \
+  using Base::operator=;                                          \
+  using Base::operator*;                                          \
+                                                                  \
   static_assert(true, "")
 
 #define SMOOTH_GROUP_API(X)                                   \
 public:                                                       \
   SMOOTH_INHERIT_TYPEDEFS;                                    \
-  /**< Construct uninitialized object */                      \
+  /*! @brief Construct uninitialized object */                \
   X() = default;                                              \
-  /*! Copy constructor */                                     \
+  /*! @brief Copy constructor */                              \
   X(const X &) = default;                                     \
-  /*! Move contructor */                                      \
+  /*! @brief Move contructor */                               \
   X(X &&) = default;                                          \
-  /*! Copy assignment */                                      \
+  /*! @brief Copy assignment */                               \
   X & operator=(const X &) = default;                         \
-  /*! Move assignment */                                      \
+  /*! @brief Move assignment */                               \
   X & operator=(X &&) = default;                              \
   ~X()                = default;                              \
-  /*! Copy assignment from other storage type */              \
+  /*! @brief Copy assignment from other storage type */       \
   template<typename OtherDerived>                             \
   X(const X##Base<OtherDerived> & o)                          \
   {                                                           \
     coeffs() = static_cast<const OtherDerived &>(o).coeffs(); \
   }                                                           \
-                                                              \
-  /*! Underlying storage is an Eigen matrix */                \
+  /*! @brief Underlying storage is an Eigen matrix */         \
   using Storage = Eigen::Matrix<Scalar, RepSize, 1>;          \
-                                                              \
-  /*! Access underlying Eigen::Matrix */                      \
+  /*! @brief Access underlying Eigen::Matrix */               \
   Storage & coeffs() { return coeffs_; }                      \
-  /*! Const access underlying Eigen::Matrix */                \
+  /*! @brief Const access underlying Eigen::Matrix */         \
   const Storage & coeffs() const { return coeffs_; }          \
-                                                              \
-  /*! Access raw pointer */                                   \
+  /*! @brief Access raw pointer */                            \
   Scalar * data() { return coeffs_.data(); }                  \
-  /*! Const access raw pointer */                             \
+  /*! @brief Const access raw pointer */                      \
   const Scalar * data() const { return coeffs_.data(); }      \
                                                               \
 private:                                                      \
@@ -83,33 +80,26 @@ private:                                                      \
 #define SMOOTH_MAP_API(X)                                        \
 public:                                                          \
   SMOOTH_INHERIT_TYPEDEFS;                                       \
-  /**                                                            \
-   * @brief Map memory as Lie type                               \
-   *                                                             \
-   * @param p pointer to memory                                  \
-   **/                                                           \
+  /*! @brief Map memory as Lie type */                           \
   X(Scalar * p) : coeffs_(p) {}                                  \
-  /*! Copy constructor */                                        \
+  /*! @brief Copy constructor */                                 \
   X(const X &) = default;                                        \
-  /*! Move constructor */                                        \
+  /*! @brief Move constructor */                                 \
   X(X &&) = default;                                             \
-  /*! Copy assignment */                                         \
+  /*! @brief Copy assignment */                                  \
   X & operator=(const X &) = default;                            \
-  /*! Move assignment */                                         \
+  /*! @brief Move assignment */                                  \
   X & operator=(X &&) = default;                                 \
   ~X()                = default;                                 \
-                                                                 \
-  /*! Underlying storage is Eigen map */                         \
+  /*! @brief Underlying storage is Eigen map */                  \
   using Storage = Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>>; \
-                                                                 \
-  /*! Access underlying Eigen::Map */                            \
+  /*! @brief Access underlying Eigen::Map */                     \
   Storage & coeffs() { return coeffs_; }                         \
-  /*! Const access underlying Eigen::Map */                      \
+  /*! @brief Const access underlying Eigen::Map */               \
   const Storage & coeffs() const { return coeffs_; }             \
-                                                                 \
-  /*! Access raw pointer */                                      \
+  /*! @brief Access raw pointer */                               \
   Scalar * data() { return coeffs_.data(); }                     \
-  /*! Const access raw pointer */                                \
+  /*! @brief Const access raw pointer */                         \
   const Scalar * data() const { return coeffs_.data(); }         \
                                                                  \
 private:                                                         \
@@ -120,29 +110,22 @@ private:                                                         \
 #define SMOOTH_CONST_MAP_API(X)                                        \
 public:                                                                \
   SMOOTH_INHERIT_TYPEDEFS;                                             \
-  /**                                                                  \
-   * @brief Const map memory as Lie type                               \
-   *                                                                   \
-   * @param p pointer to memory                                        \
-   **/                                                                 \
+  /*! @brief Const map memory as Lie type */                           \
   X(const Scalar * p) : coeffs_(p) {}                                  \
-  /*! Copy constructor */                                              \
+  /*! @brief Copy constructor */                                       \
   X(const X &) = default;                                              \
-  /*! Move constructor */                                              \
+  /*! @brief Move constructor */                                       \
   X(X &&) = default;                                                   \
-  /*! Copy assignment */                                               \
+  /*! @brief Copy assignment */                                        \
   X & operator=(const X &) = default;                                  \
-  /*! Move assignment */                                               \
+  /*! @brief Move assignment */                                        \
   X & operator=(X &&) = default;                                       \
   ~X()                = default;                                       \
-                                                                       \
-  /*! Underlying storage is Eigen const map */                         \
+  /*! @brief Underlying storage is Eigen const map */                  \
   using Storage = Eigen::Map<const Eigen::Matrix<Scalar, RepSize, 1>>; \
-                                                                       \
-  /*! Const access underlying Eigen::Map */                            \
+  /*! @brief Const access underlying Eigen::Map */                     \
   const Storage & coeffs() const { return coeffs_; }                   \
-                                                                       \
-  /*! Const access raw pointer */                                      \
+  /*! @brief Const access raw pointer */                               \
   const Scalar * data() const { return coeffs_.data(); }               \
                                                                        \
 private:                                                               \

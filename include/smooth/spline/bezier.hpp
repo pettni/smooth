@@ -101,23 +101,23 @@ public:
   ~Bezier() = default;
 
   /**
-   * @brief Evalauate Bezier curve.
+   * @brief Evaluate Bezier curve.
    *
-   * @param[in] t_in time point to evaluate at
+   * @param[in] t time point to evaluate at
    * @param[out] vel output body velocity at evaluation time
    * @param[out] acc output body acceleration at evaluation time
    * @return spline value at time t
    *
-   * @note Input \p t_in is clamped to interval [0, 1]
+   * @note Input \p t is clamped to interval [0, 1]
    */
-  G eval(double t_in, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
-    double t = std::clamp<double>(t_in, 0, 1);
+    double tc = std::clamp<double>(t, 0, 1);
 
     constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BEZIER, double, N>().transpose();
     Eigen::Map<const Eigen::Matrix<double, N + 1, N + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
-    return cspline_eval<N>(g0_, vs_, M, t, vel, acc);
+    return cspline_eval<N>(g0_, vs_, M, tc, vel, acc);
   }
 
 private:

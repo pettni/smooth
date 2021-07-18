@@ -143,7 +143,7 @@ public:
    * @param[out] acc output body acceleration at evaluation time
    * @return spline value at time t
    *
-   * @note Input \p t_in is clamped to interval [0, 1]
+   * @note Input \p t is clamped to spline interval of definition
    */
   G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {

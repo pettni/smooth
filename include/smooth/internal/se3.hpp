@@ -34,7 +34,7 @@
 namespace smooth {
 
 /**
- * @brief SE(3) Lie Group represented as S^3 ⋉ R^3
+ * @brief SE(3) Lie Group represented as S^3 ⋉ R3
  *
  * Memory layout
  * -------------
@@ -46,7 +46,7 @@ namespace smooth {
  * [ R T ]
  * [ 0 1 ]
  *
- * where R ∈ SO(3) and T ∈ R3
+ * where R ∈ SO(3) and T = [x y z] ∈ R3
  *
  * Lie algebra Matrix form
  * -----------------------
@@ -58,7 +58,7 @@ namespace smooth {
  * Constraints
  * -----------
  * Group:   qx * qx + qy * qy + qz * qz + qw * qw = 1
- * Tangent: -pi < Ωx Ωy Ωz <= pi, 0 <= Ωw <= pi
+ * Tangent: -pi < Ωx Ωy Ωz <= pi
  */
 template<typename _Scalar>
 class SE3Impl

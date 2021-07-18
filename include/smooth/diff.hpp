@@ -63,7 +63,7 @@ namespace detail {
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
- * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
 template<typename _F, typename _Wrt>
@@ -133,7 +133,7 @@ enum class Type {
 };
 
 /**
- * @brief Differentiation in local tangent space (right derivative)
+ * @brief Differentiation in tangent space
  *
  * @tparam dm differentiation method to use
  *
@@ -141,7 +141,7 @@ enum class Type {
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
- * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
 template<Type dm, typename _F, typename _Wrt>
@@ -175,13 +175,13 @@ auto dr(_F && f, _Wrt && x)
 }
 
 /**
- * @brief Differentiation in local tangent space using default method
+ * @brief Differentiation in tangent space using default method
  *
  * @param f function to differentiate
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
- * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
+ * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
 template<typename _F, typename _Wrt>

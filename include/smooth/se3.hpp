@@ -77,10 +77,10 @@ class SE2;
  * \f[
  * \mathbf{a}^\wedge =
  * \begin{bmatrix}
- *   0 & -\omega_z & \omega_y & v_x \\
- *  \omega_z &   0 & -\omega_x & v_y \\
- *  -\omega_y &  \omega_x & 0 v_y \\
- *  0 & 0 & 0 & 0
+ *   0        & -\omega_z & \omega_y  & v_x \\
+ *  \omega_z  & 0         & -\omega_x & v_y \\
+ *  -\omega_y & \omega_x  & 0         & v_y \\
+ *  0         & 0         & 0         & 0
  * \end{bmatrix} \in \mathbb{R}^{4 \times 4}
  * \f]
  */

@@ -36,13 +36,13 @@ namespace smooth {
 
 // \cond
 // Specializing lie_traits for Eigen vectors makes it possible to use
-// Eigen vectors in the bundle
+// Eigen vectors in the Bundle
 template<int _N, typename _Scalar>
 struct lie_traits<Eigen::Matrix<_Scalar, _N, 1>>
 {
-  //! Lie group operations
+  //! Lie group operations.
   using Impl = TnImpl<_N, _Scalar>;
-  //! Scalar type
+  //! Scalar type.
   using Scalar = _Scalar;
 
   //! Plain return type.
@@ -57,7 +57,7 @@ struct lie_traits<Eigen::Matrix<_Scalar, _N, 1>>
  * Represents a direct product \f$G_1 \times \ldots G_n \f$ between a
  * collection \f$G_1, \ldots, G_n \f$ of Lie groups.
  *
- * Elements of the bundle are of the form \f$ (g_1, \ldots g_n) \f$, and
+ * Elements of the Bundle are of the form \f$ (g_1, \ldots g_n) \f$, and
  * operations are performed element-wise, i.e. group composition is
  * \f[
  *   (g_1, \ldots, g_n) \circ (g_1', \ldots, g_n') = (g_1 \circ g_1', \ldots, g_n \circ g_n').
@@ -81,24 +81,26 @@ public:
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
-   * @brief Type of element in Bundle..
+   * @brief Type of element in Bundle.
    */
   template<std::size_t Idx>
   using PartType = typename lie_traits<_Derived>::template PartPlainObject<Idx>;
 
   /**
-   * @brief Access part no Idx of bundle.
+   * @brief Access part no Idx of Bundle.
    */
   template<std::size_t Idx>
   Eigen::Map<PartType<Idx>> part()
+  // \cond
   requires is_mutable
+  // \endcond
   {
     return Eigen::Map<PartType<Idx>>(
       static_cast<_Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
   /**
-   * @brief Const access part no Idx of bundle.
+   * @brief Const access part no Idx of Bundle.
    */
   template<std::size_t Idx>
   Eigen::Map<const PartType<Idx>> part() const
@@ -156,10 +158,12 @@ class Bundle : public BundleBase<Bundle<_Gs...>>
 
 public:
   /**
-   * @brief Construct bundle from parts
+   * @brief Construct Bundle from parts.
    */
   template<typename... S>
+  // \cond
   requires(std::is_assignable_v<_Gs, S> &&...)
+  // \endcond
   Bundle(S &&... gs)
   {
     auto tpl = std::forward_as_tuple(gs...);
@@ -178,7 +182,7 @@ struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
 // \endcond
 
 /**
- * @brief Memory mapping of bundle Lie group.
+ * @brief Memory mapping of Bundle Lie group.
  *
  * @see BundleBase for details.
  */
@@ -201,7 +205,7 @@ struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
 // \endcond
 
 /**
- * @brief Const memory mapping of bundle Lie group.
+ * @brief Const memory mapping of Bundle Lie group.
  *
  * @see BundleBase for details.
  */

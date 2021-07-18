@@ -146,7 +146,8 @@ public:
   }
 
   /**
-   * @brief Return as matrix Lie group element in \f$ \mathbb{R}^{\mathtt{dim} \times \mathtt{dim}} \f$.
+   * @brief Return as matrix Lie group element in \f$ \mathbb{R}^{\mathtt{dim} \times \mathtt{dim}}
+   * \f$.
    */
   Matrix matrix() const
   {
@@ -162,10 +163,8 @@ public:
   // \cond
   requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
   // \endcond
-  bool isApprox(
-    const LieGroupBase<OtherDerived> & o,
-    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()
-  ) const
+  bool isApprox(const LieGroupBase<OtherDerived> & o,
+    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
     return cderived().coeffs().isApprox(static_cast<const OtherDerived &>(o).coeffs(), eps);
   }
@@ -264,8 +263,7 @@ public:
   // \cond
   requires is_mutable
   // \endcond
-  Derived &
-  operator+=(const Eigen::MatrixBase<TangentDerived> & a)
+  Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & a)
   {
     *this *= exp(a);
     return derived();
@@ -274,7 +272,8 @@ public:
   /**
    * @brief Right-minus.
    *
-   * @return Tangent space element \f$ \mathbf{a} \f$ such that \f$ \mathbf{this} = \mathbf{xo} \oplus \mathbf{a} \f$.
+   * @return Tangent space element \f$ \mathbf{a} \f$ such that \f$ \mathbf{this} = \mathbf{xo}
+   * \oplus \mathbf{a} \f$.
    *
    * \f[
    *   \mathbf{x}_1 \ominus \mathbf{x}_2 := \log(\mathbf{x}_2^{-1} \circ \mathbf{x}_1)
@@ -306,7 +305,8 @@ public:
    * @brief Lie algebra hat map.
    *
    * Maps a parameterization \f$ a \in \mathbb{R}^\mathtt{dof} \f$ a matrix Lie algebra element
-   * to the corresponding matrix Lie algebra element \f$ A \in \mathbb{R}^{\mathtt{dim} \times \mathtt{dim}} \f$.
+   * to the corresponding matrix Lie algebra element \f$ A \in \mathbb{R}^{\mathtt{dim} \times
+   * \mathtt{dim}} \f$.
    *
    * @see vee for the inverse of hat
    */
@@ -416,9 +416,7 @@ public:
 template<typename Stream, typename Derived>
 Stream & operator<<(Stream & s, const LieGroupBase<Derived> & g)
 {
-  for (auto i = 0; i != Derived::RepSize; ++i) {
-    s << static_cast<const Derived &>(g).coeffs()[i] << " ";
-  }
+  s << static_cast<const Derived &>(g).coeffs().transpose();
   return s;
 }
 
