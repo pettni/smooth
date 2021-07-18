@@ -320,13 +320,13 @@ static constexpr bool&#160;</td><td class="memItemRight" valign="bottom"><a clas
 <tr class="separator:ab5cc38ff686866f55e5302efc79ecaa9 inherit pro_static_attribs_classsmooth_1_1LieGroupBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;LieGroupLike... _Gs&gt;<br />
+<div class="textblock"><h3>template&lt;LieImplemented... _Gs&gt;<br />
 class smooth::Bundle&lt; _Gs &gt;</h3>
 
 <p>Storage implementation of <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">Bundle</a> lie group. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1BundleBase.html" title="Base class for Bundle lie groups.">BundleBase</a> for details. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00125">125</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00151">151</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a00f76238800285d908a26fc7a22da6f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00f76238800285d908a26fc7a22da6f0">&#9670;&nbsp;</a></span>Scalar</h2>
@@ -334,7 +334,7 @@ class smooth::Bundle&lt; _Gs &gt;</h3>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">using <a class="el" href="classsmooth_1_1Bundle.html">smooth::Bundle</a>&lt; _Gs &gt;::<a class="el" href="classsmooth_1_1Bundle.html#a00f76238800285d908a26fc7a22da6f0">Scalar</a> =  typename <a class="el" href="classsmooth_1_1BundleBase.html#abe9d912bbac1d1cb502405986dc0b01e">Base::Scalar</a></td>
@@ -343,7 +343,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Scalar type. </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -353,7 +353,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">using <a class="el" href="classsmooth_1_1Bundle.html">smooth::Bundle</a>&lt; _Gs &gt;::<a class="el" href="classsmooth_1_1Bundle.html#a2409e4965edc0b1e0ce57207392d2b07">Storage</a> =  Eigen::Matrix&lt;<a class="el" href="classsmooth_1_1Bundle.html#a00f76238800285d908a26fc7a22da6f0">Scalar</a>, <a class="el" href="classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977">RepSize</a>, 1&gt;</td>
@@ -362,7 +362,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Underlying storage is an Eigen matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -372,7 +372,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">using <a class="el" href="classsmooth_1_1Bundle.html">smooth::Bundle</a>&lt; _Gs &gt;::<a class="el" href="classsmooth_1_1Bundle.html#a066200be93a615f35fa3ea83c7a02477">Tangent</a> =  typename <a class="el" href="classsmooth_1_1BundleBase.html#a792a3ec3e9633da5c498c063b547446e">Base::Tangent</a></td>
@@ -381,7 +381,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Tangent type (Eigen column vector of length Dof). </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -392,7 +392,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -420,7 +420,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -449,7 +449,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -478,7 +478,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <div class="memtemplate">
 template&lt;typename OtherDerived &gt; </div>
 <table class="mlabels">
@@ -501,7 +501,7 @@ template&lt;typename OtherDerived &gt; </div>
 </div><div class="memdoc">
 <p>Copy assignment from other storage type </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -512,7 +512,7 @@ template&lt;typename OtherDerived &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -532,7 +532,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Access underlying Eigen::Matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -542,7 +542,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -562,7 +562,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Const access underlying Eigen::Matrix </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -572,7 +572,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -592,7 +592,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Access raw pointer </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -602,7 +602,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -622,7 +622,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 </div><div class="memdoc">
 <p>Const access raw pointer </p>
 
-<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00129">129</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bundle_8hpp_source.html#l00155">155</a> of file <a class="el" href="bundle_8hpp_source.html">bundle.hpp</a>.</p>
 
 </div>
 </div>
@@ -632,7 +632,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -661,7 +661,7 @@ template&lt;LieGroupLike... _Gs&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroupLike... _Gs&gt; </div>
+template&lt;LieImplemented... _Gs&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">

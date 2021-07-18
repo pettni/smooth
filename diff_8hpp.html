@@ -87,17 +87,22 @@ $(function() {
 <code>#include &lt;type_traits&gt;</code><br />
 <code>#include &quot;<a class="el" href="concepts_8hpp_source.html">concepts.hpp</a>&quot;</code><br />
 <code>#include &quot;internal/utils.hpp&quot;</code><br />
+<code>#include &quot;tn.hpp&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for diff.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="diff_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2diff_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2diff_8hpp" id="ainclude_2smooth_2diff_8hpp">
-<area shape="rect" title="Differentiation on Lie groups." alt="" coords="61,5,216,32"/>
-<area shape="rect" title=" " alt="" coords="5,155,91,181"/>
-<area shape="rect" title=" " alt="" coords="40,80,123,107"/>
-<area shape="rect" href="concepts_8hpp.html" title=" " alt="" coords="147,80,245,107"/>
-<area shape="rect" title=" " alt="" coords="270,80,386,107"/>
-<area shape="rect" title=" " alt="" coords="159,155,233,181"/>
+<area shape="rect" title="Differentiation on Lie groups." alt="" coords="107,5,262,32"/>
+<area shape="rect" title=" " alt="" coords="142,244,227,271"/>
+<area shape="rect" title=" " alt="" coords="29,80,111,107"/>
+<area shape="rect" href="concepts_8hpp.html" title=" " alt="" coords="135,80,234,107"/>
+<area shape="rect" title=" " alt="" coords="259,80,375,107"/>
+<area shape="rect" href="tn_8hpp_source.html" title=" " alt="" coords="399,80,456,107"/>
+<area shape="rect" title=" " alt="" coords="147,162,222,189"/>
+<area shape="rect" href="lie__group__base_8hpp_source.html" title=" " alt="" coords="297,155,417,196"/>
+<area shape="rect" title=" " alt="" coords="441,162,569,189"/>
+<area shape="rect" title=" " alt="" coords="593,162,696,189"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -181,7 +186,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00122">122</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00127">127</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -231,7 +236,7 @@ template&lt;Type dm, typename _F , typename _Wrt &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00143">143</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00148">148</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -274,7 +279,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00183">183</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00188">188</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -317,7 +322,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00069">69</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00070">70</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -342,7 +347,7 @@ template&lt;typename... _Args&gt; </div>
 <p>Grouping of function arguments. </p>
 <p>A tuple of references is created from the input arguments, which is the expected format in e.g. <a class="el" href="diff_8hpp.html#a85284b9fd2ecf3be17684bafd377810a" title="Differentiation in local tangent space using default method.">dr()</a> and <a class="el" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d" title="Find a minimum of the non-linear least-squares problem.">minimize()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00049">49</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00050">50</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>

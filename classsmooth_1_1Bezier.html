@@ -92,9 +92,9 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#a6fe2fafdaadb038050e6d124b5591046">Bezier</a> ()</td></tr>
 <tr class="memdesc:a6fe2fafdaadb038050e6d124b5591046"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor creates a constant curve on [0, 1] equal to identity. <br /></td></tr>
 <tr class="separator:a6fe2fafdaadb038050e6d124b5591046"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5049cc0f9d6bee62851c26cb9e4731a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#aa5049cc0f9d6bee62851c26cb9e4731a">Bezier</a> (G &amp;&amp;g0, std::array&lt; Tangent, N &gt; &amp;&amp;vs)</td></tr>
-<tr class="memdesc:aa5049cc0f9d6bee62851c26cb9e4731a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create curve from rvalue parameter values.  <a href="classsmooth_1_1Bezier.html#aa5049cc0f9d6bee62851c26cb9e4731a">More...</a><br /></td></tr>
-<tr class="separator:aa5049cc0f9d6bee62851c26cb9e4731a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26fdfda6d78f24bd39d580fb2fc6ace4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#a26fdfda6d78f24bd39d580fb2fc6ace4">Bezier</a> (G &amp;&amp;g0, std::array&lt; typename G::Tangent, N &gt; &amp;&amp;vs)</td></tr>
+<tr class="memdesc:a26fdfda6d78f24bd39d580fb2fc6ace4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create curve from rvalue parameter values.  <a href="classsmooth_1_1Bezier.html#a26fdfda6d78f24bd39d580fb2fc6ace4">More...</a><br /></td></tr>
+<tr class="separator:a26fdfda6d78f24bd39d580fb2fc6ace4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa34f235a5aaa5b0fe510cb405257fbc"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rv&gt; </td></tr>
 <tr class="memitem:aaa34f235a5aaa5b0fe510cb405257fbc"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#aaa34f235a5aaa5b0fe510cb405257fbc">Bezier</a> (const G &amp;g0, const Rv &amp;vs)</td></tr>
 <tr class="memdesc:aaa34f235a5aaa5b0fe510cb405257fbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create curve from parameter values.  <a href="classsmooth_1_1Bezier.html#aaa34f235a5aaa5b0fe510cb405257fbc">More...</a><br /></td></tr>
@@ -124,14 +124,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a18636aaea092264a3206160ab1fe3b81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;std::size_t N, typename G&gt;<br />
+<div class="textblock"><h3>template&lt;std::size_t N, LieGroup G&gt;<br />
 class smooth::Bezier&lt; N, G &gt;</h3>
 
 <p><a class="el" href="classsmooth_1_1Bezier.html" title="Bezier curve on [0, 1].">Bezier</a> curve on [0, 1]. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">N</td><td>Polonimial degree of curve. </td></tr>
-    <tr><td class="paramname">G</td><td>Lie group type.</td></tr>
+    <tr><td class="paramname">G</td><td>LieGroup type.</td></tr>
   </table>
   </dd>
 </dl>
@@ -142,13 +142,13 @@ class smooth::Bezier&lt; N, G &gt;</h3>
 
 <p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00059">59</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="aa5049cc0f9d6bee62851c26cb9e4731a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5049cc0f9d6bee62851c26cb9e4731a">&#9670;&nbsp;</a></span>Bezier() <span class="overload">[1/2]</span></h2>
+<a id="a26fdfda6d78f24bd39d580fb2fc6ace4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26fdfda6d78f24bd39d580fb2fc6ace4">&#9670;&nbsp;</a></span>Bezier() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t N, typename G &gt; </div>
+template&lt;std::size_t N, LieGroup G&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -162,7 +162,7 @@ template&lt;std::size_t N, typename G &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::array&lt; Tangent, N &gt; &amp;&amp;&#160;</td>
+          <td class="paramtype">std::array&lt; typename G::Tangent, N &gt; &amp;&amp;&#160;</td>
           <td class="paramname"><em>vs</em>&#160;</td>
         </tr>
         <tr>
@@ -187,7 +187,7 @@ template&lt;std::size_t N, typename G &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00075">75</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00073">73</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>
@@ -197,7 +197,7 @@ template&lt;std::size_t N, typename G &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t N, typename G &gt; </div>
+template&lt;std::size_t N, LieGroup G&gt; </div>
 <div class="memtemplate">
 template&lt;std::ranges::range Rv&gt; </div>
 <table class="mlabels">
@@ -245,7 +245,7 @@ template&lt;std::ranges::range Rv&gt; </div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Range value type of <code>Rv</code> must be the tangent type of <code>G</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00087">87</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00086">86</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>
@@ -256,7 +256,7 @@ template&lt;std::ranges::range Rv&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t N, typename G &gt; </div>
+template&lt;std::size_t N, LieGroup G&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -304,7 +304,7 @@ template&lt;std::size_t N, typename G &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>spline value at time t</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Input <code>t_in</code> is clamped to interval [0, 1] </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00114">114</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00113">113</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>

@@ -95,7 +95,7 @@ Inheritance diagram for smooth::LieGroupBase&lt; Derived &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classsmooth_1_1LieGroupBase__inherit__graph.png" border="0" usemap="#asmooth_1_1LieGroupBase_3_01Derived_01_4_inherit__map" alt="Inheritance graph"/></div>
 <map name="asmooth_1_1LieGroupBase_3_01Derived_01_4_inherit__map" id="asmooth_1_1LieGroupBase_3_01Derived_01_4_inherit__map">
-<area shape="rect" title="Base class for Lie group types." alt="" coords="5,765,160,806"/>
+<area shape="rect" title="Base class for Lie group types." alt="" coords="5,870,160,911"/>
 <area shape="rect" href="classsmooth_1_1BundleBase.html" title=" " alt="" coords="246,5,397,61"/>
 <area shape="rect" href="classsmooth_1_1BundleBase.html" title=" " alt="" coords="251,85,392,126"/>
 <area shape="rect" href="classsmooth_1_1BundleBase.html" title=" " alt="" coords="226,149,417,205"/>
@@ -117,6 +117,9 @@ Inheritance diagram for smooth::LieGroupBase&lt; Derived &gt;:</div>
 <area shape="rect" href="classsmooth_1_1SO3Base.html" title=" " alt="" coords="208,1321,435,1362"/>
 <area shape="rect" href="classsmooth_1_1SO3Base.html" title=" " alt="" coords="234,1385,409,1441"/>
 <area shape="rect" href="classsmooth_1_1SO3Base.html" title=" " alt="" coords="230,1465,413,1521"/>
+<area shape="rect" href="classsmooth_1_1TnBase.html" title=" " alt="" coords="250,1545,393,1586"/>
+<area shape="rect" href="classsmooth_1_1TnBase.html" title=" " alt="" coords="242,1609,401,1665"/>
+<area shape="rect" href="classsmooth_1_1TnBase.html" title=" " alt="" coords="242,1689,401,1745"/>
 <area shape="rect" href="classEigen_1_1Map_3_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Memory mapping of bundle Lie group." alt="" coords="505,13,644,54"/>
 <area shape="rect" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group." alt="" coords="496,92,653,119"/>
 <area shape="rect" href="classEigen_1_1Map_3_01const_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Const memory mapping of bundle Lie group." alt="" coords="487,157,662,198"/>
@@ -138,6 +141,9 @@ Inheritance diagram for smooth::LieGroupBase&lt; Derived &gt;:</div>
 <area shape="rect" href="classEigen_1_1Map_3_01smooth_1_1SO3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO3 Lie group." alt="" coords="505,1321,644,1362"/>
 <area shape="rect" href="classEigen_1_1Map_3_01const_01smooth_1_1SO3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO3 Lie group." alt="" coords="487,1393,662,1434"/>
 <area shape="rect" href="classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="483,1473,667,1514"/>
+<area shape="rect" href="classsmooth_1_1Tn.html" title="Storage implementation of Tn Lie group." alt="" coords="490,1552,659,1579"/>
+<area shape="rect" href="classEigen_1_1Map_3_01smooth_1_1Tn_3_01N_00_01__Scalar_01_4_01_4.html" title="Memory mapping of Tn Lie group." alt="" coords="505,1617,644,1658"/>
+<area shape="rect" href="classEigen_1_1Map_3_01const_01smooth_1_1Tn_3_01N_00_01__Scalar_01_4_01_4.html" title="Const memory mapping of Tn Lie group." alt="" coords="487,1697,662,1738"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -322,7 +328,7 @@ class smooth::LieGroupBase&lt; Derived &gt;</h3>
 
 <p>Base class for Lie group types. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00039">39</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00048">48</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aefdebdcfadd9d69b0f244fa1532ef771"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aefdebdcfadd9d69b0f244fa1532ef771">&#9670;&nbsp;</a></span>Ad()</h2>
@@ -352,7 +358,7 @@ template&lt;typename Derived &gt; </div>
 <p>Lie group adjoint. </p>
 <dl class="section return"><dt>Returns</dt><dd>Matrix \( \mathbf{Ad}_\mathbf{X} \) s.t. \( \mathbf{Ad_X} \mathbf{a} = ( \mathbf{X} \mathbf{a}^\wedge \mathbf{X}^{-1} )^\vee \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00231">231</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00240">240</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -387,7 +393,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Lie algebra adjoint. </p>
 <dl class="section return"><dt>Returns</dt><dd>Matrix \( \mathbf{ad}_\mathbf{a} \) s.t. \( \mathbf{ad}_\mathbf{a} \mathbf{b} = [\mathbf{a}, \mathbf{b}] \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00335">335</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00344">344</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -422,7 +428,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Left jacobian of the exponential map. </p>
 <dl class="section return"><dt>Returns</dt><dd>\( \mathrm{d}^l \exp_a \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00387">387</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00396">396</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -457,7 +463,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Inverse of left jacobian of the exponential map. </p>
 <dl class="section return"><dt>Returns</dt><dd>\( \left( \mathrm{d}^l \exp_a \right)^{-1} \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00398">398</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00407">407</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -492,7 +498,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Right jacobian of the exponential map. </p>
 <dl class="section return"><dt>Returns</dt><dd>\( \mathrm{d}^r \exp_a \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00361">361</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00370">370</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -527,7 +533,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Inverse of right jacobian of the exponential map. </p>
 <dl class="section return"><dt>Returns</dt><dd>\( \left( \mathrm{d}^r \exp_a \right)^{-1} \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00374">374</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00383">383</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -563,7 +569,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Maps a parameterization \( a \in \mathbb{R}^\mathtt{dof} \) a matrix Lie algebra element to the corresponding matrix Lie algebra element \( A \in \mathbb{R}^{\mathtt{dim} \times \mathtt{dim}} \).</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1LieGroupBase.html#a4c747e39c27bc864fe7497fc992503d7" title="Lie alebra vee map.">vee</a> for the <a class="el" href="classsmooth_1_1LieGroupBase.html#ac4d9c75f3514a5a755eb4d296e1bba17" title="Group inverse operation.">inverse</a> of <a class="el" href="classsmooth_1_1LieGroupBase.html#a2cae98409bb6513fb784f35c92ba47e0" title="Lie algebra hat map.">hat</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00305">305</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00314">314</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -610,7 +616,7 @@ template&lt;typename TangentDerived1 , typename TangentDerived2 &gt; </div>
 \[ [ \mathbf{a}, \mathbf{b}] = \left( \mathbf{a}^\wedge \mathbf{b}^\wedge - \mathbf{b}^\wedge \mathbf{a}^\wedge \right)^\vee. \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00350">350</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00359">359</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -642,7 +648,7 @@ template&lt;typename Derived &gt; </div>
 <p>Lie group logarithm. </p>
 <dl class="section return"><dt>Returns</dt><dd>tangent logarithm element. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00218">218</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00227">227</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -677,7 +683,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Right-plus. </p>
 <dl class="section return"><dt>Returns</dt><dd>\( \mathbf{x} \oplus \mathbf{a} = \mathbf{x} \circ \exp(\mathbf{a}) \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00244">244</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00253">253</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -712,7 +718,7 @@ template&lt;typename TangentDerived &gt; </div>
 <p>Inplace right-plus: \( \mathbf{x} \leftarrow \mathbf{x} \circ \exp(\mathbf{a}) \). </p>
 <dl class="section return"><dt>Returns</dt><dd>Reference to this </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00259">259</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00268">268</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -750,7 +756,7 @@ template&lt;typename OtherDerived &gt; </div>
 \[ \mathbf{x}_1 \ominus \mathbf{x}_2 := \log(\mathbf{x}_2^{-1} \circ \mathbf{x}_1) \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00278">278</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00287">287</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -783,7 +789,7 @@ template&lt;typename OtherDerived &gt; </div>
 </div><div class="memdoc">
 <p>Assignment operation from other storage type. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00087">87</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00096">96</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -815,7 +821,7 @@ template&lt;typename Derived &gt; </div>
 <p>Construct a random element. </p>
 <p>Set the seed with <code>std::srand(unsigned)</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00132">132</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00141">141</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -847,7 +853,7 @@ template&lt;typename Derived &gt; </div>
 <p>Set to a random element. </p>
 <p>Set the seed with <code>std::srand(unsigned)</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00115">115</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00124">124</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -883,7 +889,7 @@ template&lt;typename MatrixDerived &gt; </div>
 <p>Maps a matrix Lie algebra element \( A \in \mathbb{R}^{\texttt{dim} \times \mathtt{dim}} \) to the corresponding parameterization \( a \in \mathbb{R}^\mathtt{dof} \).</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1LieGroupBase.html#a2cae98409bb6513fb784f35c92ba47e0" title="Lie algebra hat map.">hat</a> for the <a class="el" href="classsmooth_1_1LieGroupBase.html#ac4d9c75f3514a5a755eb4d296e1bba17" title="Group inverse operation.">inverse</a> of <a class="el" href="classsmooth_1_1LieGroupBase.html#a4c747e39c27bc864fe7497fc992503d7" title="Lie alebra vee map.">vee</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00321">321</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group__base_8hpp_source.html#l00330">330</a> of file <a class="el" href="lie__group__base_8hpp_source.html">lie_group_base.hpp</a>.</p>
 
 </div>
 </div>

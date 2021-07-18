@@ -1,8 +1,12 @@
 <map id="include/smooth/diff.hpp" name="include/smooth/diff.hpp">
-<area shape="rect" id="node1" title="Differentiation on Lie groups." alt="" coords="61,5,216,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,155,91,181"/>
-<area shape="rect" id="node3" title=" " alt="" coords="40,80,123,107"/>
-<area shape="rect" id="node4" href="$concepts_8hpp.html" title=" " alt="" coords="147,80,245,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="270,80,386,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="159,155,233,181"/>
+<area shape="rect" id="node1" title="Differentiation on Lie groups." alt="" coords="107,5,262,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="142,244,227,271"/>
+<area shape="rect" id="node3" title=" " alt="" coords="29,80,111,107"/>
+<area shape="rect" id="node4" href="$concepts_8hpp.html" title=" " alt="" coords="135,80,234,107"/>
+<area shape="rect" id="node6" title=" " alt="" coords="259,80,375,107"/>
+<area shape="rect" id="node7" href="$tn_8hpp_source.html" title=" " alt="" coords="399,80,456,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="147,162,222,189"/>
+<area shape="rect" id="node8" href="$lie__group__base_8hpp_source.html" title=" " alt="" coords="297,155,417,196"/>
+<area shape="rect" id="node9" title=" " alt="" coords="441,162,569,189"/>
+<area shape="rect" id="node10" title=" " alt="" coords="593,162,696,189"/>
 </map>

@@ -115,7 +115,7 @@ $(function() {
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> M&gt;</div>
 <div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="concepts_8hpp.html#ac1639727187099f481a8e646df093e93">   53</a></span>&#160;concept <a class="code" href="concepts_8hpp.html#ac1639727187099f481a8e646df093e93">Manifold</a> =</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<a class="code" href="tn_8hpp.html#a4362daaf2707a8d226cc8ad1b392dd82">requires</a></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;requires</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keyword">typename</span> M::Scalar;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keyword">typename</span> M::PlainObject;</div>
@@ -132,45 +132,34 @@ $(function() {
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> G&gt;</div>
 <div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">   74</a></span>&#160;concept <a class="code" href="concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">LieGroup</a> = Manifold&lt;G&gt; &amp;&amp;</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">// static constants</span></div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<a class="code" href="tn_8hpp.html#a4362daaf2707a8d226cc8ad1b392dd82">requires</a> {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  {G::Dof}-&gt;std::convertible_to&lt;Eigen::Index&gt;;      <span class="comment">// degrees of freedom</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;} &amp;&amp;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;(G::Dof &gt;= 1) &amp;&amp;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;(G::SizeAtCompileTime == G::Dof) &amp;&amp;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">// member methods</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;requires(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2)</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;{</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  {g1.inverse()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  {g1 * g2}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  {g1.log()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, 1&gt;&gt;;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  {g1.Ad()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;} &amp;&amp;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">// static methods</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<a class="code" href="tn_8hpp.html#a4362daaf2707a8d226cc8ad1b392dd82">requires</a>(<span class="keyword">const</span> Eigen::Matrix&lt;typename G::Scalar, G::Dof, 1&gt; &amp; a)</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;{</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  {G::Identity()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  {G::exp(a)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  {G::ad(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;};</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="structsmooth_1_1lie__traits.html">  106</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structsmooth_1_1lie__traits.html">lie_traits</a>;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> G&gt;</div>
-<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="concepts_8hpp.html#a9079aabd9139784886d6bd58fa46611b">  112</a></span>&#160;concept <a class="code" href="concepts_8hpp.html#a9079aabd9139784886d6bd58fa46611b">LieGroupLike</a> = <a class="code" href="tn_8hpp.html#a4362daaf2707a8d226cc8ad1b392dd82">requires</a></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;{</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <span class="keyword">typename</span> <a class="code" href="structsmooth_1_1lie__traits.html">lie_traits&lt;G&gt;::Impl</a>;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="keyword">typename</span> <a class="code" href="structsmooth_1_1lie__traits.html">lie_traits&lt;G&gt;::Scalar</a>;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;};</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;} <span class="comment">// namespace smooth</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__CONCEPTS_HPP_</span></div>
-<div class="ttc" id="aconcepts_8hpp_html_a9079aabd9139784886d6bd58fa46611b"><div class="ttname"><a href="concepts_8hpp.html#a9079aabd9139784886d6bd58fa46611b">smooth::LieGroupLike</a></div><div class="ttdeci">concept LieGroupLike</div><div class="ttdoc">Type for which lie_traits is properly specialized.</div><div class="ttdef"><b>Definition:</b> <a href="concepts_8hpp_source.html#l00112">concepts.hpp:112</a></div></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;requires {</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <span class="keyword">typename</span> G::Tangent;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  {G::Dof}-&gt;std::convertible_to&lt;Eigen::Index&gt;;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;} &amp;&amp;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;(G::Dof &gt;= 1) &amp;&amp;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;(G::SizeAtCompileTime == G::Dof) &amp;&amp;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;(G::Tangent::SizeAtCompileTime == G::Dof) &amp;&amp;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">// member methods</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;requires(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2)</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;{</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  {g1.inverse()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  {g1 * g2}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  {g1.log()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, 1&gt;&gt;;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  {g1.Ad()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;} &amp;&amp;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment">// static methods</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;requires(<span class="keyword">const</span> Eigen::Matrix&lt;typename G::Scalar, G::Dof, 1&gt; &amp; a)</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;{</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  {G::Identity()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  {G::exp(a)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  {G::ad(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;};</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;} <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__CONCEPTS_HPP_</span></div>
 <div class="ttc" id="aconcepts_8hpp_html_aa5ac6cbd43fb18cb0a5b50327627e716"><div class="ttname"><a href="concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">smooth::LieGroup</a></div><div class="ttdeci">concept LieGroup</div><div class="ttdoc">Lie group concept.</div><div class="ttdef"><b>Definition:</b> <a href="concepts_8hpp_source.html#l00074">concepts.hpp:74</a></div></div>
 <div class="ttc" id="aconcepts_8hpp_html_ac1639727187099f481a8e646df093e93"><div class="ttname"><a href="concepts_8hpp.html#ac1639727187099f481a8e646df093e93">smooth::Manifold</a></div><div class="ttdeci">concept Manifold</div><div class="ttdoc">A concept defining a (smooth) manifold.</div><div class="ttdef"><b>Definition:</b> <a href="concepts_8hpp_source.html#l00053">concepts.hpp:53</a></div></div>
-<div class="ttc" id="astructsmooth_1_1lie__traits_html"><div class="ttname"><a href="structsmooth_1_1lie__traits.html">smooth::lie_traits</a></div><div class="ttdoc">Type trait that maps a type to Lie group operations.</div><div class="ttdef"><b>Definition:</b> <a href="concepts_8hpp_source.html#l00106">concepts.hpp:106</a></div></div>
-<div class="ttc" id="atn_8hpp_html_a4362daaf2707a8d226cc8ad1b392dd82"><div class="ttname"><a href="tn_8hpp.html#a4362daaf2707a8d226cc8ad1b392dd82">smooth::requires</a></div><div class="ttdeci">requires(_N &gt; 0) using Tn</div><div class="ttdoc">Eigen type as  Lie Group.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -105,57 +105,53 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef SMOOTH__COMPAT__AUTODIFF_HPP_</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define SMOOTH__COMPAT__AUTODIFF_HPP_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">// clang-format off</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;Eigen/Core&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;autodiff/forward/forward.hpp&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;autodiff/forward/eigen.hpp&gt;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">// clang-format on</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#define SMOOTH_DIFF_AUTODIFF</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;autodiff/forward/dual.hpp&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;autodiff/forward/dual/eigen.hpp&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#define SMOOTH_DIFF_AUTODIFF</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="concepts_8hpp.html">smooth/concepts.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &quot;smooth/internal/utils.hpp&quot;</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="concepts_8hpp.html">smooth/concepts.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &quot;smooth/internal/utils.hpp&quot;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">namespace </span>smooth::diff {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">   55</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">dr_autodiff</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x)</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;{</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keyword">using</span> Result   = decltype(std::apply(f, x));</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keyword">using</span> Scalar   = <span class="keyword">typename</span> Result::Scalar;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keyword">using</span> AdScalar = autodiff::forward::Dual&lt;Scalar, Scalar&gt;;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="comment">// determine sizes if input and output</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  constexpr <span class="keyword">auto</span> Nx        = utils::tuple_dof&lt;_Wrt&gt;::value;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keyword">auto</span> nx                  = std::apply([](<span class="keyword">auto</span> &amp;&amp;... args) { <span class="keywordflow">return</span> (args.size() + ...); }, x);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Ny = Result::SizeAtCompileTime;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keyword">auto</span> val = std::apply(f, x);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="comment">// cast val and x to ad types</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keyword">auto</span> x_ad = utils::tuple_cast&lt;AdScalar&gt;(x);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="keyword">typename</span> decltype(val.template cast&lt;AdScalar&gt;())::PlainObject val_ad =</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    val.template cast&lt;AdScalar&gt;();</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">namespace </span>smooth::diff {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">   52</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">dr_autodiff</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x)</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="keyword">using</span> Result   = <span class="keyword">typename</span> decltype(std::apply(f, x))::PlainObject;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keyword">using</span> Scalar   = <span class="keyword">typename</span> Result::Scalar;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keyword">using</span> AdScalar = autodiff::Dual&lt;Scalar, Scalar&gt;;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="comment">// determine sizes if input and output</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  constexpr <span class="keyword">auto</span> Nx        = utils::tuple_dof&lt;_Wrt&gt;::value;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keyword">auto</span> nx                  = std::apply([](<span class="keyword">auto</span> &amp;&amp;... args) { <span class="keywordflow">return</span> (args.size() + ...); }, x);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Ny = Result::SizeAtCompileTime;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keyword">const</span> Result val = std::apply(f, x);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  <span class="comment">// cast val and x to ad types</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keyword">auto</span> x_ad = utils::tuple_cast&lt;AdScalar&gt;(x);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keyword">const</span> <span class="keyword">typename</span> decltype(val.template cast&lt;AdScalar&gt;())::PlainObject val_ad =</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    val.template cast&lt;AdScalar&gt;();</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="comment">// zero-valued tangent element</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  Eigen::Matrix&lt;AdScalar, Nx, 1&gt; a_ad = Eigen::Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="comment">// zero-valued tangent element</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  Eigen::Matrix&lt;AdScalar, Nx, 1&gt; a_ad = Eigen::Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, Nx&gt; jac = autodiff::forward::jacobian(</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    [&amp;f, &amp;val_ad, &amp;x_ad](Eigen::Matrix&lt;AdScalar, Nx, 1&gt; &amp; var) -&gt; Eigen::Matrix&lt;AdScalar, Ny, 1&gt; {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      <span class="keywordflow">return</span> std::apply(f, utils::tuple_plus(x_ad, var)) - val_ad;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    },</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <a class="code" href="diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca">wrt</a>(a_ad),</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    <a class="code" href="diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca">wrt</a>(a_ad));</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  Eigen::Matrix&lt;Scalar, Ny, Nx&gt; jac = autodiff::jacobian(</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    [&amp;f, &amp;val_ad, &amp;x_ad](Eigen::Matrix&lt;AdScalar, Nx, 1&gt; &amp; var) -&gt; Eigen::Matrix&lt;AdScalar, Ny, 1&gt; {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      <span class="keywordflow">return</span> std::apply(f, utils::tuple_plus(x_ad, var)) - val_ad;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    },</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    autodiff::wrt(a_ad),</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    autodiff::at(a_ad));</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <span class="keywordflow">return</span> std::make_pair(val, jac);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="keywordflow">return</span> std::make_pair(val, jac);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;}</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;}  <span class="comment">// namespace smooth::diff</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__COMPAT__AUTODIFF_HPP_</span></div>
-<div class="ttc" id="aautodiff_8hpp_html_ae718173f8a3811690c31d7628fa0c023"><div class="ttname"><a href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">smooth::diff::dr_autodiff</a></div><div class="ttdeci">auto dr_autodiff(_F &amp;&amp;f, _Wrt &amp;&amp;x)</div><div class="ttdoc">Automatic differentiation in tangent space using the autodiff library.</div><div class="ttdef"><b>Definition:</b> <a href="autodiff_8hpp_source.html#l00055">autodiff.hpp:55</a></div></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;}  <span class="comment">// namespace smooth::diff</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__COMPAT__AUTODIFF_HPP_</span></div>
+<div class="ttc" id="aautodiff_8hpp_html_ae718173f8a3811690c31d7628fa0c023"><div class="ttname"><a href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">smooth::diff::dr_autodiff</a></div><div class="ttdeci">auto dr_autodiff(_F &amp;&amp;f, _Wrt &amp;&amp;x)</div><div class="ttdoc">Automatic differentiation in tangent space using the autodiff library.</div><div class="ttdef"><b>Definition:</b> <a href="autodiff_8hpp_source.html#l00052">autodiff.hpp:52</a></div></div>
 <div class="ttc" id="aconcepts_8hpp_html"><div class="ttname"><a href="concepts_8hpp.html">concepts.hpp</a></div></div>
-<div class="ttc" id="adiff_8hpp_html_a73c425effecf4a85064d2f433c1b80ca"><div class="ttname"><a href="diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca">smooth::wrt</a></div><div class="ttdeci">auto wrt(_Args &amp;&amp;... args)</div><div class="ttdoc">Grouping of function arguments.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00049">diff.hpp:49</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
