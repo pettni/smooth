@@ -132,6 +132,15 @@ enum class Type {
   DEFAULT      ///< Automatically select type based on availability
 };
 
+static constexpr Type DefaultType =
+#ifdef SMOOTH_DIFF_AUTODIFF
+  Type::AUTODIFF;
+#elif defined SMOOTH_DIFF_CERES
+  Type::CERES;
+#else
+  Type::NUMERICAL;
+#endif
+
 /**
  * @brief Differentiation in tangent space
  *
@@ -164,13 +173,7 @@ auto dr(_F && f, _Wrt && x)
   } else if constexpr (dm == Type::ANALYTIC) {
     return std::apply(f, std::forward<_Wrt>(x));
   } else if constexpr (dm == Type::DEFAULT) {
-#ifdef SMOOTH_DIFF_AUTODIFF
-    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(x));
-#elif defined SMOOTH_DIFF_CERES
-    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(x));
-#else
-    return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(x));
-#endif
+    return dr<DefaultType>(std::forward<_F>(f), std::forward<_Wrt>(x));
   }
 }
 
