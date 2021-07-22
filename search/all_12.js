@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['vector_5fsize_167',['vector_size',['../classsmooth_1_1ManifoldVector.html#a769841932d348ba04e8e78a87631cf00',1,'smooth::ManifoldVector']]],
-  ['vee_168',['vee',['../classsmooth_1_1LieGroupBase.html#a4c747e39c27bc864fe7497fc992503d7',1,'smooth::LieGroupBase']]],
-  ['verbosity_169',['verbosity',['../structsmooth_1_1MinimizeOptions.html#ad0cb4b154e749c28b36cdf64aecf3e20',1,'smooth::MinimizeOptions']]]
+  ['u1_164',['u1',['../classsmooth_1_1SO2Base.html#a1faad78be9415b26a4a27643d51be9a3',1,'smooth::SO2Base']]]
 ];

@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['wrt_170',['wrt',['../diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca',1,'smooth']]]
+  ['vector_5fsize_165',['vector_size',['../classsmooth_1_1ManifoldVector.html#a769841932d348ba04e8e78a87631cf00',1,'smooth::ManifoldVector']]],
+  ['vee_166',['vee',['../classsmooth_1_1LieGroupBase.html#a4c747e39c27bc864fe7497fc992503d7',1,'smooth::LieGroupBase']]],
+  ['verbosity_167',['verbosity',['../structsmooth_1_1MinimizeOptions.html#ad0cb4b154e749c28b36cdf64aecf3e20',1,'smooth::MinimizeOptions']]]
 ];

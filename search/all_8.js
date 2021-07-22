@@ -1,11 +1,8 @@
 var searchData=
 [
-  ['lie_5fbracket_54',['lie_bracket',['../classsmooth_1_1LieGroupBase.html#a9e391ce171f0cfe526c0f28315af57d7',1,'smooth::LieGroupBase']]],
-  ['lie_5ftraits_55',['lie_traits',['../structsmooth_1_1lie__traits.html',1,'smooth']]],
-  ['liegroup_56',['LieGroup',['../concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716',1,'smooth']]],
-  ['liegroupbase_57',['LieGroupBase',['../classsmooth_1_1LieGroupBase.html',1,'smooth']]],
-  ['liegroupbase_3c_20_5fderived_20_3e_58',['LieGroupBase&lt; _Derived &gt;',['../classsmooth_1_1LieGroupBase.html',1,'smooth']]],
-  ['lift_5fse3_59',['lift_se3',['../classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54',1,'smooth::SE2Base']]],
-  ['lift_5fso3_60',['lift_so3',['../classsmooth_1_1SO2Base.html#ae6c9cb4cf4b12681afc8692938d392ac',1,'smooth::SO2Base']]],
-  ['log_61',['log',['../classsmooth_1_1LieGroupBase.html#acbb567be67f2064077df69fbbb8f3297',1,'smooth::LieGroupBase']]]
+  ['identity_50',['Identity',['../classsmooth_1_1LieGroupBase.html#a2d07c997add59d0c5fe899f1bcdf05fa',1,'smooth::LieGroupBase']]],
+  ['impl_51',['Impl',['../classsmooth_1_1LieGroupBase.html#a55f732e687efa0c2b44c3174f1e620fb',1,'smooth::LieGroupBase']]],
+  ['inverse_52',['inverse',['../classsmooth_1_1LieGroupBase.html#ac4d9c75f3514a5a755eb4d296e1bba17',1,'smooth::LieGroupBase']]],
+  ['is_5fmutable_53',['is_mutable',['../classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9',1,'smooth::LieGroupBase']]],
+  ['isapprox_54',['isApprox',['../classsmooth_1_1LieGroupBase.html#a180348c000f0a6db2c05b5c619e82128',1,'smooth::LieGroupBase']]]
 ];

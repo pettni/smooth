@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['identity_49',['Identity',['../classsmooth_1_1LieGroupBase.html#a2d07c997add59d0c5fe899f1bcdf05fa',1,'smooth::LieGroupBase']]],
-  ['impl_50',['Impl',['../classsmooth_1_1LieGroupBase.html#a55f732e687efa0c2b44c3174f1e620fb',1,'smooth::LieGroupBase']]],
-  ['inverse_51',['inverse',['../classsmooth_1_1LieGroupBase.html#ac4d9c75f3514a5a755eb4d296e1bba17',1,'smooth::LieGroupBase']]],
-  ['is_5fmutable_52',['is_mutable',['../classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9',1,'smooth::LieGroupBase']]],
-  ['isapprox_53',['isApprox',['../classsmooth_1_1LieGroupBase.html#a180348c000f0a6db2c05b5c619e82128',1,'smooth::LieGroupBase']]]
+  ['hat_48',['hat',['../classsmooth_1_1LieGroupBase.html#a2cae98409bb6513fb784f35c92ba47e0',1,'smooth::LieGroupBase']]],
+  ['helper_49',['helper',['../structsmooth_1_1BoostOdeintOps_1_1scale__sum.html#acda0b8932fcc7c27040780379e4eadae',1,'smooth::BoostOdeintOps::scale_sum']]]
 ];
