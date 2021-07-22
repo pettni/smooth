@@ -1,4 +1,4 @@
-# smooth: Lie Theory for Robotics
+# `smooth`: Lie Theory for Robotics
 
 [![CI Build and Test][ci-shield]][ci-link]
 [![Code coverage][cov-shield]][cov-link]
@@ -119,12 +119,12 @@ Check out the [Documentation][doc-link] and the [`examples`](https://github.com/
 
 These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
 
-* `Manifold`: type that supports `operator+()` (geodesic addition), `operator-()` (geodesic subtraction)
-  * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp` which is convenient for optimizaiton over dynamic numbers of `Manifold`s
-  * Example: `Eigen::Matrix3d`
-  * Example: `Eigen::MatrixXf`
+* `Manifold`: type that supports `operator+()` (geodesic addition) and `operator-()` (geodesic subtraction)
+  * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---a type to facilitate optimization over a dynamic number of `Manifold`s
+  * Example: `Eigen::Vector3d`
+  * Example: `Eigen::VectorXf`
 
-* `LieGroup`: a `Manifold` that also supports Lie group operations
+* `LieGroup`: a `Manifold` that also implements Lie group operations (`exp`, `log`, `Ad`, etc...)
   * Example: `smooth::SO3<float>`
   * Example: `smooth::Bundle<LieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
 
@@ -138,10 +138,9 @@ Algorithms for `LieGroup` types can be used on regular Euclidean spaces via the 
 Available for `Manifold` types, see diff.hpp.
 
 Supported techniques (see smooth::diff::Type):
-* Numerical derivatives
-* Automatic differentiation using autodiff
-* Automatic differentiation using Ceres 2.x
-* Automatic selection
+* Numerical derivatives (default)
+* Automatic differentiation using `autodiff` (must #include <smooth/compat/autodiff.hpp>)
+* Automatic differentiation using Ceres 2.x (must #include <smooth/compat/ceres.hpp>)
 
 Example: calculate ![](https://latex.codecogs.com/png.latex?\mathrm{d}^r&space;(\log(g_1&space;\circ&space;g_2))_{g_i}) for i=1, 2
 
@@ -213,10 +212,10 @@ See examples/bspline.cpp and examples/spline_fit.cpp for usage.
 
 ## Compatibility
 
-These utility headers for interfacing with adjacent software are included.
+Utility headers for interfacing with adjacent software are included.
 
-* compat/autodiff.hpp: Automatic differentiation in tangent space using [autodiff](https://autodiff.github.io/) or [Ceres](http://ceres-solver.org)
-* compat/ceres.hpp: Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization
+* compat/autodiff.hpp: Use the [autodiff](https://autodiff.github.io/) library as a back-end for automatic differentiation
+* compat/ceres.hpp: Local parameterization for [Ceres](http://ceres-solver.org/) on-manifold optimization, and use the Ceres automatic differentiation as a back-end
 * compat/odeint.hpp: Numerical integration using [`boost::odeint`](https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html)
 * compat/ros.hpp: Memory mapping of [ROS/ROS2](https://www.ros.org/) message types
 
