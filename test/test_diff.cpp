@@ -254,3 +254,10 @@ TEST(Differentiation, LinearCeres)
   test_linear<10, 3, smooth::diff::Type::CERES>();
 }
 #endif
+
+TEST(Differentiation, Const)
+{
+  const auto f = [](const auto & xx) { return xx.log(); };
+  const smooth::SO3d g = smooth::SO3d::Random();
+  smooth::diff::detail::dr_numerical(f, smooth::wrt(g));
+}

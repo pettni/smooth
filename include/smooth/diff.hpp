@@ -108,9 +108,10 @@ auto dr_numerical(_F && f, _Wrt && x)
         eps_j *= abs(w.rn()[j]);
         if (eps_j == 0.) { eps_j = eps; }
       }
-      w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
+      // const cast needed in case argument is const (value is restored two lines below)
+      const_cast<W &>(w) += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
       jac.col(index_pos + j) = (std::apply(f, x) - val) / eps_j;
-      w += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
+      const_cast<W &>(w) += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
     }
     index_pos += nx_j;
   });
@@ -125,11 +126,14 @@ auto dr_numerical(_F && f, _Wrt && x)
  * @brief Differentiation methods
  */
 enum class Type {
-  NUMERICAL,   ///< Numerical (forward) derivatives
-  AUTODIFF,    ///< Uses the autodiff (https://autodiff.github.io) library; requires  \p compat/autodiff.hpp
-  CERES,       ///< Uses the Ceres (http://ceres-solver.org) built-in autodiff; requires \p compat/ceres.hpp
-  ANALYTIC,    ///< Hand-coded derivative, requires that function returns \p std::pair \f$(f(x), \mathrm{d}^r f_x) \f$
-  DEFAULT      ///< Automatically select type based on availability
+  NUMERICAL,  ///< Numerical (forward) derivatives
+  AUTODIFF,   ///< Uses the autodiff (https://autodiff.github.io) library; requires  \p
+              ///< compat/autodiff.hpp
+  CERES,      ///< Uses the Ceres (http://ceres-solver.org) built-in autodiff; requires \p
+              ///< compat/ceres.hpp
+  ANALYTIC,   ///< Hand-coded derivative, requires that function returns \p std::pair \f$(f(x),
+              ///< \mathrm{d}^r f_x) \f$
+  DEFAULT     ///< Automatically select type based on availability
 };
 
 static constexpr Type DefaultType =
