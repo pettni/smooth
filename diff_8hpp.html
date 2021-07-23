@@ -176,17 +176,17 @@ Functions</h2></td></tr>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a3a5e2d78492ca47b9db502227af9d76a"></a>NUMERICAL&#160;</td><td class="fielddoc"><p>Numerical (forward) derivatives. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2ae1a39061bd207cb861fbc81e0f90301b"></a>AUTODIFF&#160;</td><td class="fielddoc"><p>Uses the autodiff (<a href="https://autodiff.github.io">https://autodiff.github.io</a>) library; requires <code><a class="el" href="autodiff_8hpp.html" title="autodiff compatability header.">compat/autodiff.hpp</a></code>. </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2ae1a39061bd207cb861fbc81e0f90301b"></a>AUTODIFF&#160;</td><td class="fielddoc"><p>Uses the autodiff (<a href="https://autodiff.github.io">https://autodiff.github.io</a>) library; requires <code><a class="el" href="autodiff_8hpp.html" title="autodiff compatability header.">compat/autodiff.hpp</a></code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a3cc7d3d35ab91905e272dcf657790118"></a>CERES&#160;</td><td class="fielddoc"><p>Uses the Ceres (<a href="http://ceres-solver.org">http://ceres-solver.org</a>) built-in autodiff; requires <code><a class="el" href="ceres_8hpp.html" title="ceres compatability header.">compat/ceres.hpp</a></code>. </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a3cc7d3d35ab91905e272dcf657790118"></a>CERES&#160;</td><td class="fielddoc"><p>Uses the Ceres (<a href="http://ceres-solver.org">http://ceres-solver.org</a>) built-in autodiff; requires <code><a class="el" href="ceres_8hpp.html" title="ceres compatability header.">compat/ceres.hpp</a></code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8e6d7210129786a1d1e43b61143a5a15"></a>ANALYTIC&#160;</td><td class="fielddoc"><p>Hand-coded derivative, requires that function returns <code>std::pair</code> \((f(x), \mathrm{d}^r f_x) \). </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8e6d7210129786a1d1e43b61143a5a15"></a>ANALYTIC&#160;</td><td class="fielddoc"><p>Hand-coded derivative, requires that function returns <code>std::pair</code> \((f(x), &lt; \mathrm{d}^r f_x) \) </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a5b39c8b553c821e7cddc6da64b5bd2ee"></a>DEFAULT&#160;</td><td class="fielddoc"><p>Automatically select type based on availability. </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00127">127</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00128">128</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -236,7 +236,7 @@ template&lt;Type dm, typename _F , typename _Wrt &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00157">157</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00161">161</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -279,7 +279,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00191">191</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00195">195</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
