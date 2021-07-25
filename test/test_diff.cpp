@@ -258,6 +258,13 @@ TEST(Differentiation, LinearCeres)
 TEST(Differentiation, Const)
 {
   const auto f = [](const auto & xx) { return xx.log(); };
-  const smooth::SO3d g = smooth::SO3d::Random();
-  smooth::diff::detail::dr_numerical(f, smooth::wrt(g));
+  smooth::SO3d g = smooth::SO3d::Random();
+  const smooth::SO3d g_nc = g;
+
+  const auto [v1, d1] = smooth::diff::detail::dr_numerical(f, smooth::wrt(g));
+  const auto [v2, d2] = smooth::diff::detail::dr_numerical(f, smooth::wrt(g_nc));
+
+  ASSERT_TRUE(v1.isApprox(v2));
+  ASSERT_TRUE(d1.isApprox(d2));
 }
+

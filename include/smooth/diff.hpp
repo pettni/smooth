@@ -72,16 +72,19 @@ auto dr_numerical(_F && f, _Wrt && x)
   using Result = typename decltype(std::apply(f, x))::PlainObject;
   using Scalar = typename Result::Scalar;
 
+  // arguments are modified below, so we create a copy of those that come in as const
+  auto x_nc = utils::tuple_copy_if_const(std::forward<_Wrt>(x));
+
   // static sizes
   static constexpr Eigen::Index Nx = utils::tuple_dof<std::decay_t<_Wrt>>::value;
   static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
-  const Result val = std::apply(f, x);
+  const Result val = std::apply(f, x_nc);
 
   // dynamic sizes
-  Eigen::Index nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
+  Eigen::Index nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x_nc);
   Eigen::Index ny = val.size();
 
   // output variable
@@ -92,7 +95,7 @@ auto dr_numerical(_F && f, _Wrt && x)
   utils::static_for<std::tuple_size_v<std::decay_t<_Wrt>>>([&](auto i) {
     static constexpr Eigen::Index Nx_j =
       std::decay_t<std::tuple_element_t<i, std::decay_t<_Wrt>>>::SizeAtCompileTime;
-    auto & w       = std::get<i>(x);
+    auto & w       = std::get<i>(x_nc);
     const int nx_j = w.size();
 
     using W = std::decay_t<decltype(w)>;
@@ -109,9 +112,9 @@ auto dr_numerical(_F && f, _Wrt && x)
         if (eps_j == 0.) { eps_j = eps; }
       }
       // const cast needed in case argument is const (value is restored two lines below)
-      const_cast<W &>(w) += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
-      jac.col(index_pos + j) = (std::apply(f, x) - val) / eps_j;
-      const_cast<W &>(w) += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
+      w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
+      jac.col(index_pos + j) = (std::apply(f, x_nc) - val) / eps_j;
+      w += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
     }
     index_pos += nx_j;
   });

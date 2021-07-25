@@ -78,7 +78,7 @@ constexpr std::array<T, L + 1> array_psum(const std::array<T, L> & x)
 // TUPLE STATE UTILS //
 ///////////////////////
 
-template<typename Tuple>
+template<typename T>
 struct tuple_dof
 {};
 
@@ -125,6 +125,43 @@ auto tuple_plus(const std::tuple<_Wrt...> & wrt, const Eigen::MatrixBase<Derived
     i_beg += i_len;
   });
   return ret;
+}
+
+/**
+ * @brief Trait for removing const-ness from reference types.
+ */
+template<typename T>
+struct remove_const_ref
+{
+  using type = T;
+};
+
+template<typename T>
+struct remove_const_ref<const T &>
+{
+  using type = T;
+};
+
+/**
+ * @brief Copy a tuple to make all elements modifiable.
+ *
+ * Copies are created form const & members, rest is forwarded.
+ */
+template<typename... T>
+std::tuple<typename remove_const_ref<T>::type...> tuple_copy_if_const(std::tuple<T...> && in)
+{
+  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(std::move(in));
+}
+
+/**
+ * @brief Copy a tuple to make all elements modifiable.
+ *
+ * Copies are created form const & members, rest is forwarded.
+ */
+template<typename... T>
+auto tuple_copy_if_const(const std::tuple<T...> & in)
+{
+  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(in);
 }
 
 /////////////////////////////////
