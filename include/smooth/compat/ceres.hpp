@@ -93,6 +93,8 @@ auto dr_ceres(_F && f, _Wrt && x)
   static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
   const auto ny                    = fval.size();
 
+  static_assert(Nx != -1, "Ceres autodiff only supports static sizes");
+
   Eigen::Matrix<Scalar, Nx, 1> a(nx);
   a.setZero();
 
@@ -100,26 +102,20 @@ auto dr_ceres(_F && f, _Wrt && x)
 
   Eigen::Matrix<Scalar, Ny, Nx, (Nx == 1) ? Eigen::ColMajor : Eigen::RowMajor> jac(ny, nx);
 
-  const Scalar * prms[1] = {a.data()};
-  double ** jac_rows     = new double *[ny];
-  for (auto i = 0; i < ny; i++) { jac_rows[i] = jac.row(i).data(); }
+  const Scalar * a_ptr[1] = {a.data()};
+  Scalar * jac_ptr[1]     = {jac.data()};
 
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
-    Eigen::Map<const Eigen::Matrix<T, Nx, 1>> m_in(in, nx);
-    Eigen::Map<Eigen::Matrix<T, Ny, 1>> m_out(out, ny);
-
-    m_out =
-      std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), m_in)) - fval.template cast<T>();
-
+    Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
+    Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
+    mo = std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), mi)) - fval.template cast<T>();
     return true;
   };
 
   ceres::internal::AutoDifferentiate<Result::SizeAtCompileTime,
-    ceres::internal::StaticParameterDims<Nx>>(f_deriv, prms, b.size(), b.data(), jac_rows);
+    ceres::internal::StaticParameterDims<Nx>>(f_deriv, a_ptr, b.size(), b.data(), jac_ptr);
 
-  Eigen::Matrix<Scalar, Ny, Nx> jac_ret = jac;
-
-  return std::make_pair(fval, jac_ret);
+  return std::make_pair(std::move(fval), Eigen::Matrix<Scalar, Ny, Nx>(jac));
 }
 
 }  // namespace smooth
