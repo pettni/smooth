@@ -45,7 +45,7 @@ mkdir build && cd build
 
 # Specify a C++20-compatible compiler if your default does not support C++20.
 # Build tests and/or examples as desired.
-cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF
+cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF
 make -j8
 sudo make install
 ```
