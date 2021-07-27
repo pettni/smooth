@@ -60,7 +60,7 @@ TEST(Ros, Pose)
   p.orientation.y = 0;
 
   Eigen::Map<geometry_msgs::msg::Pose> m(p);
-  ASSERT_TRUE(m.t3().isApprox(Eigen::Vector3d(3, 5, 4)));
+  ASSERT_TRUE(m.r3().isApprox(Eigen::Vector3d(3, 5, 4)));
 
   smooth::SE3d g;
   g.setRandom();
@@ -71,9 +71,9 @@ TEST(Ros, Pose)
   Eigen::Map<const geometry_msgs::msg::Pose> m_const(p);
   ASSERT_TRUE(m_const.isApprox(g));
 
-  ASSERT_DOUBLE_EQ(p.position.x, m.t3().x());
-  ASSERT_DOUBLE_EQ(p.position.y, m.t3().y());
-  ASSERT_DOUBLE_EQ(p.position.z, m.t3().z());
+  ASSERT_DOUBLE_EQ(p.position.x, m.r3().x());
+  ASSERT_DOUBLE_EQ(p.position.y, m.r3().y());
+  ASSERT_DOUBLE_EQ(p.position.z, m.r3().z());
   ASSERT_DOUBLE_EQ(p.orientation.x, m.so3().quat().x());
   ASSERT_DOUBLE_EQ(p.orientation.y, m.so3().quat().y());
   ASSERT_DOUBLE_EQ(p.orientation.z, m.so3().quat().z());
