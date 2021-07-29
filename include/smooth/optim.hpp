@@ -101,7 +101,7 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
   }
 
   double r_norm = r.stableNorm();
-  double Delta = 100. * d.stableNorm();  // TODO for Rn arguments we should multiply with norm(x)
+  double Delta  = 100. * d.stableNorm();  // TODO for Rn arguments we should multiply with norm(x)
 
   for (auto i = 0u; i != opts.max_iter; ++i) {
     // calculate step a via LM parameter algorithm
@@ -114,15 +114,16 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
     }
 
     // evaluate function and jacobian at x + a
-    auto x_plus_a               = utils::tuple_plus(x, a);
+    const auto x_plus_a         = utils::tuple_plus(x, a);
     const auto [r_cand, J_cand] = diff::dr<Diff>(f, x_plus_a);
 
     const double r_cand_norm = r_cand.stableNorm();
     const double Da_norm     = d.cwiseProduct(a).stableNorm();
 
     // calculate actual to predicted reduction
+    const Eigen::Matrix<double, decltype(J)::RowsAtCompileTime, 1> Ja = J * a;
     const double act_red  = 1. - Eigen::numext::abs2(r_cand_norm / r_norm);
-    const double fra2     = Eigen::numext::abs2((J * a).stableNorm() / r_norm);
+    const double fra2     = Eigen::numext::abs2(Ja.stableNorm() / r_norm);
     const double fra3     = Eigen::numext::abs2(std::sqrt(lambda) * Da_norm / r_norm);
     const double pred_red = fra2 + 2. * fra3;
     const double rho      = act_red / pred_red;
@@ -162,7 +163,7 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
     }
 
     //// PRINT STATUS ////
-    
+
     // TODO Pretty-print solver steps
     if (opts.verbosity > 0) { std::cout << "Step " << i << ": " << r.sum() << std::endl; }
 
