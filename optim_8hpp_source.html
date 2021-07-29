@@ -153,7 +153,7 @@ $(function() {
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  }</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keywordtype">double</span> r_norm = r.stableNorm();</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="keywordtype">double</span> Delta = 100. * d.stableNorm();  <span class="comment">// TODO for Rn arguments we should multiply with norm(x)</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  <span class="keywordtype">double</span> Delta  = 100. * d.stableNorm();  <span class="comment">// TODO for Rn arguments we should multiply with norm(x)</span></div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != opts.max_iter; ++i) {</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="comment">// calculate step a via LM parameter algorithm</span></div>
@@ -166,75 +166,76 @@ $(function() {
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    }</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="comment">// evaluate function and jacobian at x + a</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keyword">auto</span> x_plus_a               = utils::tuple_plus(x, a);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> x_plus_a         = utils::tuple_plus(x, a);</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> [r_cand, J_cand] = diff::dr&lt;Diff&gt;(f, x_plus_a);</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> r_cand_norm = r_cand.stableNorm();</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> Da_norm     = d.cwiseProduct(a).stableNorm();</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="comment">// calculate actual to predicted reduction</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> act_red  = 1. - Eigen::numext::abs2(r_cand_norm / r_norm);</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> fra2     = Eigen::numext::abs2((J * a).stableNorm() / r_norm);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> fra3     = Eigen::numext::abs2(std::sqrt(lambda) * Da_norm / r_norm);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> pred_red = fra2 + 2. * fra3;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> rho      = act_red / pred_red;</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="comment">// update trust region following Moré (1978)</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordflow">if</span> (rho &lt; 0.25) {</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;      <span class="keywordtype">double</span> mu;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;      <span class="keywordflow">if</span> (r_cand_norm &lt;= r_norm) {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        mu = 0.5;</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (r_cand_norm &lt;= 10 * r_norm) {</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">double</span> gamma = -fra2 - fra3;</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        mu                 = std::clamp(gamma / (2. * gamma + act_red), 0.1, 0.5);</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;        mu = 0.1;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;      }</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;      Delta *= mu;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ((lambda == 0 &amp;&amp; rho &lt; 0.75) || rho &gt; 0.75) {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;      Delta = 2 * Da_norm;</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    }</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordflow">if</span> (rho &gt; 1e-4) {</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;      x      = x_plus_a;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;      r      = r_cand;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;      J      = J_cand;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      r_norm = r_cand_norm;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      <span class="comment">// update scaling</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      <span class="keywordflow">if</span> constexpr (is_sparse) {</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        d = d.cwiseMax((Eigen::Matrix&lt;double, 1, -1&gt;::Ones(J.rows()) * J.cwiseProduct(J))</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                         .cwiseSqrt()</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                         .transpose());</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        d = d.cwiseMax(J.colwise().stableNorm().transpose());</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;      }</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    }</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="comment">// TODO Pretty-print solver steps</span></div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="keywordflow">if</span> (opts.verbosity &gt; 0) { std::cout &lt;&lt; <span class="stringliteral">&quot;Step &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; r.sum() &lt;&lt; std::endl; }</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="comment">// function tolerance</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordflow">if</span> (std::abs(act_red) &lt; opts.ftol &amp;&amp; pred_red &lt; opts.ftol &amp;&amp; rho &lt;= 2.) { <span class="keywordflow">break</span>; }</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="comment">// parameter tolerance</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="comment">// TODO a.size() should be norm(x) for non-angle states</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordflow">if</span> (Da_norm &lt; opts.ptol * a.size()) { <span class="keywordflow">break</span>; }</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;  }</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;}</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
-<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="optim_8hpp.html#abdcda4a51f33784c03a0e09852d8e8fa">  195</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">minimize</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x, <span class="keyword">const</span> <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a> &amp; opts = <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a>{})</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;{</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  minimize&lt;diff::Type::DEFAULT&gt;(std::forward&lt;_F&gt;(f), std::forward&lt;_Wrt&gt;(x), opts);</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;}</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;}  <span class="comment">// namespace smooth</span></div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__OPTIM_HPP_</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keyword">const</span> Eigen::Matrix&lt;double, decltype(J)::RowsAtCompileTime, 1&gt; Ja = J * a;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> act_red  = 1. - Eigen::numext::abs2(r_cand_norm / r_norm);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> fra2     = Eigen::numext::abs2(Ja.stableNorm() / r_norm);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> fra3     = Eigen::numext::abs2(std::sqrt(lambda) * Da_norm / r_norm);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> pred_red = fra2 + 2. * fra3;</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> rho      = act_red / pred_red;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="comment">// update trust region following Moré (1978)</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keywordflow">if</span> (rho &lt; 0.25) {</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;      <span class="keywordtype">double</span> mu;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;      <span class="keywordflow">if</span> (r_cand_norm &lt;= r_norm) {</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;        mu = 0.5;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;      } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (r_cand_norm &lt;= 10 * r_norm) {</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">double</span> gamma = -fra2 - fra3;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        mu                 = std::clamp(gamma / (2. * gamma + act_red), 0.1, 0.5);</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        mu = 0.1;</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;      }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;      Delta *= mu;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ((lambda == 0 &amp;&amp; rho &lt; 0.75) || rho &gt; 0.75) {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;      Delta = 2 * Da_norm;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    }</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordflow">if</span> (rho &gt; 1e-4) {</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;      x      = x_plus_a;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;      r      = r_cand;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      J      = J_cand;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      r_norm = r_cand_norm;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      <span class="comment">// update scaling</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      <span class="keywordflow">if</span> constexpr (is_sparse) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        d = d.cwiseMax((Eigen::Matrix&lt;double, 1, -1&gt;::Ones(J.rows()) * J.cwiseProduct(J))</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                         .cwiseSqrt()</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                         .transpose());</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        d = d.cwiseMax(J.colwise().stableNorm().transpose());</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <span class="comment">// TODO Pretty-print solver steps</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <span class="keywordflow">if</span> (opts.verbosity &gt; 0) { std::cout &lt;&lt; <span class="stringliteral">&quot;Step &quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; r.sum() &lt;&lt; std::endl; }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="comment">// function tolerance</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordflow">if</span> (std::abs(act_red) &lt; opts.ftol &amp;&amp; pred_red &lt; opts.ftol &amp;&amp; rho &lt;= 2.) { <span class="keywordflow">break</span>; }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="comment">// parameter tolerance</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="comment">// TODO a.size() should be norm(x) for non-angle states</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordflow">if</span> (Da_norm &lt; opts.ptol * a.size()) { <span class="keywordflow">break</span>; }</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  }</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;}</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _F, <span class="keyword">typename</span> _Wrt&gt;</div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="optim_8hpp.html#abdcda4a51f33784c03a0e09852d8e8fa">  196</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">minimize</a>(_F &amp;&amp; f, _Wrt &amp;&amp; x, <span class="keyword">const</span> <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a> &amp; opts = <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a>{})</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;{</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  minimize&lt;diff::Type::DEFAULT&gt;(std::forward&lt;_F&gt;(f), std::forward&lt;_Wrt&gt;(x), opts);</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;}</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__OPTIM_HPP_</span></div>
 <div class="ttc" id="aconcepts_8hpp_html"><div class="ttname"><a href="concepts_8hpp.html">concepts.hpp</a></div></div>
 <div class="ttc" id="adiff_8hpp_html"><div class="ttname"><a href="diff_8hpp.html">diff.hpp</a></div><div class="ttdoc">Differentiation on Lie groups.</div></div>
 <div class="ttc" id="aoptim_8hpp_html_af178cd6078aacc223a42016bce92794d"><div class="ttname"><a href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">smooth::minimize</a></div><div class="ttdeci">void minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</div><div class="ttdoc">Find a minimum of the non-linear least-squares problem.</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00079">optim.hpp:79</a></div></div>
