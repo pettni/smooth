@@ -1,11 +1,12 @@
 <map id="include/smooth/spline/bezier.hpp" name="include/smooth/spline/bezier.hpp">
-<area shape="rect" id="node1" title="bezier splines on lie groups." alt="" coords="275,5,423,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,67,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="91,95,189,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="213,95,331,121"/>
-<area shape="rect" id="node5" href="$concepts_8hpp.html" title=" " alt="" coords="355,95,501,121"/>
-<area shape="rect" id="node8" title=" " alt="" coords="525,95,688,121"/>
-<area shape="rect" id="node9" title=" " alt="" coords="712,95,808,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="339,169,413,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="437,169,523,196"/>
+<area shape="rect" id="node1" title="bezier splines on lie groups." alt="" coords="297,5,445,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,80,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="104,95,165,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="189,95,288,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="312,95,429,121"/>
+<area shape="rect" id="node6" href="$concepts_8hpp.html" title=" " alt="" coords="453,95,600,121"/>
+<area shape="rect" id="node9" title=" " alt="" coords="624,95,787,121"/>
+<area shape="rect" id="node10" title=" " alt="" coords="811,95,907,121"/>
+<area shape="rect" id="node7" title=" " alt="" coords="437,169,512,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="536,169,621,196"/>
 </map>

@@ -105,182 +105,187 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#ifndef INTERP__BSPLINE_HPP_</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define INTERP__BSPLINE_HPP_</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;ranges&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;Eigen/Sparse&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="concepts_8hpp.html">smooth/concepts.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;smooth/internal/utils.hpp&quot;</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &quot;smooth/manifold_vector.hpp&quot;</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="optim_8hpp.html">smooth/optim.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &quot;common.hpp&quot;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">namespace </span>smooth {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, LieGroup G&gt;</div>
-<div class="line"><a name="l00077"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html">   77</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1BSpline.html">BSpline</a></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;{</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a632441d31380304827cc18696f187acf">   83</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a632441d31380304827cc18696f187acf">BSpline</a>() : t0_(0), dt_(1), ctrl_pts_(K + 1, G::Identity()) {}</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aff8fc5758965dfc3b0adeca623c8da8e">   91</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#aff8fc5758965dfc3b0adeca623c8da8e">BSpline</a>(<span class="keywordtype">double</span> t0, <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>, std::vector&lt;G, Eigen::aligned_allocator&lt;G&gt;&gt; &amp;&amp; <a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>)</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;      : t0_(t0), dt_(<a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>), ctrl_pts_(std::move(<a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>))</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  {}</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="keyword">template</span>&lt;std::ranges::range R&gt;</div>
-<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">  103</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">BSpline</a>(<span class="keywordtype">double</span> t0, <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>, <span class="keyword">const</span> R &amp; <a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>)</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      : t0_(t0), dt_(<a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>), ctrl_pts_(std::ranges::begin(<a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>), std::ranges::end(<a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>))</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  {}</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835">  108</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835">BSpline</a>(<span class="keyword">const</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a5bdd526e41de2f581ef352af8a3bad7c">  110</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a5bdd526e41de2f581ef352af8a3bad7c">BSpline</a>(<a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;&amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00112"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#ada04c985428d4e87f1e562f885ae180d">  112</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp; <a class="code" href="classsmooth_1_1BSpline.html#ada04c985428d4e87f1e562f885ae180d">operator=</a>(<span class="keyword">const</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aace7e5a57e117e67aab6d4b70c6e5192">  114</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp; <a class="code" href="classsmooth_1_1BSpline.html#aace7e5a57e117e67aab6d4b70c6e5192">operator=</a>(<a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;&amp;) = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00116"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a3d735a15347893ea8383b69f629249a0">  116</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a3d735a15347893ea8383b69f629249a0">~BSpline</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">  121</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> dt_; }</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00126"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aff97d3ad8af39601d44e69e0c9878f28">  126</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#aff97d3ad8af39601d44e69e0c9878f28">t_min</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> t0_; }</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a3b137c872dd2b10185ef4dc52a61c974">  131</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a3b137c872dd2b10185ef4dc52a61c974">t_max</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> t0_ + (ctrl_pts_.size() - K) * dt_; }</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00136"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">  136</a></span>&#160;  <span class="keyword">const</span> std::vector&lt;G, Eigen::aligned_allocator&lt;G&gt;&gt; &amp; <a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> ctrl_pts_; }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#ab65ffe58be4fef751a05271bcf1a3690">  148</a></span>&#160;  G <a class="code" href="classsmooth_1_1BSpline.html#ab65ffe58be4fef751a05271bcf1a3690">eval</a>(<span class="keywordtype">double</span> t, detail::OptTangent&lt;G&gt; vel = {}, detail::OptTangent&lt;G&gt; acc = {}) <span class="keyword">const</span></div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  {</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="comment">// index of relevant interval</span></div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    int64_t istar = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>((t - t0_) / dt_);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keywordtype">double</span> u;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="comment">// clamp to end of range if necessary</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordflow">if</span> (istar &lt; 0) {</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      istar = 0;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      u     = 0;</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (istar + K + 1 &gt; ctrl_pts_.size()) {</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      istar = ctrl_pts_.size() - K - 1;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      u     = 1;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      u = (t - t0_ - istar * dt_) / dt_;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    }</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    constexpr <span class="keyword">auto</span> Mstatic = detail::cum_coefmat&lt;CSplineType::BSPLINE, double, K&gt;().transpose();</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; M(Mstatic[0].data());</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    G g = cspline_eval&lt;K, G&gt;(</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      ctrl_pts_ | std::views::drop(istar) | std::views::take(K + 1), M, u, vel, acc);</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    <span class="keywordflow">if</span> (vel.has_value()) { vel.value() /= dt_; }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordflow">if</span> (acc.has_value()) { acc.value() /= (dt_ * dt_); }</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordflow">return</span> g;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  }</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="keyword">private</span>:</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="keywordtype">double</span> t0_, dt_;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  std::vector&lt;G, Eigen::aligned_allocator&lt;G&gt;&gt; ctrl_pts_;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;};</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::ranges::range Rt, std::ranges::range Rg&gt;</div>
-<div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="bspline_8hpp.html#a60e5620d092c1e814ec922ab9017950a">  197</a></span>&#160;<a class="code" href="classsmooth_1_1BSpline.html">BSpline&lt;K, std::ranges::range_value_t&lt;Rg&gt;</a>&gt; <a class="code" href="bspline_8hpp.html#a60e5620d092c1e814ec922ab9017950a">fit_bspline</a>(<span class="keyword">const</span> Rt &amp; tt, <span class="keyword">const</span> Rg &amp; gg, <span class="keywordtype">double</span> dt)</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;{</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  static_assert(<a class="code" href="concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">LieGroup</a>&lt;std::ranges::range_value_t&lt;Rg&gt;&gt;, <span class="stringliteral">&quot;Rg value type is LieGroup&quot;</span>);</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  static_assert(std::is_same_v&lt;std::ranges::range_value_t&lt;Rt&gt;, <span class="keywordtype">double</span>&gt;, <span class="stringliteral">&quot;Rt value type is double&quot;</span>);</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  <span class="keyword">using</span> G = std::ranges::range_value_t&lt;Rg&gt;;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  <span class="keyword">auto</span> [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> t0 = *tmin_ptr;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> t1 = *tmax_ptr;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;ranges&gt;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;Eigen/Sparse&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="concepts_8hpp.html">smooth/concepts.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &quot;smooth/internal/utils.hpp&quot;</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &quot;smooth/manifold_vector.hpp&quot;</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="optim_8hpp.html">smooth/optim.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &quot;common.hpp&quot;</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">namespace </span>smooth {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, LieGroup G&gt;</div>
+<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html">   78</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1BSpline.html">BSpline</a></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;{</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a632441d31380304827cc18696f187acf">   84</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a632441d31380304827cc18696f187acf">BSpline</a>() : t0_(0), dt_(1), ctrl_pts_(K + 1, G::Identity()) {}</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aff8fc5758965dfc3b0adeca623c8da8e">   92</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#aff8fc5758965dfc3b0adeca623c8da8e">BSpline</a>(<span class="keywordtype">double</span> t0, <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>, std::vector&lt;G, Eigen::aligned_allocator&lt;G&gt;&gt; &amp;&amp; <a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>)</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;      : t0_(t0), dt_(<a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>), ctrl_pts_(std::move(<a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>))</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  {}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keyword">template</span>&lt;std::ranges::range R&gt;</div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">  104</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">BSpline</a>(<span class="keywordtype">double</span> t0, <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>, <span class="keyword">const</span> R &amp; <a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>)</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;      : t0_(t0), dt_(<a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>), ctrl_pts_(std::ranges::begin(<a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>), std::ranges::end(<a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>))</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  {}</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835">  109</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835">BSpline</a>(<span class="keyword">const</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a5bdd526e41de2f581ef352af8a3bad7c">  111</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a5bdd526e41de2f581ef352af8a3bad7c">BSpline</a>(<a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#ada04c985428d4e87f1e562f885ae180d">  113</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp; <a class="code" href="classsmooth_1_1BSpline.html#ada04c985428d4e87f1e562f885ae180d">operator=</a>(<span class="keyword">const</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aace7e5a57e117e67aab6d4b70c6e5192">  115</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp; <a class="code" href="classsmooth_1_1BSpline.html#aace7e5a57e117e67aab6d4b70c6e5192">operator=</a>(<a class="code" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;&amp;) = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a3d735a15347893ea8383b69f629249a0">  117</a></span>&#160;  <a class="code" href="classsmooth_1_1BSpline.html#a3d735a15347893ea8383b69f629249a0">~BSpline</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">  122</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> dt_; }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aff97d3ad8af39601d44e69e0c9878f28">  127</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#aff97d3ad8af39601d44e69e0c9878f28">t_min</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> t0_; }</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#a3b137c872dd2b10185ef4dc52a61c974">  132</a></span>&#160;  <span class="keywordtype">double</span> <a class="code" href="classsmooth_1_1BSpline.html#a3b137c872dd2b10185ef4dc52a61c974">t_max</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> t0_ + (ctrl_pts_.size() - K) * dt_; }</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">  137</a></span>&#160;  <span class="keyword">const</span> std::vector&lt;G, Eigen::aligned_allocator&lt;G&gt;&gt; &amp; <a class="code" href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">ctrl_pts</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> ctrl_pts_; }</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="classsmooth_1_1BSpline.html#ab65ffe58be4fef751a05271bcf1a3690">  149</a></span>&#160;  G <a class="code" href="classsmooth_1_1BSpline.html#ab65ffe58be4fef751a05271bcf1a3690">eval</a>(<span class="keywordtype">double</span> t, detail::OptTangent&lt;G&gt; vel = {}, detail::OptTangent&lt;G&gt; acc = {}) <span class="keyword">const</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="comment">// index of relevant interval</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    int64_t istar = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>((t - t0_) / dt_);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keywordtype">double</span> u;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="comment">// clamp to end of range if necessary</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="keywordflow">if</span> (istar &lt; 0) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      istar = 0;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;      u     = 0;</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (istar + K + 1 &gt; ctrl_pts_.size()) {</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      istar = ctrl_pts_.size() - K - 1;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;      u     = 1;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      u = (t - t0_ - istar * dt_) / dt_;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    }</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    constexpr <span class="keyword">auto</span> Mstatic = detail::cum_coefmat&lt;CSplineType::BSPLINE, double, K&gt;().transpose();</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; M(Mstatic[0].data());</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    G g = cspline_eval&lt;K, G&gt;(</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      ctrl_pts_ | std::views::drop(istar) | std::views::take(K + 1), M, u, vel, acc);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordflow">if</span> (vel.has_value()) { vel.value() /= dt_; }</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordflow">if</span> (acc.has_value()) { acc.value() /= (dt_ * dt_); }</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keywordflow">return</span> g;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="keyword">private</span>:</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  <span class="keywordtype">double</span> t0_, dt_;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  std::vector&lt;G, Eigen::aligned_allocator&lt;G&gt;&gt; ctrl_pts_;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;};</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::ranges::range Rt, std::ranges::range Rg&gt;</div>
+<div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="bspline_8hpp.html#a60e5620d092c1e814ec922ab9017950a">  198</a></span>&#160;<a class="code" href="classsmooth_1_1BSpline.html">BSpline&lt;K, std::ranges::range_value_t&lt;Rg&gt;</a>&gt; <a class="code" href="bspline_8hpp.html#a60e5620d092c1e814ec922ab9017950a">fit_bspline</a>(<span class="keyword">const</span> Rt &amp; tt, <span class="keyword">const</span> Rg &amp; gg, <span class="keywordtype">double</span> dt)</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;{</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  static_assert(<a class="code" href="concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">LieGroup</a>&lt;std::ranges::range_value_t&lt;Rg&gt;&gt;, <span class="stringliteral">&quot;Rg value type is LieGroup&quot;</span>);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  static_assert(std::is_same_v&lt;std::ranges::range_value_t&lt;Rt&gt;, <span class="keywordtype">double</span>&gt;, <span class="stringliteral">&quot;Rt value type is double&quot;</span>);</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  <span class="keywordflow">if</span> (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;interpolation times not strictly increasing&quot;</span>);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  }</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  <span class="keyword">using</span> G = std::ranges::range_value_t&lt;Rg&gt;;</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;  <span class="keyword">const</span> std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="keyword">const</span> std::size_t NumPts  = K + <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>((t1 - t0 + dt) / dt);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;  constexpr <span class="keyword">auto</span> Mstatic = detail::cum_coefmat&lt;CSplineType::BSPLINE, double, K&gt;().transpose();</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; M(Mstatic[0].data());</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160; </div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;  <span class="keyword">auto</span> f = [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; var) {</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    Eigen::VectorXd ret(G::Dof * NumData);</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;    Eigen::SparseMatrix&lt;double, Eigen::RowMajor&gt; Jac;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;    Jac.resize(G::Dof * NumData, G::Dof * NumPts);</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    Jac.reserve(Eigen::Matrix&lt;int, -1, 1&gt;::Constant(G::Dof * NumData, G::Dof * (K + 1)));</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="keyword">auto</span> t_iter = std::ranges::begin(tt);</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    <span class="keyword">auto</span> g_iter = std::ranges::begin(gg);</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != NumData; ++t_iter, ++g_iter, ++i) {</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;      <span class="keyword">const</span> int64_t istar = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>((*t_iter - t0) / dt);</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> u      = (*t_iter - t0 - istar * dt) / dt;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      Eigen::Matrix&lt;double, G::Dof, (K + 1) * G::Dof&gt; d_vali_pts;</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;      <span class="keyword">auto</span> g_spline = cspline_eval&lt;K, G&gt;(</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        var | std::views::drop(istar) | std::views::take(K + 1), M, u, {}, {}, d_vali_pts);</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;      <span class="keyword">const</span> <span class="keyword">typename</span> G::Tangent resi = g_spline - *g_iter;</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;      ret.segment&lt;G::Dof&gt;(i * G::Dof) = resi;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, G::Dof, G::Dof&gt; d_resi_vali          = G::dr_expinv(resi);</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, G::Dof, (K + 1) * G::Dof&gt; d_resi_pts = d_resi_vali * d_vali_pts;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;  <span class="keyword">auto</span> [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> t0 = *tmin_ptr;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> t1 = *tmax_ptr;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;  <span class="keyword">const</span> std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;  <span class="keyword">const</span> std::size_t NumPts  = K + <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>((t1 - t0 + dt) / dt);</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  constexpr <span class="keyword">auto</span> Mstatic = detail::cum_coefmat&lt;CSplineType::BSPLINE, double, K&gt;().transpose();</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; M(Mstatic[0].data());</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160; </div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;  <span class="keyword">auto</span> f = [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; var) {</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;    Eigen::VectorXd ret(G::Dof * NumData);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    Eigen::SparseMatrix&lt;double, Eigen::RowMajor&gt; Jac;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    Jac.resize(G::Dof * NumData, G::Dof * NumPts);</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    Jac.reserve(Eigen::Matrix&lt;int, -1, 1&gt;::Constant(G::Dof * NumData, G::Dof * (K + 1)));</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <span class="keyword">auto</span> t_iter = std::ranges::begin(tt);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="keyword">auto</span> g_iter = std::ranges::begin(gg);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != NumData; ++t_iter, ++g_iter, ++i) {</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;      <span class="keyword">const</span> int64_t istar = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>((*t_iter - t0) / dt);</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> u      = (*t_iter - t0 - istar * dt) / dt;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;      Eigen::Matrix&lt;double, G::Dof, (K + 1) * G::Dof&gt; d_vali_pts;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;      <span class="keyword">auto</span> g_spline = cspline_eval&lt;K, G&gt;(</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        var | std::views::drop(istar) | std::views::take(K + 1), M, u, {}, {}, d_vali_pts);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;      <span class="keyword">const</span> <span class="keyword">typename</span> G::Tangent resi = g_spline - *g_iter;</div>
 <div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r != G::Dof; ++r) {</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> c = 0u; c != G::Dof * (K + 1); ++c) {</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;          Jac.insert(i * G::Dof + r, istar * G::Dof + c) = d_resi_pts(r, c);</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;        }</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;      }</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    }</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    Jac.makeCompressed();</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    <span class="keywordflow">return</span> std::make_pair(std::move(ret), Eigen::MatrixXd(Jac));</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  };</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      ret.segment&lt;G::Dof&gt;(i * G::Dof) = resi;</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, G::Dof, G::Dof&gt; d_resi_vali          = G::dr_expinv(resi);</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, G::Dof, (K + 1) * G::Dof&gt; d_resi_pts = d_resi_vali * d_vali_pts;</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r != G::Dof; ++r) {</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> c = 0u; c != G::Dof * (K + 1); ++c) {</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;          Jac.insert(i * G::Dof + r, istar * G::Dof + c) = d_resi_pts(r, c);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        }</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;      }</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    }</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  <span class="comment">// create optimization variable</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  <a class="code" href="classsmooth_1_1ManifoldVector.html">ManifoldVector&lt;G, Eigen::aligned_allocator&gt;</a> ctrl_pts(NumPts);</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  <span class="comment">// create initial guess</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;  <span class="keyword">auto</span> t_iter = std::ranges::begin(tt);</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  <span class="keyword">auto</span> g_iter = std::ranges::begin(gg);</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != NumPts; ++i) {</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> t_target = t0 + (i - <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(K - 1) / 2) * dt;</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="keywordflow">while</span> (t_iter + 1 &lt; std::ranges::end(tt)</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;           &amp;&amp; std::abs(t_target - *(t_iter + 1)) &lt; std::abs(t_target - *t_iter)) {</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;      ++t_iter;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;      ++g_iter;</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    }</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    ctrl_pts[i] = *g_iter;</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  }</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  <span class="comment">// fit to data with loose convergence criteria</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a> opts;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b">ftol</a>     = 1e-3;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530">ptol</a>     = 1e-3;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a06c8794ce3e364e0f14b3055d5cef01b">max_iter</a> = 10;</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;  minimize&lt;diff::Type::ANALYTIC&gt;(f, <a class="code" href="diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca">smooth::wrt</a>(ctrl_pts), opts);</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline&lt;K, G&gt;</a>(t0, dt, std::move(ctrl_pts));</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;}</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    Jac.makeCompressed();</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <span class="keywordflow">return</span> std::make_pair(std::move(ret), Eigen::MatrixXd(Jac));</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  };</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  <span class="comment">// create optimization variable</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  <a class="code" href="classsmooth_1_1ManifoldVector.html">ManifoldVector&lt;G, Eigen::aligned_allocator&gt;</a> ctrl_pts(NumPts);</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;  <span class="comment">// create initial guess</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  <span class="keyword">auto</span> t_iter = std::ranges::begin(tt);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  <span class="keyword">auto</span> g_iter = std::ranges::begin(gg);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != NumPts; ++i) {</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> t_target = t0 + (i - <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(K - 1) / 2) * dt;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="keywordflow">while</span> (t_iter + 1 &lt; std::ranges::end(tt)</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;           &amp;&amp; std::abs(t_target - *(t_iter + 1)) &lt; std::abs(t_target - *t_iter)) {</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;      ++t_iter;</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;      ++g_iter;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    ctrl_pts[i] = *g_iter;</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  }</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;  <span class="comment">// fit to data with loose convergence criteria</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;  <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a> opts;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b">ftol</a>     = 1e-3;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530">ptol</a>     = 1e-3;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a06c8794ce3e364e0f14b3055d5cef01b">max_iter</a> = 10;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;  minimize&lt;diff::Type::ANALYTIC&gt;(f, <a class="code" href="diff_8hpp.html#a73c425effecf4a85064d2f433c1b80ca">smooth::wrt</a>(ctrl_pts), opts);</div>
 <div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// INTERP__BSPLINE_HPP_</span></div>
-<div class="ttc" id="abspline_8hpp_html_a60e5620d092c1e814ec922ab9017950a"><div class="ttname"><a href="bspline_8hpp.html#a60e5620d092c1e814ec922ab9017950a">smooth::fit_bspline</a></div><div class="ttdeci">BSpline&lt; K, std::ranges::range_value_t&lt; Rg &gt; &gt; fit_bspline(const Rt &amp;tt, const Rg &amp;gg, double dt)</div><div class="ttdoc">Fit a bpsline to data points  by solving the optimization problem.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00197">bspline.hpp:197</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html"><div class="ttname"><a href="classsmooth_1_1BSpline.html">smooth::BSpline</a></div><div class="ttdoc">Cardinal Bspline on a Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00077">bspline.hpp:78</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_a0d59e846a8f0a3300c3d2a6b75488191"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">smooth::BSpline::dt</a></div><div class="ttdeci">double dt() const</div><div class="ttdoc">Distance between knots.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00121">bspline.hpp:121</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_a128c0016c78002a5fd5f7bc5a480eb59"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline(double t0, double dt, const R &amp;ctrl_pts)</div><div class="ttdoc">Create a BSpline.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00103">bspline.hpp:103</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_a3b137c872dd2b10185ef4dc52a61c974"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a3b137c872dd2b10185ef4dc52a61c974">smooth::BSpline::t_max</a></div><div class="ttdeci">double t_max() const</div><div class="ttdoc">Maximal time for which spline is defined.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00131">bspline.hpp:131</a></div></div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline&lt;K, G&gt;</a>(t0, dt, std::move(ctrl_pts));</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;}</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160; </div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// INTERP__BSPLINE_HPP_</span></div>
+<div class="ttc" id="abspline_8hpp_html_a60e5620d092c1e814ec922ab9017950a"><div class="ttname"><a href="bspline_8hpp.html#a60e5620d092c1e814ec922ab9017950a">smooth::fit_bspline</a></div><div class="ttdeci">BSpline&lt; K, std::ranges::range_value_t&lt; Rg &gt; &gt; fit_bspline(const Rt &amp;tt, const Rg &amp;gg, double dt)</div><div class="ttdoc">Fit a bpsline to data points  by solving the optimization problem.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00198">bspline.hpp:198</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html"><div class="ttname"><a href="classsmooth_1_1BSpline.html">smooth::BSpline</a></div><div class="ttdoc">Cardinal Bspline on a Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00078">bspline.hpp:79</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_a0d59e846a8f0a3300c3d2a6b75488191"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">smooth::BSpline::dt</a></div><div class="ttdeci">double dt() const</div><div class="ttdoc">Distance between knots.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00122">bspline.hpp:122</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_a128c0016c78002a5fd5f7bc5a480eb59"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline(double t0, double dt, const R &amp;ctrl_pts)</div><div class="ttdoc">Create a BSpline.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00104">bspline.hpp:104</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_a3b137c872dd2b10185ef4dc52a61c974"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a3b137c872dd2b10185ef4dc52a61c974">smooth::BSpline::t_max</a></div><div class="ttdeci">double t_max() const</div><div class="ttdoc">Maximal time for which spline is defined.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00132">bspline.hpp:132</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_a3d735a15347893ea8383b69f629249a0"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a3d735a15347893ea8383b69f629249a0">smooth::BSpline::~BSpline</a></div><div class="ttdeci">~BSpline()=default</div><div class="ttdoc">Descructor.</div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_a5bdd526e41de2f581ef352af8a3bad7c"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a5bdd526e41de2f581ef352af8a3bad7c">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline(BSpline &amp;&amp;)=default</div><div class="ttdoc">Move constructor.</div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_a632441d31380304827cc18696f187acf"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a632441d31380304827cc18696f187acf">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline()</div><div class="ttdoc">Construct a constant bspline defined on [0, 1) equal to identity.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00083">bspline.hpp:83</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_a632441d31380304827cc18696f187acf"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a632441d31380304827cc18696f187acf">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline()</div><div class="ttdoc">Construct a constant bspline defined on [0, 1) equal to identity.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00084">bspline.hpp:84</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_a750d51175fecdcdd4b6da8c58a3c8835"><div class="ttname"><a href="classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline(const BSpline &amp;)=default</div><div class="ttdoc">Copy constructor.</div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_aa69acee09836c80c0e8cec767c4a1941"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">smooth::BSpline::ctrl_pts</a></div><div class="ttdeci">const std::vector&lt; G, Eigen::aligned_allocator&lt; G &gt; &gt; &amp; ctrl_pts() const</div><div class="ttdoc">Access spline control points.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00136">bspline.hpp:136</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_aa69acee09836c80c0e8cec767c4a1941"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aa69acee09836c80c0e8cec767c4a1941">smooth::BSpline::ctrl_pts</a></div><div class="ttdeci">const std::vector&lt; G, Eigen::aligned_allocator&lt; G &gt; &gt; &amp; ctrl_pts() const</div><div class="ttdoc">Access spline control points.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00137">bspline.hpp:137</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_aace7e5a57e117e67aab6d4b70c6e5192"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aace7e5a57e117e67aab6d4b70c6e5192">smooth::BSpline::operator=</a></div><div class="ttdeci">BSpline &amp; operator=(BSpline &amp;&amp;)=default</div><div class="ttdoc">Move assignment.</div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_ab65ffe58be4fef751a05271bcf1a3690"><div class="ttname"><a href="classsmooth_1_1BSpline.html#ab65ffe58be4fef751a05271bcf1a3690">smooth::BSpline::eval</a></div><div class="ttdeci">G eval(double t, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}) const</div><div class="ttdoc">Evaluate Bspline.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00148">bspline.hpp:148</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_ab65ffe58be4fef751a05271bcf1a3690"><div class="ttname"><a href="classsmooth_1_1BSpline.html#ab65ffe58be4fef751a05271bcf1a3690">smooth::BSpline::eval</a></div><div class="ttdeci">G eval(double t, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}) const</div><div class="ttdoc">Evaluate Bspline.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00149">bspline.hpp:149</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html_ada04c985428d4e87f1e562f885ae180d"><div class="ttname"><a href="classsmooth_1_1BSpline.html#ada04c985428d4e87f1e562f885ae180d">smooth::BSpline::operator=</a></div><div class="ttdeci">BSpline &amp; operator=(const BSpline &amp;)=default</div><div class="ttdoc">Copy assignment.</div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_aff8fc5758965dfc3b0adeca623c8da8e"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aff8fc5758965dfc3b0adeca623c8da8e">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline(double t0, double dt, std::vector&lt; G, Eigen::aligned_allocator&lt; G &gt;&gt; &amp;&amp;ctrl_pts)</div><div class="ttdoc">Create a BSpline.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00091">bspline.hpp:91</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html_aff97d3ad8af39601d44e69e0c9878f28"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aff97d3ad8af39601d44e69e0c9878f28">smooth::BSpline::t_min</a></div><div class="ttdeci">double t_min() const</div><div class="ttdoc">Minimal time for which spline is defined.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00126">bspline.hpp:126</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_aff8fc5758965dfc3b0adeca623c8da8e"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aff8fc5758965dfc3b0adeca623c8da8e">smooth::BSpline::BSpline</a></div><div class="ttdeci">BSpline(double t0, double dt, std::vector&lt; G, Eigen::aligned_allocator&lt; G &gt;&gt; &amp;&amp;ctrl_pts)</div><div class="ttdoc">Create a BSpline.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00092">bspline.hpp:92</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html_aff97d3ad8af39601d44e69e0c9878f28"><div class="ttname"><a href="classsmooth_1_1BSpline.html#aff97d3ad8af39601d44e69e0c9878f28">smooth::BSpline::t_min</a></div><div class="ttdeci">double t_min() const</div><div class="ttdoc">Minimal time for which spline is defined.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00127">bspline.hpp:127</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1ManifoldVector_html"><div class="ttname"><a href="classsmooth_1_1ManifoldVector.html">smooth::ManifoldVector</a></div><div class="ttdoc">std::vector based Manifold container.</div><div class="ttdef"><b>Definition:</b> <a href="manifold__vector_8hpp_source.html#l00051">manifold_vector.hpp:52</a></div></div>
 <div class="ttc" id="aconcepts_8hpp_html"><div class="ttname"><a href="concepts_8hpp.html">concepts.hpp</a></div></div>
 <div class="ttc" id="aconcepts_8hpp_html_aa5ac6cbd43fb18cb0a5b50327627e716"><div class="ttname"><a href="concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">smooth::LieGroup</a></div><div class="ttdeci">concept LieGroup</div><div class="ttdoc">Lie group concept.</div><div class="ttdef"><b>Definition:</b> <a href="concepts_8hpp_source.html#l00074">concepts.hpp:74</a></div></div>
