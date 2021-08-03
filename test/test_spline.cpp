@@ -457,3 +457,18 @@ TEST(Spline, BezierTooShort)
   ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::runtime_error);
   ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::runtime_error);
 }
+
+TEST(Spline, BezierNonIncreasing)
+{
+  std::vector<double> tt{1, 2, 2, 3};
+  std::vector<smooth::SO3d> gg;
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+
+  ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::runtime_error);
+  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::runtime_error);
+  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::runtime_error);
+  ASSERT_THROW(smooth::fit_bspline<5>(tt, gg, 0.2), std::runtime_error);
+}

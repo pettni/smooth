@@ -31,6 +31,7 @@
  * @brief bezier splines on lie groups.
  */
 
+#include <algorithm>
 #include <ranges>
 
 #include <Eigen/Sparse>
@@ -233,6 +234,11 @@ PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & 
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
+
+  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
+    throw std::runtime_error("Interpolation times not strictly increasing");
+  }
+
   using G = std::ranges::range_value_t<Rg>;
 
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
@@ -272,6 +278,11 @@ PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
+
+  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
+    throw std::runtime_error("Interpolation times not strictly increasing");
+  }
+
   using G             = std::ranges::range_value_t<Rg>;
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
@@ -321,6 +332,10 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
     throw std::runtime_error("Not enough points");
   }
   using G = std::ranges::range_value_t<Rg>;
+
+  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
+    throw std::runtime_error("Interpolation times not strictly increasing");
+  }
 
   // number of intervals
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;

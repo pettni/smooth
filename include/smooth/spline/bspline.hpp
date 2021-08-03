@@ -31,6 +31,7 @@
  * @brief B-splines on Lie groups.
  */
 
+#include <algorithm>
 #include <ranges>
 
 #include <Eigen/Sparse>
@@ -198,6 +199,10 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
 {
   static_assert(LieGroup<std::ranges::range_value_t<Rg>>, "Rg value type is LieGroup");
   static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");
+
+  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
+    throw std::runtime_error("interpolation times not strictly increasing");
+  }
 
   using G = std::ranges::range_value_t<Rg>;
 
