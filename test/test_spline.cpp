@@ -27,12 +27,12 @@
 
 #include "smooth/bundle.hpp"
 #include "smooth/diff.hpp"
-#include "smooth/spline/bezier.hpp"
-#include "smooth/spline/bspline.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
+#include "smooth/spline/bezier.hpp"
+#include "smooth/spline/bspline.hpp"
 #include "smooth/tn.hpp"
 
 TEST(Coefmat, Bspline)
@@ -87,7 +87,7 @@ template<typename G>
 class Spline : public ::testing::Test
 {};
 
-using GroupsToTest = ::testing:: Types<smooth::T2d, smooth::SO3d>;
+using GroupsToTest = ::testing::Types<smooth::T2d, smooth::SO3d>;
 
 TYPED_TEST_SUITE(Spline, GroupsToTest);
 
@@ -156,7 +156,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 
 TYPED_TEST(Spline, DerivBspline)
 {
-  TypeParam g0 = TypeParam::Random();
+  TypeParam g0  = TypeParam::Random();
   using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
 
   std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_pts;
@@ -184,7 +184,7 @@ TYPED_TEST(Spline, DerivBspline)
 
 TYPED_TEST(Spline, DerivBezier)
 {
-  TypeParam g0 = TypeParam::Random();
+  TypeParam g0  = TypeParam::Random();
   using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
 
   std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_pts;
@@ -328,7 +328,7 @@ TEST(Spline, BezierConstruct)
   std::vector<double> tt{1, 2, 3};
   std::vector<smooth::Bezier<3, smooth::SO3d>> bb(3);
 
-  auto spline = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
+  auto spline       = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
   auto spline_moved = std::move(spline);
 
   static_cast<void>(spline_moved);
@@ -471,4 +471,30 @@ TEST(Spline, BezierNonIncreasing)
   ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::runtime_error);
   ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::runtime_error);
   ASSERT_THROW(smooth::fit_bspline<5>(tt, gg, 0.2), std::runtime_error);
+}
+
+TEST(Spline, BezierInitialvel)
+{
+  std::srand(14);
+
+  for (auto i = 0u; i != 5; ++i) {
+    std::vector<double> tt{1, 2, 3, 4};
+    std::vector<smooth::SO3d> gg;
+    gg.push_back(smooth::SO3d::Random());
+    gg.push_back(smooth::SO3d::Random());
+    gg.push_back(smooth::SO3d::Random());
+    gg.push_back(smooth::SO3d::Random());
+
+    Eigen::Vector3d v0 = Eigen::Vector3d::Random();
+    Eigen::Vector3d v1 = Eigen::Vector3d::Random();
+
+    auto spline = smooth::fit_cubic_bezier(tt, gg, v0, v1);
+
+    Eigen::Vector3d test1, test2;
+    spline.eval(1, test1);
+    spline.eval(4, test2);
+
+    ASSERT_TRUE(test1.isApprox(v0));
+    ASSERT_TRUE(test2.isApprox(v1));
+  }
 }

@@ -324,14 +324,18 @@ PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(
  * @tparam Rt, Rg range types
  * @param tt interpolation times
  * @param gg interpolation values
+ * @param v0 body velocity at start of spline (optional, if not given acceleration is set to zero)
+ * @param v1 body velocity at end of spline (optional, if not given acceleration is set to zero)
  */
-template<std::ranges::range Rt, std::ranges::range Rg>
-PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & tt, const Rg & gg)
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & tt,
+  const Rg & gg,
+  std::optional<typename G::Tangent> v0 = {},
+  std::optional<typename G::Tangent> v1 = {})
 {
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
     throw std::runtime_error("Not enough points");
   }
-  using G = std::ranges::range_value_t<Rg>;
 
   if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
     throw std::runtime_error("Interpolation times not strictly increasing");
@@ -364,13 +368,19 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
 
   //// LEFT END POINT  ////
 
-  // zero second derivative at start:
-  // v_{1, 0} = v_{2, 0}
   const std::size_t v10_start = idx(1, 0);
   const std::size_t v20_start = idx(2, 0);
-  for (auto n = 0u; n != G::Dof; ++n) {
-    lhs.insert(row_counter + n, v10_start + n) = 1;
-    lhs.insert(row_counter + n, v20_start + n) = -1;
+
+  if (v0.has_value()) {
+    for (auto n = 0u; n != G::Dof; ++n) { lhs.insert(row_counter + n, v10_start + n) = 3; }
+    rhs.segment(row_counter, G::Dof) = v0.value();
+  } else {
+    // zero second derivative at start:
+    // v_{1, 0} = v_{2, 0}
+    for (auto n = 0u; n != G::Dof; ++n) {
+      lhs.insert(row_counter + n, v10_start + n) = 1;
+      lhs.insert(row_counter + n, v20_start + n) = -1;
+    }
   }
   row_counter += G::Dof;
 
@@ -436,11 +446,16 @@ PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & t
   rhs.segment(row_counter, G::Dof) = *(it_g + 1) - *it_g;
   row_counter += G::Dof;
 
-  // zero second derivative at end:
-  // v_{2, n-1} = v_{3, n-1}
-  for (auto n = 0u; n != G::Dof; ++n) {
-    lhs.insert(row_counter + n, v2_nm_start + n) = 1;
-    lhs.insert(row_counter + n, v3_nm_start + n) = -1;
+  if (v1.has_value()) {
+    for (auto n = 0u; n != G::Dof; ++n) { lhs.insert(row_counter + n, v3_nm_start + n) = 3; }
+    rhs.segment(row_counter, G::Dof) = v1.value();
+  } else {
+    // zero second derivative at end:
+    // v_{2, n-1} = v_{3, n-1}
+    for (auto n = 0u; n != G::Dof; ++n) {
+      lhs.insert(row_counter + n, v2_nm_start + n) = 1;
+      lhs.insert(row_counter + n, v3_nm_start + n) = -1;
+    }
   }
 
   //// DONE FILLING SPARSE MATRIX ////
