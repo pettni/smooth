@@ -129,6 +129,10 @@ if(BUILD_TESTING)
   target_link_libraries(test_se3 PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_se3)
 
+  add_executable(test_c1 test/test_c1.cpp)
+  target_link_libraries(test_c1 PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_c1)
+
   add_executable(test_bundle test/test_bundle.cpp)
   target_link_libraries(test_bundle PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_bundle)

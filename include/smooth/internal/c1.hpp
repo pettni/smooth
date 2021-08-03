@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__IMPL__SO2_HPP_
-#define SMOOTH__IMPL__SO2_HPP_
+#ifndef SMOOTH__IMPL__C1_HPP_
+#define SMOOTH__IMPL__C1_HPP_
 
 #include <Eigen/Core>
 
@@ -33,37 +33,39 @@
 namespace smooth {
 
 /**
- * @brief SO(2) Lie Group represented as U(1)
+ * @brief C(1) Lie group of rotation and scaling
+ *
+ * Elements are on the form \f$ k R \f$ where \f$ k > 0 \f$ is a scalar and \f$ R \in SO(2) \f$.
  *
  * Memory layout
  * -------------
- * Group:    qz qw
- * Tangent:  Ωz
+ * Group:    a b
+ * Tangent:  s Ωz
  *
  * Lie group Matrix form
  * ---------------------
- * [ qw -qz ]
- * [ qz  qw ]
+ * [ b -a ]
+ * [ a  b ]
  *
  * Lie algebra Matrix form
  * -----------------------
- * [ 0 -Ωz ]
- * [ Ωz  0 ]
+ * [ s -Ωz ]
+ * [ Ωz  s ]
  *
  * Constraints
  * -----------
- * Group:   qz * qz + qw * qw = 1
+ * Group:   a * a - b * b > 0
  * Tangent: -pi < Ωz <= pi
  */
 template<typename _Scalar>
-class SO2Impl
+class C1Impl
 {
 public:
   using Scalar = _Scalar;
 
   static constexpr Eigen::Index RepSize = 2;
   static constexpr Eigen::Index Dim     = 2;
-  static constexpr Eigen::Index Dof     = 1;
+  static constexpr Eigen::Index Dof     = 2;
 
   SMOOTH_DEFINE_REFS;
 
@@ -72,8 +74,10 @@ public:
   static void setRandom(GRefOut g_out)
   {
     using std::sin, std::cos;
+
     const Scalar u = Eigen::internal::template random_impl<Scalar>::run(0, 2 * M_PI);
-    g_out << sin(u), cos(u);
+    const Scalar t = Eigen::internal::template random_impl<Scalar>::run(0.01, 100);
+    g_out << t * sin(u), t * cos(u);
   }
 
   static void matrix(GRefIn g_in, MRefOut m_out) { m_out << g_in(1), -g_in(0), g_in(0), g_in(1); }
@@ -83,25 +87,36 @@ public:
     g_out << g_in1[0] * g_in2[1] + g_in1[1] * g_in2[0], g_in1[1] * g_in2[1] - g_in1[0] * g_in2[0];
   }
 
-  static void inverse(GRefIn g_in, GRefOut g_out) { g_out << -g_in[0], g_in[1]; }
+  static void inverse(GRefIn g_in, GRefOut g_out)
+  {
+    const Scalar t = g_in[0] * g_in[0] + g_in[1] * g_in[1];
+    g_out << -g_in[0] / t, g_in[1] / t;
+  }
 
   static void log(GRefIn g_in, TRefOut a_out)
   {
-    using std::atan2;
-    a_out << atan2(g_in[0], g_in[1]);
+    using std::atan2, std::sqrt, std::log;
+
+    const Scalar t = sqrt(g_in[0] * g_in[0] + g_in[1] * g_in[1]);
+    a_out << log(t), atan2(g_in[0], g_in[1]);
   }
 
   static void Ad(GRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
 
   static void exp(TRefIn a_in, GRefOut g_out)
   {
-    using std::cos, std::sin;
-    g_out << sin(a_in.x()), cos(a_in.x());
+    using std::cos, std::exp, std::sin;
+
+    const Scalar t = exp(a_in.x());
+    g_out << t * sin(a_in.y()), t * cos(a_in.y());
   }
 
-  static void hat(TRefIn a_in, MRefOut A_out) { A_out << Scalar(0), -a_in(0), a_in(0), Scalar(0); }
+  static void hat(TRefIn a_in, MRefOut A_out) { A_out << a_in(0), -a_in(1), a_in(1), a_in(0); }
 
-  static void vee(MRefIn A_in, TRefOut a_out) { a_out << (A_in(1, 0) - A_in(0, 1)) / Scalar(2); }
+  static void vee(MRefIn A_in, TRefOut a_out)
+  {
+    a_out << (A_in(0, 0) + A_in(1, 1)) / Scalar(2), (A_in(1, 0) - A_in(0, 1)) / Scalar(2);
+  }
 
   static void ad(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
 
@@ -112,4 +127,4 @@ public:
 
 }  // namespace smooth
 
-#endif  // SMOOTH__IMPL__SO2_HPP_
+#endif  // SMOOTH__IMPL__C1_HPP_

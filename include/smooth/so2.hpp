@@ -44,7 +44,7 @@ class SO3;
 /**
  * @brief Base class for SO2 Lie group types.
  *
- * Internally represented as \f$\mathbb{U}(1)\f$ (complex numbers).
+ * Internally represented as \f$\mathbb{U}(1)\f$ (unit complex numbers).
  *
  * Memory layout
  * -------------
@@ -98,7 +98,7 @@ public:
   Scalar angle() const { return Base::log().x(); }
 
   /**
-   * @brief Complex number (U(1)) representation.
+   * @brief Unit complex number (U(1)) representation.
    */
   std::complex<Scalar> u1() const
   {
@@ -193,7 +193,7 @@ public:
   }
 
   /**
-   * @brief Construct from complex number.
+   * @brief Construct from unit complex number.
    *
    * @param c complex number.
    *

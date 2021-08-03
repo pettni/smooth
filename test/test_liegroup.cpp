@@ -35,6 +35,7 @@
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
+#include "smooth/c1.hpp"
 #include "smooth/tn.hpp"
 
 template<smooth::LieGroup G>
@@ -47,6 +48,7 @@ using GroupsToTest = ::testing::Types<
   smooth::SO3f,
   smooth::SE2f,
   smooth::SE3f,
+  smooth::C1f,
   smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d, smooth::SE3d, smooth::T4d>>;
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
