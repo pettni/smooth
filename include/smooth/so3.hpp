@@ -80,7 +80,7 @@ class SO3Base : public LieGroupBase<_Derived>
   using Base = LieGroupBase<_Derived>;
 
 protected:
-  SO3Base()  = default;
+  SO3Base() = default;
 
 public:
 
@@ -137,7 +137,12 @@ public:
    */
   SO2<Scalar> project_so2() const
   {
-    return SO2<Scalar>(eulerAngles(0, 1, 2).z());
+    using std::atan2;
+
+    const auto q = quat();
+    Scalar yaw = atan2(Scalar(2) * (q.w() * q.z() + q.x() * q.y()),
+      Scalar(1) - Scalar(2) * (q.y() * q.y() + q.z() * q.z()));
+    return SO2<Scalar>(yaw);
   }
 };
 
@@ -187,16 +192,15 @@ public:
   {}
 };
 
-using SO3f = SO3<float>;  ///< SO3 with float scalar representation
+using SO3f = SO3<float>;   ///< SO3 with float scalar representation
 using SO3d = SO3<double>;  ///< SO3 with double scalar representation
 
 }  // namespace smooth
 
-
 // \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<smooth::SO3<_Scalar>>>
-  : public lie_traits<smooth::SO3<_Scalar>>
+    : public lie_traits<smooth::SO3<_Scalar>>
 {};
 // \endcond
 
@@ -207,7 +211,7 @@ struct smooth::lie_traits<Eigen::Map<smooth::SO3<_Scalar>>>
  */
 template<typename _Scalar>
 class Eigen::Map<smooth::SO3<_Scalar>>
-  : public smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>
+    : public smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>
 {
   using Base = smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>;
 
@@ -217,7 +221,7 @@ class Eigen::Map<smooth::SO3<_Scalar>>
 // \cond
 template<typename _Scalar>
 struct smooth::lie_traits<Eigen::Map<const smooth::SO3<_Scalar>>>
-  : public lie_traits<smooth::SO3<_Scalar>>
+    : public lie_traits<smooth::SO3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -230,7 +234,7 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SO3<_Scalar>>>
  */
 template<typename _Scalar>
 class Eigen::Map<const smooth::SO3<_Scalar>>
-  : public smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>
+    : public smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>
 {
   using Base = smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>;
 

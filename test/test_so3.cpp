@@ -84,6 +84,29 @@ TEST(SO3, ProjectLift)
     const auto so2 = g.project_so2();
     const auto so3 = so2.lift_so3();
 
-    ASSERT_NEAR(g.eulerAngles(0, 1, 2).z(), so3.eulerAngles(0, 1, 2).z(), 1e-6);
+    ASSERT_NEAR(g.eulerAngles().x(), so3.eulerAngles().x(), 1e-6);
+  }
+}
+
+TEST(SO2, Project)
+{
+  using std::cos, std::sin;
+
+  std::srand(14);
+
+  for (auto i = 0u; i != 10; ++i) {
+    double angle = rand();
+
+    smooth::SO2d so2(angle);
+
+    smooth::SO3d so31(Eigen::Quaterniond(cos(angle / 2), -1e-5, -1e-5, sin(angle / 2)));
+    smooth::SO3d so32(Eigen::Quaterniond(cos(angle / 2), -1e-5, 1e-5, sin(angle / 2)));
+    smooth::SO3d so33(Eigen::Quaterniond(cos(angle / 2), 1e-5, -1e-5, sin(angle / 2)));
+    smooth::SO3d so34(Eigen::Quaterniond(cos(angle / 2), 1e-5, 1e-5, sin(angle / 2)));
+
+    ASSERT_TRUE(so31.project_so2().isApprox(so2, 1e-4));
+    ASSERT_TRUE(so32.project_so2().isApprox(so2, 1e-4));
+    ASSERT_TRUE(so33.project_so2().isApprox(so2, 1e-4));
+    ASSERT_TRUE(so34.project_so2().isApprox(so2, 1e-4));
   }
 }
