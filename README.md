@@ -176,18 +176,19 @@ to e.g. Ceres which uses derivatives w.r.t. the parameterization.
 A sparse solver is implemented, but it is currently only available when analytical
 derivatives are provided.
 
-Example: Calculate ![](https://latex.codecogs.com/png.latex?\mathrm{argmin}_{g_1}&space;\log(g_1&space;\circ&space;g_2))
+Example: Calculate ![](https://latex.codecogs.com/png.latex?\mathrm{argmin}_{g_1}&space;\\|\log(g_1&space;\circ&space;g_2)\\|)
 
 ```cpp
 #include <smooth/optim.hpp>
 #include <smooth/so3.hpp>
 
+// function defining residual
 auto f = [](auto v1, auto v2) { return (v1 * v2).log(); };
 
 smooth::SO3d g1 = smooth::SO3d::Random();
 const smooth::SO3d g2 = smooth::SO3d::Random();
 
-// minimize f w.r.t. second argument (g1 is modified in-place)
+// minimize || f ||^2 w.r.t. first argument (g1 is modified in-place)
 smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 
 // Now g1 == g2.inverse()
