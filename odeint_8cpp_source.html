@@ -104,97 +104,96 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;boost/numeric/odeint.hpp&gt;</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;matplot/matplot.h&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;smooth/bundle.hpp&quot;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="odeint_8hpp.html">smooth/compat/odeint.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;smooth/so3.hpp&quot;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;smooth/tn.hpp&quot;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#ifdef ENABLE_PLOTTING</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &quot;plot_tools.hpp&quot;</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">using</span> matplot::plot;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">using</span> std::views::transform;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="odeint_8cpp.html#a2b760810e5bb0cfb55f0c7d6d74d4438">   54</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="odeint_8cpp.html#a2b760810e5bb0cfb55f0c7d6d74d4438">main</a>(<span class="keywordtype">int</span>, <span class="keywordtype">char</span> <span class="keyword">const</span> **)</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;{</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keyword">using</span> state_t = <a class="code" href="classsmooth_1_1Bundle.html">smooth::Bundle&lt;smooth::SO3d, Eigen::Vector3d&gt;</a>;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keyword">using</span> deriv_t = <span class="keyword">typename</span> state_t::Tangent;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  std::srand(5);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="comment">// equilibrium point</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  <span class="keyword">const</span> <a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> Xdes = <a class="code" href="classsmooth_1_1LieGroupBase.html#a2d07c997add59d0c5fe899f1bcdf05fa">smooth::SO3d::Identity</a>();</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="comment">// &quot;control&quot; proportional and derivative gains</span></div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  constexpr <span class="keywordtype">double</span> kp = 1;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  constexpr <span class="keywordtype">double</span> kd = 1;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keyword">auto</span> ode = [&amp;](<span class="keyword">const</span> state_t &amp; state, deriv_t &amp; deriv, double) {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    deriv.template head&lt;3&gt;() = state.part&lt;1&gt;();</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    deriv.template tail&lt;3&gt;() = -kp * (state.part&lt;0&gt;() - Xdes) - kd * state.part&lt;1&gt;();</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  };</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  state_t state;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  state.part&lt;0&gt;() = <a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a>(Eigen::Quaterniond(0, 0.8, 0, 0.1));</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  state.part&lt;1&gt;() = Eigen::Vector3d(0, 0, 2);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  std::vector&lt;double&gt; tvec;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  std::vector&lt;state_t&gt; gvec;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <span class="keyword">auto</span> stepper = boost::numeric::odeint::</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    runge_kutta4&lt;state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra&gt;();</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  boost::numeric::odeint::integrate_const(</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    stepper, ode, state, 0., 10., 0.01, [&amp;tvec, &amp;gvec](<span class="keyword">const</span> state_t &amp; s, <span class="keywordtype">double</span> t) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      tvec.push_back(t);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;      gvec.push_back(s);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    });</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#ifdef ENABLE_PLOTTING</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  matplot::figure();</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  matplot::hold(matplot::on);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="comment">// plot a sphere</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keyword">auto</span> phi = matplot::linspace(0, 2 * M_PI, 200);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">double</span> h = -0.9; h &lt; 0.95; h += 0.2) {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">auto</span> xsph = r2v(phi | transform([&amp;](<span class="keywordtype">double</span> p) { <span class="keywordflow">return</span> std::sqrt(1. - h * h) * std::cos(p); }));</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">auto</span> ysph = r2v(phi | transform([&amp;](<span class="keywordtype">double</span> p) { <span class="keywordflow">return</span> std::sqrt(1. - h * h) * std::sin(p); }));</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keyword">auto</span> zsph = r2v(phi | transform([&amp;](<span class="keywordtype">double</span> p) { <span class="keywordflow">return</span> h; }));</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    matplot::plot3(xsph, ysph, zsph)-&gt;line_width(0.25).color(<span class="stringliteral">&quot;gray&quot;</span>);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    matplot::plot3(ysph, zsph, xsph)-&gt;line_width(0.25).color(<span class="stringliteral">&quot;gray&quot;</span>);</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    matplot::plot3(zsph, xsph, ysph)-&gt;line_width(0.25).color(<span class="stringliteral">&quot;gray&quot;</span>);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  }</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="comment">// plot the trajectory</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keyword">auto</span> xyz =</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;0&gt;() * Eigen::Vector3d::UnitZ(); });</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  matplot::plot3(r2v(xyz | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.x(); })),</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    r2v(xyz | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.y(); })),</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    r2v(xyz | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.z(); })))</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    -&gt;line_width(4)</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    .color(<span class="stringliteral">&quot;blue&quot;</span>);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  matplot::title(<span class="stringliteral">&quot;Attitude&quot;</span>);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  matplot::figure();</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  matplot::hold(matplot::on);</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  plot(tvec, r2v(gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;1&gt;()[0]; })), <span class="stringliteral">&quot;r&quot;</span>)</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    -&gt;line_width(2);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  plot(tvec, r2v(gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;1&gt;()[1]; })), <span class="stringliteral">&quot;g&quot;</span>)</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    -&gt;line_width(2);</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  plot(tvec, r2v(gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;1&gt;()[2]; })), <span class="stringliteral">&quot;b&quot;</span>)</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    -&gt;line_width(2);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  matplot::title(<span class="stringliteral">&quot;Velocity&quot;</span>);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  matplot::show();</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="keywordflow">return</span> 0;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &quot;smooth/bundle.hpp&quot;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="odeint_8hpp.html">smooth/compat/odeint.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;smooth/so3.hpp&quot;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;smooth/tn.hpp&quot;</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#ifdef ENABLE_PLOTTING</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;matplot/matplot.h&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &quot;plot_tools.hpp&quot;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">using</span> matplot::plot;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">using</span> std::views::transform;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="odeint_8cpp.html#a2b760810e5bb0cfb55f0c7d6d74d4438">   53</a></span>&#160;<span class="keywordtype">int</span> <a class="code" href="odeint_8cpp.html#a2b760810e5bb0cfb55f0c7d6d74d4438">main</a>(<span class="keywordtype">int</span>, <span class="keywordtype">char</span> <span class="keyword">const</span> **)</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;{</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keyword">using</span> state_t = <a class="code" href="classsmooth_1_1Bundle.html">smooth::Bundle&lt;smooth::SO3d, Eigen::Vector3d&gt;</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keyword">using</span> deriv_t = <span class="keyword">typename</span> state_t::Tangent;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  std::srand(5);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="comment">// equilibrium point</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="keyword">const</span> <a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> Xdes = <a class="code" href="classsmooth_1_1LieGroupBase.html#a2d07c997add59d0c5fe899f1bcdf05fa">smooth::SO3d::Identity</a>();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="comment">// &quot;control&quot; proportional and derivative gains</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  constexpr <span class="keywordtype">double</span> kp = 1;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  constexpr <span class="keywordtype">double</span> kd = 1;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="keyword">auto</span> ode = [&amp;](<span class="keyword">const</span> state_t &amp; state, deriv_t &amp; deriv, double) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    deriv.template head&lt;3&gt;() = state.part&lt;1&gt;();</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    deriv.template tail&lt;3&gt;() = -kp * (state.part&lt;0&gt;() - Xdes) - kd * state.part&lt;1&gt;();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  };</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  state_t state;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  state.part&lt;0&gt;() = <a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a>(Eigen::Quaterniond(0, 0.8, 0, 0.1));</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  state.part&lt;1&gt;() = Eigen::Vector3d(0, 0, 2);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  std::vector&lt;double&gt; tvec;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  std::vector&lt;state_t&gt; gvec;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <span class="keyword">auto</span> stepper = boost::numeric::odeint::</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    runge_kutta4&lt;state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra&gt;();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  boost::numeric::odeint::integrate_const(</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    stepper, ode, state, 0., 10., 0.01, [&amp;tvec, &amp;gvec](<span class="keyword">const</span> state_t &amp; s, <span class="keywordtype">double</span> t) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;      tvec.push_back(t);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      gvec.push_back(s);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    });</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="preprocessor">#ifdef ENABLE_PLOTTING</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  matplot::figure();</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  matplot::hold(matplot::on);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="comment">// plot a sphere</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="keyword">auto</span> phi = matplot::linspace(0, 2 * M_PI, 200);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">double</span> h = -0.9; h &lt; 0.95; h += 0.2) {</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    <span class="keyword">auto</span> xsph = r2v(phi | transform([&amp;](<span class="keywordtype">double</span> p) { <span class="keywordflow">return</span> std::sqrt(1. - h * h) * std::cos(p); }));</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keyword">auto</span> ysph = r2v(phi | transform([&amp;](<span class="keywordtype">double</span> p) { <span class="keywordflow">return</span> std::sqrt(1. - h * h) * std::sin(p); }));</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    <span class="keyword">auto</span> zsph = r2v(phi | transform([&amp;](<span class="keywordtype">double</span> p) { <span class="keywordflow">return</span> h; }));</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    matplot::plot3(xsph, ysph, zsph)-&gt;line_width(0.25).color(<span class="stringliteral">&quot;gray&quot;</span>);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    matplot::plot3(ysph, zsph, xsph)-&gt;line_width(0.25).color(<span class="stringliteral">&quot;gray&quot;</span>);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    matplot::plot3(zsph, xsph, ysph)-&gt;line_width(0.25).color(<span class="stringliteral">&quot;gray&quot;</span>);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="comment">// plot the trajectory</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  <span class="keyword">auto</span> xyz =</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;0&gt;() * Eigen::Vector3d::UnitZ(); });</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  matplot::plot3(r2v(xyz | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.x(); })),</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    r2v(xyz | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.y(); })),</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    r2v(xyz | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.z(); })))</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    -&gt;line_width(4)</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    .color(<span class="stringliteral">&quot;blue&quot;</span>);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  matplot::title(<span class="stringliteral">&quot;Attitude&quot;</span>);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  matplot::figure();</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  matplot::hold(matplot::on);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  plot(tvec, r2v(gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;1&gt;()[0]; })), <span class="stringliteral">&quot;r&quot;</span>)</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    -&gt;line_width(2);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  plot(tvec, r2v(gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;1&gt;()[1]; })), <span class="stringliteral">&quot;g&quot;</span>)</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    -&gt;line_width(2);</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  plot(tvec, r2v(gvec | transform([](<span class="keyword">auto</span> s) { <span class="keywordflow">return</span> s.template part&lt;1&gt;()[2]; })), <span class="stringliteral">&quot;b&quot;</span>)</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    -&gt;line_width(2);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  matplot::title(<span class="stringliteral">&quot;Velocity&quot;</span>);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  matplot::show();</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  <span class="keywordflow">return</span> 0;</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
 <div class="ttc" id="aclasssmooth_1_1Bundle_html"><div class="ttname"><a href="classsmooth_1_1Bundle.html">smooth::Bundle</a></div><div class="ttdoc">Storage implementation of Bundle lie group.</div><div class="ttdef"><b>Definition:</b> <a href="bundle_8hpp_source.html#l00153">bundle.hpp:154</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_a2d07c997add59d0c5fe899f1bcdf05fa"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#a2d07c997add59d0c5fe899f1bcdf05fa">smooth::LieGroupBase::Identity</a></div><div class="ttdeci">static PlainObject Identity()</div><div class="ttdoc">Construct the identity element.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00129">lie_group_base.hpp:129</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1SO3_html"><div class="ttname"><a href="classsmooth_1_1SO3.html">smooth::SO3</a></div><div class="ttdoc">Storage implementation of SO3 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="so3_8hpp_source.html#l00176">so3.hpp:177</a></div></div>
-<div class="ttc" id="aodeint_8cpp_html_a2b760810e5bb0cfb55f0c7d6d74d4438"><div class="ttname"><a href="odeint_8cpp.html#a2b760810e5bb0cfb55f0c7d6d74d4438">main</a></div><div class="ttdeci">int main(int, char const **)</div><div class="ttdoc">Numerically solve the following ODE on :</div><div class="ttdef"><b>Definition:</b> <a href="odeint_8cpp_source.html#l00054">odeint.cpp:54</a></div></div>
+<div class="ttc" id="aodeint_8cpp_html_a2b760810e5bb0cfb55f0c7d6d74d4438"><div class="ttname"><a href="odeint_8cpp.html#a2b760810e5bb0cfb55f0c7d6d74d4438">main</a></div><div class="ttdeci">int main(int, char const **)</div><div class="ttdoc">Numerically solve the following ODE on :</div><div class="ttdef"><b>Definition:</b> <a href="odeint_8cpp_source.html#l00053">odeint.cpp:53</a></div></div>
 <div class="ttc" id="aodeint_8hpp_html"><div class="ttname"><a href="odeint_8hpp.html">odeint.hpp</a></div><div class="ttdoc">boost::odeint compatability header.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
