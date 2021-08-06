@@ -221,16 +221,17 @@ Non-linear least squares optimization</h2>
 <p>Available for <code>Manifold</code> types, see <a class="el" href="optim_8hpp.html" title="Non-linear least squares optimization on Manifolds.">optim.hpp</a>.</p>
 <p>The <a class="el" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d" title="Find a minimum of the non-linear least-squares problem.">minimize()</a> function implements a Levenberg-Marquardt trust-region procedure to find a local minimum. All derivatives and computations are done in the tangent space as opposed to e.g. Ceres which uses derivatives w.r.t. the parameterization.</p>
 <p>A sparse solver is implemented, but it is currently only available when analytical derivatives are provided.</p>
-<p>Example: Calculate <img src="https://latex.codecogs.com/png.latex?\mathrm{argmin}_{g_1}&space;\log(g_1&space;\circ&space;g_2)" alt="" class="inline"/></p>
+<p>Example: Calculate <img src="https://latex.codecogs.com/png.latex?\mathrm{argmin}_{g_1}&space;\\|\log(g_1&space;\circ&space;g_2)\\|" alt="" class="inline"/></p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="optim_8hpp.html">smooth/optim.hpp</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;smooth/so3.hpp&gt;</span></div>
 <div class="line"> </div>
+<div class="line"><span class="comment">// function defining residual</span></div>
 <div class="line"><span class="keyword">auto</span> f = [](<span class="keyword">auto</span> v1, <span class="keyword">auto</span> v2) { <span class="keywordflow">return</span> (v1 * v2).log(); };</div>
 <div class="line"> </div>
 <div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g1 = <a class="code" href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::SO3d::Random</a>();</div>
 <div class="line"><span class="keyword">const</span> <a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g2 = <a class="code" href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::SO3d::Random</a>();</div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// minimize f w.r.t. second argument (g1 is modified in-place)</span></div>
+<div class="line"><span class="comment">// minimize || f ||^2 w.r.t. first argument (g1 is modified in-place)</span></div>
 <div class="line"><a class="code" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">smooth::minimize</a>(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Now g1 == g2.inverse()</span></div>
