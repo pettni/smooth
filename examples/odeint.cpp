@@ -29,17 +29,18 @@
 
 #include <boost/numeric/odeint.hpp>
 
-#include <matplot/matplot.h>
-
 #include "smooth/bundle.hpp"
 #include "smooth/compat/odeint.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/tn.hpp"
 
+#ifdef ENABLE_PLOTTING
+#include <matplot/matplot.h>
 #include "plot_tools.hpp"
 
 using matplot::plot;
 using std::views::transform;
+#endif
 
 /**
  * @brief Numerically solve the following ODE on \f$ \mathbb{SO}(3) \times \mathbb{R}^3 \f$:
@@ -49,7 +50,7 @@ using std::views::transform;
  * \mathrm{d}^r v_t = -k_p * (X(t) \ominus X_{des}(t)) - k_d * v(t)
  * \f]
  */
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
   using state_t = smooth::Bundle<smooth::SO3d, Eigen::Vector3d>;
   using deriv_t = typename state_t::Tangent;
@@ -63,7 +64,7 @@ int main(int argc, char const * argv[])
   constexpr double kp = 1;
   constexpr double kd = 1;
 
-  auto ode = [&](const state_t & state, deriv_t & deriv, double t) {
+  auto ode = [&](const state_t & state, deriv_t & deriv, double) {
     deriv.template head<3>() = state.part<1>();
     deriv.template tail<3>() = -kp * (state.part<0>() - Xdes) - kd * state.part<1>();
   };
@@ -84,6 +85,7 @@ int main(int argc, char const * argv[])
       gvec.push_back(s);
     });
 
+#ifdef ENABLE_PLOTTING
   matplot::figure();
   matplot::hold(matplot::on);
   // plot a sphere
@@ -117,6 +119,7 @@ int main(int argc, char const * argv[])
   matplot::title("Velocity");
 
   matplot::show();
+#endif
 
   return 0;
 }

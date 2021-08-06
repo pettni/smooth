@@ -29,22 +29,23 @@
 
 #include <boost/numeric/odeint.hpp>
 
-#include <matplot/matplot.h>
-
 #include "smooth/bundle.hpp"
 #include "smooth/compat/odeint.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/tn.hpp"
 
+#ifdef ENABLE_PLOTTING
+#include <matplot/matplot.h>
 #include "plot_tools.hpp"
 
 using matplot::plot;
 using std::views::transform;
+#endif
 
 /**
  * @brief Numerically solve the following ODE on \f$ \mathbb{SO}(3) \times \mathbb{R}^3 \f$:
  */
-int main(int argc, char const * argv[])
+int main(int, char const **)
 {
   using state_t = smooth::Bundle<smooth::SO3d, smooth::SO3d>;
   using deriv_t = typename state_t::Tangent;
@@ -54,8 +55,8 @@ int main(int argc, char const * argv[])
   // equilibrium point
   const smooth::SO3d Xc = smooth::SO3d::Identity();
 
-  const smooth::SO3d X1 = smooth::SO3d::Random();
-  const smooth::SO3d X2 = smooth::SO3d::Random();
+  const smooth::SO3d X1         = smooth::SO3d::Random();
+  const smooth::SO3d X2         = smooth::SO3d::Random();
   const smooth::SO3d::Tangent d = 0.1 * smooth::SO3d::Tangent::Random();
 
   auto ode = [&](const state_t & state, deriv_t & deriv, double) {
@@ -82,17 +83,19 @@ int main(int argc, char const * argv[])
       v2.push_back(s.part<1>() - s.part<0>());
     });
 
+#ifdef ENABLE_PLOTTING
   matplot::figure();
   matplot::hold(matplot::on);
-  plot(tvec, r2v(v1 | transform([](auto s) { return s(0); })), "r") ->line_width(2);
-  plot(tvec, r2v(v2 | transform([](auto s) { return s(0); })), ":r") ->line_width(2);
-  plot(tvec, r2v(v1 | transform([](auto s) { return s(1); })), "g") ->line_width(2);
-  plot(tvec, r2v(v2 | transform([](auto s) { return s(1); })), ":g") ->line_width(2);
-  plot(tvec, r2v(v1 | transform([](auto s) { return s(2); })), "b") ->line_width(2);
-  plot(tvec, r2v(v2 | transform([](auto s) { return s(2); })), ":b") ->line_width(2);
+  plot(tvec, r2v(v1 | transform([](auto s) { return s(0); })), "r")->line_width(2);
+  plot(tvec, r2v(v2 | transform([](auto s) { return s(0); })), ":r")->line_width(2);
+  plot(tvec, r2v(v1 | transform([](auto s) { return s(1); })), "g")->line_width(2);
+  plot(tvec, r2v(v2 | transform([](auto s) { return s(1); })), ":g")->line_width(2);
+  plot(tvec, r2v(v1 | transform([](auto s) { return s(2); })), "b")->line_width(2);
+  plot(tvec, r2v(v2 | transform([](auto s) { return s(2); })), ":b")->line_width(2);
   matplot::title("Difference");
 
   matplot::show();
+#endif
 
   return 0;
 }
