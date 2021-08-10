@@ -32,6 +32,7 @@
  */
 
 #include <algorithm>
+#include <iostream>
 #include <ranges>
 
 #include <Eigen/Sparse>
@@ -43,6 +44,9 @@
 #include "common.hpp"
 
 namespace smooth {
+
+template<std::size_t N, LieGroup G>
+class PiecewiseBezier;
 
 /**
  * @brief Bezier curve on [0, 1].
@@ -90,16 +94,47 @@ public:
     std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_.begin());
   }
 
+  /**
+   * @brief Construct cubic curve with fixed end points and velocities
+   *
+   * @param
+   */
+  static Bezier FixedCubic(const G & ga,
+    const G & gb,
+    const typename G::Tangent & va,
+    const typename G::Tangent & vb) requires(N == 3)
+  {
+
+    Bezier<3, G> ret;
+
+    ret.g0_    = ga;
+    ret.vs_[0] = va / 3;
+    ret.vs_[2] = vb / 3;
+    ret.vs_[1] = (G::exp(-va / 3) * ga.inverse() * gb * G::exp(-vb / 3)).log();
+
+    return ret;
+  }
+
   /// @brief Copy constructor
   Bezier(const Bezier &) = default;
+
   /// @brief Move constructor
   Bezier(Bezier &&) = default;
+
   /// @brief Copy assignment
   Bezier & operator=(const Bezier &) = default;
+
   /// @brief Move assignment
   Bezier & operator=(Bezier &&) = default;
+
   /// @brief Destructor
   ~Bezier() = default;
+
+  /// @brief Curve start point.
+  G start() const { return g0_; }
+
+  /// @brief Curve end point.
+  G end() const { return eval(1); }
 
   /**
    * @brief Evaluate Bezier curve.
@@ -124,6 +159,8 @@ public:
 private:
   G g0_;
   std::array<typename G::Tangent, N> vs_;
+
+  friend class PiecewiseBezier<N, G>;
 };
 
 /**
@@ -143,7 +180,11 @@ public:
   /**
    * @brief Default constructor creates a constant curve defined on [0, 1] equal to identity.
    */
-  PiecewiseBezier() : knots_{0, 1}, segments_{Bezier<N, G>{}} {}
+  PiecewiseBezier() : knots_{0, 1}, segments_{Bezier<N, G>{}}
+  {
+    seg_T0_.resize(segments_.size(), 0);
+    seg_Del_.resize(segments_.size(), 1);
+  }
 
   /**
    * @brief Create a PiecewiseBezier from knot times and Bezier segments.
@@ -153,7 +194,17 @@ public:
    */
   PiecewiseBezier(std::vector<double> && knots, std::vector<Bezier<N, G>> && segments)
       : knots_(std::move(knots)), segments_(std::move(segments))
-  {}
+  {
+    if (knots_.size() < 2 || knots_.size() != segments_.size() + 1) {
+      throw std::runtime_error("PiecewiseBezier: invalid sizes");
+    }
+    if (std::ranges::adjacent_find(knots, std::ranges::greater_equal()) != knots.end()) {
+      throw std::runtime_error("PiecewiseBezier: knot times not strictly increasing");
+    }
+
+    seg_T0_.resize(segments_.size(), 0);
+    seg_Del_.resize(segments_.size(), 1);
+  }
 
   /**
    * @brief Create a PiecewiseBezier from knot times and Bezier segments.
@@ -165,24 +216,268 @@ public:
   PiecewiseBezier(const Rt & knots, const Rs & segments)
       : knots_(std::ranges::begin(knots), std::ranges::end(knots)),
         segments_(std::ranges::begin(segments), std::ranges::end(segments))
-  {}
+  {
+    if (knots_.size() < 2 || knots_.size() != segments_.size() + 1) {
+      throw std::runtime_error("PiecewiseBezier: invalid sizes");
+    }
+    if (std::ranges::adjacent_find(knots, std::ranges::greater_equal()) != knots.end()) {
+      throw std::runtime_error("PiecewiseBezier: knot times not strictly increasing");
+    }
+
+    seg_T0_.resize(segments_.size(), 0);
+    seg_Del_.resize(segments_.size(), 1);
+  }
+
+  /**
+   * @brief Create PiecewiseBezier that starts at identity and with constant body velocity.
+   *
+   * The resulting curve is
+   * \f[
+   *   x(t) = \exp(t v), \quad t \in [0, T].
+   * \f]
+   *
+   * @param v body velocity
+   * @param T curve end point
+   */
+  static PiecewiseBezier ConstantVelocity(const typename G::Tangent & v, double T = 1)
+  {
+    std::array<typename G::Tangent, N> vs;
+    vs.fill(v);
+    Bezier<N, G> seg(G::Identity(), std::move(vs));
+    return PiecewiseBezier(std::vector<double>{0, T}, std::vector<Bezier<N, G>>{std::move(seg)});
+  }
+
+  /**
+   * @brief Create PiecewiseBezier that starts at identity and with a given initial velocity, end
+   * position, and end velocity.
+   *
+   * @param v body velocity
+   * @param T curve end point
+   */
+  static PiecewiseBezier FixedCubic(const G & gb,
+    const typename G::Tangent & va,
+    const typename G::Tangent & vb,
+    double T = 1) requires(N == 3)
+  {
+    return PiecewiseBezier(std::vector<double>{0, T},
+      std::vector<Bezier<3, G>>{Bezier<3, G>::FixedCubic(G::Identity(), gb, va * T, vb * T)});
+  }
 
   /// @brief Copy constructor
   PiecewiseBezier(const PiecewiseBezier &) = default;
+
   /// @brief Move constructor
   PiecewiseBezier(PiecewiseBezier &&) = default;
+
   /// @brief Copy assignment
   PiecewiseBezier & operator=(const PiecewiseBezier &) = default;
+
   /// @brief Move assignment
   PiecewiseBezier & operator=(PiecewiseBezier &&) = default;
+
   /// @brief Destructor
   ~PiecewiseBezier() = default;
+
+  /// @brief Curve start point.
+  G start() const { return segments_.front().eval(seg_T0_.front()); }
+
+  /// @brief Curve end point.
+  G end() const { return segments_.back().eval(seg_T0_.back() + seg_Del_.back()); }
+
+  /**
+   * @brief Append another curve.
+   *
+   * @param other curve that is added.
+   *
+   * If \p this is a curve \f$ x(t) \f$ defined on \f$ t_1, t_2 \f$ and \p other
+   * is a curve \f$ x_2(t) \f$ defined on \f$ t_3, t_4 \f$, then the new curve \f$ y(t) \f$
+   * is a curve defined on \f$ [ t_1, t_2 + t_4 - t_3 ] \f$ s.t.
+   * \f[
+   *   y(t) = \begin{cases}
+   *     x_1(t) & t_1 \leq t < t_2
+   *     x_2(t_3 + t - t_2) & t_2 \leq t < t_2 + t_4 - t_3
+   *   \end{cases}
+   * \f]
+   */
+  PiecewiseBezier & operator+=(const PiecewiseBezier & other)
+  {
+    std::size_t N1 = segments_.size();
+    std::size_t N2 = other.segments_.size();
+
+    double t2 = knots_.back();
+    double t3 = other.knots_.front();
+
+    knots_.resize(N1 + N2 + 1);
+    segments_.resize(N1 + N2);
+    seg_T0_.resize(N1 + N2);
+    seg_Del_.resize(N1 + N2);
+
+    for (auto i = 0u; i < N2; ++i) { knots_[N1 + 1 + i] = t2 + other.knots_[1 + i] - t3; }
+
+    for (auto i = 0u; i < N2; ++i) {
+      segments_[N1 + i] = other.segments_[i];
+      seg_T0_[N1 + i]   = other.seg_T0_[i];
+      seg_Del_[N1 + i]  = other.seg_Del_[i];
+    }
+
+    return *this;
+  }
+
+  /**
+   * @brief Join two curves into a new curve.
+   *
+   * @param other curve that is added.
+   *
+   * @see operator+=()
+   */
+  PiecewiseBezier operator+(const PiecewiseBezier & other)
+  {
+    PiecewiseBezier ret = *this;
+    ret += other;
+    return ret;
+  }
+
+  /**
+   * @brief Extend curve by another curve in the local frame.
+   *
+   * @param other curve that is added.
+   *
+   * If \p this is a curve \f$ x(t) \f$ defined on \f$ t_1, t_2 \f$ and \p other
+   * is a curve \f$ x_2(t) \f$ defined on \f$ t_3, t_4 \f$, then the new curve \f$ y(t) \f$
+   * is a curve defined on \f$ [ t_1, t_2 + t_4 - t_3 ] \f$ s.t.
+   * \f[
+   *   y(t) = \begin{cases}
+   *     x_1(t) & t_1 \leq t < t_2
+   *     x_1(t_2) \circ x_2(t_3 + t - t_2) & t_2 \leq t < t_2 + t_4 - t_3
+   *   \end{cases}
+   * \f]
+   */
+  PiecewiseBezier & operator*=(const PiecewiseBezier & other)
+  {
+    auto other_transformed = other;
+    other_transformed.apply_on_the_left(end());
+    return operator+=(other_transformed);
+  }
+
+  /**
+   * @brief Extend curves by another curve in the local frame.
+   *
+   * @param other curve that is added.
+   *
+   * @see operator*=()
+   */
+  PiecewiseBezier operator*(const PiecewiseBezier & other)
+  {
+    PiecewiseBezier ret = *this;
+    ret *= other;
+    return ret;
+  }
+
+  /**
+   * @brief Crop a cubic curve.
+   *
+   * @param ta start time of cropped curve
+   * @param tb end time of cropped curve
+   *
+   * Returns a new curve \f$ \bar x(t) \f$ defined on \f$ [t_0, t_1] \f$ s.t.
+   * \f$ \bar x(t) = x(t) \f$.
+   *
+   * ta and tb are modified to be inside the curve support.
+   */
+  PiecewiseBezier crop(double ta, double tb) const
+  {
+    if (tb < ta) { throw std::runtime_error("PiecewiseBezier: crop interval must be positive"); }
+
+    const std::size_t i0 = find_idx(ta);
+    std::size_t Nseg     = find_idx(tb) + 1 - i0;
+
+    // prevent last segment from being empty
+    if (knots_[i0 + Nseg] == tb) { --Nseg; }
+
+    std::vector<double> knots(Nseg + 1);
+    std::vector<Bezier<N, G>> segments(Nseg);
+    std::vector<double> seg_T0(Nseg), seg_Del(Nseg);
+
+    for (auto i = 0u; i != Nseg; ++i) {
+      knots[i]    = knots_[i0 + i];
+      segments[i] = segments_[i0 + i];
+      seg_T0[i]   = seg_T0_[i0 + i];
+      seg_Del[i]  = seg_Del_[i0 + i];
+    }
+
+    knots[Nseg] = knots_[i0 + Nseg];
+
+    // mark first and last segments as partial
+    {
+      const double tta = knots[0];
+      const double ttb = knots[1];
+      const double sa  = ta;
+      const double sb  = ttb;
+      const double T0  = seg_T0[0];
+      const double Del = seg_Del[0];
+
+      const double new_T0  = T0 + Del * (sa - tta) / (ttb - tta);
+      const double new_Del = Del * (sb - sa) / (ttb - tta);
+
+      knots[0]   = sa;
+      knots[1]   = sb;
+      seg_T0[0]  = new_T0;
+      seg_Del[0] = new_Del;
+    }
+
+    {
+      const double tta = knots[Nseg - 1];
+      const double ttb = knots[Nseg];
+      const double sa  = tta;
+      const double sb  = tb;
+      const double T0  = seg_T0[Nseg - 1];
+      const double Del = seg_Del[Nseg - 1];
+
+      const double new_T0  = T0 + Del * (sa - tta) / (ttb - tta);
+      const double new_Del = Del * (sb - sa) / (ttb - tta);
+
+      knots[Nseg - 1]   = sa;
+      knots[Nseg]       = sb;
+      seg_T0[Nseg - 1]  = new_T0;
+      seg_Del[Nseg - 1] = new_Del;
+    }
+
+    PiecewiseBezier<N, G> ret(std::move(knots), std::move(segments));
+    ret.seg_T0_ = seg_T0;
+    ret.seg_Del_ = seg_Del;
+    return ret;
+  }
 
   /// @brief Minimal time where curve is defined.
   double t_min() const { return knots_.front(); }
 
   /// @brief Maximal time where curve is defined.
   double t_max() const { return knots_.back(); }
+
+  /**
+   * @brief Modify curve by left-multiplying with a constant.
+   *
+   * The new curve \f$ \bar x \f$ is such that
+   * \f[
+   *  \bar x(t) = g * x(t)
+   * \f]
+   */
+  void apply_on_the_left(const G & g)
+  {
+    for (auto & segment : segments_) { segment.g0_ = g * segment.g0_; }
+  }
+
+  /**
+   * @brief Transform curve so that it starts at \f$ t=0 \f$ with \f$ x(0) = \textrm{Identity} \f$.
+   *
+   * Useful together with operator*() for creating continuous curves.
+   */
+  void transform_to_origin()
+  {
+    double t_trans = t_min();
+    apply_on_the_left(eval(t_trans).inverse());
+    for (auto & knot : knots_) { knot -= t_trans; }
+  }
 
   /**
    * @brief Evalauate PiecewiseBezier curve.
@@ -194,26 +489,34 @@ public:
    */
   G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
-    /// find index
-    // TODO binary search
-    std::size_t istar = 0;
-    while (istar + 2 < knots_.size() && knots_[istar + 1] <= t) { ++istar; }
+    const auto istar = find_idx(t);
 
-    double T = knots_[istar + 1] - knots_[istar];
+    const double T   = knots_[istar + 1] - knots_[istar];
+    const double Del = seg_Del_[istar];
 
-    const double u = (t - knots_[istar]) / T;
+    const double u   = seg_T0_[istar] + Del * (t - knots_[istar]) / T;
 
     G g = segments_[istar].eval(u, vel, acc);
 
-    if (vel.has_value()) { vel.value() /= T; }
-    if (acc.has_value()) { acc.value() /= (T * T); }
+    if (vel.has_value()) { vel.value() *= Del / T; }
+    if (acc.has_value()) { acc.value() *= Del * Del / (T * T); }
 
     return g;
   }
 
 private:
+  /// find index
+  std::size_t find_idx(double t) const
+  {
+    // TODO binary search
+    std::size_t istar = 0;
+    while (istar + 2 < knots_.size() && knots_[istar + 1] <= t) { ++istar; }
+    return istar;
+  }
+
   std::vector<double> knots_;
   std::vector<Bezier<N, G>> segments_;
+  std::vector<double> seg_T0_, seg_Del_;
 };
 
 /**
