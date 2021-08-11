@@ -121,13 +121,12 @@ using OptJacobian =
 /**
  * @brief Evaluate a cumulative basis spline of order K and its derivatives
  *
- *   g = g_0 * \Prod_{i=1}^{K} exp ( Btilde_i(u) * v_i )
+ *   g = \Prod_{i=1}^{K} exp ( Btilde_i(u) * v_i )
  *
  * Where Btilde are cumulative basis functins and v_i = g_i - g_{i-1}.
  *
  * @tparam K spline order (number of basis functions)
  * @tparam G lie group type
- * @param[in] g_0 spline base value
  * @param[in] diff_points range of differences v_i (must be of size K)
  * @param[in] u normalized parameter: u \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
@@ -135,8 +134,7 @@ using OptJacobian =
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
 template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
-G cspline_eval(const G & g_0,
-  const Range & diff_points,
+G cspline_eval_diff(const Range & diff_points,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
   typename G::Scalar u,
   detail::OptTangent<G> vel     = {},
@@ -169,7 +167,7 @@ G cspline_eval(const G & g_0,
     if (acc.has_value()) { acc.value().setZero(); }
   }
 
-  G g = g_0;
+  G g = G::Identity();
   for (std::size_t j = 1; const auto & v : diff_points) {
     const Scalar Btilde = uvec.dot(cum_coef_mat.row(j));
     g *= G::exp(Btilde * v);
@@ -260,7 +258,7 @@ G cspline_eval(const Range & ctrl_points,
     ++b2;
   }
 
-  return cspline_eval<K, G>(*std::begin(ctrl_points), diff_pts, cum_coef_mat, u, vel, acc, der);
+  return *std::begin(ctrl_points) * cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der);
 }
 
 }  // namespace smooth

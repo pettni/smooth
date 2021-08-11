@@ -142,7 +142,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
-      auto g = smooth::cspline_eval<K, TypeParam>(g0, diff_vec, M, u, vel, acc);
+      auto g = g0 * smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc);
 
       ASSERT_TRUE(g.isApprox(g0));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -150,7 +150,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
     }
 
     diff_vec.push_back(diff_vec.back());
-    ASSERT_THROW((smooth::cspline_eval<K, TypeParam>(g0, diff_vec, M, 1)), std::runtime_error);
+    ASSERT_THROW((smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, 1)), std::runtime_error);
   });
 }
 
@@ -171,10 +171,10 @@ TYPED_TEST(Spline, DerivBspline)
   Tangent vel;
 
   for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval<3>(g0, diff_pts, M, u, vel);
+    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u - 1e-4);
-    auto g2 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u + 1e-4);
+    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
+    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
 
     auto df = ((g2 - g1) / 2e-4).eval();
 
@@ -199,10 +199,10 @@ TYPED_TEST(Spline, DerivBezier)
   Tangent vel;
 
   for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval<3>(g0, diff_pts, M, u, vel);
+    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u - 1e-4);
-    auto g2 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u + 1e-4);
+    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
+    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
 
     Tangent df = (g2 - g1) / 2e-4;
 
