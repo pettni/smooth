@@ -28,7 +28,7 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/curve.hpp"
 
-TEST(Curve, ConstantVelocity)
+TEST(Curve, ConstantVelocity1)
 {
   Eigen::Vector3d v1 = Eigen::Vector3d::Random();
 
@@ -54,6 +54,34 @@ TEST(Curve, ConstantVelocity)
   gtest = c1.eval(5, vtest);
   ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(5 * v1)));
   ASSERT_TRUE(vtest.isApprox(v1));
+}
+
+TEST(Curve, ConstantVelocity2)
+{
+  smooth::SO3d g1 = smooth::SO3d::Random();
+
+  auto c1 = smooth::Curve<smooth::SO3d>::ConstantVelocity(g1, 5.);
+
+  ASSERT_EQ(c1.t_min(), 0);
+  ASSERT_EQ(c1.t_max(), 5);
+
+  ASSERT_TRUE(c1.start().isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(c1.end().isApprox(g1));
+
+  smooth::SO3d gtest;
+  Eigen::Vector3d vtest;
+
+  gtest = c1.eval(0, vtest);
+  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+
+  gtest = c1.eval(2.5, vtest);
+  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(g1.log() / 2)));
+  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+
+  gtest = c1.eval(5, vtest);
+  ASSERT_TRUE(gtest.isApprox(g1));
+  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
 }
 
 TEST(Curve, FixedCubic)

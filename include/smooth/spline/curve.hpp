@@ -43,10 +43,13 @@
 namespace smooth {
 
 /**
- * @brief Curve type
+ * @brief Single parameter function on Lie group.
  *
- * A curve is a continuous function \f$ x : \mathbb{R} \rightarrow \mathbb{G} \f$ such that \f$ x(0)
- * = e \f$.
+ * A curve is a continuous function \f$ x : \mathbb{R} \rightarrow \mathbb{G} \f$ defined on an
+ * interval \f$ [0, T] \f$ such that \f$ x(0) = e \f$.
+ *
+ * Internally a Curve is represented via third-order polynomials, similar to a PiecewiseBezier of
+ * order 3.
  */
 template<LieGroup G>
 class Curve
@@ -95,7 +98,23 @@ public:
   ~Curve() = default;
 
   /**
-   * @brief Create Curve that starts at identity and with constant body velocity.
+   * @brief Create constant-velocity Curve that reaches a given target state.
+   *
+   * The resulting curve is
+   * \f[
+   *   x(t) = \exp( (t / T) \log(g) ), \quad t \in [0, T].
+   * \f]
+   *
+   * @param g target state
+   * @param T duration
+   */
+  static Curve ConstantVelocity(const G & g, double T = 1)
+  {
+    return ConstantVelocity(g.log() / T, T);
+  }
+
+  /**
+   * @brief Create constant-velocity Curve.
    *
    * The resulting curve is
    * \f[
@@ -103,7 +122,7 @@ public:
    * \f]
    *
    * @param v body velocity
-   * @param T curve end point
+   * @param T duration
    */
   static Curve ConstantVelocity(const typename G::Tangent & v, double T = 1)
   {
@@ -113,11 +132,11 @@ public:
   }
 
   /**
-   * @brief Create Curve that starts at identity and with a given initial velocity, end
-   * position, and end velocity.
+   * @brief Create Curve with a given start and end velocities, and a given end position.
    *
-   * @param v body velocity
-   * @param T curve end point
+   * @param gb end position
+   * @param va, vb start and end velocities
+   * @param T duration
    */
   static Curve FixedCubic(
     const G & gb, const typename G::Tangent & va, const typename G::Tangent & vb, double T = 1)
@@ -148,14 +167,26 @@ public:
   /// @brief Curve start (always equal to identity).
   G start() const { return G::Identity(); }
 
-  /// @brief Curve end .
+  /// @brief Curve end.
   G end() const
   {
     if (empty()) { return G::Identity(); }
     return end_g_.back();
   }
 
-  /// @brief Concatenate two curves
+  /**
+   * @brief Add Curve to the end of this curve via concatenation.
+   *
+   * @param other Curve to add.
+   *
+   * The resulting Curve \f$ y(t) \f$ is s.t.
+   * \f[
+   *  y(t) = \begin{cases}
+   *    x_1(t)  & 0 \leq t \leq t_1 \\
+   *    x_1(t_1) \circ x_2(t)  & t_1 \leq t \leq t_1 + t_2
+   *  \end{cases}
+   * \f]
+   */
   Curve & operator*=(const Curve & other)
   {
     std::size_t N1 = size();
@@ -181,13 +212,26 @@ public:
     return *this;
   }
 
-  Curve operator*(const Curve & o)
+  /**
+   * @brief Concatenate two curves
+   */
+  Curve operator*(const Curve & other)
   {
     Curve ret = *this;
-    ret *= o;
+    ret *= other;
     return ret;
   }
 
+  /**
+   * @brief Evaluate Curve.
+   *
+   * @param[in] t time point to evaluate at
+   * @param[out] vel output body velocity at evaluation time
+   * @param[out] acc output body acceleration at evaluation time
+   * @return value at time t
+   *
+   * @note Input \p t is clamped to interval [t_min(), t_max()]
+   */
   G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
     const auto istar = find_idx(t);
@@ -203,8 +247,8 @@ public:
 
     G g0 = istar == 0 ? G::Identity() : end_g_[istar - 1];
 
+    // compensate for cropped intervals
     if (seg_T0_[istar] > 0) {
-      // compensate for cropped intervals
       g0 *= cspline_eval_diff<3, G>(vs_[istar], M, seg_T0_[istar]).inverse();
     }
 
@@ -216,6 +260,16 @@ public:
     return g;
   }
 
+  /**
+   * @brief Crop curve
+   *
+   * @param ta, tb interval for cropped Curve
+   *
+   * The resulting Curve \f$ y(t) \f$ defined on \f$ [0, t_b - t_a] \f$ is s.t.
+   * \f[
+   *  y(t) = x(t_a).inverse() * x(t - t_a)
+   * \f]
+   */
   Curve crop(double ta, double tb = std::numeric_limits<double>::infinity()) const
   {
     if (tb < ta) { throw std::runtime_error("Curve: crop interval must be positive"); }
