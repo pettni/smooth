@@ -351,10 +351,19 @@ TEST(Curve, Dubins)
   });
 
   for (auto & [target, length] : dubins_pbms) {
-    auto c = smooth::Curve<smooth::SE2d>::Dubins(target);
+    const auto c = smooth::Curve<smooth::SE2d>::Dubins(target);
     ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
     ASSERT_TRUE(c.end().isApprox(target));
     ASSERT_NEAR(c.t_max(), length, 1e-8);
+  }
+
+  // same with double radius
+  for (auto & [target, length] : dubins_pbms) {
+    smooth::SE2d scaled_target(target.so2(), 2 * target.r2());
+    const auto c = smooth::Curve<smooth::SE2d>::Dubins(scaled_target, 2);
+    ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
+    ASSERT_TRUE(c.end().isApprox(scaled_target));
+    ASSERT_NEAR(c.t_max(), 2 * length, 1e-8);
   }
 }
 

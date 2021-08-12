@@ -48,7 +48,9 @@ int main()
 {
   MyFunctor f;
   auto g = smooth::SO3d::Random();
-  smooth::minimize(f, smooth::wrt(g));
+  smooth::MinimizeOptions opts;
+  opts.verbose = true;
+  smooth::minimize(f, smooth::wrt(g), opts);
 
   return EXIT_SUCCESS;
 }

@@ -41,10 +41,10 @@ using namespace std::numbers;
 namespace smooth {
 
 // sign of body turning velocity
-enum class DubinsSegment : int8_t {
-  Left     = 1,
-  Straight = 0,
-  Right    = -1,
+enum class DubinsSegment {
+  Left,
+  Straight,
+  Right,
 };
 
 using DubinsDescription = std::array<std::pair<DubinsSegment, double>, 3>;
@@ -105,9 +105,9 @@ inline std::array<double, 3> dubins_ccc(
   }
 
   return {
-    R * dubins_angle(smooth::SO2d::Identity(), theta1, c13),
-    R * dubins_angle(theta1, theta2, c2),
-    R * dubins_angle(theta2, target.so2(), c13),
+    dubins_angle(smooth::SO2d::Identity(), theta1, c13),
+    dubins_angle(theta1, theta2, c2),
+    dubins_angle(theta2, target.so2(), c13),
   };
 }
 
@@ -151,9 +151,9 @@ inline std::array<double, 3> dubins_csc(
   }
 
   return {
-    R * dubins_angle(smooth::SO2d::Identity(), theta, c1),
+    dubins_angle(smooth::SO2d::Identity(), theta, c1),
     (C3 - C1).dot(Eigen::Vector2d(theta.u1().real(), theta.u1().imag())),
-    R * dubins_angle(theta, target.so2(), c3),
+    dubins_angle(theta, target.so2(), c3),
   };
 }
 
@@ -174,8 +174,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Left, DubinsSegment::Left);
-    if (d2 + a1 + a3 < min_length) {
-      min_length = a1 + d2 + a3;
+    double len = d2 + R * (a1 + a3);
+    if (len < min_length) {
+      min_length = len;
       ret        = {
         std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
         std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
@@ -186,8 +187,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Left, DubinsSegment::Right);
-    if (d2 + a1 + a3 < min_length) {
-      min_length = a1 + d2 + a3;
+    double len = d2 + R * (a1 + a3);
+    if (len < min_length) {
+      min_length = len;
       ret        = {
         std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
         std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
@@ -198,8 +200,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Right, DubinsSegment::Left);
-    if (d2 + a1 + a3 < min_length) {
-      min_length = a1 + d2 + a3;
+    double len = d2 + R * (a1 + a3);
+    if (len < min_length) {
+      min_length = len;
       ret        = {
         std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
         std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
@@ -210,8 +213,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Right, DubinsSegment::Right);
-    if (d2 + a1 + a3 < min_length) {
-      min_length = a1 + d2 + a3;
+    double len = d2 + R * (a1 + a3);
+    if (len < min_length) {
+      min_length = len;
       ret        = {
         std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
         std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
@@ -222,8 +226,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, a2, a3] = detail::dubins_ccc(target, R, DubinsSegment::Right, DubinsSegment::Left);
-    if (a1 + a2 + a3 < min_length) {
-      min_length = a1 + a2 + a3;
+    double len = R * (a1 + a2 + a3);
+    if (len < min_length) {
+      min_length = len;
       ret        = {
         std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
         std::pair<DubinsSegment, double>{DubinsSegment::Left, a2},
@@ -234,8 +239,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, a2, a3] = detail::dubins_ccc(target, R, DubinsSegment::Left, DubinsSegment::Right);
-    if (a1 + a2 + a3 < min_length) {
-      min_length = a1 + a2 + a3;
+    double len = R * (a1 + a2 + a3);
+    if (len < min_length) {
+      min_length = len;
       ret        = {
         std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
         std::pair<DubinsSegment, double>{DubinsSegment::Right, a2},

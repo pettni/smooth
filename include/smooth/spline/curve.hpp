@@ -32,7 +32,6 @@
  */
 
 #include <algorithm>
-#include <iostream>
 #include <ranges>
 
 #include "smooth/concepts.hpp"
@@ -192,15 +191,19 @@ public:
    */
   static Curve Dubins(const G & gb, double R = 1) requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
   {
-    auto desc = dubins(gb, R);
+    const auto desc = dubins(gb, R);
 
     Curve ret;
-    ret *= Curve::ConstantVelocity(
-      Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[0].first) * 1. / R), desc[0].second);
-    ret *= Curve::ConstantVelocity(
-      Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[1].first) * 1. / R), desc[1].second);
-    ret *= Curve::ConstantVelocity(
-      Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[2].first) * 1. / R), desc[2].second);
+    for (auto i = 0u; i != 3; ++i) {
+      const auto & [c, l] = desc[i];
+      if (c == DubinsSegment::Left) {
+        ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1. / R), R * l);
+      } else if (c == DubinsSegment::Right) {
+        ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, -1. / R), R * l);
+      } else {
+        ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), l);
+      }
+    }
     return ret;
   }
 
@@ -292,8 +295,8 @@ public:
   {
     const auto istar = find_idx(t);
 
-    double ta = istar == 0 ? 0 : end_t_[istar - 1];
-    double T  = end_t_[istar] - ta;
+    const double ta = istar == 0 ? 0 : end_t_[istar - 1];
+    const double T  = end_t_[istar] - ta;
 
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
@@ -308,7 +311,7 @@ public:
       g0 *= cspline_eval_diff<3, G>(vs_[istar], M, seg_T0_[istar]).inverse();
     }
 
-    G g = g0 * cspline_eval_diff<3, G>(vs_[istar], M, u, vel, acc);
+    const G g = g0 * cspline_eval_diff<3, G>(vs_[istar], M, u, vel, acc);
 
     if (vel.has_value()) { vel.value() *= Del / T; }
     if (acc.has_value()) { acc.value() *= Del * Del / (T * T); }
@@ -389,19 +392,20 @@ public:
 
     // create new curve with appropriate body velocities
     Curve<G> ret;
-    ret.end_t_   = end_t;
-    ret.end_g_   = end_g;
-    ret.vs_      = vs;
-    ret.seg_T0_  = seg_T0;
-    ret.seg_Del_ = seg_Del;
-
+    ret.end_t_   = std::move(end_t);
+    ret.end_g_   = std::move(end_g);
+    ret.vs_      = std::move(vs);
+    ret.seg_T0_  = std::move(seg_T0);
+    ret.seg_Del_ = std::move(seg_Del);
     return ret;
   }
 
 private:
   std::size_t find_idx(double t) const
   {
-    // TODO binary search
+    // target condition:
+    //  end_t_[istar - 1] <= t < end_t_[istar]
+
     std::size_t istar = 0;
     while (istar + 1 < size() && end_t_[istar] <= t) { ++istar; }
     return istar;
