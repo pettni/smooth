@@ -37,8 +37,10 @@
 
 #include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
+#include "smooth/se2.hpp"
 
 #include "common.hpp"
+#include "dubins.hpp"
 
 namespace smooth {
 
@@ -126,9 +128,13 @@ public:
    */
   static Curve ConstantVelocity(const typename G::Tangent & v, double T = 1)
   {
-    std::array<typename G::Tangent, 3> vs;
-    vs.fill(T * v / 3);
-    return Curve(T, vs);
+    if (T <= 0) {
+      return Curve();
+    } else {
+      std::array<typename G::Tangent, 3> vs;
+      vs.fill(T * v / 3);
+      return Curve(T, vs);
+    }
   }
 
   /**
@@ -146,6 +152,24 @@ public:
     vs[2] = T * vb / 3;
     vs[1] = (G::exp(-vs[0]) * gb * G::exp(-vs[2])).log();
     return Curve(T, vs);
+  }
+
+  /**
+   * @brief Create Curve with a given start and end velocities, and a given end position.
+   *
+   * @param gb end position
+   * @param va, vb start and end velocities
+   * @param T duration
+   */
+  static Curve Dubins(const G & gb, double R = 1) requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
+  {
+    auto desc = dubins(gb, R);
+
+    Curve ret;
+    ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[0].first) * 1. / R), desc[0].second);
+    ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[1].first) * 1. / R), desc[1].second);
+    ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[2].first) * 1. / R), desc[2].second);
+    return ret;
   }
 
   /// @brief Number of Curve segments.
