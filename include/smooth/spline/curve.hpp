@@ -39,6 +39,7 @@
 #include "smooth/internal/utils.hpp"
 #include "smooth/se2.hpp"
 
+#include "bezier.hpp"
 #include "common.hpp"
 #include "dubins.hpp"
 
@@ -63,8 +64,9 @@ public:
    * @brief Create Curve with one segment and given velocities
    */
   Curve(double T, std::array<typename G::Tangent, 3> && vs)
-      : end_t_{T}, vs_(std::move(vs)), seg_T0_{0}, seg_Del_{1}
+      : end_t_{T}, vs_{std::move(vs)}, seg_T0_{0}, seg_Del_{1}
   {
+    if (T <= 0) { throw std::runtime_error("Curve: T must be positive"); }
     end_g_.resize(1);
     end_g_[0] = eval(T);
   }
@@ -75,6 +77,7 @@ public:
   template<std::ranges::range Rv>
   Curve(double T, const Rv & vs) : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
+    if (T <= 0) { throw std::runtime_error("Curve: T must be positive"); }
     if (std::ranges::size(vs) != 3) { throw std::runtime_error("Wrong number of control points"); }
 
     vs_.resize(1);
@@ -96,6 +99,31 @@ public:
   /// @brief Move assignment
   Curve & operator=(Curve &&) = default;
 
+  /// @brief Construct from cubic PiecewiseBezier
+  Curve(const PiecewiseBezier<3, G> & bez)
+  {
+    std::size_t N = bez.segments_.size();
+
+    end_t_.resize(N);
+    end_g_.resize(N);
+    vs_.resize(N);
+    seg_T0_.assign(N, 0);
+    seg_Del_.assign(N, 1);
+
+    if (N == 0) { return; }
+
+    double t0     = bez.knots_.front();
+    const G g0inv = bez.segments_.front().g0_.inverse();
+
+    for (auto i = 0u; i != N; ++i) {
+      end_t_[i] = bez.knots_[i + 1] - t0;
+      if (i + 1 < N) { end_g_[i] = g0inv * bez.segments_[i + 1].g0_; }
+      vs_[i] = bez.segments_[i].vs_;
+    }
+
+    end_g_[N - 1] = eval(end_t_.back());
+  }
+
   /// @brief Destructor
   ~Curve() = default;
 
@@ -112,6 +140,7 @@ public:
    */
   static Curve ConstantVelocity(const G & g, double T = 1)
   {
+    if (T <= 0) { throw std::runtime_error("Curve: T must be positive"); }
     return ConstantVelocity(g.log() / T, T);
   }
 
@@ -151,7 +180,7 @@ public:
     vs[0] = T * va / 3;
     vs[2] = T * vb / 3;
     vs[1] = (G::exp(-vs[0]) * gb * G::exp(-vs[2])).log();
-    return Curve(T, vs);
+    return Curve(T, std::move(vs));
   }
 
   /**
@@ -166,9 +195,12 @@ public:
     auto desc = dubins(gb, R);
 
     Curve ret;
-    ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[0].first) * 1. / R), desc[0].second);
-    ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[1].first) * 1. / R), desc[1].second);
-    ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[2].first) * 1. / R), desc[2].second);
+    ret *= Curve::ConstantVelocity(
+      Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[0].first) * 1. / R), desc[0].second);
+    ret *= Curve::ConstantVelocity(
+      Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[1].first) * 1. / R), desc[1].second);
+    ret *= Curve::ConstantVelocity(
+      Eigen::Vector3d(1, 0, static_cast<int8_t>(desc[2].first) * 1. / R), desc[2].second);
     return ret;
   }
 
@@ -296,19 +328,23 @@ public:
    */
   Curve crop(double ta, double tb = std::numeric_limits<double>::infinity()) const
   {
-    if (tb < ta) { throw std::runtime_error("Curve: crop interval must be positive"); }
-
     ta = std::max<double>(ta, 0);
     tb = std::min<double>(tb, t_max());
+
+    if (tb < ta) { throw std::runtime_error("Curve: crop interval must be non-empty"); }
+
+    if (tb == 0 || tb == ta) {
+      return Curve();  // empty
+    }
 
     const std::size_t i0 = find_idx(ta);
     std::size_t Nseg     = find_idx(tb) + 1 - i0;
 
     // prevent last segment from being empty
-    if (end_t_[i0 + Nseg] == tb) { --Nseg; }
+    if (Nseg >= 2 && end_t_[i0 + Nseg - 2] == tb) { --Nseg; }
 
     // state at new from beginning of curve
-    const G ga = eval(ta), gb = eval(tb);
+    const G ga = eval(ta);
 
     std::vector<double> end_t(Nseg);
     std::vector<G> end_g(Nseg);
@@ -319,7 +355,7 @@ public:
     for (auto i = 0u; i != Nseg; ++i) {
       if (i == Nseg - 1) {
         end_t[i] = tb - ta;
-        end_g[i] = ga.inverse() * gb;
+        end_g[i] = ga.inverse() * eval(tb);
       } else {
         end_t[i] = end_t_[i0 + i] - ta;
         end_g[i] = ga.inverse() * end_g_[i0 + i];

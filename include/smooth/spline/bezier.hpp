@@ -44,6 +44,11 @@
 
 namespace smooth {
 
+// \cond
+template<LieGroup G>
+class Curve;
+// \endcond
+
 /**
  * @brief Bezier curve on [0, 1].
  * @tparam N Polonimial degree of curve.
@@ -124,6 +129,8 @@ public:
 private:
   G g0_;
   std::array<typename G::Tangent, N> vs_;
+
+  friend class Curve<G>;
 };
 
 /**
@@ -214,6 +221,8 @@ public:
 private:
   std::vector<double> knots_;
   std::vector<Bezier<N, G>> segments_;
+
+  friend class Curve<G>;
 };
 
 /**

@@ -357,3 +357,47 @@ TEST(Curve, Dubins)
     ASSERT_NEAR(c.t_max(), length, 1e-8);
   }
 }
+
+TEST(Curve, FromBezier)
+{
+  std::vector<double> tt;
+  std::vector<smooth::SO3d> gg;
+
+  std::srand(10);
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+
+  auto spline = smooth::fit_cubic_bezier(tt, gg);
+
+  // constructor
+  smooth::Curve<smooth::SO3d> c(spline);
+
+  ASSERT_EQ(c.t_max(), spline.t_max() - spline.t_min());
+
+  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05)
+  {
+    ASSERT_TRUE(spline.eval(t).isApprox(spline.eval(spline.t_min()) * c.eval(t - spline.t_min())));
+  }
+
+  // assignment
+  c = spline;
+
+  ASSERT_EQ(c.t_max(), spline.t_max() - spline.t_min());
+
+  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05)
+  {
+    ASSERT_TRUE(spline.eval(t).isApprox(spline.eval(spline.t_min()) * c.eval(t - spline.t_min())));
+  }
+}
