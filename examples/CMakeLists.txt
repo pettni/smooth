@@ -1,6 +1,9 @@
 add_executable(bspline bspline.cpp)
 target_link_libraries(bspline smooth)
 
+add_executable(curve curve.cpp)
+target_link_libraries(curve smooth)
+
 add_executable(spline_fit spline_fit.cpp)
 target_link_libraries(spline_fit smooth)
 
@@ -21,6 +24,9 @@ if(${Matplot++_FOUND})
   set(CMAKE_CXX_STANDARD 20)  # thanks Matplot++
   target_compile_definitions(bspline PRIVATE ENABLE_PLOTTING)
   target_link_libraries(bspline Matplot++::matplot)
+
+  target_compile_definitions(curve PRIVATE ENABLE_PLOTTING)
+  target_link_libraries(curve Matplot++::matplot)
 
   target_compile_definitions(spline_fit PRIVATE ENABLE_PLOTTING)
   target_link_libraries(spline_fit Matplot++::matplot)

@@ -31,6 +31,8 @@
  * @brief bezier splines on lie groups.
  */
 
+#include <boost/numeric/odeint.hpp>
+
 #include <algorithm>
 #include <ranges>
 
@@ -430,6 +432,118 @@ private:
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;
 };
+
+/**
+ * @brief Reparameterize a curve to satisfy velocity and acceleration constraints.
+ *
+ * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
+ * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
+ *
+ * If \f$ x(\cdot) \f$ is a Curve, then this function generates a function \f$ s(t) \f$ the
+ * reparamtereized curve \f$ x(s(t)) \f$ has body velocity bounded between vel_min and vel_max, and
+ * body acceleration bounded between acc_min and acc_max.
+ */
+template<LieGroup G>
+auto reparameterize_curve(const Curve<G> & curve,
+  const typename G::Tangent & vel_min,
+  const typename G::Tangent & vel_max,
+  const typename G::Tangent & acc_min,
+  const typename G::Tangent & acc_max)
+{
+  // consider system \ddot s = u
+
+  // method to extract maximal velocity for a given s
+  const auto ds_bound = [&](const Eigen::Vector2d & state) -> double {
+    typename G::Tangent vel;
+    curve.eval(state.x(), vel);
+
+    // velocity ds must be s.t. vel_min <= ds * vel <= vel_max component-wise
+    double max_ds = std::numeric_limits<double>::infinity();
+    for (auto i = 0u; i != G::Dof; ++i) {
+      if (vel(i) > 0) {
+        max_ds = std::min<double>(max_ds, vel_max(i) / vel(i));
+      } else if (vel(i) < 0) {
+        max_ds = std::min<double>(max_ds, vel_min(i) / vel(i));
+      }
+    }
+    return max_ds;
+  };
+
+  // method to extract acceleration boudns for a given s, ds
+  const auto d2s_bound = [&](const Eigen::Vector2d & state) -> std::pair<double, double> {
+    typename G::Tangent vel, acc;
+    curve.eval(state.x(), vel, acc);
+
+    // acceleration d2s must be s.t. acc_min - acc * ds^2 <= d2s * vel <= acc_max - acc * ds^2
+    // component-wise
+    double max_d2s = std::numeric_limits<double>::infinity();
+    double min_d2s = -std::numeric_limits<double>::infinity();
+    for (auto i = 0u; i != G::Dof; ++i) {
+      typename G::Tangent upper = acc_max - acc * state.y() * state.y();
+      typename G::Tangent lower = acc_min - acc * state.y() * state.y();
+      if (vel(i) > 0) {
+        max_d2s = std::min<double>(max_d2s, upper(i) / vel(i));
+        min_d2s = std::max<double>(min_d2s, lower(i) / vel(i));
+      } else if (vel(i) < 0) {
+        max_d2s = std::min<double>(max_d2s, lower(i) / vel(i));
+        min_d2s = std::max<double>(min_d2s, upper(i) / vel(i));
+      }
+    }
+    return {min_d2s, max_d2s};
+  };
+
+  const auto ode_backup = [&](const Eigen::Vector2d & state, Eigen::Vector2d & deriv, double) {
+    auto [min_u, max_u] = d2s_bound(state);
+    deriv.x()           = state.y();
+    deriv.y()           = min_u;
+  };
+
+  double u;
+  const auto ode = [&](const Eigen::Vector2d & state, Eigen::Vector2d & deriv, double) {
+    deriv.x() = state.y();
+    deriv.y() = u;
+  };
+
+  boost::numeric::odeint::euler<Eigen::Vector2d,
+    double,
+    Eigen::Vector2d,
+    double,
+    boost::numeric::odeint::vector_space_algebra>
+    stepper;
+
+  double t = 0;
+  Eigen::Vector2d x(0, 1);  // start with original velocity
+
+  static constexpr double min_v = 0.01;
+  static constexpr double dt    = 0.05;
+  static constexpr double alpha = 10;
+
+  std::vector<double> svec, tvec;
+
+  while (x.x() < curve.t_max()) {
+    tvec.push_back(t);
+    svec.push_back(x.x());
+
+    Eigen::Vector2d x_lookahead = x;
+    double h_val                = std::numeric_limits<double>::infinity();
+    while (x_lookahead(0) < curve.t_max() && x_lookahead(1) > min_v) {
+      h_val = std::min<double>(h_val, ds_bound(x_lookahead) - x_lookahead(1));
+      stepper.do_step(ode_backup, x_lookahead, 0, dt);
+    }
+
+    auto [u_min, u_max] = d2s_bound(x);
+    u = std::min<double>(u_max, std::max(u_min, alpha * h_val));
+
+    stepper.do_step(ode, x, t, dt);
+    x(1) = std::max(min_v, x(1));  // make sure velocity does not go negative
+    t += dt;
+  }
+
+  tvec.push_back(t);
+  svec.push_back(x.x());
+
+  return std::make_tuple(tvec, svec);
+}
 
 }  // namespace smooth
 
