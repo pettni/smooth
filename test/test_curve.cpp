@@ -28,6 +28,19 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/curve.hpp"
 
+TEST(Curve, Construct)
+{
+  std::vector<Eigen::Vector3d> vs;
+  vs.push_back(Eigen::Vector3d::Random());
+  vs.push_back(Eigen::Vector3d::Random());
+  vs.push_back(Eigen::Vector3d::Random());
+
+  ASSERT_NO_THROW(smooth::Curve<smooth::SO3d>(2, vs));
+
+  vs.push_back(Eigen::Vector3d::Random());
+  ASSERT_THROW(smooth::Curve<smooth::SO3d>(2, vs), std::invalid_argument);
+}
+
 TEST(Curve, ConstantVelocity1)
 {
   Eigen::Vector3d v1 = Eigen::Vector3d::Random();
@@ -241,6 +254,12 @@ TEST(Curve, CropMultiple)
   gt2 = c2.eval(14, vt2);
   ASSERT_TRUE(gt1.isApprox(g_partial * gt2));
   ASSERT_TRUE(vt1.isApprox(vt1));
+
+  auto c3a = c2.crop(4, 4);
+  ASSERT_TRUE(c3a.empty());
+
+  auto c3b = c2.crop(100, -4);
+  ASSERT_TRUE(c3a.empty());
 }
 
 TEST(Curve, ExtendCropped)
@@ -337,17 +356,29 @@ TEST(Curve, Dubins)
     2 * M_PI + M_PI / 4,
   });
 
-  // LRL
+  // RLR / LRL
   dubins_pbms.push_back({
     smooth::SE2d(
       smooth::SO2d(5 * M_PI / 4), Eigen::Vector2d(2 - std::sin(M_PI_4), -1 + std::sin(M_PI_4))),
     2 * M_PI + M_PI / 4,
   });
 
+  // RLR / LRL
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, 0)),
+    2 * M_PI + M_PI / 3,
+  });
+
+  // RLR
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, 0.1)),
+    7.2139175083822469,
+  });
+
   // LRL
   dubins_pbms.push_back({
-    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d::Zero()),
-    2 * M_PI + M_PI / 3,
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, -0.1)),
+    7.2139175083822469,
   });
 
   for (auto & [target, length] : dubins_pbms) {
@@ -395,8 +426,7 @@ TEST(Curve, FromBezier)
 
   ASSERT_EQ(c.t_max(), spline.t_max() - spline.t_min());
 
-  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05)
-  {
+  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05) {
     ASSERT_TRUE(spline.eval(t).isApprox(spline.eval(spline.t_min()) * c.eval(t - spline.t_min())));
   }
 
@@ -405,8 +435,23 @@ TEST(Curve, FromBezier)
 
   ASSERT_EQ(c.t_max(), spline.t_max() - spline.t_min());
 
-  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05)
-  {
+  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05) {
     ASSERT_TRUE(spline.eval(t).isApprox(spline.eval(spline.t_min()) * c.eval(t - spline.t_min())));
   }
+}
+
+TEST(Curve, Reparameterize)
+{
+  smooth::Curve<smooth::SE2d> c;
+  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1));
+  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+
+  Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
+
+  auto [t, s] = smooth::reparameterize_curve(c, -vel_max, vel_max, -acc_max, acc_max);
+
+  ASSERT_EQ(t.front(), 0);
+  ASSERT_EQ(s.front(), 0);
+  ASSERT_GE(s.back(), c.t_max());
 }

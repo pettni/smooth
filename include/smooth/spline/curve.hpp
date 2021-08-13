@@ -198,7 +198,9 @@ public:
    * @param R turning radius
    */
   static Curve Dubins(const G & gb, double R = 1)
+  // \cond
   requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
+  // \endcond
   {
     const auto desc = dubins(gb, R);
 
@@ -343,11 +345,7 @@ public:
     ta = std::max<double>(ta, 0);
     tb = std::min<double>(tb, t_max());
 
-    if (tb < ta) { throw std::invalid_argument("Curve: crop interval must be non-empty"); }
-
-    if (tb == 0 || tb == ta) {
-      return Curve();  // empty
-    }
+    if (tb <= ta) { return Curve(); }
 
     const std::size_t i0 = find_idx(ta);
     std::size_t Nseg     = find_idx(tb) + 1 - i0;
