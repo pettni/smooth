@@ -35,6 +35,7 @@
 
 #include <algorithm>
 #include <ranges>
+#include <stdexcept>
 
 #include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
@@ -67,7 +68,7 @@ public:
   Curve(double T, std::array<typename G::Tangent, 3> && vs)
       : end_t_{T}, vs_{std::move(vs)}, seg_T0_{0}, seg_Del_{1}
   {
-    if (T <= 0) { throw std::runtime_error("Curve: T must be positive"); }
+    if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
     end_g_.resize(1);
     end_g_[0] = eval(T);
   }
@@ -76,10 +77,16 @@ public:
    * @brief Create Curve with one segment and given velocities
    */
   template<std::ranges::range Rv>
-  Curve(double T, const Rv & vs) : end_t_{T}, seg_T0_{0}, seg_Del_{1}
+  // \cond
+  requires(std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>)
+  // \endcond
+  Curve(double T, const Rv & vs)
+      : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
-    if (T <= 0) { throw std::runtime_error("Curve: T must be positive"); }
-    if (std::ranges::size(vs) != 3) { throw std::runtime_error("Wrong number of control points"); }
+    if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
+    if (std::ranges::size(vs) != 3) {
+      throw std::invalid_argument("Curve: Wrong number of control points");
+    }
 
     vs_.resize(1);
     std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_[0].begin());
@@ -141,7 +148,7 @@ public:
    */
   static Curve ConstantVelocity(const G & g, double T = 1)
   {
-    if (T <= 0) { throw std::runtime_error("Curve: T must be positive"); }
+    if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
     return ConstantVelocity(g.log() / T, T);
   }
 
@@ -188,10 +195,10 @@ public:
    * @brief Create Curve with a given start and end velocities, and a given end position.
    *
    * @param gb end position
-   * @param va, vb start and end velocities
-   * @param T duration
+   * @param R turning radius
    */
-  static Curve Dubins(const G & gb, double R = 1) requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
+  static Curve Dubins(const G & gb, double R = 1)
+  requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
   {
     const auto desc = dubins(gb, R);
 
@@ -336,7 +343,7 @@ public:
     ta = std::max<double>(ta, 0);
     tb = std::min<double>(tb, t_max());
 
-    if (tb < ta) { throw std::runtime_error("Curve: crop interval must be non-empty"); }
+    if (tb < ta) { throw std::invalid_argument("Curve: crop interval must be non-empty"); }
 
     if (tb == 0 || tb == ta) {
       return Curve();  // empty
@@ -408,6 +415,7 @@ private:
     // target condition:
     //  end_t_[istar - 1] <= t < end_t_[istar]
 
+    // TODO binary search with guide
     std::size_t istar = 0;
     while (istar + 1 < size() && end_t_[istar] <= t) { ++istar; }
     return istar;
@@ -436,12 +444,15 @@ private:
 /**
  * @brief Reparameterize a curve to satisfy velocity and acceleration constraints.
  *
+ * @param curve Curve \f$ x(t) \f$ to reparameterize
  * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
  * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
  *
  * If \f$ x(\cdot) \f$ is a Curve, then this function generates a function \f$ s(t) \f$ the
  * reparamtereized curve \f$ x(s(t)) \f$ has body velocity bounded between vel_min and vel_max, and
  * body acceleration bounded between acc_min and acc_max.
+ *
+ * @note Results are better if \f$ x(t) \f$ has continuous first-order derivatives.
  */
 template<LieGroup G>
 auto reparameterize_curve(const Curve<G> & curve,
@@ -532,7 +543,7 @@ auto reparameterize_curve(const Curve<G> & curve,
     }
 
     auto [u_min, u_max] = d2s_bound(x);
-    u = std::min<double>(u_max, std::max(u_min, alpha * h_val));
+    u                   = std::min<double>(u_max, std::max(u_min, alpha * h_val));
 
     stepper.do_step(ode, x, t, dt);
     x(1) = std::max(min_v, x(1));  // make sure velocity does not go negative

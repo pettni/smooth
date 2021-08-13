@@ -33,6 +33,7 @@
 
 #include <algorithm>
 #include <ranges>
+#include <stdexcept>
 
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
@@ -91,7 +92,9 @@ public:
   template<std::ranges::range Rv>
   Bezier(const G & g0, const Rv & vs) : g0_(g0)
   {
-    if (std::ranges::size(vs) != N) { throw std::runtime_error("Wrong number of control points"); }
+    if (std::ranges::size(vs) != N) {
+      throw std::invalid_argument("Bezier: wrong number of control points");
+    }
     std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_.begin());
   }
 
@@ -201,16 +204,16 @@ public:
    */
   G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
-    /// find index
-    // TODO binary search
+    // target condition
+    //  knots_[istar] <= t < knots_[istar + 1]
+
+    // TODO binary search with guide
     std::size_t istar = 0;
     while (istar + 2 < knots_.size() && knots_[istar + 1] <= t) { ++istar; }
 
-    double T = knots_[istar + 1] - knots_[istar];
-
+    const double T = knots_[istar + 1] - knots_[istar];
     const double u = (t - knots_[istar]) / T;
-
-    G g = segments_[istar].eval(u, vel, acc);
+    const G g      = segments_[istar].eval(u, vel, acc);
 
     if (vel.has_value()) { vel.value() /= T; }
     if (acc.has_value()) { acc.value() /= (T * T); }
@@ -233,22 +236,19 @@ private:
  *
  * @warning Result has discontinuous derivatives at knot points
  *
- * @tparam Rt, Rg range types
  * @param tt interpolation times
  * @param gg interpolation values
  */
-template<std::ranges::range Rt, std::ranges::range Rg>
-PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & tt, const Rg & gg)
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
 {
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
-    throw std::runtime_error("Not enough points");
+    throw std::invalid_argument("fit_linear_bezier: Not enough points");
   }
 
   if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::runtime_error("Interpolation times not strictly increasing");
+    throw std::invalid_argument("fit_linear_bezier: Interpolation times not strictly increasing");
   }
-
-  using G = std::ranges::range_value_t<Rg>;
 
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
@@ -276,23 +276,21 @@ PiecewiseBezier<1, std::ranges::range_value_t<Rg>> fit_linear_bezier(const Rt & 
  * @warning Result may exhibit oscillatory behavior since second derivative
  * is free.
  *
- * @tparam Rt, Rg range types
  * @param tt interpolation times
  * @param gg interpolation values
  */
-template<std::ranges::range Rt, std::ranges::range Rg>
-PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(
-  const Rt & tt, const Rg & gg)
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
 {
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
-    throw std::runtime_error("Not enough points");
+    throw std::invalid_argument("fit_quadratic_bezier: Not enough points");
   }
 
   if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::runtime_error("Interpolation times not strictly increasing");
+    throw std::invalid_argument(
+      "fit_quadratic_bezier: Interpolation times not strictly increasing");
   }
 
-  using G             = std::ranges::range_value_t<Rg>;
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
   std::vector<Bezier<2, G>> segments(N);
@@ -330,24 +328,23 @@ PiecewiseBezier<2, std::ranges::range_value_t<Rg>> fit_quadratic_bezier(
  * The resulting curve passes through the data points, has continuous first
  * derivatives, and approximately continuous second derivatives.
  *
- * @tparam Rt, Rg range types
  * @param tt interpolation times
  * @param gg interpolation values
  * @param v0 body velocity at start of spline (optional, if not given acceleration is set to zero)
  * @param v1 body velocity at end of spline (optional, if not given acceleration is set to zero)
  */
 template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
-PiecewiseBezier<3, std::ranges::range_value_t<Rg>> fit_cubic_bezier(const Rt & tt,
+PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   const Rg & gg,
   std::optional<typename G::Tangent> v0 = {},
   std::optional<typename G::Tangent> v1 = {})
 {
   if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
-    throw std::runtime_error("Not enough points");
+    throw std::invalid_argument("fit_cubic_bezier: Not enough points");
   }
 
   if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::runtime_error("Interpolation times not strictly increasing");
+    throw std::invalid_argument("fit_cubic_bezier: Interpolation times not strictly increasing");
   }
 
   // number of intervals

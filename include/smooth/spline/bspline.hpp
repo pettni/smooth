@@ -33,6 +33,7 @@
 
 #include <algorithm>
 #include <ranges>
+#include <stdexcept>
 
 #include <Eigen/Sparse>
 
@@ -166,7 +167,7 @@ public:
     constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BSPLINE, double, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
-    G g = cspline_eval<K, G>(
+    G g = cspline_eval<K>(
       ctrl_pts_ | std::views::drop(istar) | std::views::take(K + 1), M, u, vel, acc);
 
     if (vel.has_value()) { vel.value() /= dt_; }
@@ -189,22 +190,22 @@ private:
  * \f]
  *
  * @tparam K bspline degree
- * @tparam Rt, Rg input range types
  * @param tt time values t_i (doubles, non-decreasing)
  * @param gg data values t_i
  * @param dt distance between spline control points
  */
-template<std::size_t K, std::ranges::range Rt, std::ranges::range Rg>
-BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg & gg, double dt)
+template<std::size_t K,
+  std::ranges::range Rt,
+  std::ranges::range Rg,
+  LieGroup G = std::ranges::range_value_t<Rg>>
+BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
 {
   static_assert(LieGroup<std::ranges::range_value_t<Rg>>, "Rg value type is LieGroup");
   static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");
 
   if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::runtime_error("interpolation times not strictly increasing");
+    throw std::invalid_argument("fit_bspline: interpolation times not strictly increasing");
   }
-
-  using G = std::ranges::range_value_t<Rg>;
 
   auto [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
 
@@ -232,7 +233,7 @@ BSpline<K, std::ranges::range_value_t<Rg>> fit_bspline(const Rt & tt, const Rg &
       const double u      = (*t_iter - t0 - istar * dt) / dt;
 
       Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_vali_pts;
-      auto g_spline = cspline_eval<K, G>(
+      auto g_spline = cspline_eval<K>(
         var | std::views::drop(istar) | std::views::take(K + 1), M, u, {}, {}, d_vali_pts);
 
       const typename G::Tangent resi = g_spline - *g_iter;
