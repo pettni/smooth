@@ -326,10 +326,15 @@ TEST(Spline, BezierConstruct)
   std::vector<double> tt{1, 2, 3};
   std::vector<smooth::Bezier<3, smooth::SO3d>> bb(3);
 
+  using B4 = smooth::Bezier<4, smooth::SO3d>;
+  using B4v = std::vector<Eigen::Vector3d>;
+  ASSERT_THROW(B4(smooth::SO3d::Identity(), B4v(3)), std::invalid_argument);
+
   auto spline       = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
   auto spline_moved = std::move(spline);
 
-  static_cast<void>(spline_moved);
+  ASSERT_EQ(spline_moved.t_min(), 1);
+  ASSERT_EQ(spline_moved.t_max(), 3);
 }
 
 TYPED_TEST(Spline, Bezier1Fit)
