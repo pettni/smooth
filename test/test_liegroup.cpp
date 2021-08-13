@@ -63,6 +63,9 @@ TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
   test<TypeParam>();
   test<Eigen::Map<TypeParam>>();
   test<Eigen::Map<const TypeParam>>();
+
+  // move constructors are noexcept
+  static_assert(std::is_nothrow_move_constructible_v<TypeParam>);
 }
 
 TYPED_TEST(LieGroupInterface, Constructors)
