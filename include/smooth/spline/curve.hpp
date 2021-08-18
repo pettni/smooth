@@ -457,7 +457,10 @@ auto reparameterize_curve(const Curve<G> & curve,
   const typename G::Tangent & vel_min,
   const typename G::Tangent & vel_max,
   const typename G::Tangent & acc_min,
-  const typename G::Tangent & acc_max)
+  const typename G::Tangent & acc_max,
+  const double dt = 0.05,
+  const double min_v = 0.1,
+  const double alpha = 1.0)
 {
   // consider system \ddot s = u
 
@@ -522,10 +525,6 @@ auto reparameterize_curve(const Curve<G> & curve,
 
   double t = 0;
   Eigen::Vector2d x(0, 1);  // start with original velocity
-
-  static constexpr double min_v = 0.01;
-  static constexpr double dt    = 0.05;
-  static constexpr double alpha = 10;
 
   std::vector<double> svec, tvec;
 
