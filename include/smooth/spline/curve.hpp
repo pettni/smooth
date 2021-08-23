@@ -465,7 +465,8 @@ auto reparameterize_curve(const Curve<G> & curve,
   const double dt = 0.05,
   const double min_v = 0.1,
   const double alpha = 1.0,
-  const double max_accel = 10
+  const double max_accel = 10,
+  bool stop_at_zero = false
   )
 {
   static constexpr double eps = 100 * std::numeric_limits<double>::epsilon();
@@ -475,6 +476,10 @@ auto reparameterize_curve(const Curve<G> & curve,
   const auto ds_bound = [&](const Eigen::Vector2d & state) -> double {
     typename G::Tangent vel;
     curve.eval(state.x(), vel);
+
+    if (stop_at_zero && state.x() >= curve.t_max()) {
+      return min_v;
+    }
 
     // velocity ds must be s.t. vel_min <= ds * vel <= vel_max component-wise
     double max_ds = std::numeric_limits<double>::infinity();
@@ -488,7 +493,7 @@ auto reparameterize_curve(const Curve<G> & curve,
     return max_ds;
   };
 
-  // method to extract acceleration boudns for a given s, ds
+  // method to extract acceleration bounds for a given s, ds
   const auto d2s_bound = [&](const Eigen::Vector2d & state) -> std::pair<double, double> {
     typename G::Tangent vel, acc;
     curve.eval(state.x(), vel, acc);
@@ -540,10 +545,10 @@ auto reparameterize_curve(const Curve<G> & curve,
     svec.push_back(x.x());
 
     Eigen::Vector2d x_lookahead = x;
-    double h_val                = std::numeric_limits<double>::infinity();
+    double h_val                = ds_bound(x_lookahead) - x_lookahead(1);
     while (x_lookahead(0) < curve.t_max() && x_lookahead(1) > min_v) {
-      h_val = std::min<double>(h_val, ds_bound(x_lookahead) - x_lookahead(1));
       stepper.do_step(ode_backup, x_lookahead, 0, dt);
+      h_val = std::min<double>(h_val, ds_bound(x_lookahead) - x_lookahead(1));
     }
 
     auto [u_min, u_max] = d2s_bound(x);

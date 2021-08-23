@@ -32,8 +32,8 @@
 #include "smooth/tn.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include <matplot/matplot.h>
 #include "plot_tools.hpp"
+#include <matplot/matplot.h>
 
 using matplot::plot;
 using std::views::transform;
@@ -53,12 +53,11 @@ int main(int, char const **)
 
   Eigen::Vector3d vel_bounds(2, 2, 0.2), acc_bounds(1, 1, 1);
 
-  auto [tvec, svec] = smooth::reparameterize_curve(c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds);
+  auto [tvec, svec] = smooth::reparameterize_curve(
+    c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 0.05, 0.01, 5, 10, true);
 
   std::vector<smooth::T1d> svec_tmp;
-  for (double s : svec) {
-    svec_tmp.push_back(smooth::T1d(Eigen::Matrix<double, 1, 1>(s)));
-  }
+  for (double s : svec) { svec_tmp.push_back(smooth::T1d(Eigen::Matrix<double, 1, 1>(s))); }
   auto s_spline = smooth::fit_cubic_bezier(tvec, svec_tmp);
 
   std::vector<double> vx, vy, w, ax, ay, dw;
@@ -89,13 +88,13 @@ int main(int, char const **)
     rdw.push_back(acc_reparam.z());
   }
 
-
 #ifdef ENABLE_PLOTTING
   matplot::figure();
   matplot::hold(matplot::on);
   matplot::title("Reparameterization");
   plot(tvec, svec, "b")->line_width(2);
-  plot(tvec, r2v(tvec | transform([&] (double t) {return s_spline.eval(t).rn().x(); })), "r")->line_width(2);
+  plot(tvec, r2v(tvec | transform([&](double t) { return s_spline.eval(t).rn().x(); })), "r")
+    ->line_width(2);
 
   matplot::figure();
   matplot::hold(matplot::on);
