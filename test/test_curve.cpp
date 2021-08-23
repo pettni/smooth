@@ -455,3 +455,18 @@ TEST(Curve, Reparameterize)
   ASSERT_EQ(s.front(), 0);
   ASSERT_GE(s.back(), c.t_max());
 }
+
+
+TEST(Curve, ReparameterizeZero)
+{
+  smooth::Curve<smooth::SE2d> c;
+  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
+
+  Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
+
+  auto [t, s] = smooth::reparameterize_curve(c, -vel_max, vel_max, -acc_max, acc_max);
+
+  ASSERT_EQ(t.front(), 0);
+  ASSERT_EQ(s.front(), 0);
+  ASSERT_GE(s.back(), c.t_max());
+}

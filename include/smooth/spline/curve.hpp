@@ -445,6 +445,10 @@ private:
  * @param curve Curve \f$ x(t) \f$ to reparameterize
  * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
  * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
+ * @param dt reparameterization time step
+ * @param min_v lower bound on velocity for look-ahead
+ * @param alpha barrier parameter
+ * @param max_accel bound \f$ \bar a \f$ s.t. \f$ | s''(t) | \leq \bar a \f$
  *
  * If \f$ x(\cdot) \f$ is a Curve, then this function generates a function \f$ s(t) \f$ the
  * reparamtereized curve \f$ x(s(t)) \f$ has body velocity bounded between vel_min and vel_max, and
@@ -460,8 +464,11 @@ auto reparameterize_curve(const Curve<G> & curve,
   const typename G::Tangent & acc_max,
   const double dt = 0.05,
   const double min_v = 0.1,
-  const double alpha = 1.0)
+  const double alpha = 1.0,
+  const double max_accel = 10
+  )
 {
+  static constexpr double eps = 100 * std::numeric_limits<double>::epsilon();
   // consider system \ddot s = u
 
   // method to extract maximal velocity for a given s
@@ -472,9 +479,9 @@ auto reparameterize_curve(const Curve<G> & curve,
     // velocity ds must be s.t. vel_min <= ds * vel <= vel_max component-wise
     double max_ds = std::numeric_limits<double>::infinity();
     for (auto i = 0u; i != G::Dof; ++i) {
-      if (vel(i) > 0) {
+      if (vel(i) > eps) {
         max_ds = std::min<double>(max_ds, vel_max(i) / vel(i));
-      } else if (vel(i) < 0) {
+      } else if (vel(i) < -eps) {
         max_ds = std::min<double>(max_ds, vel_min(i) / vel(i));
       }
     }
@@ -488,15 +495,15 @@ auto reparameterize_curve(const Curve<G> & curve,
 
     // acceleration d2s must be s.t. acc_min - acc * ds^2 <= d2s * vel <= acc_max - acc * ds^2
     // component-wise
-    double max_d2s = std::numeric_limits<double>::infinity();
-    double min_d2s = -std::numeric_limits<double>::infinity();
+    double max_d2s = max_accel;
+    double min_d2s = -max_accel;
     for (auto i = 0u; i != G::Dof; ++i) {
-      typename G::Tangent upper = acc_max - acc * state.y() * state.y();
-      typename G::Tangent lower = acc_min - acc * state.y() * state.y();
-      if (vel(i) > 0) {
+      const typename G::Tangent upper = acc_max - acc * state.y() * state.y();
+      const typename G::Tangent lower = acc_min - acc * state.y() * state.y();
+      if (vel(i) > eps) {
         max_d2s = std::min<double>(max_d2s, upper(i) / vel(i));
         min_d2s = std::max<double>(min_d2s, lower(i) / vel(i));
-      } else if (vel(i) < 0) {
+      } else if (vel(i) < -eps) {
         max_d2s = std::min<double>(max_d2s, lower(i) / vel(i));
         min_d2s = std::max<double>(min_d2s, upper(i) / vel(i));
       }
