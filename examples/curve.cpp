@@ -53,8 +53,11 @@ int main(int, char const **)
 
   Eigen::Vector3d vel_bounds(2, 2, 0.2), acc_bounds(1, 1, 1);
 
-  auto [tvec, svec] = smooth::reparameterize_curve(
-    c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 0.05, 0.01, 5, 10, true);
+  auto [tvec, svec] = smooth::reparameterize_curve2(c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, true);
+
+  for (auto t : tvec) {
+    std::cout << t << std::endl;
+  }
 
   std::vector<smooth::T1d> svec_tmp;
   for (double s : svec) { svec_tmp.push_back(smooth::T1d(Eigen::Matrix<double, 1, 1>(s))); }
