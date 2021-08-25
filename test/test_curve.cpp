@@ -449,13 +449,12 @@ TEST(Curve, Reparameterize)
 
   Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
 
-  auto [t, s] = smooth::reparameterize_curve(c, -vel_max, vel_max, -acc_max, acc_max);
+  auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
 
   ASSERT_EQ(t.front(), 0);
   ASSERT_EQ(s.front(), 0);
-  ASSERT_GE(s.back(), c.t_max());
+  ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
 }
-
 
 TEST(Curve, ReparameterizeZero)
 {
@@ -464,9 +463,28 @@ TEST(Curve, ReparameterizeZero)
 
   Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
 
-  auto [t, s] = smooth::reparameterize_curve(c, -vel_max, vel_max, -acc_max, acc_max);
+  auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
 
   ASSERT_EQ(t.front(), 0);
   ASSERT_EQ(s.front(), 0);
-  ASSERT_GE(s.back(), c.t_max());
+
+  ASSERT_EQ(t.back(), 0);
+  ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
+}
+
+TEST(Curve, ReparameterizeZeroMiddle)
+{
+  smooth::Curve<smooth::SE2d> c;
+  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
+  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+
+  Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
+
+  auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
+
+  ASSERT_EQ(t.front(), 0);
+  ASSERT_EQ(s.front(), 0);
+
+  ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
 }

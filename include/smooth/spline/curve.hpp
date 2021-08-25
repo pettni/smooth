@@ -26,6 +26,8 @@
 #ifndef SMOOTH__INTERP__CURVE__HPP_
 #define SMOOTH__INTERP__CURVE__HPP_
 
+#define CURVE_DEBUG 0
+
 /**
  * @file
  * @brief bezier splines on lie groups.
@@ -79,8 +81,8 @@ public:
   template<std::ranges::range Rv>
   // \cond
   requires(std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>)
-    // \endcond
-    Curve(double T, const Rv & vs)
+  // \endcond
+  Curve(double T, const Rv & vs)
       : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
@@ -198,8 +200,8 @@ public:
    * @param R turning radius
    */
   static Curve Dubins(const G & gb, double R = 1)
-    // \cond
-    requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
+  // \cond
+  requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
   // \endcond
   {
     const auto desc = dubins(gb, R);
@@ -596,7 +598,7 @@ auto reparameterize_curve2(const Curve<G> & curve,
   const typename G::Tangent & acc_min,
   const typename G::Tangent & acc_max,
   double start_vel = 1,
-  double end_vel   = 0,
+  double end_vel   = std::numeric_limits<double>::infinity(),
   bool slower_only = false)
 {
   static constexpr double eps = 100 * std::numeric_limits<double>::epsilon();
@@ -637,8 +639,8 @@ auto reparameterize_curve2(const Curve<G> & curve,
   }
 
   // start and end with prescribed velocities
-  v.front() = start_vel;
-  v.back()  = end_vel;
+  v.front() = std::min(v.front(), start_vel);
+  v.back()  = std::min(v.back(), end_vel);
 
   // CALCULATE ACCELERATION BOUNDS (under-approximation since using maximal velocity)
 
@@ -685,7 +687,7 @@ auto reparameterize_curve2(const Curve<G> & curve,
     const double delta =
       (2 * v[i0] * dv / (a0 + a1) + 4 * (a0 / 3 + a1 / 6) * dv * dv / ((a0 + a1) * (a0 + a1))) / ds;
 
-    if (delta <= 1) {
+    if (delta == delta && delta <= 1) {
       // can keep v0
       TT[i0]   = 2 * dv / (delta * (a0 + a1));
       abeg[i0] = delta * a0;
@@ -698,11 +700,12 @@ auto reparameterize_curve2(const Curve<G> & curve,
       const double res = B * B / (4. * A * A) - C / A;  // positive
 
       TT[i0]   = -B / (2. * A) + std::sqrt(res);
-      v[i0]    = v[i1] - (a0 + a1) * TT[i0] / 2;
+      v[i0]    = TT[i0] < eps ? v[i1] : v[i1] - (a0 + a1) * TT[i0] / 2;
       abeg[i0] = a0;
       aend[i0] = a1;
     }
 
+#if CURVE_DEBUG
     // clang-format off
     double check0 = v[i1] - v[i0] - (abeg[i0] + aend[i0]) * TT[i0] / 2;
     double check1 = ds - v[i0] * TT[i0] - abeg[i0] * TT[i0] * TT[i0] / 3 - aend[i0] * TT[i0] * TT[i0] / 6;
@@ -710,6 +713,19 @@ auto reparameterize_curve2(const Curve<G> & curve,
         throw std::runtime_error("reparameterize_curve2: invalid reverse solution");
     }
     // clang-format on
+
+    std::cout << "BACKWARD PASS " << s[i0] << " " << s[i1] << std::endl;
+    std::cout << "v " << v[i0] << " " << v[i1] << std::endl;
+    std::cout << "ds " << ds << std::endl;
+    std::cout << "dv " << dv << std::endl;
+    std::cout << "a " << a0 << " " << a1 << std::endl;
+    std::cout << "delta " << delta << std::endl;
+
+    std::cout << "SOLUTION" << std::endl;
+    std::cout << "v " << v[i0] << " " << v[i1] << std::endl;
+    std::cout << "T " << TT[i0] << std::endl;
+    std::cout << "a " << abeg[i0] << " " << aend[i0] << std::endl << std::endl;
+#endif
   }
 
   // forward pass over all segments
@@ -720,43 +736,61 @@ auto reparameterize_curve2(const Curve<G> & curve,
 
     const double ds = s[i1] - s[i0];  // positive
     const double dv = v[i1] - v[i0];
-    const double a0 = dv > 0 ? amax[i0] : amin[i0];  // same sign as dv
-    const double a1 = dv > 0 ? amax[i1] : amin[i0];  // same sign as dv
+    const double a0 = dv >= 0 ? amax[i0] : amin[i0];  // same sign as dv
+    const double a1 = dv >= 0 ? amax[i1] : amin[i0];  // same sign as dv
 
     const double delta =
       (2 * v[i0] * dv / (a0 + a1) + 4 * (a0 / 3 + a1 / 6) * dv * dv / ((a0 + a1) * (a0 + a1))) / ds;
 
-    if (delta <= 0) {
+    if (delta == delta && delta <= eps) {
       // invalid solution, likely because dv = 0
       TT[i0]   = ds / v[i0];
       abeg[i0] = 0;
       aend[i0] = 0;
-    } else if (delta <= 1) {
+    } else if (delta == delta && delta <= 1) {
       // can keep v1 (should always be the case for dv < 0)
       TT[i0]   = 2 * dv / (delta * (a0 + a1));
       abeg[i0] = delta * a0;
       aend[i0] = delta * a1;
     } else {
       // solve for v1, T (should only occur for dv > 0)
-      if (dv <= 0) { throw std::runtime_error("reparameterize_curve2: unexpected branch"); }
+#if CURVE_DEBUG
+      if (dv < 0) { throw std::runtime_error("reparameterize_curve2: unexpected branch"); }
+#endif
       const double A   = a0 / 3 + a1 / 6;               // positive
       const double B   = v[i0];                         // non-negative
       const double C   = -ds;                           // negative
       const double res = B * B / (4. * A * A) - C / A;  // positive
 
       TT[i0]   = -B / (2. * A) + std::sqrt(res);
-      v[i1]    = v[i0] + (a0 + a1) * TT[i0] / 2;
-      abeg[i0] = a0;
-      aend[i0] = a1;
+      v[i1]    = TT[i0] < eps ? v[i0] : v[i0] + (a0 + a1) * TT[i0] / 2;
+      abeg[i0] = TT[i0] < eps ? 0 : a0;
+      aend[i0] = TT[i0] < eps ? 0 : a1;
     }
 
-    // clang-format off
+#if CURVE_DEBUG
+    std::cout << "FORWARD PASS " << s[i0] << " " << s[i1] << std::endl;
+    std::cout << "v " << v[i0] << " " << v[i1] << std::endl;
+    std::cout << "ds " << ds << std::endl;
+    std::cout << "dv " << dv << std::endl;
+    std::cout << "a " << a0 << " " << a1 << std::endl;
+    std::cout << "delta " << delta << std::endl;
+
     double check0 = v[i1] - v[i0] - (abeg[i0] + aend[i0]) * TT[i0] / 2;
-    double check1 = ds - v[i0] * TT[i0] - abeg[i0] * TT[i0] * TT[i0] / 3 - aend[i0] * TT[i0] * TT[i0] / 6;
-    if (std::abs(check0) > 1e-10 || std::abs(check1) > 1e-10) {
+    double check1 =
+      ds - v[i0] * TT[i0] - abeg[i0] * TT[i0] * TT[i0] / 3 - aend[i0] * TT[i0] * TT[i0] / 6;
+    if (TT[i0] > 0 && (std::abs(check0) > 1e-10 || std::abs(check1) > 1e-10)) {
+      std::cout << check0 << std::endl;
+      std::cout << check1 << std::endl;
       throw std::runtime_error("reparameterize_curve2: invalid forward solution");
     }
-    // clang-format on
+
+    // logging
+    std::cout << "SOLUTION" << std::endl;
+    std::cout << "v " << v[i0] << " " << v[i1] << std::endl;
+    std::cout << "T " << TT[i0] << std::endl;
+    std::cout << "a " << abeg[i0] << " " << aend[i0] << std::endl << std::endl;
+#endif
   }
 
   static constexpr std::size_t points = 50;
@@ -766,18 +800,23 @@ auto reparameterize_curve2(const Curve<G> & curve,
   ss.reserve(points * TT.size());
 
   double tcur = 0;
+
+  tt.push_back(0);
+  ss.push_back(0);
+
   for (auto i = 0u; i < n_seg; ++i) {
-    if (TT[i] <= 0) { continue; }
-    for (auto j = 0u; j != points; ++j) {
-      const double dt = static_cast<double>(j) / points * TT[i];
-      tt.push_back(tcur + dt);
-      ss.push_back(s[i] + v[i] * dt + abeg[i] * dt * dt / 3 + aend[i] * dt * dt / 6);
+    if (TT[i] == 0) {
+      tt.push_back(tcur + TT[i]);
+      ss.push_back(s[i + 1]);
+    } else {
+      for (auto j = 1u; j <= points; ++j) {
+        const double dt = static_cast<double>(j) / points * TT[i];
+        tt.push_back(tcur + dt);
+        ss.push_back(s[i] + v[i] * dt + abeg[i] * dt * dt / 3 + aend[i] * dt * dt / 6);
+      }
     }
     tcur += TT[i];
   }
-  tt.push_back(tcur);
-  ss.push_back(s.back());
-
   return std::make_pair(tt, ss);
 }
 

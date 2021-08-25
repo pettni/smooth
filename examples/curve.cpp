@@ -53,7 +53,7 @@ int main(int, char const **)
 
   Eigen::Vector3d vel_bounds(2, 2, 0.2), acc_bounds(0.5, 1, 1);
 
-  auto [tvec, svec] = smooth::reparameterize_curve2(c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 0.1, 1);
+  auto [tvec, svec] = smooth::reparameterize_curve2(c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 0, 0);
 
   /* for (auto i = 0u; i != tvec.size(); ++i) {
     std::cout << tvec[i] << " " << svec[i] << std::endl;
