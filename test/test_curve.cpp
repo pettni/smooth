@@ -447,16 +447,68 @@ TEST(Curve, Reparameterize)
   c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1));
   c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
 
-  Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
+  Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
+  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  ASSERT_EQ(std::ranges::adjacent_find(t, std::ranges::greater_equal()), t.end());
-  ASSERT_EQ(std::ranges::adjacent_find(s, std::ranges::greater_equal()), s.end());
+  ASSERT_EQ(sfun.eval(0), 0);
+  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
 
-  ASSERT_EQ(t.front(), 0);
-  ASSERT_EQ(s.front(), 0);
-  ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun.eval(t, ds, d2s);
+
+    Eigen::Vector3d vel, acc;
+    c.eval(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds;
+    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
+  }
+}
+
+TEST(Curve, ReparameterizeSpline)
+{
+  std::srand(100);
+
+  std::vector<double> tt{1, 2, 3, 4, 5, 6};
+  std::vector<smooth::SE2d> gg{smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random()};
+
+  smooth::Curve<smooth::SE2d> c(smooth::fit_cubic_bezier(tt, gg));
+
+  Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
+
+  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+
+  ASSERT_EQ(sfun.eval(0), 0);
+  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
+
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun.eval(t, ds, d2s);
+
+    Eigen::Vector3d vel, acc;
+    c.eval(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds;
+    // Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    /* ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05); */
+  }
 }
 
 TEST(Curve, ReparameterizeZero)
@@ -464,18 +516,29 @@ TEST(Curve, ReparameterizeZero)
   smooth::Curve<smooth::SE2d> c;
   c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
 
-  Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
+  Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
+  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  ASSERT_EQ(std::ranges::adjacent_find(t, std::ranges::greater_equal()), t.end());
-  ASSERT_EQ(std::ranges::adjacent_find(s, std::ranges::greater_equal()), s.end());
+  ASSERT_EQ(sfun.eval(0), 0);
+  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
 
-  ASSERT_EQ(t.front(), 0);
-  ASSERT_NEAR(s.front(), c.t_max(), 1e-8);
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun.eval(t, ds, d2s);
 
-  ASSERT_EQ(t.back(), 0);
-  ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
+    Eigen::Vector3d vel, acc;
+    c.eval(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds;
+    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
+  }
 }
 
 TEST(Curve, ReparameterizeZeroMiddle)
@@ -485,15 +548,27 @@ TEST(Curve, ReparameterizeZeroMiddle)
   c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
   c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
 
-  Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
+  Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
+  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  ASSERT_EQ(std::ranges::adjacent_find(t, std::ranges::greater_equal()), t.end());
-  ASSERT_EQ(std::ranges::adjacent_find(s, std::ranges::greater_equal()), s.end());
+  ASSERT_EQ(sfun.eval(0), 0);
+  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
 
-  ASSERT_EQ(t.front(), 0);
-  ASSERT_EQ(s.front(), 0);
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun.eval(t, ds, d2s);
 
-  ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
+    Eigen::Vector3d vel, acc;
+    c.eval(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds;
+    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
+  }
 }

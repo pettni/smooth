@@ -42,6 +42,7 @@
 #include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
 #include "smooth/se2.hpp"
+#include "smooth/tn.hpp"
 
 #include "bezier.hpp"
 #include "common.hpp"
@@ -81,8 +82,8 @@ public:
   template<std::ranges::range Rv>
   // \cond
   requires(std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>)
-  // \endcond
-  Curve(double T, const Rv & vs)
+    // \endcond
+    Curve(double T, const Rv & vs)
       : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
@@ -200,8 +201,8 @@ public:
    * @param R turning radius
    */
   static Curve Dubins(const G & gb, double R = 1)
-  // \cond
-  requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
+    // \cond
+    requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
   // \endcond
   {
     const auto desc = dubins(gb, R);
@@ -819,6 +820,224 @@ auto reparameterize_curve2(const Curve<G> & curve,
     tcur += TT[i];
   }
   return std::make_pair(tt, ss);
+}
+
+/**
+ * @brief Spline-like object that represents a Reparameterization as a function \f$ t \rightarrow
+ * s(t) \f$.
+ */
+class Reparameterization
+{
+public:
+  /**
+   * @brief Create Reparameterization
+   * @param smax maximal value of \f$ s \f$.
+   * @param spline reparameterization function.
+   */
+  Reparameterization(double smax, PiecewiseBezier<3, T1d> && spline)
+      : smax_(smax), spline_(std::move(spline))
+  {}
+
+  /// @brief Minmal t value
+  double t_min() const { return 0; }
+
+  /// @brief Maximal t value
+  double t_max() const { return spline_.t_max(); }
+
+  /**
+   * @brief Evaluate reparameterization function
+   * @param t time
+   */
+  double eval(double t) const { return std::clamp<double>(spline_.eval(t).rn().x(), 0., smax_); }
+
+  /**
+   * @brief Evaluate reparameterization function
+   * @param[in] t time
+   * @param[out] ds return derivative \f$ s'(t) \f$
+   */
+  double eval(double t, double & ds) const
+  {
+    Eigen::Matrix<double, 1, 1> v;
+    double s = std::clamp<double>(spline_.eval(t, v).rn().x(), 0., smax_);
+    ds       = v.x();
+    return s;
+  }
+
+  /**
+   * @brief Evaluate reparameterization function
+   * @param[in] t time
+   * @param[out] ds return first derivative \f$ s'(t) \f$
+   * @param[out] d2s return second derivative \f$ s''(t) \f$
+   */
+  double eval(double t, double & ds, double & d2s) const
+  {
+    Eigen::Matrix<double, 1, 1> v, a;
+    double s = std::clamp<double>(spline_.eval(t, v, a).rn().x(), 0., smax_);
+    ds       = v.x();
+    d2s      = a.x();
+    return s;
+  }
+
+private:
+  double smax_;
+  PiecewiseBezier<3, T1d> spline_;
+};
+
+/**
+ * @brief Reparameterize a curve to approximately satisfy velocity and acceleration constraints.
+ *
+ * If \f$ x(\cdot) \f$ is a Curve, then this function generates a function \f$ s(t) \f$ the
+ * reparamterized curve \f$ x(s(t)) \f$ has body velocity bounded between vel_min and vel_max, and
+ * body acceleration bounded between acc_min and acc_max.
+ *
+ * @param curve Curve \f$ x(t) \f$ to reparameterize.
+ * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
+ * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
+ * @param start_vel desired value for \f$ s'(0) \f$ (must be non-negative).
+ * @param end_vel desired value for \f$ s'(t_{max}) \f$ (must be non-negative).
+ * @param slower_only result is s.t. \f$ s'(t) <= 1 \f$.
+ * @param dt time discretization step (smaller gives a more accurate solution)
+ *
+ * @note It may not be feasible to satisfy the desired boundary velocities. In those cases the
+ * resulting velocities will be lower than the desired values.
+ */
+template<LieGroup G>
+Reparameterization reparameterize_curve3(const Curve<G> & curve,
+  const typename G::Tangent & vel_min,
+  const typename G::Tangent & vel_max,
+  const typename G::Tangent & acc_min,
+  const typename G::Tangent & acc_max,
+  double start_vel = 1,
+  double end_vel   = 10,
+  bool slower_only = false,
+  double dt        = 0.05)
+{
+  static constexpr double eps = 100 * std::numeric_limits<double>::epsilon();
+
+  // stepper
+
+  boost::numeric::odeint::runge_kutta4<Eigen::Vector2d,
+    double,
+    Eigen::Vector2d,
+    double,
+    boost::numeric::odeint::vector_space_algebra>
+    stepper;
+
+  // ode
+  double a       = 0;
+  const auto ode = [&a](const Eigen::Vector2d & s_v, Eigen::Vector2d & ds_dv, double) {
+    ds_dv.x() = s_v.y();
+    ds_dv.y() = a;
+  };
+
+  // BACKWARDS PASS
+
+  Eigen::Vector2d state(curve.t_max(), end_vel);  // s, v
+  std::vector<double> xx;
+  std::vector<smooth::T1d> yy;
+
+  do {
+    typename G::Tangent vel, acc;
+    curve.eval(state.x(), vel, acc);
+
+    // clamp velocity to not exceed constraints
+    for (auto i = 0u; i != G::Dof; ++i) {
+      if (vel(i) > eps) {
+        state.y() = std::min<double>(state.y(), vel_max(i) / vel(i));
+      } else if (vel(i) < -eps) {
+        state.y() = std::min<double>(state.y(), vel_min(i) / vel(i));
+      }
+    }
+
+    if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
+
+    if (xx.empty() || state.x() < xx.back()) {
+      xx.push_back(state.x());
+      yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.y())));
+    }
+
+    // figure minimal allowed acceleration
+    a = -std::numeric_limits<double>::infinity();
+    for (auto i = 0u; i != G::Dof; ++i) {
+      const typename G::Tangent upper = acc_max - acc * state.y() * state.y();
+      const typename G::Tangent lower = acc_min - acc * state.y() * state.y();
+      if (vel(i) > eps) {
+        a = std::max<double>(a, lower(i) / vel(i));
+      } else if (vel(i) < -eps) {
+        a = std::max<double>(a, upper(i) / vel(i));
+      }
+    }
+
+    if (a == -std::numeric_limits<double>::infinity()) {
+      // segment with zero velocity
+      state.x() -= dt * state.y();
+    } else {
+      stepper.do_step(ode, state, 0, -dt);
+
+      // ensure v stays positive
+      state.y() = std::max(state.y(), 1e-3);
+    }
+
+  } while (state.x() > 0);
+
+  if (xx.empty() || state.x() < xx.back()) {
+    xx.push_back(state.x());
+    yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.y())));
+  }
+
+  // fit a spline to get v(s)
+
+  std::reverse(xx.begin(), xx.end());
+  std::reverse(yy.begin(), yy.end());
+  auto v_func = fit_linear_bezier(xx, yy);
+
+  // FORWARD PASS
+
+  xx.clear();
+  yy.clear();
+  state << 0, start_vel;
+
+  do {
+    typename G::Tangent vel, acc;
+    curve.eval(state.x(), vel, acc);
+
+    // clamp velocity to not exceed upper bound
+    state.y() = std::min<double>(state.y(), v_func.eval(state.x()).rn().x());
+
+    if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
+
+    xx.push_back(xx.empty() ? 0 : xx.back() + dt);
+    yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.x())));
+
+    // figure maximal allowed acceleration
+    a = std::numeric_limits<double>::infinity();
+    for (auto i = 0u; i != G::Dof; ++i) {
+      const typename G::Tangent upper = acc_max - acc * state.y() * state.y();
+      const typename G::Tangent lower = acc_min - acc * state.y() * state.y();
+      if (vel(i) > eps) {
+        a = std::min<double>(a, upper(i) / vel(i));
+      } else if (vel(i) < -eps) {
+        a = std::min<double>(a, lower(i) / vel(i));
+      }
+    }
+
+    if (a == std::numeric_limits<double>::infinity()) {
+      state.x() += dt * state.y();
+    } else {
+      stepper.do_step(ode, state, 0, dt);
+
+      // ensure v stays positive
+      state.y() = std::max(state.y(), 1e-3);
+    }
+
+  } while (state.x() < curve.t_max());
+
+  xx.push_back(xx.back() + dt);
+  yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.x())));
+
+  auto func = fit_cubic_bezier(xx, yy);
+
+  return Reparameterization(curve.t_max(), std::move(func));
 }
 
 }  // namespace smooth

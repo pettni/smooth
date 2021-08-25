@@ -32,11 +32,7 @@
 #include "smooth/tn.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include "plot_tools.hpp"
 #include <matplot/matplot.h>
-
-using matplot::plot;
-using std::views::transform;
 #endif
 
 /**
@@ -45,40 +41,48 @@ using std::views::transform;
 int main(int, char const **)
 {
   using Curve = smooth::Curve<smooth::SE2d>;
+  std::srand(100);
 
-  Curve c;
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 5);
+  std::vector<double> tt{1, 2, 3, 4, 5, 6};
+  std::vector<smooth::SE2d> gg{smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random()};
+
+  Curve c(smooth::fit_cubic_bezier(tt, gg));
+
+  /* Curve c = Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 5);
   c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 5);
+  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 10); */
 
-  Eigen::Vector3d vel_bounds(2, 2, 0.2), acc_bounds(0.5, 1, 1);
+  Eigen::Vector3d vel_bounds(1, 1, 1), acc_bounds(1, 1, 1);
 
-  auto [tvec, svec] = smooth::reparameterize_curve2(c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 0, 0);
+  auto sfun = smooth::reparameterize_curve3(
+    c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 1, 1, false, 0.001);
 
-  /* for (auto i = 0u; i != tvec.size(); ++i) {
-    std::cout << tvec[i] << " " << svec[i] << std::endl;
-  } */
-
-  std::vector<smooth::T1d> svec_tmp;
-  for (double s : svec) { svec_tmp.push_back(smooth::T1d(Eigen::Matrix<double, 1, 1>(s))); }
-  auto s_spline = smooth::fit_cubic_bezier(tvec, svec_tmp);
-
+  std::vector<double> tvec, svec;
   std::vector<double> vx, vy, w, ax, ay, dw;
   std::vector<double> rvx, rvy, rw, rax, ray, rdw;
 
-  for (auto i = 0u; i != tvec.size(); ++i) {
+  for (double t = 0; t < sfun.t_max(); t += 0.01) {
+    double ds, d2s;
+    double s = sfun.eval(t, std::ref(ds), std::ref(d2s));
+
     Eigen::Vector3d vel, acc;
-    c.eval(svec[i], vel, acc);
+    c.eval(s, vel, acc);
 
-    Eigen::Matrix<double, 1, 1> ds, d2s;
-    s_spline.eval(tvec[i], ds, d2s);
+    Eigen::Vector3d vel_reparam = vel * ds;
+    Eigen::Vector3d acc_reparam = vel * d2s + acc * ds * ds;
 
-    Eigen::Vector3d vel_reparam = vel * ds.x();
-    Eigen::Vector3d acc_reparam = acc * ds.x() * ds.x() + vel * d2s.x();
+    tvec.push_back(t);
+    svec.push_back(s);
 
     vx.push_back(vel.x());
     vy.push_back(vel.y());
     w.push_back(vel.z());
+
     ax.push_back(acc.x());
     ay.push_back(acc.y());
     dw.push_back(acc.z());
@@ -86,6 +90,7 @@ int main(int, char const **)
     rvx.push_back(vel_reparam.x());
     rvy.push_back(vel_reparam.y());
     rw.push_back(vel_reparam.z());
+
     rax.push_back(acc_reparam.x());
     ray.push_back(acc_reparam.y());
     rdw.push_back(acc_reparam.z());
@@ -95,29 +100,27 @@ int main(int, char const **)
   matplot::figure();
   matplot::hold(matplot::on);
   matplot::title("Reparameterization");
-  plot(tvec, svec, "b")->line_width(2);
-  plot(tvec, r2v(tvec | transform([&](double t) { return s_spline.eval(t).rn().x(); })), "r")
-    ->line_width(2);
+  matplot::plot(tvec, svec, "b")->line_width(2);
 
   matplot::figure();
   matplot::hold(matplot::on);
   matplot::title("Reparameterized velocities");
-  plot(tvec, vx, "r--")->line_width(2);
-  plot(tvec, vy, "g--")->line_width(2);
-  plot(tvec, w, "b--")->line_width(2);
-  plot(tvec, rvx, "r")->line_width(2);
-  plot(tvec, rvy, "g")->line_width(2);
-  plot(tvec, rw, "b")->line_width(2);
+  matplot::plot(tvec, vx, "r--")->line_width(2);
+  matplot::plot(tvec, vy, "g--")->line_width(2);
+  matplot::plot(tvec, w, "b--")->line_width(2);
+  matplot::plot(tvec, rvx, "r")->line_width(2);
+  matplot::plot(tvec, rvy, "g")->line_width(2);
+  matplot::plot(tvec, rw, "b")->line_width(2);
 
   matplot::figure();
   matplot::hold(matplot::on);
   matplot::title("Reparameterized accelerations");
-  plot(tvec, ax, "r--")->line_width(2);
-  plot(tvec, ay, "g--")->line_width(2);
-  plot(tvec, dw, "b--")->line_width(2);
-  plot(tvec, rax, "r--")->line_width(2);
-  plot(tvec, ray, "g--")->line_width(2);
-  plot(tvec, rdw, "b--")->line_width(2);
+  matplot::plot(tvec, ax, "r--")->line_width(2);
+  matplot::plot(tvec, ay, "g--")->line_width(2);
+  matplot::plot(tvec, dw, "b--")->line_width(2);
+  matplot::plot(tvec, rax, "r")->line_width(2);
+  matplot::plot(tvec, ray, "g")->line_width(2);
+  matplot::plot(tvec, rdw, "b")->line_width(2);
 
   matplot::show();
 #endif
