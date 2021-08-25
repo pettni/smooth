@@ -51,13 +51,13 @@ int main(int, char const **)
   c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
   c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 5);
 
-  Eigen::Vector3d vel_bounds(2, 2, 0.2), acc_bounds(1, 1, 1);
+  Eigen::Vector3d vel_bounds(2, 2, 0.2), acc_bounds(0.5, 1, 1);
 
-  auto [tvec, svec] = smooth::reparameterize_curve2(c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, true);
+  auto [tvec, svec] = smooth::reparameterize_curve2(c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 0.1, 1);
 
-  for (auto t : tvec) {
-    std::cout << t << std::endl;
-  }
+  /* for (auto i = 0u; i != tvec.size(); ++i) {
+    std::cout << tvec[i] << " " << svec[i] << std::endl;
+  } */
 
   std::vector<smooth::T1d> svec_tmp;
   for (double s : svec) { svec_tmp.push_back(smooth::T1d(Eigen::Matrix<double, 1, 1>(s))); }

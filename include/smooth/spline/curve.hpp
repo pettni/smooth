@@ -444,7 +444,8 @@ private:
     const typename Go::Tangent & vel_max,
     const typename Go::Tangent & acc_min,
     const typename Go::Tangent & acc_max,
-    bool,
+    double,
+    double,
     bool);
 };
 
@@ -572,19 +573,21 @@ auto reparameterize_curve(const Curve<G> & curve,
 }
 
 /**
- * @brief Reparameterize a curve to satisfy velocity and acceleration constraints.
- *
- * @param curve Curve \f$ x(t) \f$ to reparameterize
- * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
- * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
- * @param stop_at_zero result has zero velocity at the end point
- * @param slower_only result is s.t. s'(t) <= 1
+ * @brief Reparameterize a curve to approximately satisfy velocity and acceleration constraints.
  *
  * If \f$ x(\cdot) \f$ is a Curve, then this function generates a function \f$ s(t) \f$ the
- * reparamtereized curve \f$ x(s(t)) \f$ has body velocity bounded between vel_min and vel_max, and
+ * reparamterized curve \f$ x(s(t)) \f$ has body velocity bounded between vel_min and vel_max, and
  * body acceleration bounded between acc_min and acc_max.
  *
- * @note Results are better if \f$ x(t) \f$ has continuous first-order derivatives.
+ * @param curve Curve \f$ x(t) \f$ to reparameterize.
+ * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
+ * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
+ * @param start_vel desired value for \f$ s'(0) \f$.
+ * @param end_vel desired value for \f$ s'(t_{max}) \f$.
+ * @param slower_only result is s.t. \f$ s'(t) <= 1 \f$.
+ *
+ * @note It may not be feasible to satisfy the desired boundary velocities. In those cases the
+ * resulting velocities will be lower than the desired values.
  */
 template<LieGroup G>
 auto reparameterize_curve2(const Curve<G> & curve,
@@ -592,20 +595,24 @@ auto reparameterize_curve2(const Curve<G> & curve,
   const typename G::Tangent & vel_max,
   const typename G::Tangent & acc_min,
   const typename G::Tangent & acc_max,
-  bool stop_at_zero = false,
-  bool slower_only = false
-  )
+  double start_vel = 1,
+  double end_vel   = 0,
+  bool slower_only = false)
 {
-  using T                     = typename G::Tangent;
   static constexpr double eps = 100 * std::numeric_limits<double>::epsilon();
 
-  std::vector<double> s(2 * curve.size() + 1);
-  std::vector<double> v(2 * curve.size() + 1, slower_only ? 1 : std::numeric_limits<double>::infinity());
-  std::vector<double> TT(2 * curve.size(), 0);
-  std::vector<double> abeg(2 * curve.size(), 0);
-  std::vector<double> aend(2 * curve.size(), 0);
-  std::vector<double> amin(2 * curve.size() + 1, -std::numeric_limits<double>::infinity());
-  std::vector<double> amax(2 * curve.size() + 1, std::numeric_limits<double>::infinity());
+  // knot distances, velocities, acceleration bounds
+  const std::size_t n_knots = 2 * curve.size() + 1;
+  std::vector<double> s(n_knots);
+  std::vector<double> v(n_knots, slower_only ? 1 : std::numeric_limits<double>::infinity());
+  std::vector<double> amin(n_knots, -std::numeric_limits<double>::infinity());
+  std::vector<double> amax(n_knots, std::numeric_limits<double>::infinity());
+
+  // segment duration and accelerations
+  const std::size_t n_seg = 2 * curve.size();
+  std::vector<double> TT(n_seg, 0);
+  std::vector<double> abeg(n_seg, 0);
+  std::vector<double> aend(n_seg, 0);
 
   // CALCULATE MAXIMAL VELOCITY
 
@@ -616,7 +623,7 @@ auto reparameterize_curve2(const Curve<G> & curve,
     for (auto j = 0u; j != 3; ++j) {
       double t = t0 + static_cast<double>(j) / 2 * (t1 - t0);
       if (j == 2) { t -= eps; }  // stay in segment
-      T vel;
+      typename G::Tangent vel;
       curve.eval(t, vel);
       s[2 * k + j] = t;
       for (auto i = 0u; i != G::SizeAtCompileTime; ++i) {
@@ -629,8 +636,9 @@ auto reparameterize_curve2(const Curve<G> & curve,
     }
   }
 
-  v.front() = 1;
-  if (stop_at_zero) { v.back() = 0; }
+  // start and end with prescribed velocities
+  v.front() = start_vel;
+  v.back()  = end_vel;
 
   // CALCULATE ACCELERATION BOUNDS (under-approximation since using maximal velocity)
 
@@ -641,7 +649,7 @@ auto reparameterize_curve2(const Curve<G> & curve,
     for (auto j = 0u; j != 3; ++j) {
       double t = t0 + static_cast<double>(j) / 2 * (t1 - t0);
       if (j == 2) { t -= eps; }  // stay in segment
-      T vel, acc;
+      typename G::Tangent vel, acc;
       curve.eval(t, vel, acc);
       const typename G::Tangent upper = acc_max - acc * v[2 * k + j] * v[2 * k + j];
       const typename G::Tangent lower = acc_min - acc * v[2 * k + j] * v[2 * k + j];
@@ -657,119 +665,99 @@ auto reparameterize_curve2(const Curve<G> & curve,
     }
   }
 
-  // backwards pass
+  // backwards pass over deceleration segments
 
-  for (auto k = 0u; k + 1 < s.size(); ++k) {
-    auto i0 = s.size() - k - 2;
-    auto i1 = s.size() - k - 1;
+  for (auto k = 0u; k < n_seg; ++k) {
+    const auto i0 = s.size() - k - 2;
+    const auto i1 = s.size() - k - 1;
 
-    double s0 = s[i0];
-    double s1 = s[i1];
+    const double ds = s[i1] - s[i0];
+    const double dv = v[i1] - v[i0];
+    const double a0 = amin[i0];
+    const double a1 = amin[i1];
 
-    double v0des = v[i0];
-    double v1    = v[i1];
-
-    if (v0des == v1) {
-      // no acceleration needed
-      TT[i0]   = (s1 - s0) / v0des;
-      abeg[i0] = 0;
-      aend[i0] = 0;
+    if (!(dv < 0)) {
+      // curve not decelerating, backward pass not relevant
+      continue;
     }
-
-    if (!(v0des > v1)) {
-      continue;  // curve not decelrating, backward pass not relevant
-    }
-
-    double a0 = amin[i0];
-    double a1 = amin[i1];
 
     // solve for scaled acceleration delta
-    double delta =
-      (2 * v0des * (v1 - v0des) / (a0 + a1)
-        + 4 * (a0 / 3 + a1 / 6) * (v1 - v0des) * (v1 - v0des) / ((a0 + a1) * (a0 + a1)))
-      / (s1 - s0);
+    const double delta =
+      (2 * v[i0] * dv / (a0 + a1) + 4 * (a0 / 3 + a1 / 6) * dv * dv / ((a0 + a1) * (a0 + a1))) / ds;
 
-    if (delta <= 0) {
-      TT[i0]   = 0;
-      v[i0]    = v0des;
-      abeg[i0] = 0;
-      aend[i0] = 0;
-    } else if (delta <= 1) {
+    if (delta <= 1) {
       // can keep v0
-      TT[i0]   = 2 * (v1 - v0des) / (delta * (a0 + a1));
-      v[i0]    = v0des;
+      TT[i0]   = 2 * dv / (delta * (a0 + a1));
       abeg[i0] = delta * a0;
       aend[i0] = delta * a1;
     } else {
       // solve for new v0
-      double A   = a0 / 6 + a1 / 3;               // negative
-      double B   = -v1;                           // non-positive
-      double C   = s1 - s0;                       // positive
-      double res = B * B / (4. * A * A) - C / A;  // positive
+      const double A   = a0 / 6 + a1 / 3;               // negative
+      const double B   = -v[i1];                        // non-positive
+      const double C   = ds;                            // positive
+      const double res = B * B / (4. * A * A) - C / A;  // positive
 
       TT[i0]   = -B / (2. * A) + std::sqrt(res);
-      v[i0]    = v1 - (a0 + a1) * TT[i0] / 2;
+      v[i0]    = v[i1] - (a0 + a1) * TT[i0] / 2;
       abeg[i0] = a0;
       aend[i0] = a1;
     }
 
     // clang-format off
     double check0 = v[i1] - v[i0] - (abeg[i0] + aend[i0]) * TT[i0] / 2;
-    double check1 = s1 - s0 - v[i0] * TT[i0] - abeg[i0] * TT[i0] * TT[i0] / 3 - aend[i0] * TT[i0] * TT[i0] / 6;
-    if (std::abs(check0) > 1e-10 || std::abs(check1) > 1e-10) { std::cerr << "SOLVER PROBLEM" << std::endl; }
+    double check1 = ds - v[i0] * TT[i0] - abeg[i0] * TT[i0] * TT[i0] / 3 - aend[i0] * TT[i0] * TT[i0] / 6;
+    if (std::abs(check0) > 1e-10 || std::abs(check1) > 1e-10) {
+        throw std::runtime_error("reparameterize_curve2: invalid reverse solution");
+    }
     // clang-format on
   }
 
-  // forward pass
-  for (auto k = 0u; k + 1 < s.size(); ++k) {
-    auto i0 = k;
-    auto i1 = k + 1;
+  // forward pass over all segments
 
-    double s0 = s[i0];
-    double s1 = s[i1];
+  for (auto k = 0u; k < n_seg; ++k) {
+    const auto i0 = k;
+    const auto i1 = k + 1;
 
-    double v0    = v[i0];
-    double v1des = v[i1];
+    const double ds = s[i1] - s[i0];  // positive
+    const double dv = v[i1] - v[i0];
+    const double a0 = dv > 0 ? amax[i0] : amin[i0];  // same sign as dv
+    const double a1 = dv > 0 ? amax[i1] : amin[i0];  // same sign as dv
 
-    if (!(v1des > v0)) {
-      continue;  // curve not accelerating, forward pass not relevant
-    }
+    const double delta =
+      (2 * v[i0] * dv / (a0 + a1) + 4 * (a0 / 3 + a1 / 6) * dv * dv / ((a0 + a1) * (a0 + a1))) / ds;
 
-    double a0 = amax[i0];
-    double a1 = amax[i1];
-
-    double delta =
-      (2 * v0 * (v1des - v0) / (a0 + a1)
-        + 4 * (a0 / 3 + a1 / 6) * (v1des - v0) * (v1des - v0) / ((a0 + a1) * (a0 + a1)))
-      / (s1 - s0);
-
-    if (delta <= 1) {
-      // can keep v1
-      TT[i0]   = 2 * (v1des - v0) / (delta * (a0 + a1));
-      v[i1]    = v1des;
+    if (delta <= 0) {
+      // invalid solution, likely because dv = 0
+      TT[i0]   = ds / v[i0];
+      abeg[i0] = 0;
+      aend[i0] = 0;
+    } else if (delta <= 1) {
+      // can keep v1 (should always be the case for dv < 0)
+      TT[i0]   = 2 * dv / (delta * (a0 + a1));
       abeg[i0] = delta * a0;
       aend[i0] = delta * a1;
     } else {
-
-      // solve for v1, T
-      double A   = 5. * a0 / 6 + 2. * a1 / 3;     // positive
-      double B   = v0;                            // non-negative
-      double C   = -(s1 - s0);                    // negative
-      double res = B * B / (4. * A * A) - C / A;  // positive
+      // solve for v1, T (should only occur for dv > 0)
+      if (dv <= 0) { throw std::runtime_error("reparameterize_curve2: unexpected branch"); }
+      const double A   = a0 / 3 + a1 / 6;               // positive
+      const double B   = v[i0];                         // non-negative
+      const double C   = -ds;                           // negative
+      const double res = B * B / (4. * A * A) - C / A;  // positive
 
       TT[i0]   = -B / (2. * A) + std::sqrt(res);
-      v[i1]    = v0 + (a0 + a1) * TT[i0] / 2;
+      v[i1]    = v[i0] + (a0 + a1) * TT[i0] / 2;
       abeg[i0] = a0;
       aend[i0] = a1;
     }
 
     // clang-format off
     double check0 = v[i1] - v[i0] - (abeg[i0] + aend[i0]) * TT[i0] / 2;
-    double check1 = s1 - s0 - v[i0] * TT[i0] - abeg[i0] * TT[i0] * TT[i0] / 3 - aend[i0] * TT[i0] * TT[i0] / 6;
-    if (std::abs(check0) > 1e-10 || std::abs(check1) > 1e-10) { std::cerr << "SOLVER PROBLEM" << std::endl; }
+    double check1 = ds - v[i0] * TT[i0] - abeg[i0] * TT[i0] * TT[i0] / 3 - aend[i0] * TT[i0] * TT[i0] / 6;
+    if (std::abs(check0) > 1e-10 || std::abs(check1) > 1e-10) {
+      throw std::runtime_error("reparameterize_curve2: invalid forward solution");
+    }
     // clang-format on
   }
-
 
   static constexpr std::size_t points = 50;
 
@@ -778,7 +766,8 @@ auto reparameterize_curve2(const Curve<G> & curve,
   ss.reserve(points * TT.size());
 
   double tcur = 0;
-  for (auto i = 0u; i + 1 != s.size(); ++i) {
+  for (auto i = 0u; i < n_seg; ++i) {
+    if (TT[i] <= 0) { continue; }
     for (auto j = 0u; j != points; ++j) {
       const double dt = static_cast<double>(j) / points * TT[i];
       tt.push_back(tcur + dt);
@@ -787,7 +776,7 @@ auto reparameterize_curve2(const Curve<G> & curve,
     tcur += TT[i];
   }
   tt.push_back(tcur);
-  ss.push_back(curve.t_max());
+  ss.push_back(s.back());
 
   return std::make_pair(tt, ss);
 }
