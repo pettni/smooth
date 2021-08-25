@@ -584,8 +584,8 @@ auto reparameterize_curve(const Curve<G> & curve,
  * @param curve Curve \f$ x(t) \f$ to reparameterize.
  * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
  * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
- * @param start_vel desired value for \f$ s'(0) \f$.
- * @param end_vel desired value for \f$ s'(t_{max}) \f$.
+ * @param start_vel desired value for \f$ s'(0) \f$ (must be non-negative).
+ * @param end_vel desired value for \f$ s'(t_{max}) \f$ (must be non-negative).
  * @param slower_only result is s.t. \f$ s'(t) <= 1 \f$.
  *
  * @note It may not be feasible to satisfy the desired boundary velocities. In those cases the
@@ -805,9 +805,10 @@ auto reparameterize_curve2(const Curve<G> & curve,
   ss.push_back(0);
 
   for (auto i = 0u; i < n_seg; ++i) {
-    if (TT[i] == 0) {
-      tt.push_back(tcur + TT[i]);
-      ss.push_back(s[i + 1]);
+    if (TT[i] < eps) {
+      // zero-time segment: overwrite last value
+      tt.back() = tcur + TT[i];
+      ss.back() = s[i + 1];
     } else {
       for (auto j = 1u; j <= points; ++j) {
         const double dt = static_cast<double>(j) / points * TT[i];

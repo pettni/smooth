@@ -451,6 +451,9 @@ TEST(Curve, Reparameterize)
 
   auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
 
+  ASSERT_EQ(std::ranges::adjacent_find(t, std::ranges::greater_equal()), t.end());
+  ASSERT_EQ(std::ranges::adjacent_find(s, std::ranges::greater_equal()), s.end());
+
   ASSERT_EQ(t.front(), 0);
   ASSERT_EQ(s.front(), 0);
   ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
@@ -465,8 +468,11 @@ TEST(Curve, ReparameterizeZero)
 
   auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
 
+  ASSERT_EQ(std::ranges::adjacent_find(t, std::ranges::greater_equal()), t.end());
+  ASSERT_EQ(std::ranges::adjacent_find(s, std::ranges::greater_equal()), s.end());
+
   ASSERT_EQ(t.front(), 0);
-  ASSERT_EQ(s.front(), 0);
+  ASSERT_NEAR(s.front(), c.t_max(), 1e-8);
 
   ASSERT_EQ(t.back(), 0);
   ASSERT_NEAR(s.back(), c.t_max(), 1e-8);
@@ -482,6 +488,9 @@ TEST(Curve, ReparameterizeZeroMiddle)
   Eigen::Vector3d vel_max(0.5, 0.2, 0.2), acc_max(1, 0.05, 0.1);
 
   auto [t, s] = smooth::reparameterize_curve2(c, -vel_max, vel_max, -acc_max, acc_max);
+
+  ASSERT_EQ(std::ranges::adjacent_find(t, std::ranges::greater_equal()), t.end());
+  ASSERT_EQ(std::ranges::adjacent_find(s, std::ranges::greater_equal()), s.end());
 
   ASSERT_EQ(t.front(), 0);
   ASSERT_EQ(s.front(), 0);
