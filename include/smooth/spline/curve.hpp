@@ -82,8 +82,8 @@ public:
   template<std::ranges::range Rv>
   // \cond
   requires(std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>)
-    // \endcond
-    Curve(double T, const Rv & vs)
+  // \endcond
+  Curve(double T, const Rv & vs)
       : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
@@ -201,8 +201,8 @@ public:
    * @param R turning radius
    */
   static Curve Dubins(const G & gb, double R = 1)
-    // \cond
-    requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
+  // \cond
+  requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
   // \endcond
   {
     const auto desc = dubins(gb, R);
@@ -896,7 +896,8 @@ private:
  * @param start_vel desired value for \f$ s'(0) \f$ (must be non-negative).
  * @param end_vel desired value for \f$ s'(t_{max}) \f$ (must be non-negative).
  * @param slower_only result is s.t. \f$ s'(t) <= 1 \f$.
- * @param dt time discretization step (smaller gives a more accurate solution)
+ * @param dt time discretization step (smaller gives a more accurate solution).
+ * @param eps parameter to control minimal \f$ s'(t) \f$ (eps) and maximal \f$ s''(t) \f$ (1 / eps).
  *
  * @note It may not be feasible to satisfy the desired boundary velocities. In those cases the
  * resulting velocities will be lower than the desired values.
@@ -908,13 +909,14 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
   const typename G::Tangent & acc_min,
   const typename G::Tangent & acc_max,
   double start_vel = 1,
-  double end_vel   = 10,
+  double end_vel   = std::numeric_limits<double>::infinity(),
   bool slower_only = false,
-  double dt        = 0.05)
+  double dt        = 0.05,
+  double eps       = 1e-2)
 {
-  static constexpr double eps = 100 * std::numeric_limits<double>::epsilon();
+  const double zeps = std::numeric_limits<double>::epsilon() / eps;
 
-  // stepper
+  // STEPPER AND ODE
 
   boost::numeric::odeint::runge_kutta4<Eigen::Vector2d,
     double,
@@ -923,7 +925,6 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
     boost::numeric::odeint::vector_space_algebra>
     stepper;
 
-  // ode
   double a       = 0;
   const auto ode = [&a](const Eigen::Vector2d & s_v, Eigen::Vector2d & ds_dv, double) {
     ds_dv.x() = s_v.y();
@@ -942,12 +943,14 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
 
     // clamp velocity to not exceed constraints
     for (auto i = 0u; i != G::Dof; ++i) {
-      if (vel(i) > eps) {
+      if (vel(i) > zeps) {
         state.y() = std::min<double>(state.y(), vel_max(i) / vel(i));
-      } else if (vel(i) < -eps) {
+      } else if (vel(i) < -zeps) {
         state.y() = std::min<double>(state.y(), vel_min(i) / vel(i));
       }
     }
+    // ensure v stays positive
+    state.y() = std::max(state.y(), eps);
 
     if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
@@ -957,27 +960,17 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
     }
 
     // figure minimal allowed acceleration
-    a = -std::numeric_limits<double>::infinity();
+    a = -1 / eps;
     for (auto i = 0u; i != G::Dof; ++i) {
       const typename G::Tangent upper = acc_max - acc * state.y() * state.y();
       const typename G::Tangent lower = acc_min - acc * state.y() * state.y();
-      if (vel(i) > eps) {
+      if (vel(i) > zeps) {
         a = std::max<double>(a, lower(i) / vel(i));
       } else if (vel(i) < -eps) {
         a = std::max<double>(a, upper(i) / vel(i));
       }
     }
-
-    if (a == -std::numeric_limits<double>::infinity()) {
-      // segment with zero velocity
-      state.x() -= dt * state.y();
-    } else {
-      stepper.do_step(ode, state, 0, -dt);
-
-      // ensure v stays positive
-      state.y() = std::max(state.y(), 1e-3);
-    }
-
+    stepper.do_step(ode, state, 0, -dt);
   } while (state.x() > 0);
 
   if (xx.empty() || state.x() < xx.back()) {
@@ -989,7 +982,7 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
 
   std::reverse(xx.begin(), xx.end());
   std::reverse(yy.begin(), yy.end());
-  auto v_func = fit_linear_bezier(xx, yy);
+  auto v_func = fit_linear_bezier(xx, yy);  // linear guarantees positive velocities
 
   // FORWARD PASS
 
@@ -1003,6 +996,8 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
 
     // clamp velocity to not exceed upper bound
     state.y() = std::min<double>(state.y(), v_func.eval(state.x()).rn().x());
+    // ensure v stays positive
+    state.y() = std::max(state.y(), eps);
 
     if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
@@ -1010,7 +1005,7 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
     yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.x())));
 
     // figure maximal allowed acceleration
-    a = std::numeric_limits<double>::infinity();
+    a = 1 / eps;
     for (auto i = 0u; i != G::Dof; ++i) {
       const typename G::Tangent upper = acc_max - acc * state.y() * state.y();
       const typename G::Tangent lower = acc_min - acc * state.y() * state.y();
@@ -1020,21 +1015,13 @@ Reparameterization reparameterize_curve3(const Curve<G> & curve,
         a = std::min<double>(a, lower(i) / vel(i));
       }
     }
-
-    if (a == std::numeric_limits<double>::infinity()) {
-      state.x() += dt * state.y();
-    } else {
-      stepper.do_step(ode, state, 0, dt);
-
-      // ensure v stays positive
-      state.y() = std::max(state.y(), 1e-3);
-    }
-
+    stepper.do_step(ode, state, 0, dt);
   } while (state.x() < curve.t_max());
 
   xx.push_back(xx.back() + dt);
   yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.x())));
 
+  // TODO: cubic bezier that ensure positive first derivative
   auto func = fit_cubic_bezier(xx, yy);
 
   return Reparameterization(curve.t_max(), std::move(func));

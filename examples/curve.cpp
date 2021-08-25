@@ -53,14 +53,14 @@ int main(int, char const **)
 
   Curve c(smooth::fit_cubic_bezier(tt, gg));
 
-  /* Curve c = Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 5);
+  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 5);
   c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 10); */
+  c *= Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);
+  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 10);
 
-  Eigen::Vector3d vel_bounds(1, 1, 1), acc_bounds(1, 1, 1);
+  Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
-  auto sfun = smooth::reparameterize_curve3(
-    c, -vel_bounds, vel_bounds, -acc_bounds, acc_bounds, 1, 1, false, 0.001);
+  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 0);
 
   std::vector<double> tvec, svec;
   std::vector<double> vx, vy, w, ax, ay, dw;
