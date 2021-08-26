@@ -110,7 +110,7 @@ TYPED_TEST(Spline, BSplineConstantCtrlpts)
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
-      auto g = smooth::cspline_eval<K, TypeParam>(ctrl_pts, M, u, vel, acc);
+      auto g = smooth::cspline_eval<K>(ctrl_pts, M, u, vel, acc);
 
       ASSERT_TRUE(g.isApprox(ctrl_pts.front()));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -118,7 +118,6 @@ TYPED_TEST(Spline, BSplineConstantCtrlpts)
     }
 
     ctrl_pts.push_back(ctrl_pts.back());
-    ASSERT_THROW((smooth::cspline_eval<K, TypeParam>(ctrl_pts, M, 1)), std::runtime_error);
   });
 }
 
@@ -142,7 +141,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
-      auto g = smooth::cspline_eval<K, TypeParam>(g0, diff_vec, M, u, vel, acc);
+      auto g = g0 * smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc);
 
       ASSERT_TRUE(g.isApprox(g0));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -150,7 +149,6 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
     }
 
     diff_vec.push_back(diff_vec.back());
-    ASSERT_THROW((smooth::cspline_eval<K, TypeParam>(g0, diff_vec, M, 1)), std::runtime_error);
   });
 }
 
@@ -171,10 +169,10 @@ TYPED_TEST(Spline, DerivBspline)
   Tangent vel;
 
   for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval<3>(g0, diff_pts, M, u, vel);
+    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u - 1e-4);
-    auto g2 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u + 1e-4);
+    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
+    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
 
     auto df = ((g2 - g1) / 2e-4).eval();
 
@@ -199,10 +197,10 @@ TYPED_TEST(Spline, DerivBezier)
   Tangent vel;
 
   for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval<3>(g0, diff_pts, M, u, vel);
+    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u - 1e-4);
-    auto g2 = smooth::cspline_eval<3, TypeParam>(g0, diff_pts, M, u + 1e-4);
+    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
+    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
 
     Tangent df = (g2 - g1) / 2e-4;
 
@@ -260,14 +258,14 @@ TEST(Spline, BSplineDerivT1)
   Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(Mstatic[0].data());
 
   Eigen::Matrix<double, 1, 4> jac;
-  auto g0 = smooth::cspline_eval<3, smooth::Bundle<smooth::T1d>>(c1, M, u, {}, {}, jac);
+  auto g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
 
   Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
   for (auto i = 0u; i != 4; ++i) { c1[i].part<0>().rn()(0) += eps(i); }
 
   // expect gp \approx g0 + jac * eps
   auto gp       = g0 + (jac * eps);
-  auto gp_exact = smooth::cspline_eval<3, smooth::Bundle<smooth::T1d>>(c1, M, u);
+  auto gp_exact = smooth::cspline_eval<3>(c1, M, u);
 
   ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
 }
@@ -285,14 +283,14 @@ TEST(Spline, BSplineDerivSO3)
     Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(Mstatic[0].data());
 
     Eigen::Matrix<double, 3, 12> jac;
-    smooth::SO3d g0 = smooth::cspline_eval<3, smooth::SO3d>(c1, M, u, {}, {}, jac);
+    smooth::SO3d g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
 
     Eigen::Matrix<double, 12, 1> eps = 1e-6 * Eigen::Matrix<double, 12, 1>::Random();
     for (auto i = 0u; i != 4; ++i) { c1[i] += eps.segment<3>(i * 3); }
 
     // expect gp \approx g0 + jac * eps
     smooth::SO3d gp       = g0 + (jac * eps).eval();
-    smooth::SO3d gp_exact = smooth::cspline_eval<3, smooth::SO3d>(c1, M, u);
+    smooth::SO3d gp_exact = smooth::cspline_eval<3>(c1, M, u);
 
     ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
   }
@@ -328,10 +326,15 @@ TEST(Spline, BezierConstruct)
   std::vector<double> tt{1, 2, 3};
   std::vector<smooth::Bezier<3, smooth::SO3d>> bb(3);
 
+  using B4 = smooth::Bezier<4, smooth::SO3d>;
+  using B4v = std::vector<Eigen::Vector3d>;
+  ASSERT_THROW(B4(smooth::SO3d::Identity(), B4v(3)), std::invalid_argument);
+
   auto spline       = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
   auto spline_moved = std::move(spline);
 
-  static_cast<void>(spline_moved);
+  ASSERT_EQ(spline_moved.t_min(), 1);
+  ASSERT_EQ(spline_moved.t_max(), 3);
 }
 
 TYPED_TEST(Spline, Bezier1Fit)
@@ -358,12 +361,14 @@ TYPED_TEST(Spline, Bezier1Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
   ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
   ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
   ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
 }
 
 TYPED_TEST(Spline, Bezier2Fit)
@@ -390,12 +395,14 @@ TYPED_TEST(Spline, Bezier2Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
   ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
   ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
   ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto tt = 2.5; tt < 6; ++tt) {
@@ -432,12 +439,58 @@ TYPED_TEST(Spline, Bezier3Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
   ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
   ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
   ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+
+  // check continuity of derivative
+  for (auto t_test = 2.5; t_test < 6; ++t_test) {
+    typename TypeParam::Tangent va, vb;
+    spline.eval(t_test - 1e-5, va);
+    spline.eval(t_test + 1e-5, vb);
+    ASSERT_TRUE(va.isApprox(vb, 1e-3));
+  }
+}
+
+TYPED_TEST(Spline, Bezier3LocalFit)
+{
+  std::vector<double> tt;
+  std::vector<TypeParam> gg;
+
+  std::srand(10);
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+
+  auto spline = smooth::fit_cubic_bezier_local(tt, gg);
+
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
+
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
@@ -453,9 +506,10 @@ TEST(Spline, BezierTooShort)
   std::vector<double> tt;
   std::vector<smooth::SO3d> gg;
 
-  ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::runtime_error);
-  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::runtime_error);
-  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::runtime_error);
+  ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_cubic_bezier_local(tt, gg), std::invalid_argument);
 }
 
 TEST(Spline, BezierNonIncreasing)
@@ -467,10 +521,11 @@ TEST(Spline, BezierNonIncreasing)
   gg.push_back(smooth::SO3d::Random());
   gg.push_back(smooth::SO3d::Random());
 
-  ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::runtime_error);
-  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::runtime_error);
-  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::runtime_error);
-  ASSERT_THROW(smooth::fit_bspline<5>(tt, gg, 0.2), std::runtime_error);
+  ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_cubic_bezier_local(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_bspline<5>(tt, gg, 0.2), std::invalid_argument);
 }
 
 TEST(Spline, BezierInitialvel)

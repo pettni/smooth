@@ -121,13 +121,12 @@ using OptJacobian =
 /**
  * @brief Evaluate a cumulative basis spline of order K and its derivatives
  *
- *   g = g_0 * \Prod_{i=1}^{K} exp ( Btilde_i(u) * v_i )
+ *   g = \Prod_{i=1}^{K} exp ( Btilde_i(u) * v_i )
  *
  * Where Btilde are cumulative basis functins and v_i = g_i - g_{i-1}.
  *
  * @tparam K spline order (number of basis functions)
  * @tparam G lie group type
- * @param[in] g_0 spline base value
  * @param[in] diff_points range of differences v_i (must be of size K)
  * @param[in] u normalized parameter: u \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
@@ -135,19 +134,13 @@ using OptJacobian =
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
 template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
-G cspline_eval(const G & g_0,
-  const Range & diff_points,
+inline G cspline_eval_diff(const Range & diff_points,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
   typename G::Scalar u,
   detail::OptTangent<G> vel     = {},
   detail::OptTangent<G> acc     = {},
-  detail::OptJacobian<G, K> der = {})
+  detail::OptJacobian<G, K> der = {}) noexcept
 {
-  if (std::ranges::size(diff_points) != K) {
-    throw std::runtime_error("cspline_eval: diff_points range must be size K=" + std::to_string(K)
-                             + ", got " + std::to_string(std::ranges::size(diff_points)));
-  }
-
   using Scalar = typename G::Scalar;
 
   Eigen::Matrix<Scalar, 1, K + 1> uvec, duvec, d2uvec;
@@ -169,7 +162,7 @@ G cspline_eval(const G & g_0,
     if (acc.has_value()) { acc.value().setZero(); }
   }
 
-  G g = g_0;
+  G g = G::Identity();
   for (std::size_t j = 1; const auto & v : diff_points) {
     const Scalar Btilde = uvec.dot(cum_coef_mat.row(j));
     g *= G::exp(Btilde * v);
@@ -222,45 +215,35 @@ G cspline_eval(const G & g_0,
 
 /**
  * @brief Evaluate a cumulative basis spline of order K and calculate derivatives
+ * \f[
+ *   g = g_0 * \Prod_{i=1}^{K} \exp ( \tilde B_i(u) * v_i ),
+ * \f]
+ * where \f$ \tilde B \f$ are cumulative basis functions and \f$ v_i = g_i - g_{i-1} \f$.
  *
- *   g = g_0 * \Prod_{i=1}^{K} exp ( Btilde_i(u) * v_i )
- *
- * Where Btilde are cumulative Bspline basis functins and v_i = g_i - g_{i-1}.
- *
- * @tparam G lie group type
- * @tparam K bspline order
- * @tparam It iterator type
- * @param[in] ctrl_points range of control points (must be of size K + 1)
+ * @tparam K spline order
+ * @param[in] gs LieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K + 1)
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives w.r.t. the K+1 control points
  */
-template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
-G cspline_eval(const Range & ctrl_points,
+template<std::size_t K,
+  std::ranges::range R,
+  typename Derived,
+  LieGroup G = std::ranges::range_value_t<R>>
+inline G cspline_eval(const R & gs,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
   typename G::Scalar u,
   detail::OptTangent<G> vel     = {},
   detail::OptTangent<G> acc     = {},
-  detail::OptJacobian<G, K> der = {})
+  detail::OptJacobian<G, K> der = {}) noexcept
 {
-  if (std::ranges::size(ctrl_points) != K + 1) {
-    throw std::runtime_error(
-      "cspline_eval: ctrl_points range must be size K+1=" + std::to_string(K + 1) + ", got "
-      + std::to_string(std::ranges::size(ctrl_points)));
-  }
-
-  auto b1 = std::begin(ctrl_points);
-  auto b2 = std::begin(ctrl_points) + 1;
-
+  auto b1 = std::begin(gs);
+  auto b2 = std::begin(gs) + 1;
   std::array<typename G::Tangent, K> diff_pts;
-  for (auto i = 0u; i != K; ++i) {
-    diff_pts[i] = *b2 - *b1;
-    ++b1;
-    ++b2;
-  }
+  for (auto i = 0u; i != K; ++i) { diff_pts[i] = *b2++ - *b1++; }
 
-  return cspline_eval<K, G>(*std::begin(ctrl_points), diff_pts, cum_coef_mat, u, vel, acc, der);
+  return *std::begin(gs) * cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der);
 }
 
 }  // namespace smooth

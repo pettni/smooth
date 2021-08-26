@@ -34,6 +34,8 @@
 #include <Eigen/Dense>
 #include <Eigen/Sparse>
 
+#include <chrono>
+#include <iomanip>
 #include <iostream>
 #include <numeric>
 
@@ -42,6 +44,8 @@
 #include "internal/lmpar.hpp"
 #include "internal/lmpar_sparse.hpp"
 #include "internal/utils.hpp"
+
+using std::chrono::duration_cast, std::chrono::microseconds;
 
 namespace smooth {
 
@@ -56,8 +60,8 @@ struct MinimizeOptions
   double ftol{1e-6};
   /// maximum number of iterations
   std::size_t max_iter{1000};
-  /// solver verbosity level
-  int verbosity{0};
+  /// print solver status to stdout
+  bool verbose{0};
 };
 
 /**
@@ -103,7 +107,24 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
   double r_norm = r.stableNorm();
   double Delta  = 100. * d.stableNorm();  // TODO for Rn arguments we should multiply with norm(x)
 
-  for (auto i = 0u; i != opts.max_iter; ++i) {
+  std::size_t iter = 0u;
+
+  auto t0 = std::chrono::high_resolution_clock::now();
+
+  if (opts.verbose) {
+    using std::cout, std::left, std::endl, std::setw, std::right;
+    // clang-format off
+    cout << "================= Levenberg-Marquardt Solver ================" << endl;
+    cout << "Solving NLSQ with n=" << J.cols() << ", m=" << J.rows() << endl;
+    cout << setw(8)  << right << "ITER"
+         << setw(14) << right << "|| r ||"
+         << setw(14) << right << "RED"
+         << setw(14) << right << "|| D * a ||"
+         << setw(10) << right << "TIME" << std::endl;
+    // clang-format on
+  }
+
+  for (; iter < opts.max_iter; ++iter) {
     // calculate step a via LM parameter algorithm
     Eigen::Matrix<double, Nx, 1> a(nx);
     double lambda;
@@ -144,6 +165,19 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
       Delta = 2 * Da_norm;
     }
 
+    if (opts.verbose) {
+      using std::cout, std::setw, std::right, std::endl;
+      // clang-format off
+      cout << setw(7) << right << iter << ":"
+           << std::scientific
+           << setw(14) << right << r_cand_norm
+           << setw(14) << right << act_red
+           << setw(14) << right << Da_norm
+           << setw(10) << right << duration_cast<microseconds>(std::chrono::high_resolution_clock::now() - t0).count()
+           << endl;
+      // clang-format on
+    }
+
     //// TAKE STEP IF SUCCESSFUL ////
 
     if (rho > 1e-4) {
@@ -162,11 +196,6 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
       }
     }
 
-    //// PRINT STATUS ////
-
-    // TODO Pretty-print solver steps
-    if (opts.verbosity > 0) { std::cout << "Step " << i << ": " << r.sum() << std::endl; }
-
     //// CHECK FOR CONVERGENCE ////
 
     // function tolerance
@@ -175,6 +204,18 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
     // parameter tolerance
     // TODO a.size() should be norm(x) for non-angle states
     if (Da_norm < opts.ptol * a.size()) { break; }
+  }
+
+  //// PRINT STATUS ////
+  if (opts.verbose) {
+    using std::cout, std::left, std::right, std::setw, std::endl;
+
+    // clang-format off
+    cout << "NLSQ solver summary:" << endl;
+    cout << setw(25) << left << "Iterations"                << setw(10) << right << iter                                                                                    << endl;
+    cout << setw(25) << left << "Total time (microseconds)" << setw(10) << right << duration_cast<microseconds>(std::chrono::high_resolution_clock::now() - t0).count()     << endl;
+    cout << "=============================================================" << endl;
+    // clang-format on
   }
 }
 

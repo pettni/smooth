@@ -196,8 +196,9 @@ public:
     const Scalar vdw                     = a.template tail<3>().dot(a.template head<3>());
     const Eigen::Matrix<Scalar, 3, 3> WV = W * V, VW = V * W, WW = W * W;
 
-    return Scalar(0.5) * V + A * (WV + VW - vdw * W)
-         + B * (W * WV + VW * W + vdw * (Scalar(3) * W - WW)) - C * Scalar(3) * vdw * WW;
+    // clang-format off
+    return Scalar(0.5) * V + A * (WV + VW - vdw * W) + B * (W * WV + VW * W + vdw * (Scalar(3) * W - WW)) - C * Scalar(3) * vdw * WW;
+    // clang-format on
   }
 
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)

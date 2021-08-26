@@ -63,6 +63,9 @@ TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
   test<TypeParam>();
   test<Eigen::Map<TypeParam>>();
   test<Eigen::Map<const TypeParam>>();
+
+  // move constructors are noexcept
+  static_assert(std::is_nothrow_move_constructible_v<TypeParam>);
 }
 
 TYPED_TEST(LieGroupInterface, Constructors)
@@ -185,6 +188,7 @@ TYPED_TEST(LieGroupInterface, Copying)
   std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1, a2;
   TypeParam g1, g2;
   Eigen::Map<TypeParam> m1(a1.data()), m2(a2.data());
+  Eigen::Map<const TypeParam> m2_const(a2.data());
 
   // group to group
   g1.setRandom();
@@ -198,13 +202,27 @@ TYPED_TEST(LieGroupInterface, Copying)
   g1.setRandom();
   m1 = g1;
   ASSERT_TRUE(m1.isApprox(g1));
-  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(m1.coeffs()[i], a1[i]); }
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(a1[i], g1.coeffs()[i]); }
 
   // map to map
   m1.setRandom();
   m2 = m1;
   ASSERT_TRUE(m2.isApprox(m1));
-  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(m1.coeffs()[i], a2[i]); }
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(a1[i], a2[i]); }
+
+  // const map to map
+  m2.setRandom();
+  m1 = m2_const;
+  ASSERT_TRUE(m1.isApprox(m2_const));
+  ASSERT_TRUE(m1.isApprox(m2));
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(a1[i], a2[i]); }
+
+  // const map to group
+  m2.setRandom();
+  g1 = m2_const;
+  ASSERT_TRUE(g1.isApprox(m2_const));
+  ASSERT_TRUE(g1.isApprox(m2));
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(g1.coeffs()[i], a2[i]); }
 
   // map to group
   m1.setRandom();

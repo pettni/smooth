@@ -54,7 +54,8 @@ public:                                                       \
   X & operator=(const X &) = default;                         \
   /*! @brief Move assignment */                               \
   X & operator=(X &&) = default;                              \
-  ~X()                = default;                              \
+  /*! @brief Destructor */                                    \
+  ~X() = default;                                             \
   /*! @brief Copy assignment from other storage type */       \
   template<typename OtherDerived>                             \
   X(const X##Base<OtherDerived> & o)                          \
@@ -90,7 +91,14 @@ public:                                                          \
   X & operator=(const X &) = default;                            \
   /*! @brief Move assignment */                                  \
   X & operator=(X &&) = default;                                 \
-  ~X()                = default;                                 \
+  /*! @brief Destructor */                                       \
+  ~X() = default;                                                \
+  /*! @brief Copy assignment from other storage type */          \
+  template<typename OtherDerived>                                \
+  X(const X##Base<OtherDerived> & o)                             \
+  {                                                              \
+    coeffs() = static_cast<const OtherDerived &>(o).coeffs();    \
+  }                                                              \
   /*! @brief Underlying storage is Eigen map */                  \
   using Storage = Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>>; \
   /*! @brief Access underlying Eigen::Map */                     \
@@ -112,15 +120,8 @@ public:                                                                \
   SMOOTH_INHERIT_TYPEDEFS;                                             \
   /*! @brief Const map memory as Lie type */                           \
   X(const Scalar * p) : coeffs_(p) {}                                  \
-  /*! @brief Copy constructor */                                       \
-  X(const X &) = default;                                              \
-  /*! @brief Move constructor */                                       \
-  X(X &&) = default;                                                   \
-  /*! @brief Copy assignment */                                        \
-  X & operator=(const X &) = default;                                  \
-  /*! @brief Move assignment */                                        \
-  X & operator=(X &&) = default;                                       \
-  ~X()                = default;                                       \
+  /*! @brief Destructor */                                             \
+  ~X() = default;                                                      \
   /*! @brief Underlying storage is Eigen const map */                  \
   using Storage = Eigen::Map<const Eigen::Matrix<Scalar, RepSize, 1>>; \
   /*! @brief Const access underlying Eigen::Map */                     \

@@ -69,17 +69,13 @@ struct BoostOdeintOps
     const std::tuple<Fac ...> m_alpha;
 
     //! Constructor for scale sum.
-    scale_sum(Fac ... alpha)
+    inline scale_sum(Fac ... alpha) noexcept
     : m_alpha(alpha ...)
-    {
-      if (std::get<0>(m_alpha) != std::tuple_element_t<0, std::tuple<Fac...>>(1)) {
-        throw std::runtime_error("BoostOdeintOps only valid for alpha1 = 1");
-      }
-    }
+    {}
 
     //! Helper for scaled addition operation.
     template<typename ... Ts, std::size_t ... Is>
-    auto helper(std::index_sequence<Is...>, const Ts & ... as)
+    inline auto helper(std::index_sequence<Is...>, const Ts & ... as) noexcept
     {
       // plus 1 since alpha1 = 1 is not included in Ts...
       return ((std::get<Is + 1>(m_alpha) * as) + ...);
@@ -89,7 +85,7 @@ struct BoostOdeintOps
     template<Manifold T1, Manifold T2, typename ... Ts>
     requires std::is_same_v<T1, T2>&&
     std::conjunction_v<std::is_same<typename T1::Tangent, Ts>...>
-    void operator()(T1 & y, const T2 & x, const Ts & ... as)
+    inline void operator()(T1 & y, const T2 & x, const Ts & ... as) noexcept
     {
       y = x + helper(std::make_index_sequence<sizeof...(Ts)>(), as...);
     }

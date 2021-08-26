@@ -1,4 +1,4 @@
-# `smooth`: Lie Theory for Robotics
+# smooth: Lie Theory for Robotics
 
 [![CI Build and Test][ci-shield]][ci-link]
 [![Code coverage][cov-shield]][cov-link]
@@ -176,7 +176,7 @@ to e.g. Ceres which uses derivatives w.r.t. the parameterization.
 A sparse solver is implemented, but it is currently only available when analytical
 derivatives are provided.
 
-Example: Calculate ![](https://latex.codecogs.com/png.latex?\mathrm{argmin}_{g_1}&space;\\|\log(g_1&space;\circ&space;g_2)\\|_2^2)
+Example: Calculate ![](https://latex.codecogs.com/svg.image?\mathrm{argmin}_{g_1}&space;\|\log(g_1&space;\circ&space;g_2&space;)&space;\||)
 
 ```cpp
 #include <smooth/optim.hpp>

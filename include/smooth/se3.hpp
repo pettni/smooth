@@ -189,8 +189,8 @@ public:
   template<typename SO3Derived, typename T3Derived>
   SE3(const SO3Base<SO3Derived> & so3, const Eigen::MatrixBase<T3Derived> & r3)
   {
-    Base::so3() = so3;
-    Base::r3()  = r3;
+    Base::so3() = static_cast<const SO3Derived &>(so3);
+    Base::r3()  = static_cast<const T3Derived &>(r3);
   }
 };
 

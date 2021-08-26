@@ -105,6 +105,10 @@ if(BUILD_TESTING)
 
   # CORE TESTS
 
+  add_executable(test_utils test/test_utils.cpp)
+  target_link_libraries(test_utils PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_utils)
+
   add_executable(test_lie_api test/test_liegroup.cpp)
   target_link_libraries(test_lie_api PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_lie_api)
@@ -142,6 +146,10 @@ if(BUILD_TESTING)
   add_executable(test_spline test/test_spline.cpp)
   target_link_libraries(test_spline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_spline)
+
+  add_executable(test_curve test/test_curve.cpp)
+  target_link_libraries(test_curve PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_curve)
 
   add_executable(test_diff test/test_diff.cpp)
   target_link_libraries(test_diff PRIVATE smooth GTest::Main)

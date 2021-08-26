@@ -190,8 +190,8 @@ public:
   template<typename SO2Derived, typename T2Derived>
   SE2(const SO2Base<SO2Derived> & so2, const Eigen::MatrixBase<T2Derived> & r2)
   {
-    Base::so2() = so2;
-    Base::r2()  = r2;
+    Base::so2() = static_cast<const SO2Derived &>(so2);
+    Base::r2()  = static_cast<const T2Derived &>(r2);
   }
 };
 

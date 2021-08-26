@@ -44,9 +44,38 @@ TEST(SE2, Parts)
   std::array<double, 4> d;
   for (auto i = 0u; i != 4; ++i) { d[i] = g.coeffs()[i]; }
 
-  Eigen::Map<const smooth::SE2d> g_map(d.data());
-  ASSERT_TRUE(g_map.so2().isApprox(so2));
-  ASSERT_TRUE(g_map.r2().isApprox(tr));
+  Eigen::Map<smooth::SE2d> g_map(d.data());
+  Eigen::Map<const smooth::SE2d> g_const_map(d.data());
+  ASSERT_TRUE(g_const_map.so2().isApprox(so2));
+  ASSERT_TRUE(g_const_map.r2().isApprox(tr));
+
+  smooth::SE2d g_copy1(g_const_map.so2(), g_const_map.r2());
+  smooth::SE2d g_copy2(g_map.so2(), g_map.r2());
+
+  ASSERT_TRUE(g_copy1.isApprox(g));
+  ASSERT_TRUE(g_copy2.isApprox(g));
+}
+
+TEST(SE2, Test)
+{
+  smooth::SE2d g = smooth::SE2d::Random();
+
+  Eigen::Map<smooth::SE2d> g_map(g.data());
+
+  // copy into new SO2
+  smooth::SO2d rot(g_map.so2());
+  ASSERT_TRUE(rot.isApprox(g.so2()));
+
+  // copy into SO2 map
+  std::array<double, 2> a;
+  Eigen::Map<smooth::SO2d> m_a(a.data());
+  m_a = g_map.so2();
+  ASSERT_DOUBLE_EQ(a[0], g.coeffs()[2]);
+  ASSERT_DOUBLE_EQ(a[1], g.coeffs()[3]);
+
+  // copy inton new SE2
+  smooth::SE2d g_copy(g_map.so2(), g_map.r2());
+  ASSERT_TRUE(g.isApprox(g_copy));
 }
 
 TEST(SE2, Action)
