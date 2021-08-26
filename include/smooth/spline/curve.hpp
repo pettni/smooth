@@ -26,8 +26,6 @@
 #ifndef SMOOTH__INTERP__CURVE__HPP_
 #define SMOOTH__INTERP__CURVE__HPP_
 
-#define CURVE_DEBUG 0
-
 /**
  * @file
  * @brief bezier splines on lie groups.
@@ -470,7 +468,9 @@ public:
   /**
    * @brief Create Reparameterization
    * @param smax maximal value of \f$ s \f$.
-   * @param spline reparameterization function.
+   * @param tt vector of times
+   * @param ss vector of parameter values
+   * @param vv vector of velocities
    */
   Reparameterization(
     double smax, std::vector<double> && tt, std::vector<double> && ss, std::vector<double> && vv)
