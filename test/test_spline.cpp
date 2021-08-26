@@ -451,6 +451,48 @@ TYPED_TEST(Spline, Bezier3Fit)
   }
 }
 
+TYPED_TEST(Spline, Bezier3LocalFit)
+{
+  std::vector<double> tt;
+  std::vector<TypeParam> gg;
+
+  std::srand(10);
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+
+  auto spline = smooth::fit_cubic_bezier_local(tt, gg);
+
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
+
+  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+
+  // check continuity of derivative
+  for (auto t_test = 2.5; t_test < 6; ++t_test) {
+    typename TypeParam::Tangent va, vb;
+    spline.eval(t_test - 1e-5, va);
+    spline.eval(t_test + 1e-5, vb);
+    ASSERT_TRUE(va.isApprox(vb, 1e-3));
+  }
+}
+
 TEST(Spline, BezierTooShort)
 {
   std::vector<double> tt;

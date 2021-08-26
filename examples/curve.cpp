@@ -52,11 +52,10 @@ int main(int, char const **)
     smooth::SE2d::Random()};
 
   Curve c(smooth::fit_cubic_bezier(tt, gg));
-
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 5);
+  c *= Curve::ConstantVelocity(Eigen::Vector3d(1.2, 0, 0), 5);
   c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
   c *= Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), 10);
+  c *= Curve::ConstantVelocity(Eigen::Vector3d(0.5, 1.5, 0), 10);
 
   Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 

@@ -451,8 +451,9 @@ TEST(Curve, Reparameterize)
 
   auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  ASSERT_EQ(sfun.eval(0), 0);
-  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
+  double tmp;
+  ASSERT_EQ(sfun.eval(0, tmp, tmp), 0);
+  ASSERT_GE(sfun.eval(sfun.t_max(), tmp, tmp), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
     double ds, d2s;
@@ -490,8 +491,9 @@ TEST(Curve, ReparameterizeSpline)
 
   auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  ASSERT_EQ(sfun.eval(0), 0);
-  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
+  double tmp;
+  ASSERT_EQ(sfun.eval(0, tmp, tmp), 0);
+  ASSERT_GE(sfun.eval(sfun.t_max(), tmp, tmp), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
     double ds, d2s;
@@ -520,8 +522,8 @@ TEST(Curve, ReparameterizeZero)
 
   auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  ASSERT_EQ(sfun.eval(0), 0);
-  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
+  double tmp;
+  ASSERT_GE(sfun.eval(0, tmp, tmp), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
     double ds, d2s;
@@ -552,8 +554,9 @@ TEST(Curve, ReparameterizeZeroMiddle)
 
   auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  ASSERT_EQ(sfun.eval(0), 0);
-  ASSERT_GE(sfun.eval(sfun.t_max()), c.t_max());
+  double tmp;
+  ASSERT_EQ(sfun.eval(0, tmp, tmp), 0);
+  ASSERT_GE(sfun.eval(sfun.t_max(), tmp, tmp), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
     double ds, d2s;

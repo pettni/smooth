@@ -489,7 +489,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
     // re-compute v2 to compensate for linearization
     // this ensures points are interpolated, but the cost is
     // potential non-continuity of the second derivative
-    typename G::Tangent v2 = *(it_g + 1) * G::exp(-v3) - *(it_g)*G::exp(v1);
+    typename G::Tangent v2 = *(it_g + 1) * G::exp(-v3) - (*it_g) * G::exp(v1);
 
     segments.emplace_back(
       *it_g, std::array<typename G::Tangent, 3>{std::move(v1), std::move(v2), std::move(v3)});
@@ -498,6 +498,83 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   auto take_view = tt | std::views::take(N + 1);
   std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
 
+  return PiecewiseBezier<3, G>(std::move(knots), std::move(segments));
+}
+
+/**
+ * @brief Fit a cubic PiecewiseBezier curve with local support to data.
+ *
+ * The resulting curve passes through the data points, and has continuous first
+ * derivatives. Knot velocities are calculated from finite differences. This method
+ * works best for dense data.
+ *
+ * @param tt interpolation times
+ * @param gg interpolation values
+ * @param v0 body velocity at start of spline (optional, if not given acceleration is set to zero)
+ * @param v1 body velocity at end of spline (optional, if not given acceleration is set to zero)
+ */
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
+  const Rg & gg,
+  std::optional<typename G::Tangent> v0 = {},
+  std::optional<typename G::Tangent> v1 = {})
+{
+  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
+    throw std::invalid_argument("fit_cubic_bezier_local: Not enough points");
+  }
+
+  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
+    throw std::invalid_argument(
+      "fit_cubic_bezier_local: Interpolation times not strictly increasing");
+  }
+
+  // number of intervals
+  const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
+
+  std::vector<Bezier<3, G>> segments(N);
+  std::vector<typename G::Tangent> vel(N + 1);
+
+  auto t_it = std::ranges::begin(tt);
+  auto g_it = std::ranges::begin(gg);
+
+  if (v0) {
+    vel[0] = v0.value();
+  } else {
+    vel[0] = (*(g_it + 1) - *g_it) / (*(t_it + 1) - *t_it);
+  }
+
+  ++t_it;
+  ++g_it;
+
+  for (auto i = 1u; i < N; ++i) {
+    // forward difference
+    vel[i] = (*(g_it + 1) - *(g_it)) / (*(t_it + 1) - *(t_it));
+    ++t_it;
+    ++g_it;
+  }
+
+  if (v1) {
+    vel[N] = v1.value();
+  } else {
+    vel[N] = (*g_it - *(g_it - 1)) / (*t_it - *(t_it - 1));
+  }
+
+  t_it = std::ranges::begin(tt);
+  g_it = std::ranges::begin(gg);
+
+  for (auto i = 0u; i < N; ++i) {
+    std::array<typename G::Tangent, 3> vs;
+    vs[0] = (*(t_it + 1) - *t_it) * vel[i] / 3;
+    vs[2] = (*(t_it + 1) - *t_it) * vel[i + 1] / 3;
+    vs[1] = *(g_it + 1) * G::exp(-vs[2]) - (*g_it) * G::exp(vs[0]);
+
+    segments[i] = Bezier<3, G>(*g_it, std::move(vs));
+
+    ++t_it;
+    ++g_it;
+  }
+
+  std::vector<double> knots(std::ranges::begin(tt), std::ranges::end(tt));
   return PiecewiseBezier<3, G>(std::move(knots), std::move(segments));
 }
 
