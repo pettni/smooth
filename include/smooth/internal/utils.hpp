@@ -46,7 +46,8 @@ namespace smooth::utils {
  *
  * @param r sorted range to search in
  * @param t value to search for
- * @return range iterator it s.t. *it <= t < *(it + 1)
+ * @return range iterator it s.t. *it <= t < *(it + 1), or std::ranges::end(r) if no such iterator
+ * exists
  */
 template<std::ranges::range R, typename T = std::ranges::range_value_t<R>>
 auto binary_interval_search(const R & r, T t) noexcept
