@@ -207,9 +207,16 @@ public:
     // target condition
     //  knots_[istar] <= t < knots_[istar + 1]
 
-    // TODO binary search with guide
-    std::size_t istar = 0;
-    while (istar + 2 < knots_.size() && knots_[istar + 1] <= t) { ++istar; }
+    auto it = utils::binary_interval_search(knots_, t);
+
+    std::size_t istar;
+    if (it != std::ranges::end(knots_)) {
+      istar = it - std::ranges::begin(knots_);
+    } else if (t < knots_.front()) {
+      istar = 0;
+    } else {
+      istar = knots_.size() - 2;
+    }
 
     const double T = knots_[istar + 1] - knots_[istar];
     const double u = (t - knots_[istar]) / T;

@@ -105,6 +105,10 @@ if(BUILD_TESTING)
 
   # CORE TESTS
 
+  add_executable(test_utils test/test_utils.cpp)
+  target_link_libraries(test_utils PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_utils)
+
   add_executable(test_lie_api test/test_liegroup.cpp)
   target_link_libraries(test_lie_api PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_lie_api)

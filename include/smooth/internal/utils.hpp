@@ -30,11 +30,59 @@
 #include <cstddef>
 #include <functional>
 #include <numeric>
+#include <ranges>
 #include <utility>
 
 #include <Eigen/Core>
 
 namespace smooth::utils {
+
+/////////////////////////////
+// BINARY SEARCH ALGORITHM //
+/////////////////////////////
+
+/**
+ * @brief Binary search for interval that contains value in sorted range.
+ *
+ * @param r sorted range to search in
+ * @param t value to search for
+ * @return range iterator it s.t. *it <= t < *(it + 1)
+ */
+template<std::ranges::range R, typename T = std::ranges::range_value_t<R>>
+auto binary_interval_search(const R & r, T t) noexcept
+{
+  auto left = std::ranges::begin(r);
+  auto rght = std::ranges::end(r);
+
+  decltype(left) pivot;
+
+  if (left + 2 > rght) {
+    return rght;
+  } else if (!(*left <= t && t < *(rght - 1))) {
+    return rght;
+  }
+
+  while (left + 1 < rght) {
+    double alpha;
+    if constexpr (std::is_convertible_v<T, double>) {
+      alpha = static_cast<double>(t - *left) / static_cast<double>(*(rght - 1) - *left);
+    } else {
+      alpha = 0.5;
+    }
+
+    pivot = left + static_cast<intptr_t>(static_cast<double>(rght - 1 - left) * alpha);
+
+    if (*pivot <= t && t < *(pivot + 1)) {
+      break;
+    } else if (t >= *(pivot + 1)) {
+      left = pivot + 1;
+    } else if (t < *pivot) {
+      rght = pivot + 1;
+    }
+  }
+
+  return pivot;
+}
 
 /////////////////////
 // STATIC FOR LOOP //

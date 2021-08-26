@@ -416,9 +416,17 @@ private:
     // target condition:
     //  end_t_[istar - 1] <= t < end_t_[istar]
 
-    // TODO binary search with guide
-    std::size_t istar = 0;
-    while (istar + 1 < size() && end_t_[istar] <= t) { ++istar; }
+    std::size_t istar;
+
+    auto it = utils::binary_interval_search(end_t_, t);
+    if (it != std::ranges::end(end_t_)) {
+      istar = (it - std::ranges::begin(end_t_)) + 1;
+    } else if (t < end_t_.front()) {
+      istar = 0;
+    } else {
+      istar = end_t_.size() - 1;
+    }
+
     return istar;
   }
 
@@ -464,8 +472,9 @@ public:
    * @param smax maximal value of \f$ s \f$.
    * @param spline reparameterization function.
    */
-  Reparameterization(double smax, std::vector<double> && tt, std::vector<double> && ss)
-      : smax_(smax), tt_(std::move(tt)), ss_(std::move(ss))
+  Reparameterization(
+    double smax, std::vector<double> && tt, std::vector<double> && ss, std::vector<double> && vv)
+      : smax_(smax), tt_(std::move(tt)), ss_(std::move(ss)), vv_(std::move(vv))
   {}
 
   /// @brief Minmal t value
@@ -489,22 +498,28 @@ public:
     }
 
     // target: tt_[idx] <= t < tt_[idx + 1]
-    // TODO binary search
-    std::size_t idx = 0u;
-    while (idx + 1 < tt_.size() && tt_[idx + 1] <= t) { ++idx; }
+    auto it = utils::binary_interval_search(tt_, t);
 
-    const double T   = tt_[idx + 1] - tt_[idx];
+    std::size_t idx;
+    if (it != std::ranges::end(tt_)) {
+      idx = it - std::ranges::begin(tt_);
+    } else if (t < tt_.front()) {
+      idx = 0;
+    } else {
+      idx = tt_.size() - 1;
+    }
+
     const double tau = t - tt_[idx];
 
-    ds  = (ss_[idx + 1] - ss_[idx]) / T;
-    d2s = 0;
+    ds  = vv_[idx];
+    d2s = idx + 2 < tt_.size() ? 0 : (vv_[idx + 1] - vv_[idx]) / (tt_[idx + 1] - tt_[idx]);
 
     return std::clamp(ss_[idx] + tau * ds, 0., smax_);
   }
 
 private:
   double smax_;
-  std::vector<double> tt_, ss_;
+  std::vector<double> tt_, ss_, vv_;
 };
 
 /**
@@ -602,8 +617,12 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
   // FORWARD PASS
 
-  std::vector<double> tt, ss;
+  std::vector<double> tt, ss, vv;
   state << 0, start_vel;
+
+  // clamp velocity to not exceed upper bound
+  state.y() = std::min<double>(state.y(), v_func.eval(0).rn().x());
+  if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
   do {
     typename G::Tangent vel, acc;
@@ -613,12 +632,6 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
       // skip over without storing if curve is stationary
       state.x() += eps;
     } else {
-      // clamp velocity to not exceed upper bound
-      state.y() = std::min<double>(state.y(), v_func.eval(state.x()).rn().x());
-      if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
-      // ensure v stays positive
-      state.y() = std::max(state.y(), eps);
-
       // figure maximal allowed acceleration
       double a = std::numeric_limits<double>::infinity();
       for (auto i = 0u; i != G::Dof; ++i) {
@@ -633,16 +646,23 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
       tt.push_back(tt.empty() ? 0 : tt.back() + dt);
       ss.push_back(state.x());
+      vv.push_back(state.y());
 
-      state.x() += state.y() * dt + a * dt * dt / 2;
+      state.x() += state.y() * dt;
       state.y() += dt * a;
+
+      // clamp velocity to not exceed upper bound
+      state.y() = std::min<double>(state.y(), v_func.eval(state.x()).rn().x());
+      if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
+      // ensure v stays positive
+      state.y() = std::max(state.y(), eps);
     }
   } while (state.x() < curve.t_max());
 
   tt.push_back(tt.empty() ? 0 : tt.back() + dt);
   ss.push_back(state.x());
 
-  return Reparameterization(curve.t_max(), std::move(tt), std::move(ss));
+  return Reparameterization(curve.t_max(), std::move(tt), std::move(ss), std::move(vv));
 }
 
 }  // namespace smooth
