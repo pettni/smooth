@@ -59,7 +59,7 @@ int main(int, char const **)
 
   Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
-  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 0);
+  auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 0);
 
   std::vector<double> tvec, svec;
   std::vector<double> vx, vy, w, ax, ay, dw;

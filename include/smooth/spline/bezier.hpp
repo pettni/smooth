@@ -537,27 +537,18 @@ PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
   auto t_it = std::ranges::begin(tt);
   auto g_it = std::ranges::begin(gg);
 
-  if (v0) {
-    vel[0] = v0.value();
-  } else {
-    vel[0] = (*(g_it + 1) - *g_it) / (*(t_it + 1) - *t_it);
-  }
+  vel[0] = v0.value_or((*(g_it + 1) - *g_it) / (*(t_it + 1) - *t_it));
 
   ++t_it;
   ++g_it;
 
   for (auto i = 1u; i < N; ++i) {
-    // forward difference
     vel[i] = (*(g_it + 1) - *(g_it)) / (*(t_it + 1) - *(t_it));
     ++t_it;
     ++g_it;
   }
 
-  if (v1) {
-    vel[N] = v1.value();
-  } else {
-    vel[N] = (*g_it - *(g_it - 1)) / (*t_it - *(t_it - 1));
-  }
+  vel[N] = v1.value_or((*g_it - *(g_it - 1)) / (*t_it - *(t_it - 1)));
 
   t_it = std::ranges::begin(tt);
   g_it = std::ranges::begin(gg);

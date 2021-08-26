@@ -449,7 +449,7 @@ TEST(Curve, Reparameterize)
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+  auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
   double tmp;
   ASSERT_EQ(sfun.eval(0, tmp, tmp), 0);
@@ -489,7 +489,7 @@ TEST(Curve, ReparameterizeSpline)
 
   Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
-  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+  auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
   double tmp;
   ASSERT_EQ(sfun.eval(0, tmp, tmp), 0);
@@ -520,7 +520,7 @@ TEST(Curve, ReparameterizeZero)
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+  auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
   double tmp;
   ASSERT_GE(sfun.eval(0, tmp, tmp), c.t_max());
@@ -552,7 +552,7 @@ TEST(Curve, ReparameterizeZeroMiddle)
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto sfun = smooth::reparameterize_curve3(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+  auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
   double tmp;
   ASSERT_EQ(sfun.eval(0, tmp, tmp), 0);

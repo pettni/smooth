@@ -501,6 +501,7 @@ TEST(Spline, BezierTooShort)
   ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::invalid_argument);
   ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::invalid_argument);
   ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_cubic_bezier_local(tt, gg), std::invalid_argument);
 }
 
 TEST(Spline, BezierNonIncreasing)
@@ -515,6 +516,7 @@ TEST(Spline, BezierNonIncreasing)
   ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::invalid_argument);
   ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::invalid_argument);
   ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::invalid_argument);
+  ASSERT_THROW(smooth::fit_cubic_bezier_local(tt, gg), std::invalid_argument);
   ASSERT_THROW(smooth::fit_bspline<5>(tt, gg, 0.2), std::invalid_argument);
 }
 
