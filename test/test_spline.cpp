@@ -361,12 +361,14 @@ TYPED_TEST(Spline, Bezier1Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
   ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
   ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
   ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
 }
 
 TYPED_TEST(Spline, Bezier2Fit)
@@ -393,12 +395,14 @@ TYPED_TEST(Spline, Bezier2Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
   ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
   ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
   ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto tt = 2.5; tt < 6; ++tt) {
@@ -435,12 +439,14 @@ TYPED_TEST(Spline, Bezier3Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
   ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
   ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
   ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
@@ -477,12 +483,14 @@ TYPED_TEST(Spline, Bezier3LocalFit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
   ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
   ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
   ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
   ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
   ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {

@@ -84,6 +84,10 @@ TEST(Curve, ConstantVelocity2)
   smooth::SO3d gtest;
   Eigen::Vector3d vtest;
 
+  gtest = c1.eval(-1, vtest);
+  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+
   gtest = c1.eval(0, vtest);
   ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
   ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
