@@ -1,4 +1,4 @@
-# `smooth`: Lie Theory for Robotics
+# smooth: Lie Theory for Robotics
 
 [![CI Build and Test][ci-shield]][ci-link]
 [![Code coverage][cov-shield]][cov-link]
