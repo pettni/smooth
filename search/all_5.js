@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['eulerangles_40',['eulerAngles',['../classsmooth_1_1SO3Base.html#a006ab2a2c6343e74db54f56170d1e336',1,'smooth::SO3Base']]],
-  ['eval_41',['eval',['../classsmooth_1_1Bezier.html#aa0ed04788c168d0dd3020655149bdfd9',1,'smooth::Bezier::eval()'],['../classsmooth_1_1PiecewiseBezier.html#a630a9ec7bee967d36f6734acc557eabf',1,'smooth::PiecewiseBezier::eval()'],['../classsmooth_1_1BSpline.html#ab65ffe58be4fef751a05271bcf1a3690',1,'smooth::BSpline::eval()']]],
-  ['exp_42',['exp',['../classsmooth_1_1LieGroupBase.html#ab38a5d4fcd63b818f3af5427f0cba79e',1,'smooth::LieGroupBase']]]
+  ['fit_5fbspline_56',['fit_bspline',['../bspline_8hpp.html#a2b6b1a5c1e3400b8b1569b5ccda000d9',1,'smooth']]],
+  ['fit_5fcubic_5fbezier_57',['fit_cubic_bezier',['../bezier_8hpp.html#ac16bac984bd45054d88533b1eb331a5c',1,'smooth']]],
+  ['fit_5fcubic_5fbezier_5flocal_58',['fit_cubic_bezier_local',['../bezier_8hpp.html#a359598fe8c535a19f80bbc866763fc35',1,'smooth']]],
+  ['fit_5flinear_5fbezier_59',['fit_linear_bezier',['../bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724',1,'smooth']]],
+  ['fit_5fquadratic_5fbezier_60',['fit_quadratic_bezier',['../bezier_8hpp.html#a5bae08a2dd5837204af3f7fc03ade7a8',1,'smooth']]],
+  ['fixedcubic_61',['FixedCubic',['../classsmooth_1_1Curve.html#aa224a3d759e74d62823141fa763b5240',1,'smooth::Curve']]],
+  ['ftol_62',['ftol',['../structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b',1,'smooth::MinimizeOptions']]]
 ];

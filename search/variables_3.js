@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['liegroup_329',['LieGroup',['../concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716',1,'smooth']]]
+  ['liegroup_395',['LieGroup',['../concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716',1,'smooth']]]
 ];

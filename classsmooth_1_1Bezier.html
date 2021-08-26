@@ -75,6 +75,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classsmooth_1_1Bezier-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">smooth::Bezier&lt; N, G &gt; Class Template Reference</div>  </div>
@@ -122,6 +123,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa0ed04788c168d0dd3020655149bdfd9"><td class="memItemLeft" align="right" valign="top">G&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Bezier.html#aa0ed04788c168d0dd3020655149bdfd9">eval</a> (double t, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}) const</td></tr>
 <tr class="memdesc:aa0ed04788c168d0dd3020655149bdfd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate <a class="el" href="classsmooth_1_1Bezier.html" title="Bezier curve on [0, 1].">Bezier</a> curve.  <a href="classsmooth_1_1Bezier.html#aa0ed04788c168d0dd3020655149bdfd9">More...</a><br /></td></tr>
 <tr class="separator:aa0ed04788c168d0dd3020655149bdfd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a49449c9a3cc5ff41efb70517ec4655e0"><td class="memItemLeft" align="right" valign="top"><a id="a49449c9a3cc5ff41efb70517ec4655e0"></a>
+class&#160;</td><td class="memItemRight" valign="bottom"><b>Curve&lt; G &gt;</b></td></tr>
+<tr class="separator:a49449c9a3cc5ff41efb70517ec4655e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;std::size_t N, LieGroup G&gt;<br />
@@ -140,7 +147,7 @@ class smooth::Bezier&lt; N, G &gt;</h3>
 </p>
 <p> where \(\tilde B_i(t)\) are cumulative Bernstein basis functions and \(v_i = g_i \ominus g_{i-1}\) are the control point differences. </p>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00060">60</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00066">66</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a26fdfda6d78f24bd39d580fb2fc6ace4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a26fdfda6d78f24bd39d580fb2fc6ace4">&#9670;&nbsp;</a></span>Bezier() <span class="overload">[1/2]</span></h2>
@@ -187,7 +194,7 @@ template&lt;std::size_t N, LieGroup G&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00074">74</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00080">80</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>
@@ -245,7 +252,7 @@ template&lt;std::ranges::range Rv&gt; </div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Range value type of <code>Rv</code> must be the tangent type of <code>G</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00087">87</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00093">93</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>
@@ -304,7 +311,7 @@ template&lt;std::size_t N, LieGroup G&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>spline value at time t</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Input <code>t</code> is clamped to interval [0, 1] </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00114">114</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00122">122</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>smooth: &lt;tt&gt;smooth&lt;/tt&gt;: Lie Theory for Robotics</title>
+<title>smooth: smooth: Lie Theory for Robotics</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,7 +70,7 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title"><code>smooth</code>: Lie Theory for Robotics </div>  </div>
+<div class="title">smooth: Lie Theory for Robotics </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://github.com/pettni/lie/actions/workflows/build_and_test.yml"><img src="https://img.shields.io/github/workflow/status/pettni/smooth/build_and_test/master?style=flat-square" alt="CI Build and Test" class="inline"/></a> <a href="https://codecov.io/gh/pettni/smooth"><img src="https://img.shields.io/codecov/c/gh/pettni/smooth/master?style=flat-square" alt="Code coverage" class="inline"/></a> <a href="https://github.com/pettni/smooth/blob/master/LICENSE"><img src="https://img.shields.io/github/license/pettni/smooth.svg?style=flat-square" alt="License" style="pointer-events: none;" class="inline"/></a></p>
@@ -221,7 +221,7 @@ Non-linear least squares optimization</h2>
 <p>Available for <code>Manifold</code> types, see <a class="el" href="optim_8hpp.html" title="Non-linear least squares optimization on Manifolds.">optim.hpp</a>.</p>
 <p>The <a class="el" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d" title="Find a minimum of the non-linear least-squares problem.">minimize()</a> function implements a Levenberg-Marquardt trust-region procedure to find a local minimum. All derivatives and computations are done in the tangent space as opposed to e.g. Ceres which uses derivatives w.r.t. the parameterization.</p>
 <p>A sparse solver is implemented, but it is currently only available when analytical derivatives are provided.</p>
-<p>Example: Calculate <img src="https://latex.codecogs.com/png.latex?\mathrm{argmin}_{g_1}&space;\\|\log(g_1&space;\circ&space;g_2)\\|_2^2" alt="" class="inline"/></p>
+<p>Example: Calculate <img src="https://latex.codecogs.com/svg.image?\mathrm{argmin}_{g_1}&space;\|\log(g_1&space;\circ&space;g_2&space;)&space;\||" alt="" class="inline"/></p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="optim_8hpp.html">smooth/optim.hpp</a>&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &lt;smooth/so3.hpp&gt;</span></div>
 <div class="line"> </div>
@@ -236,7 +236,7 @@ Non-linear least squares optimization</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Now g1 == g2.inverse()</span></div>
 <div class="ttc" id="aoptim_8hpp_html"><div class="ttname"><a href="optim_8hpp.html">optim.hpp</a></div><div class="ttdoc">Non-linear least squares optimization on Manifolds.</div></div>
-<div class="ttc" id="aoptim_8hpp_html_af178cd6078aacc223a42016bce92794d"><div class="ttname"><a href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">smooth::minimize</a></div><div class="ttdeci">void minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</div><div class="ttdoc">Find a minimum of the non-linear least-squares problem.</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00079">optim.hpp:79</a></div></div>
+<div class="ttc" id="aoptim_8hpp_html_af178cd6078aacc223a42016bce92794d"><div class="ttname"><a href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">smooth::minimize</a></div><div class="ttdeci">void minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</div><div class="ttdoc">Find a minimum of the non-linear least-squares problem.</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00083">optim.hpp:83</a></div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
 Bezier curve evaluation and fitting</h2>
 <p>Available for <code>LieGroup</code> types, see <a class="el" href="bezier_8hpp.html" title="bezier splines on lie groups.">spline/bezier.hpp</a>.</p>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['verbosity_336',['verbosity',['../structsmooth_1_1MinimizeOptions.html#ad0cb4b154e749c28b36cdf64aecf3e20',1,'smooth::MinimizeOptions']]]
+  ['verbose_402',['verbose',['../structsmooth_1_1MinimizeOptions.html#a94304c3311c302eb868271421e33c8b2',1,'smooth::MinimizeOptions']]]
 ];

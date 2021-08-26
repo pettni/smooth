@@ -85,6 +85,7 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;ranges&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
 <code>#include &lt;Eigen/Sparse&gt;</code><br />
 <code>#include &lt;Eigen/SparseLU&gt;</code><br />
 <code>#include &quot;<a class="el" href="concepts_8hpp_source.html">smooth/concepts.hpp</a>&quot;</code><br />
@@ -95,16 +96,17 @@ Include dependency graph for bezier.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="bezier_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2bezier_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2bezier_8hpp" id="ainclude_2smooth_2spline_2bezier_8hpp">
-<area shape="rect" title="bezier splines on lie groups." alt="" coords="297,5,445,47"/>
+<area shape="rect" title="bezier splines on lie groups." alt="" coords="334,5,482,47"/>
 <area shape="rect" title=" " alt="" coords="5,95,80,121"/>
 <area shape="rect" title=" " alt="" coords="104,95,165,121"/>
-<area shape="rect" title=" " alt="" coords="189,95,288,121"/>
-<area shape="rect" title=" " alt="" coords="312,95,429,121"/>
-<area shape="rect" href="concepts_8hpp.html" title=" " alt="" coords="453,95,600,121"/>
-<area shape="rect" title=" " alt="" coords="624,95,787,121"/>
-<area shape="rect" title=" " alt="" coords="811,95,907,121"/>
-<area shape="rect" title=" " alt="" coords="437,169,512,196"/>
-<area shape="rect" title=" " alt="" coords="536,169,621,196"/>
+<area shape="rect" title=" " alt="" coords="190,95,269,121"/>
+<area shape="rect" title=" " alt="" coords="293,95,392,121"/>
+<area shape="rect" title=" " alt="" coords="416,95,533,121"/>
+<area shape="rect" href="concepts_8hpp.html" title=" " alt="" coords="557,95,704,121"/>
+<area shape="rect" title=" " alt="" coords="728,95,891,121"/>
+<area shape="rect" title=" " alt="" coords="915,95,1011,121"/>
+<area shape="rect" title=" " alt="" coords="541,169,616,196"/>
+<area shape="rect" title=" " alt="" coords="640,169,725,196"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -112,8 +114,9 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="bezier_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2bezier_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2bezier_8hppdep" id="ainclude_2smooth_2spline_2bezier_8hppdep">
-<area shape="rect" title="bezier splines on lie groups." alt="" coords="9,5,157,47"/>
-<area shape="rect" href="spline__fit_8cpp_source.html" title=" " alt="" coords="5,95,161,121"/>
+<area shape="rect" title="bezier splines on lie groups." alt="" coords="97,5,245,47"/>
+<area shape="rect" href="spline__fit_8cpp_source.html" title=" " alt="" coords="5,102,161,129"/>
+<area shape="rect" href="curve_8hpp.html" title="bezier splines on lie groups." alt="" coords="185,95,333,136"/>
 </map>
 </div>
 </div>
@@ -130,26 +133,30 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a41fa4ef69fa4622f8c8d44397934d459"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </td></tr>
-<tr class="memitem:a41fa4ef69fa4622f8c8d44397934d459"><td class="memTemplItemLeft" align="right" valign="top">PiecewiseBezier&lt; 1, std::ranges::range_value_t&lt; Rg &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="bezier_8hpp.html#a41fa4ef69fa4622f8c8d44397934d459">smooth::fit_linear_bezier</a> (const Rt &amp;tt, const Rg &amp;gg)</td></tr>
-<tr class="memdesc:a41fa4ef69fa4622f8c8d44397934d459"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a linear <a class="el" href="classsmooth_1_1PiecewiseBezier.html" title="Piecewise curve built from Bezier segments.">PiecewiseBezier</a> curve to data.  <a href="bezier_8hpp.html#a41fa4ef69fa4622f8c8d44397934d459">More...</a><br /></td></tr>
-<tr class="separator:a41fa4ef69fa4622f8c8d44397934d459"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99b8315f72d2e3690647a718fa6f85cd"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </td></tr>
-<tr class="memitem:a99b8315f72d2e3690647a718fa6f85cd"><td class="memTemplItemLeft" align="right" valign="top">PiecewiseBezier&lt; 2, std::ranges::range_value_t&lt; Rg &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="bezier_8hpp.html#a99b8315f72d2e3690647a718fa6f85cd">smooth::fit_quadratic_bezier</a> (const Rt &amp;tt, const Rg &amp;gg)</td></tr>
-<tr class="memdesc:a99b8315f72d2e3690647a718fa6f85cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a quadratic <a class="el" href="classsmooth_1_1PiecewiseBezier.html" title="Piecewise curve built from Bezier segments.">PiecewiseBezier</a> curve to data.  <a href="bezier_8hpp.html#a99b8315f72d2e3690647a718fa6f85cd">More...</a><br /></td></tr>
-<tr class="separator:a99b8315f72d2e3690647a718fa6f85cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3b7f0ccc4f875c6d4a231e364e8d96b4"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </td></tr>
-<tr class="memitem:a3b7f0ccc4f875c6d4a231e364e8d96b4"><td class="memTemplItemLeft" align="right" valign="top">PiecewiseBezier&lt; 3, std::ranges::range_value_t&lt; Rg &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="bezier_8hpp.html#a3b7f0ccc4f875c6d4a231e364e8d96b4">smooth::fit_cubic_bezier</a> (const Rt &amp;tt, const Rg &amp;gg, std::optional&lt; typename G::Tangent &gt; v0={}, std::optional&lt; typename G::Tangent &gt; v1={})</td></tr>
-<tr class="memdesc:a3b7f0ccc4f875c6d4a231e364e8d96b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a cubic <a class="el" href="classsmooth_1_1PiecewiseBezier.html" title="Piecewise curve built from Bezier segments.">PiecewiseBezier</a> curve to data.  <a href="bezier_8hpp.html#a3b7f0ccc4f875c6d4a231e364e8d96b4">More...</a><br /></td></tr>
-<tr class="separator:a3b7f0ccc4f875c6d4a231e364e8d96b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb3bf22a4262593ab6abdb20f0fa6724"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </td></tr>
+<tr class="memitem:abb3bf22a4262593ab6abdb20f0fa6724"><td class="memTemplItemLeft" align="right" valign="top">PiecewiseBezier&lt; 1, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724">smooth::fit_linear_bezier</a> (const Rt &amp;tt, const Rg &amp;gg)</td></tr>
+<tr class="memdesc:abb3bf22a4262593ab6abdb20f0fa6724"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a linear <a class="el" href="classsmooth_1_1PiecewiseBezier.html" title="Piecewise curve built from Bezier segments.">PiecewiseBezier</a> curve to data.  <a href="bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724">More...</a><br /></td></tr>
+<tr class="separator:abb3bf22a4262593ab6abdb20f0fa6724"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5bae08a2dd5837204af3f7fc03ade7a8"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </td></tr>
+<tr class="memitem:a5bae08a2dd5837204af3f7fc03ade7a8"><td class="memTemplItemLeft" align="right" valign="top">PiecewiseBezier&lt; 2, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="bezier_8hpp.html#a5bae08a2dd5837204af3f7fc03ade7a8">smooth::fit_quadratic_bezier</a> (const Rt &amp;tt, const Rg &amp;gg)</td></tr>
+<tr class="memdesc:a5bae08a2dd5837204af3f7fc03ade7a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a quadratic <a class="el" href="classsmooth_1_1PiecewiseBezier.html" title="Piecewise curve built from Bezier segments.">PiecewiseBezier</a> curve to data.  <a href="bezier_8hpp.html#a5bae08a2dd5837204af3f7fc03ade7a8">More...</a><br /></td></tr>
+<tr class="separator:a5bae08a2dd5837204af3f7fc03ade7a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac16bac984bd45054d88533b1eb331a5c"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </td></tr>
+<tr class="memitem:ac16bac984bd45054d88533b1eb331a5c"><td class="memTemplItemLeft" align="right" valign="top">PiecewiseBezier&lt; 3, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="bezier_8hpp.html#ac16bac984bd45054d88533b1eb331a5c">smooth::fit_cubic_bezier</a> (const Rt &amp;tt, const Rg &amp;gg, std::optional&lt; typename G::Tangent &gt; v0={}, std::optional&lt; typename G::Tangent &gt; v1={})</td></tr>
+<tr class="memdesc:ac16bac984bd45054d88533b1eb331a5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a cubic <a class="el" href="classsmooth_1_1PiecewiseBezier.html" title="Piecewise curve built from Bezier segments.">PiecewiseBezier</a> curve to data.  <a href="bezier_8hpp.html#ac16bac984bd45054d88533b1eb331a5c">More...</a><br /></td></tr>
+<tr class="separator:ac16bac984bd45054d88533b1eb331a5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a359598fe8c535a19f80bbc866763fc35"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </td></tr>
+<tr class="memitem:a359598fe8c535a19f80bbc866763fc35"><td class="memTemplItemLeft" align="right" valign="top">PiecewiseBezier&lt; 3, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="bezier_8hpp.html#a359598fe8c535a19f80bbc866763fc35">smooth::fit_cubic_bezier_local</a> (const Rt &amp;tt, const Rg &amp;gg, std::optional&lt; typename G::Tangent &gt; v0={}, std::optional&lt; typename G::Tangent &gt; v1={})</td></tr>
+<tr class="memdesc:a359598fe8c535a19f80bbc866763fc35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a cubic <a class="el" href="classsmooth_1_1PiecewiseBezier.html" title="Piecewise curve built from Bezier segments.">PiecewiseBezier</a> curve with local support to data.  <a href="bezier_8hpp.html#a359598fe8c535a19f80bbc866763fc35">More...</a><br /></td></tr>
+<tr class="separator:a359598fe8c535a19f80bbc866763fc35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>bezier splines on lie groups. </p>
 
 <p class="definition">Definition in file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a3b7f0ccc4f875c6d4a231e364e8d96b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3b7f0ccc4f875c6d4a231e364e8d96b4">&#9670;&nbsp;</a></span>fit_cubic_bezier()</h2>
+<a id="ac16bac984bd45054d88533b1eb331a5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac16bac984bd45054d88533b1eb331a5c">&#9670;&nbsp;</a></span>fit_cubic_bezier()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,7 +164,7 @@ Functions</h2></td></tr>
 template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">PiecewiseBezier&lt;3, std::ranges::range_value_t&lt;Rg&gt; &gt; smooth::fit_cubic_bezier </td>
+          <td class="memname">PiecewiseBezier&lt;3, G&gt; smooth::fit_cubic_bezier </td>
           <td>(</td>
           <td class="paramtype">const Rt &amp;&#160;</td>
           <td class="paramname"><em>tt</em>, </td>
@@ -190,12 +197,6 @@ template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::rang
 
 <p>Fit a cubic PiecewiseBezier curve to data. </p>
 <p>The resulting curve passes through the data points, has continuous first derivatives, and approximately continuous second derivatives.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Rt,Rg</td><td>range types </td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tt</td><td>interpolation times </td></tr>
@@ -206,20 +207,76 @@ template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::rang
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00331">331</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00344">344</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a41fa4ef69fa4622f8c8d44397934d459"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41fa4ef69fa4622f8c8d44397934d459">&#9670;&nbsp;</a></span>fit_linear_bezier()</h2>
+<a id="a359598fe8c535a19f80bbc866763fc35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a359598fe8c535a19f80bbc866763fc35">&#9670;&nbsp;</a></span>fit_cubic_bezier_local()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </div>
+template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">PiecewiseBezier&lt;1, std::ranges::range_value_t&lt;Rg&gt; &gt; smooth::fit_linear_bezier </td>
+          <td class="memname">PiecewiseBezier&lt;3, G&gt; smooth::fit_cubic_bezier_local </td>
+          <td>(</td>
+          <td class="paramtype">const Rt &amp;&#160;</td>
+          <td class="paramname"><em>tt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Rg &amp;&#160;</td>
+          <td class="paramname"><em>gg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::optional&lt; typename G::Tangent &gt;&#160;</td>
+          <td class="paramname"><em>v0</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::optional&lt; typename G::Tangent &gt;&#160;</td>
+          <td class="paramname"><em>v1</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Fit a cubic PiecewiseBezier curve with local support to data. </p>
+<p>The resulting curve passes through the data points, and has continuous first derivatives. Knot velocities are calculated from finite differences. This method works best for dense data.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tt</td><td>interpolation times </td></tr>
+    <tr><td class="paramname">gg</td><td>interpolation values </td></tr>
+    <tr><td class="paramname">v0</td><td>body velocity at start of spline (optional, if not given acceleration is set to zero) </td></tr>
+    <tr><td class="paramname">v1</td><td>body velocity at end of spline (optional, if not given acceleration is set to zero) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00524">524</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+
+</div>
+</div>
+<a id="abb3bf22a4262593ab6abdb20f0fa6724"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb3bf22a4262593ab6abdb20f0fa6724">&#9670;&nbsp;</a></span>fit_linear_bezier()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">PiecewiseBezier&lt;1, G&gt; smooth::fit_linear_bezier </td>
           <td>(</td>
           <td class="paramtype">const Rt &amp;&#160;</td>
           <td class="paramname"><em>tt</em>, </td>
@@ -241,12 +298,6 @@ template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </div>
 <p>Fit a linear PiecewiseBezier curve to data. </p>
 <p>The resulting curve passes through the data points and has piecewise constant velocity.</p>
 <dl class="section warning"><dt>Warning</dt><dd>Result has discontinuous derivatives at knot points</dd></dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Rt,Rg</td><td>range types </td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tt</td><td>interpolation times </td></tr>
@@ -255,20 +306,20 @@ template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00232">232</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00250">250</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a99b8315f72d2e3690647a718fa6f85cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a99b8315f72d2e3690647a718fa6f85cd">&#9670;&nbsp;</a></span>fit_quadratic_bezier()</h2>
+<a id="a5bae08a2dd5837204af3f7fc03ade7a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bae08a2dd5837204af3f7fc03ade7a8">&#9670;&nbsp;</a></span>fit_quadratic_bezier()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </div>
+template&lt;std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t&lt;Rg&gt;&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">PiecewiseBezier&lt;2, std::ranges::range_value_t&lt;Rg&gt; &gt; smooth::fit_quadratic_bezier </td>
+          <td class="memname">PiecewiseBezier&lt;2, G&gt; smooth::fit_quadratic_bezier </td>
           <td>(</td>
           <td class="paramtype">const Rt &amp;&#160;</td>
           <td class="paramname"><em>tt</em>, </td>
@@ -290,12 +341,6 @@ template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </div>
 <p>Fit a quadratic PiecewiseBezier curve to data. </p>
 <p>The resulting curve passes through the data points and has continuous derivatives.</p>
 <dl class="section warning"><dt>Warning</dt><dd>Result may exhibit oscillatory behavior since second derivative is free.</dd></dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Rt,Rg</td><td>range types </td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tt</td><td>interpolation times </td></tr>
@@ -304,7 +349,7 @@ template&lt;std::ranges::range Rt, std::ranges::range Rg&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00275">275</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bezier_8hpp_source.html#l00290">290</a> of file <a class="el" href="bezier_8hpp_source.html">bezier.hpp</a>.</p>
 
 </div>
 </div>
