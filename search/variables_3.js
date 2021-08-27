@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['liegroup_395',['LieGroup',['../concepts_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716',1,'smooth']]]
+  ['is_5fmutable_413',['is_mutable',['../classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9',1,'smooth::LieGroupBase']]]
 ];

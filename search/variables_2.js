@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['is_5fmutable_394',['is_mutable',['../classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9',1,'smooth::LieGroupBase']]]
+  ['ftol_412',['ftol',['../structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b',1,'smooth::MinimizeOptions']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['impl_403',['Impl',['../classsmooth_1_1LieGroupBase.html#a55f732e687efa0c2b44c3174f1e620fb',1,'smooth::LieGroupBase']]]
+  ['dubinsdescription_425',['DubinsDescription',['../dubins_8hpp.html#ad09fdac8c8a208733dd8b6d6ea78fe37',1,'smooth']]]
 ];

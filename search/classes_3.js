@@ -1,25 +1,6 @@
 var searchData=
 [
-  ['manifoldvector_222',['ManifoldVector',['../classsmooth_1_1ManifoldVector.html',1,'smooth']]],
-  ['map_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3apose_20_3e_223',['Map&lt; const geometry_msgs::msg::Pose &gt;',['../classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3aquaternion_20_3e_224',['Map&lt; const geometry_msgs::msg::Quaternion &gt;',['../classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3atransform_20_3e_225',['Map&lt; const geometry_msgs::msg::Transform &gt;',['../classEigen_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20smooth_3a_3abundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_226',['Map&lt; const smooth::Bundle&lt; _Gs... &gt; &gt;',['../classEigen_1_1Map_3_01const_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20smooth_3a_3ac1_3c_20_5fscalar_20_3e_20_3e_227',['Map&lt; const smooth::C1&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01const_01smooth_1_1C1_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20smooth_3a_3ase2_3c_20_5fscalar_20_3e_20_3e_228',['Map&lt; const smooth::SE2&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01const_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20smooth_3a_3ase3_3c_20_5fscalar_20_3e_20_3e_229',['Map&lt; const smooth::SE3&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01const_01smooth_1_1SE3_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20smooth_3a_3aso2_3c_20_5fscalar_20_3e_20_3e_230',['Map&lt; const smooth::SO2&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01const_01smooth_1_1SO2_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20smooth_3a_3aso3_3c_20_5fscalar_20_3e_20_3e_231',['Map&lt; const smooth::SO3&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01const_01smooth_1_1SO3_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20const_20smooth_3a_3atn_3c_20n_2c_20_5fscalar_20_3e_20_3e_232',['Map&lt; const smooth::Tn&lt; N, _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01const_01smooth_1_1Tn_3_01N_00_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20geometry_5fmsgs_3a_3amsg_3a_3apose_20_3e_233',['Map&lt; geometry_msgs::msg::Pose &gt;',['../classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html',1,'Eigen']]],
-  ['map_3c_20geometry_5fmsgs_3a_3amsg_3a_3aquaternion_20_3e_234',['Map&lt; geometry_msgs::msg::Quaternion &gt;',['../classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html',1,'Eigen']]],
-  ['map_3c_20geometry_5fmsgs_3a_3amsg_3a_3atransform_20_3e_235',['Map&lt; geometry_msgs::msg::Transform &gt;',['../classEigen_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html',1,'Eigen']]],
-  ['map_3c_20smooth_3a_3abundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_236',['Map&lt; smooth::Bundle&lt; _Gs... &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1Bundle_3_01__Gs_8_8_8_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20smooth_3a_3ac1_3c_20_5fscalar_20_3e_20_3e_237',['Map&lt; smooth::C1&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1C1_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20smooth_3a_3ase2_3c_20_5fscalar_20_3e_20_3e_238',['Map&lt; smooth::SE2&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20smooth_3a_3ase3_3c_20_5fscalar_20_3e_20_3e_239',['Map&lt; smooth::SE3&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1SE3_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20smooth_3a_3aso2_3c_20_5fscalar_20_3e_20_3e_240',['Map&lt; smooth::SO2&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1SO2_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20smooth_3a_3aso3_3c_20_5fscalar_20_3e_20_3e_241',['Map&lt; smooth::SO3&lt; _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1SO3_3_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['map_3c_20smooth_3a_3atn_3c_20n_2c_20_5fscalar_20_3e_20_3e_242',['Map&lt; smooth::Tn&lt; N, _Scalar &gt; &gt;',['../classEigen_1_1Map_3_01smooth_1_1Tn_3_01N_00_01__Scalar_01_4_01_4.html',1,'Eigen']]],
-  ['minimizeoptions_243',['MinimizeOptions',['../structsmooth_1_1MinimizeOptions.html',1,'smooth']]]
+  ['lie_5ftraits_232',['lie_traits',['../structsmooth_1_1lie__traits.html',1,'smooth']]],
+  ['liegroupbase_233',['LieGroupBase',['../classsmooth_1_1LieGroupBase.html',1,'smooth']]],
+  ['liegroupbase_3c_20_5fderived_20_3e_234',['LieGroupBase&lt; _Derived &gt;',['../classsmooth_1_1LieGroupBase.html',1,'smooth']]]
 ];

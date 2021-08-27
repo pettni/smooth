@@ -1,30 +1,4 @@
 var searchData=
 [
-  ['scale_5fsum_246',['scale_sum',['../structsmooth_1_1BoostOdeintOps_1_1scale__sum.html',1,'smooth::BoostOdeintOps']]],
-  ['se2_247',['SE2',['../classsmooth_1_1SE2.html',1,'smooth']]],
-  ['se2base_248',['SE2Base',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se2base_3c_20eigen_3a_3amap_3c_20const_20smooth_3a_3ase2_3c_20_5fscalar_20_3e_20_3e_20_3e_249',['SE2Base&lt; Eigen::Map&lt; const smooth::SE2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se2base_3c_20eigen_3a_3amap_3c_20smooth_3a_3ase2_3c_20_5fscalar_20_3e_20_3e_20_3e_250',['SE2Base&lt; Eigen::Map&lt; smooth::SE2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se2base_3c_20se2_3c_20_5fscalar_20_3e_20_3e_251',['SE2Base&lt; SE2&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se3_252',['SE3',['../classsmooth_1_1SE3.html',1,'smooth']]],
-  ['se3base_253',['SE3Base',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20eigen_3a_3amap_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3apose_20_3e_20_3e_254',['SE3Base&lt; Eigen::Map&lt; const geometry_msgs::msg::Pose &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20eigen_3a_3amap_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3atransform_20_3e_20_3e_255',['SE3Base&lt; Eigen::Map&lt; const geometry_msgs::msg::Transform &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20eigen_3a_3amap_3c_20const_20smooth_3a_3ase3_3c_20_5fscalar_20_3e_20_3e_20_3e_256',['SE3Base&lt; Eigen::Map&lt; const smooth::SE3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20eigen_3a_3amap_3c_20geometry_5fmsgs_3a_3amsg_3a_3apose_20_3e_20_3e_257',['SE3Base&lt; Eigen::Map&lt; geometry_msgs::msg::Pose &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20eigen_3a_3amap_3c_20geometry_5fmsgs_3a_3amsg_3a_3atransform_20_3e_20_3e_258',['SE3Base&lt; Eigen::Map&lt; geometry_msgs::msg::Transform &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20eigen_3a_3amap_3c_20smooth_3a_3ase3_3c_20_5fscalar_20_3e_20_3e_20_3e_259',['SE3Base&lt; Eigen::Map&lt; smooth::SE3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20se3_3c_20_5fscalar_20_3e_20_3e_260',['SE3Base&lt; SE3&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['so2_261',['SO2',['../classsmooth_1_1SO2.html',1,'smooth']]],
-  ['so2base_262',['SO2Base',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so2base_3c_20eigen_3a_3amap_3c_20const_20smooth_3a_3aso2_3c_20_5fscalar_20_3e_20_3e_20_3e_263',['SO2Base&lt; Eigen::Map&lt; const smooth::SO2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so2base_3c_20eigen_3a_3amap_3c_20smooth_3a_3aso2_3c_20_5fscalar_20_3e_20_3e_20_3e_264',['SO2Base&lt; Eigen::Map&lt; smooth::SO2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so2base_3c_20so2_3c_20_5fscalar_20_3e_20_3e_265',['SO2Base&lt; SO2&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so3_266',['SO3',['../classsmooth_1_1SO3.html',1,'smooth']]],
-  ['so3base_267',['SO3Base',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20eigen_3a_3amap_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3aquaternion_20_3e_20_3e_268',['SO3Base&lt; Eigen::Map&lt; const geometry_msgs::msg::Quaternion &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20eigen_3a_3amap_3c_20const_20smooth_3a_3aso3_3c_20_5fscalar_20_3e_20_3e_20_3e_269',['SO3Base&lt; Eigen::Map&lt; const smooth::SO3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20eigen_3a_3amap_3c_20geometry_5fmsgs_3a_3amsg_3a_3aquaternion_20_3e_20_3e_270',['SO3Base&lt; Eigen::Map&lt; geometry_msgs::msg::Quaternion &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20eigen_3a_3amap_3c_20smooth_3a_3aso3_3c_20_5fscalar_20_3e_20_3e_20_3e_271',['SO3Base&lt; Eigen::Map&lt; smooth::SO3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20so3_3c_20_5fscalar_20_3e_20_3e_272',['SO3Base&lt; SO3&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]]
+  ['reparameterization_258',['Reparameterization',['../classsmooth_1_1Reparameterization.html',1,'smooth']]]
 ];
