@@ -207,15 +207,11 @@ public:
     // target condition
     //  knots_[istar] <= t < knots_[istar + 1]
 
-    auto it = utils::binary_interval_search(knots_, t);
+    std::size_t istar = 0;
 
-    std::size_t istar;
+    auto it = utils::binary_interval_search(knots_, t);
     if (it != std::ranges::end(knots_)) {
-      istar = it - std::ranges::begin(knots_);
-    } else if (t < knots_.front()) {
-      istar = 0;
-    } else {
-      istar = knots_.size() - 2;
+      istar = std::min<std::size_t>(it - knots_.begin(), knots_.size() - 2);
     }
 
     const double T = knots_[istar + 1] - knots_[istar];

@@ -61,13 +61,13 @@ int main(int, char const **)
 
   auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 0);
 
-  std::vector<double> tvec, svec;
+  std::vector<double> tvec, svec, vvec, avec;
   std::vector<double> vx, vy, w, ax, ay, dw;
   std::vector<double> rvx, rvy, rw, rax, ray, rdw;
 
   for (double t = 0; t < sfun.t_max(); t += 0.01) {
     double ds, d2s;
-    double s = sfun.eval(t, std::ref(ds), std::ref(d2s));
+    double s = sfun.eval(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
     c.eval(s, vel, acc);
@@ -77,6 +77,8 @@ int main(int, char const **)
 
     tvec.push_back(t);
     svec.push_back(s);
+    vvec.push_back(ds);
+    avec.push_back(d2s);
 
     vx.push_back(vel.x());
     vy.push_back(vel.y());
@@ -99,7 +101,10 @@ int main(int, char const **)
   matplot::figure();
   matplot::hold(matplot::on);
   matplot::title("Reparameterization");
-  matplot::plot(tvec, svec, "b")->line_width(2);
+  matplot::plot(tvec, svec, "r")->line_width(2);
+  matplot::plot(tvec, vvec, "g")->line_width(2);
+  matplot::plot(tvec, avec, "b")->line_width(2);
+  matplot::legend({"s", "v", "a"});
 
   matplot::figure();
   matplot::hold(matplot::on);

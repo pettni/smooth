@@ -39,7 +39,6 @@
 
 #include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
-#include "smooth/se2.hpp"
 #include "smooth/tn.hpp"
 
 #include "bezier.hpp"
@@ -49,9 +48,9 @@
 namespace smooth {
 
 /**
- * @brief Single parameter function on Lie group.
+ * @brief Single-parameter Lie group-valued function.
  *
- * A curve is a continuous function \f$ x : \mathbb{R} \rightarrow \mathbb{G} \f$ defined on an
+ * A Curve is a continuous function \f$ x : \mathbb{R} \rightarrow \mathbb{G} \f$ defined on an
  * interval \f$ [0, T] \f$ such that \f$ x(0) = e \f$.
  *
  * Internally a Curve is represented via third-order polynomials, similar to a PiecewiseBezier of
@@ -246,9 +245,9 @@ public:
   }
 
   /**
-   * @brief Add Curve to the end of this curve via concatenation.
+   * @brief In-place curve concatenation.
    *
-   * @param other Curve to add.
+   * @param other Curve to append at the end of this Curve.
    *
    * The resulting Curve \f$ y(t) \f$ is s.t.
    * \f[
@@ -284,7 +283,7 @@ public:
   }
 
   /**
-   * @brief Concatenate two curves
+   * @brief Curve concatenation.
    */
   Curve operator*(const Curve & other)
   {
@@ -294,17 +293,30 @@ public:
   }
 
   /**
-   * @brief Evaluate Curve.
+   * @brief Evaluate Curve at given time.
    *
    * @param[in] t time point to evaluate at
    * @param[out] vel output body velocity at evaluation time
    * @param[out] acc output body acceleration at evaluation time
    * @return value at time t
    *
-   * @note Input \p t is clamped to interval [t_min(), t_max()]
+   * @note Outside the support [t_min(), t_max()] the result is clamped to the end points, and
+   * the acceleration and velocity is zero.
    */
   G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
+    if (empty() || t < 0) {
+      if (vel.has_value()) { vel.value().setZero(); }
+      if (acc.has_value()) { acc.value().setZero(); }
+      return G::Identity();
+    }
+
+    if (t > t_max()) {
+      if (vel.has_value()) { vel.value().setZero(); }
+      if (acc.has_value()) { acc.value().setZero(); }
+      return end_g_.back();
+    }
+
     const auto istar = find_idx(t);
 
     const double ta = istar == 0 ? 0 : end_t_[istar - 1];
@@ -414,15 +426,11 @@ private:
     // target condition:
     //  end_t_[istar - 1] <= t < end_t_[istar]
 
-    std::size_t istar;
+    std::size_t istar = 0;
 
     auto it = utils::binary_interval_search(end_t_, t);
-    if (it != std::ranges::end(end_t_)) {
-      istar = (it - std::ranges::begin(end_t_)) + 1;
-    } else if (t < end_t_.front()) {
-      istar = 0;
-    } else {
-      istar = end_t_.size() - 1;
+    if (it != end_t_.end()) {
+      istar = std::min<std::size_t>((it - end_t_.begin()) + 1, end_t_.size() - 1);
     }
 
     return istar;
@@ -465,23 +473,31 @@ private:
 class Reparameterization
 {
 public:
+  /// @brief Reparameterization data
+  struct Data
+  {
+    /// time t
+    double t;
+    /// position s
+    double s;
+    /// ds/dt
+    double v;
+    /// d2s/dt2
+    double a;
+  };
+
   /**
    * @brief Create Reparameterization
    * @param smax maximal value of \f$ s \f$.
-   * @param tt vector of times
-   * @param ss vector of parameter values
-   * @param vv vector of velocities
+   * @param d data vector
    */
-  Reparameterization(
-    double smax, std::vector<double> && tt, std::vector<double> && ss, std::vector<double> && vv)
-      : smax_(smax), tt_(std::move(tt)), ss_(std::move(ss)), vv_(std::move(vv))
-  {}
+  Reparameterization(double smax, std::vector<Data> && d) : smax_(smax), d_(std::move(d)) {}
 
-  /// @brief Minmal t value
+  /// @brief Minimal t value
   double t_min() const { return 0; }
 
   /// @brief Maximal t value
-  double t_max() const { return tt_.back(); }
+  double t_max() const { return d_.back().t; }
 
   /**
    * @brief Evaluate reparameterization function
@@ -491,35 +507,25 @@ public:
    */
   double eval(double t, double & ds, double & d2s) const
   {
-    if (tt_.size() == 1) {
+    if (d_.size() == 1) {
       ds  = 0;
       d2s = 0;
-      return std::min(ss_.front(), smax_);
+      return std::min(d_.front().s, smax_);
     }
 
-    // target: tt_[idx] <= t < tt_[idx + 1]
-    auto it = utils::binary_interval_search(tt_, t);
+    auto it =
+      utils::binary_interval_search(d_, t, [](const Data & d, double t) { return d.t <=> t; });
+    const double tau = t - it->t;
 
-    std::size_t idx;
-    if (it != std::ranges::end(tt_)) {
-      idx = it - std::ranges::begin(tt_);
-    } else if (t < tt_.front()) {
-      idx = 0;
-    } else {
-      idx = tt_.size() - 1;
-    }
+    ds  = it->v + it->a * tau;
+    d2s = it->a;
 
-    const double tau = t - tt_[idx];
-
-    ds  = vv_[idx];
-    d2s = idx + 2 < tt_.size() ? 0 : (vv_[idx + 1] - vv_[idx]) / (tt_[idx + 1] - tt_[idx]);
-
-    return std::clamp(ss_[idx] + tau * ds, 0., smax_);
+    return std::clamp(it->s + it->v * tau + it->a * tau * tau / 2, 0., smax_);
   }
 
 private:
   double smax_;
-  std::vector<double> tt_, ss_, vv_;
+  std::vector<Data> d_;
 };
 
 /**
@@ -532,13 +538,14 @@ private:
  * @param curve Curve \f$ x(t) \f$ to reparameterize.
  * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
  * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
- * @param start_vel desired value for \f$ s'(0) \f$ (must be non-negative).
- * @param end_vel desired value for \f$ s'(t_{max}) \f$ (must be non-negative).
+ * @param start_vel target value for \f$ s'(0) \f$ (must be non-negative).
+ * @param end_vel target value for \f$ s'(t_{max}) \f$ (must be non-negative).
  * @param slower_only result is s.t. \f$ s'(t) <= 1 \f$.
- * @param dt time discretization step (smaller gives a more accurate solution).
- * @param eps parameter to control minimal \f$ s'(t) \f$ (eps) and maximal \f$ s'(t) \f$ (1 / eps).
+ * @param dt time discretization step (smaller step gives a more accurate solution).
+ * @param eps parameter that controls max and min velocities, and step size for unconstrained
+ * segments
  *
- * @note It may not be feasible to satisfy the desired boundary velocities. In those cases the
+ * @note It may not be feasible to satisfy the target boundary velocities. In those cases the
  * resulting velocities will be lower than the desired values.
  */
 template<LieGroup G>
@@ -555,7 +562,7 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 {
   const double zeps = std::numeric_limits<double>::epsilon() / eps;
 
-  // BACKWARDS PASS
+  // BACKWARDS PASS WITH MINIMAL ACCELERATION
 
   Eigen::Vector2d state(curve.t_max(), end_vel);  // s, v
   std::vector<double> xx;
@@ -615,9 +622,9 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
   std::reverse(yy.begin(), yy.end());
   auto v_func = fit_linear_bezier(xx, yy);  // linear guarantees positive velocities
 
-  // FORWARD PASS
+  // FORWARD PASS WITH MAXIMAL ACCELERATION
 
-  std::vector<double> tt, ss, vv;
+  std::vector<Reparameterization::Data> dd;
   state << 0, start_vel;
 
   // clamp velocity to not exceed upper bound
@@ -644,25 +651,38 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
         }
       }
 
-      tt.push_back(tt.empty() ? 0 : tt.back() + dt);
-      ss.push_back(state.x());
-      vv.push_back(state.y());
-
-      state.x() += state.y() * dt;
-      state.y() += dt * a;
+      double new_s = state.x() + state.y() * dt + a * dt * dt / 2;
+      double new_v = state.y() + dt * a;
 
       // clamp velocity to not exceed upper bound
-      state.y() = std::min<double>(state.y(), v_func.eval(state.x()).rn().x());
-      if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
+      new_v = std::min<double>(new_v, v_func.eval(new_s).rn().x());
+      if (slower_only) { new_v = std::min<double>(new_v, 1); }
+
       // ensure v stays positive
-      state.y() = std::max(state.y(), eps);
+      new_v = std::max(new_v, eps);
+
+      a = (new_v - state.y()) / dt;
+
+      dd.push_back({
+        .t = dd.empty() ? 0 : dd.back().t + dt,
+        .s = state.x(),
+        .v = state.y(),
+        .a = a,
+      });
+
+      state.x() += dd.back().v * dt + dd.back().a * dt * dt / 2;
+      state.y() += dd.back().a * dt;
     }
   } while (state.x() < curve.t_max());
 
-  tt.push_back(tt.empty() ? 0 : tt.back() + dt);
-  ss.push_back(state.x());
+  dd.push_back({
+    .t = dd.empty() ? 0 : dd.back().t + dt,
+    .s = state.x(),
+    .v = state.y(),
+    .a = 0,
+  });
 
-  return Reparameterization(curve.t_max(), std::move(tt), std::move(ss), std::move(vv));
+  return Reparameterization(curve.t_max(), std::move(dd));
 }
 
 }  // namespace smooth

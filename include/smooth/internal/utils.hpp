@@ -37,52 +37,70 @@
 
 namespace smooth::utils {
 
-/////////////////////////////
-// BINARY SEARCH ALGORITHM //
-/////////////////////////////
+////////////////////////////
+// INTERVAL BINARY SEARCH //
+////////////////////////////
 
 /**
- * @brief Binary search for interval that contains value in sorted range.
+ * @brief Find interval in sorted range with binary search.
+ *
+ * 1. If r is empty, returns r.end()                  (not found)
+ * 2. If t < r.front(), returns r.end()               (not found)
+ * 3. If t >= r.back(), returns r.end() - 1           (no upper bound)
+ * 4. Otherwise returns it s.t. *it <= t < *(it + 1)
  *
  * @param r sorted range to search in
  * @param t value to search for
- * @return range iterator it s.t. *it <= t < *(it + 1), or std::ranges::end(r) if no such iterator
- * exists
+ * @param wo comparison operation with signature \p std::weak_ordering(const
+ * std::ranges::range_value_t<R> &, const T &)
+ *
+ * @return range iterator it according to the above rules
  */
-template<std::ranges::range R, typename T = std::ranges::range_value_t<R>>
-auto binary_interval_search(const R & r, T t) noexcept
+template<std::ranges::range R, typename T, typename WO>
+auto binary_interval_search(const R & r, const T & t, WO && wo) noexcept
 {
   auto left = std::ranges::begin(r);
   auto rght = std::ranges::end(r);
 
-  decltype(left) pivot;
-
-  if (left + 2 > rght) {
+  if (std::ranges::empty(r) || wo(*left, t) > 0) {
     return rght;
-  } else if (!(*left <= t && t < *(rght - 1))) {
-    return rght;
+  } else if (wo(*(rght - 1), t) <= 0) {
+    return rght - 1;
   }
+
+  decltype(left) pivot;
 
   while (left + 1 < rght) {
     double alpha;
-    if constexpr (std::is_convertible_v<T, double>) {
-      alpha = static_cast<double>(t - *left) / static_cast<double>(*(rght - 1) - *left);
+    if constexpr (std::is_convertible_v<std::ranges::range_value_t<R>,
+                    double> && std::is_convertible_v<T, double>) {
+      alpha = (static_cast<double>(t) - static_cast<double>(*left))
+            / static_cast<double>(*(rght - 1) - *left);
     } else {
       alpha = 0.5;
     }
 
     pivot = left + static_cast<intptr_t>(static_cast<double>(rght - 1 - left) * alpha);
 
-    if (*pivot <= t && t < *(pivot + 1)) {
-      break;
-    } else if (t >= *(pivot + 1)) {
+    if (wo(*(pivot + 1), t) <= 0) {
       left = pivot + 1;
-    } else if (t < *pivot) {
+    } else if (wo(*pivot, t) > 0) {
       rght = pivot + 1;
+    } else {
+      break;
     }
   }
 
   return pivot;
+}
+
+/**
+ * @brief Find interval in sorted range with binary search using default comparison.
+ */
+template<std::ranges::range R, typename T, typename S = std::ranges::range_value_t<R>>
+auto binary_interval_search(const R & r, const T & t) noexcept
+{
+  return binary_interval_search(r, t, [](const S & _s, const T & _t) { return _s <=> _t; });
 }
 
 /////////////////////

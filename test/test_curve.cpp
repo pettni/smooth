@@ -86,7 +86,7 @@ TEST(Curve, ConstantVelocity2)
 
   gtest = c1.eval(-1, vtest);
   ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
-  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+  ASSERT_TRUE(vtest.isApprox(Eigen::Vector3d::Zero()));
 
   gtest = c1.eval(0, vtest);
   ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
@@ -99,6 +99,10 @@ TEST(Curve, ConstantVelocity2)
   gtest = c1.eval(5, vtest);
   ASSERT_TRUE(gtest.isApprox(g1));
   ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+
+  gtest = c1.eval(7, vtest);
+  ASSERT_TRUE(gtest.isApprox(g1));
+  ASSERT_TRUE(vtest.isApprox(Eigen::Vector3d::Zero()));
 }
 
 TEST(Curve, FixedCubic)

@@ -843,6 +843,7 @@ INPUT                  = README.md \
                          include/smooth/spline/bezier.hpp \
                          include/smooth/spline/bspline.hpp \
                          include/smooth/spline/curve.hpp \
+                         include/smooth/spline/dubins.hpp \
                          include/smooth/internal/lie_group_base.hpp \
                          include/smooth/manifold_vector.hpp \
                          include/smooth/optim.hpp \

@@ -40,13 +40,17 @@ TEST(Utils, BinarySearch)
   ASSERT_EQ(smooth::utils::binary_interval_search(v1, 5), std::ranges::begin(v1) + 5);
   ASSERT_EQ(smooth::utils::binary_interval_search(v1, 5.5), std::ranges::begin(v1) + 5);
 
+  ASSERT_EQ(smooth::utils::binary_interval_search(v1, 6), std::ranges::begin(v1) + 6);
+  ASSERT_EQ(smooth::utils::binary_interval_search(v1, 6.5), std::ranges::begin(v1) + 6);
+
   ASSERT_EQ(smooth::utils::binary_interval_search(v1, -0.5), std::ranges::end(v1));
-  ASSERT_EQ(smooth::utils::binary_interval_search(v1, 6), std::ranges::end(v1));
-  ASSERT_EQ(smooth::utils::binary_interval_search(v1, 6.5), std::ranges::end(v1));
 
   std::vector<double> v2, v3{0};
+  ASSERT_EQ(smooth::utils::binary_interval_search(v2, -1), std::ranges::end(v2));
   ASSERT_EQ(smooth::utils::binary_interval_search(v2, 0), std::ranges::end(v2));
-  ASSERT_EQ(smooth::utils::binary_interval_search(v3, 0), std::ranges::end(v3));
+
+  ASSERT_EQ(smooth::utils::binary_interval_search(v3, -1), std::ranges::end(v3));
+  ASSERT_EQ(smooth::utils::binary_interval_search(v3, 0), std::ranges::begin(v3));
 }
 
 TEST(Utils, BinarySearchUnequal)
@@ -75,9 +79,10 @@ TEST(Utils, BinarySearchUnequal)
   ASSERT_EQ(smooth::utils::binary_interval_search(v, 501), std::ranges::begin(v) + 6);
   ASSERT_EQ(smooth::utils::binary_interval_search(v, 501.5), std::ranges::begin(v) + 6);
 
+  ASSERT_EQ(smooth::utils::binary_interval_search(v, 502), std::ranges::begin(v) + 7);
+  ASSERT_EQ(smooth::utils::binary_interval_search(v, 502.5), std::ranges::begin(v) + 7);
+
   ASSERT_EQ(smooth::utils::binary_interval_search(v, -0.5), std::ranges::end(v));
-  ASSERT_EQ(smooth::utils::binary_interval_search(v, 502), std::ranges::end(v));
-  ASSERT_EQ(smooth::utils::binary_interval_search(v, 502.5), std::ranges::end(v));
 }
 
 TEST(Utils, BinarySearchString)
@@ -98,7 +103,8 @@ TEST(Utils, BinarySearchString)
   ASSERT_EQ(smooth::utils::binary_interval_search(v, "n"), std::ranges::begin(v) + 4);
   ASSERT_EQ(smooth::utils::binary_interval_search(v, "p"), std::ranges::begin(v) + 4);
 
+  ASSERT_EQ(smooth::utils::binary_interval_search(v, "x"), std::ranges::begin(v) + 5);
+  ASSERT_EQ(smooth::utils::binary_interval_search(v, "y"), std::ranges::begin(v) + 5);
+
   ASSERT_EQ(smooth::utils::binary_interval_search(v, "a"), std::ranges::end(v));
-  ASSERT_EQ(smooth::utils::binary_interval_search(v, "x"), std::ranges::end(v));
-  ASSERT_EQ(smooth::utils::binary_interval_search(v, "y"), std::ranges::end(v));
 }

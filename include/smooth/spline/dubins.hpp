@@ -40,13 +40,10 @@ using namespace std::numbers;
 
 namespace smooth {
 
-// sign of body turning velocity
-enum class DubinsSegment {
-  Left,
-  Straight,
-  Right,
-};
+/// Segment classes
+enum class DubinsSegment { Left, Straight, Right };
 
+/// @brief Three DubinsSegment with given lengths
 using DubinsDescription = std::array<std::pair<DubinsSegment, double>, 3>;
 
 namespace detail {
@@ -174,7 +171,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Left, DubinsSegment::Left);
-    double len = d2 + R * (a1 + a3);
+    double len        = d2 + R * (a1 + a3);
     if (len < min_length) {
       min_length = len;
       ret        = {
@@ -187,7 +184,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Left, DubinsSegment::Right);
-    double len = d2 + R * (a1 + a3);
+    double len        = d2 + R * (a1 + a3);
     if (len < min_length) {
       min_length = len;
       ret        = {
@@ -200,7 +197,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Right, DubinsSegment::Left);
-    double len = d2 + R * (a1 + a3);
+    double len        = d2 + R * (a1 + a3);
     if (len < min_length) {
       min_length = len;
       ret        = {
@@ -213,7 +210,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, d2, a3] = detail::dubins_csc(target, R, DubinsSegment::Right, DubinsSegment::Right);
-    double len = d2 + R * (a1 + a3);
+    double len        = d2 + R * (a1 + a3);
     if (len < min_length) {
       min_length = len;
       ret        = {
@@ -226,7 +223,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, a2, a3] = detail::dubins_ccc(target, R, DubinsSegment::Right, DubinsSegment::Left);
-    double len = R * (a1 + a2 + a3);
+    double len        = R * (a1 + a2 + a3);
     if (len < min_length) {
       min_length = len;
       ret        = {
@@ -239,7 +236,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
   {
     auto [a1, a2, a3] = detail::dubins_ccc(target, R, DubinsSegment::Left, DubinsSegment::Right);
-    double len = R * (a1 + a2 + a3);
+    double len        = R * (a1 + a2 + a3);
     if (len < min_length) {
       min_length = len;
       ret        = {
