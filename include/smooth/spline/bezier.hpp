@@ -243,7 +243,7 @@ private:
 template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
 {
-  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
@@ -278,7 +278,7 @@ PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
 template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
 {
-  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
@@ -329,7 +329,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   std::optional<typename G::Tangent> v0 = {},
   std::optional<typename G::Tangent> v1 = {})
 {
-  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   // number of intervals
@@ -504,7 +504,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
   std::optional<typename G::Tangent> v0 = {},
   std::optional<typename G::Tangent> v1 = {})
 {
-  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   // number of intervals
