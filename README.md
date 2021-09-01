@@ -28,6 +28,7 @@ The following common Lie groups are implemented:
  * smooth::SO3: three-dimensional rotations with quaternion ![](https://latex.codecogs.com/png.latex?\mathbb{S}^3) memory representation
  * smooth::SE2: two-dimensional rigid motions
  * smooth::SE3: three-dimensional rigid motions
+ * smooth::C1: complex numbers (excluding zero) under multiplication
  * A smooth::Bundle type to treat Lie group products ![](https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n) as a single Lie group. The Bundle type also supports regular Eigen vectors as ![](https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)) components
 
 The guiding principles for `smooth` are **brevity, reliability and compatability**. 
