@@ -32,8 +32,8 @@
  */
 
 #include <algorithm>
+#include <cassert>
 #include <ranges>
-#include <stdexcept>
 
 #include <Eigen/Sparse>
 
@@ -190,7 +190,7 @@ private:
  * \f]
  *
  * @tparam K bspline degree
- * @param tt time values t_i (doubles, non-decreasing)
+ * @param tt time values t_i (doubles, strictly increasing)
  * @param gg data values t_i
  * @param dt distance between spline control points
  */
@@ -203,9 +203,7 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
   static_assert(LieGroup<std::ranges::range_value_t<Rg>>, "Rg value type is LieGroup");
   static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");
 
-  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::invalid_argument("fit_bspline: interpolation times not strictly increasing");
-  }
+  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   auto [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
 

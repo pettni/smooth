@@ -32,8 +32,8 @@
  */
 
 #include <algorithm>
+#include <cassert>
 #include <ranges>
-#include <stdexcept>
 
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
@@ -92,9 +92,7 @@ public:
   template<std::ranges::range Rv>
   Bezier(const G & g0, const Rv & vs) : g0_(g0)
   {
-    if (std::ranges::size(vs) != N) {
-      throw std::invalid_argument("Bezier: wrong number of control points");
-    }
+    assert(std::ranges::size(vs) == N);
     std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_.begin());
   }
 
@@ -245,13 +243,8 @@ private:
 template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
 {
-  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
-    throw std::invalid_argument("fit_linear_bezier: Not enough points");
-  }
-
-  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::invalid_argument("fit_linear_bezier: Interpolation times not strictly increasing");
-  }
+  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
@@ -285,14 +278,8 @@ PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
 template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
 {
-  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
-    throw std::invalid_argument("fit_quadratic_bezier: Not enough points");
-  }
-
-  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::invalid_argument(
-      "fit_quadratic_bezier: Interpolation times not strictly increasing");
-  }
+  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
@@ -342,13 +329,8 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   std::optional<typename G::Tangent> v0 = {},
   std::optional<typename G::Tangent> v1 = {})
 {
-  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
-    throw std::invalid_argument("fit_cubic_bezier: Not enough points");
-  }
-
-  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::invalid_argument("fit_cubic_bezier: Interpolation times not strictly increasing");
-  }
+  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   // number of intervals
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
@@ -522,14 +504,8 @@ PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
   std::optional<typename G::Tangent> v0 = {},
   std::optional<typename G::Tangent> v1 = {})
 {
-  if (std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2) {
-    throw std::invalid_argument("fit_cubic_bezier_local: Not enough points");
-  }
-
-  if (std::ranges::adjacent_find(tt, std::ranges::greater_equal()) != tt.end()) {
-    throw std::invalid_argument(
-      "fit_cubic_bezier_local: Interpolation times not strictly increasing");
-  }
+  assert(std::ranges::size(tt) < 2 || std::ranges::size(gg) < 2);
+  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 
   // number of intervals
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;

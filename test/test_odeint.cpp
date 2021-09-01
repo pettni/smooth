@@ -32,11 +32,6 @@
 
 using namespace smooth;
 
-TEST(OdeInt, Construct)
-{
-  ASSERT_NO_THROW(smooth::BoostOdeintOps::scale_sum2<double>(1., 2.));
-}
-
 TEST(OdeInt, Euler)
 {
   using state_t = smooth::SO3d;

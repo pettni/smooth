@@ -28,19 +28,6 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/curve.hpp"
 
-TEST(Curve, Construct)
-{
-  std::vector<Eigen::Vector3d> vs;
-  vs.push_back(Eigen::Vector3d::Random());
-  vs.push_back(Eigen::Vector3d::Random());
-  vs.push_back(Eigen::Vector3d::Random());
-
-  ASSERT_NO_THROW(smooth::Curve<smooth::SO3d>(2, vs));
-
-  vs.push_back(Eigen::Vector3d::Random());
-  ASSERT_THROW(smooth::Curve<smooth::SO3d>(2, vs), std::invalid_argument);
-}
-
 TEST(Curve, ConstantVelocity1)
 {
   Eigen::Vector3d v1 = Eigen::Vector3d::Random();

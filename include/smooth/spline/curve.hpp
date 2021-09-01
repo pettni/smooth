@@ -34,8 +34,8 @@
 #include <boost/numeric/odeint.hpp>
 
 #include <algorithm>
+#include <cassert>
 #include <ranges>
-#include <stdexcept>
 
 #include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
@@ -64,29 +64,33 @@ public:
 
   /**
    * @brief Create Curve with one segment and given velocities
+   *
+   * @param T duration (must be strictly positive)
    */
   Curve(double T, std::array<typename G::Tangent, 3> && vs)
       : end_t_{T}, vs_{std::move(vs)}, seg_T0_{0}, seg_Del_{1}
   {
-    if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
+    assert(T > 0);
+
     end_g_.resize(1);
     end_g_[0] = eval(T);
   }
 
   /**
    * @brief Create Curve with one segment and given velocities
+   *
+   * @param T duration (must be strictly positive)
+   * @param vs velocity constants (must be of size 3)
    */
   template<std::ranges::range Rv>
   // \cond
   requires(std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>)
-    // \endcond
-    Curve(double T, const Rv & vs)
+  // \endcond
+  Curve(double T, const Rv & vs)
       : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
-    if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
-    if (std::ranges::size(vs) != 3) {
-      throw std::invalid_argument("Curve: Wrong number of control points");
-    }
+    assert(T > 0);
+    assert(std::ranges::size(vs) == 3);
 
     vs_.resize(1);
     std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_[0].begin());
@@ -144,11 +148,11 @@ public:
    * \f]
    *
    * @param g target state
-   * @param T duration
+   * @param T duration (must be positive)
    */
   static Curve ConstantVelocity(const G & g, double T = 1)
   {
-    if (T <= 0) { throw std::invalid_argument("Curve: T must be positive"); }
+    assert(T > 0);
     return ConstantVelocity(g.log() / T, T);
   }
 

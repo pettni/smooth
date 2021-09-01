@@ -326,10 +326,6 @@ TEST(Spline, BezierConstruct)
   std::vector<double> tt{1, 2, 3};
   std::vector<smooth::Bezier<3, smooth::SO3d>> bb(3);
 
-  using B4 = smooth::Bezier<4, smooth::SO3d>;
-  using B4v = std::vector<Eigen::Vector3d>;
-  ASSERT_THROW(B4(smooth::SO3d::Identity(), B4v(3)), std::invalid_argument);
-
   auto spline       = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
   auto spline_moved = std::move(spline);
 
@@ -499,33 +495,6 @@ TYPED_TEST(Spline, Bezier3LocalFit)
     spline.eval(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
-}
-
-TEST(Spline, BezierTooShort)
-{
-  std::vector<double> tt;
-  std::vector<smooth::SO3d> gg;
-
-  ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::invalid_argument);
-  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::invalid_argument);
-  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::invalid_argument);
-  ASSERT_THROW(smooth::fit_cubic_bezier_local(tt, gg), std::invalid_argument);
-}
-
-TEST(Spline, BezierNonIncreasing)
-{
-  std::vector<double> tt{1, 2, 2, 3};
-  std::vector<smooth::SO3d> gg;
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-
-  ASSERT_THROW(smooth::fit_linear_bezier(tt, gg), std::invalid_argument);
-  ASSERT_THROW(smooth::fit_quadratic_bezier(tt, gg), std::invalid_argument);
-  ASSERT_THROW(smooth::fit_cubic_bezier(tt, gg), std::invalid_argument);
-  ASSERT_THROW(smooth::fit_cubic_bezier_local(tt, gg), std::invalid_argument);
-  ASSERT_THROW(smooth::fit_bspline<5>(tt, gg, 0.2), std::invalid_argument);
 }
 
 TEST(Spline, BezierInitialvel)
