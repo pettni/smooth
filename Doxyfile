@@ -833,25 +833,26 @@ INPUT                  = README.md \
                          examples/bspline.cpp \
                          examples/spline_fit.cpp \
                          examples/odeint.cpp \
+                         include/smooth/adapted_lie_group.hpp \
                          include/smooth/bundle.hpp \
-                         include/smooth/concepts.hpp \
-                         include/smooth/diff.hpp \
+                         include/smooth/c1.hpp \
                          include/smooth/compat/autodiff.hpp \
                          include/smooth/compat/ceres.hpp \
                          include/smooth/compat/odeint.hpp \
                          include/smooth/compat/ros.hpp \
-                         include/smooth/spline/bezier.hpp \
-                         include/smooth/spline/bspline.hpp \
-                         include/smooth/spline/curve.hpp \
-                         include/smooth/spline/dubins.hpp \
+                         include/smooth/concepts.hpp \
+                         include/smooth/diff.hpp \
                          include/smooth/internal/lie_group_base.hpp \
                          include/smooth/manifold_vector.hpp \
                          include/smooth/optim.hpp \
-                         include/smooth/c1.hpp \
                          include/smooth/se2.hpp \
                          include/smooth/se3.hpp \
                          include/smooth/so2.hpp \
                          include/smooth/so3.hpp \
+                         include/smooth/spline/bezier.hpp \
+                         include/smooth/spline/bspline.hpp \
+                         include/smooth/spline/curve.hpp \
+                         include/smooth/spline/dubins.hpp \
                          include/smooth/tn.hpp
 
 # This tag can be used to specify the character encoding of the source files

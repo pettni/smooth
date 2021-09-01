@@ -138,6 +138,10 @@ if(BUILD_TESTING)
   target_link_libraries(test_bundle PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_bundle)
 
+  add_executable(test_adapted test/test_adapted.cpp)
+  target_link_libraries(test_adapted PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_adapted)
+
   # ALGO TESTS
 
   add_executable(test_spline test/test_spline.cpp)

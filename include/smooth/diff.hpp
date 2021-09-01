@@ -47,6 +47,7 @@ namespace smooth {
  * which is the expected format in e.g. dr() and minimize().
  */
 template<typename... _Args>
+requires (Manifold<std::decay_t<_Args>> && ...)
 auto wrt(_Args &&... args)
 {
   return std::forward_as_tuple(std::forward<_Args>(args)...);

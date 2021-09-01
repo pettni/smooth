@@ -34,9 +34,9 @@
 
 #include <Eigen/Core>
 
+namespace smooth {
 
-namespace smooth
-{
+// clang-format off
 
 /**
  * @brief A concept defining a (smooth) manifold.
@@ -62,13 +62,12 @@ requires(const M & m1, const M & m2, const Eigen::Matrix<typename M::Scalar, M::
   {m1.size()}->std::convertible_to<Eigen::Index>;             // degrees of freedom at runtime
   {m1 + a}->std::convertible_to<typename M::PlainObject>;
   {m1 - m2}->std::convertible_to<Eigen::Matrix<typename M::Scalar, M::SizeAtCompileTime, 1>>;
+  {m1.template cast<float>()};
   {m1.template cast<double>()};
 };
 
 /**
- * @brief Lie group concept.
- *
- * Requires the exp and log maps, and the upper and lowercase adjoints.
+ * @brief Class with an internally defined Lie group interface.
  */
 template<typename G>
 concept LieGroup = Manifold<G> &&
@@ -76,26 +75,39 @@ concept LieGroup = Manifold<G> &&
 requires {
   typename G::Tangent;
   {G::Dof}->std::convertible_to<Eigen::Index>;
+  {G::Dim}->std::convertible_to<Eigen::Index>;
+  {G::Identity()}->std::convertible_to<typename G::PlainObject>;
+  {G::Random()}->std::convertible_to<typename G::PlainObject>;
 } &&
 (G::Dof >= 1) &&
 (G::SizeAtCompileTime == G::Dof) &&
 (G::Tangent::SizeAtCompileTime == G::Dof) &&
 // member methods
-requires(const G & g1, const G & g2)
+requires(const G & g1, const G & g2, typename G::Scalar eps)
 {
-  {g1.inverse()}->std::convertible_to<typename G::PlainObject>;
-  {g1 * g2}->std::convertible_to<typename G::PlainObject>;
-  {g1.log()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
   {g1.Ad()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {g1 * g2}->std::convertible_to<typename G::PlainObject>;
+  {g1.inverse()}->std::convertible_to<typename G::PlainObject>;
+  {g1.isApprox(g2, eps)}->std::convertible_to<bool>;
+  {g1.log()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
+  {g1.matrix()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
 } &&
 // static methods
 requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
 {
-  {G::Identity()}->std::convertible_to<typename G::PlainObject>;
-  {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
   {G::ad(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
+  {G::hat(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
+  {G::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {G::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+} &&
+requires(const Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim> & A)
+{
+  {G::vee(A)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
 };
 
-} // namespace smooth
+// clang-format on
+
+}  // namespace smooth
 
 #endif  // SMOOTH__CONCEPTS_HPP_

@@ -47,17 +47,17 @@ namespace smooth {
  * number of elements in the vector. For the latter,
  * use `vector_size()`.
  */
-template<Manifold M, template<typename> typename Allocator = std::allocator>
-class ManifoldVector : public std::vector<M, Allocator<M>>
+template<Manifold M>
+class ManifoldVector : public std::vector<M>
 {
 private:
-  using Base = std::vector<M, Allocator<M>>;
+  using Base = std::vector<M>;
 
 public:
   //! Degrees of freedom of manifold (equal to tangent space dimentsion)
   static constexpr Eigen::Index SizeAtCompileTime = -1;
   //! Plain return type
-  using PlainObject = ManifoldVector<M, Allocator>;
+  using PlainObject = ManifoldVector<M>;
   //! Scalar type
   using Scalar = typename M::Scalar;
 
@@ -87,7 +87,7 @@ public:
   auto cast() const
   {
     using CastT = typename decltype(M{}.template cast<NewScalar>())::PlainObject;
-    ManifoldVector<CastT, Allocator> ret;
+    ManifoldVector<CastT> ret;
     ret.reserve(vector_size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
       return x.template cast<NewScalar>();
@@ -175,7 +175,7 @@ public:
 }  // namespace smooth
 
 template<typename Stream, typename M, template<typename> typename Allocator>
-Stream & operator<<(Stream & s, const smooth::ManifoldVector<M, Allocator> & g)
+Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
 {
   s << "ManifoldVector with " << g.vector_size() << " elements:" << std::endl;
   for (auto i = 0u; i != g.vector_size(); ++i) {

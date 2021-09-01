@@ -66,6 +66,7 @@ public:
    * @brief Create Curve with one segment and given velocities
    *
    * @param T duration (must be strictly positive)
+   * @param vs velocities for segment
    */
   Curve(double T, std::array<typename G::Tangent, 3> && vs)
       : end_t_{T}, vs_{std::move(vs)}, seg_T0_{0}, seg_Del_{1}

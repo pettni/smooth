@@ -6,6 +6,11 @@
 
 <img src="media/ode.png" width="300">  <img src="media/bspline.png" width="300">
 
+* Requirements: C++20, Eigen 3.4
+* [Documentation][doc-link]
+* Compatible with: autodiff, Ceres, ROS
+* Written in an extensible functional programming style
+
 *This project is currently being developed---breaking changes and bugs should be expected.
 If you are looking for something stable and established, check out
 [manif][manif-link] and [Sophus][sophus-link].*

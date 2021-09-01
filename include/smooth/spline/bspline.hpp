@@ -254,7 +254,7 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
   };
 
   // create optimization variable
-  ManifoldVector<G, Eigen::aligned_allocator> ctrl_pts(NumPts);
+  ManifoldVector<G> ctrl_pts(NumPts);
 
   // create initial guess
   auto t_iter = std::ranges::begin(tt);
