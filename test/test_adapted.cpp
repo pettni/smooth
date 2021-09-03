@@ -190,8 +190,8 @@ TYPED_TEST(LieGroupInterface, dl_exp)
     smooth::Tangent<TypeParam> a  = smooth::Tangent<TypeParam>::Random();
     smooth::Tangent<TypeParam> da = eps0 * smooth::Tangent<TypeParam>::Random();
 
-    auto t1 = smooth::exp<TypeParam>(a + da);
-    auto t2 = smooth::lplus(smooth::exp<TypeParam>(a), smooth::dl_exp<TypeParam>(a) * da);
+    TypeParam t1 = smooth::exp<TypeParam>(a + da);
+    TypeParam t2 = smooth::lplus(smooth::exp<TypeParam>(a), smooth::dl_exp<TypeParam>(a) * da);
     ASSERT_TRUE(smooth::isApprox(t1, t2, eps1));
   }
 }
