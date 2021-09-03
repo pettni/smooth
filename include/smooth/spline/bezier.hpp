@@ -38,22 +38,19 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
 
-#include "smooth/concepts.hpp"
-#include "smooth/internal/utils.hpp"
-
 #include "common.hpp"
 
 namespace smooth {
 
 // \cond
-template<LieGroup G>
+template<AdaptedLieGroup G>
 class Curve;
 // \endcond
 
 /**
  * @brief Bezier curve on [0, 1].
  * @tparam N Polonimial degree of curve.
- * @tparam G LieGroup type.
+ * @tparam G AdaptedLieGroup type.
  *
  * The curve is defined by
  * \f[
@@ -62,14 +59,14 @@ class Curve;
  * where \f$\tilde B_i(t)\f$ are cumulative Bernstein basis functions and
  * \f$v_i = g_i \ominus g_{i-1}\f$ are the control point differences.
  */
-template<std::size_t N, LieGroup G>
+template<std::size_t N, AdaptedLieGroup G>
 class Bezier
 {
 public:
   /**
    * @brief Default constructor creates a constant curve on [0, 1] equal to identity.
    */
-  Bezier() : g0_(G::Identity()) { vs_.fill(G::Tangent::Zero()); }
+  Bezier() : g0_(Identity<G>()) { vs_.fill(Tangent<G>::Zero()); }
 
   /**
    * @brief Create curve from rvalue parameter values.
@@ -77,8 +74,7 @@ public:
    * @param g0 starting value
    * @param vs differences [v_1, ..., v_n] between control points
    */
-  Bezier(G && g0, std::array<typename G::Tangent, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs))
-  {}
+  Bezier(G && g0, std::array<Tangent<G>, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs)) {}
 
   /**
    * @brief Create curve from parameter values.
@@ -124,12 +120,12 @@ public:
     constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BEZIER, double, N>().transpose();
     Eigen::Map<const Eigen::Matrix<double, N + 1, N + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
-    return g0_ * cspline_eval_diff<N, G>(vs_, M, tc, vel, acc);
+    return composition(g0_, cspline_eval_diff<N, G>(vs_, M, tc, vel, acc));
   }
 
 private:
   G g0_;
-  std::array<typename G::Tangent, N> vs_;
+  std::array<Tangent<G>, N> vs_;
 
   friend class Curve<G>;
 };
@@ -144,7 +140,7 @@ private:
  * for \f$ t \in [t_i, t_{i+1}]\f$
  * where \f$p_i\f$ is a Bezier curve on \f$[0, 1]\f$.
  */
-template<std::size_t N, LieGroup G>
+template<std::size_t N, AdaptedLieGroup G>
 class PiecewiseBezier
 {
 public:
@@ -240,7 +236,9 @@ private:
  * @param tt interpolation times
  * @param gg interpolation values
  */
-template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt,
+  std::ranges::range Rg,
+  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
 {
   assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
@@ -254,7 +252,7 @@ PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
   auto it_t = std::ranges::begin(tt);
 
   for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
-    segments[i] = Bezier<1, G>(*it_g, std::array<typename G::Tangent, 1>{(*(it_g + 1) - *it_g)});
+    segments[i] = Bezier<1, G>(*it_g, std::array<Tangent<G>, 1>{rsub(*(it_g + 1), *it_g)});
   }
 
   auto take_view = tt | std::views::take(N + 1);
@@ -275,7 +273,9 @@ PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
  * @param tt interpolation times
  * @param gg interpolation values
  */
-template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt,
+  std::ranges::range Rg,
+  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
 {
   assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
@@ -288,19 +288,19 @@ PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
   auto it_g = std::ranges::begin(gg);
   auto it_t = std::ranges::begin(tt);
 
-  typename G::Tangent v0 = (*(it_g + 1) - *it_g) / (*(it_t + 1) - *it_t);
+  Tangent<G> v0 = rsub(*(it_g + 1), *it_g) / (*(it_t + 1) - *it_t);
 
   for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
     const double dt = *(it_t + 1) - *it_t;
 
     // scaled velocity
-    const typename G::Tangent va = v0 * dt;
+    const Tangent<G> va = v0 * dt;
 
     // create segment
-    const typename G::Tangent v1 = va / 2;
-    const typename G::Tangent v2 = *(it_g + 1) - (*it_g * G::exp(va / 2));
+    const Tangent<G> v1 = va / 2;
+    const Tangent<G> v2 = rsub(*(it_g + 1), composition(*it_g, ::smooth::exp<G>(va / 2)));
 
-    segments[i] = Bezier<2, G>(*it_g, std::array<typename G::Tangent, 2>{v1, v2});
+    segments[i] = Bezier<2, G>(*it_g, std::array<Tangent<G>, 2>{v1, v2});
 
     // unscaled end velocity for interval
     v0 = v2 * 2 / dt;
@@ -323,11 +323,13 @@ PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
  * @param v0 body velocity at start of spline (optional, if not given acceleration is set to zero)
  * @param v1 body velocity at end of spline (optional, if not given acceleration is set to zero)
  */
-template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt,
+  std::ranges::range Rg,
+  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   const Rg & gg,
-  std::optional<typename G::Tangent> v0 = {},
-  std::optional<typename G::Tangent> v1 = {})
+  std::optional<Tangent<G>> v0 = {},
+  std::optional<Tangent<G>> v1 = {})
 {
   assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
@@ -335,16 +337,16 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   // number of intervals
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
-  std::size_t NumVars = G::Dof * 3 * N;
+  std::size_t NumVars = Dof<G> * 3 * N;
 
-  Eigen::SparseMatrix<typename G::Scalar> lhs;
+  Eigen::SparseMatrix<Scalar<G>> lhs;
   lhs.resize(NumVars, NumVars);
   Eigen::Matrix<int, -1, 1> nnz = Eigen::Matrix<int, -1, 1>::Constant(NumVars, 3);
-  nnz.head(G::Dof).setConstant(2);
-  nnz.tail(G::Dof).setConstant(2);
+  nnz.head(Dof<G>).setConstant(2);
+  nnz.tail(Dof<G>).setConstant(2);
   lhs.reserve(nnz);
 
-  Eigen::Matrix<typename G::Scalar, -1, 1> rhs(NumVars);
+  Eigen::Matrix<Scalar<G>, -1, 1> rhs(NumVars);
   rhs.setZero();
 
   // variable layout:
@@ -353,7 +355,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   //
   // where v_ji is a Dof-length vector
 
-  const auto idx = [&](int j, int i) { return 3 * G::Dof * i + G::Dof * (j - 1); };
+  const auto idx = [&](int j, int i) { return 3 * Dof<G> * i + Dof<G> * (j - 1); };
 
   std::size_t row_counter = 0;
 
@@ -363,17 +365,17 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   const std::size_t v20_start = idx(2, 0);
 
   if (v0.has_value()) {
-    for (auto n = 0u; n != G::Dof; ++n) { lhs.insert(row_counter + n, v10_start + n) = 3; }
-    rhs.segment(row_counter, G::Dof) = v0.value();
+    for (auto n = 0u; n != Dof<G>; ++n) { lhs.insert(row_counter + n, v10_start + n) = 3; }
+    rhs.segment(row_counter, Dof<G>) = v0.value();
   } else {
     // zero second derivative at start:
     // v_{1, 0} = v_{2, 0}
-    for (auto n = 0u; n != G::Dof; ++n) {
+    for (auto n = 0u; n != Dof<G>; ++n) {
       lhs.insert(row_counter + n, v10_start + n) = 1;
       lhs.insert(row_counter + n, v20_start + n) = -1;
     }
   }
-  row_counter += G::Dof;
+  row_counter += Dof<G>;
 
   //// INTERIOR END POINT  ////
 
@@ -389,36 +391,36 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
     const std::size_t v2ip_start = idx(2, i + 1);
 
     // segment lengths
-    const typename G::Scalar Ti  = *(it_t + 1) - *it_t;
-    const typename G::Scalar Tip = *(it_t + 2) - *(it_t + 1);
+    const Scalar<G> Ti  = *(it_t + 1) - *it_t;
+    const Scalar<G> Tip = *(it_t + 2) - *(it_t + 1);
 
     // pass through control points
     // v_{1, i} + v_{2, i} + v_{3, i} = x_{i+1} - x_i
-    for (auto n = 0u; n != G::Dof; ++n) {
+    for (auto n = 0u; n != Dof<G>; ++n) {
       lhs.insert(row_counter + n, v1i_start + n) = 1;
       lhs.insert(row_counter + n, v2i_start + n) = 1;
       lhs.insert(row_counter + n, v3i_start + n) = 1;
     }
-    rhs.segment(row_counter, G::Dof) = *(it_g + 1) - *(it_g);
-    row_counter += G::Dof;
+    rhs.segment(row_counter, Dof<G>) = rsub(*(it_g + 1), *it_g);
+    row_counter += Dof<G>;
 
     // velocity continuity
     // v_{3, i} = v_{1, i+1}
-    for (auto n = 0u; n != G::Dof; ++n) {
+    for (auto n = 0u; n != Dof<G>; ++n) {
       lhs.insert(row_counter + n, v3i_start + n)  = 1 * Tip;
       lhs.insert(row_counter + n, v1ip_start + n) = -1 * Ti;
     }
-    row_counter += G::Dof;
+    row_counter += Dof<G>;
 
     // acceleration continuity (approximate for Lie groups)
     // v_{2, i} - v_{3, i} = v_{2, i+1} - v_{1, i+1}
-    for (auto n = 0u; n != G::Dof; ++n) {
+    for (auto n = 0u; n != Dof<G>; ++n) {
       lhs.insert(row_counter + n, v2i_start + n)  = 1 * (Tip * Tip);
       lhs.insert(row_counter + n, v3i_start + n)  = -1 * (Tip * Tip);
       lhs.insert(row_counter + n, v1ip_start + n) = -1 * (Ti * Ti);
       lhs.insert(row_counter + n, v2ip_start + n) = 1 * (Ti * Ti);
     }
-    row_counter += G::Dof;
+    row_counter += Dof<G>;
   }
 
   //// RIGHT END POINT  ////
@@ -429,21 +431,21 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
 
   // end at last control point
   // v_{1, n-1} + v_{2, n-1} v_{3, n-1} = x_{n} - x_{n-1}
-  for (auto n = 0u; n != G::Dof; ++n) {
+  for (auto n = 0u; n != Dof<G>; ++n) {
     lhs.insert(row_counter + n, v1_nm_start + n) = 1;
     lhs.insert(row_counter + n, v2_nm_start + n) = 1;
     lhs.insert(row_counter + n, v3_nm_start + n) = 1;
   }
-  rhs.segment(row_counter, G::Dof) = *(it_g + 1) - *it_g;
-  row_counter += G::Dof;
+  rhs.segment(row_counter, Dof<G>) = rsub(*(it_g + 1), *it_g);
+  row_counter += Dof<G>;
 
   if (v1.has_value()) {
-    for (auto n = 0u; n != G::Dof; ++n) { lhs.insert(row_counter + n, v3_nm_start + n) = 3; }
-    rhs.segment(row_counter, G::Dof) = v1.value();
+    for (auto n = 0u; n != Dof<G>; ++n) { lhs.insert(row_counter + n, v3_nm_start + n) = 3; }
+    rhs.segment(row_counter, Dof<G>) = v1.value();
   } else {
     // zero second derivative at end:
     // v_{2, n-1} = v_{3, n-1}
-    for (auto n = 0u; n != G::Dof; ++n) {
+    for (auto n = 0u; n != Dof<G>; ++n) {
       lhs.insert(row_counter + n, v2_nm_start + n) = 1;
       lhs.insert(row_counter + n, v3_nm_start + n) = -1;
     }
@@ -469,15 +471,16 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
     const std::size_t v1i_start = idx(1, i);
     const std::size_t v3i_start = idx(3, i);
 
-    typename G::Tangent v1 = result.template segment<G::Dof>(v1i_start);
-    typename G::Tangent v3 = result.template segment<G::Dof>(v3i_start);
+    Tangent<G> v1 = result.template segment<Dof<G>>(v1i_start);
+    Tangent<G> v3 = result.template segment<Dof<G>>(v3i_start);
     // re-compute v2 to compensate for linearization
     // this ensures points are interpolated, but the cost is
     // potential non-continuity of the second derivative
-    typename G::Tangent v2 = *(it_g + 1) * G::exp(-v3) - (*it_g) * G::exp(v1);
+    Tangent<G> v2 = rsub(composition(*(it_g + 1), ::smooth::exp<G>(-v3)),
+      smooth::composition(*it_g, ::smooth::exp<G>(v1)));
 
     segments.emplace_back(
-      *it_g, std::array<typename G::Tangent, 3>{std::move(v1), std::move(v2), std::move(v3)});
+      *it_g, std::array<Tangent<G>, 3>{std::move(v1), std::move(v2), std::move(v3)});
   }
 
   auto take_view = tt | std::views::take(N + 1);
@@ -498,11 +501,13 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
  * @param v0 body velocity at start of spline (optional, if not given acceleration is set to zero)
  * @param v1 body velocity at end of spline (optional, if not given acceleration is set to zero)
  */
-template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt,
+  std::ranges::range Rg,
+  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
   const Rg & gg,
-  std::optional<typename G::Tangent> v0 = {},
-  std::optional<typename G::Tangent> v1 = {})
+  std::optional<Tangent<G>> v0 = {},
+  std::optional<Tangent<G>> v1 = {})
 {
   assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
@@ -511,32 +516,33 @@ PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
   const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
 
   std::vector<Bezier<3, G>> segments(N);
-  std::vector<typename G::Tangent> vel(N + 1);
+  std::vector<Tangent<G>> vel(N + 1);
 
   auto t_it = std::ranges::begin(tt);
   auto g_it = std::ranges::begin(gg);
 
-  vel[0] = v0.value_or((*(g_it + 1) - *g_it) / (*(t_it + 1) - *t_it));
+  vel[0] = v0.value_or(rsub(*(g_it + 1), *g_it) / (*(t_it + 1) - *t_it));
 
   ++t_it;
   ++g_it;
 
   for (auto i = 1u; i < N; ++i) {
-    vel[i] = (*(g_it + 1) - *(g_it)) / (*(t_it + 1) - *(t_it));
+    vel[i] = rsub(*(g_it + 1), *(g_it)) / (*(t_it + 1) - *(t_it));
     ++t_it;
     ++g_it;
   }
 
-  vel[N] = v1.value_or((*g_it - *(g_it - 1)) / (*t_it - *(t_it - 1)));
+  vel[N] = v1.value_or(rsub(*g_it, *(g_it - 1)) / (*t_it - *(t_it - 1)));
 
   t_it = std::ranges::begin(tt);
   g_it = std::ranges::begin(gg);
 
   for (auto i = 0u; i < N; ++i) {
-    std::array<typename G::Tangent, 3> vs;
+    std::array<Tangent<G>, 3> vs;
     vs[0] = (*(t_it + 1) - *t_it) * vel[i] / 3;
     vs[2] = (*(t_it + 1) - *t_it) * vel[i + 1] / 3;
-    vs[1] = *(g_it + 1) * G::exp(-vs[2]) - (*g_it) * G::exp(vs[0]);
+    vs[1] = rsub(composition(*(g_it + 1), ::smooth::exp<G>(-vs[2])),
+      smooth::composition(*g_it, ::smooth::exp<G>(vs[0])));
 
     segments[i] = Bezier<3, G>(*g_it, std::move(vs));
 

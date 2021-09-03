@@ -37,9 +37,7 @@
 #include <cassert>
 #include <ranges>
 
-#include "smooth/concepts.hpp"
 #include "smooth/internal/utils.hpp"
-#include "smooth/tn.hpp"
 
 #include "bezier.hpp"
 #include "common.hpp"
@@ -56,7 +54,7 @@ namespace smooth {
  * Internally a Curve is represented via third-order polynomials, similar to a PiecewiseBezier of
  * order 3.
  */
-template<LieGroup G>
+template<AdaptedLieGroup G>
 class Curve
 {
 public:
@@ -68,7 +66,7 @@ public:
    * @param T duration (must be strictly positive)
    * @param vs velocities for segment
    */
-  Curve(double T, std::array<typename G::Tangent, 3> && vs)
+  Curve(double T, std::array<Tangent<G>, 3> && vs)
       : end_t_{T}, vs_{std::move(vs)}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
@@ -84,11 +82,10 @@ public:
    * @param vs velocity constants (must be of size 3)
    */
   template<std::ranges::range Rv>
-  // \cond
-  requires(std::is_same_v<std::ranges::range_value_t<Rv>, typename G::Tangent>)
+    // \cond
+    requires(std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
   // \endcond
-  Curve(double T, const Rv & vs)
-      : end_t_{T}, seg_T0_{0}, seg_Del_{1}
+  Curve(double T, const Rv & vs) : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
     assert(std::ranges::size(vs) == 3);
@@ -126,11 +123,11 @@ public:
     if (N == 0) { return; }
 
     double t0     = bez.knots_.front();
-    const G g0inv = bez.segments_.front().g0_.inverse();
+    const G g0inv = inverse(bez.segments_.front().g0_);
 
     for (auto i = 0u; i != N; ++i) {
       end_t_[i] = bez.knots_[i + 1] - t0;
-      if (i + 1 < N) { end_g_[i] = g0inv * bez.segments_[i + 1].g0_; }
+      if (i + 1 < N) { end_g_[i] = composition(g0inv, bez.segments_[i + 1].g0_); }
       vs_[i] = bez.segments_[i].vs_;
     }
 
@@ -168,12 +165,12 @@ public:
    * @param v body velocity
    * @param T duration
    */
-  static Curve ConstantVelocity(const typename G::Tangent & v, double T = 1)
+  static Curve ConstantVelocity(const Tangent<G> & v, double T = 1)
   {
     if (T <= 0) {
       return Curve();
     } else {
-      std::array<typename G::Tangent, 3> vs;
+      std::array<Tangent<G>, 3> vs;
       vs.fill(T * v / 3);
       return Curve(T, vs);
     }
@@ -186,13 +183,12 @@ public:
    * @param va, vb start and end velocities
    * @param T duration
    */
-  static Curve FixedCubic(
-    const G & gb, const typename G::Tangent & va, const typename G::Tangent & vb, double T = 1)
+  static Curve FixedCubic(const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T = 1)
   {
-    std::array<typename G::Tangent, 3> vs;
+    std::array<Tangent<G>, 3> vs;
     vs[0] = T * va / 3;
     vs[2] = T * vb / 3;
-    vs[1] = (G::exp(-vs[0]) * gb * G::exp(-vs[2])).log();
+    vs[1] = log(composition(::smooth::exp<G>(-vs[0]), gb, ::smooth::exp<G>(-vs[2])));
     return Curve(T, std::move(vs));
   }
 
@@ -240,12 +236,12 @@ public:
   }
 
   /// @brief Curve start (always equal to identity).
-  G start() const { return G::Identity(); }
+  G start() const { return Identity<G>(); }
 
   /// @brief Curve end.
   G end() const
   {
-    if (empty()) { return G::Identity(); }
+    if (empty()) { return Identity<G>(); }
     return end_g_.back();
   }
 
@@ -278,7 +274,7 @@ public:
 
     for (auto i = 0u; i < N2; ++i) {
       end_t_[N1 + i]   = tend + other.end_t_[i];
-      end_g_[N1 + i]   = gend * other.end_g_[i];
+      end_g_[N1 + i]   = composition(gend, other.end_g_[i]);
       vs_[N1 + i]      = other.vs_[i];
       seg_T0_[N1 + i]  = other.seg_T0_[i];
       seg_Del_[N1 + i] = other.seg_Del_[i];
@@ -313,7 +309,7 @@ public:
     if (empty() || t < 0) {
       if (vel.has_value()) { vel.value().setZero(); }
       if (acc.has_value()) { acc.value().setZero(); }
-      return G::Identity();
+      return Identity<G>();
     }
 
     if (t > t_max()) {
@@ -333,14 +329,14 @@ public:
     constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BEZIER, double, 3>().transpose();
     Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
-    G g0 = istar == 0 ? G::Identity() : end_g_[istar - 1];
+    G g0 = istar == 0 ? Identity<G>() : end_g_[istar - 1];
 
     // compensate for cropped intervals
     if (seg_T0_[istar] > 0) {
-      g0 *= cspline_eval_diff<3, G>(vs_[istar], M, seg_T0_[istar]).inverse();
+      g0 = composition(g0, inverse(cspline_eval_diff<3, G>(vs_[istar], M, seg_T0_[istar])));
     }
 
-    const G g = g0 * cspline_eval_diff<3, G>(vs_[istar], M, u, vel, acc);
+    const G g = composition(g0, cspline_eval_diff<3, G>(vs_[istar], M, u, vel, acc));
 
     if (vel.has_value()) { vel.value() *= Del / T; }
     if (acc.has_value()) { acc.value() *= Del * Del / (T * T); }
@@ -376,7 +372,7 @@ public:
 
     std::vector<double> end_t(Nseg);
     std::vector<G> end_g(Nseg);
-    std::vector<std::array<typename G::Tangent, 3>> vs(Nseg);
+    std::vector<std::array<Tangent<G>, 3>> vs(Nseg);
     std::vector<double> seg_T0(Nseg), seg_Del(Nseg);
 
     // copy over all relevant segments
@@ -455,12 +451,12 @@ private:
   std::vector<G> end_g_;
 
   // segment bezier velocities
-  std::vector<std::array<typename G::Tangent, 3>> vs_;
+  std::vector<std::array<Tangent<G>, 3>> vs_;
 
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;
 
-  template<LieGroup Go>
+  template<AdaptedLieGroup Go>
   friend auto reparameterize_curve2(const Curve<Go> & curve,
     const typename Go::Tangent & vel_min,
     const typename Go::Tangent & vel_max,
@@ -553,12 +549,12 @@ private:
  * @note It may not be feasible to satisfy the target boundary velocities. In those cases the
  * resulting velocities will be lower than the desired values.
  */
-template<LieGroup G>
+template<AdaptedLieGroup G>
 Reparameterization reparameterize_curve(const Curve<G> & curve,
-  const typename G::Tangent & vel_min,
-  const typename G::Tangent & vel_max,
-  const typename G::Tangent & acc_min,
-  const typename G::Tangent & acc_max,
+  const Tangent<G> & vel_min,
+  const Tangent<G> & vel_max,
+  const Tangent<G> & acc_min,
+  const Tangent<G> & acc_max,
   double start_vel = 1,
   double end_vel   = std::numeric_limits<double>::infinity(),
   bool slower_only = false,
@@ -570,15 +566,14 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
   // BACKWARDS PASS WITH MINIMAL ACCELERATION
 
   Eigen::Vector2d state(curve.t_max(), end_vel);  // s, v
-  std::vector<double> xx;
-  std::vector<smooth::T1d> yy;
+  std::vector<double> xx, yy;
 
   do {
-    typename G::Tangent vel, acc;
+    Tangent<G> vel, acc;
     curve.eval(state.x(), vel, acc);
 
     // clamp velocity to not exceed constraints
-    for (auto i = 0u; i != G::Dof; ++i) {
+    for (auto i = 0u; i != Dof<G>; ++i) {
       if (vel(i) > zeps) {
         state.y() = std::min<double>(state.y(), vel_max(i) / vel(i));
       } else if (vel(i) < -zeps) {
@@ -591,7 +586,7 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
     if (xx.empty() || state.x() < xx.back()) {
       xx.push_back(state.x());
-      yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.y())));
+      yy.push_back(state.y());
     }
 
     if (vel.cwiseAbs().maxCoeff() <= zeps) {
@@ -601,9 +596,9 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
     } else {
       // figure minimal allowed acceleration
       double a = -std::numeric_limits<double>::infinity();
-      for (auto i = 0u; i != G::Dof; ++i) {
-        const typename G::Tangent upper = acc_max - acc * state.y() * state.y();
-        const typename G::Tangent lower = acc_min - acc * state.y() * state.y();
+      for (auto i = 0u; i != Dof<G>; ++i) {
+        const Tangent<G> upper = acc_max - acc * state.y() * state.y();
+        const Tangent<G> lower = acc_min - acc * state.y() * state.y();
         if (vel(i) > zeps) {
           a = std::max<double>(a, lower(i) / vel(i));
         } else if (vel(i) < -zeps) {
@@ -618,7 +613,7 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
   if (xx.empty() || state.x() < xx.back()) {
     xx.push_back(state.x());
-    yy.push_back(T1d(Eigen::Matrix<double, 1, 1>(state.y())));
+    yy.push_back(state.y());
   }
 
   // fit a spline to get v(s)
@@ -633,11 +628,11 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
   state << 0, start_vel;
 
   // clamp velocity to not exceed upper bound
-  state.y() = std::min<double>(state.y(), v_func.eval(0).rn().x());
+  state.y() = std::min<double>(state.y(), v_func.eval(0));
   if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
   do {
-    typename G::Tangent vel, acc;
+    Tangent<G> vel, acc;
     curve.eval(state.x(), vel, acc);
 
     if (vel.cwiseAbs().maxCoeff() <= zeps) {
@@ -646,9 +641,9 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
     } else {
       // figure maximal allowed acceleration
       double a = std::numeric_limits<double>::infinity();
-      for (auto i = 0u; i != G::Dof; ++i) {
-        const typename G::Tangent upper = acc_max - acc * state.y() * state.y();
-        const typename G::Tangent lower = acc_min - acc * state.y() * state.y();
+      for (auto i = 0u; i != Dof<G>; ++i) {
+        const Tangent<G> upper = acc_max - acc * state.y() * state.y();
+        const Tangent<G> lower = acc_min - acc * state.y() * state.y();
         if (vel(i) > zeps) {
           a = std::min<double>(a, upper(i) / vel(i));
         } else if (vel(i) < -zeps) {
@@ -660,7 +655,7 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
       double new_v = state.y() + dt * a;
 
       // clamp velocity to not exceed upper bound
-      new_v = std::min<double>(new_v, v_func.eval(new_s).rn().x());
+      new_v = std::min<double>(new_v, v_func.eval(new_s));
       if (slower_only) { new_v = std::min<double>(new_v, 1); }
 
       // ensure v stays positive

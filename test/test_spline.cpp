@@ -35,6 +35,8 @@
 #include "smooth/spline/bspline.hpp"
 #include "smooth/tn.hpp"
 
+#include "adapted.hpp"
+
 TEST(Coefmat, Bspline)
 {
   constexpr auto c3 = smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>();
@@ -132,7 +134,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 
     TypeParam g0 = TypeParam::Random();
 
-    std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_vec;
+    std::vector<Tangent> diff_vec;
     for (auto i = 0u; i != K; ++i) { diff_vec.push_back(Tangent::Zero()); }
 
     constexpr auto Mstatic =
@@ -157,7 +159,7 @@ TYPED_TEST(Spline, DerivBspline)
   TypeParam g0  = TypeParam::Random();
   using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
 
-  std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_pts;
+  std::vector<Tangent> diff_pts;
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
@@ -185,7 +187,7 @@ TYPED_TEST(Spline, DerivBezier)
   TypeParam g0  = TypeParam::Random();
   using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
 
-  std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_pts;
+  std::vector<Tangent> diff_pts;
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
@@ -521,4 +523,33 @@ TEST(Spline, BezierInitialvel)
     ASSERT_TRUE(test1.isApprox(v0));
     ASSERT_TRUE(test2.isApprox(v1));
   }
+}
+
+TEST(Spline, CustomAdaptedGroup)
+{
+  std::vector<double> tt{
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+  };
+  std::vector<MyGroup<double>> gg{
+    MyGroup<double>{1},
+    MyGroup<double>{2},
+    MyGroup<double>{3},
+    MyGroup<double>{4},
+    MyGroup<double>{5},
+    MyGroup<double>{6},
+  };
+
+  auto spl1 = smooth::fit_bspline<3>(tt, gg, 1);
+  auto spl2 = smooth::fit_cubic_bezier(tt, gg);
+
+  auto g1 = spl1.eval(2.5);
+  auto g2 = spl2.eval(2.5);
+
+  static_cast<void>(g1);
+  static_cast<void>(g2);
 }

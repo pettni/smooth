@@ -128,7 +128,9 @@ struct lie_traits<Tn<N, _Scalar>>
  * @see TnBase for memory layout.
  */
 template<int N, typename _Scalar>
+  // \cond
   requires(N > 0)
+// \endcond
 class Tn : public TnBase<Tn<N, _Scalar>>
 {
   using Base = TnBase<Tn<N, _Scalar>>;

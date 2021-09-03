@@ -29,7 +29,7 @@
 #include <Eigen/Sparse>
 #include <numeric>
 
-#include "concepts.hpp"
+#include "adapted_lie_group.hpp"
 
 namespace smooth {
 
@@ -38,35 +38,35 @@ namespace smooth {
  *
  * Convenient to treat a collection
  * \f[
- *   m = (m_1, m_2, ..., m_k) \in M \times M \times ... \times M
+ *   m = (m_1, m_2, ..., m_k) \in G \times G \times ... \times G
  * \f]
  * of Manifold elements as a single Manifold element \f$m\f$.
  *
  * @warning calling `size()` on a `ManifoldVector` returns
- * the degrees of freedom of \f$M \times M \times \ldots \times M\f$, NOT the
+ * the degrees of freedom of \f$G \times G \times \ldots \times G\f$, NOT the
  * number of elements in the vector. For the latter,
  * use `vector_size()`.
  */
-template<Manifold M>
-class ManifoldVector : public std::vector<M>
+template<AdaptedLieGroup G>
+class ManifoldVector : public std::vector<G>
 {
 private:
-  using Base = std::vector<M>;
+  using Base = std::vector<G>;
 
 public:
   //! Degrees of freedom of manifold (equal to tangent space dimentsion)
   static constexpr Eigen::Index SizeAtCompileTime = -1;
   //! Plain return type
-  using PlainObject = ManifoldVector<M>;
+  using PlainObject = ManifoldVector<G>;
   //! Scalar type
-  using Scalar = typename M::Scalar;
+  using Scalar = ::smooth::Scalar<G>;
 
   //! Default constructor of empty ManifoldVector
-  ManifoldVector()                         = default;
+  ManifoldVector() = default;
   //! Copy constructor
   ManifoldVector(const ManifoldVector & o) = default;
   //! Move constructor
-  ManifoldVector(ManifoldVector && o)      = default;
+  ManifoldVector(ManifoldVector && o) = default;
   //! Copy assignment operator
   ManifoldVector & operator=(const ManifoldVector & o) = default;
   //! Move assignment operator
@@ -86,11 +86,11 @@ public:
   template<typename NewScalar>
   auto cast() const
   {
-    using CastT = typename decltype(M{}.template cast<NewScalar>())::PlainObject;
+    using CastT = ::smooth::PlainObject<decltype(::smooth::cast<NewScalar>(G{}))>;
     ManifoldVector<CastT> ret;
     ret.reserve(vector_size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
-      return x.template cast<NewScalar>();
+      return ::smooth::cast<NewScalar>(x);
     });
     return ret;
   }
@@ -107,8 +107,8 @@ public:
    */
   Eigen::Index size() const
   {
-    if constexpr (M::SizeAtCompileTime > 0) {
-      return vector_size() * M::SizeAtCompileTime;
+    if constexpr (Dof < G >> 0) {
+      return vector_size() * Dof<G>;
     } else {
       return std::accumulate(this->begin(), this->end(), 0u, [](auto & v1, const auto & item) {
         return v1 + item.size();
@@ -126,8 +126,8 @@ public:
   {
     Eigen::Index idx = 0;
     for (auto i = 0u; i != this->vector_size(); ++i) {
-      const auto size_i = this->operator[](i).size();
-      this->operator[](i) += a.template segment<M::SizeAtCompileTime>(idx, size_i);
+      const auto size_i   = ::smooth::dof(this->operator[](i));
+      this->operator[](i) = rplus(this->operator[](i), a.template segment<Dof<G>>(idx, size_i));
       idx += size_i;
     }
     return *this;
@@ -154,17 +154,17 @@ public:
   Eigen::Matrix<Scalar, -1, 1> operator-(const PlainObject & o) const
   {
     std::size_t dof = 0;
-    if (M::SizeAtCompileTime > 0) {
-      dof = M::SizeAtCompileTime * vector_size();
+    if (Dof < G >> 0) {
+      dof = Dof<G> * vector_size();
     } else {
-      for (auto i = 0u; i != vector_size(); ++i) { dof += this->operator[](i).size(); }
+      for (auto i = 0u; i != vector_size(); ++i) { dof += ::smooth::dof(this->operator[](i)); }
     }
 
     Eigen::Matrix<Scalar, -1, 1> ret(dof);
     Eigen::Index idx = 0;
     for (auto i = 0u; i != vector_size(); ++i) {
-      const auto & size_i                                     = this->operator[](i).size();
-      ret.template segment<M::SizeAtCompileTime>(idx, size_i) = this->operator[](i) - o[i];
+      const auto & size_i                       = ::smooth::dof(this->operator[](i));
+      ret.template segment<Dof<G>>(idx, size_i) = rsub(this->operator[](i), o[i]);
       idx += size_i;
     }
 
@@ -174,8 +174,8 @@ public:
 
 }  // namespace smooth
 
-template<typename Stream, typename M, template<typename> typename Allocator>
-Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
+template<typename Stream, typename G>
+Stream & operator<<(Stream & s, const smooth::ManifoldVector<G> & g)
 {
   s << "ManifoldVector with " << g.vector_size() << " elements:" << std::endl;
   for (auto i = 0u; i != g.vector_size(); ++i) {

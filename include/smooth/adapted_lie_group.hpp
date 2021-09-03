@@ -64,6 +64,14 @@ requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dim, lie<G>::Dim> 
 //// Free functions that dispatch to traits ////
 ////////////////////////////////////////////////
 
+// Static constants
+
+template<AdaptedLieGroup G>
+static constexpr Eigen::Index Dof = lie<G>::Dof;
+
+template<AdaptedLieGroup G>
+static constexpr Eigen::Index Dim = lie<G>::Dim;
+
 // Types
 
 /**
@@ -149,7 +157,7 @@ PlainObject<G1> composition(const G1 & g1, const G2 & g2, const Gs &... gs)
 template<AdaptedLieGroup G>
 Eigen::Index dof(const G & g)
 {
-  return lie<G>::dof();
+  return lie<G>::dof(g);
 }
 
 /**
@@ -158,7 +166,7 @@ Eigen::Index dof(const G & g)
 template<AdaptedLieGroup G>
 Eigen::Index dim(const G & g)
 {
-  return lie<G>::dim();
+  return lie<G>::dim(g);
 }
 
 /**
@@ -354,8 +362,8 @@ struct lie<G>
   {
     return g1.operator*(g2);
   }
-  static Eigen::Index dof(const G & g) { return G::Dof; }
-  static Eigen::Index dim(const G & g) { return G::Dim; }
+  static Eigen::Index dof(const G &) { return G::Dof; }
+  static Eigen::Index dim(const G &) { return G::Dim; }
   static PlainObject inverse(const G & g) { return g.inverse(); }
   template<LieGroup Go>
   static bool isApprox(const G & g, const Go & go, Scalar eps)
@@ -543,7 +551,7 @@ public:
   static Eigen::Index dof(G) { return 1; }
   static Eigen::Index dim(G) { return 2; }
   static PlainObject inverse(G g) { return -g; }
-  static PlainObject isApprox(G g1, G g2, G eps)
+  static bool isApprox(G g1, G g2, Scalar eps)
   {
     using std::abs;
     return abs<G>(g1 - g2) <= eps * abs<G>(g1);

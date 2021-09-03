@@ -26,8 +26,7 @@
 #ifndef INTERP__COMMON_HPP_
 #define INTERP__COMMON_HPP_
 
-#include "smooth/concepts.hpp"
-#include "smooth/internal/lie_group_base.hpp"
+#include "smooth/adapted_lie_group.hpp"
 #include "smooth/internal/utils.hpp"
 
 namespace smooth {
@@ -109,12 +108,11 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
   return M;
 }
 
-template<LieGroup G>
-using OptTangent = std::optional<Eigen::Ref<typename G::Tangent>>;
+template<AdaptedLieGroup G>
+using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
 
-template<LieGroup G, std::size_t K>
-using OptJacobian =
-  std::optional<Eigen::Ref<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof *(K + 1)>>>;
+template<AdaptedLieGroup G, std::size_t K>
+using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)>>>;
 
 }  // namespace detail
 
@@ -133,27 +131,25 @@ using OptJacobian =
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
-template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
+template<std::size_t K, AdaptedLieGroup G, std::ranges::range Range, typename Derived>
 inline G cspline_eval_diff(const Range & diff_points,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
-  typename G::Scalar u,
+  Scalar<G> u,
   detail::OptTangent<G> vel     = {},
   detail::OptTangent<G> acc     = {},
   detail::OptJacobian<G, K> der = {}) noexcept
 {
-  using Scalar = typename G::Scalar;
+  Eigen::Matrix<Scalar<G>, 1, K + 1> uvec, duvec, d2uvec;
 
-  Eigen::Matrix<Scalar, 1, K + 1> uvec, duvec, d2uvec;
-
-  uvec(0)   = Scalar(1);
-  duvec(0)  = Scalar(0);
-  d2uvec(0) = Scalar(0);
+  uvec(0)   = Scalar<G>(1);
+  duvec(0)  = Scalar<G>(0);
+  d2uvec(0) = Scalar<G>(0);
 
   for (std::size_t k = 1; k != K + 1; ++k) {
     uvec(k) = u * uvec(k - 1);
     if (vel.has_value() || acc.has_value()) {
-      duvec(k) = Scalar(k) * uvec(k - 1);
-      if (acc.has_value()) { d2uvec(k) = Scalar(k) * duvec(k - 1); }
+      duvec(k) = Scalar<G>(k) * uvec(k - 1);
+      if (acc.has_value()) { d2uvec(k) = Scalar<G>(k) * duvec(k - 1); }
     }
   }
 
@@ -162,50 +158,50 @@ inline G cspline_eval_diff(const Range & diff_points,
     if (acc.has_value()) { acc.value().setZero(); }
   }
 
-  G g = G::Identity();
+  G g = Identity<G>();
   for (std::size_t j = 1; const auto & v : diff_points) {
-    const Scalar Btilde = uvec.dot(cum_coef_mat.row(j));
-    g *= G::exp(Btilde * v);
+    const Scalar<G> Btilde = uvec.dot(cum_coef_mat.row(j));
+    g                      = composition(g, ::smooth::exp<G>(Btilde * v));
 
     if (vel.has_value() || acc.has_value()) {
-      const Scalar dBtilde = duvec.dot(cum_coef_mat.row(j));
-      const auto Ad        = G::exp(-Btilde * v).Ad();
-      vel.value().applyOnTheLeft(Ad);
+      const Scalar<G> dBtilde = duvec.dot(cum_coef_mat.row(j));
+      const auto Ad_bt_v      = Ad(::smooth::exp<G>(-Btilde * v));
+      vel.value().applyOnTheLeft(Ad_bt_v);
       vel.value() += dBtilde * v;
 
       if (acc.has_value()) {
-        const Scalar d2Btilde = d2uvec.dot(cum_coef_mat.row(j));
-        acc.value().applyOnTheLeft(Ad);
-        acc.value() += dBtilde * G::ad(vel.value()) * v + d2Btilde * v;
+        const Scalar<G> d2Btilde = d2uvec.dot(cum_coef_mat.row(j));
+        acc.value().applyOnTheLeft(Ad_bt_v);
+        acc.value() += dBtilde * ad<G>(vel.value()) * v + d2Btilde * v;
       }
     }
     ++j;
   }
 
   if (der.has_value()) {
-    G z2inv = G::Identity();
+    G z2inv = Identity<G>();
 
     der.value().setZero();
 
     for (int j = K; j >= 0; --j) {
       if (j != K) {
-        const Scalar Btilde_jp          = uvec.dot(cum_coef_mat.row(j + 1));
-        const typename G::Tangent & vjp = *(std::ranges::begin(diff_points) + j);
-        const typename G::Tangent sjp   = Btilde_jp * vjp;
+        const Scalar<G> Btilde_jp = uvec.dot(cum_coef_mat.row(j + 1));
+        const Tangent<G> & vjp    = *(std::ranges::begin(diff_points) + j);
+        const Tangent<G> sjp      = Btilde_jp * vjp;
 
-        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) -=
-          Btilde_jp * z2inv.Ad() * G::dr_exp(sjp) * G::dl_expinv(vjp);
+        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>) -=
+          Btilde_jp * Ad(z2inv) * dr_exp<G>(sjp) * dl_expinv<G>(vjp);
 
-        z2inv *= G::exp(-sjp);
+        z2inv = composition(z2inv, ::smooth::exp<G>(-sjp));
       }
 
-      const Scalar Btilde_j = uvec.dot(cum_coef_mat.row(j));
+      const Scalar<G> Btilde_j = uvec.dot(cum_coef_mat.row(j));
       if (j != 0) {
-        const typename G::Tangent & vj = *(std::ranges::begin(diff_points) + j - 1);
-        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) +=
-          Btilde_j * z2inv.Ad() * G::dr_exp(Btilde_j * vj) * G::dr_expinv(vj);
+        const Tangent<G> & vj = *(std::ranges::begin(diff_points) + j - 1);
+        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>) +=
+          Btilde_j * Ad(z2inv) * dr_exp<G>(Btilde_j * vj) * dr_expinv<G>(vj);
       } else {
-        der.value().template block<G::Dof, G::Dof>(0, j * G::Dof) += Btilde_j * z2inv.Ad();
+        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += Btilde_j * Ad(z2inv);
       }
     }
   }
@@ -221,7 +217,8 @@ inline G cspline_eval_diff(const Range & diff_points,
  * where \f$ \tilde B \f$ are cumulative basis functions and \f$ v_i = g_i - g_{i-1} \f$.
  *
  * @tparam K spline order
- * @param[in] gs LieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K + 1)
+ * @param[in] gs AdaptedLieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K +
+ * 1)
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
@@ -230,20 +227,21 @@ inline G cspline_eval_diff(const Range & diff_points,
 template<std::size_t K,
   std::ranges::range R,
   typename Derived,
-  LieGroup G = std::ranges::range_value_t<R>>
+  AdaptedLieGroup G = std::ranges::range_value_t<R>>
 inline G cspline_eval(const R & gs,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
-  typename G::Scalar u,
+  Scalar<G> u,
   detail::OptTangent<G> vel     = {},
   detail::OptTangent<G> acc     = {},
   detail::OptJacobian<G, K> der = {}) noexcept
 {
   auto b1 = std::begin(gs);
   auto b2 = std::begin(gs) + 1;
-  std::array<typename G::Tangent, K> diff_pts;
-  for (auto i = 0u; i != K; ++i) { diff_pts[i] = *b2++ - *b1++; }
+  std::array<Tangent<G>, K> diff_pts;
+  for (auto i = 0u; i != K; ++i) { diff_pts[i] = rsub(*b2++, *b1++); }
 
-  return *std::begin(gs) * cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der);
+  return composition(
+    *std::begin(gs), cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der));
 }
 
 }  // namespace smooth

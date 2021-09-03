@@ -36,26 +36,26 @@
 
 #define SMOOTH_DIFF_CERES
 
-#include "smooth/concepts.hpp"
+#include "smooth/adapted_lie_group.hpp"
 #include "smooth/internal/lie_group_base.hpp"
 #include "smooth/internal/utils.hpp"
 
 namespace smooth {
 
 // \cond
-template<LieGroup G>
+template<AdaptedLieGroup G>
 struct CeresParameterizationFunctor
 {
   template<typename Scalar>
   bool operator()(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const
   {
-    using GScalar = decltype(G().template cast<Scalar>());
+    using GCast = decltype(::smooth::cast<Scalar>(std::declval<G>()));
 
-    Map<const GScalar> mx(x);
-    Eigen::Map<const typename GScalar::Tangent> mdelta(delta);
-    Map<GScalar> mx_plus_delta(x_plus_delta);
+    Map<const GCast> mx(x);
+    Eigen::Map<const Tangent<GCast>> mdelta(delta);
+    Map<GCast> mx_plus_delta(x_plus_delta);
 
-    mx_plus_delta = mx + mdelta;
+    mx_plus_delta = rplus(mx, mdelta);
     return true;
   }
 };
@@ -64,7 +64,7 @@ struct CeresParameterizationFunctor
 /**
  * @brief Parameterization for on-manifold optimization with Ceres.
  */
-template<LieGroup G>
+template<AdaptedLieGroup G>
 class CeresLocalParameterization
     : public ceres::
         AutoDiffLocalParameterization<CeresParameterizationFunctor<G>, G::RepSize, G::Dof>

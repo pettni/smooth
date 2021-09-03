@@ -63,7 +63,7 @@ int main(int, char const **)
   std::vector<double> tvec;
   std::vector<smooth::SO3d> bspline_vec, bezier1_vec, bezier2_vec, bezier3_vec;
 
-  std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> bspline_v, bezier1_v,
+  std::vector<Eigen::Vector3d> bspline_v, bezier1_v,
     bezier2_v, bezier3_v;
 
   for (double t = bspline.t_min(); t < bspline.t_max(); t += 0.05) {

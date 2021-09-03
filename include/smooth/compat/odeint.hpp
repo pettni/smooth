@@ -33,14 +33,12 @@
 
 #include <boost/numeric/odeint/algebra/operations_dispatcher.hpp>
 
-#include "smooth/concepts.hpp"
+#include "smooth/adapted_lie_group.hpp"
 
-
-namespace smooth
-{
+namespace smooth {
 
 /**
- * @brief \p boost::odeint Stepper operations for Manifold types.
+ * @brief \p boost::odeint Stepper operations for AdaptedLieGroup types.
  *
  * \p boost::odeint Butcher tableaus are evaluated by weighted
  * calculations of the form y = Σ_{i=1}^n alpha_i x_i which are generically
@@ -62,32 +60,30 @@ struct BoostOdeintOps
   /**
    * @brief Variadic scale_sum implementation.
    */
-  template<typename ... Fac>
+  template<typename... Fac>
   struct scale_sum
   {
     //! Storage for scale sum weights.
-    const std::tuple<Fac ...> m_alpha;
+    const std::tuple<Fac...> m_alpha;
 
     //! Constructor for scale sum.
-    inline scale_sum(Fac ... alpha) noexcept
-    : m_alpha(alpha ...)
-    {}
+    inline scale_sum(Fac... alpha) noexcept : m_alpha(alpha...) {}
 
     //! Helper for scaled addition operation.
-    template<typename ... Ts, std::size_t ... Is>
-    inline auto helper(std::index_sequence<Is...>, const Ts & ... as) noexcept
+    template<typename... Ts, std::size_t... Is>
+    inline auto helper(std::index_sequence<Is...>, const Ts &... as) noexcept
     {
       // plus 1 since alpha1 = 1 is not included in Ts...
       return ((std::get<Is + 1>(m_alpha) * as) + ...);
     }
 
     //! Scaled addition operation.
-    template<Manifold T1, Manifold T2, typename ... Ts>
-    requires std::is_same_v<T1, T2>&&
-    std::conjunction_v<std::is_same<typename T1::Tangent, Ts>...>
-    inline void operator()(T1 & y, const T2 & x, const Ts & ... as) noexcept
+    template<AdaptedLieGroup T1, AdaptedLieGroup T2, typename... Ts>
+      requires(
+        std::is_same_v<T1, T2> && std::conjunction_v<std::is_same<typename T1::Tangent, Ts>...>)
+    inline void operator()(T1 & y, const T2 & x, const Ts &... as) noexcept
     {
-      y = x + helper(std::make_index_sequence<sizeof...(Ts)>(), as...);
+      y = smooth::rplus(x, helper(std::make_index_sequence<sizeof...(Ts)>(), as...));
     }
 
     //! Required typedef.
@@ -95,6 +91,7 @@ struct BoostOdeintOps
   };
 
   // \cond
+  // clang-format off
   template<typename Fac1, typename Fac2 = Fac1>
   using scale_sum2 = scale_sum<Fac1, Fac2>;
 
@@ -133,16 +130,17 @@ struct BoostOdeintOps
 
   template<typename Fac1, typename Fac2 = Fac1, typename Fac3 = Fac2, typename Fac4 = Fac3, typename Fac5 = Fac4, typename Fac6 = Fac5, typename Fac7 = Fac6, typename Fac8 = Fac7, typename Fac9 = Fac8, typename Fac10 = Fac9, typename Fac11 = Fac10, typename Fac12 = Fac11, typename Fac13 = Fac12, typename Fac14 = Fac13>
   using scale_sum14 = scale_sum<Fac1, Fac2, Fac3, Fac4, Fac5, Fac6, Fac7, Fac8, Fac9, Fac10, Fac11, Fac12, Fac13, Fac14>;
+  // clang-format on
   // \endcond
 };
 
 }  // namespace smooth
 
 /**
- * @brief SFINAE dispatcher for Manifold types.
+ * @brief SFINAE dispatcher for AdaptedLieGroup types.
  */
 // \cond
-template<smooth::LieGroup G>
+template<smooth::AdaptedLieGroup G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
   using operations_type = ::smooth::BoostOdeintOps;

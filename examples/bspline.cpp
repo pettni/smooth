@@ -67,7 +67,7 @@ int main(int, char const **)
 #ifdef ENABLE_PLOTTING
   auto tvec = matplot::linspace(spline.t_min(), spline.t_max(), 300);
   std::vector<smooth::SO3d> gvec;
-  std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> vvec, avec;
+  std::vector<Eigen::Vector3d> vvec, avec;
 
   for (auto t : tvec) {
     Eigen::Vector3d vel, acc;

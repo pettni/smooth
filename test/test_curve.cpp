@@ -28,6 +28,8 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/curve.hpp"
 
+#include "adapted.hpp"
+
 TEST(Curve, ConstantVelocity1)
 {
   Eigen::Vector3d v1 = Eigen::Vector3d::Random();
@@ -569,4 +571,17 @@ TEST(Curve, ReparameterizeZeroMiddle)
     ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
     ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
   }
+}
+
+TEST(Curve, Adapted)
+{
+  smooth::Curve<MyGroup<double>> c;
+
+  c *= smooth::Curve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
+  c *= smooth::Curve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(0));
+  c *= smooth::Curve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
+
+  auto x = c.eval(0.5);
+
+  static_cast<void>(x);
 }

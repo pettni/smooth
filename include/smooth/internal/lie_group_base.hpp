@@ -97,7 +97,9 @@ public:
    * Assignment operation from other storage type.
    */
   template<typename OtherDerived>
+    // \cond
     requires(is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
+  // \endcond
   Derived & operator=(const LieGroupBase<OtherDerived> & o)
   {
     derived().coeffs() = static_cast<const OtherDerived &>(o).coeffs();
@@ -165,7 +167,9 @@ public:
    * @brief Check if (approximately) equal to other element `o`.
    */
   template<typename OtherDerived>
+    // \cond
     requires(std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
+  // \endcond
   bool isApprox(const LieGroupBase<OtherDerived> & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
@@ -187,7 +191,9 @@ public:
    * @brief Group binary composition operation.
    */
   template<typename OtherDerived>
+    // \cond
     requires(std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
+  // \endcond
   PlainObject operator*(const LieGroupBase<OtherDerived> & o) const
   {
     PlainObject ret;
@@ -200,7 +206,9 @@ public:
    * @brief Inplace group binary composition operation.
    */
   template<typename OtherDerived>
+    // \cond
     requires(is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
+  // \endcond
   Derived & operator*=(const LieGroupBase<OtherDerived> & o)
   {
     derived().coeffs() = (*this * o).coeffs();
@@ -259,7 +267,9 @@ public:
    * @return Reference to this
    */
   template<typename TangentDerived>
+    // \cond
     requires(is_mutable)
+  // \endcond
   Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & a)
   {
     *this *= exp(a);
@@ -277,7 +287,9 @@ public:
    * \f]
    */
   template<typename OtherDerived>
+    // \cond
     requires(std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
+  // \endcond
   Tangent operator-(const LieGroupBase<OtherDerived> & xo) const
   {
     return (xo.inverse() * *this).log();
