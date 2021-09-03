@@ -199,14 +199,9 @@ public:
   }
 };
 
-using C1f = C1<float>;   ///< C1 with float scalar representation
-using C1d = C1<double>;  ///< C1 with double scalar representation
-
-}  // namespace smooth
-
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::C1<_Scalar>>> : public lie_traits<smooth::C1<_Scalar>>
+struct lie_traits<Map<C1<_Scalar>>> : public lie_traits<C1<_Scalar>>
 {};
 // \endcond
 
@@ -216,17 +211,16 @@ struct smooth::lie_traits<Eigen::Map<smooth::C1<_Scalar>>> : public lie_traits<s
  * @see C1Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<smooth::C1<_Scalar>> : public smooth::C1Base<Eigen::Map<smooth::C1<_Scalar>>>
+class Map<C1<_Scalar>> : public C1Base<Map<C1<_Scalar>>>
 {
-  using Base = smooth::C1Base<Eigen::Map<smooth::C1<_Scalar>>>;
+  using Base = C1Base<Map<C1<_Scalar>>>;
 
-  SMOOTH_MAP_API(Map);
+  SMOOTH_MAP_API(C1);
 };
 
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::C1<_Scalar>>>
-    : public lie_traits<smooth::C1<_Scalar>>
+struct lie_traits<Map<const C1<_Scalar>>> : public lie_traits<C1<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -238,12 +232,16 @@ struct smooth::lie_traits<Eigen::Map<const smooth::C1<_Scalar>>>
  * @see C1Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<const smooth::C1<_Scalar>>
-    : public smooth::C1Base<Eigen::Map<const smooth::C1<_Scalar>>>
+class Map<const C1<_Scalar>> : public C1Base<Map<const C1<_Scalar>>>
 {
-  using Base = smooth::C1Base<Eigen::Map<const smooth::C1<_Scalar>>>;
+  using Base = C1Base<Map<const C1<_Scalar>>>;
 
-  SMOOTH_CONST_MAP_API(Map);
+  SMOOTH_CONST_MAP_API();
 };
+
+using C1f = C1<float>;   ///< C1 with float scalar representation
+using C1d = C1<double>;  ///< C1 with double scalar representation
+
+}  // namespace smooth
 
 #endif  // SMOOTH__C1_HPP_

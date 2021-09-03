@@ -39,12 +39,12 @@ TEST(Ros, LieGroup)
   geometry_msgs::msg::Pose msg4;
   geometry_msgs::msg::Transform msg5;
 
-  test(Eigen::Map<geometry_msgs::msg::Quaternion>(msg3));
-  test(Eigen::Map<const geometry_msgs::msg::Quaternion>(msg3));
-  test(Eigen::Map<geometry_msgs::msg::Pose>(msg4));
-  test(Eigen::Map<const geometry_msgs::msg::Pose>(msg4));
-  test(Eigen::Map<geometry_msgs::msg::Transform>(msg5));
-  test(Eigen::Map<const geometry_msgs::msg::Transform>(msg5));
+  test(smooth::Map<geometry_msgs::msg::Quaternion>(msg3));
+  test(smooth::Map<const geometry_msgs::msg::Quaternion>(msg3));
+  test(smooth::Map<geometry_msgs::msg::Pose>(msg4));
+  test(smooth::Map<const geometry_msgs::msg::Pose>(msg4));
+  test(smooth::Map<geometry_msgs::msg::Transform>(msg5));
+  test(smooth::Map<const geometry_msgs::msg::Transform>(msg5));
 }
 
 
@@ -59,7 +59,7 @@ TEST(Ros, Pose)
   p.orientation.x = 0;
   p.orientation.y = 0;
 
-  Eigen::Map<geometry_msgs::msg::Pose> m(p);
+  smooth::Map<geometry_msgs::msg::Pose> m(p);
   ASSERT_TRUE(m.r3().isApprox(Eigen::Vector3d(3, 5, 4)));
 
   smooth::SE3d g;
@@ -68,7 +68,7 @@ TEST(Ros, Pose)
 
   ASSERT_TRUE(m.isApprox(g));
 
-  Eigen::Map<const geometry_msgs::msg::Pose> m_const(p);
+  smooth::Map<const geometry_msgs::msg::Pose> m_const(p);
   ASSERT_TRUE(m_const.isApprox(g));
 
   ASSERT_DOUBLE_EQ(p.position.x, m.r3().x());

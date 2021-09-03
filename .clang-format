@@ -38,13 +38,14 @@ BraceWrapping:
     SplitEmptyNamespace: false
 
 BreakBeforeBinaryOperators: NonAssignment
-# BreakBeforeConceptDeclarations: true
+BreakBeforeConceptDeclarations: true
 BreakConstructorInitializers: BeforeColon
 BreakInheritanceList: BeforeColon
 
 FixNamespaceComments: true
 
 IndentCaseLabels: false
+IndentRequires: true
 
 InsertTrailingCommas: Wrapped
 

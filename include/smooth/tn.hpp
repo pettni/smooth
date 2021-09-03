@@ -104,7 +104,8 @@ public:
 
 // \cond
 template<int N, typename _Scalar>
-requires(N > 0) class Tn;
+  requires(N > 0)
+class Tn;
 // \endcond
 
 // \cond
@@ -127,10 +128,8 @@ struct lie_traits<Tn<N, _Scalar>>
  * @see TnBase for memory layout.
  */
 template<int N, typename _Scalar>
-// \cond
-requires(N > 0)
-  // \endcond
-  class Tn : public TnBase<Tn<N, _Scalar>>
+  requires(N > 0)
+class Tn : public TnBase<Tn<N, _Scalar>>
 {
   using Base = TnBase<Tn<N, _Scalar>>;
   SMOOTH_GROUP_API(Tn);
@@ -146,12 +145,9 @@ public:
   {}
 };
 
-}  // namespace smooth
-
 // \cond
 template<int N, typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::Tn<N, _Scalar>>>
-    : public lie_traits<smooth::Tn<N, _Scalar>>
+struct lie_traits<Map<Tn<N, _Scalar>>> : public lie_traits<Tn<N, _Scalar>>
 {};
 // \endcond
 
@@ -161,17 +157,16 @@ struct smooth::lie_traits<Eigen::Map<smooth::Tn<N, _Scalar>>>
  * @see TnBase for memory layout.
  */
 template<int N, typename _Scalar>
-class Eigen::Map<smooth::Tn<N, _Scalar>> : public smooth::TnBase<Eigen::Map<smooth::Tn<N, _Scalar>>>
+class Map<Tn<N, _Scalar>> : public TnBase<Map<Tn<N, _Scalar>>>
 {
-  using Base = smooth::TnBase<Eigen::Map<smooth::Tn<N, _Scalar>>>;
+  using Base = TnBase<Map<Tn<N, _Scalar>>>;
 
-  SMOOTH_MAP_API(Map);
+  SMOOTH_MAP_API(Tn);
 };
 
 // \cond
 template<int N, typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::Tn<N, _Scalar>>>
-    : public lie_traits<smooth::Tn<N, _Scalar>>
+struct lie_traits<Map<const Tn<N, _Scalar>>> : public lie_traits<Tn<N, _Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -183,15 +178,13 @@ struct smooth::lie_traits<Eigen::Map<const smooth::Tn<N, _Scalar>>>
  * @see TnBase for memory layout.
  */
 template<int N, typename _Scalar>
-class Eigen::Map<const smooth::Tn<N, _Scalar>>
-    : public smooth::TnBase<Eigen::Map<const smooth::Tn<N, _Scalar>>>
+class Map<const Tn<N, _Scalar>> : public TnBase<Map<const Tn<N, _Scalar>>>
 {
-  using Base = smooth::TnBase<Eigen::Map<const smooth::Tn<N, _Scalar>>>;
+  using Base = TnBase<Map<const Tn<N, _Scalar>>>;
 
-  SMOOTH_CONST_MAP_API(Map);
+  SMOOTH_CONST_MAP_API();
 };
 
-namespace smooth {
 // \cond
 template<typename Scalar>
 using T1 = Tn<1, Scalar>;

@@ -37,6 +37,7 @@
 #define SMOOTH_DIFF_CERES
 
 #include "smooth/concepts.hpp"
+#include "smooth/internal/lie_group_base.hpp"
 #include "smooth/internal/utils.hpp"
 
 namespace smooth {
@@ -50,9 +51,9 @@ struct CeresParameterizationFunctor
   {
     using GScalar = decltype(G().template cast<Scalar>());
 
-    Eigen::Map<const GScalar> mx(x);
+    Map<const GScalar> mx(x);
     Eigen::Map<const typename GScalar::Tangent> mdelta(delta);
-    Eigen::Map<GScalar> mx_plus_delta(x_plus_delta);
+    Map<GScalar> mx_plus_delta(x_plus_delta);
 
     mx_plus_delta = mx + mdelta;
     return true;

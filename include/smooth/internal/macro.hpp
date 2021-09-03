@@ -82,20 +82,20 @@ private:                                                      \
 public:                                                          \
   SMOOTH_INHERIT_TYPEDEFS;                                       \
   /*! @brief Map memory as Lie type */                           \
-  X(Scalar * p) : coeffs_(p) {}                                  \
+  Map(Scalar * p) : coeffs_(p) {}                                \
   /*! @brief Copy constructor */                                 \
-  X(const X &) = default;                                        \
+  Map(const Map &) = default;                                    \
   /*! @brief Move constructor */                                 \
-  X(X &&) = default;                                             \
+  Map(Map &&) = default;                                         \
   /*! @brief Copy assignment */                                  \
-  X & operator=(const X &) = default;                            \
+  Map & operator=(const Map &) = default;                        \
   /*! @brief Move assignment */                                  \
-  X & operator=(X &&) = default;                                 \
+  Map & operator=(Map &&) = default;                             \
   /*! @brief Destructor */                                       \
-  ~X() = default;                                                \
+  ~Map() = default;                                              \
   /*! @brief Copy assignment from other storage type */          \
   template<typename OtherDerived>                                \
-  X(const X##Base<OtherDerived> & o)                             \
+  Map(const X##Base<OtherDerived> & o)                           \
   {                                                              \
     coeffs() = static_cast<const OtherDerived &>(o).coeffs();    \
   }                                                              \
@@ -115,13 +115,13 @@ private:                                                         \
                                                                  \
   static_assert(true, "")
 
-#define SMOOTH_CONST_MAP_API(X)                                        \
+#define SMOOTH_CONST_MAP_API()                                         \
 public:                                                                \
   SMOOTH_INHERIT_TYPEDEFS;                                             \
   /*! @brief Const map memory as Lie type */                           \
-  X(const Scalar * p) : coeffs_(p) {}                                  \
+  Map(const Scalar * p) : coeffs_(p) {}                                \
   /*! @brief Destructor */                                             \
-  ~X() = default;                                                      \
+  ~Map() = default;                                                    \
   /*! @brief Underlying storage is Eigen const map */                  \
   using Storage = Eigen::Map<const Eigen::Matrix<Scalar, RepSize, 1>>; \
   /*! @brief Const access underlying Eigen::Map */                     \

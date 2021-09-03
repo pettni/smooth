@@ -31,6 +31,12 @@
 namespace smooth {
 
 /**
+ * @brief Memory mapping of internal Lie group types.
+ */
+template<typename T>
+class Map;
+
+/**
  * @brief Type trait that maps a type to Lie group operations.
  *
  * Required members:
@@ -39,7 +45,8 @@ namespace smooth {
  *  - `typename template<NewScalar> PlainObject`: Default return type
  */
 template<typename T>
-struct lie_traits;
+struct lie_traits
+{};
 
 /**
  * @brief Base class for Lie group types
@@ -90,9 +97,7 @@ public:
    * Assignment operation from other storage type.
    */
   template<typename OtherDerived>
-  // \cond
-  requires is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
-  // \endcond
+    requires(is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
   Derived & operator=(const LieGroupBase<OtherDerived> & o)
   {
     derived().coeffs() = static_cast<const OtherDerived &>(o).coeffs();
@@ -160,9 +165,7 @@ public:
    * @brief Check if (approximately) equal to other element `o`.
    */
   template<typename OtherDerived>
-  // \cond
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
-  // \endcond
+    requires(std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
   bool isApprox(const LieGroupBase<OtherDerived> & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
@@ -184,9 +187,7 @@ public:
    * @brief Group binary composition operation.
    */
   template<typename OtherDerived>
-  // \cond
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
-  // \endcond
+    requires(std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
   PlainObject operator*(const LieGroupBase<OtherDerived> & o) const
   {
     PlainObject ret;
@@ -199,9 +200,7 @@ public:
    * @brief Inplace group binary composition operation.
    */
   template<typename OtherDerived>
-  // \cond
-  requires is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
-  // \endcond
+    requires(is_mutable && std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
   Derived & operator*=(const LieGroupBase<OtherDerived> & o)
   {
     derived().coeffs() = (*this * o).coeffs();
@@ -260,9 +259,7 @@ public:
    * @return Reference to this
    */
   template<typename TangentDerived>
-  // \cond
-  requires is_mutable
-  // \endcond
+    requires(is_mutable)
   Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & a)
   {
     *this *= exp(a);
@@ -280,9 +277,7 @@ public:
    * \f]
    */
   template<typename OtherDerived>
-  // \cond
-  requires std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>
-  // \endcond
+    requires(std::is_same_v<Impl, typename lie_traits<OtherDerived>::Impl>)
   Tangent operator-(const LieGroupBase<OtherDerived> & xo) const
   {
     return (xo.inverse() * *this).log();

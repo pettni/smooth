@@ -43,7 +43,7 @@ TEST(SE3, Parts)
   std::array<double, 7> d;
   for (auto i = 0u; i != 7; ++i) { d[i] = g.coeffs()[i]; }
 
-  Eigen::Map<const smooth::SE3d> g_map(d.data());
+  smooth::Map<const smooth::SE3d> g_map(d.data());
   ASSERT_TRUE(g_map.so3().isApprox(so3));
   ASSERT_TRUE(g_map.r3().isApprox(tr));
 }

@@ -61,8 +61,8 @@ TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
 {
   // check that groups satisfy LieGroup concept
   test<TypeParam>();
-  test<Eigen::Map<TypeParam>>();
-  test<Eigen::Map<const TypeParam>>();
+  test<smooth::Map<TypeParam>>();
+  test<smooth::Map<const TypeParam>>();
 
   // move constructors are noexcept
   static_assert(std::is_nothrow_move_constructible_v<TypeParam>);
@@ -78,8 +78,8 @@ TYPED_TEST(LieGroupInterface, Constructors)
 
   // map construction
   std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1;
-  Eigen::Map<TypeParam> m1(a1.data());
-  Eigen::Map<const TypeParam> m2(a1.data());
+  smooth::Map<TypeParam> m1(a1.data());
+  smooth::Map<const TypeParam> m2(a1.data());
   m1.setRandom();
   ASSERT_TRUE(m1.isApprox(m2));
 
@@ -91,7 +91,7 @@ TYPED_TEST(LieGroupInterface, Constructors)
 
   // map -> group copy constructor
   {
-    Eigen::Map<TypeParam> m(a.data());
+    smooth::Map<TypeParam> m(a.data());
     m = g;
     TypeParam m_copy(m);
     ASSERT_TRUE(m_copy.isApprox(g));
@@ -111,9 +111,9 @@ TYPED_TEST(LieGroupInterface, Constructors)
     TypeParam g1;
     g1.setRandom();
 
-    Eigen::Map<TypeParam> m1(a.data());
+    smooth::Map<TypeParam> m1(a.data());
     m1 = g1;
-    Eigen::Map<TypeParam> m2(std::move(m1));
+    smooth::Map<TypeParam> m2(std::move(m1));
 
     ASSERT_TRUE(m2.isApprox(g1));
   }
@@ -132,14 +132,14 @@ TYPED_TEST(LieGroupInterface, DataAccess)
   TypeParam g1       = TypeParam::Random();
   const TypeParam g2 = TypeParam::Random();
 
-  Eigen::Map<TypeParam> m1(g1.data());
-  Eigen::Map<const TypeParam> m2(g2.data());
+  smooth::Map<TypeParam> m1(g1.data());
+  smooth::Map<const TypeParam> m2(g2.data());
 
   ASSERT_TRUE(m1.isApprox(g1));
   ASSERT_TRUE(m2.isApprox(g2));
 
-  Eigen::Map<TypeParam> m1p(m1.data());
-  Eigen::Map<const TypeParam> m2p(m2.data());
+  smooth::Map<TypeParam> m1p(m1.data());
+  smooth::Map<const TypeParam> m2p(m2.data());
 
   ASSERT_TRUE(m1p.isApprox(g1));
   ASSERT_TRUE(m2p.isApprox(g2));
@@ -187,8 +187,8 @@ TYPED_TEST(LieGroupInterface, Copying)
 
   std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1, a2;
   TypeParam g1, g2;
-  Eigen::Map<TypeParam> m1(a1.data()), m2(a2.data());
-  Eigen::Map<const TypeParam> m2_const(a2.data());
+  smooth::Map<TypeParam> m1(a1.data()), m2(a2.data());
+  smooth::Map<const TypeParam> m2_const(a2.data());
 
   // group to group
   g1.setRandom();
@@ -246,7 +246,7 @@ TYPED_TEST(LieGroupInterface, Moving)
 
   // move map to map
   {
-    Eigen::Map<TypeParam> m1(a1.data()), m2(a2.data());
+    smooth::Map<TypeParam> m1(a1.data()), m2(a2.data());
     m1 = g;
 
     m2 = std::move(m1);

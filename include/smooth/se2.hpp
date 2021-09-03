@@ -98,17 +98,17 @@ public:
   /**
    * @brief Access SO(2) part.
    */
-  Eigen::Map<SO2<Scalar>> so2() requires is_mutable
+  Map<SO2<Scalar>> so2() requires is_mutable
   {
-    return Eigen::Map<SO2<Scalar>>(static_cast<_Derived &>(*this).data() + 2);
+    return Map<SO2<Scalar>>(static_cast<_Derived &>(*this).data() + 2);
   }
 
   /**
    * @brief Const access SO(2) part.
    */
-  Eigen::Map<const SO2<Scalar>> so2() const
+  Map<const SO2<Scalar>> so2() const
   {
-    return Eigen::Map<const SO2<Scalar>>(static_cast<const _Derived &>(*this).data() + 2);
+    return Map<const SO2<Scalar>>(static_cast<const _Derived &>(*this).data() + 2);
   }
 
   /**
@@ -182,7 +182,7 @@ class SE2 : public SE2Base<SE2<_Scalar>>
 
 public:
   /**
-   * @brief Construct from SO2 and R2. 
+   * @brief Construct from SO2 and R2.
    *
    * @param so2 orientation component.
    * @param r2 translation component.
@@ -195,17 +195,11 @@ public:
   }
 };
 
-using SE2f = SE2<float>;   ///< SE2 with float
-using SE2d = SE2<double>;  ///< SE2 with double
-
-}  // namespace smooth
-
 // MAP TYPE TRAITS
 
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::SE2<_Scalar>>>
-    : public lie_traits<smooth::SE2<_Scalar>>
+struct lie_traits<Map<SE2<_Scalar>>> : public lie_traits<SE2<_Scalar>>
 {};
 // \endcond
 
@@ -215,17 +209,16 @@ struct smooth::lie_traits<Eigen::Map<smooth::SE2<_Scalar>>>
  * @see SE2Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<smooth::SE2<_Scalar>> : public smooth::SE2Base<Eigen::Map<smooth::SE2<_Scalar>>>
+class Map<SE2<_Scalar>> : public SE2Base<Map<SE2<_Scalar>>>
 {
-  using Base = smooth::SE2Base<Eigen::Map<smooth::SE2<_Scalar>>>;
+  using Base = SE2Base<Map<SE2<_Scalar>>>;
 
-  SMOOTH_MAP_API(Map);
+  SMOOTH_MAP_API(SE2);
 };
 
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::SE2<_Scalar>>>
-    : public lie_traits<smooth::SE2<_Scalar>>
+struct lie_traits<Map<const SE2<_Scalar>>> : public lie_traits<SE2<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -237,12 +230,16 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SE2<_Scalar>>>
  * @see SE2Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<const smooth::SE2<_Scalar>>
-    : public smooth::SE2Base<Eigen::Map<const smooth::SE2<_Scalar>>>
+class Map<const SE2<_Scalar>> : public SE2Base<Map<const SE2<_Scalar>>>
 {
-  using Base = smooth::SE2Base<Eigen::Map<const smooth::SE2<_Scalar>>>;
+  using Base = SE2Base<Map<const SE2<_Scalar>>>;
 
-  SMOOTH_CONST_MAP_API(Map);
+  SMOOTH_CONST_MAP_API();
 };
+
+using SE2f = SE2<float>;   ///< SE2 with float
+using SE2d = SE2<double>;  ///< SE2 with double
+
+}  // namespace smooth
 
 #endif  // SMOOTH__SE2_HPP_
