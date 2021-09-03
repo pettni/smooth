@@ -160,7 +160,7 @@ public:
     Eigen::Index idx = 0;
     for (auto i = 0u; i != size(); ++i) {
       const auto & size_i                            = man<M>::dof(this->operator[](i));
-      ret.template segment<man<M>::Dof>(idx, size_i) = man<M>::rsub(this->operator[](i), o[i]);
+      ret.template segment<man<M>::Dof>(idx, size_i) = man<M>::rminus(this->operator[](i), o[i]);
       idx += size_i;
     }
 
@@ -193,7 +193,7 @@ struct man<ManifoldVector<M>>
     return m + a;
   }
 
-  static inline Eigen::Matrix<Scalar, Dof, 1> rsub(
+  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(
     const ManifoldVector<M> & m1, const ManifoldVector<M> & m2)
   {
     return m1 - m2;

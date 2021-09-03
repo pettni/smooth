@@ -335,6 +335,42 @@ TEST(Spline, BezierConstruct)
   ASSERT_EQ(spline_moved.t_max(), 3);
 }
 
+TYPED_TEST(Spline, Bezier0Fit)
+{
+  std::vector<double> tt;
+  std::vector<TypeParam> gg;
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+
+  auto spline = smooth::fit_constant_bezier(tt, gg);
+
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
+
+  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.1).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.2).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.3).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.4).isApprox(gg[0]));
+  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
+}
+
 TYPED_TEST(Spline, Bezier1Fit)
 {
   std::vector<double> tt;

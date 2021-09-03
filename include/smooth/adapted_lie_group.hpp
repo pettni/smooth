@@ -305,7 +305,7 @@ inline PlainObject<G> lplus(const G & g, const Eigen::MatrixBase<Derived> & a)
  * @brief Right-minus
  */
 template<AdaptedLieGroup G>
-inline Tangent<G> rsub(const G & g1, const G & g2)
+inline Tangent<G> rminus(const G & g1, const G & g2)
 {
   return log(composition(inverse(g2), g1));
 }
@@ -629,7 +629,7 @@ struct man<G>
     return lie<G>::composition(g, lie<G>::exp(a));
   }
 
-  static inline Eigen::Matrix<Scalar, Dof, 1> rsub(const G & g1, const G & g2)
+  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const G & g1, const G & g2)
   {
     return lie<G>::log(lie<G>::composition(lie<G>::inverse(g2), g1));
   }

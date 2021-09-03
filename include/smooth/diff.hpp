@@ -113,7 +113,7 @@ auto dr_numerical(_F && f, _Wrt && x)
         if (eps_j == 0.) { eps_j = eps; }
       }
       w = man<W>::rplus(w, (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
-      jac.col(index_pos + j) = man<Result>::rsub(std::apply(f, x_nc), val) / eps_j;
+      jac.col(index_pos + j) = man<Result>::rminus(std::apply(f, x_nc), val) / eps_j;
       w = man<W>::rplus(w, (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
     }
     index_pos += nx_j;

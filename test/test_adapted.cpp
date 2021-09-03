@@ -242,18 +242,18 @@ TYPED_TEST(LieGroupInterface, dl_expinv)
   }
 }
 
-TYPED_TEST(LieGroupInterface, rplus_rsub)
+TYPED_TEST(LieGroupInterface, rplus_rminus)
 {
   for (auto i = 0; i != 10; ++i) {
     TypeParam g                           = smooth::Random<TypeParam>();
     smooth::Tangent<TypeParam> a          = smooth::Tangent<TypeParam>::Random();
     TypeParam gp                          = smooth::rplus(g, a);
-    smooth::Tangent<TypeParam> gp_minus_g = smooth::rsub(gp, g);
+    smooth::Tangent<TypeParam> gp_minus_g = smooth::rminus(gp, g);
     ASSERT_TRUE(a.isApprox(gp_minus_g));
 
     TypeParam g1                    = smooth::Random<TypeParam>();
     TypeParam g2                    = smooth::Random<TypeParam>();
-    smooth::Tangent<TypeParam> diff = smooth::rsub(g1, g2);
+    smooth::Tangent<TypeParam> diff = smooth::rminus(g1, g2);
     ASSERT_TRUE(smooth::isApprox(smooth::rplus(g2, diff), g1));
   }
 }

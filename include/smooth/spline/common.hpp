@@ -238,7 +238,7 @@ inline G cspline_eval(const R & gs,
   auto b1 = std::begin(gs);
   auto b2 = std::begin(gs) + 1;
   std::array<Tangent<G>, K> diff_pts;
-  for (auto i = 0u; i != K; ++i) { diff_pts[i] = rsub(*b2++, *b1++); }
+  for (auto i = 0u; i != K; ++i) { diff_pts[i] = rminus(*b2++, *b1++); }
 
   return composition(
     *std::begin(gs), cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der));

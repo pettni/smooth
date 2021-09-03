@@ -226,6 +226,40 @@ private:
 };
 
 /**
+ * @brief Fit a constant PiecewiseBezier curve to data.
+ *
+ * The resulting curve passes through the data points and has piecewise
+ * constant values.
+ *
+ * @param tt interpolation times
+ * @param gg interpolation values
+ */
+template<std::ranges::range Rt,
+  std::ranges::range Rg,
+  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
+PiecewiseBezier<0, G> fit_constant_bezier(const Rt & tt, const Rg & gg)
+{
+  assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
+  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
+
+  const std::size_t N = std::min<std::size_t>(std::ranges::size(tt), std::ranges::size(gg)) - 1;
+
+  std::vector<Bezier<0, G>> segments(N);
+
+  auto it_g = std::ranges::begin(gg);
+  auto it_t = std::ranges::begin(tt);
+
+  for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
+    segments[i] = Bezier<0, G>(*it_g, std::array<Tangent<G>, 0>{});
+  }
+
+  auto take_view = tt | std::views::take(N + 1);
+  std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
+
+  return PiecewiseBezier<0, G>(std::move(knots), std::move(segments));
+}
+
+/**
  * @brief Fit a linear PiecewiseBezier curve to data.
  *
  * The resulting curve passes through the data points and has piecewise
@@ -252,7 +286,7 @@ PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
   auto it_t = std::ranges::begin(tt);
 
   for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
-    segments[i] = Bezier<1, G>(*it_g, std::array<Tangent<G>, 1>{rsub(*(it_g + 1), *it_g)});
+    segments[i] = Bezier<1, G>(*it_g, std::array<Tangent<G>, 1>{rminus(*(it_g + 1), *it_g)});
   }
 
   auto take_view = tt | std::views::take(N + 1);
@@ -288,7 +322,7 @@ PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
   auto it_g = std::ranges::begin(gg);
   auto it_t = std::ranges::begin(tt);
 
-  Tangent<G> v0 = rsub(*(it_g + 1), *it_g) / (*(it_t + 1) - *it_t);
+  Tangent<G> v0 = rminus(*(it_g + 1), *it_g) / (*(it_t + 1) - *it_t);
 
   for (auto i = 0u; i != N; ++i, ++it_t, ++it_g) {
     const double dt = *(it_t + 1) - *it_t;
@@ -298,7 +332,7 @@ PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
 
     // create segment
     const Tangent<G> v1 = va / 2;
-    const Tangent<G> v2 = rsub(*(it_g + 1), composition(*it_g, ::smooth::exp<G>(va / 2)));
+    const Tangent<G> v2 = rminus(*(it_g + 1), composition(*it_g, ::smooth::exp<G>(va / 2)));
 
     segments[i] = Bezier<2, G>(*it_g, std::array<Tangent<G>, 2>{v1, v2});
 
@@ -401,7 +435,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
       lhs.insert(row_counter + n, v2i_start + n) = 1;
       lhs.insert(row_counter + n, v3i_start + n) = 1;
     }
-    rhs.segment(row_counter, Dof<G>) = rsub(*(it_g + 1), *it_g);
+    rhs.segment(row_counter, Dof<G>) = rminus(*(it_g + 1), *it_g);
     row_counter += Dof<G>;
 
     // velocity continuity
@@ -436,7 +470,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
     lhs.insert(row_counter + n, v2_nm_start + n) = 1;
     lhs.insert(row_counter + n, v3_nm_start + n) = 1;
   }
-  rhs.segment(row_counter, Dof<G>) = rsub(*(it_g + 1), *it_g);
+  rhs.segment(row_counter, Dof<G>) = rminus(*(it_g + 1), *it_g);
   row_counter += Dof<G>;
 
   if (v1.has_value()) {
@@ -476,7 +510,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
     // re-compute v2 to compensate for linearization
     // this ensures points are interpolated, but the cost is
     // potential non-continuity of the second derivative
-    Tangent<G> v2 = rsub(composition(*(it_g + 1), ::smooth::exp<G>(-v3)),
+    Tangent<G> v2 = rminus(composition(*(it_g + 1), ::smooth::exp<G>(-v3)),
       smooth::composition(*it_g, ::smooth::exp<G>(v1)));
 
     segments.emplace_back(
@@ -521,18 +555,18 @@ PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
   auto t_it = std::ranges::begin(tt);
   auto g_it = std::ranges::begin(gg);
 
-  vel[0] = v0.value_or(rsub(*(g_it + 1), *g_it) / (*(t_it + 1) - *t_it));
+  vel[0] = v0.value_or(rminus(*(g_it + 1), *g_it) / (*(t_it + 1) - *t_it));
 
   ++t_it;
   ++g_it;
 
   for (auto i = 1u; i < N; ++i) {
-    vel[i] = rsub(*(g_it + 1), *(g_it)) / (*(t_it + 1) - *(t_it));
+    vel[i] = rminus(*(g_it + 1), *(g_it)) / (*(t_it + 1) - *(t_it));
     ++t_it;
     ++g_it;
   }
 
-  vel[N] = v1.value_or(rsub(*g_it, *(g_it - 1)) / (*t_it - *(t_it - 1)));
+  vel[N] = v1.value_or(rminus(*g_it, *(g_it - 1)) / (*t_it - *(t_it - 1)));
 
   t_it = std::ranges::begin(tt);
   g_it = std::ranges::begin(gg);
@@ -541,7 +575,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
     std::array<Tangent<G>, 3> vs;
     vs[0] = (*(t_it + 1) - *t_it) * vel[i] / 3;
     vs[2] = (*(t_it + 1) - *t_it) * vel[i + 1] / 3;
-    vs[1] = rsub(composition(*(g_it + 1), ::smooth::exp<G>(-vs[2])),
+    vs[1] = rminus(composition(*(g_it + 1), ::smooth::exp<G>(-vs[2])),
       smooth::composition(*g_it, ::smooth::exp<G>(vs[0])));
 
     segments[i] = Bezier<3, G>(*g_it, std::move(vs));

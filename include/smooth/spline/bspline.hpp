@@ -233,7 +233,7 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
       auto g_spline = cspline_eval<K>(
         var | std::views::drop(istar) | std::views::take(K + 1), M, u, {}, {}, d_vali_pts);
 
-      const Tangent<G> resi = rsub(g_spline, *g_iter);
+      const Tangent<G> resi = rminus(g_spline, *g_iter);
 
       ret.segment<Dof<G>>(i * Dof<G>) = resi;
 
