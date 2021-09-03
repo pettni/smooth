@@ -222,7 +222,9 @@ void test_linear(double prec = 1e-10)
     Eigen::Matrix<double, Ny, Nx> H = Eigen::Matrix<double, Ny, Nx>::Random();
     Eigen::Matrix<double, Ny, 1> h  = Eigen::Matrix<double, Ny, 1>::Random();
 
-    auto f = [&H, &h](const auto & var) { return H * var.rn() + h; };
+    auto f = [&H, &h]<typename T>(const smooth::Tn<Nx, T> & var) -> Eigen::Matrix<T, Ny, 1> {
+      return H * var.rn() + h;
+    };
 
     const auto [fval, dr_f] = smooth::diff::dr<DiffType>(f, smooth::wrt(t));
     ASSERT_TRUE(fval.isApprox(f(t)));
@@ -257,8 +259,8 @@ TEST(Differentiation, LinearCeres)
 
 TEST(Differentiation, Const)
 {
-  const auto f = [](const auto & xx) { return xx.log(); };
-  smooth::SO3d g = smooth::SO3d::Random();
+  const auto f            = [](const auto & xx) { return xx.log(); };
+  smooth::SO3d g          = smooth::SO3d::Random();
   const smooth::SO3d g_nc = g;
 
   const auto [v1, d1] = smooth::diff::detail::dr_numerical(f, smooth::wrt(g));
@@ -267,4 +269,3 @@ TEST(Differentiation, Const)
   ASSERT_TRUE(v1.isApprox(v2));
   ASSERT_TRUE(d1.isApprox(d2));
 }
-

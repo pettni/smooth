@@ -36,7 +36,7 @@
 
 #define SMOOTH_DIFF_AUTODIFF
 
-#include "smooth/concepts.hpp"
+#include "smooth/adapted_lie_group.hpp"
 #include "smooth/internal/utils.hpp"
 
 namespace smooth::diff {

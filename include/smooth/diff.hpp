@@ -34,8 +34,9 @@
 #include <Eigen/Core>
 #include <type_traits>
 
-#include "concepts.hpp"
 #include "internal/utils.hpp"
+#include "manifold.hpp"
+#include "adapted_lie_group.hpp"
 #include "tn.hpp"
 
 namespace smooth {
@@ -47,11 +48,8 @@ namespace smooth {
  * which is the expected format in e.g. dr() and minimize().
  */
 template<typename... _Args>
-requires (Manifold<std::decay_t<_Args>> && ...)
-auto wrt(_Args &&... args)
-{
-  return std::forward_as_tuple(std::forward<_Args>(args)...);
-}
+  requires(AdaptedManifold<std::decay_t<_Args>> &&...)
+auto wrt(_Args &&... args) { return std::forward_as_tuple(std::forward<_Args>(args)...); }
 
 // differentiation module
 namespace diff {
@@ -65,28 +63,31 @@ namespace detail {
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
- * the Manifold concept.
+ * the AdaptedLieGroup concept.
  */
 template<typename _F, typename _Wrt>
 auto dr_numerical(_F && f, _Wrt && x)
 {
-  using Result = typename decltype(std::apply(f, x))::PlainObject;
-  using Scalar = typename Result::Scalar;
+  using Result = decltype(std::apply(f, x));
+  using Scalar = typename man<Result>::Scalar;
+
+  static_assert(AdaptedManifold<Result>, "f(x) is not an AdaptedManifold");
 
   // arguments are modified below, so we create a copy of those that come in as const
   auto x_nc = utils::tuple_copy_if_const(std::forward<_Wrt>(x));
 
   // static sizes
   static constexpr Eigen::Index Nx = utils::tuple_dof<std::decay_t<_Wrt>>::value;
-  static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
+  static constexpr Eigen::Index Ny = man<Result>::Dof;
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
   const Result val = std::apply(f, x_nc);
 
   // dynamic sizes
-  Eigen::Index nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x_nc);
-  Eigen::Index ny = val.size();
+  Eigen::Index nx = std::apply(
+    [](auto &&... args) { return (man<std::decay_t<decltype(args)>>::dof(args) + ...); }, x_nc);
+  Eigen::Index ny = man<Result>::dof(val);
 
   // output variable
   Eigen::Matrix<Scalar, Ny, Nx> jac(ny, nx);
@@ -94,12 +95,11 @@ auto dr_numerical(_F && f, _Wrt && x)
   Eigen::Index index_pos = 0;
 
   utils::static_for<std::tuple_size_v<std::decay_t<_Wrt>>>([&](auto i) {
-    static constexpr Eigen::Index Nx_j =
-      std::decay_t<std::tuple_element_t<i, std::decay_t<_Wrt>>>::SizeAtCompileTime;
-    auto & w       = std::get<i>(x_nc);
-    const int nx_j = w.size();
+    auto & w = std::get<i>(x_nc);
+    using W  = std::decay_t<decltype(w)>;
 
-    using W = std::decay_t<decltype(w)>;
+    static constexpr Eigen::Index Nx_j = man<W>::Dof;
+    const int nx_j                     = man<W>::dof(w);
 
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
@@ -112,10 +112,9 @@ auto dr_numerical(_F && f, _Wrt && x)
         eps_j *= abs(w.rn()[j]);
         if (eps_j == 0.) { eps_j = eps; }
       }
-      // const cast needed in case argument is const (value is restored two lines below)
-      w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
-      jac.col(index_pos + j) = (std::apply(f, x_nc) - val) / eps_j;
-      w += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
+      w = man<W>::rplus(w, (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
+      jac.col(index_pos + j) = man<Result>::rsub(std::apply(f, x_nc), val) / eps_j;
+      w = man<W>::rplus(w, (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
     }
     index_pos += nx_j;
   });
@@ -159,7 +158,7 @@ static constexpr Type DefaultType =
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
- * the Manifold concept.
+ * the AdaptedLieGroup concept.
  */
 template<Type dm, typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)
@@ -193,7 +192,7 @@ auto dr(_F && f, _Wrt && x)
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
- * the Manifold concept.
+ * the AdaptedLieGroup concept.
  */
 template<typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)

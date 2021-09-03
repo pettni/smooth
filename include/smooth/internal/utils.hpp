@@ -35,6 +35,8 @@
 
 #include <Eigen/Core>
 
+#include "smooth/manifold.hpp"
+
 namespace smooth::utils {
 
 ////////////////////////////
@@ -157,9 +159,9 @@ struct tuple_dof
 template<typename... Wrt>
 struct tuple_dof<std::tuple<Wrt...>>
 {
-  static constexpr int value = std::min<int>({std::decay_t<Wrt>::SizeAtCompileTime...}) == -1
-                               ? std::min<int>({std::decay_t<Wrt>::SizeAtCompileTime...})
-                               : (std::decay_t<Wrt>::SizeAtCompileTime + ...);
+  static constexpr int value = std::min<int>({man<std::decay_t<Wrt>>::Dof...}) == -1
+                               ? std::min<int>({man<std::decay_t<Wrt>>::Dof...})
+                               : (man<std::decay_t<Wrt>>::Dof + ...);
 };
 
 /**
@@ -168,11 +170,11 @@ struct tuple_dof<std::tuple<Wrt...>>
 template<typename Scalar, typename... _Wrt>
 auto tuple_cast(const std::tuple<_Wrt...> & wrt)
 {
-  std::tuple<
-    typename std::decay_t<decltype(std::decay_t<_Wrt>{}.template cast<Scalar>())>::PlainObject...>
-    ret;
-  static_for<sizeof...(_Wrt)>(
-    [&](auto i) { std::get<i>(ret) = std::get<i>(wrt).template cast<Scalar>(); });
+  std::tuple<decltype(man<std::decay_t<_Wrt>>::template cast<Scalar>(std::declval<_Wrt>()))...> ret;
+  static_for<sizeof...(_Wrt)>([&](auto i) {
+    using Wi         = std::decay_t<decltype(std::get<i>(wrt))>;
+    std::get<i>(ret) = man<Wi>::template cast<Scalar>(std::get<i>(wrt));
+  });
   return ret;
 }
 
@@ -182,14 +184,14 @@ auto tuple_cast(const std::tuple<_Wrt...> & wrt)
 template<typename Derived, typename... _Wrt>
 auto tuple_plus(const std::tuple<_Wrt...> & wrt, const Eigen::MatrixBase<Derived> & a)
 {
-  std::tuple<typename std::decay_t<_Wrt>::PlainObject...> ret;
+  std::tuple<std::decay_t<_Wrt>...> ret;
   std::size_t i_beg = 0;
   static_for<sizeof...(_Wrt)>([&](auto i) {
-    constexpr auto i_size =
-      std::tuple_element_t<i, std::tuple<std::decay_t<_Wrt>...>>::SizeAtCompileTime;
-    std::size_t i_len = std::get<i>(wrt).size();
-    std::get<i>(ret)  = std::get<i>(wrt) + a.template segment<i_size>(i_beg, i_len);
-    i_beg += i_len;
+    using Wi             = std::decay_t<decltype(std::get<i>(wrt))>;
+    constexpr auto Ni    = man<Wi>::Dof;
+    const std::size_t ni = man<Wi>::dof(std::get<i>(wrt));
+    std::get<i>(ret)     = man<Wi>::rplus(std::get<i>(wrt), a.template segment<Ni>(i_beg, ni));
+    i_beg += ni;
   });
   return ret;
 }

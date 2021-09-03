@@ -29,7 +29,7 @@
 #include <Eigen/Sparse>
 #include <numeric>
 
-#include "adapted_lie_group.hpp"
+#include "manifold.hpp"
 
 namespace smooth {
 
@@ -38,28 +38,23 @@ namespace smooth {
  *
  * Convenient to treat a collection
  * \f[
- *   m = (m_1, m_2, ..., m_k) \in G \times G \times ... \times G
+ *   m = (m_1, m_2, ..., m_k) \in M \times M \times ... \times M
  * \f]
  * of Manifold elements as a single Manifold element \f$m\f$.
- *
- * @warning calling `size()` on a `ManifoldVector` returns
- * the degrees of freedom of \f$G \times G \times \ldots \times G\f$, NOT the
- * number of elements in the vector. For the latter,
- * use `vector_size()`.
  */
-template<AdaptedLieGroup G>
-class ManifoldVector : public std::vector<G>
+template<AdaptedManifold M>
+class ManifoldVector : public std::vector<M>
 {
 private:
-  using Base = std::vector<G>;
+  using Base = std::vector<M>;
 
 public:
   //! Degrees of freedom of manifold (equal to tangent space dimentsion)
   static constexpr Eigen::Index SizeAtCompileTime = -1;
   //! Plain return type
-  using PlainObject = ManifoldVector<G>;
+  using PlainObject = ManifoldVector<M>;
   //! Scalar type
-  using Scalar = ::smooth::Scalar<G>;
+  using Scalar = typename man<M>::Scalar;
 
   //! Default constructor of empty ManifoldVector
   ManifoldVector() = default;
@@ -86,11 +81,11 @@ public:
   template<typename NewScalar>
   auto cast() const
   {
-    using CastT = ::smooth::PlainObject<decltype(::smooth::cast<NewScalar>(G{}))>;
+    using CastT = decltype(man<M>::template cast<NewScalar>(M{}));
     ManifoldVector<CastT> ret;
-    ret.reserve(vector_size());
+    ret.reserve(size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
-      return ::smooth::cast<NewScalar>(x);
+      return man<M>::template cast<NewScalar>(x);
     });
     return ret;
   }
@@ -98,20 +93,20 @@ public:
   /**
    * @brief Number of elements in ManifoldVector.
    */
-  std::size_t vector_size() const { return Base::size(); }
+  std::size_t size() const { return Base::size(); }
 
   /**
    * @brief Runtime degrees of freedom.
    *
    * Sum of the degrees of freedom of constituent elements.
    */
-  Eigen::Index size() const
+  Eigen::Index dof() const
   {
-    if constexpr (Dof < G >> 0) {
-      return vector_size() * Dof<G>;
+    if constexpr (man<M>::Dof > 0) {
+      return size() * man<M>::Dof;
     } else {
       return std::accumulate(this->begin(), this->end(), 0u, [](auto & v1, const auto & item) {
-        return v1 + item.size();
+        return v1 + man<M>::dof();
       });
     }
   }
@@ -119,15 +114,16 @@ public:
   /**
    * @brief In-place addition.
    *
-   * @note It must hold that size() == a.size()
+   * @note It must hold that dof() == a.dof()
    */
   template<typename Derived>
   PlainObject & operator+=(const Eigen::MatrixBase<Derived> & a)
   {
     Eigen::Index idx = 0;
-    for (auto i = 0u; i != this->vector_size(); ++i) {
-      const auto size_i   = ::smooth::dof(this->operator[](i));
-      this->operator[](i) = rplus(this->operator[](i), a.template segment<Dof<G>>(idx, size_i));
+    for (auto i = 0u; i != this->size(); ++i) {
+      const auto size_i = man<M>::dof(this->operator[](i));
+      this->operator[](i) =
+        man<M>::rplus(this->operator[](i), a.template segment<man<M>::Dof>(idx, size_i));
       idx += size_i;
     }
     return *this;
@@ -136,7 +132,7 @@ public:
   /**
    * @brief Addition.
    *
-   * @note It must hold that `size() == a.size()`
+   * @note It must hold that `dof() == a.dof()`
    */
   template<typename Derived>
   PlainObject operator+(const Eigen::MatrixBase<Derived> & a) const
@@ -149,22 +145,22 @@ public:
   /**
    * @brief Subtraction.
    *
-   * @note It must hold that `size() == o.size()`
+   * @note It must hold that `dof() == o.dof()`
    */
   Eigen::Matrix<Scalar, -1, 1> operator-(const PlainObject & o) const
   {
     std::size_t dof = 0;
-    if (Dof < G >> 0) {
-      dof = Dof<G> * vector_size();
+    if (man<M>::Dof > 0) {
+      dof = man<M>::Dof * size();
     } else {
-      for (auto i = 0u; i != vector_size(); ++i) { dof += ::smooth::dof(this->operator[](i)); }
+      for (auto i = 0u; i != size(); ++i) { dof += man<M>::dof(this->operator[](i)); }
     }
 
     Eigen::Matrix<Scalar, -1, 1> ret(dof);
     Eigen::Index idx = 0;
-    for (auto i = 0u; i != vector_size(); ++i) {
-      const auto & size_i                       = ::smooth::dof(this->operator[](i));
-      ret.template segment<Dof<G>>(idx, size_i) = rsub(this->operator[](i), o[i]);
+    for (auto i = 0u; i != size(); ++i) {
+      const auto & size_i                            = man<M>::dof(this->operator[](i));
+      ret.template segment<man<M>::Dof>(idx, size_i) = man<M>::rsub(this->operator[](i), o[i]);
       idx += size_i;
     }
 
@@ -172,15 +168,48 @@ public:
   }
 };
 
+/**
+ * @brief Manifold interface for ManifoldVector
+ */
+template<AdaptedManifold M>
+struct man<ManifoldVector<M>>
+{
+  // \cond
+  using Scalar                      = typename man<M>::Scalar;
+  static constexpr Eigen::Index Dof = -1;
+
+  static inline Eigen::Index dof(const ManifoldVector<M> & m) { return m.dof(); }
+
+  template<typename NewScalar>
+  static inline auto cast(const ManifoldVector<M> & m)
+  {
+    return m.template cast<NewScalar>();
+  }
+
+  template<typename Derived>
+  static inline ManifoldVector<M> rplus(
+    const ManifoldVector<M> & m, const Eigen::MatrixBase<Derived> & a)
+  {
+    return m + a;
+  }
+
+  static inline Eigen::Matrix<Scalar, Dof, 1> rsub(
+    const ManifoldVector<M> & m1, const ManifoldVector<M> & m2)
+  {
+    return m1 - m2;
+  }
+  // \endcond
+};
+
 }  // namespace smooth
 
-template<typename Stream, typename G>
-Stream & operator<<(Stream & s, const smooth::ManifoldVector<G> & g)
+template<typename Stream, typename M>
+Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
 {
-  s << "ManifoldVector with " << g.vector_size() << " elements:" << std::endl;
-  for (auto i = 0u; i != g.vector_size(); ++i) {
+  s << "ManifoldVector with " << g.size() << " elements:" << std::endl;
+  for (auto i = 0u; i != g.size(); ++i) {
     s << i << ": " << g[i];
-    if (i != g.vector_size() - 1) { s << std::endl; }
+    if (i != g.size() - 1) { s << std::endl; }
   }
   return s;
 }
