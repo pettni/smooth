@@ -58,7 +58,7 @@ jobs:
 
     - name: Build
       working-directory: ${{ github.workspace }}/build
-      run: make -j8
+      run: make -j2
 
     - name: Test
       working-directory: ${{ github.workspace }}/build
@@ -102,7 +102,7 @@ jobs:
 
     - name: Build
       working-directory: ${{ github.workspace }}/build
-      run: make -j8
+      run: make -j2
 
     - name: Test
       working-directory: ${{ github.workspace }}/build
