@@ -38,7 +38,7 @@
 namespace smooth {
 
 /**
- * @brief \p boost::odeint Stepper operations for AdaptedLieGroup types.
+ * @brief \p boost::odeint Stepper operations for Manifold types.
  *
  * \p boost::odeint Butcher tableaus are evaluated by weighted
  * calculations of the form y = Σ_{i=1}^n alpha_i x_i which are generically
@@ -78,7 +78,7 @@ struct BoostOdeintOps
     }
 
     //! Scaled addition operation.
-    template<AdaptedLieGroup T1, AdaptedLieGroup T2, typename... Ts>
+    template<Manifold T1, Manifold T2, typename... Ts>
       requires(
         std::is_same_v<T1, T2> && std::conjunction_v<std::is_same<typename T1::Tangent, Ts>...>)
     inline void operator()(T1 & y, const T2 & x, const Ts &... as) noexcept
@@ -137,10 +137,10 @@ struct BoostOdeintOps
 }  // namespace smooth
 
 /**
- * @brief SFINAE dispatcher for AdaptedLieGroup types.
+ * @brief SFINAE dispatcher for Manifold types.
  */
 // \cond
-template<smooth::AdaptedLieGroup G>
+template<smooth::Manifold G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
   using operations_type = ::smooth::BoostOdeintOps;

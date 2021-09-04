@@ -7,7 +7,7 @@
 namespace smooth {
 
 /**
- * @brief Trait class for making a class n AdaptedManifold
+ * @brief Trait class for making a class n Manifold
  */
 template<typename T>
 struct man;
@@ -18,7 +18,7 @@ struct man;
  * @brief Class-external Lie group interface defined via the man trait.
  */
 template<typename M>
-concept AdaptedManifold =
+concept Manifold =
 std::is_default_constructible_v<M> &&
 std::is_copy_constructible_v<M> &&
 std::is_copy_assignable_v<M> &&
@@ -43,25 +43,25 @@ requires(const M & m, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 
  *
  * @note Equal to -1 for a dynamically sized Manifold
  */
-template<AdaptedManifold M>
+template<Manifold M>
 static inline constexpr Eigen::Index Dof = man<M>::Dof;
 
 /**
  * @brief Manifold scalar type
  */
-template<AdaptedManifold M>
+template<Manifold M>
 using Scalar = typename man<M>::Scalar;
 
 /**
  * @brief Cast'ed type
  */
-template<AdaptedManifold M, typename NewScalar>
+template<Manifold M, typename NewScalar>
 using CastT = decltype(man<M>::template cast<NewScalar>(std::declval<M>()));
 
 /**
  * @brief Manifold degrees of freedom (tangent space dimension)
  */
-template<AdaptedManifold M>
+template<Manifold M>
 inline auto dof(const M & m)
 {
   return man<M>::dof(m);
@@ -70,13 +70,13 @@ inline auto dof(const M & m)
 /**
  * @brief Tangent as a Dof-lenth Eigen vector
  */
-template<AdaptedManifold M>
+template<Manifold M>
 using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
 
 /**
  * @brief Cast to different scalar type
  */
-template<typename NewScalar, AdaptedManifold M>
+template<typename NewScalar, Manifold M>
 inline CastT<M, NewScalar> cast(const M & m)
 {
   return man<M>::template cast<NewScalar>(m);
@@ -85,7 +85,7 @@ inline CastT<M, NewScalar> cast(const M & m)
 /**
  * @brief Manifold right-plus
  */
-template<AdaptedManifold M, typename Derived>
+template<Manifold M, typename Derived>
 inline M rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
 {
   return man<M>::rplus(m, a);
@@ -94,7 +94,7 @@ inline M rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
 /**
  * @brief Manifold right-minus
  */
-template<AdaptedManifold M>
+template<Manifold M>
 inline Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> rminus(const M & g1, const M & g2)
 {
   return man<M>::rminus(g1, g2);

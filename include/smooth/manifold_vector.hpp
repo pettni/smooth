@@ -42,7 +42,7 @@ namespace smooth {
  * \f]
  * of Manifold elements as a single Manifold element \f$m\f$.
  */
-template<AdaptedManifold M>
+template<Manifold M>
 class ManifoldVector : public std::vector<M>
 {
 private:
@@ -163,7 +163,7 @@ public:
 /**
  * @brief Manifold interface for ManifoldVector
  */
-template<AdaptedManifold M>
+template<Manifold M>
 struct man<ManifoldVector<M>>
 {
   // \cond

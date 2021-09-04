@@ -43,14 +43,14 @@
 namespace smooth {
 
 // \cond
-template<AdaptedLieGroup G>
+template<LieGroup G>
 class Curve;
 // \endcond
 
 /**
  * @brief Bezier curve on [0, 1].
  * @tparam N Polonimial degree of curve.
- * @tparam G AdaptedLieGroup type.
+ * @tparam G LieGroup type.
  *
  * The curve is defined by
  * \f[
@@ -59,7 +59,7 @@ class Curve;
  * where \f$\tilde B_i(t)\f$ are cumulative Bernstein basis functions and
  * \f$v_i = g_i \ominus g_{i-1}\f$ are the control point differences.
  */
-template<std::size_t N, AdaptedLieGroup G>
+template<std::size_t N, LieGroup G>
 class Bezier
 {
 public:
@@ -140,7 +140,7 @@ private:
  * for \f$ t \in [t_i, t_{i+1}]\f$
  * where \f$p_i\f$ is a Bezier curve on \f$[0, 1]\f$.
  */
-template<std::size_t N, AdaptedLieGroup G>
+template<std::size_t N, LieGroup G>
 class PiecewiseBezier
 {
 public:
@@ -234,9 +234,7 @@ private:
  * @param tt interpolation times
  * @param gg interpolation values
  */
-template<std::ranges::range Rt,
-  std::ranges::range Rg,
-  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<0, G> fit_constant_bezier(const Rt & tt, const Rg & gg)
 {
   assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
@@ -270,9 +268,7 @@ PiecewiseBezier<0, G> fit_constant_bezier(const Rt & tt, const Rg & gg)
  * @param tt interpolation times
  * @param gg interpolation values
  */
-template<std::ranges::range Rt,
-  std::ranges::range Rg,
-  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
 {
   assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
@@ -307,9 +303,7 @@ PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
  * @param tt interpolation times
  * @param gg interpolation values
  */
-template<std::ranges::range Rt,
-  std::ranges::range Rg,
-  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
 {
   assert(std::ranges::size(tt) >= 2 && std::ranges::size(gg) >= 2);
@@ -357,9 +351,7 @@ PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
  * @param v0 body velocity at start of spline (optional, if not given acceleration is set to zero)
  * @param v1 body velocity at end of spline (optional, if not given acceleration is set to zero)
  */
-template<std::ranges::range Rt,
-  std::ranges::range Rg,
-  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
   const Rg & gg,
   std::optional<Tangent<G>> v0 = {},
@@ -535,9 +527,7 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
  * @param v0 body velocity at start of spline (optional, if not given acceleration is set to zero)
  * @param v1 body velocity at end of spline (optional, if not given acceleration is set to zero)
  */
-template<std::ranges::range Rt,
-  std::ranges::range Rg,
-  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
+template<std::ranges::range Rt, std::ranges::range Rg, LieGroup G = std::ranges::range_value_t<Rg>>
 PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
   const Rg & gg,
   std::optional<Tangent<G>> v0 = {},

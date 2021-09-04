@@ -108,10 +108,10 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
   return M;
 }
 
-template<AdaptedLieGroup G>
+template<LieGroup G>
 using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
 
-template<AdaptedLieGroup G, std::size_t K>
+template<LieGroup G, std::size_t K>
 using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)>>>;
 
 }  // namespace detail
@@ -131,7 +131,7 @@ using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Do
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
-template<std::size_t K, AdaptedLieGroup G, std::ranges::range Range, typename Derived>
+template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
 inline G cspline_eval_diff(const Range & diff_points,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
   Scalar<G> u,
@@ -217,7 +217,7 @@ inline G cspline_eval_diff(const Range & diff_points,
  * where \f$ \tilde B \f$ are cumulative basis functions and \f$ v_i = g_i - g_{i-1} \f$.
  *
  * @tparam K spline order
- * @param[in] gs AdaptedLieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K +
+ * @param[in] gs LieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K +
  * 1)
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
@@ -227,7 +227,7 @@ inline G cspline_eval_diff(const Range & diff_points,
 template<std::size_t K,
   std::ranges::range R,
   typename Derived,
-  AdaptedLieGroup G = std::ranges::range_value_t<R>>
+  LieGroup G = std::ranges::range_value_t<R>>
 inline G cspline_eval(const R & gs,
   const Eigen::MatrixBase<Derived> & cum_coef_mat,
   Scalar<G> u,

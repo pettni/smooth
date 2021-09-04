@@ -1,5 +1,5 @@
-#ifndef SMOOTH__ADAPTED_LIE_GROUP_HPP_
-#define SMOOTH__ADAPTED_LIE_GROUP_HPP_
+#ifndef SMOOTH__LIE_GROUP_HPP_
+#define SMOOTH__LIE_GROUP_HPP_
 
 #include <Eigen/Core>
 #include <concepts>
@@ -7,13 +7,13 @@
 #include "manifold.hpp"
 
 /**
- * @file adapted_lie_group.hpp Lie group interface for third-party types.
+ * @file lie_group.hpp Internal and external Lie group interfaces
  */
 
 namespace smooth {
 
 /**
- * @brief Trait class for making a class an AdaptedLieGroup instance
+ * @brief Trait class for making a class an LieGroup instance
  */
 template<typename T>
 struct lie;
@@ -146,7 +146,7 @@ struct lie<G>
  * @brief Class-external Lie group interface defined via the lie trait.
  */
 template<typename G>
-concept AdaptedLieGroup =
+concept LieGroup =
 std::is_default_constructible_v<G> &&
 std::is_copy_constructible_v<G> &&
 std::is_copy_assignable_v<G> &&
@@ -189,7 +189,7 @@ requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dim, lie<G>::Dim> 
 
 // Static constants
 
-template<AdaptedLieGroup G>
+template<LieGroup G>
 static inline constexpr Eigen::Index Dim = lie<G>::Dim;
 
 // Types
@@ -197,19 +197,19 @@ static inline constexpr Eigen::Index Dim = lie<G>::Dim;
 /**
  * @brief Group type
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 using PlainObject = typename lie<G>::PlainObject;
 
 /**
  * @brief Matrix of size Dim x Dim
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 using Matrix = Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dim, lie<G>::Dim>;
 
 /**
  * @brief Matrix of size Dof x Dof
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 using TangentMap = Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, lie<G>::Dof>;
 
 // Group interface
@@ -217,7 +217,7 @@ using TangentMap = Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, lie<G>::D
 /**
  * @brief Group identity element
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline auto Identity()
 {
   return lie<G>::Identity();
@@ -226,7 +226,7 @@ inline auto Identity()
 /**
  * @brief Random group element
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline auto Random()
 {
   return lie<G>::Random();
@@ -235,7 +235,7 @@ inline auto Random()
 /**
  * @brief Group adjoint \f$ Ad_g a \coloneq (G * \hat(a) * G^{-1})^{\wedge} \f$
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline auto Ad(const G & g)
 {
   return lie<G>::Ad(g);
@@ -244,7 +244,7 @@ inline auto Ad(const G & g)
 /**
  * @brief Group binary composition
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto composition(const G & g, Arg && a)
 {
   return lie<G>::composition(g, std::forward<Arg>(a));
@@ -253,7 +253,7 @@ inline auto composition(const G & g, Arg && a)
 /**
  * @brief Group multinary composition
  */
-template<AdaptedLieGroup G, typename Arg, typename... Args>
+template<LieGroup G, typename Arg, typename... Args>
 inline auto composition(const G & g, Arg && a, Args &&... as)
 {
   return composition(composition(g, std::forward<Arg>(a)), std::forward<Args>(as)...);
@@ -262,7 +262,7 @@ inline auto composition(const G & g, Arg && a, Args &&... as)
 /**
  * @brief Matrix dimension of Lie group
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline auto dim(const G & g)
 {
   return lie<G>::dim(g);
@@ -271,7 +271,7 @@ inline auto dim(const G & g)
 /**
  * @brief Group inverse
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline auto inverse(const G & g)
 {
   return lie<G>::inverse(g);
@@ -280,7 +280,7 @@ inline auto inverse(const G & g)
 /**
  * @brief Check if two group elements are approximately equal
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto isApprox(
   const G & g, Arg && a, Scalar<G> eps = Eigen::NumTraits<Scalar<G>>::dummy_precision())
 {
@@ -292,7 +292,7 @@ inline auto isApprox(
  *
  * @see exp
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline auto log(const G & g)
 {
   return lie<G>::log(g);
@@ -301,7 +301,7 @@ inline auto log(const G & g)
 /**
  * @brief Matrix Lie group representation
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline auto matrix(const G & g)
 {
   return lie<G>::matrix(g);
@@ -312,7 +312,7 @@ inline auto matrix(const G & g)
 /**
  * @brief Lie algebra adjoint \f$ ad_a b = [a, b] \f$
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto ad(Arg && a)
 {
   return lie<G>::ad(std::forward<Arg>(a));
@@ -323,7 +323,7 @@ inline auto ad(Arg && a)
  *
  * @see log
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto exp(Arg && a)
 {
   return lie<G>::exp(std::forward<Arg>(a));
@@ -334,7 +334,7 @@ inline auto exp(Arg && a)
  *
  * @see vee
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto hat(Arg && a)
 {
   return lie<G>::hat(std::forward<Arg>(a));
@@ -345,7 +345,7 @@ inline auto hat(Arg && a)
  *
  * @see hat
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto vee(Arg && A)
 {
   return lie<G>::vee(std::forward<Arg>(A));
@@ -354,7 +354,7 @@ inline auto vee(Arg && A)
 /**
  * @brief Right derivative of exponential map
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto dr_exp(Arg && a)
 {
   return lie<G>::dr_exp(std::forward<Arg>(a));
@@ -363,7 +363,7 @@ inline auto dr_exp(Arg && a)
 /**
  * @brief Right derivative of exponential map inverse
  */
-template<AdaptedLieGroup G, typename Arg>
+template<LieGroup G, typename Arg>
 inline auto dr_expinv(Arg && a)
 {
   return lie<G>::dr_expinv(std::forward<Arg>(a));
@@ -374,7 +374,7 @@ inline auto dr_expinv(Arg && a)
 /**
  * @brief Left-plus
  */
-template<AdaptedLieGroup G, typename Derived>
+template<LieGroup G, typename Derived>
 inline PlainObject<G> lplus(const G & g, const Eigen::MatrixBase<Derived> & a)
 {
   return composition(::smooth::exp<G>(a), g);
@@ -383,7 +383,7 @@ inline PlainObject<G> lplus(const G & g, const Eigen::MatrixBase<Derived> & a)
 /**
  * @brief Left-minus
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 inline Tangent<G> lsub(const G & g1, const G & g2)
 {
   return log(composition(g1, inverse(g2)));
@@ -392,7 +392,7 @@ inline Tangent<G> lsub(const G & g1, const G & g2)
 /**
  * @brief Left derivative of exponential map
  */
-template<AdaptedLieGroup G, typename Derived>
+template<LieGroup G, typename Derived>
 inline TangentMap<G> dl_exp(const Eigen::MatrixBase<Derived> & a)
 {
   return Ad(::smooth::exp<G>(a)) * dr_exp<G>(a);
@@ -401,7 +401,7 @@ inline TangentMap<G> dl_exp(const Eigen::MatrixBase<Derived> & a)
 /**
  * @brief Left derivative of exponential map inverse
  */
-template<AdaptedLieGroup G, typename Derived>
+template<LieGroup G, typename Derived>
 inline TangentMap<G> dl_expinv(const Eigen::MatrixBase<Derived> & a)
 {
   return -ad<G>(a) + dr_expinv<G>(a);
@@ -598,9 +598,9 @@ public:
 };
 
 /**
- * @brief AdaptedManifold interface for AdaptedLieGroup
+ * @brief Manifold interface for LieGroup
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 struct man<G>
 {
   // \cond
@@ -630,4 +630,4 @@ struct man<G>
 
 }  // namespace smooth
 
-#endif  // SMOOTH__ADAPTED_LIE_GROUP_HPP_
+#endif  // SMOOTH__LIE_GROUP_HPP_

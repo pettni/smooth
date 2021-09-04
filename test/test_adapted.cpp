@@ -34,14 +34,14 @@ TEST(AdaptedLieGroup, Static)
 {
   static_assert(smooth::NativeLieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
   static_assert(smooth::NativeLieGroup<smooth::SE2d>);
-  static_assert(smooth::AdaptedLieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
-  static_assert(smooth::AdaptedLieGroup<smooth::SE2d>);
-  static_assert(smooth::AdaptedLieGroup<float>);
-  static_assert(smooth::AdaptedLieGroup<double>);
-  static_assert(smooth::AdaptedLieGroup<Eigen::Vector2d>);
+  static_assert(smooth::LieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
+  static_assert(smooth::LieGroup<smooth::SE2d>);
+  static_assert(smooth::LieGroup<float>);
+  static_assert(smooth::LieGroup<double>);
+  static_assert(smooth::LieGroup<Eigen::Vector2d>);
 }
 
-template<smooth::AdaptedLieGroup G>
+template<smooth::LieGroup G>
 class LieGroupInterface : public ::testing::Test
 {};
 

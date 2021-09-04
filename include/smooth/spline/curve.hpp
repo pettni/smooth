@@ -54,7 +54,7 @@ namespace smooth {
  * Internally a Curve is represented via third-order polynomials, similar to a PiecewiseBezier of
  * order 3.
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 class Curve
 {
 public:
@@ -456,7 +456,7 @@ private:
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;
 
-  template<AdaptedLieGroup Go>
+  template<LieGroup Go>
   friend auto reparameterize_curve2(const Curve<Go> & curve,
     const typename Go::Tangent & vel_min,
     const typename Go::Tangent & vel_max,
@@ -549,7 +549,7 @@ private:
  * @note It may not be feasible to satisfy the target boundary velocities. In those cases the
  * resulting velocities will be lower than the desired values.
  */
-template<AdaptedLieGroup G>
+template<LieGroup G>
 Reparameterization reparameterize_curve(const Curve<G> & curve,
   const Tangent<G> & vel_min,
   const Tangent<G> & vel_max,

@@ -54,7 +54,7 @@ auto dr_autodiff(_F && f, _Wrt && x)
   using Result = decltype(std::apply(f, x));
   using Scalar = ::smooth::Scalar<Result>;
 
-  static_assert(AdaptedManifold<Result>, "f(x) is not an AdaptedManifold");
+  static_assert(Manifold<Result>, "f(x) is not an Manifold");
 
   using AdScalar = autodiff::Dual<Scalar, Scalar>;
 

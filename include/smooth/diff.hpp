@@ -46,7 +46,7 @@ namespace smooth {
  * which is the expected format in e.g. dr() and minimize().
  */
 template<typename... _Args>
-  requires(AdaptedManifold<std::decay_t<_Args>> &&...)
+  requires(Manifold<std::decay_t<_Args>> &&...)
 auto wrt(_Args &&... args) { return std::forward_as_tuple(std::forward<_Args>(args)...); }
 
 // differentiation module
@@ -61,7 +61,7 @@ namespace detail {
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
- * the AdaptedLieGroup concept.
+ * the Manifold concept.
  */
 template<typename _F, typename _Wrt>
 auto dr_numerical(_F && f, _Wrt && x)
@@ -69,7 +69,7 @@ auto dr_numerical(_F && f, _Wrt && x)
   using Result = decltype(std::apply(f, x));
   using Scalar = typename man<Result>::Scalar;
 
-  static_assert(AdaptedManifold<Result>, "f(x) is not an AdaptedManifold");
+  static_assert(Manifold<Result>, "f(x) is not an Manifold");
 
   // arguments are modified below, so we create a copy of those that come in as const
   auto x_nc = utils::tuple_copy_if_const(std::forward<_Wrt>(x));
@@ -152,7 +152,7 @@ static constexpr Type DefaultType =
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
- * the AdaptedLieGroup concept.
+ * the Manifold concept.
  */
 template<Type dm, typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)
@@ -186,7 +186,7 @@ auto dr(_F && f, _Wrt && x)
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  *
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
- * the AdaptedLieGroup concept.
+ * the Manifold concept.
  */
 template<typename _F, typename _Wrt>
 auto dr(_F && f, _Wrt && x)

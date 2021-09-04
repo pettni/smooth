@@ -75,7 +75,7 @@ namespace smooth {
  * which aligns control points with the maximum of the corresponding
  * basis function.
  */
-template<std::size_t K, AdaptedLieGroup G>
+template<std::size_t K, LieGroup G>
 class BSpline
 {
 public:
@@ -197,7 +197,7 @@ private:
 template<std::size_t K,
   std::ranges::range Rt,
   std::ranges::range Rg,
-  AdaptedLieGroup G = std::ranges::range_value_t<Rg>>
+  LieGroup G = std::ranges::range_value_t<Rg>>
 BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
 {
   static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");

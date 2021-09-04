@@ -27,12 +27,11 @@
 
 #include <sstream>
 
-#include "smooth/adapted_lie_group.hpp"
 #include "smooth/manifold_vector.hpp"
 #include "smooth/optim.hpp"
 #include "smooth/so3.hpp"
 
-template<smooth::AdaptedManifold M>
+template<smooth::Manifold M>
 void test(const M &)
 {}
 

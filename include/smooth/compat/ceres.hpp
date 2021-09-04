@@ -36,14 +36,13 @@
 
 #define SMOOTH_DIFF_CERES
 
-#include "smooth/internal/lie_group_base.hpp"
 #include "smooth/internal/utils.hpp"
-#include "smooth/lie_group.hpp"
+#include "smooth/manifold.hpp"
 
 namespace smooth {
 
 // \cond
-template<AdaptedLieGroup G>
+template<Manifold G>
 struct CeresParameterizationFunctor
 {
   template<typename Scalar>
@@ -64,7 +63,7 @@ struct CeresParameterizationFunctor
 /**
  * @brief Parameterization for on-manifold optimization with Ceres.
  */
-template<AdaptedLieGroup G>
+template<Manifold G>
 class CeresLocalParameterization
     : public ceres::
         AutoDiffLocalParameterization<CeresParameterizationFunctor<G>, G::RepSize, G::Dof>
@@ -85,15 +84,15 @@ auto dr_ceres(_F && f, _Wrt && x)
   // the Lie operations require everything to have a uniform scalar type. Enabling
   // plus and minus for different scalars would thus save some casts.
   using Result = decltype(std::apply(f, x));
-  using Scalar = typename Result::Scalar;
+  using Scalar = ::smooth::Scalar<Result>;
 
-  static_assert(AdaptedManifold<Result>, "f(x) is not an AdaptedManifold");
+  static_assert(Manifold<Result>, "f(x) is not an Manifold");
 
   const Result fval = std::apply(f, x);
 
   static constexpr Eigen::Index Nx = utils::tuple_dof<_Wrt>::value;
   const auto nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
-  static constexpr Eigen::Index Ny = man<Result>::Dof;
+  static constexpr Eigen::Index Ny = Dof<Result>;
   const auto ny                    = fval.size();
 
   static_assert(Nx != -1, "Ceres autodiff only supports static sizes");
@@ -111,12 +110,12 @@ auto dr_ceres(_F && f, _Wrt && x)
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
     Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
     Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
-    mo = man<Result>::rminus(
+    mo = rminus<CastT<Result, T>>(
       std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), mi)), fval.template cast<T>());
     return true;
   };
 
-  ceres::internal::AutoDifferentiate<man<Result>::Dof, ceres::internal::StaticParameterDims<Nx>>(
+  ceres::internal::AutoDifferentiate<Dof<Result>, ceres::internal::StaticParameterDims<Nx>>(
     f_deriv, a_ptr, b.size(), b.data(), jac_ptr);
 
   return std::make_pair(std::move(fval), Eigen::Matrix<Scalar, Ny, Nx>(jac));

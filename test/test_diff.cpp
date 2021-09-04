@@ -39,7 +39,7 @@
 
 using namespace smooth;
 
-template<smooth::AdaptedManifold G>
+template<smooth::Manifold G>
 class DiffTest : public ::testing::Test
 {};
 
