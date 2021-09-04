@@ -82,9 +82,9 @@ public:
   using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
   //! Plain return type with different scalar
   template<typename NewScalar>
-  using PlainObjectCast = typename traits::template PlainObject<NewScalar>;
+  using CastT = typename traits::template PlainObject<NewScalar>;
   //! Plain return type
-  using PlainObject = PlainObjectCast<Scalar>;
+  using PlainObject = CastT<Scalar>;
 
   /**
    * Assignment operation from other storage type.
@@ -168,9 +168,9 @@ public:
    * @brief Cast to different scalar type.
    */
   template<typename NewScalar>
-  PlainObjectCast<NewScalar> cast() const
+  CastT<NewScalar> cast() const
   {
-    PlainObjectCast<NewScalar> ret;
+    CastT<NewScalar> ret;
     ret.coeffs() = cderived().coeffs().template cast<NewScalar>();
     return ret;
   }

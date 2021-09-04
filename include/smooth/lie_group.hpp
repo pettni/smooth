@@ -45,8 +45,6 @@ requires(const G & g1, const G & g2, typename G::Scalar eps)
   {g1.isApprox(g2, eps)}->std::convertible_to<bool>;
   {g1.log()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
   {g1.matrix()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
-  /* {g1.template cast<float>()};
-  {g1.template cast<double>()}; */
 } &&
 // static methods
 requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
@@ -67,9 +65,6 @@ requires(const Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim> & A)
  */
 template<typename G>
 concept LieGroup =
-// std::is_default_constructible_v<G> &&
-// std::is_copy_constructible_v<G> &&
-// std::is_copy_assignable_v<G> &&
 requires {
   typename lie<G>::Scalar;
   typename lie<G>::PlainObject;
@@ -87,8 +82,6 @@ requires(const G & g1, const G & g2, typename lie<G>::Scalar eps) {
   {lie<G>::isApprox(g1, g2, eps)}->std::convertible_to<bool>;
   {lie<G>::log(g1)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1>>;
   {lie<G>::matrix(g1)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dim, lie<G>::Dim>>;
-  /* {lie<G>::template cast<double>(g1)};
-  {lie<G>::template cast<float>(g1)}; */
 } &&
 requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1> & a) {
   {lie<G>::ad(a)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, lie<G>::Dof>>;
@@ -99,7 +92,21 @@ requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1> & a) {
 } &&
 requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dim, lie<G>::Dim> & A) {
   {lie<G>::vee(A)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1>>;
-};
+} && (
+  !std::is_convertible_v<typename lie<G>::Scalar, double> ||
+  requires (const G & g) {
+    {lie<G>::template cast<double>(g)};
+  }
+) && (
+  !std::is_convertible_v<typename lie<G>::Scalar, float> ||
+  requires (const G & g) {
+    {lie<G>::template cast<double>(g)};
+  }
+) &&
+std::is_default_constructible_v<typename lie<G>::PlainObject> &&
+std::is_copy_constructible_v<typename lie<G>::PlainObject> &&
+std::is_assignable_v<G &, typename lie<G>::PlainObject> &&
+std::is_assignable_v<typename lie<G>::PlainObject &, G>;
 
 // clang-format on
 
@@ -113,12 +120,6 @@ template<LieGroup G>
 static inline constexpr Eigen::Index Dim = lie<G>::Dim;
 
 // Types
-
-/**
- * @brief Group type
- */
-template<LieGroup G>
-using PlainObject = typename lie<G>::PlainObject;
 
 /**
  * @brief Matrix of size Dim x Dim
@@ -296,7 +297,7 @@ inline auto dr_expinv(Arg && a)
  * @brief Left-plus
  */
 template<LieGroup G, typename Derived>
-inline PlainObject<G> lplus(const G & g, const Eigen::MatrixBase<Derived> & a)
+inline typename lie<G>::PlainObject lplus(const G & g, const Eigen::MatrixBase<Derived> & a)
 {
   return composition(::smooth::exp<G>(a), g);
 }
@@ -340,7 +341,9 @@ template<NativeLieGroup G>
 struct lie<G>
 {
   // \cond
-  using Scalar      = typename G::Scalar;
+  using Scalar = typename G::Scalar;
+  template<typename NewScalar>
+  using CastT       = typename G::template CastT<NewScalar>;
   using PlainObject = typename G::PlainObject;
 
   static constexpr Eigen::Index Dof = G::Dof;
@@ -424,11 +427,13 @@ template<RnType G>
 struct lie<G>
 {
   // \cond
-  using Scalar      = typename G::Scalar;
-  using PlainObject = typename G::PlainObject;
-
   static constexpr int Dof = G::SizeAtCompileTime;
   static constexpr int Dim = Dof == -1 ? -1 : Dof + 1;
+
+  using Scalar      = typename G::Scalar;
+  using PlainObject = Eigen::Matrix<Scalar, Dof, 1>;
+  template<typename NewScalar>
+  using CastT = Eigen::Matrix<NewScalar, Dof, 1>;
 
 private:
   using Matrix     = Eigen::Matrix<Scalar, Dim, Dim>;
@@ -523,6 +528,8 @@ struct lie<G>
   // \cond
   using Scalar      = G;
   using PlainObject = G;
+  template<typename NewScalar>
+  using CastT = NewScalar;
 
   static constexpr int Dof = 1;
   static constexpr int Dim = 2;

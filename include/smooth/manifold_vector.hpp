@@ -167,7 +167,11 @@ template<Manifold M>
 struct man<ManifoldVector<M>>
 {
   // \cond
-  using Scalar                      = ::smooth::Scalar<M>;
+  using Scalar      = ::smooth::Scalar<M>;
+  using PlainObject = ManifoldVector<M>;
+  template<typename NewScalar>
+  using CastT = ManifoldVector<typename man<M>::template CastT<NewScalar>>;
+
   static constexpr Eigen::Index Dof = -1;
 
   static inline Eigen::Index dof(const ManifoldVector<M> & m) { return m.dof(); }

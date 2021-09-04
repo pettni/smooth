@@ -29,6 +29,7 @@
 #include "smooth/manifold.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
+#include "smooth/manifold_vector.hpp"
 
 TEST(AdaptedLieGroup, Static)
 {
@@ -37,6 +38,22 @@ TEST(AdaptedLieGroup, Static)
   static_assert(smooth::LieGroup<float>);
   static_assert(smooth::LieGroup<double>);
   static_assert(smooth::LieGroup<Eigen::Vector2d>);
+
+  static_assert(smooth::LieGroup<smooth::Map<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>>);
+  static_assert(smooth::LieGroup<smooth::Map<smooth::SE2d>>);
+  static_assert(smooth::LieGroup<Eigen::Map<Eigen::Vector2d>>);
+
+  static_assert(smooth::Manifold<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
+  static_assert(smooth::Manifold<smooth::SE2d>);
+  static_assert(smooth::Manifold<float>);
+  static_assert(smooth::Manifold<double>);
+  static_assert(smooth::Manifold<Eigen::Vector2d>);
+
+  static_assert(smooth::Manifold<smooth::Map<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>>);
+  static_assert(smooth::Manifold<smooth::Map<smooth::SE2d>>);
+  static_assert(smooth::Manifold<Eigen::Map<Eigen::Vector2d>>);
+
+  static_assert(smooth::Manifold<smooth::ManifoldVector<smooth::SE2d>>);
 }
 
 template<smooth::LieGroup G>

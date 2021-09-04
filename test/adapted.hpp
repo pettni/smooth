@@ -11,6 +11,8 @@ struct smooth::lie<MyGroup<_Scalar>>
 {
   using Scalar      = _Scalar;
   using PlainObject = MyGroup<Scalar>;
+  template<typename NewScalar>
+  using CastT = MyGroup<NewScalar>;
 
   static constexpr int Dof = 1;
   static constexpr int Dim = 2;

@@ -117,7 +117,7 @@ void run_exp_test()
 
   auto [f, jac] = smooth::diff::dr<dm>(
     [](auto var) {
-      return TypeParam::template PlainObjectCast<typename decltype(var)::Scalar>::exp(var);
+      return TypeParam::template CastT<typename decltype(var)::Scalar>::exp(var);
     },
     smooth::wrt(a));
 

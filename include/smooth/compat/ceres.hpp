@@ -50,7 +50,7 @@ struct CeresParamFunctor
   template<typename Scalar>
   bool operator()(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const
   {
-    using GCast = typename G::template PlainObjectCast<Scalar>;
+    using GCast = typename G::template CastT<Scalar>;
 
     smooth::Map<const GCast> mx(x);
     Eigen::Map<const Tangent<GCast>> mdelta(delta);
@@ -87,7 +87,7 @@ auto dr_ceres(_F && f, _Wrt && x)
   using Result = decltype(std::apply(f, x));
   using Scalar = ::smooth::Scalar<Result>;
 
-  static_assert(Manifold<Result>, "f(x) is not an Manifold");
+  static_assert(Manifold<Result>, "f(x) is not a Manifold");
 
   Result fval = std::apply(f, x);
 
@@ -96,7 +96,7 @@ auto dr_ceres(_F && f, _Wrt && x)
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
   const Eigen::Index ny = dof<Result>(fval);
 
-  static_assert(Nx != -1, "Ceres autodiff does not support dynamic sizes");
+  static_assert(Nx > 0, "Ceres autodiff does not support dynamic sizes");
 
   Eigen::Matrix<Scalar, Nx, 1> a = Eigen::Matrix<Scalar, Nx, 1>::Zero(nx);
   Eigen::Matrix<Scalar, Ny, 1> b(ny);
