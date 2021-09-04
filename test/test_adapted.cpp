@@ -68,7 +68,7 @@ using GroupsToTest = ::testing::Types<Eigen::Vector2d,
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 
-TYPED_TEST(LieGroupInterface, Ad)
+/* TYPED_TEST(LieGroupInterface, Ad)
 {
   for (auto i = 0; i != 10; ++i) {
     TypeParam g                  = smooth::Random<TypeParam>();
@@ -81,7 +81,7 @@ TYPED_TEST(LieGroupInterface, Ad)
 
     ASSERT_TRUE(smooth::hat<TypeParam>(Ad_g * a).isApprox(mat_g * hat_a * mat_ginv));
   }
-}
+} */
 
 TYPED_TEST(LieGroupInterface, Composition)
 {
@@ -141,7 +141,7 @@ TYPED_TEST(LieGroupInterface, cast)
   }
 }
 
-TYPED_TEST(LieGroupInterface, ad)
+/* TYPED_TEST(LieGroupInterface, ad)
 {
   for (auto i = 0; i != 10; ++i) {
     smooth::Tangent<TypeParam> a = smooth::Tangent<TypeParam>::Random();
@@ -157,9 +157,9 @@ TYPED_TEST(LieGroupInterface, ad)
 
     ASSERT_TRUE(M1.isApprox(M2));
   }
-}
+} */
 
-TYPED_TEST(LieGroupInterface, hat_vee)
+/* TYPED_TEST(LieGroupInterface, hat_vee)
 {
   for (auto i = 0; i != 10; ++i) {
     smooth::Tangent<TypeParam> a = smooth::Tangent<TypeParam>::Random();
@@ -168,7 +168,7 @@ TYPED_TEST(LieGroupInterface, hat_vee)
 
     ASSERT_TRUE(a.isApprox(A_vee));
   }
-}
+} */
 
 TYPED_TEST(LieGroupInterface, dr_exp)
 {

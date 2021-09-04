@@ -38,40 +38,14 @@ namespace smooth {
 template<typename T>
 class Map;
 
-// \cond
-template<typename T>
-struct map_traits;
-
-template<NativeLieGroup G>
-struct map_traits<G>
-{
-  using type = ::smooth::Map<G>;
-};
-
-template<NativeLieGroup G>
-struct map_traits<const G>
-{
-  using type = ::smooth::Map<const G>;
-};
-
-template<typename _Scalar, int _N>
-struct map_traits<Eigen::Matrix<_Scalar, _N, 1>>
-{
-  using type = ::Eigen::Map<Eigen::Matrix<_Scalar, _N, 1>>;
-};
-
-template<typename _Scalar, int _N>
-struct map_traits<const Eigen::Matrix<_Scalar, _N, 1>>
-{
-  using type = ::Eigen::Map<const Eigen::Matrix<_Scalar, _N, 1>>;
-};
-// \endcond
-
 /**
- * @brief Send smooth types to smooth::Map and Eigen types to Eigen::Map.
+ * @brief Send Eigen types to Eigen::Map and other types to smooth::Map.
  */
 template<typename T>
-using MapDispatch = typename map_traits<T>::type;
+using MapDispatch = std::conditional_t<
+  std::is_base_of_v<Eigen::MatrixBase<std::remove_const_t<T>>, std::remove_const_t<T>>,
+  ::Eigen::Map<T>,
+  ::smooth::Map<T>>;
 
 }  // namespace smooth
 
