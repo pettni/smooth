@@ -58,34 +58,53 @@ struct wrt_dof<std::tuple<Wrt...>>
     std::min<int>({Dof<std::decay_t<Wrt>>...}) == -1 ? -1 : (Dof<std::decay_t<Wrt>> + ...);
 };
 
+// \cond
+template<typename Scalar, typename Wrt, std::size_t... Idx>
+auto wrt_cast_helper(Wrt && wrt, std::index_sequence<Idx...>)
+{
+  return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
+}
+// \endcond
+
 /**
  * @brief Cast a tuple of variables to a new scalar type.
  */
-template<typename Scalar, typename... _Wrt>
-auto wrt_cast(const std::tuple<_Wrt...> & wrt)
+template<typename Scalar, typename Wrt>
+auto wrt_cast(Wrt && wrt)
 {
-  std::tuple<CastT<Scalar, std::decay_t<_Wrt>>...> ret;
-  utils::static_for<sizeof...(_Wrt)>(
-    [&](auto i) { std::get<i>(ret) = cast<Scalar>(std::get<i>(wrt)); });
-  return ret;
+  return wrt_cast_helper<Scalar>(
+    std::forward<Wrt>(wrt), std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 
-/**
- * @brief Add a tangent vector to a tuple of variables.
- */
-template<typename Derived, typename... _Wrt>
-auto wrt_rplus(const std::tuple<_Wrt...> & wrt, const Eigen::MatrixBase<Derived> & a)
+// \cond
+template<typename Wrt, typename Derived, std::size_t... Idx>
+auto wrt_rplus_helper(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
 {
-  std::tuple<std::decay_t<_Wrt>...> ret;
-  std::size_t i_beg = 0;
-  utils::static_for<sizeof...(_Wrt)>([&](auto i) {
-    using Wi             = std::decay_t<std::tuple_element_t<i, std::tuple<_Wrt...>>>;
-    constexpr auto Ni    = Dof<Wi>;
-    const std::size_t ni = dof(std::get<i>(wrt));
-    std::get<i>(ret)     = rplus(std::get<i>(wrt), a.template segment<Ni>(i_beg, ni));
-    i_beg += ni;
-  });
-  return ret;
+  static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{
+    Dof<std::decay_t<std::tuple_element_t<Idx, std::decay_t<Wrt>>>>...};
+  std::array<Eigen::Index, sizeof...(Idx)> nx{dof(std::get<Idx>(wrt))...};
+
+  const auto psum = utils::array_psum(nx);
+
+  // clang-format off
+  return std::make_tuple(
+      rplus(
+        std::get<Idx>(wrt),
+        a.template segment<std::get<Idx>(Nx)>(std::get<Idx>(psum), std::get<Idx>(nx))
+      )...
+  );
+  // clang-format on
+}
+// \endcond
+
+/**
+ * @brief Calculate rplus(x_i, a[bi: bi + ni]) for a tuple
+ */
+template<typename Wrt, typename Derived>
+auto wrt_rplus(Wrt && wrt, const Eigen::MatrixBase<Derived> & a)
+{
+  return wrt_rplus_helper(
+    std::forward<Wrt>(wrt), a, std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 
 /**
