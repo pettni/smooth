@@ -36,8 +36,8 @@
 
 #define SMOOTH_DIFF_AUTODIFF
 
-#include "smooth/adapted_lie_group.hpp"
 #include "smooth/internal/utils.hpp"
+#include "smooth/manifold.hpp"
 
 namespace smooth::diff {
 
@@ -51,33 +51,36 @@ namespace smooth::diff {
 template<typename _F, typename _Wrt>
 auto dr_autodiff(_F && f, _Wrt && x)
 {
-  using Result   = typename decltype(std::apply(f, x))::PlainObject;
-  using Scalar   = typename Result::Scalar;
+  using Result = decltype(std::apply(f, x));
+  using Scalar = ::smooth::Scalar<Result>;
+
+  static_assert(AdaptedManifold<Result>, "f(x) is not an AdaptedManifold");
+
   using AdScalar = autodiff::Dual<Scalar, Scalar>;
 
   // determine sizes if input and output
   constexpr auto Nx        = utils::tuple_dof<_Wrt>::value;
-  auto nx                  = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
-  static constexpr auto Ny = Result::SizeAtCompileTime;
+  static constexpr auto Ny = Dof<Result>;
 
-  const Result val = std::apply(f, x);
+  const auto nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
 
-  // cast val and x to ad types
-  auto x_ad = utils::tuple_cast<AdScalar>(x);
-  const typename decltype(val.template cast<AdScalar>())::PlainObject val_ad =
-    val.template cast<AdScalar>();
+  const Result fval = std::apply(f, x);
+
+  // cast fval and x to ad types
+  const auto x_ad                       = utils::tuple_cast<AdScalar>(x);
+  const CastT<Result, AdScalar> fval_ad = fval.template cast<AdScalar>();
 
   // zero-valued tangent element
   Eigen::Matrix<AdScalar, Nx, 1> a_ad = Eigen::Matrix<AdScalar, Nx, 1>::Zero(nx);
 
   Eigen::Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(
-    [&f, &val_ad, &x_ad](Eigen::Matrix<AdScalar, Nx, 1> & var) -> Eigen::Matrix<AdScalar, Ny, 1> {
-      return std::apply(f, utils::tuple_plus(x_ad, var)) - val_ad;
+    [&f, &fval_ad, &x_ad](Eigen::Matrix<AdScalar, Nx, 1> & var) -> Eigen::Matrix<AdScalar, Ny, 1> {
+      return rminus<CastT<Result, AdScalar>>(std::apply(f, utils::tuple_plus(x_ad, var)), fval_ad);
     },
     autodiff::wrt(a_ad),
     autodiff::at(a_ad));
 
-  return std::make_pair(val, jac);
+  return std::make_pair(fval, jac);
 }
 
 }  // namespace smooth::diff

@@ -30,19 +30,17 @@
 #include <sstream>
 
 #include "smooth/bundle.hpp"
-#include "smooth/concepts.hpp"
+#include "smooth/c1.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/c1.hpp"
 
-template<smooth::LieGroup G>
+template<smooth::NativeLieGroup G>
 class LieGroupInterface : public ::testing::Test
 {};
 
-using GroupsToTest = ::testing::Types<
-  smooth::SO2f,
+using GroupsToTest = ::testing::Types<smooth::SO2f,
   smooth::SO3f,
   smooth::SE2f,
   smooth::SE3f,
@@ -51,13 +49,13 @@ using GroupsToTest = ::testing::Types<
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 
-template<smooth::LieGroup T>
+template<smooth::NativeLieGroup T>
 void test()
 {}
 
 TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
 {
-  // check that groups satisfy LieGroup concept
+  // check that groups satisfy NativeLieGroup concept
   test<TypeParam>();
   test<smooth::Map<TypeParam>>();
   test<smooth::Map<const TypeParam>>();
@@ -120,7 +118,7 @@ TYPED_TEST(LieGroupInterface, Constructors)
 TYPED_TEST(LieGroupInterface, Size)
 {
   auto g = TypeParam::Random();
-  ASSERT_EQ(g.size(), TypeParam::Dof);
+  ASSERT_EQ(g.dof(), TypeParam::Dof);
 }
 
 TYPED_TEST(LieGroupInterface, DataAccess)

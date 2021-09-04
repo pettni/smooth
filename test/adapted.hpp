@@ -1,4 +1,4 @@
-#include "smooth/adapted_lie_group.hpp"
+#include "smooth/lie_group.hpp"
 
 template<typename Scalar>
 struct MyGroup

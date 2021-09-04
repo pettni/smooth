@@ -109,14 +109,9 @@ public:
   // Group API
 
   /**
-   * @brief Static size (degrees of freedom).
-   */
-  static constexpr Eigen::Index SizeAtCompileTime = Dof;
-
-  /**
    * @brief Dynamic size (degrees of freedom).
    */
-  Eigen::Index size() const { return Dof; }
+  Eigen::Index dof() const { return Dof; }
 
   /**
    * @brief Set to group identity element.

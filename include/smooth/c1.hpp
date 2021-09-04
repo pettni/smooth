@@ -30,11 +30,10 @@
 
 #include <complex>
 
-#include "adapted_lie_group.hpp"
 #include "internal/c1.hpp"
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
-#include "manifold.hpp"
+#include "lie_group.hpp"
 #include "so2.hpp"
 
 namespace smooth {

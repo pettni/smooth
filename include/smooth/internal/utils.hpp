@@ -159,9 +159,9 @@ struct tuple_dof
 template<typename... Wrt>
 struct tuple_dof<std::tuple<Wrt...>>
 {
-  static constexpr int value = std::min<int>({man<std::decay_t<Wrt>>::Dof...}) == -1
-                               ? std::min<int>({man<std::decay_t<Wrt>>::Dof...})
-                               : (man<std::decay_t<Wrt>>::Dof + ...);
+  static constexpr int value = std::min<int>({Dof<std::decay_t<Wrt>>...}) == -1
+                               ? std::min<int>({Dof<std::decay_t<Wrt>>...})
+                               : (Dof<std::decay_t<Wrt>> + ...);
 };
 
 /**
@@ -170,10 +170,10 @@ struct tuple_dof<std::tuple<Wrt...>>
 template<typename Scalar, typename... _Wrt>
 auto tuple_cast(const std::tuple<_Wrt...> & wrt)
 {
-  std::tuple<decltype(man<std::decay_t<_Wrt>>::template cast<Scalar>(std::declval<_Wrt>()))...> ret;
+  std::tuple<CastT<std::decay_t<_Wrt>, Scalar>...> ret;
   static_for<sizeof...(_Wrt)>([&](auto i) {
     using Wi         = std::decay_t<decltype(std::get<i>(wrt))>;
-    std::get<i>(ret) = man<Wi>::template cast<Scalar>(std::get<i>(wrt));
+    std::get<i>(ret) = cast<Scalar, Wi>(std::get<i>(wrt));
   });
   return ret;
 }
@@ -188,9 +188,9 @@ auto tuple_plus(const std::tuple<_Wrt...> & wrt, const Eigen::MatrixBase<Derived
   std::size_t i_beg = 0;
   static_for<sizeof...(_Wrt)>([&](auto i) {
     using Wi             = std::decay_t<decltype(std::get<i>(wrt))>;
-    constexpr auto Ni    = man<Wi>::Dof;
-    const std::size_t ni = man<Wi>::dof(std::get<i>(wrt));
-    std::get<i>(ret)     = man<Wi>::rplus(std::get<i>(wrt), a.template segment<Ni>(i_beg, ni));
+    constexpr auto Ni    = Dof<Wi>;
+    const std::size_t ni = dof<Wi>(std::get<i>(wrt));
+    std::get<i>(ret)     = rplus<Wi>(std::get<i>(wrt), a.template segment<Ni>(i_beg, ni));
     i_beg += ni;
   });
   return ret;

@@ -29,11 +29,10 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "adapted_lie_group.hpp"
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
 #include "internal/so3.hpp"
-#include "manifold.hpp"
+#include "lie_group.hpp"
 
 namespace smooth {
 

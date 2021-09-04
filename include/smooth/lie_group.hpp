@@ -4,7 +4,6 @@
 #include <Eigen/Core>
 #include <concepts>
 
-#include "concepts.hpp"
 #include "manifold.hpp"
 
 /**
@@ -18,6 +17,128 @@ namespace smooth {
  */
 template<typename T>
 struct lie;
+
+// clang-format off
+
+/**
+ * @brief Class with an internally defined Lie group interface.
+ */
+template<typename G>
+concept NativeLieGroup =
+// static constants
+requires {
+  typename G::Scalar;
+  typename G::Tangent;
+  typename G::PlainObject;
+  {G::Dof}->std::convertible_to<Eigen::Index>;
+  {G::Dim}->std::convertible_to<Eigen::Index>;
+  {G::Identity()}->std::convertible_to<typename G::PlainObject>;
+  {G::Random()}->std::convertible_to<typename G::PlainObject>;
+} &&
+(G::Dof >= 1) &&
+(G::Tangent::SizeAtCompileTime == G::Dof) &&
+// member methods
+requires(const G & g1, const G & g2, typename G::Scalar eps)
+{
+  {g1.dof()}->std::convertible_to<Eigen::Index>;             // degrees of freedom at runtime
+  {g1.Ad()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {g1 * g2}->std::convertible_to<typename G::PlainObject>;
+  {g1.inverse()}->std::convertible_to<typename G::PlainObject>;
+  {g1.isApprox(g2, eps)}->std::convertible_to<bool>;
+  {g1.log()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
+  {g1.matrix()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
+  {g1.template cast<float>()};
+  {g1.template cast<double>()};
+} &&
+// static methods
+requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
+{
+  {G::ad(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
+  {G::hat(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
+  {G::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {G::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+} &&
+requires(const Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim> & A)
+{
+  {G::vee(A)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
+};
+
+// clang-format on
+
+/**
+ * @brief External Lie group interface for native LieGroup's
+ */
+template<NativeLieGroup G>
+struct lie<G>
+{
+  // \cond
+  using Scalar      = typename G::Scalar;
+  using PlainObject = typename G::PlainObject;
+
+  static constexpr Eigen::Index Dof = G::Dof;
+  static constexpr Eigen::Index Dim = G::Dim;
+
+  // group interface
+
+  static inline PlainObject Identity() { return G::Identity(); }
+  static inline PlainObject Random() { return G::Random(); }
+  static inline typename G::TangentMap Ad(const G & g) { return g.Ad(); }
+  template<NativeLieGroup Go>
+  static inline PlainObject composition(const G & g1, const Go & g2)
+  {
+    return g1.operator*(g2);
+  }
+  static inline Eigen::Index dof(const G &) { return G::Dof; }
+  static inline Eigen::Index dim(const G &) { return G::Dim; }
+  static inline PlainObject inverse(const G & g) { return g.inverse(); }
+  template<NativeLieGroup Go>
+  static inline bool isApprox(const G & g, const Go & go, Scalar eps)
+  {
+    return g.isApprox(go, eps);
+  }
+  static inline typename G::Tangent log(const G & g) { return g.log(); }
+  static inline typename G::Matrix matrix(const G & g) { return g.matrix(); }
+  template<typename NewScalar>
+  static inline auto cast(const G & g)
+  {
+    return g.template cast<NewScalar>();
+  }
+
+  // tangent interface
+
+  template<typename Derived>
+  static inline typename G::TangentMap ad(const Eigen::MatrixBase<Derived> & a)
+  {
+    return G::ad(a);
+  }
+  template<typename Derived>
+  static inline PlainObject exp(const Eigen::MatrixBase<Derived> & a)
+  {
+    return G::exp(a);
+  }
+  template<typename Derived>
+  static inline typename G::Matrix hat(const Eigen::MatrixBase<Derived> & a)
+  {
+    return G::hat(a);
+  }
+  template<typename Derived>
+  static inline typename G::Tangent vee(const Eigen::MatrixBase<Derived> & A)
+  {
+    return G::vee(A);
+  }
+  template<typename Derived>
+  static inline typename G::TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
+  {
+    return G::dr_exp(a);
+  }
+  template<typename Derived>
+  static inline typename G::TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
+  {
+    return G::dr_expinv(a);
+  }
+  // \endcond
+};
 
 // clang-format off
 
@@ -285,84 +406,6 @@ inline TangentMap<G> dl_expinv(const Eigen::MatrixBase<Derived> & a)
 {
   return -ad<G>(a) + dr_expinv<G>(a);
 }
-
-//////////////////////////////
-//// Adapter for LieGroup ////
-//////////////////////////////
-
-/**
- * @brief External Lie group interface for native LieGroup's
- */
-template<LieGroup G>
-struct lie<G>
-{
-  // \cond
-  using Scalar      = typename G::Scalar;
-  using PlainObject = typename G::PlainObject;
-
-  static constexpr Eigen::Index Dof = G::Dof;
-  static constexpr Eigen::Index Dim = G::Dim;
-
-  // group interface
-
-  static inline PlainObject Identity() { return G::Identity(); }
-  static inline PlainObject Random() { return G::Random(); }
-  static inline typename G::TangentMap Ad(const G & g) { return g.Ad(); }
-  template<LieGroup Go>
-  static inline PlainObject composition(const G & g1, const Go & g2)
-  {
-    return g1.operator*(g2);
-  }
-  static inline Eigen::Index dof(const G &) { return G::Dof; }
-  static inline Eigen::Index dim(const G &) { return G::Dim; }
-  static inline PlainObject inverse(const G & g) { return g.inverse(); }
-  template<LieGroup Go>
-  static inline bool isApprox(const G & g, const Go & go, Scalar eps)
-  {
-    return g.isApprox(go, eps);
-  }
-  static inline typename G::Tangent log(const G & g) { return g.log(); }
-  static inline typename G::Matrix matrix(const G & g) { return g.matrix(); }
-  template<typename NewScalar>
-  static inline auto cast(const G & g)
-  {
-    return g.template cast<NewScalar>();
-  }
-
-  // tangent interface
-
-  template<typename Derived>
-  static inline typename G::TangentMap ad(const Eigen::MatrixBase<Derived> & a)
-  {
-    return G::ad(a);
-  }
-  template<typename Derived>
-  static inline PlainObject exp(const Eigen::MatrixBase<Derived> & a)
-  {
-    return G::exp(a);
-  }
-  template<typename Derived>
-  static inline typename G::Matrix hat(const Eigen::MatrixBase<Derived> & a)
-  {
-    return G::hat(a);
-  }
-  template<typename Derived>
-  static inline typename G::Tangent vee(const Eigen::MatrixBase<Derived> & A)
-  {
-    return G::vee(A);
-  }
-  template<typename Derived>
-  static inline typename G::TangentMap dr_exp(const Eigen::MatrixBase<Derived> & a)
-  {
-    return G::dr_exp(a);
-  }
-  template<typename Derived>
-  static inline typename G::TangentMap dr_expinv(const Eigen::MatrixBase<Derived> & a)
-  {
-    return G::dr_expinv(a);
-  }
-  // \endcond
-};
 
 ///////////////////////////////////
 //// Wrapper for Eigen vectors ////

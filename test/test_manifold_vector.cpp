@@ -32,7 +32,7 @@
 #include "smooth/optim.hpp"
 #include "smooth/so3.hpp"
 
-template<smooth::Manifold M>
+template<smooth::AdaptedManifold M>
 void test(const M &)
 {}
 

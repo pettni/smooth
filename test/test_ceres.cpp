@@ -34,7 +34,7 @@
 #include "smooth/so3.hpp"
 
 
-template<smooth::LieGroup G>
+template<smooth::AdaptedLieGroup G>
 class CeresLocalParam : public ::testing::Test
 {};
 

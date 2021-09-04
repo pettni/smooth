@@ -34,7 +34,6 @@
 #include <Eigen/Core>
 #include <type_traits>
 
-#include "adapted_lie_group.hpp"
 #include "internal/utils.hpp"
 #include "manifold.hpp"
 

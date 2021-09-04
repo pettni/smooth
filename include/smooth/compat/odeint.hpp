@@ -33,7 +33,7 @@
 
 #include <boost/numeric/odeint/algebra/operations_dispatcher.hpp>
 
-#include "smooth/adapted_lie_group.hpp"
+#include "smooth/lie_group.hpp"
 
 namespace smooth {
 

@@ -27,6 +27,7 @@
 
 #include <Eigen/Sparse>
 
+#include "smooth/lie_group.hpp"
 #include "smooth/optim.hpp"
 #include "smooth/so3.hpp"
 

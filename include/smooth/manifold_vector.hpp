@@ -49,13 +49,6 @@ private:
   using Base = std::vector<M>;
 
 public:
-  //! Degrees of freedom of manifold (equal to tangent space dimentsion)
-  static constexpr Eigen::Index SizeAtCompileTime = -1;
-  //! Plain return type
-  using PlainObject = ManifoldVector<M>;
-  //! Scalar type
-  using Scalar = typename man<M>::Scalar;
-
   //! Default constructor of empty ManifoldVector
   ManifoldVector() = default;
   //! Copy constructor
@@ -79,10 +72,9 @@ public:
    * @brief Cast to different scalar type.
    */
   template<typename NewScalar>
-  auto cast() const
+  ManifoldVector<CastT<M, NewScalar>> cast() const
   {
-    using CastT = decltype(man<M>::template cast<NewScalar>(M{}));
-    ManifoldVector<CastT> ret;
+    ManifoldVector<CastT<M, NewScalar>> ret;
     ret.reserve(size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
       return man<M>::template cast<NewScalar>(x);
@@ -117,7 +109,7 @@ public:
    * @note It must hold that dof() == a.dof()
    */
   template<typename Derived>
-  PlainObject & operator+=(const Eigen::MatrixBase<Derived> & a)
+  ManifoldVector<M> & operator+=(const Eigen::MatrixBase<Derived> & a)
   {
     Eigen::Index idx = 0;
     for (auto i = 0u; i != this->size(); ++i) {
@@ -135,9 +127,9 @@ public:
    * @note It must hold that `dof() == a.dof()`
    */
   template<typename Derived>
-  PlainObject operator+(const Eigen::MatrixBase<Derived> & a) const
+  ManifoldVector<M> operator+(const Eigen::MatrixBase<Derived> & a) const
   {
-    PlainObject ret = *this;
+    ManifoldVector<M> ret = *this;
     ret += a;
     return ret;
   }
@@ -147,7 +139,7 @@ public:
    *
    * @note It must hold that `dof() == o.dof()`
    */
-  Eigen::Matrix<Scalar, -1, 1> operator-(const PlainObject & o) const
+  Eigen::Matrix<typename man<M>::Scalar, -1, 1> operator-(const ManifoldVector<M> & o) const
   {
     std::size_t dof = 0;
     if (man<M>::Dof > 0) {
@@ -156,7 +148,7 @@ public:
       for (auto i = 0u; i != size(); ++i) { dof += man<M>::dof(this->operator[](i)); }
     }
 
-    Eigen::Matrix<Scalar, -1, 1> ret(dof);
+    Eigen::Matrix<typename man<M>::Scalar, -1, 1> ret(dof);
     Eigen::Index idx = 0;
     for (auto i = 0u; i != size(); ++i) {
       const auto & size_i                            = man<M>::dof(this->operator[](i));

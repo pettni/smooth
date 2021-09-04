@@ -39,7 +39,7 @@
 #include <iostream>
 #include <numeric>
 
-#include "concepts.hpp"
+#include "manifold.hpp"
 #include "diff.hpp"
 #include "internal/lmpar.hpp"
 #include "internal/lmpar_sparse.hpp"

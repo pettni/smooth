@@ -26,11 +26,11 @@
 #ifndef SMOOTH__BUNDLE_HPP_
 #define SMOOTH__BUNDLE_HPP_
 
-#include "concepts.hpp"
 #include "internal/bundle.hpp"
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
 #include "internal/tn.hpp"
+#include "lie_group.hpp"
 
 namespace smooth {
 

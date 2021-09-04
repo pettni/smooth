@@ -37,8 +37,8 @@
 
 #include <Eigen/Sparse>
 
-#include "smooth/adapted_lie_group.hpp"
 #include "smooth/internal/utils.hpp"
+#include "smooth/lie_group.hpp"
 #include "smooth/manifold_vector.hpp"
 #include "smooth/optim.hpp"
 

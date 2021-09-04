@@ -36,12 +36,18 @@ requires(const M & m, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 
   {man<M>::rplus(m, a)}->std::convertible_to<M>;
 };
 
+// clang-format on
 
+/**
+ * @brief Manifold degrees of freedom (tangent space dimension)
+ *
+ * @note Equal to -1 for a dynamically sized Manifold
+ */
 template<AdaptedManifold M>
 static inline constexpr Eigen::Index Dof = man<M>::Dof;
 
 /**
- * @brief Group scalar type
+ * @brief Manifold scalar type
  */
 template<AdaptedManifold M>
 using Scalar = typename man<M>::Scalar;
@@ -53,7 +59,7 @@ template<AdaptedManifold M, typename NewScalar>
 using CastT = decltype(man<M>::template cast<NewScalar>(std::declval<M>()));
 
 /**
- * @brief Degrees of freedom of Lie group
+ * @brief Manifold degrees of freedom (tangent space dimension)
  */
 template<AdaptedManifold M>
 inline auto dof(const M & m)
@@ -62,7 +68,7 @@ inline auto dof(const M & m)
 }
 
 /**
- * @brief Vector of size Dof
+ * @brief Tangent as a Dof-lenth Eigen vector
  */
 template<AdaptedManifold M>
 using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
@@ -76,9 +82,8 @@ inline CastT<M, NewScalar> cast(const M & m)
   return man<M>::template cast<NewScalar>(m);
 }
 
-
 /**
- * @brief Right-plus
+ * @brief Manifold right-plus
  */
 template<AdaptedManifold M, typename Derived>
 inline M rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
@@ -87,15 +92,13 @@ inline M rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
 }
 
 /**
- * @brief Right-minus
+ * @brief Manifold right-minus
  */
 template<AdaptedManifold M>
 inline Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> rminus(const M & g1, const M & g2)
 {
   return man<M>::rminus(g1, g2);
 }
-
-// clang-format on
 
 }  // namespace smooth
 

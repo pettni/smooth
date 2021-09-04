@@ -36,9 +36,9 @@
 
 #define SMOOTH_DIFF_CERES
 
-#include "smooth/adapted_lie_group.hpp"
 #include "smooth/internal/lie_group_base.hpp"
 #include "smooth/internal/utils.hpp"
+#include "smooth/lie_group.hpp"
 
 namespace smooth {
 
@@ -84,14 +84,16 @@ auto dr_ceres(_F && f, _Wrt && x)
   // The ceres Jet type supports binary operations with e.g. double, but currently
   // the Lie operations require everything to have a uniform scalar type. Enabling
   // plus and minus for different scalars would thus save some casts.
-  using Result = typename decltype(std::apply(f, x))::PlainObject;
+  using Result = decltype(std::apply(f, x));
   using Scalar = typename Result::Scalar;
+
+  static_assert(AdaptedManifold<Result>, "f(x) is not an AdaptedManifold");
 
   const Result fval = std::apply(f, x);
 
   static constexpr Eigen::Index Nx = utils::tuple_dof<_Wrt>::value;
   const auto nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
-  static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
+  static constexpr Eigen::Index Ny = man<Result>::Dof;
   const auto ny                    = fval.size();
 
   static_assert(Nx != -1, "Ceres autodiff only supports static sizes");
@@ -109,12 +111,13 @@ auto dr_ceres(_F && f, _Wrt && x)
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
     Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
     Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
-    mo = rminus(std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), mi)), fval.template cast<T>());
+    mo = man<Result>::rminus(
+      std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), mi)), fval.template cast<T>());
     return true;
   };
 
-  ceres::internal::AutoDifferentiate<Result::SizeAtCompileTime,
-    ceres::internal::StaticParameterDims<Nx>>(f_deriv, a_ptr, b.size(), b.data(), jac_ptr);
+  ceres::internal::AutoDifferentiate<man<Result>::Dof, ceres::internal::StaticParameterDims<Nx>>(
+    f_deriv, a_ptr, b.size(), b.data(), jac_ptr);
 
   return std::make_pair(std::move(fval), Eigen::Matrix<Scalar, Ny, Nx>(jac));
 }

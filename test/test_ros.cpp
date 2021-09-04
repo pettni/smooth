@@ -25,11 +25,10 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/concepts.hpp"
 #include "smooth/compat/ros.hpp"
+#include "smooth/lie_group.hpp"
 
-
-template<smooth::LieGroup G>
+template<smooth::NativeLieGroup G>
 void test(G)
 {}
 
@@ -47,13 +46,12 @@ TEST(Ros, LieGroup)
   test(smooth::Map<const geometry_msgs::msg::Transform>(msg5));
 }
 
-
 TEST(Ros, Pose)
 {
   geometry_msgs::msg::Pose p;
-  p.position.x = 3;
-  p.position.y = 5;
-  p.position.z = 4;
+  p.position.x    = 3;
+  p.position.y    = 5;
+  p.position.z    = 4;
   p.orientation.w = 0;
   p.orientation.z = 1;
   p.orientation.x = 0;

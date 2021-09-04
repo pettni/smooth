@@ -26,8 +26,8 @@
 #ifndef INTERP__COMMON_HPP_
 #define INTERP__COMMON_HPP_
 
-#include "smooth/adapted_lie_group.hpp"
 #include "smooth/internal/utils.hpp"
+#include "smooth/lie_group.hpp"
 
 namespace smooth {
 

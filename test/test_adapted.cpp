@@ -25,14 +25,15 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/adapted_lie_group.hpp"
-
 #include "smooth/bundle.hpp"
+#include "smooth/lie_group.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 
 TEST(AdaptedLieGroup, Static)
 {
+  static_assert(smooth::NativeLieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
+  static_assert(smooth::NativeLieGroup<smooth::SE2d>);
   static_assert(smooth::AdaptedLieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
   static_assert(smooth::AdaptedLieGroup<smooth::SE2d>);
   static_assert(smooth::AdaptedLieGroup<float>);
