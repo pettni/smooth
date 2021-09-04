@@ -33,7 +33,6 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/bezier.hpp"
 #include "smooth/spline/bspline.hpp"
-#include "smooth/tn.hpp"
 
 #include "adapted.hpp"
 
@@ -89,7 +88,7 @@ template<typename G>
 class Spline : public ::testing::Test
 {};
 
-using GroupsToTest = ::testing::Types<smooth::T2d, smooth::SO3d>;
+using GroupsToTest = ::testing::Types<Eigen::Vector2d, smooth::SO3d>;
 
 TYPED_TEST_SUITE(Spline, GroupsToTest);
 
@@ -97,7 +96,7 @@ TYPED_TEST(Spline, BSplineConstantCtrlpts)
 {
   std::srand(5);
 
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
   smooth::utils::static_for<6>([](auto k) {
     static constexpr uint32_t K = k + 1;
@@ -127,7 +126,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 {
   std::srand(5);
 
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
   smooth::utils::static_for<6>([](auto k) {
     static constexpr uint32_t K = k + 1;
@@ -143,7 +142,8 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
-      auto g = g0 * smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc);
+      auto g =
+        smooth::composition(g0, smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc));
 
       ASSERT_TRUE(g.isApprox(g0));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -157,7 +157,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 TYPED_TEST(Spline, DerivBspline)
 {
   TypeParam g0  = TypeParam::Random();
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
   std::vector<Tangent> diff_pts;
   diff_pts.push_back(Tangent::Random());
@@ -173,8 +173,10 @@ TYPED_TEST(Spline, DerivBspline)
   for (double u = 0.1; u < 0.99; u += 0.1) {
     smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
-    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
+    auto g1 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
+    auto g2 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
 
     auto df = ((g2 - g1) / 2e-4).eval();
 
@@ -185,7 +187,7 @@ TYPED_TEST(Spline, DerivBspline)
 TYPED_TEST(Spline, DerivBezier)
 {
   TypeParam g0  = TypeParam::Random();
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
   std::vector<Tangent> diff_pts;
   diff_pts.push_back(Tangent::Random());
@@ -201,8 +203,10 @@ TYPED_TEST(Spline, DerivBezier)
   for (double u = 0.1; u < 0.99; u += 0.1) {
     smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
-    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
+    auto g1 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
+    auto g2 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
 
     Tangent df = (g2 - g1) / 2e-4;
 
@@ -250,8 +254,10 @@ TEST(Spline, BSplineOutside)
 TEST(Spline, BSplineDerivT1)
 {
   std::srand(5);
-  std::vector<smooth::Bundle<smooth::T1d>> c1;
-  for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::Bundle<smooth::T1d>::Random()); }
+  std::vector<smooth::Bundle<Eigen::Matrix<double, 1, 1>>> c1;
+  for (auto i = 0u; i != 4; ++i) {
+    c1.push_back(smooth::Bundle<Eigen::Matrix<double, 1, 1>>::Random());
+  }
 
   double u = 0.5;
 
@@ -263,7 +269,7 @@ TEST(Spline, BSplineDerivT1)
   auto g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
 
   Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
-  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>().rn()(0) += eps(i); }
+  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>()(0) += eps(i); }
 
   // expect gp \approx g0 + jac * eps
   auto gp       = g0 + (jac * eps);
@@ -440,7 +446,7 @@ TYPED_TEST(Spline, Bezier2Fit)
 
   // check continuity of derivative
   for (auto tt = 2.5; tt < 6; ++tt) {
-    typename TypeParam::Tangent va, vb;
+    smooth::Tangent<TypeParam> va, vb;
     spline.eval(tt - 1e-5, va);
     spline.eval(tt + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
@@ -484,7 +490,7 @@ TYPED_TEST(Spline, Bezier3Fit)
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
-    typename TypeParam::Tangent va, vb;
+    typename smooth::Tangent<TypeParam> va, vb;
     spline.eval(t_test - 1e-5, va);
     spline.eval(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
@@ -528,7 +534,7 @@ TYPED_TEST(Spline, Bezier3LocalFit)
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
-    typename TypeParam::Tangent va, vb;
+    smooth::Tangent<TypeParam> va, vb;
     spline.eval(t_test - 1e-5, va);
     spline.eval(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));

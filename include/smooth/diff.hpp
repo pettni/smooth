@@ -34,10 +34,9 @@
 #include <Eigen/Core>
 #include <type_traits>
 
+#include "adapted_lie_group.hpp"
 #include "internal/utils.hpp"
 #include "manifold.hpp"
-#include "adapted_lie_group.hpp"
-#include "tn.hpp"
 
 namespace smooth {
 
@@ -106,10 +105,6 @@ auto dr_numerical(_F && f, _Wrt && x)
       if constexpr (std::is_base_of_v<Eigen::MatrixBase<W>, W>) {
         // scale step size if we are in Rn
         eps_j *= abs(w[j]);
-        if (eps_j == 0.) { eps_j = eps; }
-      } else if constexpr (std::is_base_of_v<smooth::TnBase<W>, W>) {
-        // or Tn
-        eps_j *= abs(w.rn()[j]);
         if (eps_j == 0.) { eps_j = eps; }
       }
       w = man<W>::rplus(w, (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());

@@ -29,7 +29,6 @@
 
 #include "smooth/spline/curve.hpp"
 #include "smooth/se2.hpp"
-#include "smooth/tn.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include <matplot/matplot.h>

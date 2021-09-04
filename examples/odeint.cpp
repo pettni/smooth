@@ -32,7 +32,6 @@
 #include "smooth/bundle.hpp"
 #include "smooth/compat/odeint.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/tn.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include <matplot/matplot.h>

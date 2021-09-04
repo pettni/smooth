@@ -69,9 +69,6 @@ requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dim, lie<G>::Dim> 
 // Static constants
 
 template<AdaptedLieGroup G>
-static inline constexpr Eigen::Index Dof = lie<G>::Dof;
-
-template<AdaptedLieGroup G>
 static inline constexpr Eigen::Index Dim = lie<G>::Dim;
 
 // Types
@@ -80,19 +77,7 @@ static inline constexpr Eigen::Index Dim = lie<G>::Dim;
  * @brief Group type
  */
 template<AdaptedLieGroup G>
-using Scalar = typename lie<G>::Scalar;
-
-/**
- * @brief Group type
- */
-template<AdaptedLieGroup G>
 using PlainObject = typename lie<G>::PlainObject;
-
-/**
- * @brief Vector of size Dof
- */
-template<AdaptedLieGroup G>
-using Tangent = Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1>;
 
 /**
  * @brief Matrix of size Dim x Dim
@@ -154,15 +139,6 @@ inline auto composition(const G & g, Arg && a, Args &&... as)
 }
 
 /**
- * @brief Degrees of freedom of Lie group
- */
-template<AdaptedLieGroup G>
-inline auto dof(const G & g)
-{
-  return lie<G>::dof(g);
-}
-
-/**
  * @brief Matrix dimension of Lie group
  */
 template<AdaptedLieGroup G>
@@ -208,15 +184,6 @@ template<AdaptedLieGroup G>
 inline auto matrix(const G & g)
 {
   return lie<G>::matrix(g);
-}
-
-/**
- * @brief Cast to different scalar type
- */
-template<typename NewScalar, AdaptedLieGroup G>
-inline auto cast(const G & g)
-{
-  return lie<G>::template cast<NewScalar>(g);
 }
 
 // Tangent interface
@@ -284,30 +251,12 @@ inline auto dr_expinv(Arg && a)
 // Convenience methods
 
 /**
- * @brief Right-plus
- */
-template<AdaptedLieGroup G, typename Derived>
-inline PlainObject<G> rplus(const G & g, const Eigen::MatrixBase<Derived> & a)
-{
-  return composition(g, ::smooth::exp<G>(a));
-}
-
-/**
  * @brief Left-plus
  */
 template<AdaptedLieGroup G, typename Derived>
 inline PlainObject<G> lplus(const G & g, const Eigen::MatrixBase<Derived> & a)
 {
   return composition(::smooth::exp<G>(a), g);
-}
-
-/**
- * @brief Right-minus
- */
-template<AdaptedLieGroup G>
-inline Tangent<G> rminus(const G & g1, const G & g2)
-{
-  return log(composition(inverse(g2), g1));
 }
 
 /**
