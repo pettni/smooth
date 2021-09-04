@@ -323,7 +323,7 @@ struct lie<G>
   }
   static inline typename G::Tangent log(const G & g) { return g.log(); }
   template<typename NewScalar>
-  static inline auto cast(const G & g)
+  static inline CastT<NewScalar> cast(const G & g)
   {
     return g.template cast<NewScalar>();
   }

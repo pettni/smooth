@@ -87,22 +87,22 @@ using PlainObject = typename man<M>::PlainObject;
 template<typename NewScalar, Manifold M>
 using CastT = typename man<M>::template CastT<NewScalar>;
 
+/**
+ * @brief Tangent as a Dof-lenth Eigen vector
+ */
+template<Manifold M>
+using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
+
 // Functions
 
 /**
  * @brief Manifold degrees of freedom (tangent space dimension)
  */
 template<Manifold M>
-inline auto dof(const M & m)
+inline Eigen::Index dof(const M & m)
 {
   return man<M>::dof(m);
 }
-
-/**
- * @brief Tangent as a Dof-lenth Eigen vector
- */
-template<Manifold M>
-using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
 
 /**
  * @brief Cast to different scalar type
@@ -117,7 +117,7 @@ inline CastT<NewScalar, M> cast(const M & m)
  * @brief Manifold right-plus
  */
 template<Manifold M, typename Derived>
-inline M rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
+inline PlainObject<M> rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
 {
   return man<M>::rplus(m, a);
 }
@@ -125,8 +125,8 @@ inline M rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
 /**
  * @brief Manifold right-minus
  */
-template<Manifold M>
-inline Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> rminus(const M & g1, const M & g2)
+template<Manifold M, Manifold Mo>
+inline Tangent<M> rminus(const M & g1, const Mo & g2)
 {
   return man<M>::rminus(g1, g2);
 }
@@ -148,20 +148,21 @@ struct man<G>
   static inline Eigen::Index dof(const G & g) { return lie<G>::dof(g); }
 
   template<typename NewScalar>
-  static inline auto cast(const G & g)
+  static inline CastT<NewScalar> cast(const G & g)
   {
     return lie<G>::template cast<NewScalar>(g);
   }
 
   template<typename Derived>
-  static inline G rplus(const G & g, const Eigen::MatrixBase<Derived> & a)
+  static inline PlainObject rplus(const G & g, const Eigen::MatrixBase<Derived> & a)
   {
     return lie<G>::composition(g, lie<G>::exp(a));
   }
 
-  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const G & g1, const G & g2)
+  template<LieGroup Go = G>
+  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const G & g1, const Go & g2)
   {
-    return lie<G>::log(lie<G>::composition(lie<G>::inverse(g2), g1));
+    return lie<G>::log(lie<Go>::composition(lie<Go>::inverse(g2), g1));
   }
   // \endcond
 };
