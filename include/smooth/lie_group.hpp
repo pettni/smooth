@@ -45,8 +45,8 @@ requires(const G & g1, const G & g2, typename G::Scalar eps)
   {g1.isApprox(g2, eps)}->std::convertible_to<bool>;
   {g1.log()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, 1>>;
   {g1.matrix()}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim>>;
-  {g1.template cast<float>()};
-  {g1.template cast<double>()};
+  /* {g1.template cast<float>()};
+  {g1.template cast<double>()}; */
 } &&
 // static methods
 requires(const Eigen::Matrix<typename G::Scalar, G::Dof, 1> & a)
@@ -67,9 +67,9 @@ requires(const Eigen::Matrix<typename G::Scalar, G::Dim, G::Dim> & A)
  */
 template<typename G>
 concept LieGroup =
-std::is_default_constructible_v<G> &&
-std::is_copy_constructible_v<G> &&
-std::is_copy_assignable_v<G> &&
+// std::is_default_constructible_v<G> &&
+// std::is_copy_constructible_v<G> &&
+// std::is_copy_assignable_v<G> &&
 requires {
   typename lie<G>::Scalar;
   typename lie<G>::PlainObject;
@@ -87,8 +87,8 @@ requires(const G & g1, const G & g2, typename lie<G>::Scalar eps) {
   {lie<G>::isApprox(g1, g2, eps)}->std::convertible_to<bool>;
   {lie<G>::log(g1)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1>>;
   {lie<G>::matrix(g1)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dim, lie<G>::Dim>>;
-  {lie<G>::template cast<double>(g1)};
-  {lie<G>::template cast<float>(g1)};
+  /* {lie<G>::template cast<double>(g1)};
+  {lie<G>::template cast<float>(g1)}; */
 } &&
 requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1> & a) {
   {lie<G>::ad(a)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, lie<G>::Dof>>;

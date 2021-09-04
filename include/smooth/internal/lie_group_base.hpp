@@ -31,12 +31,6 @@
 namespace smooth {
 
 /**
- * @brief Memory mapping of internal Lie group types.
- */
-template<typename T>
-class Map;
-
-/**
  * @brief Type trait that maps a type to Lie group operations.
  *
  * Required members:
@@ -67,10 +61,6 @@ protected:
   //! Group-specific Lie group implementation
   using Impl = typename traits::Impl;
 
-  //! Plain return type
-  template<typename NewScalar>
-  using PlainObjectCast = typename traits::template PlainObject<NewScalar>;
-
   //! True if underlying storage supports modification
   static constexpr bool is_mutable = traits::is_mutable;
 
@@ -90,6 +80,9 @@ public:
   using Tangent = Eigen::Matrix<Scalar, Dof, 1>;
   //! Matrix representing map between tangent elements
   using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
+  //! Plain return type with different scalar
+  template<typename NewScalar>
+  using PlainObjectCast = typename traits::template PlainObject<NewScalar>;
   //! Plain return type
   using PlainObject = PlainObjectCast<Scalar>;
 

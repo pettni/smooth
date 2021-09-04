@@ -34,6 +34,7 @@
 #include "internal/macro.hpp"
 #include "internal/so2.hpp"
 #include "lie_group.hpp"
+#include "map.hpp"
 
 namespace smooth {
 

@@ -22,20 +22,24 @@ struct man;
 
 /**
  * @brief Class-external Lie group interface defined via the man trait.
+ *
+ * TODO
+ *  - needs PlainObjectCast
+ *  - add condition for casting (must be supported by scalar type..)
  */
 template<typename M>
 concept Manifold =
-std::is_default_constructible_v<M> &&
-std::is_copy_constructible_v<M> &&
-std::is_copy_assignable_v<M> &&
+// std::is_default_constructible_v<M> &&
+// std::is_copy_constructible_v<M> &&
+// std::is_copy_assignable_v<M> &&
 requires {
   {man<M>::Dof}->std::convertible_to<Eigen::Index>;
   typename man<M>::Scalar;
 } &&
 requires(const M & m1, const M & m2) {
   {man<M>::dof(m1)}->std::convertible_to<Eigen::Index>;
-  {man<M>::template cast<double>(m1)};
-  {man<M>::template cast<float>(m1)};
+  /* {man<M>::template cast<double>(m1)};
+  {man<M>::template cast<float>(m1)}; */
   {man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>>;
 } &&
 requires(const M & m, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> & a) {

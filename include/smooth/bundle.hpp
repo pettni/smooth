@@ -31,6 +31,7 @@
 #include "internal/macro.hpp"
 #include "internal/tn.hpp"
 #include "lie_group.hpp"
+#include "map.hpp"
 
 namespace smooth {
 
@@ -50,28 +51,6 @@ struct lie_traits<Eigen::Matrix<_Scalar, _N, 1>>
   using PlainObject = Eigen::Matrix<NewScalar, _N, 1>;
 };
 
-template<typename T>
-struct map_traits
-{
-  using type = Map<T>;
-};
-
-template<typename T>
-struct map_traits<const T>
-{
-  using type = Map<const T>;
-};
-template<int _N, typename _Scalar>
-struct map_traits<Eigen::Matrix<_Scalar, _N, 1>>
-{
-  using type = Eigen::Map<Eigen::Matrix<_Scalar, _N, 1>>;
-};
-
-template<int _N, typename _Scalar>
-struct map_traits<const Eigen::Matrix<_Scalar, _N, 1>>
-{
-  using type = Eigen::Map<const Eigen::Matrix<_Scalar, _N, 1>>;
-};
 // \endcond
 
 /**
@@ -111,9 +90,9 @@ public:
    * @brief Access part no Idx of Bundle.
    */
   template<std::size_t Idx>
-  typename map_traits<PartType<Idx>>::type part() requires is_mutable
+  MapDispatch<PartType<Idx>> part() requires is_mutable
   {
-    return typename map_traits<PartType<Idx>>::type(
+    return MapDispatch<PartType<Idx>>(
       static_cast<_Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
@@ -121,9 +100,9 @@ public:
    * @brief Const access part no Idx of Bundle.
    */
   template<std::size_t Idx>
-  typename map_traits<const PartType<Idx>>::type part() const
+  MapDispatch<const PartType<Idx>> part() const
   {
-    return typename map_traits<const PartType<Idx>>::type(
+    return MapDispatch<const PartType<Idx>>(
       static_cast<const _Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 };

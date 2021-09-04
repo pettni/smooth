@@ -58,17 +58,15 @@ auto dr_autodiff(_F && f, _Wrt && x)
 
   using AdScalar = autodiff::Dual<Scalar, Scalar>;
 
-  // determine sizes if input and output
-  constexpr auto Nx        = utils::tuple_dof<_Wrt>::value;
-  static constexpr auto Ny = Dof<Result>;
+  Result fval = std::apply(f, x);
 
-  const auto nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
-
-  const Result fval = std::apply(f, x);
+  static constexpr Eigen::Index Nx = utils::tuple_dof<_Wrt>::value;
+  static constexpr Eigen::Index Ny = Dof<Result>;
+  const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
 
   // cast fval and x to ad types
   const auto x_ad                       = utils::tuple_cast<AdScalar>(x);
-  const CastT<AdScalar, Result> fval_ad = fval.template cast<AdScalar>();
+  const CastT<AdScalar, Result> fval_ad = cast<AdScalar>(fval);
 
   // zero-valued tangent element
   Eigen::Matrix<AdScalar, Nx, 1> a_ad = Eigen::Matrix<AdScalar, Nx, 1>::Zero(nx);
@@ -80,7 +78,7 @@ auto dr_autodiff(_F && f, _Wrt && x)
     autodiff::wrt(a_ad),
     autodiff::at(a_ad));
 
-  return std::make_pair(fval, jac);
+  return std::make_pair(std::move(fval), std::move(jac));
 }
 
 }  // namespace smooth::diff
