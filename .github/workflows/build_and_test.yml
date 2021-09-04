@@ -35,7 +35,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y --no-install-recommends \
         libboost-dev \
-        libceres-dev \
         libgtest-dev
 
     - name: Install Eigen 3.4
@@ -46,6 +45,18 @@ jobs:
           -B ${{ github.workspace }}/deps/eigen/build
         cmake --build ${{ github.workspace }}/deps/eigen/build
         sudo cmake --install ${{ github.workspace }}/deps/eigen/build
+
+    - name: Install autodiff
+      run: |
+        git clone --branch v0.6.4 https://github.com/autodiff/autodiff.git ${{ github.workspace }}/deps/autodiff
+        cmake \
+          -S ${{ github.workspace }}/deps/autodiff \
+          -B ${{ github.workspace }}/deps/autodiff/build \
+          -DAUTODIFF_BUILD_EXAMPLES=OFF \
+          -DAUTODIFF_BUILD_TESTS=OFF \
+          -DAUTODIFF_BUILD_PYTHON=OFF
+        cmake --build ${{ github.workspace }}/deps/autodiff/build
+        sudo cmake --install ${{ github.workspace }}/deps/autodiff/build
 
     - name: Configure CMake
       run: |
@@ -88,6 +99,18 @@ jobs:
           -B ${{ github.workspace }}/deps/eigen/build
         cmake --build ${{ github.workspace }}/deps/eigen/build
         sudo cmake --install ${{ github.workspace }}/deps/eigen/build
+
+    - name: Install autodiff
+      run: |
+        git clone --branch v0.6.4 https://github.com/autodiff/autodiff.git ${{ github.workspace }}/deps/autodiff
+        cmake \
+          -S ${{ github.workspace }}/deps/autodiff \
+          -B ${{ github.workspace }}/deps/autodiff/build \
+          -DAUTODIFF_BUILD_EXAMPLES=OFF \
+          -DAUTODIFF_BUILD_TESTS=OFF \
+          -DAUTODIFF_BUILD_PYTHON=OFF
+        cmake --build ${{ github.workspace }}/deps/autodiff/build
+        sudo cmake --install ${{ github.workspace }}/deps/autodiff/build
 
     - name: Configure CMake
       run: |
