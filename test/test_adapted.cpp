@@ -26,14 +26,12 @@
 #include <gtest/gtest.h>
 
 #include "smooth/bundle.hpp"
-#include "smooth/lie_group.hpp"
+#include "smooth/manifold.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 
 TEST(AdaptedLieGroup, Static)
 {
-  static_assert(smooth::NativeLieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
-  static_assert(smooth::NativeLieGroup<smooth::SE2d>);
   static_assert(smooth::LieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
   static_assert(smooth::LieGroup<smooth::SE2d>);
   static_assert(smooth::LieGroup<float>);
@@ -259,18 +257,18 @@ TYPED_TEST(LieGroupInterface, rplus_rminus)
   }
 }
 
-TYPED_TEST(LieGroupInterface, lplus_lsub)
+TYPED_TEST(LieGroupInterface, lplus_lminus)
 {
   for (auto i = 0; i != 10; ++i) {
     TypeParam g                           = smooth::Random<TypeParam>();
     smooth::Tangent<TypeParam> a          = smooth::Tangent<TypeParam>::Random();
     TypeParam gp                          = smooth::lplus(g, a);
-    smooth::Tangent<TypeParam> gp_minus_g = smooth::lsub(gp, g);
+    smooth::Tangent<TypeParam> gp_minus_g = smooth::lminus(gp, g);
     ASSERT_TRUE(a.isApprox(gp_minus_g));
 
     TypeParam g1                    = smooth::Random<TypeParam>();
     TypeParam g2                    = smooth::Random<TypeParam>();
-    smooth::Tangent<TypeParam> diff = smooth::lsub(g1, g2);
+    smooth::Tangent<TypeParam> diff = smooth::lminus(g1, g2);
     ASSERT_TRUE(smooth::isApprox(smooth::lplus(g2, diff), g1));
   }
 }

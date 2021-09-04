@@ -67,7 +67,7 @@ template<typename _F, typename _Wrt>
 auto dr_numerical(_F && f, _Wrt && x)
 {
   using Result = decltype(std::apply(f, x));
-  using Scalar = typename man<Result>::Scalar;
+  using Scalar = ::smooth::Scalar<Result>;
 
   static_assert(Manifold<Result>, "f(x) is not an Manifold");
 
@@ -76,7 +76,7 @@ auto dr_numerical(_F && f, _Wrt && x)
 
   // static sizes
   static constexpr Eigen::Index Nx = utils::tuple_dof<std::decay_t<_Wrt>>::value;
-  static constexpr Eigen::Index Ny = man<Result>::Dof;
+  static constexpr Eigen::Index Ny = Dof<Result>;
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
@@ -84,8 +84,8 @@ auto dr_numerical(_F && f, _Wrt && x)
 
   // dynamic sizes
   Eigen::Index nx = std::apply(
-    [](auto &&... args) { return (man<std::decay_t<decltype(args)>>::dof(args) + ...); }, x_nc);
-  Eigen::Index ny = man<Result>::dof(val);
+    [](auto &&... args) { return (dof<std::decay_t<decltype(args)>>(args) + ...); }, x_nc);
+  Eigen::Index ny = dof<Result>(val);
 
   // output variable
   Eigen::Matrix<Scalar, Ny, Nx> jac(ny, nx);
@@ -96,8 +96,8 @@ auto dr_numerical(_F && f, _Wrt && x)
     auto & w = std::get<i>(x_nc);
     using W  = std::decay_t<decltype(w)>;
 
-    static constexpr Eigen::Index Nx_j = man<W>::Dof;
-    const int nx_j                     = man<W>::dof(w);
+    static constexpr Eigen::Index Nx_j = Dof<W>;
+    const int nx_j                     = dof<W>(w);
 
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
@@ -106,9 +106,9 @@ auto dr_numerical(_F && f, _Wrt && x)
         eps_j *= abs(w[j]);
         if (eps_j == 0.) { eps_j = eps; }
       }
-      w = man<W>::rplus(w, (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
-      jac.col(index_pos + j) = man<Result>::rminus(std::apply(f, x_nc), val) / eps_j;
-      w = man<W>::rplus(w, (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
+      w = rplus<W>(w, (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
+      jac.col(index_pos + j) = rminus<Result>(std::apply(f, x_nc), val) / eps_j;
+      w = rplus<W>(w, (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
     }
     index_pos += nx_j;
   });

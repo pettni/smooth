@@ -72,12 +72,12 @@ public:
    * @brief Cast to different scalar type.
    */
   template<typename NewScalar>
-  ManifoldVector<CastT<M, NewScalar>> cast() const
+  ManifoldVector<CastT<NewScalar, M>> cast() const
   {
-    ManifoldVector<CastT<M, NewScalar>> ret;
+    ManifoldVector<CastT<NewScalar, M>> ret;
     ret.reserve(size());
     std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
-      return man<M>::template cast<NewScalar>(x);
+      return ::smooth::cast<NewScalar>(x);
     });
     return ret;
   }
@@ -94,11 +94,11 @@ public:
    */
   Eigen::Index dof() const
   {
-    if constexpr (man<M>::Dof > 0) {
-      return size() * man<M>::Dof;
+    if constexpr (Dof < M >> 0) {
+      return size() * Dof<M>;
     } else {
       return std::accumulate(this->begin(), this->end(), 0u, [](auto & v1, const auto & item) {
-        return v1 + man<M>::dof();
+        return v1 + ::smooth::dof<M>();
       });
     }
   }
@@ -111,12 +111,12 @@ public:
   template<typename Derived>
   ManifoldVector<M> & operator+=(const Eigen::MatrixBase<Derived> & a)
   {
-    Eigen::Index idx = 0;
+    Eigen::Index dof_cntr = 0;
     for (auto i = 0u; i != this->size(); ++i) {
-      const auto size_i = man<M>::dof(this->operator[](i));
+      const auto dof_i = ::smooth::dof<M>(this->operator[](i));
       this->operator[](i) =
-        man<M>::rplus(this->operator[](i), a.template segment<man<M>::Dof>(idx, size_i));
-      idx += size_i;
+        rplus<M>(this->operator[](i), a.template segment<Dof<M>>(dof_cntr, dof_i));
+      dof_cntr += dof_i;
     }
     return *this;
   }
@@ -139,20 +139,20 @@ public:
    *
    * @note It must hold that `dof() == o.dof()`
    */
-  Eigen::Matrix<typename man<M>::Scalar, -1, 1> operator-(const ManifoldVector<M> & o) const
+  Eigen::Matrix<Scalar<M>, -1, 1> operator-(const ManifoldVector<M> & o) const
   {
-    std::size_t dof = 0;
-    if (man<M>::Dof > 0) {
-      dof = man<M>::Dof * size();
+    std::size_t dof_cnts = 0;
+    if (Dof < M >> 0) {
+      dof_cnts = Dof<M> * size();
     } else {
-      for (auto i = 0u; i != size(); ++i) { dof += man<M>::dof(this->operator[](i)); }
+      for (auto i = 0u; i != size(); ++i) { dof_cnts += ::smooth::dof<M>(this->operator[](i)); }
     }
 
-    Eigen::Matrix<typename man<M>::Scalar, -1, 1> ret(dof);
+    Eigen::Matrix<Scalar<M>, -1, 1> ret(dof_cnts);
     Eigen::Index idx = 0;
     for (auto i = 0u; i != size(); ++i) {
-      const auto & size_i                            = man<M>::dof(this->operator[](i));
-      ret.template segment<man<M>::Dof>(idx, size_i) = man<M>::rminus(this->operator[](i), o[i]);
+      const auto & size_i                       = ::smooth::dof<M>(this->operator[](i));
+      ret.template segment<Dof<M>>(idx, size_i) = rminus<M>(this->operator[](i), o[i]);
       idx += size_i;
     }
 
@@ -167,7 +167,7 @@ template<Manifold M>
 struct man<ManifoldVector<M>>
 {
   // \cond
-  using Scalar                      = typename man<M>::Scalar;
+  using Scalar                      = ::smooth::Scalar<M>;
   static constexpr Eigen::Index Dof = -1;
 
   static inline Eigen::Index dof(const ManifoldVector<M> & m) { return m.dof(); }

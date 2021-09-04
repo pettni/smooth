@@ -842,6 +842,7 @@ INPUT                  = README.md \
                          include/smooth/diff.hpp \
                          include/smooth/internal/lie_group_base.hpp \
                          include/smooth/lie_group.hpp \
+                         include/smooth/manifold.hpp \
                          include/smooth/manifold_vector.hpp \
                          include/smooth/optim.hpp \
                          include/smooth/se2.hpp \

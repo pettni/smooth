@@ -170,7 +170,7 @@ struct tuple_dof<std::tuple<Wrt...>>
 template<typename Scalar, typename... _Wrt>
 auto tuple_cast(const std::tuple<_Wrt...> & wrt)
 {
-  std::tuple<CastT<std::decay_t<_Wrt>, Scalar>...> ret;
+  std::tuple<CastT<Scalar, std::decay_t<_Wrt>>...> ret;
   static_for<sizeof...(_Wrt)>([&](auto i) {
     using Wi         = std::decay_t<decltype(std::get<i>(wrt))>;
     std::get<i>(ret) = cast<Scalar, Wi>(std::get<i>(wrt));

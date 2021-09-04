@@ -4,6 +4,12 @@
 #include <Eigen/Core>
 #include <concepts>
 
+#include "lie_group.hpp"
+
+/**
+ * @file manifold.hpp Manifold interface
+ */
+
 namespace smooth {
 
 /**
@@ -38,6 +44,12 @@ requires(const M & m, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 
 
 // clang-format on
 
+////////////////////////////////////////////////
+//// Free functions that dispatch to man<G> ////
+////////////////////////////////////////////////
+
+// Static constants
+
 /**
  * @brief Manifold degrees of freedom (tangent space dimension)
  *
@@ -45,6 +57,8 @@ requires(const M & m, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 
  */
 template<Manifold M>
 static inline constexpr Eigen::Index Dof = man<M>::Dof;
+
+// Types
 
 /**
  * @brief Manifold scalar type
@@ -55,8 +69,10 @@ using Scalar = typename man<M>::Scalar;
 /**
  * @brief Cast'ed type
  */
-template<Manifold M, typename NewScalar>
+template<typename NewScalar, Manifold M>
 using CastT = decltype(man<M>::template cast<NewScalar>(std::declval<M>()));
+
+// Functions
 
 /**
  * @brief Manifold degrees of freedom (tangent space dimension)
@@ -77,7 +93,7 @@ using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
  * @brief Cast to different scalar type
  */
 template<typename NewScalar, Manifold M>
-inline CastT<M, NewScalar> cast(const M & m)
+inline CastT<NewScalar, M> cast(const M & m)
 {
   return man<M>::template cast<NewScalar>(m);
 }
@@ -99,6 +115,38 @@ inline Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> rminus(const M & g
 {
   return man<M>::rminus(g1, g2);
 }
+
+/**
+ * @brief Manifold interface for LieGroup
+ */
+template<LieGroup G>
+struct man<G>
+{
+  // \cond
+  using Scalar                      = typename lie<G>::Scalar;
+  static constexpr Eigen::Index Dof = lie<G>::Dof;
+
+  static inline Eigen::Index dof(const G & g) { return lie<G>::dof(g); }
+
+  template<typename NewScalar>
+  static inline auto cast(const G & g)
+  {
+    return lie<G>::template cast<NewScalar>(g);
+  }
+
+  template<typename Derived>
+  static inline G rplus(const G & g, const Eigen::MatrixBase<Derived> & a)
+  {
+    return lie<G>::composition(g, lie<G>::exp(a));
+  }
+
+  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const G & g1, const G & g2)
+  {
+    return lie<G>::log(lie<G>::composition(lie<G>::inverse(g2), g1));
+  }
+  // \endcond
+};
+
 
 }  // namespace smooth
 

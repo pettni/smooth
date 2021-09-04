@@ -110,7 +110,7 @@ auto dr_ceres(_F && f, _Wrt && x)
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
     Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
     Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
-    mo = rminus<CastT<Result, T>>(
+    mo = rminus<CastT<T, Result>>(
       std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), mi)), fval.template cast<T>());
     return true;
   };

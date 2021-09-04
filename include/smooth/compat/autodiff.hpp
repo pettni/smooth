@@ -68,14 +68,14 @@ auto dr_autodiff(_F && f, _Wrt && x)
 
   // cast fval and x to ad types
   const auto x_ad                       = utils::tuple_cast<AdScalar>(x);
-  const CastT<Result, AdScalar> fval_ad = fval.template cast<AdScalar>();
+  const CastT<AdScalar, Result> fval_ad = fval.template cast<AdScalar>();
 
   // zero-valued tangent element
   Eigen::Matrix<AdScalar, Nx, 1> a_ad = Eigen::Matrix<AdScalar, Nx, 1>::Zero(nx);
 
   Eigen::Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(
     [&f, &fval_ad, &x_ad](Eigen::Matrix<AdScalar, Nx, 1> & var) -> Eigen::Matrix<AdScalar, Ny, 1> {
-      return rminus<CastT<Result, AdScalar>>(std::apply(f, utils::tuple_plus(x_ad, var)), fval_ad);
+      return rminus<CastT<AdScalar, Result>>(std::apply(f, utils::tuple_plus(x_ad, var)), fval_ad);
     },
     autodiff::wrt(a_ad),
     autodiff::at(a_ad));
