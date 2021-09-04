@@ -113,7 +113,7 @@ public:
    *
    * @note Input \p t is clamped to interval [0, 1]
    */
-  G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
     double tc = std::clamp<double>(t, 0, 1);
 
@@ -196,7 +196,7 @@ public:
    * @param[out] acc output body acceleration at evaluation time
    * @return curve value at time t
    */
-  G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
     // target condition
     //  knots_[istar] <= t < knots_[istar + 1]
@@ -210,7 +210,7 @@ public:
 
     const double T = knots_[istar + 1] - knots_[istar];
     const double u = (t - knots_[istar]) / T;
-    const G g      = segments_[istar].eval(u, vel, acc);
+    const G g      = segments_[istar](u, vel, acc);
 
     if (vel.has_value()) { vel.value() /= T; }
     if (acc.has_value()) { acc.value() /= (T * T); }

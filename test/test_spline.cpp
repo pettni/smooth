@@ -227,11 +227,9 @@ TEST(Spline, BSplineConstructors)
   smooth::BSpline<5, smooth::SO3d> spl1(0, 1, c1);
   smooth::BSpline<5, smooth::SO3d> spl2(0, 1, std::move(c1));
 
-  ASSERT_TRUE(spl0.eval(0.5).isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(spl0(0.5).isApprox(smooth::SO3d::Identity()));
 
-  for (double t = 0; t != spl1.t_max(); t += 0.5) {
-    ASSERT_TRUE(spl1.eval(t).isApprox(spl2.eval(t)));
-  }
+  for (double t = 0; t != spl1.t_max(); t += 0.5) { ASSERT_TRUE(spl1(t).isApprox(spl2(t))); }
 }
 
 TEST(Spline, BSplineOutside)
@@ -243,12 +241,12 @@ TEST(Spline, BSplineOutside)
 
   smooth::BSpline<5, smooth::SO3d> spl(0, 1, c1);
 
-  ASSERT_TRUE(spl.eval(-2).isApprox(spl.eval(0)));
-  ASSERT_TRUE(spl.eval(-1).isApprox(spl.eval(0)));
-  ASSERT_FALSE(spl.eval(45).isApprox(spl.eval(44)));
-  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(46)));
-  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(47)));
-  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(48)));
+  ASSERT_TRUE(spl(-2).isApprox(spl(0)));
+  ASSERT_TRUE(spl(-1).isApprox(spl(0)));
+  ASSERT_FALSE(spl(45).isApprox(spl(44)));
+  ASSERT_TRUE(spl(45).isApprox(spl(46)));
+  ASSERT_TRUE(spl(45).isApprox(spl(47)));
+  ASSERT_TRUE(spl(45).isApprox(spl(48)));
 }
 
 TEST(Spline, BSplineDerivT1)
@@ -365,16 +363,16 @@ TYPED_TEST(Spline, Bezier0Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.3).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.4).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.3).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.4).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
 }
 
 TYPED_TEST(Spline, Bezier1Fit)
@@ -401,14 +399,14 @@ TYPED_TEST(Spline, Bezier1Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 }
 
 TYPED_TEST(Spline, Bezier2Fit)
@@ -435,20 +433,20 @@ TYPED_TEST(Spline, Bezier2Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto tt = 2.5; tt < 6; ++tt) {
     smooth::Tangent<TypeParam> va, vb;
-    spline.eval(tt - 1e-5, va);
-    spline.eval(tt + 1e-5, vb);
+    spline(tt - 1e-5, va);
+    spline(tt + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
 }
@@ -479,20 +477,20 @@ TYPED_TEST(Spline, Bezier3Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
     typename smooth::Tangent<TypeParam> va, vb;
-    spline.eval(t_test - 1e-5, va);
-    spline.eval(t_test + 1e-5, vb);
+    spline(t_test - 1e-5, va);
+    spline(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
 }
@@ -523,20 +521,20 @@ TYPED_TEST(Spline, Bezier3LocalFit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
     smooth::Tangent<TypeParam> va, vb;
-    spline.eval(t_test - 1e-5, va);
-    spline.eval(t_test + 1e-5, vb);
+    spline(t_test - 1e-5, va);
+    spline(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
 }
@@ -559,8 +557,8 @@ TEST(Spline, BezierInitialvel)
     auto spline = smooth::fit_cubic_bezier(tt, gg, v0, v1);
 
     Eigen::Vector3d test1, test2;
-    spline.eval(1, test1);
-    spline.eval(4, test2);
+    spline(1, test1);
+    spline(4, test2);
 
     ASSERT_TRUE(test1.isApprox(v0));
     ASSERT_TRUE(test2.isApprox(v1));
@@ -589,8 +587,8 @@ TEST(Spline, CustomAdaptedGroup)
   auto spl1 = smooth::fit_bspline<3>(tt, gg, 1);
   auto spl2 = smooth::fit_cubic_bezier(tt, gg);
 
-  auto g1 = spl1.eval(2.5);
-  auto g2 = spl2.eval(2.5);
+  auto g1 = spl1(2.5);
+  auto g2 = spl2(2.5);
 
   static_cast<void>(g1);
   static_cast<void>(g2);

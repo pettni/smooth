@@ -145,7 +145,7 @@ public:
    *
    * @note Input \p t is clamped to spline interval of definition
    */
-  G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
     // index of relevant interval
     int64_t istar = static_cast<int64_t>((t - t0_) / dt_);

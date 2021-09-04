@@ -71,7 +71,7 @@ public:
     assert(T > 0);
 
     end_g_.resize(1);
-    end_g_[0] = eval(T);
+    end_g_[0] = operator()(T);
   }
 
   /**
@@ -93,7 +93,7 @@ public:
     std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_[0].begin());
 
     end_g_.resize(1);
-    end_g_[0] = eval(T);
+    end_g_[0] = operator()(T);
   }
 
   /// @brief Copy constructor
@@ -130,7 +130,7 @@ public:
       vs_[i] = bez.segments_[i].vs_;
     }
 
-    end_g_[N - 1] = eval(end_t_.back());
+    end_g_[N - 1] = operator()(end_t_.back());
   }
 
   /// @brief Destructor
@@ -303,7 +303,7 @@ public:
    * @note Outside the support [t_min(), t_max()] the result is clamped to the end points, and
    * the acceleration and velocity is zero.
    */
-  G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
     if (empty() || t < 0) {
       if (vel.has_value()) { vel.value().setZero(); }
@@ -367,7 +367,7 @@ public:
     if (Nseg >= 2 && end_t_[i0 + Nseg - 2] == tb) { --Nseg; }
 
     // state at new from beginning of curve
-    const G ga = eval(ta);
+    const G ga = operator()(ta);
 
     std::vector<double> end_t(Nseg);
     std::vector<G> end_g(Nseg);
@@ -378,7 +378,7 @@ public:
     for (auto i = 0u; i != Nseg; ++i) {
       if (i == Nseg - 1) {
         end_t[i] = tb - ta;
-        end_g[i] = ga.inverse() * eval(tb);
+        end_g[i] = ga.inverse() * operator()(tb);
       } else {
         end_t[i] = end_t_[i0 + i] - ta;
         end_g[i] = ga.inverse() * end_g_[i0 + i];
@@ -505,7 +505,7 @@ public:
    * @param[out] ds return first derivative \f$ s'(t) \f$
    * @param[out] d2s return second derivative \f$ s''(t) \f$
    */
-  double eval(double t, double & ds, double & d2s) const
+  double operator()(double t, double & ds, double & d2s) const
   {
     if (d_.size() == 1) {
       ds  = 0;
@@ -569,7 +569,7 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
   do {
     Tangent<G> vel, acc;
-    curve.eval(state.x(), vel, acc);
+    curve(state.x(), vel, acc);
 
     // clamp velocity to not exceed constraints
     for (auto i = 0u; i != Dof<G>; ++i) {
@@ -627,12 +627,12 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
   state << 0, start_vel;
 
   // clamp velocity to not exceed upper bound
-  state.y() = std::min<double>(state.y(), v_func.eval(0));
+  state.y() = std::min<double>(state.y(), v_func(0));
   if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
   do {
     Tangent<G> vel, acc;
-    curve.eval(state.x(), vel, acc);
+    curve(state.x(), vel, acc);
 
     if (vel.cwiseAbs().maxCoeff() <= zeps) {
       // skip over without storing if curve is stationary
@@ -654,7 +654,7 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
       double new_v = state.y() + dt * a;
 
       // clamp velocity to not exceed upper bound
-      new_v = std::min<double>(new_v, v_func.eval(new_s));
+      new_v = std::min<double>(new_v, v_func(new_s));
       if (slower_only) { new_v = std::min<double>(new_v, 1); }
 
       // ensure v stays positive

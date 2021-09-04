@@ -71,7 +71,7 @@ int main(int, char const **)
 
   for (auto t : tvec) {
     Eigen::Vector3d vel, acc;
-    auto g = spline.eval(t, vel, acc);
+    auto g = spline(t, vel, acc);
     gvec.push_back(g);
     vvec.push_back(vel);
     avec.push_back(acc);
