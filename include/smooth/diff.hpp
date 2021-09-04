@@ -36,18 +36,9 @@
 
 #include "internal/utils.hpp"
 #include "manifold.hpp"
+#include "wrt.hpp"
 
 namespace smooth {
-
-/**
- * @brief Grouping of function arguments.
- *
- * A tuple of references is created from the input arguments,
- * which is the expected format in e.g. dr() and minimize().
- */
-template<typename... _Args>
-  requires(Manifold<std::decay_t<_Args>> &&...)
-auto wrt(_Args &&... args) { return std::forward_as_tuple(std::forward<_Args>(args)...); }
 
 // differentiation module
 namespace diff {
@@ -74,11 +65,11 @@ auto dr_numerical(_F && f, _Wrt && x)
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
   // arguments are modified below, so we create a copy of those that come in as const
-  auto x_nc  = utils::tuple_copy_if_const(std::forward<_Wrt>(x));
+  auto x_nc  = wrt_copy_if_const(std::forward<_Wrt>(x));
   Result val = std::apply(f, x_nc);
 
   // static sizes
-  static constexpr Eigen::Index Nx = utils::tuple_dof<std::decay_t<_Wrt>>::value;
+  static constexpr Eigen::Index Nx = wrt_dof<std::decay_t<_Wrt>>::value;
   static constexpr Eigen::Index Ny = Dof<Result>;
 
   // dynamic sizes

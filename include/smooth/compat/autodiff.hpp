@@ -38,6 +38,7 @@
 
 #include "smooth/internal/utils.hpp"
 #include "smooth/manifold.hpp"
+#include "smooth/wrt.hpp"
 
 namespace smooth::diff {
 
@@ -60,12 +61,12 @@ auto dr_autodiff(_F && f, _Wrt && x)
 
   Result fval = std::apply(f, x);
 
-  static constexpr Eigen::Index Nx = utils::tuple_dof<_Wrt>::value;
+  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>::value;
   static constexpr Eigen::Index Ny = Dof<Result>;
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
 
   // cast fval and x to ad types
-  const auto x_ad                       = utils::tuple_cast<AdScalar>(x);
+  const auto x_ad                       = wrt_cast<AdScalar>(x);
   const CastT<AdScalar, Result> fval_ad = cast<AdScalar>(fval);
 
   // zero-valued tangent element
@@ -73,7 +74,7 @@ auto dr_autodiff(_F && f, _Wrt && x)
 
   Eigen::Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(
     [&f, &fval_ad, &x_ad](Eigen::Matrix<AdScalar, Nx, 1> & var) -> Eigen::Matrix<AdScalar, Ny, 1> {
-      return rminus<CastT<AdScalar, Result>>(std::apply(f, utils::tuple_plus(x_ad, var)), fval_ad);
+      return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), fval_ad);
     },
     autodiff::wrt(a_ad),
     autodiff::at(a_ad));

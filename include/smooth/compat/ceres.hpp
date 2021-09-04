@@ -36,10 +36,10 @@
 
 #define SMOOTH_DIFF_CERES
 
-#include "smooth/internal/utils.hpp"
 #include "smooth/lie_group.hpp"
 #include "smooth/manifold.hpp"
 #include "smooth/map.hpp"
+#include "smooth/wrt.hpp"
 
 namespace smooth {
 
@@ -91,7 +91,7 @@ auto dr_ceres(_F && f, _Wrt && x)
 
   Result fval = std::apply(f, x);
 
-  static constexpr Eigen::Index Nx = utils::tuple_dof<_Wrt>::value;
+  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>::value;
   static constexpr Eigen::Index Ny = Dof<Result>;
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
   const Eigen::Index ny = dof<Result>(fval);
@@ -105,8 +105,8 @@ auto dr_ceres(_F && f, _Wrt && x)
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
     Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
     Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
-    mo = rminus<CastT<T, Result>>(
-      std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), mi)), cast<T, Result>(fval));
+    mo =
+      rminus<CastT<T, Result>>(std::apply(f, wrt_rplus(wrt_cast<T>(x), mi)), cast<T, Result>(fval));
     return true;
   };
   const Scalar * a_ptr[1] = {a.data()};
