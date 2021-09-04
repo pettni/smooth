@@ -28,8 +28,6 @@
 
 #include <Eigen/Core>
 
-#include "lie_group.hpp"
-
 namespace smooth {
 
 /**

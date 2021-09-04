@@ -40,7 +40,6 @@
 #include "smooth/internal/utils.hpp"
 
 #include "bezier.hpp"
-#include "common.hpp"
 #include "dubins.hpp"
 
 namespace smooth {
@@ -151,7 +150,7 @@ public:
   static Curve ConstantVelocity(const G & g, double T = 1)
   {
     assert(T > 0);
-    return ConstantVelocity(g.log() / T, T);
+    return ConstantVelocity(::smooth::log(g) / T, T);
   }
 
   /**

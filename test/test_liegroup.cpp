@@ -24,7 +24,6 @@
 // SOFTWARE.
 
 #include <gtest/gtest.h>
-
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include <sstream>

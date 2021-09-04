@@ -7,13 +7,13 @@
 #include "lie_group.hpp"
 
 /**
- * @file manifold.hpp Manifold interface
+ * @file manifold.hpp Manifold interface and free Manifold functions.
  */
 
 namespace smooth {
 
 /**
- * @brief Trait class for making a class n Manifold
+ * @brief Trait class for making a class a Manifold instance via specialization.
  */
 template<typename T>
 struct man;
@@ -21,21 +21,25 @@ struct man;
 // clang-format off
 
 /**
- * @brief Class-external Lie group interface defined via the man trait.
+ * @brief Class-external Manifold interface defined through the man trait class.
  */
 template<typename M>
 concept Manifold =
 requires {
-  {man<M>::Dof}->std::convertible_to<Eigen::Index>;
+  // Underlying scalar type
   typename man<M>::Scalar;
+  // Default representation
   typename man<M>::PlainObject;
+  // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
+  {man<M>::Dof}->std::convertible_to<Eigen::Index>;
 } &&
-requires(const M & m1, const M & m2) {
+requires(const M & m1, const M & m2, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> & a) {
+  // Run-time degrees of freedom (tangent space dimension)
   {man<M>::dof(m1)}->std::convertible_to<Eigen::Index>;
+  // Right-plus: add a tangent vector to a Manifold element to obtain a new Manifold element
+  {man<M>::rplus(m1, a)}->std::convertible_to<typename man<M>::PlainObject>;
+  // Right-minus: subtract a Manifold element from another to obtain the difference tangent vector
   {man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>>;
-} &&
-requires(const M & m, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> & a) {
-  {man<M>::rplus(m, a)}->std::convertible_to<typename man<M>::PlainObject>;
 } && (
   !std::is_convertible_v<typename man<M>::Scalar, double> ||
   requires (const M & m) {
@@ -47,14 +51,16 @@ requires(const M & m, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 
     {man<M>::template cast<float>(m)}->std::convertible_to<typename man<M>::template CastT<float>>;
   }
 ) &&
+// PlainObject must be default-constructible
 std::is_default_constructible_v<typename man<M>::PlainObject> &&
 std::is_copy_constructible_v<typename man<M>::PlainObject> &&
-std::is_assignable_v<M &, typename man<M>::PlainObject>;
+// PlainObject must be assignable from M
+std::is_assignable_v<typename man<M>::PlainObject &, M>;
 
 // clang-format on
 
 ////////////////////////////////////////////////
-//// Free functions that dispatch to man<G> ////
+//// Free functions that dispatch to man<M> ////
 ////////////////////////////////////////////////
 
 // Static constants

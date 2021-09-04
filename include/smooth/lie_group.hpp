@@ -5,13 +5,13 @@
 #include <concepts>
 
 /**
- * @file lie_group.hpp Internal and external Lie group interfaces
+ * @file lie_group.hpp Internal and external LieGroup interfaces and free LieGroup functions.
  */
 
 namespace smooth {
 
 /**
- * @brief Trait class for making a class an LieGroup instance
+ * @brief Trait class for making a class a LieGroup instance via specialization.
  */
 template<typename T>
 struct lie;
@@ -19,7 +19,7 @@ struct lie;
 // clang-format off
 
 /**
- * @brief Concept defining class with an external Lie group interface defined through the lie trait class.
+ * @brief Class-external Lie group interface defined through the lie trait class.
  */
 template<typename G>
 concept LieGroup =
@@ -75,8 +75,7 @@ requires(const Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1> & a) {
 // PlainObject must be default-constructible
 std::is_default_constructible_v<typename lie<G>::PlainObject> &&
 std::is_copy_constructible_v<typename lie<G>::PlainObject> &&
-// PlainObject must be assignable from G, and vice versa
-std::is_assignable_v<G &, typename lie<G>::PlainObject> &&
+// PlainObject must be assignable from G
 std::is_assignable_v<typename lie<G>::PlainObject &, G>;
 
 // clang-format on
@@ -225,9 +224,9 @@ inline typename lie<G>::PlainObject lplus(const G & g, const Eigen::MatrixBase<D
 /**
  * @brief Left-minus
  */
-template<LieGroup G>
+template<LieGroup G, LieGroup Go>
 inline typename Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, 1> lminus(
-  const G & g1, const G & g2)
+  const G & g1, const Go & g2)
 {
   return log(composition(g1, inverse(g2)));
 }

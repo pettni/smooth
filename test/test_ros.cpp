@@ -27,6 +27,7 @@
 
 #include "smooth/compat/ros.hpp"
 #include "smooth/lie_group.hpp"
+#include "smooth/manifold.hpp"
 
 template<smooth::NativeLieGroup G>
 void test(G)
@@ -76,4 +77,44 @@ TEST(Ros, Pose)
   ASSERT_DOUBLE_EQ(p.orientation.y, m.so3().quat().y());
   ASSERT_DOUBLE_EQ(p.orientation.z, m.so3().quat().z());
   ASSERT_DOUBLE_EQ(p.orientation.w, m.so3().quat().w());
+}
+
+TEST(Ros, Ops)
+{
+  using Vec6 = Eigen::Matrix<double, 6, 1>;
+
+  for (auto i = 0u; i != 10; ++i) {
+    geometry_msgs::msg::Pose p;
+    smooth::Map<geometry_msgs::msg::Pose> m(p);
+    smooth::SE3d g = smooth::SE3d::Random();
+
+    m = g;
+
+    Vec6 a             = Vec6::Random();
+    smooth::SE3d grand = smooth::SE3d::Random();
+
+    {
+      auto x = smooth::rplus(m, a);
+      auto y = smooth::rplus(g, a);
+      static_assert(std::is_same_v<decltype(x), smooth::SE3d>);
+      static_assert(std::is_same_v<decltype(y), smooth::SE3d>);
+      ASSERT_TRUE(x.isApprox(y));
+    }
+
+    {
+      auto x = smooth::log(m);
+      auto y = smooth::log(g);
+      static_assert(std::is_same_v<decltype(x), Vec6>);
+      static_assert(std::is_same_v<decltype(y), Vec6>);
+      ASSERT_TRUE(x.isApprox(y));
+    }
+
+    {
+      auto x = smooth::lminus(m, grand);
+      auto y = smooth::lminus(g, grand);
+      static_assert(std::is_same_v<decltype(x), Vec6>);
+      static_assert(std::is_same_v<decltype(y), Vec6>);
+      ASSERT_TRUE(x.isApprox(y));
+    }
+  }
 }

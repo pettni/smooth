@@ -24,14 +24,15 @@
 // SOFTWARE.
 
 #include <gtest/gtest.h>
+#include <unsupported/Eigen/MatrixFunctions>
 
 #include "smooth/bundle.hpp"
 #include "smooth/manifold.hpp"
+#include "smooth/manifold_vector.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
-#include "smooth/manifold_vector.hpp"
 
-TEST(AdaptedLieGroup, Static)
+TEST(LieGroup, Concepts)
 {
   static_assert(smooth::LieGroup<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
   static_assert(smooth::LieGroup<smooth::SE2d>);
@@ -43,6 +44,10 @@ TEST(AdaptedLieGroup, Static)
   static_assert(smooth::LieGroup<smooth::Map<smooth::SE2d>>);
   static_assert(smooth::LieGroup<Eigen::Map<Eigen::Vector2d>>);
 
+  static_assert(smooth::LieGroup<smooth::Map<const smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>>);
+  static_assert(smooth::LieGroup<smooth::Map<const smooth::SE2d>>);
+  static_assert(smooth::LieGroup<Eigen::Map<const Eigen::Vector2d>>);
+
   static_assert(smooth::Manifold<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>);
   static_assert(smooth::Manifold<smooth::SE2d>);
   static_assert(smooth::Manifold<float>);
@@ -52,6 +57,10 @@ TEST(AdaptedLieGroup, Static)
   static_assert(smooth::Manifold<smooth::Map<smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>>);
   static_assert(smooth::Manifold<smooth::Map<smooth::SE2d>>);
   static_assert(smooth::Manifold<Eigen::Map<Eigen::Vector2d>>);
+
+  static_assert(smooth::Manifold<smooth::Map<const smooth::Bundle<smooth::SE2d, Eigen::Vector2d>>>);
+  static_assert(smooth::Manifold<smooth::Map<const smooth::SE2d>>);
+  static_assert(smooth::Manifold<Eigen::Map<const Eigen::Vector2d>>);
 
   static_assert(smooth::Manifold<smooth::ManifoldVector<smooth::SE2d>>);
 }
@@ -68,31 +77,41 @@ using GroupsToTest = ::testing::Types<Eigen::Vector2d,
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
 
-/* TYPED_TEST(LieGroupInterface, Ad)
+TYPED_TEST(LieGroupInterface, Ad)
 {
-  for (auto i = 0; i != 10; ++i) {
+  // check Ad_(g1 g2) = Ad_g1 * Ad_g2
+  for (auto i = 0u; i != 10; ++i) {
+    TypeParam g1 = smooth::Random<TypeParam>();
+    TypeParam g2 = smooth::Random<TypeParam>();
+
+    smooth::TangentMap<TypeParam> Ad_g1_g2    = smooth::Ad(smooth::composition(g1, g2));
+    smooth::TangentMap<TypeParam> Ad_g1_Ad_g2 = smooth::Ad(g1) * smooth::Ad(g2);
+
+    ASSERT_TRUE(Ad_g1_g2.isApprox(Ad_g1_Ad_g2));
+  }
+
+  // check exp(Ad_g a) = g * exp(a) * ginv
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g                  = smooth::Random<TypeParam>();
     smooth::Tangent<TypeParam> a = smooth::Tangent<TypeParam>::Random();
 
-    auto Ad_g     = smooth::Ad(g);
-    auto mat_g    = smooth::matrix(g);
-    auto mat_ginv = smooth::matrix(smooth::inverse(g));
-    auto hat_a    = smooth::hat<TypeParam>(a);
+    TypeParam exp_Ad_g_a   = smooth::exp<TypeParam>(smooth::Ad(g) * a);
+    TypeParam g_exp_a_ginv = smooth::composition(g, smooth::exp<TypeParam>(a), smooth::inverse(g));
 
-    ASSERT_TRUE(smooth::hat<TypeParam>(Ad_g * a).isApprox(mat_g * hat_a * mat_ginv));
+    ASSERT_TRUE(smooth::isApprox(exp_Ad_g_a, g_exp_a_ginv));
   }
-} */
+}
 
 TYPED_TEST(LieGroupInterface, Composition)
 {
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g1 = smooth::Random<TypeParam>();
     TypeParam g2 = smooth::Random<TypeParam>();
     TypeParam g3 = smooth::Random<TypeParam>();
 
-    auto c1 = smooth::composition(g1, g2, g3);
-    auto c2 = smooth::composition(smooth::composition(g1, g2), g3);
-    auto c3 = smooth::composition(g1, smooth::composition(g2, g3));
+    TypeParam c1 = smooth::composition(g1, g2, g3);
+    TypeParam c2 = smooth::composition(smooth::composition(g1, g2), g3);
+    TypeParam c3 = smooth::composition(g1, smooth::composition(g2, g3));
 
     ASSERT_TRUE(smooth::isApprox(c1, c2));
     ASSERT_TRUE(smooth::isApprox(c2, c3));
@@ -104,7 +123,7 @@ TYPED_TEST(LieGroupInterface, Inverse)
   TypeParam e = smooth::Identity<TypeParam>();
   ASSERT_TRUE(smooth::isApprox(e, smooth::inverse(e)));
 
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g    = smooth::Random<TypeParam>();
     TypeParam ginv = smooth::inverse(g);
 
@@ -114,11 +133,11 @@ TYPED_TEST(LieGroupInterface, Inverse)
 
 TYPED_TEST(LieGroupInterface, exp_log)
 {
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g = smooth::Random<TypeParam>();
 
-    auto g_log     = smooth::log(g);
-    auto g_log_exp = smooth::exp<TypeParam>(g_log);
+    smooth::Tangent<TypeParam> g_log = smooth::log(g);
+    TypeParam g_log_exp              = smooth::exp<TypeParam>(g_log);
 
     ASSERT_TRUE(smooth::isApprox(g, g_log_exp));
   }
@@ -126,7 +145,7 @@ TYPED_TEST(LieGroupInterface, exp_log)
 
 TYPED_TEST(LieGroupInterface, cast)
 {
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g = smooth::Random<TypeParam>();
 
     auto g_fl      = smooth::template cast<float>(g);
@@ -141,34 +160,29 @@ TYPED_TEST(LieGroupInterface, cast)
   }
 }
 
-/* TYPED_TEST(LieGroupInterface, ad)
+TYPED_TEST(LieGroupInterface, ad)
 {
-  for (auto i = 0; i != 10; ++i) {
+  // check ad_a b = -ad_b a
+  for (auto i = 0u; i != 10; ++i) {
     smooth::Tangent<TypeParam> a = smooth::Tangent<TypeParam>::Random();
     smooth::Tangent<TypeParam> b = smooth::Tangent<TypeParam>::Random();
 
-    auto ad_a = smooth::ad<TypeParam>(a);
+    smooth::Tangent<TypeParam> ad_a_b = smooth::ad<TypeParam>(a) * b;
+    smooth::Tangent<TypeParam> ad_b_a = smooth::ad<TypeParam>(b) * a;
 
-    smooth::Matrix<TypeParam> A = smooth::hat<TypeParam>(a);
-    smooth::Matrix<TypeParam> B = smooth::hat<TypeParam>(b);
-
-    smooth::Matrix<TypeParam> M1 = smooth::hat<TypeParam>(ad_a * b);
-    smooth::Matrix<TypeParam> M2 = A * B - B * A;
-
-    ASSERT_TRUE(M1.isApprox(M2));
+    ASSERT_TRUE(ad_a_b.isApprox(-ad_b_a));
   }
-} */
 
-/* TYPED_TEST(LieGroupInterface, hat_vee)
-{
-  for (auto i = 0; i != 10; ++i) {
+  // check Ad_exp a = exp ad_a
+  for (auto i = 0u; i != 10; ++i) {
     smooth::Tangent<TypeParam> a = smooth::Tangent<TypeParam>::Random();
-    smooth::Matrix<TypeParam> A  = smooth::hat<TypeParam>(a);
-    auto A_vee                   = smooth::vee<TypeParam>(A);
 
-    ASSERT_TRUE(a.isApprox(A_vee));
+    smooth::TangentMap<TypeParam> Ad_exp_a = smooth::Ad(smooth::exp<TypeParam>(a));
+    smooth::TangentMap<TypeParam> exp_ad_a = smooth::ad<TypeParam>(a).exp();
+
+    ASSERT_TRUE(Ad_exp_a.isApprox(exp_ad_a));
   }
-} */
+}
 
 TYPED_TEST(LieGroupInterface, dr_exp)
 {
@@ -181,7 +195,7 @@ TYPED_TEST(LieGroupInterface, dr_exp)
     eps1 = 1e-6;
   }
 
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     smooth::Tangent<TypeParam> a  = smooth::Tangent<TypeParam>::Random();
     smooth::Tangent<TypeParam> da = eps0 * smooth::Tangent<TypeParam>::Random();
 
@@ -202,7 +216,7 @@ TYPED_TEST(LieGroupInterface, dl_exp)
     eps1 = 1e-6;
   }
 
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     smooth::Tangent<TypeParam> a  = smooth::Tangent<TypeParam>::Random();
     smooth::Tangent<TypeParam> da = eps0 * smooth::Tangent<TypeParam>::Random();
 
@@ -223,7 +237,7 @@ TYPED_TEST(LieGroupInterface, dr_expinv)
     eps1 = 1e-6;
   }
 
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g                   = smooth::Random<TypeParam>();
     smooth::Tangent<TypeParam> da = eps0 * smooth::Tangent<TypeParam>::Random();
 
@@ -246,7 +260,7 @@ TYPED_TEST(LieGroupInterface, dl_expinv)
     eps1 = 1e-6;
   }
 
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g                   = smooth::Random<TypeParam>();
     smooth::Tangent<TypeParam> da = eps0 * smooth::Tangent<TypeParam>::Random();
 
@@ -260,7 +274,7 @@ TYPED_TEST(LieGroupInterface, dl_expinv)
 
 TYPED_TEST(LieGroupInterface, rplus_rminus)
 {
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g                           = smooth::Random<TypeParam>();
     smooth::Tangent<TypeParam> a          = smooth::Tangent<TypeParam>::Random();
     TypeParam gp                          = smooth::rplus(g, a);
@@ -276,7 +290,7 @@ TYPED_TEST(LieGroupInterface, rplus_rminus)
 
 TYPED_TEST(LieGroupInterface, lplus_lminus)
 {
-  for (auto i = 0; i != 10; ++i) {
+  for (auto i = 0u; i != 10; ++i) {
     TypeParam g                           = smooth::Random<TypeParam>();
     smooth::Tangent<TypeParam> a          = smooth::Tangent<TypeParam>::Random();
     TypeParam gp                          = smooth::lplus(g, a);
