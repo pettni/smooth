@@ -26,8 +26,6 @@
 #include <gtest/gtest.h>
 
 #include "smooth/compat/ros.hpp"
-#include "smooth/lie_group.hpp"
-#include "smooth/manifold.hpp"
 
 template<smooth::NativeLieGroup G>
 void test(G)

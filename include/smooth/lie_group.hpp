@@ -29,6 +29,8 @@
 #include <Eigen/Core>
 #include <concepts>
 
+#include "manifold.hpp"
+
 /**
  * @file lie_group.hpp Internal and external LieGroup interfaces and free LieGroup functions.
  */
@@ -518,6 +520,42 @@ struct lie<G>
   static inline Eigen::Matrix<Scalar, 1, 1> dr_expinv(const Eigen::MatrixBase<Derived> &)
   {
     return Eigen::Matrix<Scalar, 1, 1>::Identity();
+  }
+  // \endcond
+};
+
+/**
+ * @brief Manifold interface for LieGroup
+ */
+template<LieGroup G>
+struct man<G>
+{
+  // \cond
+  using Scalar      = typename lie<G>::Scalar;
+  using PlainObject = typename lie<G>::PlainObject;
+  template<typename NewScalar>
+  using CastT = typename lie<G>::template CastT<NewScalar>;
+
+  static constexpr Eigen::Index Dof = lie<G>::Dof;
+
+  static inline Eigen::Index dof(const G & g) { return lie<G>::dof(g); }
+
+  template<typename NewScalar>
+  static inline CastT<NewScalar> cast(const G & g)
+  {
+    return lie<G>::template cast<NewScalar>(g);
+  }
+
+  template<typename Derived>
+  static inline PlainObject rplus(const G & g, const Eigen::MatrixBase<Derived> & a)
+  {
+    return lie<G>::composition(g, lie<G>::exp(a));
+  }
+
+  template<LieGroup Go = G>
+  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const G & g1, const Go & g2)
+  {
+    return lie<G>::log(lie<Go>::composition(lie<Go>::inverse(g2), g1));
   }
   // \endcond
 };

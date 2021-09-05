@@ -89,7 +89,7 @@ auto dr_numerical(_F && f, _Wrt && x)
 
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
-      if constexpr (RnType<W>) {
+      if constexpr (std::is_base_of_v<Eigen::MatrixBase<W>, W>) {
         // scale step size if we are in Rn
         eps_j *= abs(w[j]);
         if (eps_j == 0.) { eps_j = eps; }

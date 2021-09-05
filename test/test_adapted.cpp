@@ -27,7 +27,6 @@
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "smooth/bundle.hpp"
-#include "smooth/manifold.hpp"
 #include "smooth/manifold_vector.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
