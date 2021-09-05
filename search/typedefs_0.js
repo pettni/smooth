@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dubinsdescription_425',['DubinsDescription',['../dubins_8hpp.html#ad09fdac8c8a208733dd8b6d6ea78fe37',1,'smooth']]]
+  ['castt_435',['CastT',['../classsmooth_1_1LieGroupBase.html#a71725f9f1ed4a67b6bc3d847f4fab570',1,'smooth::LieGroupBase::CastT()'],['../manifold_8hpp.html#a1f0126bfb879b315a0e819dee21abaea',1,'smooth::CastT()']]]
 ];

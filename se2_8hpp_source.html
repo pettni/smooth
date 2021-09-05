@@ -112,151 +112,151 @@ $(function() {
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &quot;internal/lie_group_base.hpp&quot;</span></div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &quot;internal/macro.hpp&quot;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &quot;internal/se2.hpp&quot;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;so2.hpp&quot;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="keyword">namespace </span>smooth {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="lie__group_8hpp.html">lie_group.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &quot;map.hpp&quot;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &quot;so2.hpp&quot;</span></div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment">// \cond</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Scalar&gt;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">class </span>SE3;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">// \endcond</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Derived&gt;</div>
-<div class="line"><a name="l00088"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html">   88</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a> : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1LieGroupBase.html">LieGroupBase</a>&lt;_Derived&gt;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;{</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1LieGroupBase.html">Base</a> = <a class="code" href="classsmooth_1_1LieGroupBase.html">LieGroupBase&lt;_Derived&gt;</a>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a>() = <span class="keywordflow">default</span>;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#aceec9c027c7bffffbe9a9881cc4bd3a5">   96</a></span>&#160;  SMOOTH_INHERIT_TYPEDEFS;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">  101</a></span>&#160;  Eigen::Map&lt;SO2&lt;Scalar&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">so2</a>() requires <a class="code" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">is_mutable</a></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  {</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">return</span> Eigen::Map&lt;SO2&lt;Scalar&gt;&gt;(<span class="keyword">static_cast&lt;</span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data() + 2);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#a0ed999aa8fac69fd50b1309153ce70fd">  109</a></span>&#160;  Eigen::Map&lt;const SO2&lt;Scalar&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#a0ed999aa8fac69fd50b1309153ce70fd">so2</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">return</span> Eigen::Map&lt;const SO2&lt;Scalar&gt;&gt;(<span class="keyword">static_cast&lt;</span><span class="keyword">const </span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data() + 2);</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  }</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">  117</a></span>&#160;  Eigen::Map&lt;Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>() requires <a class="code" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">is_mutable</a></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keywordflow">return</span> Eigen::Map&lt;Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt;(<span class="keyword">static_cast&lt;</span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data());</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#a7749de06188c73f55a70762ff3f4a35e">  125</a></span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#a7749de06188c73f55a70762ff3f4a35e">r2</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt;(</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;      <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data());</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  }</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> EigenDerived&gt;</div>
-<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#afa3100842d2e726fa7dc60ee6ec1dd73">  135</a></span>&#160;  Eigen::Matrix&lt;Scalar, 2, 1&gt; <a class="code" href="classsmooth_1_1SE2Base.html#afa3100842d2e726fa7dc60ee6ec1dd73">operator*</a>(<span class="keyword">const</span> Eigen::MatrixBase&lt;EigenDerived&gt; &amp; v)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">so2</a>() * v + <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>();</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  }</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54">  145</a></span>&#160;  <a class="code" href="classsmooth_1_1SE3.html">SE3&lt;Scalar&gt;</a> <a class="code" href="classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54">lift_se3</a>()<span class="keyword"> const</span></div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;<span class="keyword">  </span>{</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1SE3.html">SE3&lt;Scalar&gt;</a>(</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;      <a class="code" href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">so2</a>().lift_so3(), Eigen::Matrix&lt;Scalar, 3, 1&gt;(<a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>().x(), <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>().y(), <a class="code" href="classsmooth_1_1SE2Base.html#aceec9c027c7bffffbe9a9881cc4bd3a5">Scalar</a>(0)));</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  }</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;};</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;<span class="comment">// \cond</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="keyword">class </span>SE2;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="comment">// \endcond</span></div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="comment">// \cond</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="keyword">struct </span>lie_traits&lt;SE2&lt;_Scalar&gt;&gt;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;{</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_mutable = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="keyword">using</span> Impl   = SE2Impl&lt;_Scalar&gt;;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keyword">using</span> Scalar = _Scalar;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NewScalar&gt;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <span class="keyword">using</span> PlainObject = SE2&lt;NewScalar&gt;;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;};</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">// \endcond</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2.html">  177</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1SE2.html">SE2</a> : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a>&lt;SE2&lt;_Scalar&gt;&gt;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;{</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2Base.html">Base</a> = <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base&lt;SE2&lt;_Scalar&gt;</a>&gt;;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2.html#a2ea000ae5d6d3bce50008c5045b95262">  181</a></span>&#160;  SMOOTH_GROUP_API(<a class="code" href="classsmooth_1_1SE2.html">SE2</a>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">namespace </span>smooth {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">// \cond</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Scalar&gt;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">class </span>SE3;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">// \endcond</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Derived&gt;</div>
+<div class="line"><a name="l00090"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html">   90</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a> : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1LieGroupBase.html">LieGroupBase</a>&lt;_Derived&gt;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;{</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1LieGroupBase.html">Base</a> = <a class="code" href="classsmooth_1_1LieGroupBase.html">LieGroupBase&lt;_Derived&gt;</a>;</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#aceec9c027c7bffffbe9a9881cc4bd3a5">   98</a></span>&#160;  SMOOTH_INHERIT_TYPEDEFS;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">  103</a></span>&#160;  Map&lt;SO2&lt;Scalar&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">so2</a>() requires <a class="code" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">is_mutable</a></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  {</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordflow">return</span> Map&lt;SO2&lt;Scalar&gt;&gt;(<span class="keyword">static_cast&lt;</span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data() + 2);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  }</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#aa38142eb4c19214deff067fd37b8a5de">  111</a></span>&#160;  Map&lt;const SO2&lt;Scalar&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#aa38142eb4c19214deff067fd37b8a5de">so2</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">return</span> Map&lt;const SO2&lt;Scalar&gt;&gt;(<span class="keyword">static_cast&lt;</span><span class="keyword">const </span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data() + 2);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">  119</a></span>&#160;  Eigen::Map&lt;Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>() requires <a class="code" href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">is_mutable</a></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  {</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="keywordflow">return</span> Eigen::Map&lt;Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt;(<span class="keyword">static_cast&lt;</span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data());</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#a7749de06188c73f55a70762ff3f4a35e">  127</a></span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt; <a class="code" href="classsmooth_1_1SE2Base.html#a7749de06188c73f55a70762ff3f4a35e">r2</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordflow">return</span> Eigen::Map&lt;const Eigen::Matrix&lt;Scalar, 2, 1&gt;&gt;(</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>_Derived &amp;<span class="keyword">&gt;</span>(*this).data());</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  }</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> EigenDerived&gt;</div>
+<div class="line"><a name="l00137"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#afa3100842d2e726fa7dc60ee6ec1dd73">  137</a></span>&#160;  Eigen::Matrix&lt;Scalar, 2, 1&gt; <a class="code" href="classsmooth_1_1SE2Base.html#afa3100842d2e726fa7dc60ee6ec1dd73">operator*</a>(<span class="keyword">const</span> Eigen::MatrixBase&lt;EigenDerived&gt; &amp; v)<span class="keyword"> const</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">so2</a>() * v + <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>();</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  }</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54">  147</a></span>&#160;  <a class="code" href="classsmooth_1_1SE3.html">SE3&lt;Scalar&gt;</a> <a class="code" href="classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54">lift_se3</a>()<span class="keyword"> const</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="keyword">  </span>{</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1SE3.html">SE3&lt;Scalar&gt;</a>(</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;      <a class="code" href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">so2</a>().lift_so3(), Eigen::Matrix&lt;Scalar, 3, 1&gt;(<a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>().x(), <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>().y(), <a class="code" href="classsmooth_1_1SE2Base.html#aceec9c027c7bffffbe9a9881cc4bd3a5">Scalar</a>(0)));</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  }</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;};</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="comment">// \cond</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;<span class="keyword">class </span>SE2;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;<span class="comment">// \endcond</span></div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;<span class="comment">// \cond</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;<span class="keyword">struct </span>lie_traits&lt;SE2&lt;_Scalar&gt;&gt;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;{</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_mutable = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  <span class="keyword">using</span> Impl   = SE2Impl&lt;_Scalar&gt;;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <span class="keyword">using</span> Scalar = _Scalar;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NewScalar&gt;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="keyword">using</span> PlainObject = SE2&lt;NewScalar&gt;;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;};</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">// \endcond</span></div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
+<div class="line"><a name="l00179"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2.html">  179</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1SE2.html">SE2</a> : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a>&lt;SE2&lt;_Scalar&gt;&gt;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;{</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2Base.html">Base</a> = <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base&lt;SE2&lt;_Scalar&gt;</a>&gt;;</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SO2Derived, <span class="keyword">typename</span> T2Derived&gt;</div>
-<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2.html#a35f45e223c26c7517bd63f88f99c8c49">  191</a></span>&#160;  <a class="code" href="classsmooth_1_1SE2.html#a35f45e223c26c7517bd63f88f99c8c49">SE2</a>(<span class="keyword">const</span> <a class="code" href="classsmooth_1_1SO2Base.html">SO2Base&lt;SO2Derived&gt;</a> &amp; <a class="code" href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">so2</a>, <span class="keyword">const</span> Eigen::MatrixBase&lt;T2Derived&gt; &amp; <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>)</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  {</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    <a class="code" href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">Base::so2</a>() = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>SO2Derived &amp;<span class="keyword">&gt;</span>(<a class="code" href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">so2</a>);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;    <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">Base::r2</a>()  = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>T2Derived &amp;<span class="keyword">&gt;</span>(<a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>);</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  }</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;};</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160; </div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="keyword">using</span> SE2f = SE2&lt;float&gt;;   </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="keyword">using</span> SE2d = SE2&lt;double&gt;;  </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;}  <span class="comment">// namespace smooth</span></div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="comment">// MAP TYPE TRAITS</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;<span class="comment">// \cond</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;<span class="keyword">struct </span><a class="code" href="structsmooth_1_1lie__traits.html">smooth::lie_traits</a>&lt;Eigen::Map&lt;smooth::SE2&lt;_Scalar&gt;&gt;&gt;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    : <span class="keyword">public</span> lie_traits&lt;smooth::SE2&lt;_Scalar&gt;&gt;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;{};</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment">// \endcond</span></div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00218"></a><span class="lineno"><a class="line" href="classEigen_1_1Map_3_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html">  218</a></span>&#160;<span class="keyword">class </span>Eigen::Map&lt;smooth::SE2&lt;_Scalar&gt;&gt; : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1SE2Base.html">smooth::SE2Base</a>&lt;Eigen::Map&lt;smooth::SE2&lt;_Scalar&gt;&gt;&gt;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;{</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2Base.html">Base</a> = <a class="code" href="classsmooth_1_1SE2Base.html">smooth::SE2Base&lt;Eigen::Map&lt;smooth::SE2&lt;_Scalar&gt;</a>&gt;&gt;;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="classEigen_1_1Map_3_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html#ac396ea8b6d80ac2ea01ee4d075a9a737">  222</a></span>&#160;  SMOOTH_MAP_API(Map);</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;};</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment">// \cond</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="keyword">struct </span><a class="code" href="structsmooth_1_1lie__traits.html">smooth::lie_traits</a>&lt;Eigen::Map&lt;const smooth::SE2&lt;_Scalar&gt;&gt;&gt;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    : <span class="keyword">public</span> lie_traits&lt;smooth::SE2&lt;_Scalar&gt;&gt;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;{</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_mutable = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;};</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment">// \endcond</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="classEigen_1_1Map_3_01const_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html">  240</a></span>&#160;<span class="keyword">class </span>Eigen::Map&lt;const smooth::SE2&lt;_Scalar&gt;&gt;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1SE2Base.html">smooth::SE2Base</a>&lt;Eigen::Map&lt;const smooth::SE2&lt;_Scalar&gt;&gt;&gt;</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;{</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2Base.html">Base</a> = <a class="code" href="classsmooth_1_1SE2Base.html">smooth::SE2Base&lt;Eigen::Map&lt;const smooth::SE2&lt;_Scalar&gt;</a>&gt;&gt;;</div>
+<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2.html#a2ea000ae5d6d3bce50008c5045b95262">  183</a></span>&#160;  SMOOTH_GROUP_API(<a class="code" href="classsmooth_1_1SE2.html">SE2</a>);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SO2Derived, <span class="keyword">typename</span> T2Derived&gt;</div>
+<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="classsmooth_1_1SE2.html#a35f45e223c26c7517bd63f88f99c8c49">  193</a></span>&#160;  <a class="code" href="classsmooth_1_1SE2.html#a35f45e223c26c7517bd63f88f99c8c49">SE2</a>(<span class="keyword">const</span> <a class="code" href="classsmooth_1_1SO2Base.html">SO2Base&lt;SO2Derived&gt;</a> &amp; <a class="code" href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">so2</a>, <span class="keyword">const</span> Eigen::MatrixBase&lt;T2Derived&gt; &amp; <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>)</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  {</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    <a class="code" href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">Base::so2</a>() = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>SO2Derived &amp;<span class="keyword">&gt;</span>(<a class="code" href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">so2</a>);</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">Base::r2</a>()  = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span>T2Derived &amp;<span class="keyword">&gt;</span>(<a class="code" href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">r2</a>);</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  }</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;};</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment">// MAP TYPE TRAITS</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="comment">// \cond</span></div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;<span class="keyword">struct </span>lie_traits&lt;Map&lt;SE2&lt;_Scalar&gt;&gt;&gt; : <span class="keyword">public</span> lie_traits&lt;SE2&lt;_Scalar&gt;&gt;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;{};</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;<span class="comment">// \endcond</span></div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
+<div class="line"><a name="l00214"></a><span class="lineno"><a class="line" href="classsmooth_1_1Map_3_01SE2_3_01__Scalar_01_4_01_4.html">  214</a></span>&#160;<span class="keyword">class </span>Map&lt;<a class="code" href="classsmooth_1_1SE2.html">SE2</a>&lt;_Scalar&gt;&gt; : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a>&lt;Map&lt;SE2&lt;_Scalar&gt;&gt;&gt;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;{</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2Base.html">Base</a> = <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base&lt;Map&lt;SE2&lt;_Scalar&gt;</a>&gt;&gt;;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00218"></a><span class="lineno"><a class="line" href="classsmooth_1_1Map_3_01SE2_3_01__Scalar_01_4_01_4.html#aa32f0763c59295cc448a5951c3e66d4a">  218</a></span>&#160;  SMOOTH_MAP_API();</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;};</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;<span class="comment">// \cond</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="keyword">struct </span><a class="code" href="structsmooth_1_1lie__traits.html">lie_traits</a>&lt;Map&lt;const <a class="code" href="classsmooth_1_1SE2.html">SE2</a>&lt;_Scalar&gt;&gt;&gt; : <span class="keyword">public</span> <a class="code" href="structsmooth_1_1lie__traits.html">lie_traits</a>&lt;SE2&lt;_Scalar&gt;&gt;</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;{</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_mutable = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;};</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="comment">// \endcond</span></div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
+<div class="line"><a name="l00235"></a><span class="lineno"><a class="line" href="classsmooth_1_1Map_3_01const_01SE2_3_01__Scalar_01_4_01_4.html">  235</a></span>&#160;<span class="keyword">class </span>Map&lt;const <a class="code" href="classsmooth_1_1SE2.html">SE2</a>&lt;_Scalar&gt;&gt; : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base</a>&lt;Map&lt;const SE2&lt;_Scalar&gt;&gt;&gt;</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;{</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2Base.html">Base</a> = <a class="code" href="classsmooth_1_1SE2Base.html">SE2Base&lt;Map&lt;const SE2&lt;_Scalar&gt;</a>&gt;&gt;;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno"><a class="line" href="classsmooth_1_1Map_3_01const_01SE2_3_01__Scalar_01_4_01_4.html#a05cc09b53f693bb6a982640d740b010e">  239</a></span>&#160;  SMOOTH_CONST_MAP_API();</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;};</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2.html">SE2f</a> = <a class="code" href="classsmooth_1_1SE2.html">SE2&lt;float&gt;</a>;   </div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="keyword">using</span> <a class="code" href="classsmooth_1_1SE2.html">SE2d</a> = <a class="code" href="classsmooth_1_1SE2.html">SE2&lt;double&gt;</a>;  </div>
 <div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
-<div class="line"><a name="l00245"></a><span class="lineno"><a class="line" href="classEigen_1_1Map_3_01const_01smooth_1_1SE2_3_01__Scalar_01_4_01_4.html#acaeccf1df6b6ca6fbf62b1bdfde36335">  245</a></span>&#160;  SMOOTH_CONST_MAP_API(Map);</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;};</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160; </div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__SE2_HPP_</span></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase</a></div><div class="ttdoc">Base class for Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00048">lie_group_base.hpp:49</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_ab5cc38ff686866f55e5302efc79ecaa9"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">smooth::LieGroupBase&lt; _Derived &gt;::is_mutable</a></div><div class="ttdeci">static constexpr bool is_mutable</div><div class="ttdoc">True if underlying storage supports modification.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00068">lie_group_base.hpp:68</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html"><div class="ttname"><a href="classsmooth_1_1SE2Base.html">smooth::SE2Base</a></div><div class="ttdoc">Base class for SE2 Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00088">se2.hpp:89</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html_a02b1eb30dff39505d3b47114c2b8fb54"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54">smooth::SE2Base::lift_se3</a></div><div class="ttdeci">SE3&lt; Scalar &gt; lift_se3() const</div><div class="ttdoc">Lift to SE3.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00145">se2.hpp:145</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html_a0ed999aa8fac69fd50b1309153ce70fd"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#a0ed999aa8fac69fd50b1309153ce70fd">smooth::SE2Base::so2</a></div><div class="ttdeci">Eigen::Map&lt; const SO2&lt; Scalar &gt; &gt; so2() const</div><div class="ttdoc">Const access SO(2) part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00109">se2.hpp:109</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html_a7749de06188c73f55a70762ff3f4a35e"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#a7749de06188c73f55a70762ff3f4a35e">smooth::SE2Base::r2</a></div><div class="ttdeci">Eigen::Map&lt; const Eigen::Matrix&lt; Scalar, 2, 1 &gt; &gt; r2() const</div><div class="ttdoc">Const access R2 part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00125">se2.hpp:125</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html_abae2dcbf08413af18acca16e62a53603"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">smooth::SE2Base::r2</a></div><div class="ttdeci">Eigen::Map&lt; Eigen::Matrix&lt; Scalar, 2, 1 &gt; &gt; r2() requires is_mutable</div><div class="ttdoc">Access R2 part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00117">se2.hpp:117</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html_aceec9c027c7bffffbe9a9881cc4bd3a5"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#aceec9c027c7bffffbe9a9881cc4bd3a5">smooth::SE2Base::Scalar</a></div><div class="ttdeci">typename Base::Scalar Scalar</div><div class="ttdoc">Scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00096">se2.hpp:96</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html_ae4e0839a7466c89726e0b3413d2b62b3"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#ae4e0839a7466c89726e0b3413d2b62b3">smooth::SE2Base::so2</a></div><div class="ttdeci">Eigen::Map&lt; SO2&lt; Scalar &gt; &gt; so2() requires is_mutable</div><div class="ttdoc">Access SO(2) part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00101">se2.hpp:101</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2Base_html_afa3100842d2e726fa7dc60ee6ec1dd73"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#afa3100842d2e726fa7dc60ee6ec1dd73">smooth::SE2Base::operator*</a></div><div class="ttdeci">Eigen::Matrix&lt; Scalar, 2, 1 &gt; operator*(const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v) const</div><div class="ttdoc">Tranformation action on 2D vector.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00135">se2.hpp:135</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2_html"><div class="ttname"><a href="classsmooth_1_1SE2.html">smooth::SE2</a></div><div class="ttdoc">Storage implementation of SE2 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00177">se2.hpp:178</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE2_html_a35f45e223c26c7517bd63f88f99c8c49"><div class="ttname"><a href="classsmooth_1_1SE2.html#a35f45e223c26c7517bd63f88f99c8c49">smooth::SE2::SE2</a></div><div class="ttdeci">SE2(const SO2Base&lt; SO2Derived &gt; &amp;so2, const Eigen::MatrixBase&lt; T2Derived &gt; &amp;r2)</div><div class="ttdoc">Construct from SO2 and R2.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00191">se2.hpp:191</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SE3_html"><div class="ttname"><a href="classsmooth_1_1SE3.html">smooth::SE3</a></div><div class="ttdoc">Storage implementation of SE3 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="se3_8hpp_source.html#l00176">se3.hpp:177</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SO2Base_html"><div class="ttname"><a href="classsmooth_1_1SO2Base.html">smooth::SO2Base</a></div><div class="ttdoc">Base class for SO2 Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="so2_8hpp_source.html#l00085">so2.hpp:86</a></div></div>
-<div class="ttc" id="astructsmooth_1_1lie__traits_html"><div class="ttname"><a href="structsmooth_1_1lie__traits.html">smooth::lie_traits</a></div><div class="ttdoc">Type trait that maps a type to Lie group operations.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00042">lie_group_base.hpp:42</a></div></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__SE2_HPP_</span></div>
+<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase</a></div><div class="ttdoc">Base class for Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00049">lie_group_base.hpp:50</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_ab5cc38ff686866f55e5302efc79ecaa9"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">smooth::LieGroupBase&lt; _Derived &gt;::is_mutable</a></div><div class="ttdeci">static constexpr bool is_mutable</div><div class="ttdoc">True if underlying storage supports modification.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00065">lie_group_base.hpp:65</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html"><div class="ttname"><a href="classsmooth_1_1SE2Base.html">smooth::SE2Base</a></div><div class="ttdoc">Base class for SE2 Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00090">se2.hpp:91</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html_a02b1eb30dff39505d3b47114c2b8fb54"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54">smooth::SE2Base::lift_se3</a></div><div class="ttdeci">SE3&lt; Scalar &gt; lift_se3() const</div><div class="ttdoc">Lift to SE3.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00147">se2.hpp:147</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html_a7749de06188c73f55a70762ff3f4a35e"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#a7749de06188c73f55a70762ff3f4a35e">smooth::SE2Base::r2</a></div><div class="ttdeci">Eigen::Map&lt; const Eigen::Matrix&lt; Scalar, 2, 1 &gt; &gt; r2() const</div><div class="ttdoc">Const access R2 part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00127">se2.hpp:127</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html_aa38142eb4c19214deff067fd37b8a5de"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#aa38142eb4c19214deff067fd37b8a5de">smooth::SE2Base::so2</a></div><div class="ttdeci">Map&lt; const SO2&lt; Scalar &gt; &gt; so2() const</div><div class="ttdoc">Const access SO(2) part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00111">se2.hpp:111</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html_abae2dcbf08413af18acca16e62a53603"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#abae2dcbf08413af18acca16e62a53603">smooth::SE2Base::r2</a></div><div class="ttdeci">Eigen::Map&lt; Eigen::Matrix&lt; Scalar, 2, 1 &gt; &gt; r2() requires is_mutable</div><div class="ttdoc">Access R2 part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00119">se2.hpp:119</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html_aceec9c027c7bffffbe9a9881cc4bd3a5"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#aceec9c027c7bffffbe9a9881cc4bd3a5">smooth::SE2Base::Scalar</a></div><div class="ttdeci">typename Base::Scalar Scalar</div><div class="ttdoc">Scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00098">se2.hpp:98</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html_adda3889d11d381271a2cf6563fe1ee69"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#adda3889d11d381271a2cf6563fe1ee69">smooth::SE2Base::so2</a></div><div class="ttdeci">Map&lt; SO2&lt; Scalar &gt; &gt; so2() requires is_mutable</div><div class="ttdoc">Access SO(2) part.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00103">se2.hpp:103</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2Base_html_afa3100842d2e726fa7dc60ee6ec1dd73"><div class="ttname"><a href="classsmooth_1_1SE2Base.html#afa3100842d2e726fa7dc60ee6ec1dd73">smooth::SE2Base::operator*</a></div><div class="ttdeci">Eigen::Matrix&lt; Scalar, 2, 1 &gt; operator*(const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v) const</div><div class="ttdoc">Tranformation action on 2D vector.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00137">se2.hpp:137</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2_html"><div class="ttname"><a href="classsmooth_1_1SE2.html">smooth::SE2</a></div><div class="ttdoc">Storage implementation of SE2 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00179">se2.hpp:180</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE2_html_a35f45e223c26c7517bd63f88f99c8c49"><div class="ttname"><a href="classsmooth_1_1SE2.html#a35f45e223c26c7517bd63f88f99c8c49">smooth::SE2::SE2</a></div><div class="ttdeci">SE2(const SO2Base&lt; SO2Derived &gt; &amp;so2, const Eigen::MatrixBase&lt; T2Derived &gt; &amp;r2)</div><div class="ttdoc">Construct from SO2 and R2.</div><div class="ttdef"><b>Definition:</b> <a href="se2_8hpp_source.html#l00193">se2.hpp:193</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SE3_html"><div class="ttname"><a href="classsmooth_1_1SE3.html">smooth::SE3</a></div><div class="ttdoc">Storage implementation of SE3 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="se3_8hpp_source.html#l00178">se3.hpp:179</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SO2Base_html"><div class="ttname"><a href="classsmooth_1_1SO2Base.html">smooth::SO2Base</a></div><div class="ttdoc">Base class for SO2 Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="so2_8hpp_source.html#l00087">so2.hpp:88</a></div></div>
+<div class="ttc" id="alie__group_8hpp_html"><div class="ttname"><a href="lie__group_8hpp.html">lie_group.hpp</a></div></div>
+<div class="ttc" id="astructsmooth_1_1lie__traits_html"><div class="ttname"><a href="structsmooth_1_1lie__traits.html">smooth::lie_traits</a></div><div class="ttdoc">Type trait that maps a type to Lie group operations.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00042">lie_group_base.hpp:43</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

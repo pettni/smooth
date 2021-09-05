@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['s_420',['s',['../structsmooth_1_1Reparameterization_1_1Data.html#abad3183aac82b87174c2d70fed9292e0',1,'smooth::Reparameterization::Data']]],
-  ['sizeatcompiletime_421',['SizeAtCompileTime',['../classsmooth_1_1LieGroupBase.html#ab49025aac6fb6b4e026413818dea2346',1,'smooth::LieGroupBase::SizeAtCompileTime()'],['../classsmooth_1_1ManifoldVector.html#aafa19ef731aeb1a540350c249d817434',1,'smooth::ManifoldVector::SizeAtCompileTime()']]]
+  ['repsize_429',['RepSize',['../classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'smooth::LieGroupBase']]],
+  ['rntype_430',['RnType',['../lie__group_8hpp.html#a77615f337de1ec1bb048589deac46b27',1,'smooth']]]
 ];

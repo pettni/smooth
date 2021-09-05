@@ -139,11 +139,11 @@ $(function() {
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#ifdef ENABLE_PLOTTING</span></div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keyword">auto</span> tvec = matplot::linspace(spline.t_min(), spline.t_max(), 300);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  std::vector&lt;smooth::SO3d&gt; gvec;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  std::vector&lt;Eigen::Vector3d, Eigen::aligned_allocator&lt;Eigen::Vector3d&gt;&gt; vvec, avec;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  std::vector&lt;Eigen::Vector3d&gt; vvec, avec;</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> t : tvec) {</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    Eigen::Vector3d vel, acc;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">auto</span> g = spline.eval(t, vel, acc);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">auto</span> g = spline(t, vel, acc);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    gvec.push_back(g);</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    vvec.push_back(vel);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    avec.push_back(acc);</div>
@@ -182,8 +182,8 @@ $(function() {
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
 <div class="ttc" id="abspline_8cpp_html_a2b760810e5bb0cfb55f0c7d6d74d4438"><div class="ttname"><a href="bspline_8cpp.html#a2b760810e5bb0cfb55f0c7d6d74d4438">main</a></div><div class="ttdeci">int main(int, char const **)</div><div class="ttdoc">Define and plot a B-spline on .</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8cpp_source.html#l00044">bspline.cpp:44</a></div></div>
 <div class="ttc" id="abspline_8hpp_html"><div class="ttname"><a href="bspline_8hpp.html">bspline.hpp</a></div><div class="ttdoc">B-splines on Lie groups.</div></div>
-<div class="ttc" id="aclasssmooth_1_1BSpline_html"><div class="ttname"><a href="classsmooth_1_1BSpline.html">smooth::BSpline</a></div><div class="ttdoc">Cardinal Bspline on a Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00079">bspline.hpp:80</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_affb405319b0c006dcfabbf1a961224a7"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::LieGroupBase::Random</a></div><div class="ttdeci">static PlainObject Random()</div><div class="ttdoc">Construct a random element.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00141">lie_group_base.hpp:141</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1BSpline_html"><div class="ttname"><a href="classsmooth_1_1BSpline.html">smooth::BSpline</a></div><div class="ttdoc">Cardinal Bspline on a Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00077">bspline.hpp:78</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_affb405319b0c006dcfabbf1a961224a7"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::LieGroupBase::Random</a></div><div class="ttdeci">static PlainObject Random()</div><div class="ttdoc">Construct a random element.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00136">lie_group_base.hpp:136</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

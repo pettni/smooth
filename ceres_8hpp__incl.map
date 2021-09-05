@@ -1,9 +1,10 @@
 <map id="include/smooth/compat/ceres.hpp" name="include/smooth/compat/ceres.hpp">
-<area shape="rect" id="node1" title="ceres compatability header." alt="" coords="251,5,409,47"/>
+<area shape="rect" id="node1" title="ceres compatability header." alt="" coords="337,5,494,47"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,95,140,136"/>
 <area shape="rect" id="node3" title=" " alt="" coords="164,102,320,129"/>
-<area shape="rect" id="node4" href="$concepts_8hpp.html" title=" " alt="" coords="345,102,491,129"/>
-<area shape="rect" id="node7" title=" " alt="" coords="515,102,678,129"/>
-<area shape="rect" id="node5" title=" " alt="" coords="329,184,403,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="427,184,513,211"/>
+<area shape="rect" id="node4" href="$manifold_8hpp.html" title=" " alt="" coords="344,102,487,129"/>
+<area shape="rect" id="node7" title=" " alt="" coords="511,102,629,129"/>
+<area shape="rect" id="node8" title=" " alt="" coords="653,102,764,129"/>
+<area shape="rect" id="node5" title=" " alt="" coords="321,184,406,211"/>
+<area shape="rect" id="node6" title=" " alt="" coords="430,184,505,211"/>
 </map>

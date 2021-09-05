@@ -1,0 +1,5 @@
+<map id="smooth::Map&lt; const geometry_msgs::msg::Quaternion &gt;" name="smooth::Map&lt; const geometry_msgs::msg::Quaternion &gt;">
+<area shape="rect" id="node1" title="Const memory mapping of ROS message as Lie group type." alt="" coords="23,199,171,255"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="5,95,188,151"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="19,5,174,47"/>
+</map>

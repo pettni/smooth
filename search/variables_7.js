@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['repsize_419',['RepSize',['../classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'smooth::LieGroupBase']]]
+  ['ptol_428',['ptol',['../structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530',1,'smooth::MinimizeOptions']]]
 ];

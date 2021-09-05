@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['matrix_427',['Matrix',['../classsmooth_1_1LieGroupBase.html#abff41124555fe53be6ec9a231c33d9cf',1,'smooth::LieGroupBase']]]
+  ['impl_437',['Impl',['../classsmooth_1_1LieGroupBase.html#a55f732e687efa0c2b44c3174f1e620fb',1,'smooth::LieGroupBase']]]
 ];

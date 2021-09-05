@@ -71,6 +71,7 @@ var menudata={children:[
 {text:"~",url:"functions_func_~.html#index__7E"}]},
 {text:"Variables",url:"functions_vars.html"},
 {text:"Typedefs",url:"functions_type.html",children:[
+{text:"c",url:"functions_type.html#index_c"},
 {text:"i",url:"functions_type.html#index_i"},
 {text:"m",url:"functions_type.html#index_m"},
 {text:"p",url:"functions_type.html#index_p"},

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['t_422',['t',['../structsmooth_1_1Reparameterization_1_1Data.html#aa0b183996f82418d26a32b75f81b5998',1,'smooth::Reparameterization::Data']]]
+  ['s_431',['s',['../structsmooth_1_1Reparameterization_1_1Data.html#abad3183aac82b87174c2d70fed9292e0',1,'smooth::Reparameterization::Data']]]
 ];

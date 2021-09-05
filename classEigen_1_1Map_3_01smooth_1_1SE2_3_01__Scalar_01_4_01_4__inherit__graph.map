@@ -1,5 +1,0 @@
-<map id="Eigen::Map&lt; smooth::SE2&lt; _Scalar &gt; &gt;" name="Eigen::Map&lt; smooth::SE2&lt; _Scalar &gt; &gt;">
-<area shape="rect" id="node1" title="Memory mapping of SE2 Lie group." alt="" coords="49,184,187,225"/>
-<area shape="rect" id="node2" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="5,95,231,136"/>
-<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="41,5,195,47"/>
-</map>

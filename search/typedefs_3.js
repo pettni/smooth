@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['parttype_428',['PartType',['../classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f',1,'smooth::BundleBase']]],
-  ['plainobject_429',['PlainObject',['../classsmooth_1_1LieGroupBase.html#a3fa503f35690e9c5b538fea863700042',1,'smooth::LieGroupBase::PlainObject()'],['../classsmooth_1_1ManifoldVector.html#aee5e33cea4a41561b2a276a0468c0cc7',1,'smooth::ManifoldVector::PlainObject()']]],
-  ['plainobjectcast_430',['PlainObjectCast',['../classsmooth_1_1LieGroupBase.html#a111812b412d0ba85ab79cdd6c1b856a5',1,'smooth::LieGroupBase']]]
+  ['matrix_438',['Matrix',['../classsmooth_1_1LieGroupBase.html#abff41124555fe53be6ec9a231c33d9cf',1,'smooth::LieGroupBase']]]
 ];
