@@ -23,22 +23,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__MACRO_HPP_
-#define SMOOTH__MACRO_HPP_
+#ifndef SMOOTH__INTERNAL__MACRO_HPP_
+#define SMOOTH__INTERNAL__MACRO_HPP_
 
 namespace smooth {
 
-#define SMOOTH_INHERIT_TYPEDEFS                                   \
-  using Base::is_mutable;                                         \
-  using Base::Dof;                                                \
-  using Base::RepSize;                                            \
-  /*! @brief Scalar type. */                                      \
-  using Scalar = typename Base::Scalar;                           \
-  /*! @brief Tangent type (Eigen column vector of length Dof). */ \
-  using Tangent       = typename Base::Tangent;                   \
-  using Base::operator=;                                          \
-  using Base::operator*;                                          \
-                                                                  \
+#define SMOOTH_INHERIT_TYPEDEFS                 \
+  using Base::is_mutable;                       \
+  using Base::Dof;                              \
+  using Base::RepSize;                          \
+  /*! @brief Scalar type. */                    \
+  using Scalar = typename Base::Scalar;         \
+  /*! @brief Tangent type. */                   \
+  using Tangent       = typename Base::Tangent; \
+  using Base::operator=;                        \
+  using Base::operator*;                        \
+                                                \
   static_assert(true, "")
 
 #define SMOOTH_GROUP_API(X)                                   \
@@ -56,7 +56,7 @@ public:                                                       \
   X & operator=(X &&) = default;                              \
   /*! @brief Destructor */                                    \
   ~X() = default;                                             \
-  /*! @brief Copy assignment from other storage type */       \
+  /*! @brief Copy constructor from other storage type */      \
   template<typename OtherDerived>                             \
   X(const X##Base<OtherDerived> & o)                          \
   {                                                           \
@@ -78,7 +78,7 @@ private:                                                      \
                                                               \
   static_assert(true, "")
 
-#define SMOOTH_MAP_API(X)                                        \
+#define SMOOTH_MAP_API()                                         \
 public:                                                          \
   SMOOTH_INHERIT_TYPEDEFS;                                       \
   /*! @brief Map memory as Lie type */                           \
@@ -93,12 +93,6 @@ public:                                                          \
   Map & operator=(Map &&) = default;                             \
   /*! @brief Destructor */                                       \
   ~Map() = default;                                              \
-  /*! @brief Copy assignment from other storage type */          \
-  template<typename OtherDerived>                                \
-  Map(const X##Base<OtherDerived> & o)                           \
-  {                                                              \
-    coeffs() = static_cast<const OtherDerived &>(o).coeffs();    \
-  }                                                              \
   /*! @brief Underlying storage is Eigen map */                  \
   using Storage = Eigen::Map<Eigen::Matrix<Scalar, RepSize, 1>>; \
   /*! @brief Access underlying Eigen::Map */                     \
@@ -136,4 +130,4 @@ private:                                                               \
 
 }  // namespace smooth
 
-#endif  // SMOOTH__MACRO_HPP_
+#endif  // SMOOTH__INTERNAL__MACRO_HPP_

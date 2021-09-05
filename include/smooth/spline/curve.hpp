@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__INTERP__CURVE__HPP_
-#define SMOOTH__INTERP__CURVE__HPP_
+#ifndef SMOOTH__SPLINE__CURVE__HPP_
+#define SMOOTH__SPLINE__CURVE__HPP_
 
 /**
  * @file
@@ -686,4 +686,4 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
 }  // namespace smooth
 
-#endif  // SMOOTH__INTERP__CURVE__HPP_
+#endif  // SMOOTH__SPLINE__CURVE__HPP_

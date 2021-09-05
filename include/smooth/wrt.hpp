@@ -59,11 +59,13 @@ struct wrt_dof<std::tuple<Wrt...>>
 };
 
 // \cond
+namespace detail {
 template<typename Scalar, typename Wrt, std::size_t... Idx>
-auto wrt_cast_helper(Wrt && wrt, std::index_sequence<Idx...>)
+auto wrt_cast_impl(Wrt && wrt, std::index_sequence<Idx...>)
 {
   return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
 }
+}  // namespace detail
 // \endcond
 
 /**
@@ -72,13 +74,14 @@ auto wrt_cast_helper(Wrt && wrt, std::index_sequence<Idx...>)
 template<typename Scalar, typename Wrt>
 auto wrt_cast(Wrt && wrt)
 {
-  return wrt_cast_helper<Scalar>(
+  return detail::wrt_cast_impl<Scalar>(
     std::forward<Wrt>(wrt), std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 
 // \cond
+namespace detail {
 template<typename Wrt, typename Derived, std::size_t... Idx>
-auto wrt_rplus_helper(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
+auto wrt_rplus_impl(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
 {
   static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{
     Dof<std::decay_t<std::tuple_element_t<Idx, std::decay_t<Wrt>>>>...};
@@ -95,6 +98,7 @@ auto wrt_rplus_helper(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::ind
   );
   // clang-format on
 }
+}  // namespace detail
 // \endcond
 
 /**
@@ -103,7 +107,7 @@ auto wrt_rplus_helper(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::ind
 template<typename Wrt, typename Derived>
 auto wrt_rplus(Wrt && wrt, const Eigen::MatrixBase<Derived> & a)
 {
-  return wrt_rplus_helper(
+  return detail::wrt_rplus_impl(
     std::forward<Wrt>(wrt), a, std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 

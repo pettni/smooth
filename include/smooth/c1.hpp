@@ -217,7 +217,7 @@ class Map<C1<_Scalar>> : public C1Base<Map<C1<_Scalar>>>
 {
   using Base = C1Base<Map<C1<_Scalar>>>;
 
-  SMOOTH_MAP_API(C1);
+  SMOOTH_MAP_API();
 };
 
 // \cond

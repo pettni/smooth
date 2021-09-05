@@ -215,7 +215,7 @@ class Map<SE2<_Scalar>> : public SE2Base<Map<SE2<_Scalar>>>
 {
   using Base = SE2Base<Map<SE2<_Scalar>>>;
 
-  SMOOTH_MAP_API(SE2);
+  SMOOTH_MAP_API();
 };
 
 // \cond

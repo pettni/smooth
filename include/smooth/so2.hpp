@@ -227,7 +227,7 @@ class Map<SO2<_Scalar>> : public SO2Base<Map<SO2<_Scalar>>>
 {
   using Base = SO2Base<Map<SO2<_Scalar>>>;
 
-  SMOOTH_MAP_API(SO2);
+  SMOOTH_MAP_API();
 };
 
 // \cond

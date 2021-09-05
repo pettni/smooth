@@ -208,7 +208,7 @@ class Map<SO3<_Scalar>> : public SO3Base<Map<SO3<_Scalar>>>
 {
   using Base = SO3Base<Map<SO3<_Scalar>>>;
 
-  SMOOTH_MAP_API(SO3);
+  SMOOTH_MAP_API();
 };
 
 // \cond

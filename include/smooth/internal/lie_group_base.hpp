@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__LIE_GROUP_BASE_HPP_
-#define SMOOTH__LIE_GROUP_BASE_HPP_
+#ifndef SMOOTH__INTERNAL__LIE_GROUP_BASE_HPP_
+#define SMOOTH__INTERNAL__LIE_GROUP_BASE_HPP_
 
 #include <Eigen/Core>
 
@@ -417,4 +417,4 @@ Stream & operator<<(Stream & s, const LieGroupBase<Derived> & g)
 
 }  // namespace smooth
 
-#endif  // SMOOTH__LIE_GROUP_BASE_HPP_
+#endif  // SMOOTH__INTERNAL__LIE_GROUP_BASE_HPP_

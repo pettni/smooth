@@ -24,8 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__INTERP__DUBINS_HPP_
-#define SMOOTH__INTERP__DUBINS_HPP_
+#ifndef SMOOTH__SPLINE__DUBINS_HPP_
+#define SMOOTH__SPLINE__DUBINS_HPP_
 
 /**
  * @file
@@ -252,4 +252,4 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 
 }  // namespace smooth
 
-#endif  // SMOOTH__INTERP__DUBINS_HPP_
+#endif  // SMOOTH__SPLINE__DUBINS_HPP_

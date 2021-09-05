@@ -36,7 +36,6 @@
 
 #define SMOOTH_DIFF_CERES
 
-#include "smooth/lie_group.hpp"
 #include "smooth/manifold.hpp"
 #include "smooth/map.hpp"
 #include "smooth/wrt.hpp"
@@ -44,7 +43,7 @@
 namespace smooth {
 
 // \cond
-template<NativeLieGroup G>
+template<Manifold G>
 struct CeresParamFunctor
 {
   template<typename Scalar>
@@ -52,11 +51,12 @@ struct CeresParamFunctor
   {
     using GCast = typename G::template CastT<Scalar>;
 
-    smooth::Map<const GCast> mx(x);
+    smooth::MapDispatch<const GCast> mx(x);
     Eigen::Map<const Tangent<GCast>> mdelta(delta);
-    smooth::Map<GCast> mx_plus_delta(x_plus_delta);
+    smooth::MapDispatch<GCast> mx_plus_delta(x_plus_delta);
 
-    mx_plus_delta = mx * GCast::exp(mdelta);
+    mx_plus_delta = rplus(mx, mdelta);
+
     return true;
   }
 };

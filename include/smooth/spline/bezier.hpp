@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__INTERP__BEZIER_HPP_
-#define SMOOTH__INTERP__BEZIER_HPP_
+#ifndef SMOOTH__SPLINE__BEZIER_HPP_
+#define SMOOTH__SPLINE__BEZIER_HPP_
 
 /**
  * @file
@@ -580,4 +580,4 @@ PiecewiseBezier<3, G> fit_cubic_bezier_local(const Rt & tt,
 
 }  // namespace smooth
 
-#endif  // SMOOTH__INTERP__BEZIER_HPP_
+#endif  // SMOOTH__SPLINE__BEZIER_HPP_

@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef INTERP__BSPLINE_HPP_
-#define INTERP__BSPLINE_HPP_
+#ifndef SMOOTH__SPLINE__BSPLINE_HPP_
+#define SMOOTH__SPLINE__BSPLINE_HPP_
 
 /**
  * @file
@@ -278,4 +278,4 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
 
 }  // namespace smooth
 
-#endif  // INTERP__BSPLINE_HPP_
+#endif  // SMOOTH__SPLINE__BSPLINE_HPP_

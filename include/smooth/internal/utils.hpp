@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__UTILS_HPP_
-#define SMOOTH__UTILS_HPP_
+#ifndef SMOOTH__INTERNAL__UTILS_HPP_
+#define SMOOTH__INTERNAL__UTILS_HPP_
 
 #include <array>
 #include <cstddef>
@@ -210,4 +210,4 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
 
 }  // namespace smooth::utils
 
-#endif  // SMOOTH__UTILS_HPP_
+#endif  // SMOOTH__INTERNAL__UTILS_HPP_

@@ -183,7 +183,7 @@ class Map<Bundle<_Gs...>> : public BundleBase<Map<Bundle<_Gs...>>>
 {
   using Base = BundleBase<Map<Bundle<_Gs...>>>;
 
-  SMOOTH_MAP_API(Bundle);
+  SMOOTH_MAP_API();
 };
 
 // \cond

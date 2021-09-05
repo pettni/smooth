@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef INTERP__COMMON_HPP_
-#define INTERP__COMMON_HPP_
+#ifndef SMOOTH__SPLINE__COMMON_HPP_
+#define SMOOTH__SPLINE__COMMON_HPP_
 
 #include "smooth/internal/utils.hpp"
 #include "smooth/lie_group.hpp"
@@ -246,4 +246,4 @@ inline G cspline_eval(const R & gs,
 
 }  // namespace smooth
 
-#endif  // INTERP__COMMON_HPP_
+#endif  // SMOOTH__SPLINE__COMMON_HPP_

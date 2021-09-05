@@ -1,3 +1,28 @@
+// smooth: Lie Theory for Robotics
+// https://github.com/pettni/smooth
+//
+// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
+//
+// Copyright (c) 2021 Petter Nilsson
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 #ifndef SMOOTH__LIE_GROUP_HPP_
 #define SMOOTH__LIE_GROUP_HPP_
 
@@ -376,16 +401,11 @@ struct lie<G>
   template<typename NewScalar>
   using CastT = Eigen::Matrix<NewScalar, Dof, 1>;
 
-private:
-  using Tangent    = Eigen::Matrix<Scalar, Dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
-
-public:
   // group interface
 
   static inline PlainObject Identity() { return G::Zero(); }
   static inline PlainObject Random() { return G::Random(); }
-  static inline TangentMap Ad(const G &) { return TangentMap::Identity(); }
+  static inline Eigen::Matrix<Scalar, Dof, Dof> Ad(const G &) { return Eigen::Matrix<Scalar, Dof, Dof>::Identity(); }
   template<typename Derived>
   static inline PlainObject composition(const G & g1, const Eigen::MatrixBase<Derived> & g2)
   {
@@ -398,7 +418,7 @@ public:
   {
     return g.isApprox(g2, eps);
   }
-  static inline Tangent log(const G & g) { return g; }
+  static inline Eigen::Matrix<Scalar, Dof, 1> log(const G & g) { return g; }
   template<typename NewScalar>
   static inline Eigen::Matrix<NewScalar, Dof, 1> cast(const G & g)
   {
@@ -408,9 +428,9 @@ public:
   // tangent interface
 
   template<typename Derived>
-  static inline TangentMap ad(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, Dof, Dof> ad(const Eigen::MatrixBase<Derived> &)
   {
-    return TangentMap::Zero();
+    return Eigen::Matrix<Scalar, Dof, Dof>::Zero();
   }
   template<typename Derived>
   static inline PlainObject exp(const Eigen::MatrixBase<Derived> & a)
@@ -418,14 +438,14 @@ public:
     return a;
   }
   template<typename Derived>
-  static inline TangentMap dr_exp(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, Dof, Dof> dr_exp(const Eigen::MatrixBase<Derived> &)
   {
-    return TangentMap::Identity();
+    return Eigen::Matrix<Scalar, Dof, Dof>::Identity();
   }
   template<typename Derived>
-  static inline TangentMap dr_expinv(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, Dof, Dof> dr_expinv(const Eigen::MatrixBase<Derived> &)
   {
-    return TangentMap::Identity();
+    return Eigen::Matrix<Scalar, Dof, Dof>::Identity();
   }
   // \endcond
 };
@@ -454,11 +474,6 @@ struct lie<G>
 
   static constexpr int Dof = 1;
 
-private:
-  using Tangent    = Eigen::Matrix<Scalar, Dof, 1>;
-  using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
-
-public:
   // group interface
 
   static inline PlainObject Identity() { return G(0); }
@@ -466,7 +481,7 @@ public:
   {
     return G(Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
   }
-  static inline TangentMap Ad(G) { return TangentMap{1}; }
+  static inline Eigen::Matrix<Scalar, 1, 1> Ad(G) { return Eigen::Matrix<Scalar, 1, 1>{1}; }
   static inline PlainObject composition(G g1, G g2) { return g1 + g2; }
   static inline Eigen::Index dof(G) { return 1; }
   static inline PlainObject inverse(G g) { return -g; }
@@ -475,7 +490,7 @@ public:
     using std::abs;
     return abs<G>(g1 - g2) <= eps * abs<G>(g1);
   }
-  static inline Tangent log(G g) { return Tangent{g}; }
+  static inline Eigen::Matrix<Scalar, 1, 1> log(G g) { return Eigen::Matrix<Scalar, 1, 1>{g}; }
   template<typename NewScalar>
   static inline NewScalar cast(G g)
   {
@@ -485,9 +500,9 @@ public:
   // tangent interface
 
   template<typename Derived>
-  static inline TangentMap ad(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, 1, 1> ad(const Eigen::MatrixBase<Derived> &)
   {
-    return TangentMap::Zero();
+    return Eigen::Matrix<Scalar, 1, 1>::Zero();
   }
   template<typename Derived>
   static inline PlainObject exp(const Eigen::MatrixBase<Derived> & a)
@@ -495,19 +510,14 @@ public:
     return a(0);
   }
   template<typename Derived>
-  static inline Tangent vee(const Eigen::MatrixBase<Derived> & A)
+  static inline Eigen::Matrix<Scalar, 1, 1> dr_exp(const Eigen::MatrixBase<Derived> &)
   {
-    return Tangent{A(0, 1)};
+    return Eigen::Matrix<Scalar, 1, 1>::Identity();
   }
   template<typename Derived>
-  static inline TangentMap dr_exp(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, 1, 1> dr_expinv(const Eigen::MatrixBase<Derived> &)
   {
-    return TangentMap::Identity();
-  }
-  template<typename Derived>
-  static inline TangentMap dr_expinv(const Eigen::MatrixBase<Derived> &)
-  {
-    return TangentMap::Identity();
+    return Eigen::Matrix<Scalar, 1, 1>::Identity();
   }
   // \endcond
 };

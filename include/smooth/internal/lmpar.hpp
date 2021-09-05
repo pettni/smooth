@@ -233,7 +233,8 @@ std::pair<double, Eigen::Matrix<double, N, 1>> lmpar(const MatrixT & J,
   // calculate qr decomposition of J
   std::conditional_t<is_sparse,
     Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<int>>,
-    Eigen::ColPivHouseholderQR<MatrixT>> J_qr;
+    Eigen::ColPivHouseholderQR<MatrixT>>
+    J_qr;
 
   if constexpr (is_sparse) {
     // sparse solver is not very good for close-to-singular matrices
