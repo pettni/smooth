@@ -29,7 +29,6 @@
 
 #include "smooth/spline/curve.hpp"
 #include "smooth/se2.hpp"
-#include "smooth/tn.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include <matplot/matplot.h>
@@ -67,10 +66,10 @@ int main(int, char const **)
 
   for (double t = 0; t < sfun.t_max(); t += 0.01) {
     double ds, d2s;
-    double s = sfun.eval(t, ds, d2s);
+    double s = sfun(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
-    c.eval(s, vel, acc);
+    c(s, vel, acc);
 
     Eigen::Vector3d vel_reparam = vel * ds;
     Eigen::Vector3d acc_reparam = vel * d2s + acc * ds * ds;

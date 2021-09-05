@@ -34,23 +34,11 @@
 #include <Eigen/Core>
 #include <type_traits>
 
-#include "concepts.hpp"
 #include "internal/utils.hpp"
-#include "tn.hpp"
+#include "manifold.hpp"
+#include "wrt.hpp"
 
 namespace smooth {
-
-/**
- * @brief Grouping of function arguments.
- *
- * A tuple of references is created from the input arguments,
- * which is the expected format in e.g. dr() and minimize().
- */
-template<typename... _Args>
-auto wrt(_Args &&... args)
-{
-  return std::forward_as_tuple(std::forward<_Args>(args)...);
-}
 
 // differentiation module
 namespace diff {
@@ -69,36 +57,35 @@ namespace detail {
 template<typename _F, typename _Wrt>
 auto dr_numerical(_F && f, _Wrt && x)
 {
-  using Result = typename decltype(std::apply(f, x))::PlainObject;
-  using Scalar = typename Result::Scalar;
+  using Result = decltype(std::apply(f, x));
+  using Scalar = ::smooth::Scalar<Result>;
 
-  // arguments are modified below, so we create a copy of those that come in as const
-  auto x_nc = utils::tuple_copy_if_const(std::forward<_Wrt>(x));
-
-  // static sizes
-  static constexpr Eigen::Index Nx = utils::tuple_dof<std::decay_t<_Wrt>>::value;
-  static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
+  static_assert(Manifold<Result>, "f(x) is not a Manifold");
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
-  const Result val = std::apply(f, x_nc);
+  // arguments are modified below, so we create a copy of those that come in as const
+  auto x_nc  = wrt_copy_if_const(std::forward<_Wrt>(x));
+  Result val = std::apply(f, x_nc);
+
+  // static sizes
+  static constexpr Eigen::Index Nx = wrt_dof<std::decay_t<_Wrt>>::value;
+  static constexpr Eigen::Index Ny = Dof<Result>;
 
   // dynamic sizes
-  Eigen::Index nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x_nc);
-  Eigen::Index ny = val.size();
+  Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x_nc);
+  Eigen::Index ny = dof<Result>(val);
 
   // output variable
   Eigen::Matrix<Scalar, Ny, Nx> jac(ny, nx);
 
   Eigen::Index index_pos = 0;
-
   utils::static_for<std::tuple_size_v<std::decay_t<_Wrt>>>([&](auto i) {
-    static constexpr Eigen::Index Nx_j =
-      std::decay_t<std::tuple_element_t<i, std::decay_t<_Wrt>>>::SizeAtCompileTime;
-    auto & w       = std::get<i>(x_nc);
-    const int nx_j = w.size();
+    auto & w = std::get<i>(x_nc);
+    using W  = std::decay_t<decltype(w)>;
 
-    using W = std::decay_t<decltype(w)>;
+    static constexpr Eigen::Index Nx_j = Dof<W>;
+    const int nx_j                     = dof<W>(w);
 
     for (auto j = 0; j != nx_j; ++j) {
       Scalar eps_j = eps;
@@ -106,20 +93,15 @@ auto dr_numerical(_F && f, _Wrt && x)
         // scale step size if we are in Rn
         eps_j *= abs(w[j]);
         if (eps_j == 0.) { eps_j = eps; }
-      } else if constexpr (std::is_base_of_v<smooth::TnBase<W>, W>) {
-        // or Tn
-        eps_j *= abs(w.rn()[j]);
-        if (eps_j == 0.) { eps_j = eps; }
       }
-      // const cast needed in case argument is const (value is restored two lines below)
-      w += (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
-      jac.col(index_pos + j) = (std::apply(f, x_nc) - val) / eps_j;
-      w += (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j));
+      w = rplus<W>(w, (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
+      jac.col(index_pos + j) = rminus<Result>(std::apply(f, x_nc), val) / eps_j;
+      w = rplus<W>(w, (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
     }
     index_pos += nx_j;
   });
 
-  return std::make_pair(val, jac);
+  return std::make_pair(std::move(val), std::move(jac));
 }
 
 }  // namespace detail

@@ -33,6 +33,8 @@
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
 #include "internal/se3.hpp"
+#include "lie_group.hpp"
+#include "map.hpp"
 #include "so3.hpp"
 
 namespace smooth {
@@ -98,17 +100,17 @@ public:
   /**
    * @brief Access SO(3) part.
    */
-  Eigen::Map<SO3<Scalar>> so3() requires is_mutable
+  Map<SO3<Scalar>> so3() requires is_mutable
   {
-    return Eigen::Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3);
+    return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3);
   }
 
   /**
    * @brief Const access SO(3) part.
    */
-  Eigen::Map<const SO3<Scalar>> so3() const
+  Map<const SO3<Scalar>> so3() const
   {
-    return Eigen::Map<const SO3<Scalar>>(static_cast<const _Derived &>(*this).data() + 3);
+    return Map<const SO3<Scalar>>(static_cast<const _Derived &>(*this).data() + 3);
   }
 
   /**
@@ -194,15 +196,9 @@ public:
   }
 };
 
-using SE3f = SE3<float>;   ///< SE3 with float
-using SE3d = SE3<double>;  ///< SE3 with double
-
-}  // namespace smooth
-
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::SE3<_Scalar>>>
-    : public lie_traits<smooth::SE3<_Scalar>>
+struct lie_traits<Map<SE3<_Scalar>>> : public lie_traits<SE3<_Scalar>>
 {};
 // \endcond
 
@@ -212,17 +208,16 @@ struct smooth::lie_traits<Eigen::Map<smooth::SE3<_Scalar>>>
  * @see SE3Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<smooth::SE3<_Scalar>> : public smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>
+class Map<SE3<_Scalar>> : public SE3Base<Map<SE3<_Scalar>>>
 {
-  using Base = smooth::SE3Base<Eigen::Map<smooth::SE3<_Scalar>>>;
+  using Base = SE3Base<Map<SE3<_Scalar>>>;
 
-  SMOOTH_MAP_API(Map);
+  SMOOTH_MAP_API();
 };
 
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::SE3<_Scalar>>>
-    : public lie_traits<smooth::SE3<_Scalar>>
+struct lie_traits<Map<const SE3<_Scalar>>> : public lie_traits<SE3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -234,12 +229,16 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SE3<_Scalar>>>
  * @see SE3Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<const smooth::SE3<_Scalar>>
-    : public smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>
+class Map<const SE3<_Scalar>> : public SE3Base<Map<const SE3<_Scalar>>>
 {
-  using Base = smooth::SE3Base<Eigen::Map<const smooth::SE3<_Scalar>>>;
+  using Base = SE3Base<Map<const SE3<_Scalar>>>;
 
-  SMOOTH_CONST_MAP_API(Map);
+  SMOOTH_CONST_MAP_API();
 };
+
+using SE3f = SE3<float>;   ///< SE3 with float
+using SE3d = SE3<double>;  ///< SE3 with double
+
+}  // namespace smooth
 
 #endif  // SMOOTH__SE3_HPP_

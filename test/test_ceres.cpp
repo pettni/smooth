@@ -32,7 +32,6 @@
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/tn.hpp"
 
 
 template<smooth::LieGroup G>
@@ -41,7 +40,7 @@ class CeresLocalParam : public ::testing::Test
 
 using GroupsToTest = ::testing::Types<
   smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
-  smooth::Bundle<smooth::SO3d, smooth::T4d, smooth::SE2d>
+  smooth::Bundle<smooth::SO3d, Eigen::Vector4d, smooth::SE2d>
 >;
 
 TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest);

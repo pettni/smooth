@@ -33,7 +33,8 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/bezier.hpp"
 #include "smooth/spline/bspline.hpp"
-#include "smooth/tn.hpp"
+
+#include "adapted.hpp"
 
 TEST(Coefmat, Bspline)
 {
@@ -87,7 +88,7 @@ template<typename G>
 class Spline : public ::testing::Test
 {};
 
-using GroupsToTest = ::testing::Types<smooth::T2d, smooth::SO3d>;
+using GroupsToTest = ::testing::Types<Eigen::Vector2d, smooth::SO3d>;
 
 TYPED_TEST_SUITE(Spline, GroupsToTest);
 
@@ -95,7 +96,7 @@ TYPED_TEST(Spline, BSplineConstantCtrlpts)
 {
   std::srand(5);
 
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
   smooth::utils::static_for<6>([](auto k) {
     static constexpr uint32_t K = k + 1;
@@ -125,14 +126,14 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 {
   std::srand(5);
 
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
   smooth::utils::static_for<6>([](auto k) {
     static constexpr uint32_t K = k + 1;
 
     TypeParam g0 = TypeParam::Random();
 
-    std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_vec;
+    std::vector<Tangent> diff_vec;
     for (auto i = 0u; i != K; ++i) { diff_vec.push_back(Tangent::Zero()); }
 
     constexpr auto Mstatic =
@@ -141,7 +142,8 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
-      auto g = g0 * smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc);
+      auto g =
+        smooth::composition(g0, smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc));
 
       ASSERT_TRUE(g.isApprox(g0));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -155,9 +157,9 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
 TYPED_TEST(Spline, DerivBspline)
 {
   TypeParam g0  = TypeParam::Random();
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
-  std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_pts;
+  std::vector<Tangent> diff_pts;
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
@@ -171,8 +173,10 @@ TYPED_TEST(Spline, DerivBspline)
   for (double u = 0.1; u < 0.99; u += 0.1) {
     smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
-    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
+    auto g1 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
+    auto g2 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
 
     auto df = ((g2 - g1) / 2e-4).eval();
 
@@ -183,9 +187,9 @@ TYPED_TEST(Spline, DerivBspline)
 TYPED_TEST(Spline, DerivBezier)
 {
   TypeParam g0  = TypeParam::Random();
-  using Tangent = Eigen::Matrix<typename TypeParam::Scalar, TypeParam::SizeAtCompileTime, 1>;
+  using Tangent = smooth::Tangent<TypeParam>;
 
-  std::vector<Tangent, Eigen::aligned_allocator<Tangent>> diff_pts;
+  std::vector<Tangent> diff_pts;
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
@@ -199,8 +203,10 @@ TYPED_TEST(Spline, DerivBezier)
   for (double u = 0.1; u < 0.99; u += 0.1) {
     smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
 
-    auto g1 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4);
-    auto g2 = g0 * smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4);
+    auto g1 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
+    auto g2 =
+      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
 
     Tangent df = (g2 - g1) / 2e-4;
 
@@ -221,11 +227,9 @@ TEST(Spline, BSplineConstructors)
   smooth::BSpline<5, smooth::SO3d> spl1(0, 1, c1);
   smooth::BSpline<5, smooth::SO3d> spl2(0, 1, std::move(c1));
 
-  ASSERT_TRUE(spl0.eval(0.5).isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(spl0(0.5).isApprox(smooth::SO3d::Identity()));
 
-  for (double t = 0; t != spl1.t_max(); t += 0.5) {
-    ASSERT_TRUE(spl1.eval(t).isApprox(spl2.eval(t)));
-  }
+  for (double t = 0; t != spl1.t_max(); t += 0.5) { ASSERT_TRUE(spl1(t).isApprox(spl2(t))); }
 }
 
 TEST(Spline, BSplineOutside)
@@ -237,19 +241,21 @@ TEST(Spline, BSplineOutside)
 
   smooth::BSpline<5, smooth::SO3d> spl(0, 1, c1);
 
-  ASSERT_TRUE(spl.eval(-2).isApprox(spl.eval(0)));
-  ASSERT_TRUE(spl.eval(-1).isApprox(spl.eval(0)));
-  ASSERT_FALSE(spl.eval(45).isApprox(spl.eval(44)));
-  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(46)));
-  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(47)));
-  ASSERT_TRUE(spl.eval(45).isApprox(spl.eval(48)));
+  ASSERT_TRUE(spl(-2).isApprox(spl(0)));
+  ASSERT_TRUE(spl(-1).isApprox(spl(0)));
+  ASSERT_FALSE(spl(45).isApprox(spl(44)));
+  ASSERT_TRUE(spl(45).isApprox(spl(46)));
+  ASSERT_TRUE(spl(45).isApprox(spl(47)));
+  ASSERT_TRUE(spl(45).isApprox(spl(48)));
 }
 
 TEST(Spline, BSplineDerivT1)
 {
   std::srand(5);
-  std::vector<smooth::Bundle<smooth::T1d>> c1;
-  for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::Bundle<smooth::T1d>::Random()); }
+  std::vector<smooth::Bundle<Eigen::Matrix<double, 1, 1>>> c1;
+  for (auto i = 0u; i != 4; ++i) {
+    c1.push_back(smooth::Bundle<Eigen::Matrix<double, 1, 1>>::Random());
+  }
 
   double u = 0.5;
 
@@ -261,7 +267,7 @@ TEST(Spline, BSplineDerivT1)
   auto g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
 
   Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
-  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>().rn()(0) += eps(i); }
+  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>()(0) += eps(i); }
 
   // expect gp \approx g0 + jac * eps
   auto gp       = g0 + (jac * eps);
@@ -333,6 +339,42 @@ TEST(Spline, BezierConstruct)
   ASSERT_EQ(spline_moved.t_max(), 3);
 }
 
+TYPED_TEST(Spline, Bezier0Fit)
+{
+  std::vector<double> tt;
+  std::vector<TypeParam> gg;
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+  gg.push_back(TypeParam::Random());
+
+  auto spline = smooth::fit_constant_bezier(tt, gg);
+
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
+
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.3).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.4).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+}
+
 TYPED_TEST(Spline, Bezier1Fit)
 {
   std::vector<double> tt;
@@ -357,14 +399,14 @@ TYPED_TEST(Spline, Bezier1Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 }
 
 TYPED_TEST(Spline, Bezier2Fit)
@@ -391,20 +433,20 @@ TYPED_TEST(Spline, Bezier2Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto tt = 2.5; tt < 6; ++tt) {
-    typename TypeParam::Tangent va, vb;
-    spline.eval(tt - 1e-5, va);
-    spline.eval(tt + 1e-5, vb);
+    smooth::Tangent<TypeParam> va, vb;
+    spline(tt - 1e-5, va);
+    spline(tt + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
 }
@@ -435,20 +477,20 @@ TYPED_TEST(Spline, Bezier3Fit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
-    typename TypeParam::Tangent va, vb;
-    spline.eval(t_test - 1e-5, va);
-    spline.eval(t_test + 1e-5, vb);
+    typename smooth::Tangent<TypeParam> va, vb;
+    spline(t_test - 1e-5, va);
+    spline(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
 }
@@ -479,20 +521,20 @@ TYPED_TEST(Spline, Bezier3LocalFit)
   ASSERT_NEAR(spline.t_min(), 2, 1e-6);
   ASSERT_NEAR(spline.t_max(), 6, 1e-6);
 
-  ASSERT_TRUE(spline.eval(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline.eval(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline.eval(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline.eval(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline.eval(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline.eval(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline.eval(7).isApprox(gg[5]));
+  ASSERT_TRUE(spline(1).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2).isApprox(gg[0]));
+  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
+  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
+  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
+  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
+  ASSERT_TRUE(spline(6).isApprox(gg[5]));
+  ASSERT_TRUE(spline(7).isApprox(gg[5]));
 
   // check continuity of derivative
   for (auto t_test = 2.5; t_test < 6; ++t_test) {
-    typename TypeParam::Tangent va, vb;
-    spline.eval(t_test - 1e-5, va);
-    spline.eval(t_test + 1e-5, vb);
+    smooth::Tangent<TypeParam> va, vb;
+    spline(t_test - 1e-5, va);
+    spline(t_test + 1e-5, vb);
     ASSERT_TRUE(va.isApprox(vb, 1e-3));
   }
 }
@@ -515,10 +557,39 @@ TEST(Spline, BezierInitialvel)
     auto spline = smooth::fit_cubic_bezier(tt, gg, v0, v1);
 
     Eigen::Vector3d test1, test2;
-    spline.eval(1, test1);
-    spline.eval(4, test2);
+    spline(1, test1);
+    spline(4, test2);
 
     ASSERT_TRUE(test1.isApprox(v0));
     ASSERT_TRUE(test2.isApprox(v1));
   }
+}
+
+TEST(Spline, CustomAdaptedGroup)
+{
+  std::vector<double> tt{
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+  };
+  std::vector<MyGroup<double>> gg{
+    MyGroup<double>{1},
+    MyGroup<double>{2},
+    MyGroup<double>{3},
+    MyGroup<double>{4},
+    MyGroup<double>{5},
+    MyGroup<double>{6},
+  };
+
+  auto spl1 = smooth::fit_bspline<3>(tt, gg, 1);
+  auto spl2 = smooth::fit_cubic_bezier(tt, gg);
+
+  auto g1 = spl1(2.5);
+  auto g2 = spl2(2.5);
+
+  static_cast<void>(g1);
+  static_cast<void>(g2);
 }

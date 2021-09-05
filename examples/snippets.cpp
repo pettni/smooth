@@ -1,4 +1,5 @@
 #include <smooth/diff.hpp>
+#include <smooth/manifold.hpp>
 #include <smooth/optim.hpp>
 #include <smooth/so3.hpp>
 
@@ -37,7 +38,7 @@ void optim()
   // mapping \f$ G \times G \rightarrow R^n \f$
   auto f = [](auto v1, auto v2) { return (v1 * v2).log(); };
 
-  smooth::SO3d g1 = smooth::SO3d::Random();
+  smooth::SO3d g1       = smooth::SO3d::Random();
   const smooth::SO3d g2 = smooth::SO3d::Random();
 
   // minimize f w.r.t. second argument (g1 is modified in-place)
@@ -47,8 +48,6 @@ void optim()
   std::cout << g1 << std::endl;
   std::cout << g2 << std::endl;
 }
-
-
 
 int main()
 {

@@ -110,10 +110,6 @@ if(BUILD_TESTING)
   target_link_libraries(test_lie_api PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_lie_api)
 
-  add_executable(test_tn test/test_tn.cpp)
-  target_link_libraries(test_tn PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_tn)
-
   add_executable(test_so2 test/test_so2.cpp)
   target_link_libraries(test_so2 PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_so2)
@@ -137,6 +133,10 @@ if(BUILD_TESTING)
   add_executable(test_bundle test/test_bundle.cpp)
   target_link_libraries(test_bundle PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_bundle)
+
+  add_executable(test_adapted test/test_adapted.cpp)
+  target_link_libraries(test_adapted PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_adapted)
 
   # ALGO TESTS
 

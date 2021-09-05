@@ -26,11 +26,12 @@
 #ifndef SMOOTH__BUNDLE_HPP_
 #define SMOOTH__BUNDLE_HPP_
 
-#include "concepts.hpp"
 #include "internal/bundle.hpp"
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
 #include "internal/tn.hpp"
+#include "lie_group.hpp"
+#include "map.hpp"
 
 namespace smooth {
 
@@ -49,6 +50,7 @@ struct lie_traits<Eigen::Matrix<_Scalar, _N, 1>>
   template<typename NewScalar>
   using PlainObject = Eigen::Matrix<NewScalar, _N, 1>;
 };
+
 // \endcond
 
 /**
@@ -73,11 +75,9 @@ class BundleBase : public LieGroupBase<_Derived>
   using Impl = typename lie_traits<_Derived>::Impl;
 
 protected:
-
   BundleBase() = default;
 
 public:
-
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
@@ -90,12 +90,9 @@ public:
    * @brief Access part no Idx of Bundle.
    */
   template<std::size_t Idx>
-  Eigen::Map<PartType<Idx>> part()
-  // \cond
-  requires is_mutable
-  // \endcond
+  MapDispatch<PartType<Idx>> part() requires is_mutable
   {
-    return Eigen::Map<PartType<Idx>>(
+    return MapDispatch<PartType<Idx>>(
       static_cast<_Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
@@ -103,14 +100,14 @@ public:
    * @brief Const access part no Idx of Bundle.
    */
   template<std::size_t Idx>
-  Eigen::Map<const PartType<Idx>> part() const
+  MapDispatch<const PartType<Idx>> part() const
   {
-    return Eigen::Map<const PartType<Idx>>(
+    return MapDispatch<const PartType<Idx>>(
       static_cast<const _Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 };
 
-/// Type for which lie_traits is properly specified. 
+/// Type for which lie_traits is properly specified.
 template<typename T>
 concept LieImplemented = requires
 {
@@ -161,9 +158,7 @@ public:
    * @brief Construct Bundle from parts.
    */
   template<typename... S>
-  // \cond
-  requires(std::is_assignable_v<_Gs, S> &&...)
-  // \endcond
+    requires(std::is_assignable_v<_Gs, S> &&...)
   Bundle(S &&... gs)
   {
     auto tpl = std::forward_as_tuple(gs...);
@@ -172,12 +167,9 @@ public:
   }
 };
 
-}  // namespace smooth
-
 // \cond
-template<smooth::LieImplemented... _Gs>
-struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
-  : public lie_traits<smooth::Bundle<_Gs...>>
+template<LieImplemented... _Gs>
+struct lie_traits<Map<Bundle<_Gs...>>> : public lie_traits<Bundle<_Gs...>>
 {};
 // \endcond
 
@@ -186,19 +178,17 @@ struct smooth::lie_traits<Eigen::Map<smooth::Bundle<_Gs...>>>
  *
  * @see BundleBase for details.
  */
-template<smooth::LieImplemented... _Gs>
-class Eigen::Map<smooth::Bundle<_Gs...>>
-  : public smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>
+template<LieImplemented... _Gs>
+class Map<Bundle<_Gs...>> : public BundleBase<Map<Bundle<_Gs...>>>
 {
-  using Base = smooth::BundleBase<Eigen::Map<smooth::Bundle<_Gs...>>>;
+  using Base = BundleBase<Map<Bundle<_Gs...>>>;
 
-  SMOOTH_MAP_API(Map);
+  SMOOTH_MAP_API();
 };
 
 // \cond
-template<smooth::LieImplemented... _Gs>
-struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
-  : public lie_traits<smooth::Bundle<_Gs...>>
+template<LieImplemented... _Gs>
+struct lie_traits<Map<const Bundle<_Gs...>>> : public lie_traits<Bundle<_Gs...>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -209,13 +199,14 @@ struct smooth::lie_traits<Eigen::Map<const smooth::Bundle<_Gs...>>>
  *
  * @see BundleBase for details.
  */
-template<smooth::LieImplemented... _Gs>
-class Eigen::Map<const smooth::Bundle<_Gs...>>
-  : public smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>
+template<LieImplemented... _Gs>
+class Map<const Bundle<_Gs...>> : public BundleBase<Map<const Bundle<_Gs...>>>
 {
-  using Base = smooth::BundleBase<Eigen::Map<const smooth::Bundle<_Gs...>>>;
+  using Base = BundleBase<Map<const Bundle<_Gs...>>>;
 
-  SMOOTH_CONST_MAP_API(Map);
+  SMOOTH_CONST_MAP_API();
 };
+
+}  // namespace smooth
 
 #endif  // SMOOTH__BUNDLE_HPP_

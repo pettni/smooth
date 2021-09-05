@@ -30,7 +30,6 @@
 #include "smooth/so3.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
-#include "smooth/tn.hpp"
 
 
 using namespace smooth;

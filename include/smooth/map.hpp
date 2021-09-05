@@ -23,25 +23,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include <gtest/gtest.h>
+#ifndef SMOOTH__MAP_HPP_
+#define SMOOTH__MAP_HPP_
 
-#include "smooth/tn.hpp"
+#include <Eigen/Core>
 
-TEST(Tn, Constructor)
-{
-  Eigen::Vector3d v = Eigen::Vector3d::Random();
-  smooth::Tn<3, double> t3(v);
-  const smooth::Tn<3, double> ct3(v);
+namespace smooth {
 
-  ASSERT_TRUE(v.isApprox(t3.rn()));
-  ASSERT_TRUE(v.isApprox(ct3.rn()));
-}
+/**
+ * @brief Memory mapping of internal Lie group types.
+ */
+template<typename T>
+class Map;
 
-TEST(Tn, Action)
-{
-  Eigen::Vector3d v = Eigen::Vector3d::Random();
-  smooth::Tn<3, double> t3(v);
+/**
+ * @brief Send Eigen types to Eigen::Map and other types to smooth::Map.
+ */
+template<typename T>
+using MapDispatch = std::conditional_t<
+  std::is_base_of_v<Eigen::MatrixBase<std::remove_const_t<T>>, std::remove_const_t<T>>,
+  ::Eigen::Map<T>,
+  ::smooth::Map<T>>;
 
-  ASSERT_TRUE((t3 * v).isApprox(2 * v));
-}
+}  // namespace smooth
 
+#endif  // SMOOTH__MAP_HPP_

@@ -33,6 +33,8 @@
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
 #include "internal/so2.hpp"
+#include "lie_group.hpp"
+#include "map.hpp"
 
 namespace smooth {
 
@@ -209,15 +211,9 @@ public:
   }
 };
 
-using SO2f = SO2<float>;   ///< SO2 with float scalar representation
-using SO2d = SO2<double>;  ///< SO2 with double scalar representation
-
-}  // namespace smooth
-
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::SO2<_Scalar>>>
-    : public lie_traits<smooth::SO2<_Scalar>>
+struct lie_traits<Map<SO2<_Scalar>>> : public lie_traits<SO2<_Scalar>>
 {};
 // \endcond
 
@@ -227,17 +223,16 @@ struct smooth::lie_traits<Eigen::Map<smooth::SO2<_Scalar>>>
  * @see SO2Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<smooth::SO2<_Scalar>> : public smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>
+class Map<SO2<_Scalar>> : public SO2Base<Map<SO2<_Scalar>>>
 {
-  using Base = smooth::SO2Base<Eigen::Map<smooth::SO2<_Scalar>>>;
+  using Base = SO2Base<Map<SO2<_Scalar>>>;
 
-  SMOOTH_MAP_API(Map);
+  SMOOTH_MAP_API();
 };
 
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::SO2<_Scalar>>>
-    : public lie_traits<smooth::SO2<_Scalar>>
+struct lie_traits<Map<const SO2<_Scalar>>> : public lie_traits<SO2<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -249,12 +244,16 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SO2<_Scalar>>>
  * @see SO2Base for memory layout.
  */
 template<typename _Scalar>
-class Eigen::Map<const smooth::SO2<_Scalar>>
-    : public smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>
+class Map<const SO2<_Scalar>> : public SO2Base<Map<const SO2<_Scalar>>>
 {
-  using Base = smooth::SO2Base<Eigen::Map<const smooth::SO2<_Scalar>>>;
+  using Base = SO2Base<Map<const SO2<_Scalar>>>;
 
-  SMOOTH_CONST_MAP_API(Map);
+  SMOOTH_CONST_MAP_API();
 };
+
+using SO2f = SO2<float>;   ///< SO2 with float scalar representation
+using SO2d = SO2<double>;  ///< SO2 with double scalar representation
+
+}  // namespace smooth
 
 #endif  // SMOOTH__SO2_HPP_

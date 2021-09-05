@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__UTILS_HPP_
-#define SMOOTH__UTILS_HPP_
+#ifndef SMOOTH__INTERNAL__UTILS_HPP_
+#define SMOOTH__INTERNAL__UTILS_HPP_
 
 #include <array>
 #include <cstddef>
@@ -34,6 +34,8 @@
 #include <utility>
 
 #include <Eigen/Core>
+
+#include "smooth/manifold.hpp"
 
 namespace smooth::utils {
 
@@ -141,96 +143,6 @@ constexpr std::array<T, L + 1> array_psum(const std::array<T, L> & x)
   return ret;
 }
 
-///////////////////////
-// TUPLE STATE UTILS //
-///////////////////////
-
-template<typename T>
-struct tuple_dof
-{};
-
-/**
- * @brief Compile-time size of a tuple of variables.
- *
- * If at least one variable is dynamically sized (size -1), this returns -1.
- */
-template<typename... Wrt>
-struct tuple_dof<std::tuple<Wrt...>>
-{
-  static constexpr int value = std::min<int>({std::decay_t<Wrt>::SizeAtCompileTime...}) == -1
-                               ? std::min<int>({std::decay_t<Wrt>::SizeAtCompileTime...})
-                               : (std::decay_t<Wrt>::SizeAtCompileTime + ...);
-};
-
-/**
- * @brief Cast a tuple of variables to a new scalar type.
- */
-template<typename Scalar, typename... _Wrt>
-auto tuple_cast(const std::tuple<_Wrt...> & wrt)
-{
-  std::tuple<
-    typename std::decay_t<decltype(std::decay_t<_Wrt>{}.template cast<Scalar>())>::PlainObject...>
-    ret;
-  static_for<sizeof...(_Wrt)>(
-    [&](auto i) { std::get<i>(ret) = std::get<i>(wrt).template cast<Scalar>(); });
-  return ret;
-}
-
-/**
- * @brief Add a tangent vector to a tuple of variables.
- */
-template<typename Derived, typename... _Wrt>
-auto tuple_plus(const std::tuple<_Wrt...> & wrt, const Eigen::MatrixBase<Derived> & a)
-{
-  std::tuple<typename std::decay_t<_Wrt>::PlainObject...> ret;
-  std::size_t i_beg = 0;
-  static_for<sizeof...(_Wrt)>([&](auto i) {
-    constexpr auto i_size =
-      std::tuple_element_t<i, std::tuple<std::decay_t<_Wrt>...>>::SizeAtCompileTime;
-    std::size_t i_len = std::get<i>(wrt).size();
-    std::get<i>(ret)  = std::get<i>(wrt) + a.template segment<i_size>(i_beg, i_len);
-    i_beg += i_len;
-  });
-  return ret;
-}
-
-/**
- * @brief Trait for removing const-ness from reference types.
- */
-template<typename T>
-struct remove_const_ref
-{
-  using type = T;
-};
-
-template<typename T>
-struct remove_const_ref<const T &>
-{
-  using type = T;
-};
-
-/**
- * @brief Copy a tuple to make all elements modifiable.
- *
- * Copies are created form const & members, rest is forwarded.
- */
-template<typename... T>
-std::tuple<typename remove_const_ref<T>::type...> tuple_copy_if_const(std::tuple<T...> && in)
-{
-  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(std::move(in));
-}
-
-/**
- * @brief Copy a tuple to make all elements modifiable.
- *
- * Copies are created form const & members, rest is forwarded.
- */
-template<typename... T>
-auto tuple_copy_if_const(const std::tuple<T...> & in)
-{
-  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(in);
-}
-
 /////////////////////////////////
 // COMPILE-TIME MATRIX ALGEBRA //
 /////////////////////////////////
@@ -298,4 +210,4 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
 
 }  // namespace smooth::utils
 
-#endif  // SMOOTH__UTILS_HPP_
+#endif  // SMOOTH__INTERNAL__UTILS_HPP_

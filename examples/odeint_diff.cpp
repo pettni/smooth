@@ -32,7 +32,6 @@
 #include "smooth/bundle.hpp"
 #include "smooth/compat/odeint.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/tn.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include <matplot/matplot.h>
@@ -68,7 +67,7 @@ int main(int, char const **)
     runge_kutta4<state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra>();
 
   std::vector<double> tvec;
-  std::vector<Eigen::Vector3d, Eigen::aligned_allocator<Eigen::Vector3d>> v1, v2;
+  std::vector<Eigen::Vector3d> v1, v2;
 
   state_t state1(X1, X1 + d), state2(X2, X2 + d);
 

@@ -77,13 +77,11 @@ TEST(ManifoldVector, Cast)
 
 TEST(ManifoldVector, Optimize)
 {
-  auto f = [] (const auto & var) {
+  auto f = [](const auto & var) {
     using Scalar = typename std::decay_t<decltype(var)>::Scalar;
     Eigen::Matrix<Scalar, 3, 1> ret;
     ret.setZero();
-    for (const auto & gi : var) {
-      ret += gi.log().cwiseAbs2();
-    }
+    for (const auto & gi : var) { ret += gi.log().cwiseAbs2(); }
     return ret;
   };
 
@@ -96,9 +94,7 @@ TEST(ManifoldVector, Optimize)
 
   smooth::minimize(f, smooth::wrt(m));
 
-  for (auto x : m) {
-    ASSERT_LE(x.log().norm(), 1e-5);
-  }
+  for (auto x : m) { ASSERT_LE(x.log().norm(), 1e-5); }
 }
 
 TEST(ManifoldVector, print)
@@ -114,4 +110,3 @@ TEST(ManifoldVector, print)
   ss << m << std::endl;
   ASSERT_GE(ss.str().size(), 0);
 }
-

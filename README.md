@@ -6,6 +6,11 @@
 
 <img src="media/ode.png" width="300">  <img src="media/bspline.png" width="300">
 
+* Requirements: C++20, Eigen 3.4
+* [Documentation][doc-link]
+* Compatible with: autodiff, Ceres, ROS
+* Written in an extensible functional programming style
+
 *This project is currently being developed---breaking changes and bugs should be expected.
 If you are looking for something stable and established, check out
 [manif][manif-link] and [Sophus][sophus-link].*
@@ -23,13 +28,13 @@ robotics software, by enabling:
  * Optimization
 
 The following common Lie groups are implemented:
- * smooth::Tn: n-dimensional translations
  * smooth::SO2: two-dimensional rotations with complex number ![](https://latex.codecogs.com/png.latex?\mathbb{C}(1)) memory representation
  * smooth::SO3: three-dimensional rotations with quaternion ![](https://latex.codecogs.com/png.latex?\mathbb{S}^3) memory representation
  * smooth::SE2: two-dimensional rigid motions
  * smooth::SE3: three-dimensional rigid motions
  * smooth::C1: complex numbers (excluding zero) under multiplication
  * A smooth::Bundle type to treat Lie group products ![](https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n) as a single Lie group. The Bundle type also supports regular Eigen vectors as ![](https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)) components
+ * Lie group interfaces for Eigen vectors and builtin scalars
 
 The guiding principles for `smooth` are **brevity, reliability and compatability**. 
 

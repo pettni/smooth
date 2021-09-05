@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__IMPL__SO2_HPP_
-#define SMOOTH__IMPL__SO2_HPP_
+#ifndef SMOOTH__INTERNAL__SO2_HPP_
+#define SMOOTH__INTERNAL__SO2_HPP_
 
 #include <Eigen/Core>
 
@@ -112,4 +112,4 @@ public:
 
 }  // namespace smooth
 
-#endif  // SMOOTH__IMPL__SO2_HPP_
+#endif  // SMOOTH__INTERNAL__SO2_HPP_

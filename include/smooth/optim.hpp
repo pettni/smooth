@@ -39,11 +39,11 @@
 #include <iostream>
 #include <numeric>
 
-#include "concepts.hpp"
 #include "diff.hpp"
 #include "internal/lmpar.hpp"
 #include "internal/lmpar_sparse.hpp"
-#include "internal/utils.hpp"
+#include "manifold.hpp"
+#include "wrt.hpp"
 
 using std::chrono::duration_cast, std::chrono::microseconds;
 
@@ -135,7 +135,7 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
     }
 
     // evaluate function and jacobian at x + a
-    const auto x_plus_a         = utils::tuple_plus(x, a);
+    const auto x_plus_a         = wrt_rplus(x, a);
     const auto [r_cand, J_cand] = diff::dr<Diff>(f, x_plus_a);
 
     const double r_cand_norm = r_cand.stableNorm();

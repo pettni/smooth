@@ -39,12 +39,12 @@
 
 using namespace smooth;
 
-template<smooth::LieGroup G>
+template<smooth::Manifold G>
 class DiffTest : public ::testing::Test
 {};
 
 using GroupsToTest =
-  testing::Types<smooth::T2d, smooth::SO2d, smooth::SE2d, smooth::SO3d, smooth::SE3d>;
+  testing::Types<smooth::SO2d, smooth::SE2d, smooth::SO3d, smooth::SE3d>;
 
 TYPED_TEST_SUITE(DiffTest, GroupsToTest);
 
@@ -64,12 +64,12 @@ void run_rminus_test()
   auto [f3, jac3] =
     smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 - v2; }, smooth::wrt(g1, g2));
 
-  static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::Dof, "Error");
-  static_assert(decltype(jac1)::ColsAtCompileTime == TypeParam::Dof, "Error");
-  static_assert(decltype(jac2)::RowsAtCompileTime == TypeParam::Dof, "Error");
-  static_assert(decltype(jac2)::ColsAtCompileTime == TypeParam::Dof, "Error");
-  static_assert(decltype(jac3)::RowsAtCompileTime == TypeParam::Dof, "Error");
-  static_assert(decltype(jac3)::ColsAtCompileTime == 2 * TypeParam::Dof, "Error");
+  static_assert(decltype(jac1)::RowsAtCompileTime == man<TypeParam>::Dof, "Error");
+  static_assert(decltype(jac1)::ColsAtCompileTime == man<TypeParam>::Dof, "Error");
+  static_assert(decltype(jac2)::RowsAtCompileTime == man<TypeParam>::Dof, "Error");
+  static_assert(decltype(jac2)::ColsAtCompileTime == man<TypeParam>::Dof, "Error");
+  static_assert(decltype(jac3)::RowsAtCompileTime == man<TypeParam>::Dof, "Error");
+  static_assert(decltype(jac3)::ColsAtCompileTime == 2 * man<TypeParam>::Dof, "Error");
 
   auto v         = g1 - g2;
   auto jac1_true = TypeParam::dr_expinv(v);
@@ -80,8 +80,8 @@ void run_rminus_test()
 
   ASSERT_TRUE(jac1.isApprox(jac1_true, 1e-5));
   ASSERT_TRUE(jac2.isApprox(jac2_true, 1e-5));
-  ASSERT_TRUE(jac1.isApprox(jac3.template leftCols<TypeParam::Dof>(), 1e-5));
-  ASSERT_TRUE(jac2.isApprox(jac3.template rightCols<TypeParam::Dof>(), 1e-5));
+  ASSERT_TRUE(jac1.isApprox(jac3.template leftCols<man<TypeParam>::Dof>(), 1e-5));
+  ASSERT_TRUE(jac2.isApprox(jac3.template rightCols<man<TypeParam>::Dof>(), 1e-5));
 }
 
 template<smooth::diff::Type dm, typename TypeParam>
@@ -94,19 +94,19 @@ void run_composition_test()
   auto [f1, jac1] =
     smooth::diff::dr<dm>([](auto v1, auto v2) { return v1 * v2; }, smooth::wrt(g1, g2));
 
-  static_assert(decltype(jac1)::RowsAtCompileTime == TypeParam::Dof, "Error");
-  static_assert(decltype(jac1)::ColsAtCompileTime == 2 * TypeParam::Dof, "Error");
+  static_assert(decltype(jac1)::RowsAtCompileTime == man<TypeParam>::Dof, "Error");
+  static_assert(decltype(jac1)::ColsAtCompileTime == 2 * man<TypeParam>::Dof, "Error");
 
-  ASSERT_EQ(jac1.rows(), TypeParam::Dof);
-  ASSERT_EQ(jac1.cols(), 2 * TypeParam::Dof);
+  ASSERT_EQ(jac1.rows(), man<TypeParam>::Dof);
+  ASSERT_EQ(jac1.cols(), 2 * man<TypeParam>::Dof);
 
   auto jac1_true = g2.inverse().Ad();
   auto jac2_true = decltype(jac1_true)::Identity();
 
   ASSERT_TRUE(f1.isApprox(g1 * g2, 1e-5));
 
-  ASSERT_TRUE(jac1.template leftCols<TypeParam::Dof>().isApprox(jac1_true, 1e-5));
-  ASSERT_TRUE(jac1.template rightCols<TypeParam::Dof>().isApprox(jac2_true, 1e-5));
+  ASSERT_TRUE(jac1.template leftCols<man<TypeParam>::Dof>().isApprox(jac1_true, 1e-5));
+  ASSERT_TRUE(jac1.template rightCols<man<TypeParam>::Dof>().isApprox(jac2_true, 1e-5));
 }
 
 template<smooth::diff::Type dm, typename TypeParam>
@@ -117,7 +117,7 @@ void run_exp_test()
 
   auto [f, jac] = smooth::diff::dr<dm>(
     [](auto var) {
-      return TypeParam::template PlainObjectCast<typename decltype(var)::Scalar>::exp(var);
+      return TypeParam::template CastT<typename decltype(var)::Scalar>::exp(var);
     },
     smooth::wrt(a));
 
@@ -217,12 +217,14 @@ template<int Nx, int Ny, smooth::diff::Type DiffType>
 void test_linear(double prec = 1e-10)
 {
   for (auto it = 0u; it != 10; ++it) {
-    smooth::Tn<Nx, double> t = smooth::Tn<Nx, double>::Random();
+    Eigen::Matrix<double, Nx, 1> t = Eigen::Matrix<double, Nx, 1>::Random();
 
     Eigen::Matrix<double, Ny, Nx> H = Eigen::Matrix<double, Ny, Nx>::Random();
     Eigen::Matrix<double, Ny, 1> h  = Eigen::Matrix<double, Ny, 1>::Random();
 
-    auto f = [&H, &h](const auto & var) { return H * var.rn() + h; };
+    auto f = [&H, &h]<typename T>(const Eigen::Matrix<T, Nx, 1> & var) -> Eigen::Matrix<T, Ny, 1> {
+      return H * var + h;
+    };
 
     const auto [fval, dr_f] = smooth::diff::dr<DiffType>(f, smooth::wrt(t));
     ASSERT_TRUE(fval.isApprox(f(t)));
@@ -257,8 +259,8 @@ TEST(Differentiation, LinearCeres)
 
 TEST(Differentiation, Const)
 {
-  const auto f = [](const auto & xx) { return xx.log(); };
-  smooth::SO3d g = smooth::SO3d::Random();
+  const auto f            = [](const auto & xx) { return xx.log(); };
+  smooth::SO3d g          = smooth::SO3d::Random();
   const smooth::SO3d g_nc = g;
 
   const auto [v1, d1] = smooth::diff::detail::dr_numerical(f, smooth::wrt(g));
@@ -267,4 +269,3 @@ TEST(Differentiation, Const)
   ASSERT_TRUE(v1.isApprox(v2));
   ASSERT_TRUE(d1.isApprox(d2));
 }
-

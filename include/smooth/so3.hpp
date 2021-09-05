@@ -32,6 +32,8 @@
 #include "internal/lie_group_base.hpp"
 #include "internal/macro.hpp"
 #include "internal/so3.hpp"
+#include "lie_group.hpp"
+#include "map.hpp"
 
 namespace smooth {
 
@@ -83,14 +85,12 @@ protected:
   SO3Base() = default;
 
 public:
-
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
    * @brief Access quaterion.
    */
-  Eigen::Map<Eigen::Quaternion<Scalar>> quat()
-  requires is_mutable
+  Eigen::Map<Eigen::Quaternion<Scalar>> quat() requires is_mutable
   {
     return Eigen::Map<Eigen::Quaternion<Scalar>>(static_cast<_Derived &>(*this).data());
   }
@@ -113,8 +113,8 @@ public:
    * \f$ Rot_{i_1}(a_1) * Rot_{i_2}(a_2) * Rot_{i_3}(a_3). \f$
    * where \f$ Rot_i(a) \f$ rotates an angle \f$a\f$ around the \f$i\f$:th axis.
    */
-  Eigen::Matrix<Scalar, 3, 1>
-  eulerAngles(Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
+  Eigen::Matrix<Scalar, 3, 1> eulerAngles(
+    Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
   {
     return quat().toRotationMatrix().eulerAngles(i1, i2, i3);
   }
@@ -140,7 +140,7 @@ public:
     using std::atan2;
 
     const auto q = quat();
-    Scalar yaw = atan2(Scalar(2) * (q.w() * q.z() + q.x() * q.y()),
+    Scalar yaw   = atan2(Scalar(2) * (q.w() * q.z() + q.x() * q.y()),
       Scalar(1) - Scalar(2) * (q.y() * q.y() + q.z() * q.z()));
     return SO2<Scalar>(yaw);
   }
@@ -192,15 +192,9 @@ public:
   {}
 };
 
-using SO3f = SO3<float>;   ///< SO3 with float scalar representation
-using SO3d = SO3<double>;  ///< SO3 with double scalar representation
-
-}  // namespace smooth
-
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<smooth::SO3<_Scalar>>>
-    : public lie_traits<smooth::SO3<_Scalar>>
+struct lie_traits<Map<SO3<_Scalar>>> : public lie_traits<SO3<_Scalar>>
 {};
 // \endcond
 
@@ -210,18 +204,16 @@ struct smooth::lie_traits<Eigen::Map<smooth::SO3<_Scalar>>>
  * @see SO3Base for group API.
  */
 template<typename _Scalar>
-class Eigen::Map<smooth::SO3<_Scalar>>
-    : public smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>
+class Map<SO3<_Scalar>> : public SO3Base<Map<SO3<_Scalar>>>
 {
-  using Base = smooth::SO3Base<Eigen::Map<smooth::SO3<_Scalar>>>;
+  using Base = SO3Base<Map<SO3<_Scalar>>>;
 
-  SMOOTH_MAP_API(Map);
+  SMOOTH_MAP_API();
 };
 
 // \cond
 template<typename _Scalar>
-struct smooth::lie_traits<Eigen::Map<const smooth::SO3<_Scalar>>>
-    : public lie_traits<smooth::SO3<_Scalar>>
+struct lie_traits<Map<const SO3<_Scalar>>> : public lie_traits<SO3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };
@@ -233,12 +225,16 @@ struct smooth::lie_traits<Eigen::Map<const smooth::SO3<_Scalar>>>
  * @see SO3Base for group API.
  */
 template<typename _Scalar>
-class Eigen::Map<const smooth::SO3<_Scalar>>
-    : public smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>
+class Map<const SO3<_Scalar>> : public SO3Base<Map<const SO3<_Scalar>>>
 {
-  using Base = smooth::SO3Base<Eigen::Map<const smooth::SO3<_Scalar>>>;
+  using Base = SO3Base<Map<const SO3<_Scalar>>>;
 
-  SMOOTH_CONST_MAP_API(Map);
+  SMOOTH_CONST_MAP_API();
 };
+
+using SO3f = SO3<float>;   ///< SO3 with float scalar representation
+using SO3d = SO3<double>;  ///< SO3 with double scalar representation
+
+}  // namespace smooth
 
 #endif  // SMOOTH__SO3_HPP_

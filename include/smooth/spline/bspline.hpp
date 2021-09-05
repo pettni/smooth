@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef INTERP__BSPLINE_HPP_
-#define INTERP__BSPLINE_HPP_
+#ifndef SMOOTH__SPLINE__BSPLINE_HPP_
+#define SMOOTH__SPLINE__BSPLINE_HPP_
 
 /**
  * @file
@@ -37,8 +37,6 @@
 
 #include <Eigen/Sparse>
 
-#include "smooth/concepts.hpp"
-#include "smooth/internal/utils.hpp"
 #include "smooth/manifold_vector.hpp"
 #include "smooth/optim.hpp"
 
@@ -90,7 +88,7 @@ public:
    * @param dt distance between spline knots
    * @param ctrl_pts spline control points
    */
-  BSpline(double t0, double dt, std::vector<G, Eigen::aligned_allocator<G>> && ctrl_pts)
+  BSpline(double t0, double dt, std::vector<G> && ctrl_pts)
       : t0_(t0), dt_(dt), ctrl_pts_(std::move(ctrl_pts))
   {}
 
@@ -135,7 +133,7 @@ public:
   /**
    * @brief Access spline control points.
    */
-  const std::vector<G, Eigen::aligned_allocator<G>> & ctrl_pts() const { return ctrl_pts_; }
+  const std::vector<G> & ctrl_pts() const { return ctrl_pts_; }
 
   /**
    * @brief Evaluate Bspline.
@@ -147,7 +145,7 @@ public:
    *
    * @note Input \p t is clamped to spline interval of definition
    */
-  G eval(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
     // index of relevant interval
     int64_t istar = static_cast<int64_t>((t - t0_) / dt_);
@@ -178,7 +176,7 @@ public:
 
 private:
   double t0_, dt_;
-  std::vector<G, Eigen::aligned_allocator<G>> ctrl_pts_;
+  std::vector<G> ctrl_pts_;
 };
 
 /**
@@ -200,7 +198,6 @@ template<std::size_t K,
   LieGroup G = std::ranges::range_value_t<Rg>>
 BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
 {
-  static_assert(LieGroup<std::ranges::range_value_t<Rg>>, "Rg value type is LieGroup");
   static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");
 
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
@@ -217,11 +214,11 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
   auto f = [&](const auto & var) {
-    Eigen::VectorXd ret(G::Dof * NumData);
+    Eigen::VectorXd ret(Dof<G> * NumData);
 
     Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;
-    Jac.resize(G::Dof * NumData, G::Dof * NumPts);
-    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(G::Dof * NumData, G::Dof * (K + 1)));
+    Jac.resize(Dof<G> * NumData, Dof<G> * NumPts);
+    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(Dof<G> * NumData, Dof<G> * (K + 1)));
 
     auto t_iter = std::ranges::begin(tt);
     auto g_iter = std::ranges::begin(gg);
@@ -230,20 +227,20 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
       const int64_t istar = static_cast<int64_t>((*t_iter - t0) / dt);
       const double u      = (*t_iter - t0 - istar * dt) / dt;
 
-      Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_vali_pts;
+      Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_vali_pts;
       auto g_spline = cspline_eval<K>(
         var | std::views::drop(istar) | std::views::take(K + 1), M, u, {}, {}, d_vali_pts);
 
-      const typename G::Tangent resi = g_spline - *g_iter;
+      const Tangent<G> resi = rminus(g_spline, *g_iter);
 
-      ret.segment<G::Dof>(i * G::Dof) = resi;
+      ret.segment<Dof<G>>(i * Dof<G>) = resi;
 
-      const Eigen::Matrix<double, G::Dof, G::Dof> d_resi_vali          = G::dr_expinv(resi);
-      const Eigen::Matrix<double, G::Dof, (K + 1) * G::Dof> d_resi_pts = d_resi_vali * d_vali_pts;
+      const Eigen::Matrix<double, Dof<G>, Dof<G>> d_resi_vali          = dr_expinv<G>(resi);
+      const Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_resi_pts = d_resi_vali * d_vali_pts;
 
-      for (auto r = 0u; r != G::Dof; ++r) {
-        for (auto c = 0u; c != G::Dof * (K + 1); ++c) {
-          Jac.insert(i * G::Dof + r, istar * G::Dof + c) = d_resi_pts(r, c);
+      for (auto r = 0u; r != Dof<G>; ++r) {
+        for (auto c = 0u; c != Dof<G> * (K + 1); ++c) {
+          Jac.insert(i * Dof<G> + r, istar * Dof<G> + c) = d_resi_pts(r, c);
         }
       }
     }
@@ -254,7 +251,7 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
   };
 
   // create optimization variable
-  ManifoldVector<G, Eigen::aligned_allocator> ctrl_pts(NumPts);
+  ManifoldVector<G> ctrl_pts(NumPts);
 
   // create initial guess
   auto t_iter = std::ranges::begin(tt);
@@ -281,4 +278,4 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
 
 }  // namespace smooth
 
-#endif  // INTERP__BSPLINE_HPP_
+#endif  // SMOOTH__SPLINE__BSPLINE_HPP_

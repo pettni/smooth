@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__IMPL__COMMON_HPP_
-#define SMOOTH__IMPL__COMMON_HPP_
+#ifndef SMOOTH__INTERNAL__COMMON_HPP_
+#define SMOOTH__INTERNAL__COMMON_HPP_
 
 namespace smooth {
 
@@ -47,4 +47,4 @@ static constexpr double eps2 = 1e-8;
 
 }  // namespace smooth
 
-#endif  // SMOOTH__IMPL__COMMON_HPP_
+#endif  // SMOOTH__INTERNAL__COMMON_HPP_

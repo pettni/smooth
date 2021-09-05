@@ -36,25 +36,27 @@
 
 #define SMOOTH_DIFF_CERES
 
-#include "smooth/concepts.hpp"
-#include "smooth/internal/utils.hpp"
+#include "smooth/manifold.hpp"
+#include "smooth/map.hpp"
+#include "smooth/wrt.hpp"
 
 namespace smooth {
 
 // \cond
-template<LieGroup G>
-struct CeresParameterizationFunctor
+template<Manifold G>
+struct CeresParamFunctor
 {
   template<typename Scalar>
   bool operator()(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const
   {
-    using GScalar = decltype(G().template cast<Scalar>());
+    using GCast = typename G::template CastT<Scalar>;
 
-    Eigen::Map<const GScalar> mx(x);
-    Eigen::Map<const typename GScalar::Tangent> mdelta(delta);
-    Eigen::Map<GScalar> mx_plus_delta(x_plus_delta);
+    smooth::MapDispatch<const GCast> mx(x);
+    Eigen::Map<const Tangent<GCast>> mdelta(delta);
+    smooth::MapDispatch<GCast> mx_plus_delta(x_plus_delta);
 
-    mx_plus_delta = mx + mdelta;
+    mx_plus_delta = rplus(mx, mdelta);
+
     return true;
   }
 };
@@ -63,10 +65,9 @@ struct CeresParameterizationFunctor
 /**
  * @brief Parameterization for on-manifold optimization with Ceres.
  */
-template<LieGroup G>
+template<Manifold G>
 class CeresLocalParameterization
-    : public ceres::
-        AutoDiffLocalParameterization<CeresParameterizationFunctor<G>, G::RepSize, G::Dof>
+    : public ceres::AutoDiffLocalParameterization<CeresParamFunctor<G>, G::RepSize, G::Dof>
 {};
 
 /**
@@ -83,37 +84,36 @@ auto dr_ceres(_F && f, _Wrt && x)
   // The ceres Jet type supports binary operations with e.g. double, but currently
   // the Lie operations require everything to have a uniform scalar type. Enabling
   // plus and minus for different scalars would thus save some casts.
-  using Result = typename decltype(std::apply(f, x))::PlainObject;
-  using Scalar = typename Result::Scalar;
+  using Result = decltype(std::apply(f, x));
+  using Scalar = ::smooth::Scalar<Result>;
 
-  const Result fval = std::apply(f, x);
+  static_assert(Manifold<Result>, "f(x) is not a Manifold");
 
-  static constexpr Eigen::Index Nx = utils::tuple_dof<_Wrt>::value;
-  const auto nx = std::apply([](auto &&... args) { return (args.size() + ...); }, x);
-  static constexpr Eigen::Index Ny = Result::SizeAtCompileTime;
-  const auto ny                    = fval.size();
+  Result fval = std::apply(f, x);
 
-  static_assert(Nx != -1, "Ceres autodiff only supports static sizes");
+  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>::value;
+  static constexpr Eigen::Index Ny = Dof<Result>;
+  const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
+  const Eigen::Index ny = dof<Result>(fval);
 
-  Eigen::Matrix<Scalar, Nx, 1> a(nx);
-  a.setZero();
+  static_assert(Nx > 0, "Ceres autodiff does not support dynamic sizes");
 
+  Eigen::Matrix<Scalar, Nx, 1> a = Eigen::Matrix<Scalar, Nx, 1>::Zero(nx);
   Eigen::Matrix<Scalar, Ny, 1> b(ny);
-
   Eigen::Matrix<Scalar, Ny, Nx, (Nx == 1) ? Eigen::ColMajor : Eigen::RowMajor> jac(ny, nx);
-
-  const Scalar * a_ptr[1] = {a.data()};
-  Scalar * jac_ptr[1]     = {jac.data()};
 
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
     Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
     Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
-    mo = std::apply(f, utils::tuple_plus(utils::tuple_cast<T>(x), mi)) - fval.template cast<T>();
+    mo =
+      rminus<CastT<T, Result>>(std::apply(f, wrt_rplus(wrt_cast<T>(x), mi)), cast<T, Result>(fval));
     return true;
   };
+  const Scalar * a_ptr[1] = {a.data()};
+  Scalar * jac_ptr[1]     = {jac.data()};
 
-  ceres::internal::AutoDifferentiate<Result::SizeAtCompileTime,
-    ceres::internal::StaticParameterDims<Nx>>(f_deriv, a_ptr, b.size(), b.data(), jac_ptr);
+  ceres::internal::AutoDifferentiate<Dof<Result>, ceres::internal::StaticParameterDims<Nx>>(
+    f_deriv, a_ptr, b.size(), b.data(), jac_ptr);
 
   return std::make_pair(std::move(fval), Eigen::Matrix<Scalar, Ny, Nx>(jac));
 }
