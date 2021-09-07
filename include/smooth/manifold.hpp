@@ -55,6 +55,8 @@ requires {
   typename man<M>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
   {man<M>::Dof}->std::convertible_to<Eigen::Index>;
+  // A default-initialized Manifold object
+  {man<M>::Default()}->std::convertible_to<typename man<M>::PlainObject>;
 } &&
 requires(const M & m1, const M & m2, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> & a) {
   // Run-time degrees of freedom (tangent space dimension)
@@ -123,6 +125,15 @@ template<Manifold M>
 using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
 
 // Functions
+
+/**
+ * @brief Default-initialized Manifold
+ */
+template<Manifold M>
+inline typename man<M>::PlainObject Default()
+{
+  return man<M>::Default();
+}
 
 /**
  * @brief Manifold degrees of freedom (tangent space dimension)

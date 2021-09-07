@@ -57,13 +57,13 @@ requires {
   typename lie<G>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
   {lie<G>::Dof}->std::convertible_to<Eigen::Index>;
-} &&
-// GROUP INTERFACE
-requires(const G & g1, const G & g2, typename lie<G>::Scalar eps) {
   // Return the identity element
   {lie<G>::Identity()}->std::convertible_to<typename lie<G>::PlainObject>;
   // Return a random element
   {lie<G>::Random()}->std::convertible_to<typename lie<G>::PlainObject>;
+} &&
+// GROUP INTERFACE
+requires(const G & g1, const G & g2, typename lie<G>::Scalar eps) {
   // Group adjoint
   {lie<G>::Ad(g1)}->std::convertible_to<Eigen::Matrix<typename lie<G>::Scalar, lie<G>::Dof, lie<G>::Dof>>;
   // Group composition
@@ -538,13 +538,12 @@ struct man<G>
 
   static constexpr Eigen::Index Dof = lie<G>::Dof;
 
+  static inline PlainObject Default() { return lie<G>::Identity(); }
+
   static inline Eigen::Index dof(const G & g) { return lie<G>::dof(g); }
 
   template<typename NewScalar>
-  static inline CastT<NewScalar> cast(const G & g)
-  {
-    return lie<G>::template cast<NewScalar>(g);
-  }
+  static inline CastT<NewScalar> cast(const G & g) { return lie<G>::template cast<NewScalar>(g); }
 
   template<typename Derived>
   static inline PlainObject rplus(const G & g, const Eigen::MatrixBase<Derived> & a)

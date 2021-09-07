@@ -176,6 +176,8 @@ struct man<ManifoldVector<M>>
 
   static inline Eigen::Index dof(const ManifoldVector<M> & m) { return m.dof(); }
 
+  static inline PlainObject Default() { return PlainObject(); }
+
   template<typename NewScalar>
   static inline auto cast(const ManifoldVector<M> & m)
   {
