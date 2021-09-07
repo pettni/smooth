@@ -8,7 +8,7 @@
 
 * Requirements: C++20, Eigen 3.4
 * [Documentation][doc-link]
-* Compatible with: autodiff, Ceres, ROS
+* Compatible with: autodiff, boost::numeric::odeint, Ceres, ROS
 * Written in an extensible functional programming style
 
 *This project is currently being developed---breaking changes and bugs should be expected.
