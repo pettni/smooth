@@ -56,7 +56,7 @@ class SO2;
  * Constraints
  * -----------
  *
- * - Group:   \f$q_x^2 + q_y^2 + q_z^2 + q_w^2 = 1 \f$
+ * - Group:   \f$ q_x^2 + q_y^2 + q_z^2 + q_w^2 = 1, q_w >= 0 \f$
  * - Tangent: \f$ -\pi < \omega_x, \omega_y, \omega_z \leq \pi \f$
  *
  * Lie group matrix form
@@ -189,7 +189,9 @@ public:
    */
   template<typename Derived>
   SO3(const Eigen::QuaternionBase<Derived> & quat) : coeffs_(quat.normalized().coeffs())
-  {}
+  {
+    if (coeffs_(3) < 0) { coeffs_ *= Scalar(-1); }
+  }
 };
 
 // \cond

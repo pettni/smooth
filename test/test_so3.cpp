@@ -66,7 +66,7 @@ TEST(SO3, Eulerangles)
 TEST(SO3, Action)
 {
   for (auto i = 0u; i != 5; ++i) {
-    Eigen::Quaterniond q= Eigen::Quaterniond::UnitRandom();
+    Eigen::Quaterniond q = Eigen::Quaterniond::UnitRandom();
     smooth::SO3d g(q);
 
     Eigen::Vector3d v = Eigen::Vector3d::Random();
@@ -81,8 +81,8 @@ TEST(SO3, ProjectLift)
 {
   for (auto i = 0u; i != 5; ++i) {
     const smooth::SO3d g = smooth::SO3d::Random();
-    const auto so2 = g.project_so2();
-    const auto so3 = so2.lift_so3();
+    const auto so2       = g.project_so2();
+    const auto so3       = so2.lift_so3();
 
     ASSERT_NEAR(g.eulerAngles().x(), so3.eulerAngles().x(), 1e-6);
   }
@@ -109,4 +109,15 @@ TEST(SO2, Project)
     ASSERT_TRUE(so33.project_so2().isApprox(so2, 1e-4));
     ASSERT_TRUE(so34.project_so2().isApprox(so2, 1e-4));
   }
+}
+
+TEST(SE3, SignedInverse)
+{
+  Eigen::Vector4d c = Eigen::Vector4d::Random();
+
+  smooth::SO3d g1(Eigen::Quaterniond(c(0), c(1), c(2), c(3)));
+  smooth::SO3d g2(Eigen::Quaterniond(-c(0), -c(1), -c(2), -c(3)));
+
+  ASSERT_TRUE(g1.isApprox(g2));
+  ASSERT_LE((g1 - g2).cwiseAbs().maxCoeff(), 1e-10);
 }

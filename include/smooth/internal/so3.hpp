@@ -72,7 +72,7 @@ public:
   static void setRandom(GRefOut g_out)
   {
     g_out = Eigen::Quaternion<Scalar>::UnitRandom().coeffs();
-    if (g_out[3] < 0) { g_out *= Scalar(-1); }
+    if (g_out[3] < Scalar(0)) { g_out *= Scalar(-1); }
   }
 
   static void matrix(GRefIn g_in, MRefOut m_out)
@@ -86,6 +86,7 @@ public:
     Eigen::Map<const Eigen::Quaternion<Scalar>> q1(g_in1.data());
     Eigen::Map<const Eigen::Quaternion<Scalar>> q2(g_in2.data());
     g_out = (q1 * q2).coeffs();
+    if (g_out[3] < Scalar(0)) { g_out *= Scalar(-1); }
   }
 
   static void inverse(GRefIn g_in, GRefOut g_out)
@@ -137,6 +138,7 @@ public:
     }
 
     g_out << A * a_in.x(), A * a_in.y(), A * a_in.z(), B;
+    if (g_out[3] < Scalar(0)) { g_out *= Scalar(-1); }
   }
 
   static void hat(TRefIn a_in, MRefOut A_out)
