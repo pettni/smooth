@@ -10,7 +10,7 @@ option(BUILD_TESTING "Build the tests." OFF)
 include(CTest)
 include(GoogleTest)
 
-find_package(Eigen3 3.4... REQUIRED)
+find_package(Eigen3 3.4 REQUIRED)
 
 # ---------------------------------------------------------------------------------------
 # TARGETS
