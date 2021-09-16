@@ -96,9 +96,34 @@ TEST(SE2, LiftProject)
 {
   for (auto i = 0u; i != 5; ++i) {
     const smooth::SE2d g = smooth::SE2d::Random();
-    const auto se3 = g.lift_se3();
-    const auto se2 = se3.project_se2();
+    const auto se3       = g.lift_se3();
+    const auto se2       = se3.project_se2();
 
     ASSERT_TRUE(se2.isApprox(g, 1e-6));
+  }
+}
+
+TEST(SE2, ToFromEigen)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    const smooth::SE2d g        = smooth::SE2d::Random();
+    const Eigen::Isometry2d iso = g.isometry();
+
+    const smooth::SE2d g_copy(iso);
+    const Eigen::Isometry2d iso_copy = g_copy.isometry();
+
+    ASSERT_TRUE(g.isApprox(g_copy));
+    ASSERT_TRUE(iso.isApprox(iso_copy));
+
+    ASSERT_TRUE(g.r2().isApprox(iso.translation()));
+    ASSERT_TRUE(g.r2().isApprox(iso_copy.translation()));
+
+    for (auto j = 0u; j != 5; ++j) {
+      const Eigen::Vector2d v = Eigen::Vector2d::Random();
+      Eigen::Vector2d v1      = g * v;
+      Eigen::Vector2d v2      = iso * v;
+
+      ASSERT_TRUE(v1.isApprox(v2));
+    }
   }
 }
