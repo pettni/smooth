@@ -150,11 +150,15 @@ Eigen::Map&lt; Eigen::Matrix&lt; <a class="el" href="classsmooth_1_1SE3Base.html
 Eigen::Map&lt; const Eigen::Matrix&lt; <a class="el" href="classsmooth_1_1SE3Base.html#a02a8d675389fb7233edf7e288f58ddf1">Scalar</a>, 3, 1 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SE3Base.html#a29286ce6ac78562f2f0f111047d45d2c">r3</a> () const</td></tr>
 <tr class="memdesc:a29286ce6ac78562f2f0f111047d45d2c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Const access R3 part. <br /></td></tr>
 <tr class="separator:a29286ce6ac78562f2f0f111047d45d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d8b574aa8cc81b0b848a505234107e3"><td class="memTemplParams" colspan="2"><a id="a0d8b574aa8cc81b0b848a505234107e3"></a>
+<tr class="memitem:aad1aefcb8d0f3ecda8105ba68c1224ff"><td class="memItemLeft" align="right" valign="top"><a id="aad1aefcb8d0f3ecda8105ba68c1224ff"></a>
+Eigen::Transform&lt; <a class="el" href="classsmooth_1_1SE3Base.html#a02a8d675389fb7233edf7e288f58ddf1">Scalar</a>, 3, Eigen::Isometry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SE3Base.html#aad1aefcb8d0f3ecda8105ba68c1224ff">isometry</a> () const</td></tr>
+<tr class="memdesc:aad1aefcb8d0f3ecda8105ba68c1224ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return as 3D Eigen transform. <br /></td></tr>
+<tr class="separator:aad1aefcb8d0f3ecda8105ba68c1224ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69693b81a4f6d1ceca5de89376eb3744"><td class="memTemplParams" colspan="2"><a id="a69693b81a4f6d1ceca5de89376eb3744"></a>
 template&lt;typename EigenDerived &gt; </td></tr>
-<tr class="memitem:a0d8b574aa8cc81b0b848a505234107e3"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; <a class="el" href="classsmooth_1_1SE3Base.html#a02a8d675389fb7233edf7e288f58ddf1">Scalar</a>, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SE3Base.html#a0d8b574aa8cc81b0b848a505234107e3">operator*</a> (const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v)</td></tr>
-<tr class="memdesc:a0d8b574aa8cc81b0b848a505234107e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tranformation action on 3D vector. <br /></td></tr>
-<tr class="separator:a0d8b574aa8cc81b0b848a505234107e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69693b81a4f6d1ceca5de89376eb3744"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; <a class="el" href="classsmooth_1_1SE3Base.html#a02a8d675389fb7233edf7e288f58ddf1">Scalar</a>, 3, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SE3Base.html#a69693b81a4f6d1ceca5de89376eb3744">operator*</a> (const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v) const</td></tr>
+<tr class="memdesc:a69693b81a4f6d1ceca5de89376eb3744"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tranformation action on 3D vector. <br /></td></tr>
+<tr class="separator:a69693b81a4f6d1ceca5de89376eb3744"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8d2b28ca3028b0ac4cb2ad899cb0fe9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsmooth_1_1SE2.html">SE2</a>&lt; <a class="el" href="classsmooth_1_1SE3Base.html#a02a8d675389fb7233edf7e288f58ddf1">Scalar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SE3Base.html#aa8d2b28ca3028b0ac4cb2ad899cb0fe9">project_se2</a> () const</td></tr>
 <tr class="memdesc:aa8d2b28ca3028b0ac4cb2ad899cb0fe9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Project to <a class="el" href="classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group.">SE2</a>.  <a href="classsmooth_1_1SE3Base.html#aa8d2b28ca3028b0ac4cb2ad899cb0fe9">More...</a><br /></td></tr>
 <tr class="separator:aa8d2b28ca3028b0ac4cb2ad899cb0fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -308,7 +312,7 @@ Lie algebra matrix form</h2>
 \[ \mathbf{a}^\wedge = \begin{bmatrix} 0 &amp; -\omega_z &amp; \omega_y &amp; v_x \\ \omega_z &amp; 0 &amp; -\omega_x &amp; v_y \\ -\omega_y &amp; \omega_x &amp; 0 &amp; v_y \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{bmatrix} \in \mathbb{R}^{4 \times 4} \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00090">90</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00091">91</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="aa8d2b28ca3028b0ac4cb2ad899cb0fe9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa8d2b28ca3028b0ac4cb2ad899cb0fe9">&#9670;&nbsp;</a></span>project_se2()</h2>
@@ -338,7 +342,7 @@ template&lt;typename _Derived &gt; </div>
 <p>Project to <a class="el" href="classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group.">SE2</a>. </p>
 <dl class="section note"><dt>Note</dt><dd><a class="el" href="classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group.">SE2</a> header must be included. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00147">147</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00156">156</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>

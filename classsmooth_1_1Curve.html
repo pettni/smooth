@@ -161,9 +161,9 @@ G&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsm
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae268559d5af01c8a68ac0acfc099d856"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmooth_1_1Curve.html">Curve</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Curve.html#ae268559d5af01c8a68ac0acfc099d856">ConstantVelocity</a> (const G &amp;g, double T=1)</td></tr>
-<tr class="memdesc:ae268559d5af01c8a68ac0acfc099d856"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create constant-velocity <a class="el" href="classsmooth_1_1Curve.html" title="Single-parameter Lie group-valued function.">Curve</a> that reaches a given target state.  <a href="classsmooth_1_1Curve.html#ae268559d5af01c8a68ac0acfc099d856">More...</a><br /></td></tr>
-<tr class="separator:ae268559d5af01c8a68ac0acfc099d856"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9dd44b8ed5fb8670f11afdf2f5fdb9c0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmooth_1_1Curve.html">Curve</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Curve.html#a9dd44b8ed5fb8670f11afdf2f5fdb9c0">ConstantVelocityGoal</a> (const G &amp;g, double T=1)</td></tr>
+<tr class="memdesc:a9dd44b8ed5fb8670f11afdf2f5fdb9c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create constant-velocity <a class="el" href="classsmooth_1_1Curve.html" title="Single-parameter Lie group-valued function.">Curve</a> that reaches a given target state.  <a href="classsmooth_1_1Curve.html#a9dd44b8ed5fb8670f11afdf2f5fdb9c0">More...</a><br /></td></tr>
+<tr class="separator:a9dd44b8ed5fb8670f11afdf2f5fdb9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab28057f01d429aa5b7c920c8636f12a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classsmooth_1_1Curve.html">Curve</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Curve.html#aab28057f01d429aa5b7c920c8636f12a">ConstantVelocity</a> (const <a class="el" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent</a>&lt; G &gt; &amp;v, double T=1)</td></tr>
 <tr class="memdesc:aab28057f01d429aa5b7c920c8636f12a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create constant-velocity <a class="el" href="classsmooth_1_1Curve.html" title="Single-parameter Lie group-valued function.">Curve</a>.  <a href="classsmooth_1_1Curve.html#aab28057f01d429aa5b7c920c8636f12a">More...</a><br /></td></tr>
 <tr class="separator:aab28057f01d429aa5b7c920c8636f12a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -292,60 +292,8 @@ template&lt;std::ranges::range Rv&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae268559d5af01c8a68ac0acfc099d856"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae268559d5af01c8a68ac0acfc099d856">&#9670;&nbsp;</a></span>ConstantVelocity() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="classsmooth_1_1Curve.html">Curve</a> <a class="el" href="classsmooth_1_1Curve.html">smooth::Curve</a>&lt; G &gt;::ConstantVelocity </td>
-          <td>(</td>
-          <td class="paramtype">const G &amp;&#160;</td>
-          <td class="paramname"><em>g</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>T</em> = <code>1</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Create constant-velocity <a class="el" href="classsmooth_1_1Curve.html" title="Single-parameter Lie group-valued function.">Curve</a> that reaches a given target state. </p>
-<p>The resulting curve is </p><p class="formulaDsp">
-\[ x(t) = \exp( (t / T) \log(g) ), \quad t \in [0, T]. \]
-</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">g</td><td>target state </td></tr>
-    <tr><td class="paramname">T</td><td>duration (must be positive) </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="curve_8hpp_source.html#l00150">150</a> of file <a class="el" href="curve_8hpp_source.html">curve.hpp</a>.</p>
-
-</div>
-</div>
 <a id="aab28057f01d429aa5b7c920c8636f12a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aab28057f01d429aa5b7c920c8636f12a">&#9670;&nbsp;</a></span>ConstantVelocity() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aab28057f01d429aa5b7c920c8636f12a">&#9670;&nbsp;</a></span>ConstantVelocity()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -393,6 +341,58 @@ template&lt;LieGroup G&gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="curve_8hpp_source.html#l00167">167</a> of file <a class="el" href="curve_8hpp_source.html">curve.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a9dd44b8ed5fb8670f11afdf2f5fdb9c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9dd44b8ed5fb8670f11afdf2f5fdb9c0">&#9670;&nbsp;</a></span>ConstantVelocityGoal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;LieGroup G&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classsmooth_1_1Curve.html">Curve</a> <a class="el" href="classsmooth_1_1Curve.html">smooth::Curve</a>&lt; G &gt;::ConstantVelocityGoal </td>
+          <td>(</td>
+          <td class="paramtype">const G &amp;&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>T</em> = <code>1</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Create constant-velocity <a class="el" href="classsmooth_1_1Curve.html" title="Single-parameter Lie group-valued function.">Curve</a> that reaches a given target state. </p>
+<p>The resulting curve is </p><p class="formulaDsp">
+\[ x(t) = \exp( (t / T) \log(g) ), \quad t \in [0, T]. \]
+</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">g</td><td>target state </td></tr>
+    <tr><td class="paramname">T</td><td>duration (must be positive) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="curve_8hpp_source.html#l00150">150</a> of file <a class="el" href="curve_8hpp_source.html">curve.hpp</a>.</p>
 
 </div>
 </div>
