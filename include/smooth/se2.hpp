@@ -27,6 +27,7 @@
 #define SMOOTH__SE2_HPP_
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 #include <complex>
 
@@ -131,6 +132,14 @@ public:
   }
 
   /**
+   * @brief Return as 2D Eigen transform.
+   */
+  Eigen::Transform<Scalar, 2, Eigen::Isometry> isometry() const
+  {
+    return Eigen::Translation<Scalar, 2>(r2()) * Eigen::Rotation2D<Scalar>(so2().angle());
+  }
+
+  /**
    * @brief Tranformation action on 2D vector.
    */
   template<typename EigenDerived>
@@ -194,6 +203,18 @@ public:
   {
     Base::so2() = static_cast<const SO2Derived &>(so2);
     Base::r2()  = static_cast<const T2Derived &>(r2);
+  }
+
+  /**
+   * @brief Construct from Eigen transform.
+   */
+  SE2(const Eigen::Transform<Scalar, 2, Eigen::Isometry> & t)
+  {
+    Eigen::Matrix2<Scalar> rotmat = t.rotation();
+    coeffs().x() = t.translation().x();
+    coeffs().y() = t.translation().y();
+    coeffs().z() = rotmat(1, 0);  // sin(angle)
+    coeffs().w() = rotmat(0, 0);  // cos(angle)
   }
 };
 

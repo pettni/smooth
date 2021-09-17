@@ -62,7 +62,7 @@ TEST(Curve, ConstantVelocity2)
 {
   smooth::SO3d g1 = smooth::SO3d::Random();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::ConstantVelocity(g1, 5.);
+  auto c1 = smooth::Curve<smooth::SO3d>::ConstantVelocityGoal(g1, 5.);
 
   ASSERT_EQ(c1.t_min(), 0);
   ASSERT_EQ(c1.t_max(), 5);

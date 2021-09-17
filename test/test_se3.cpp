@@ -61,3 +61,28 @@ TEST(SE3, Action)
 
   ASSERT_TRUE((tr * w).isApprox(Eigen::Vector3d(6, 7, 8)));
 }
+
+TEST(SE3, ToFromEigen)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    const smooth::SE3d g        = smooth::SE3d::Random();
+    const Eigen::Isometry3d iso = g.isometry();
+
+    const smooth::SE3d g_copy(iso);
+    const Eigen::Isometry3d iso_copy = g_copy.isometry();
+
+    ASSERT_TRUE(g.isApprox(g_copy));
+    ASSERT_TRUE(iso.isApprox(iso_copy));
+
+    ASSERT_TRUE(g.r3().isApprox(iso.translation()));
+    ASSERT_TRUE(g.r3().isApprox(iso_copy.translation()));
+
+    for (auto j = 0u; j != 5; ++j) {
+      const Eigen::Vector3d v = Eigen::Vector3d::Random();
+      Eigen::Vector3d v1      = g * v;
+      Eigen::Vector3d v2      = iso * v;
+
+      ASSERT_TRUE(v1.isApprox(v2));
+    }
+  }
+}

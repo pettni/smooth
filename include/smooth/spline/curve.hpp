@@ -147,7 +147,7 @@ public:
    * @param g target state
    * @param T duration (must be positive)
    */
-  static Curve ConstantVelocity(const G & g, double T = 1)
+  static Curve ConstantVelocityGoal(const G & g, double T = 1)
   {
     assert(T > 0);
     return ConstantVelocity(::smooth::log(g) / T, T);

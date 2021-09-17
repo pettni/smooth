@@ -27,6 +27,7 @@
 #define SMOOTH__SE3_HPP_
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 #include <complex>
 
@@ -131,10 +132,18 @@ public:
   }
 
   /**
+   * @brief Return as 3D Eigen transform.
+   */
+  Eigen::Transform<Scalar, 3, Eigen::Isometry> isometry() const
+  {
+    return Eigen::Translation<Scalar, 3>(r3()) * so3().quat();
+  }
+
+  /**
    * @brief Tranformation action on 3D vector.
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v)
+  Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return so3() * v + r3();
   }
@@ -193,6 +202,15 @@ public:
   {
     Base::so3() = static_cast<const SO3Derived &>(so3);
     Base::r3()  = static_cast<const T3Derived &>(r3);
+  }
+
+  /**
+   * @brief Construct from Eigen transform.
+   */
+  SE3(const Eigen::Transform<Scalar, 3, Eigen::Isometry> & t)
+  {
+    Base::so3() = smooth::SO3<Scalar>(Eigen::Quaternion<Scalar>(t.rotation()));
+    Base::r3() = t.translation();
   }
 };
 
