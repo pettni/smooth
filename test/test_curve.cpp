@@ -585,3 +585,43 @@ TEST(Curve, Adapted)
 
   static_cast<void>(x);
 }
+
+TEST(Curve, IntegratePolynomial)
+{
+  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 0, 0, 3), 27, 1e-2);
+
+  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 0, 2, 3), 126, 1e-2);
+  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 0, -2, 3), 72.5, 1e-2);
+
+  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 1, 2, 3), 459, 1e-2);
+  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, -1, 2, 3), 217.67, 1e-2);
+}
+
+TEST(Curve, ArcLengthConstant) {
+  smooth::Curve<Eigen::Vector2d> c;
+  c *= smooth::Curve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{1, 0});
+  c *= smooth::Curve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{0, 1});
+  c *= smooth::Curve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{-1, 0});
+
+  ASSERT_NEAR(c.arclength(c.t_max()).x(), 2, 1e-6);
+  ASSERT_NEAR(c.arclength(c.t_max()).y(), 1, 1e-6);
+
+  ASSERT_NEAR(c.arclength(1.5).x(), 1, 1e-6);
+  ASSERT_NEAR(c.arclength(1.5).y(), 0.5, 1e-6);
+
+  auto c_partial = c.crop(0.5, 2.5);
+
+  ASSERT_NEAR(c_partial.arclength(c_partial.t_max()).x(), 1, 1e-6);
+  ASSERT_NEAR(c_partial.arclength(c_partial.t_max()).x(), 1, 1e-6);
+
+  ASSERT_NEAR(c_partial.arclength(1).y(), 0.5, 1e-6);
+  ASSERT_NEAR(c_partial.arclength(1).y(), 0.5, 1e-6);
+}
+
+TEST(Curve, ArcLengthNonConstant) {
+  std::vector<Eigen::Vector2d> vs{Eigen::Vector2d{1, -1}, Eigen::Vector2d{-2, 2}, Eigen::Vector2d{1, -1}};
+  smooth::Curve<Eigen::Vector2d> c(1, vs);
+
+  ASSERT_NEAR(c.arclength(c.t_max()).x(), 1.1547, 1e-4);
+  ASSERT_NEAR(c.arclength(c.t_max()).y(), 1.1547, 1e-4);
+}

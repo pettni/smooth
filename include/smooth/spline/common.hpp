@@ -108,6 +108,41 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
   return M;
 }
 
+/**
+ * @brief Evaluate the integral
+ *
+ * \f[
+ *   \int_{t_0}^{t_1} \left| At^2 + Bt + C \right| \mathrm{d} t
+ * \f]
+ */
+inline double integrate_absolute_polynomial(double t0, double t1, double A, double B, double C)
+{
+  // location of first zero (if any)
+  double mid1 = std::numeric_limits<double>::infinity();
+  // location of second zero (if any)
+  double mid2 = std::numeric_limits<double>::infinity();
+
+  if (std::abs(A) < 1e-9 && std::abs(B) > 1e-9) {
+    // linear non-constant function
+    mid1 = std::clamp(-C / B, t0, t1);
+  } else if (std::abs(A) > 1e-9) {
+    // quadratic function
+    const double res = B * B / (4 * A * A) - C / A;
+
+    if (res > 0) {
+      mid1 = -B / (2 * A) - std::sqrt(res);
+      mid2 = -B / (2 * A) + std::sqrt(res);
+    }
+  }
+
+  const auto integ = [&](double u) { return A * u * u * u / 3 + B * u * u / 2 + C * u; };
+
+  const double mid1cl = std::clamp(mid1, t0, t1);
+  const double mid2cl = std::clamp(mid2, t0, t1);
+
+  return std::abs(integ(t1) - integ(t0) + 2 * integ(mid1cl) - 2 * integ(mid2cl));
+}
+
 template<LieGroup G>
 using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
 
