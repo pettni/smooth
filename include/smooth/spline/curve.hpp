@@ -344,6 +344,45 @@ public:
   }
 
   /**
+   * @brief Get approximate arclength traversed at time T.
+   *
+   * The arclength is defined as
+   * \f[
+   *   A(t) = \int_{0}^t \left| \mathrm{d}^r x_s \right| \mathrm{d} s,
+   * \f]
+   * where the absolute value is component-wise.
+   *
+   * @note This function is approximate for Lie groups with curvature.
+   */
+  Tangent<G> arclength(double t) const
+  {
+    Tangent<G> ret = Tangent<G>::Zero();
+
+    for (auto i = 0u; i < end_t_.size(); ++i) {
+      // check if we have reached t
+      if (i > 0 && t <= end_t_[i - 1]) { break; }
+
+      // polynomial coefficients: dx/dt = At^2 + Bt + C
+      const Tangent<G> A = 3 * vs_[i][0] - 6 * vs_[i][1] + 3 * vs_[i][2];
+      const Tangent<G> B = -6 * vs_[i][0] + 6 * vs_[i][1];
+      const Tangent<G> C = 3 * vs_[i][0];
+
+      const double ta = i == 0 ? 0 : end_t_[i - 1];
+      const double tb = end_t_[i];
+
+      const double ua = seg_T0_[i];
+      const double ub = ua + seg_Del_[i] * (std::min<double>(t, tb) - ta) / (tb - ta);
+
+      // integrate | A u2 + B u + C |  for  u \in [ua, ub]
+      for (auto k = 0u; k < Dof<G>; ++k) {
+        ret(k) += detail::integrate_absolute_polynomial(ua, ub, A(k), B(k), C(k));
+      }
+    }
+
+    return ret;
+  }
+
+  /**
    * @brief Crop curve
    *
    * @param ta, tb interval for cropped Curve
@@ -378,10 +417,10 @@ public:
     for (auto i = 0u; i != Nseg; ++i) {
       if (i == Nseg - 1) {
         end_t[i] = tb - ta;
-        end_g[i] = ga.inverse() * operator()(tb);
+        end_g[i] = composition(inverse(ga), operator()(tb));
       } else {
         end_t[i] = end_t_[i0 + i] - ta;
-        end_g[i] = ga.inverse() * end_g_[i0 + i];
+        end_g[i] = composition(inverse(ga), end_g_[i0 + i]);
       }
       vs[i]      = vs_[i0 + i];
       seg_T0[i]  = seg_T0_[i0 + i];
@@ -439,9 +478,15 @@ private:
   // segment i is defined by
   //
   //  - time interval:  end_t_[i-1], end_t_[i]
-  //  - g interval:     end[i-1], end_g_[i]
+  //  - g interval:     end_g_[i-1], end_g_[i]
   //  - velocities:     vs_[i]
   //  - crop:           seg_T0_[i], seg_Del_[i]
+  //
+  // s.t.
+  //
+  //  u(t) = T0[i] + Del[i] * (t - end_t[i-1]) / (end_t[i] - end_t[i-1])
+  //
+  //  x(t) = xu(u(t))  where xu is spline defined in [0, 1]
 
   // segment end times
   std::vector<double> end_t_;
@@ -454,16 +499,6 @@ private:
 
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;
-
-  template<LieGroup Go>
-  friend auto reparameterize_curve2(const Curve<Go> & curve,
-    const typename Go::Tangent & vel_min,
-    const typename Go::Tangent & vel_max,
-    const typename Go::Tangent & acc_min,
-    const typename Go::Tangent & acc_max,
-    double,
-    double,
-    bool);
 };
 
 /**
