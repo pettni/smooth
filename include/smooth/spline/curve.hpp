@@ -595,8 +595,6 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
   double dt        = 0.05,
   double eps       = 1e-2)
 {
-  const double zeps = std::numeric_limits<double>::epsilon() / eps;
-
   // BACKWARDS PASS WITH MINIMAL ACCELERATION
 
   Eigen::Vector2d state(curve.t_max(), end_vel);  // s, v
@@ -608,12 +606,21 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
     // clamp velocity to not exceed constraints
     for (auto i = 0u; i != Dof<G>; ++i) {
-      if (vel(i) > zeps) {
+      // regular velocity constraint
+      if (vel(i) > eps) {
         state.y() = std::min<double>(state.y(), vel_max(i) / vel(i));
-      } else if (vel(i) < -zeps) {
+      } else if (vel(i) < -eps) {
         state.y() = std::min<double>(state.y(), vel_min(i) / vel(i));
       }
+
+      // ensure a = 0 is feasible for acceleration constraint
+      if (acc(i) > eps) {
+        state.y() = std::min<double>(state.y(), std::sqrt(acc_max(i) / acc(i)));
+      } else if (acc(i) < -eps) {
+        state.y() = std::min<double>(state.y(), std::sqrt(acc_min(i) / acc(i)));
+      }
     }
+
     if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
     // ensure v stays positive
     state.y() = std::max(state.y(), eps);
@@ -623,26 +630,23 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
       yy.push_back(state.y());
     }
 
-    if (vel.cwiseAbs().maxCoeff() <= zeps) {
-      // skip over if curve is stationary
-      state.x() -= eps;
-      state.y() = 1. / eps;
-    } else {
+    double a = 0;
+    if (vel.cwiseAbs().maxCoeff() > eps) {
       // figure minimal allowed acceleration
-      double a = -std::numeric_limits<double>::infinity();
+      a                      = -std::numeric_limits<double>::infinity();
+      const Tangent<G> upper = (acc_max - acc * state.y() * state.y()).cwiseMax(Tangent<G>::Zero());
+      const Tangent<G> lower = (acc_min - acc * state.y() * state.y()).cwiseMin(Tangent<G>::Zero());
       for (auto i = 0u; i != Dof<G>; ++i) {
-        const Tangent<G> upper = acc_max - acc * state.y() * state.y();
-        const Tangent<G> lower = acc_min - acc * state.y() * state.y();
-        if (vel(i) > zeps) {
+        if (vel(i) > eps) {
           a = std::max<double>(a, lower(i) / vel(i));
-        } else if (vel(i) < -zeps) {
+        } else if (vel(i) < -eps) {
           a = std::max<double>(a, upper(i) / vel(i));
         }
       }
-
-      state.x() -= state.y() * dt - a * dt * dt / 2;
-      state.y() -= dt * a;
     }
+
+    state.x() -= state.y() * dt - a * dt * dt / 2;
+    state.y() -= dt * a;
   } while (state.x() > 0);
 
   if (xx.empty() || state.x() < xx.back()) {
@@ -662,51 +666,46 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
   state << 0, start_vel;
 
   // clamp velocity to not exceed upper bound
-  state.y() = std::min<double>(state.y(), v_func(0));
+  state.y() = std::clamp<double>(state.y(), eps, v_func(0));
   if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
   do {
     Tangent<G> vel, acc;
     curve(state.x(), vel, acc);
 
-    if (vel.cwiseAbs().maxCoeff() <= zeps) {
-      // skip over without storing if curve is stationary
-      state.x() += eps;
-    } else {
+    double a = 0;
+    if (vel.cwiseAbs().maxCoeff() > eps) {
       // figure maximal allowed acceleration
-      double a = std::numeric_limits<double>::infinity();
+      a                      = std::numeric_limits<double>::infinity();
+      const Tangent<G> upper = (acc_max - acc * state.y() * state.y()).cwiseMax(Tangent<G>::Zero());
+      const Tangent<G> lower = (acc_min - acc * state.y() * state.y()).cwiseMin(Tangent<G>::Zero());
       for (auto i = 0u; i != Dof<G>; ++i) {
-        const Tangent<G> upper = acc_max - acc * state.y() * state.y();
-        const Tangent<G> lower = acc_min - acc * state.y() * state.y();
-        if (vel(i) > zeps) {
+        if (vel(i) > eps) {
           a = std::min<double>(a, upper(i) / vel(i));
-        } else if (vel(i) < -zeps) {
+        } else if (vel(i) < -eps) {
           a = std::min<double>(a, lower(i) / vel(i));
         }
       }
 
-      double new_s = state.x() + state.y() * dt + a * dt * dt / 2;
-      double new_v = state.y() + dt * a;
+      const double new_s = state.x() + state.y() * dt + a * dt * dt / 2;
+      double new_v       = state.y() + dt * a;
 
       // clamp velocity to not exceed upper bound
-      new_v = std::min<double>(new_v, v_func(new_s));
+      new_v = std::clamp<double>(new_v, eps, v_func(new_s));
       if (slower_only) { new_v = std::min<double>(new_v, 1); }
 
-      // ensure v stays positive
-      new_v = std::max(new_v, eps);
-
       a = (new_v - state.y()) / dt;
-
-      dd.push_back({
-        .t = dd.empty() ? 0 : dd.back().t + dt,
-        .s = state.x(),
-        .v = state.y(),
-        .a = a,
-      });
-
-      state.x() += dd.back().v * dt + dd.back().a * dt * dt / 2;
-      state.y() += dd.back().a * dt;
     }
+
+    dd.push_back({
+      .t = dd.empty() ? 0 : dd.back().t + dt,
+      .s = state.x(),
+      .v = state.y(),
+      .a = a,
+    });
+
+    state.x() += dd.back().v * dt + dd.back().a * dt * dt / 2;
+    state.y() += dd.back().a * dt;
   } while (state.x() < curve.t_max());
 
   dd.push_back({
