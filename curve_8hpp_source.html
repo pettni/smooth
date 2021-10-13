@@ -511,133 +511,132 @@ $(function() {
 <div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;  <span class="keywordtype">double</span> dt        = 0.05,</div>
 <div class="line"><a name="l00596"></a><span class="lineno">  596</span>&#160;  <span class="keywordtype">double</span> eps       = 1e-2)</div>
 <div class="line"><a name="l00597"></a><span class="lineno">  597</span>&#160;{</div>
-<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> zeps = std::numeric_limits&lt;double&gt;::epsilon() / eps;</div>
+<div class="line"><a name="l00598"></a><span class="lineno">  598</span>&#160;  <span class="comment">// BACKWARDS PASS WITH MINIMAL ACCELERATION</span></div>
 <div class="line"><a name="l00599"></a><span class="lineno">  599</span>&#160; </div>
-<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;  <span class="comment">// BACKWARDS PASS WITH MINIMAL ACCELERATION</span></div>
-<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160; </div>
-<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;  Eigen::Vector2d state(curve.<a class="code" href="classsmooth_1_1Curve.html#ac9d11d48219799e656e18dfe1691d4ba">t_max</a>(), end_vel);  <span class="comment">// s, v</span></div>
-<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;  std::vector&lt;double&gt; xx, yy;</div>
-<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160; </div>
-<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;  <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;    <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> vel, acc;</div>
-<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;    curve(state.x(), vel, acc);</div>
-<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160; </div>
-<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;    <span class="comment">// clamp velocity to not exceed constraints</span></div>
-<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != Dof&lt;G&gt;; ++i) {</div>
-<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;      <span class="keywordflow">if</span> (vel(i) &gt; zeps) {</div>
-<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;        state.y() = std::min&lt;double&gt;(state.y(), vel_max(i) / vel(i));</div>
-<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;      } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vel(i) &lt; -zeps) {</div>
-<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;        state.y() = std::min&lt;double&gt;(state.y(), vel_min(i) / vel(i));</div>
-<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;      }</div>
-<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;    }</div>
-<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;    <span class="keywordflow">if</span> (slower_only) { state.y() = std::min&lt;double&gt;(state.y(), 1); }</div>
-<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;    <span class="comment">// ensure v stays positive</span></div>
-<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;    state.y() = std::max(state.y(), eps);</div>
-<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160; </div>
-<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;    <span class="keywordflow">if</span> (xx.empty() || state.x() &lt; xx.back()) {</div>
-<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;      xx.push_back(state.x());</div>
-<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;      yy.push_back(state.y());</div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;    }</div>
-<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160; </div>
-<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;    <span class="keywordflow">if</span> (vel.cwiseAbs().maxCoeff() &lt;= zeps) {</div>
-<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;      <span class="comment">// skip over if curve is stationary</span></div>
-<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;      state.x() -= eps;</div>
-<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;      state.y() = 1. / eps;</div>
-<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;      <span class="comment">// figure minimal allowed acceleration</span></div>
-<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;      <span class="keywordtype">double</span> a = -std::numeric_limits&lt;double&gt;::infinity();</div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != Dof&lt;G&gt;; ++i) {</div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;        <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> upper = acc_max - acc * state.y() * state.y();</div>
-<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;        <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> lower = acc_min - acc * state.y() * state.y();</div>
-<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;        <span class="keywordflow">if</span> (vel(i) &gt; zeps) {</div>
-<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;          a = std::max&lt;double&gt;(a, lower(i) / vel(i));</div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vel(i) &lt; -zeps) {</div>
-<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;          a = std::max&lt;double&gt;(a, upper(i) / vel(i));</div>
-<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;        }</div>
-<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;      }</div>
-<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160; </div>
-<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;      state.x() -= state.y() * dt - a * dt * dt / 2;</div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;      state.y() -= dt * a;</div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;    }</div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;  } <span class="keywordflow">while</span> (state.x() &gt; 0);</div>
+<div class="line"><a name="l00600"></a><span class="lineno">  600</span>&#160;  Eigen::Vector2d state(curve.<a class="code" href="classsmooth_1_1Curve.html#ac9d11d48219799e656e18dfe1691d4ba">t_max</a>(), end_vel);  <span class="comment">// s, v</span></div>
+<div class="line"><a name="l00601"></a><span class="lineno">  601</span>&#160;  std::vector&lt;double&gt; xx, yy;</div>
+<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160; </div>
+<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;  <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;    <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> vel, acc;</div>
+<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;    curve(state.x(), vel, acc);</div>
+<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160; </div>
+<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;    <span class="comment">// clamp velocity to not exceed constraints</span></div>
+<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != Dof&lt;G&gt;; ++i) {</div>
+<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;      <span class="comment">// regular velocity constraint</span></div>
+<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;      <span class="keywordflow">if</span> (vel(i) &gt; eps) {</div>
+<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;        state.y() = std::min&lt;double&gt;(state.y(), vel_max(i) / vel(i));</div>
+<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;      } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vel(i) &lt; -eps) {</div>
+<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;        state.y() = std::min&lt;double&gt;(state.y(), vel_min(i) / vel(i));</div>
+<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;      }</div>
+<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160; </div>
+<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;      <span class="comment">// ensure a = 0 is feasible for acceleration constraint</span></div>
+<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;      <span class="keywordflow">if</span> (acc(i) &gt; eps) {</div>
+<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;        state.y() = std::min&lt;double&gt;(state.y(), std::sqrt(acc_max(i) / acc(i)));</div>
+<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;      } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (acc(i) &lt; -eps) {</div>
+<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;        state.y() = std::min&lt;double&gt;(state.y(), std::sqrt(acc_min(i) / acc(i)));</div>
+<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;      }</div>
+<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;    }</div>
+<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160; </div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;    <span class="keywordflow">if</span> (slower_only) { state.y() = std::min&lt;double&gt;(state.y(), 1); }</div>
+<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;    <span class="comment">// ensure v stays positive</span></div>
+<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;    state.y() = std::max(state.y(), eps);</div>
+<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160; </div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;    <span class="keywordflow">if</span> (xx.empty() || state.x() &lt; xx.back()) {</div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;      xx.push_back(state.x());</div>
+<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;      yy.push_back(state.y());</div>
+<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;    }</div>
+<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160; </div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;    <span class="keywordtype">double</span> a = 0;</div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;    <span class="keywordflow">if</span> (vel.cwiseAbs().maxCoeff() &gt; eps) {</div>
+<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;      <span class="comment">// figure minimal allowed acceleration</span></div>
+<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;      a                      = -std::numeric_limits&lt;double&gt;::infinity();</div>
+<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;      <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> upper = (acc_max - acc * state.y() * state.y()).cwiseMax(<a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;::Zero</a>());</div>
+<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;      <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> lower = (acc_min - acc * state.y() * state.y()).cwiseMin(<a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;::Zero</a>());</div>
+<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != Dof&lt;G&gt;; ++i) {</div>
+<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;        <span class="keywordflow">if</span> (vel(i) &gt; eps) {</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;          a = std::max&lt;double&gt;(a, lower(i) / vel(i));</div>
+<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vel(i) &lt; -eps) {</div>
+<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;          a = std::max&lt;double&gt;(a, upper(i) / vel(i));</div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;        }</div>
+<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;      }</div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;    }</div>
 <div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160; </div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;  <span class="keywordflow">if</span> (xx.empty() || state.x() &lt; xx.back()) {</div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;    xx.push_back(state.x());</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;    yy.push_back(state.y());</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;  }</div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160; </div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;  <span class="comment">// fit a spline to get v(s)</span></div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160; </div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;  std::reverse(xx.begin(), xx.end());</div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;  std::reverse(yy.begin(), yy.end());</div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;  <span class="keyword">auto</span> v_func = <a class="code" href="bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724">fit_linear_bezier</a>(xx, yy);  <span class="comment">// linear guarantees positive velocities</span></div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;    state.x() -= state.y() * dt - a * dt * dt / 2;</div>
+<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;    state.y() -= dt * a;</div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;  } <span class="keywordflow">while</span> (state.x() &gt; 0);</div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160; </div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;  <span class="keywordflow">if</span> (xx.empty() || state.x() &lt; xx.back()) {</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;    xx.push_back(state.x());</div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;    yy.push_back(state.y());</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;  }</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160; </div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;  <span class="comment">// fit a spline to get v(s)</span></div>
 <div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160; </div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;  <span class="comment">// FORWARD PASS WITH MAXIMAL ACCELERATION</span></div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160; </div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;  std::vector&lt;Reparameterization::Data&gt; dd;</div>
-<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;  state &lt;&lt; 0, start_vel;</div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160; </div>
-<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;  <span class="comment">// clamp velocity to not exceed upper bound</span></div>
-<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;  state.y() = std::min&lt;double&gt;(state.y(), v_func(0));</div>
-<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;  <span class="keywordflow">if</span> (slower_only) { state.y() = std::min&lt;double&gt;(state.y(), 1); }</div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;  std::reverse(xx.begin(), xx.end());</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;  std::reverse(yy.begin(), yy.end());</div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;  <span class="keyword">auto</span> v_func = <a class="code" href="bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724">fit_linear_bezier</a>(xx, yy);  <span class="comment">// linear guarantees positive velocities</span></div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160; </div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;  <span class="comment">// FORWARD PASS WITH MAXIMAL ACCELERATION</span></div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160; </div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;  std::vector&lt;Reparameterization::Data&gt; dd;</div>
+<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;  state &lt;&lt; 0, start_vel;</div>
 <div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160; </div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;  <span class="keywordflow">do</span> {</div>
-<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;    <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> vel, acc;</div>
-<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;    curve(state.x(), vel, acc);</div>
+<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;  <span class="comment">// clamp velocity to not exceed upper bound</span></div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;  state.y() = std::clamp&lt;double&gt;(state.y(), eps, v_func(0));</div>
+<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;  <span class="keywordflow">if</span> (slower_only) { state.y() = std::min&lt;double&gt;(state.y(), 1); }</div>
 <div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160; </div>
-<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;    <span class="keywordflow">if</span> (vel.cwiseAbs().maxCoeff() &lt;= zeps) {</div>
-<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;      <span class="comment">// skip over without storing if curve is stationary</span></div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;      state.x() += eps;</div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;      <span class="comment">// figure maximal allowed acceleration</span></div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;      <span class="keywordtype">double</span> a = std::numeric_limits&lt;double&gt;::infinity();</div>
-<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != Dof&lt;G&gt;; ++i) {</div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;        <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> upper = acc_max - acc * state.y() * state.y();</div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;        <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> lower = acc_min - acc * state.y() * state.y();</div>
-<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;        <span class="keywordflow">if</span> (vel(i) &gt; zeps) {</div>
-<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;          a = std::min&lt;double&gt;(a, upper(i) / vel(i));</div>
-<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vel(i) &lt; -zeps) {</div>
-<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;          a = std::min&lt;double&gt;(a, lower(i) / vel(i));</div>
-<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;        }</div>
-<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;      }</div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160; </div>
-<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;      <span class="keywordtype">double</span> new_s = state.x() + state.y() * dt + a * dt * dt / 2;</div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;      <span class="keywordtype">double</span> new_v = state.y() + dt * a;</div>
-<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160; </div>
-<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;      <span class="comment">// clamp velocity to not exceed upper bound</span></div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;      new_v = std::min&lt;double&gt;(new_v, v_func(new_s));</div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;      <span class="keywordflow">if</span> (slower_only) { new_v = std::min&lt;double&gt;(new_v, 1); }</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160; </div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;      <span class="comment">// ensure v stays positive</span></div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;      new_v = std::max(new_v, eps);</div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160; </div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;      a = (new_v - state.y()) / dt;</div>
+<div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160;  <span class="keywordflow">do</span> {</div>
+<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;    <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> vel, acc;</div>
+<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;    curve(state.x(), vel, acc);</div>
+<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160; </div>
+<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;    <span class="keywordtype">double</span> a = 0;</div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;    <span class="keywordflow">if</span> (vel.cwiseAbs().maxCoeff() &gt; eps) {</div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;      <span class="comment">// figure maximal allowed acceleration</span></div>
+<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;      a                      = std::numeric_limits&lt;double&gt;::infinity();</div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;      <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> upper = (acc_max - acc * state.y() * state.y()).cwiseMax(<a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;::Zero</a>());</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;      <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;</a> lower = (acc_min - acc * state.y() * state.y()).cwiseMin(<a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent&lt;G&gt;::Zero</a>());</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != Dof&lt;G&gt;; ++i) {</div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;        <span class="keywordflow">if</span> (vel(i) &gt; eps) {</div>
+<div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160;          a = std::min&lt;double&gt;(a, upper(i) / vel(i));</div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vel(i) &lt; -eps) {</div>
+<div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160;          a = std::min&lt;double&gt;(a, lower(i) / vel(i));</div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;        }</div>
+<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;      }</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160; </div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> new_s = state.x() + state.y() * dt + a * dt * dt / 2;</div>
+<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;      <span class="keywordtype">double</span> new_v       = state.y() + dt * a;</div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160; </div>
+<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;      <span class="comment">// clamp velocity to not exceed upper bound</span></div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;      new_v = std::clamp&lt;double&gt;(new_v, eps, v_func(new_s));</div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;      <span class="keywordflow">if</span> (slower_only) { new_v = std::min&lt;double&gt;(new_v, 1); }</div>
+<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160; </div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;      a = (new_v - state.y()) / dt;</div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;    }</div>
 <div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160; </div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;      dd.push_back({</div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;        .t = dd.empty() ? 0 : dd.back().t + dt,</div>
-<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;        .s = state.x(),</div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;        .v = state.y(),</div>
-<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;        .a = a,</div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;      });</div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;    dd.push_back({</div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;      .t = dd.empty() ? 0 : dd.back().t + dt,</div>
+<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;      .s = state.x(),</div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;      .v = state.y(),</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;      .a = a,</div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;    });</div>
 <div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160; </div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;      state.x() += dd.back().v * dt + dd.back().a * dt * dt / 2;</div>
-<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;      state.y() += dd.back().a * dt;</div>
-<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;    }</div>
-<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;  } <span class="keywordflow">while</span> (state.x() &lt; curve.<a class="code" href="classsmooth_1_1Curve.html#ac9d11d48219799e656e18dfe1691d4ba">t_max</a>());</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160; </div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;  dd.push_back({</div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;    .t = dd.empty() ? 0 : dd.back().t + dt,</div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;    .s = state.x(),</div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;    .v = state.y(),</div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;    .a = 0,</div>
-<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;  });</div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160; </div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1Reparameterization.html">Reparameterization</a>(curve.<a class="code" href="classsmooth_1_1Curve.html#ac9d11d48219799e656e18dfe1691d4ba">t_max</a>(), std::move(dd));</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;}</div>
-<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160; </div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;}  <span class="comment">// namespace smooth</span></div>
-<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160; </div>
-<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__SPLINE__CURVE__HPP_</span></div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;    state.x() += dd.back().v * dt + dd.back().a * dt * dt / 2;</div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;    state.y() += dd.back().a * dt;</div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;  } <span class="keywordflow">while</span> (state.x() &lt; curve.<a class="code" href="classsmooth_1_1Curve.html#ac9d11d48219799e656e18dfe1691d4ba">t_max</a>());</div>
+<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160; </div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;  dd.push_back({</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;    .t = dd.empty() ? 0 : dd.back().t + dt,</div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;    .s = state.x(),</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;    .v = state.y(),</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;    .a = 0,</div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;  });</div>
+<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160; </div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1Reparameterization.html">Reparameterization</a>(curve.<a class="code" href="classsmooth_1_1Curve.html#ac9d11d48219799e656e18dfe1691d4ba">t_max</a>(), std::move(dd));</div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;}</div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160; </div>
+<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160; </div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__SPLINE__CURVE__HPP_</span></div>
 <div class="ttc" id="abezier_8hpp_html"><div class="ttname"><a href="bezier_8hpp.html">bezier.hpp</a></div><div class="ttdoc">bezier splines on lie groups.</div></div>
 <div class="ttc" id="abezier_8hpp_html_abb3bf22a4262593ab6abdb20f0fa6724"><div class="ttname"><a href="bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724">smooth::fit_linear_bezier</a></div><div class="ttdeci">PiecewiseBezier&lt; 1, G &gt; fit_linear_bezier(const Rt &amp;tt, const Rg &amp;gg)</div><div class="ttdoc">Fit a linear PiecewiseBezier curve to data.</div><div class="ttdef"><b>Definition:</b> <a href="bezier_8hpp_source.html#l00272">bezier.hpp:272</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1Curve_html"><div class="ttname"><a href="classsmooth_1_1Curve.html">smooth::Curve</a></div><div class="ttdoc">Single-parameter Lie group-valued function.</div><div class="ttdef"><b>Definition:</b> <a href="curve_8hpp_source.html#l00057">curve.hpp:58</a></div></div>
