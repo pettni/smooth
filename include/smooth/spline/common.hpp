@@ -35,6 +35,20 @@ enum class CSplineType { BEZIER, BSPLINE };
 
 namespace detail {
 
+/**
+ * @brief Bspline coefficient matrix.
+ *
+ * Returns matrix B s.t. Bspline basis functions can be evaluated as
+ * \[
+ *   \begin{bmatrix}
+ *     b_{0, K}(u)  \\
+ *     b_{1, K}(u)  \\
+ *      \vdots      \\
+ *     b_{K, K}(u)
+ *   \end{bmatrix}
+ *   = B * \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix}.
+ * \]
+ */
 template<typename Scalar, std::size_t K>
 constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
 {
@@ -66,6 +80,20 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
   }
 }
 
+/**
+ * @brief Bezier coefficient matrix.
+ *
+ * Returns matrix B s.t. bezier basis functions can be evaluated as
+ * \[
+ *   \begin{bmatrix}
+ *     b_{0, K}(u)  \\
+ *     b_{1, K}(u)  \\
+ *      \vdots      \\
+ *     b_{K, K}(u)
+ *   \end{bmatrix}
+ *   = B * \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix}.
+ * \]
+ */
 template<typename Scalar, std::size_t N>
 constexpr ::smooth::utils::StaticMatrix<Scalar, N + 1, N + 1> bezier_coefmat()
 {
@@ -161,6 +189,7 @@ using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Do
  * @tparam K spline order (number of basis functions)
  * @tparam G lie group type
  * @param[in] diff_points range of differences v_i (must be of size K)
+ * @param[in] cum_coef_mat matrix of cumulative base coefficients (size K+1 x K+1)
  * @param[in] u normalized parameter: u \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
@@ -254,6 +283,7 @@ inline G cspline_eval_diff(const Range & diff_points,
  * @tparam K spline order
  * @param[in] gs LieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K +
  * 1)
+ * @param[in] cum_coef_mat matrix of cumulative base coefficients (size K+1 x K+1)
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
@@ -270,13 +300,13 @@ inline G cspline_eval(const R & gs,
   detail::OptTangent<G> acc     = {},
   detail::OptJacobian<G, K> der = {}) noexcept
 {
-  auto b1 = std::begin(gs);
-  auto b2 = std::begin(gs) + 1;
+  auto b1 = std::ranges::begin(gs);
+  auto b2 = std::ranges::begin(gs) + 1;
   std::array<Tangent<G>, K> diff_pts;
   for (auto i = 0u; i != K; ++i) { diff_pts[i] = rminus(*b2++, *b1++); }
 
   return composition(
-    *std::begin(gs), cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der));
+    *std::ranges::begin(gs), cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der));
 }
 
 }  // namespace smooth

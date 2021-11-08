@@ -144,6 +144,10 @@ if(BUILD_TESTING)
   target_link_libraries(test_spline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_spline)
 
+  add_executable(test_interp test/test_interp.cpp)
+  target_link_libraries(test_interp PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_interp)
+
   add_executable(test_curve test/test_curve.cpp)
   target_link_libraries(test_curve PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_curve)

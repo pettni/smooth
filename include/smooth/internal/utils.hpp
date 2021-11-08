@@ -148,7 +148,9 @@ constexpr std::array<T, L + 1> array_psum(const std::array<T, L> & x)
 /////////////////////////////////
 
 /**
- * @brief Elementary structure for compile-time matrix algebra
+ * @brief Elementary structure for compile-time matrix algebra.
+ *
+ * Matrix is stored in memory in row-major order.
  */
 template<typename _Scalar, std::size_t _Rows, std::size_t _Cols>
 struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
