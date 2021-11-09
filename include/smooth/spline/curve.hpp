@@ -323,8 +323,8 @@ public:
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
 
-    constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BEZIER, double, 3>().transpose();
-    Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(Mstatic[0].data());
+    constexpr auto M_s = detail::cum_coefmat<PolynomialBasis::Bernstein, double, 3>().transpose();
+    Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     G g0 = istar == 0 ? Identity<G>() : end_g_[istar - 1];
 

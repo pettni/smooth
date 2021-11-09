@@ -117,7 +117,7 @@ public:
   {
     double tc = std::clamp<double>(t, 0, 1);
 
-    constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BEZIER, double, N>().transpose();
+    constexpr auto Mstatic = detail::cum_coefmat<PolynomialBasis::Bernstein, double, N>().transpose();
     Eigen::Map<const Eigen::Matrix<double, N + 1, N + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
     return composition(g0_, cspline_eval_diff<N, G>(vs_, M, tc, vel, acc));

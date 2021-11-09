@@ -26,8 +26,6 @@
 #include <Eigen/Cholesky>
 #include <Eigen/Core>
 
-#include <boost/math/special_functions/binomial.hpp>
-
 #include <cassert>
 #include <iostream>
 #include <ranges>
@@ -53,15 +51,16 @@ constexpr std::size_t prod(std::size_t beg, std::size_t end)
  * Returns M s.t. M(i, j) = int (d^D/dx^D) x^i * (d^D/dx^D) x^j) dx,   x  0 -> 1
  */
 template<std::size_t K, std::size_t D>
-constexpr ::smooth::utils::StaticMatrix<double, K + 1, K + 1> intsq_coefmat()
+constexpr ::smooth::utils::StaticMatrix<double, K + 1, K + 1> monomial_integral_coefmat()
 {
   smooth::utils::StaticMatrix<double, K + 1, K + 1> ret;
   for (auto i = 0u; i <= K; ++i) {
     for (auto j = i; j <= K; ++j) {
-      ret[i][j] = 0;
       if (i >= D && j >= D) {
         ret[i][j] =
           static_cast<double>(prod(i - D + 1, i) * prod(j - D + 1, j)) / (i + j - 2 * D + 1);
+      } else {
+        ret[i][j] = 0;
       }
       ret[j][i] = ret[i][j];
     }
@@ -73,11 +72,15 @@ constexpr ::smooth::utils::StaticMatrix<double, K + 1, K + 1> intsq_coefmat()
  * @brief Calculate array U s.t. U[i] = u^i
  */
 template<typename Scalar, std::size_t K, std::size_t D>
-constexpr std::array<Scalar, K + 1> array_of_pow(Scalar u)
+constexpr smooth::utils::StaticMatrix<double, K + 1, D + 1> monomial_derivative_coefmat(Scalar u)
 {
-  std::array<Scalar, K + 1> ret;
-  ret[0] = 1;
-  for (auto i = 1u; i <= K; ++i) { ret[i] = ret[i - 1] * u; }
+  smooth::utils::StaticMatrix<double, K + 1, D + 1> ret;
+  ret[0].fill(0);
+  ret[0][0] = 1;
+  for (auto i = 1u; i <= K; ++i) {
+    ret[i][0] = u * ret[i - 1][0];
+    for (auto d = 1u; d <= D; ++d) { ret[i][d] = Scalar(i) * ret[i - 1][d - 1]; }
+  }
   return ret;
 }
 
@@ -110,8 +113,23 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
   const std::size_t N = std::min(std::ranges::size(dt_r), std::ranges::size(dx_r));
 
   // coefficient layout is
-  //   [ a00 a01 ... a0K a10 a11 ... a1K   ...   a{N-1}0 a{N-1}1 ... a{N-1}K ]
-  // where p_i(t) = ai0 + ai1 b1(t) + ... + aiK bk(t) defines p on [tvec(i), tvec(i+1)]
+  //   [ x0 x1   ...   Xn ]
+  // where p_i(t) = \sum_k x_i[k] * b_{i,k}(t) defines p on [tvec(i), tvec(i+1)]
+
+  // compile-time matrix algebra
+  static constexpr auto B_s    = smooth::detail::bernstein_coefmat<double, K>();
+  static constexpr auto U0_s   = monomial_derivative_coefmat<double, K, D>(0);
+  static constexpr auto U1_s   = monomial_derivative_coefmat<double, K, D>(1);
+  static constexpr auto U0tB_s = U0_s.transpose() * B_s;
+  static constexpr auto U1tB_s = U1_s.transpose() * B_s;
+
+  Eigen::Map<const Eigen::Matrix<double, D + 1, K + 1, Eigen::RowMajor>> U0tB(U0tB_s[0].data());
+  Eigen::Map<const Eigen::Matrix<double, D + 1, K + 1, Eigen::RowMajor>> U1tB(U1tB_s[0].data());
+
+  // d:th derivative of Bernstein polynomial at 0 (resp. 1) is now U0tB.row(d) * x (resp.
+  // U1tB.row(d) * x), where x are the coefficients.
+
+  // The i:th derivative at zero is equal to U[:, i]' * B * alpha
 
   const std::size_t N_coef = (K + 1) * N;
 
@@ -126,87 +144,42 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
 
   assert(N_coef >= N_eq);
 
+  // create matrices A, b s.t. A x = b models constraints
+
   Eigen::MatrixXd A = Eigen::MatrixXd::Zero(N_eq, N_coef);
   Eigen::VectorXd b = Eigen::VectorXd::Zero(N_eq);
 
   // current inequality counter
   std::size_t M = 0;
 
-  // ADD curve beg derivative constraints
+  // curve beg derivative zero constraints
   for (auto d = 1u; d + 1 <= D; ++d) {
-    double nfac_div_nmdfac = 1;
-    for (int i = K - d; i <= K; ++i) { nfac_div_nmdfac *= i; }
-
-    for (auto nu = 0u; nu <= K; ++nu) {
-      // d:th derivative of b_nu_n(t) at 0 is zero
-      if (nu <= d && d < K) {
-        const double p_over_nu    = boost::math::binomial_coefficient<double>(d, nu);
-        const double sign         = (nu + d) % 2 == 0 ? -1 : 1;
-        const double b0_nu_n_pder = nfac_div_nmdfac * sign * p_over_nu;
-        A(M, nu)                  = b0_nu_n_pder;
-      }
-    }
-    b(M++) = 0;
+    A.row(M).segment(0, K + 1) = U0tB.row(d);
+    b(M++)                     = 0;
   }
 
   for (auto i = 0u; i < N; ++i) {
-    const std::size_t pi_beg = i * (K + 1);
+    // interval beg + end constraint
+    A(M, i * (K + 1))     = 1;
+    b(M++)                = 0;
+    A(M, i * (K + 1) + K) = 1;
+    b(M++)                = dx_r[i];
 
-    // ADD interval beg + end constraint
-    A(M, pi_beg) = 1;
-    b(M++)       = 0;
-    A(M, pi_beg + K) = 1;
-    b(M++)           = dx_r[i];
-
-    // ADD inner derivative constraints
+    // inner derivative continuity constraints
     if (i + 1 < N) {
-      const auto j             = i + 1;
-      const std::size_t pj_beg = j * (K + 1);
-
       for (auto d = 1u; d <= D; ++d) {
-        double nfac_div_nmdfac = 1;
-        for (int i = K - d; i <= K; ++i) { nfac_div_nmdfac *= i; }
-
-        for (auto nu = 0u; nu <= K; ++nu) {
-          // d:th derivative of b_nu_n(t) at 1
-          if (K - nu <= d && d < K) {
-            const double p_over_n_minus_nu = boost::math::binomial_coefficient<double>(d, K - nu);
-            const double sign              = (K - nu) % 2 == 0 ? -1 : 1;
-            const double b1_nu_n_pder      = nfac_div_nmdfac * sign * p_over_n_minus_nu;
-            A(M, pi_beg + nu)              = b1_nu_n_pder * dt_r[j];
-          }
-
-          // d:th derivative of b_nu_n(t) at 0
-          if (nu <= d && d <= K) {
-            const double p_over_nu    = boost::math::binomial_coefficient<double>(d, nu);
-            const double sign         = (nu + d) % 2 == 0 ? -1 : 1;
-            const double b0_nu_n_pder = nfac_div_nmdfac * sign * p_over_nu;
-
-            A(M, pj_beg + nu) = -b0_nu_n_pder * dt_r[i];
-          }
-        }
-        b(M++) = 0;
+        A.row(M).segment(i * (K + 1), K + 1)       = U1tB.row(d) / dt_r[i];
+        A.row(M).segment((i + 1) * (K + 1), K + 1) = -U0tB.row(d) / dt_r[i + 1];
+        b(M++)                                     = 0;
       }
     }
   }
 
-  // ADD curve end derivative constraints
+  // curve end derivative zero constraints
   for (auto d = 1u; d + 1 <= D; ++d) {
-    double nfac_div_nmdfac = 1;
-    for (int i = K - d; i <= K; ++i) { nfac_div_nmdfac *= i; }
-    // d:th derivative of b_nu_n(t) at 1 is zero
-    for (auto nu = 0u; nu <= K; ++nu) {
-      if (K - nu <= d && d < K) {
-        const double p_over_n_minus_nu = boost::math::binomial_coefficient<double>(d, K - nu);
-        const double sign              = (K - nu) % 2 == 0 ? -1 : 1;
-        const double b1_nu_n_pder      = nfac_div_nmdfac * sign * p_over_n_minus_nu;
-        A(M, (K + 1) * (N - 1) + nu)   = b1_nu_n_pder;
-      }
-    }
-    b(M++) = 0;
+    A.row(M).segment((K + 1) * (N - 1), K + 1) = U1tB.row(d);
+    b(M++)                                     = 0;
   }
-
-  std::cout << A << std::endl;
 
   // need optimization matrix s.t. x' P x = \int p^(d) (t) dt
   //
@@ -218,18 +191,16 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
   //
   // Then the integral over p(t)^2 is equal to x' B M B' x.
 
-  constexpr auto Mmat = intsq_coefmat<K, D>();
-  constexpr auto Bmat = smooth::detail::bezier_coefmat<double, K>();
-
-  constexpr auto BMBt_s = Bmat * Mmat * Bmat.transpose();
+  static constexpr auto Mmat   = monomial_integral_coefmat<K, D>();
+  static constexpr auto BMBt_s = B_s * Mmat * B_s.transpose();
 
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> BMBt(BMBt_s[0].data());
 
   // Solve QP
   //  min_a  (1/2) x' Q x
   //  s.t.   A x = b
-  // by factorizing the KKT equations
-  // [Q A'; A 0] [x; l] =   [0; b]
+  // by solving the KKT equations via LDLt factorization
+  //  [Q A'; A 0] [x; l] =   [0; b]
 
   Eigen::MatrixXd H(N_eq + N_coef, N_eq + N_coef);
   H.topLeftCorner(N_coef, N_coef) = Eigen::VectorXd::Constant(N_coef, 1e-6).asDiagonal();

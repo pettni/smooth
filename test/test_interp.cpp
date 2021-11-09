@@ -28,9 +28,42 @@
 #include "smooth/diff.hpp"
 #include "smooth/spline/interp.hpp"
 
+TEST(Interp, MonomialDerivative)
+{
+  constexpr auto c = monomial_derivative_coefmat<double, 6, 3>(0.5);
+
+  static_assert(c[0][0] == 1.);
+  static_assert(c[1][0] == 0.5);
+  static_assert(c[2][0] == 0.5 * 0.5);
+  static_assert(c[3][0] == 0.5 * 0.5 * 0.5);
+  static_assert(c[4][0] == 0.5 * 0.5 * 0.5 * 0.5);
+  static_assert(c[5][0] == 0.5 * 0.5 * 0.5 * 0.5 * 0.5);
+
+  static_assert(c[0][1] == 0.);
+  static_assert(c[1][1] == 1);
+  static_assert(c[2][1] == 2 * 0.5);
+  static_assert(c[3][1] == 3 * 0.5 * 0.5);
+  static_assert(c[4][1] == 4 * 0.5 * 0.5 * 0.5);
+  static_assert(c[5][1] == 5 * 0.5 * 0.5 * 0.5 * 0.5);
+
+  static_assert(c[0][2] == 0.);
+  static_assert(c[1][2] == 0.);
+  static_assert(c[2][2] == 2);
+  static_assert(c[3][2] == 3 * 2 * 0.5);
+  static_assert(c[4][2] == 4 * 3 * 0.5 * 0.5);
+  static_assert(c[5][2] == 5 * 4 * 0.5 * 0.5 * 0.5);
+
+  static_assert(c[0][3] == 0.);
+  static_assert(c[1][3] == 0.);
+  static_assert(c[2][3] == 0.);
+  static_assert(c[3][3] == 3 * 2);
+  static_assert(c[4][3] == 4 * 3 * 2 * 0.5);
+  static_assert(c[5][3] == 5 * 4 * 3 * 0.5 * 0.5);
+}
+
 TEST(Interp, Coefmat)
 {
-  constexpr auto c0 = intsq_coefmat<4, 0>();
+  constexpr auto c0 = monomial_integral_coefmat<4, 0>();
   static_assert(c0[0][0] == 1.);
   static_assert(c0[0][1] == 1. / 2);
   static_assert(c0[0][2] == 1. / 3);
@@ -42,7 +75,7 @@ TEST(Interp, Coefmat)
   static_assert(c0[2][3] == 1. / 6);
   static_assert(c0[3][3] == 1. / 7);
 
-  constexpr auto c1 = intsq_coefmat<4, 1>();
+  constexpr auto c1 = monomial_integral_coefmat<4, 1>();
   static_assert(c1[0][0] == 0.);
   static_assert(c1[0][1] == 0.);
   static_assert(c1[0][2] == 0.);
@@ -54,7 +87,7 @@ TEST(Interp, Coefmat)
   static_assert(c1[2][3] == 6. / 4);
   static_assert(c1[3][3] == 9. / 5);
 
-  constexpr auto c2 = intsq_coefmat<4, 2>();
+  constexpr auto c2 = monomial_integral_coefmat<4, 2>();
   static_assert(c2[0][0] == 0.);
   static_assert(c2[0][1] == 0.);
   static_assert(c2[0][2] == 0.);
@@ -66,7 +99,7 @@ TEST(Interp, Coefmat)
   static_assert(c2[2][3] == 12. / 2);
   static_assert(c2[3][3] == 6. * 6. / 3);
 
-  constexpr auto c3 = intsq_coefmat<4, 3>();
+  constexpr auto c3 = monomial_integral_coefmat<4, 3>();
   static_assert(c3[0][0] == 0.);
   static_assert(c3[0][1] == 0.);
   static_assert(c3[0][2] == 0.);
@@ -78,7 +111,7 @@ TEST(Interp, Coefmat)
   static_assert(c3[2][3] == 0.);
   static_assert(c3[3][3] == 6 * 6);
 
-  constexpr auto c4 = intsq_coefmat<4, 4>();
+  constexpr auto c4 = monomial_integral_coefmat<4, 4>();
   static_assert(c4[0][0] == 0.);
   static_assert(c4[0][1] == 0.);
   static_assert(c4[0][2] == 0.);
@@ -99,19 +132,21 @@ TEST(Interp, PassThrough)
 
   const auto alpha = fit_polynomial_1d<K, 3>(dtvec, dxvec);
 
-  constexpr auto Ms = smooth::detail::bezier_coefmat<double, K>();
+  constexpr auto Ms = smooth::detail::bernstein_coefmat<double, K>();
   Eigen::MatrixXd M =
     Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 
   const auto f1 = [&]<typename T>(T t) -> T {
-    const std::array<T, K + 1> Um   = array_of_pow<T, K, 0>(t / dtvec[0]);
-    const Eigen::Matrix<T, -1, 1> U = Eigen::Map<const Eigen::Matrix<T, -1, 1>>(Um.data(), K + 1);
+    const auto Um = monomial_derivative_coefmat<T, K, 0>(t / dtvec[0]);
+    const Eigen::Matrix<T, -1, 1> U =
+      Eigen::Map<const Eigen::Matrix<T, -1, 1>>(Um[0].data(), K + 1);
     return (U.transpose() * M * alpha.segment(0, K + 1))(0);
   };
 
   const auto f2 = [&]<typename T>(T t) -> T {
-    const std::array<T, K + 1> Um   = array_of_pow<T, K, 0>(t / dtvec[1]);
-    const Eigen::Matrix<T, -1, 1> U = Eigen::Map<const Eigen::Matrix<T, -1, 1>>(Um.data(), K + 1);
+    const auto Um = monomial_derivative_coefmat<T, K, 0>(t / dtvec[1]);
+    const Eigen::Matrix<T, -1, 1> U =
+      Eigen::Map<const Eigen::Matrix<T, -1, 1>>(Um[0].data(), K + 1);
     return (U.transpose() * M * alpha.segment(K + 1, K + 1))(0);
   };
 
@@ -134,7 +169,7 @@ TEST(Interp, PassThrough)
   ASSERT_NEAR(df2_1(0), 0, 1e-4);
 }
 
-TEST(Interp, MinJerk)
+TEST(Interp, MinJerk5)
 {
   static constexpr auto K = 5;
 
@@ -143,7 +178,7 @@ TEST(Interp, MinJerk)
   const auto alpha = fit_polynomial_1d<K, 3>(dtvec, dxvec);
 
   // monomial coefficients
-  constexpr auto Ms = smooth::detail::bezier_coefmat<double, K>();
+  constexpr auto Ms = smooth::detail::bernstein_coefmat<double, K>();
   Eigen::MatrixXd M =
     Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 

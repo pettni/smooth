@@ -31,7 +31,7 @@
 
 namespace smooth {
 
-enum class CSplineType { BEZIER, BSPLINE };
+enum class PolynomialBasis { Bernstein, Bspline };
 
 namespace detail {
 
@@ -85,14 +85,14 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
  * \]
  */
 template<typename Scalar, std::size_t N>
-constexpr ::smooth::utils::StaticMatrix<Scalar, N + 1, N + 1> bezier_coefmat()
+constexpr ::smooth::utils::StaticMatrix<Scalar, N + 1, N + 1> bernstein_coefmat()
 {
   ::smooth::utils::StaticMatrix<Scalar, N + 1, N + 1> ret;
   if constexpr (N == 0) {
     ret[0][0] = 1;
     return ret;
   } else {
-    constexpr auto coeff_mat_km1 = bezier_coefmat<Scalar, N - 1>();
+    constexpr auto coeff_mat_km1 = bernstein_coefmat<Scalar, N - 1>();
     ::smooth::utils::StaticMatrix<Scalar, N + 1, N> low, high;
     ::smooth::utils::StaticMatrix<Scalar, N, N + 1> left, right;
 
@@ -114,12 +114,12 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, N + 1, N + 1> bezier_coefmat()
   }
 }
 
-template<CSplineType Type, typename Scalar, std::size_t K>
+template<PolynomialBasis Basis, typename Scalar, std::size_t K>
 constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> cum_coefmat()
 {
   ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> M;
-  if constexpr (Type == CSplineType::BEZIER) { M = bezier_coefmat<double, K>(); }
-  if constexpr (Type == CSplineType::BSPLINE) { M = bspline_coefmat<double, K>(); }
+  if constexpr (Basis == PolynomialBasis::Bernstein) { M = bernstein_coefmat<double, K>(); }
+  if constexpr (Basis == PolynomialBasis::Bspline) { M = bspline_coefmat<double, K>(); }
   for (std::size_t i = 0; i != K + 1; ++i) {
     for (std::size_t j = 0; j != K; ++j) { M[i][K - 1 - j] += M[i][K - j]; }
   }

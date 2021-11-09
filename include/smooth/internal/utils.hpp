@@ -184,9 +184,9 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
   /**
    * @brief Return transpose of a matrix
    */
-  constexpr StaticMatrix<_Scalar, _Rows, _Cols> transpose() const
+  constexpr StaticMatrix<_Scalar, _Cols, _Rows> transpose() const
   {
-    StaticMatrix<_Scalar, _Rows, _Cols> ret;
+    StaticMatrix<_Scalar, _Cols, _Rows> ret;
     for (auto i = 0u; i < _Rows; ++i) {
       for (auto j = 0u; j < _Cols; ++j) { ret[j][i] = operator[](i)[j]; }
     }

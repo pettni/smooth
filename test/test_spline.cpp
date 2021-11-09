@@ -38,7 +38,7 @@
 
 TEST(Coefmat, Bspline)
 {
-  constexpr auto c3 = smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>();
+  constexpr auto c3 = smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>();
   static_assert(std::abs(c3[0][0] - 1) < 1e-8);
   static_assert(std::abs(c3[0][1] - 5. / 6) < 1e-8);
   static_assert(std::abs(c3[0][2] - 1. / 6) < 1e-8);
@@ -62,7 +62,7 @@ TEST(Coefmat, Bspline)
 
 TEST(Coefmat, Bezier)
 {
-  constexpr auto c3 = smooth::detail::cum_coefmat<smooth::CSplineType::BEZIER, double, 3>();
+  constexpr auto c3 = smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bernstein, double, 3>();
   static_assert(std::abs(c3[0][0] - 1) < 1e-8);
   static_assert(std::abs(c3[0][1] - 0) < 1e-8);
   static_assert(std::abs(c3[0][2] - 0) < 1e-8);
@@ -106,7 +106,7 @@ TYPED_TEST(Spline, BSplineConstantCtrlpts)
     for (auto i = 0u; i != K; ++i) { ctrl_pts.push_back(ctrl_pts.back()); }
 
     constexpr auto Mstatic =
-      smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, K>().transpose();
+      smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bspline, double, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
     for (double u = 0.; u < 1; u += 0.05) {
@@ -137,7 +137,7 @@ TYPED_TEST(Spline, BSplineConstantDiffvec)
     for (auto i = 0u; i != K; ++i) { diff_vec.push_back(Tangent::Zero()); }
 
     constexpr auto Mstatic =
-      smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, K>().transpose();
+      smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bspline, double, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
     for (double u = 0.; u < 1; u += 0.05) {
@@ -165,7 +165,7 @@ TYPED_TEST(Spline, DerivBspline)
   diff_pts.push_back(Tangent::Random());
 
   constexpr auto Mstatic =
-    smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>().transpose();
+    smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>().transpose();
   Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
   Tangent vel;
@@ -195,7 +195,7 @@ TYPED_TEST(Spline, DerivBezier)
   diff_pts.push_back(Tangent::Random());
 
   constexpr auto Mstatic =
-    smooth::detail::cum_coefmat<smooth::CSplineType::BEZIER, double, 3>().transpose();
+    smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bernstein, double, 3>().transpose();
   Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
   Tangent vel;
@@ -260,7 +260,7 @@ TEST(Spline, BSplineDerivT1)
   double u = 0.5;
 
   constexpr auto Mstatic =
-    smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>().transpose();
+    smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>().transpose();
   Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(Mstatic[0].data());
 
   Eigen::Matrix<double, 1, 4> jac;
@@ -285,7 +285,7 @@ TEST(Spline, BSplineDerivSO3)
     for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::SO3d::Random()); }
 
     constexpr auto Mstatic =
-      smooth::detail::cum_coefmat<smooth::CSplineType::BSPLINE, double, 3>().transpose();
+      smooth::detail::cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>().transpose();
     Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(Mstatic[0].data());
 
     Eigen::Matrix<double, 3, 12> jac;

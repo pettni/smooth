@@ -162,7 +162,7 @@ public:
       u = (t - t0_ - istar * dt_) / dt_;
     }
 
-    constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BSPLINE, double, K>().transpose();
+    constexpr auto Mstatic = detail::cum_coefmat<PolynomialBasis::Bspline, double, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
     // gcc 11.1 bug can handle uint64_t
@@ -211,7 +211,7 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
   const std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));
   const std::size_t NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
 
-  constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BSPLINE, double, K>().transpose();
+  constexpr auto Mstatic = detail::cum_coefmat<PolynomialBasis::Bspline, double, K>().transpose();
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
   auto f = [&](const auto & var) {
