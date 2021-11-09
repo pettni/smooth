@@ -23,15 +23,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef SMOOTH__SPLINE__MIN_DERIV_HPP_
+#define SMOOTH__SPLINE__MIN_DERIV_HPP_
+
 #include <Eigen/Cholesky>
 #include <Eigen/Core>
 
 #include <cassert>
-#include <iostream>
 #include <ranges>
-#include <vector>
 
 #include "common.hpp"
+
+namespace smooth {
 
 /**
  * @brief Calculate the product beg * (beg + 1) * .. * end
@@ -88,8 +91,8 @@ constexpr smooth::utils::StaticMatrix<double, K + 1, D + 1> monomial_derivative_
  * @brief Find N degree K Bernstein polynomials p_i(t) for i = 0, ..., N s.t.
  *
  * p_i(0) = 0
- * p_i(dt) = \delta x   for (\delta t, \delta x) in zip(dt_r, dx_r)
- * p_i^(d) (1) = p_{i+1}^(d) (0)  for d = 1, \ldots, D,   i = 0, \ldots, N-2
+ * p_i(\delta t) = \delta x   for (\delta t, \delta x) in zip(dt_r, dx_r)
+ * p_i^{(d)} (1) = p_{i+1}^(d) (0)  for d = 1, \ldots, D,   i = 0, \ldots, N-2
  *
  * p_0^(k) = 0   for k = 1, \ldots, D - 1
  * p_N^(k) = 0   for k = 1, \ldots, D - 1
@@ -108,7 +111,7 @@ constexpr smooth::utils::StaticMatrix<double, K + 1, D + 1> monomial_derivative_
  * where \f$ \delta t \f$ is the i:th member of dt_r.
  */
 template<int K, int D, std::ranges::range Rt, std::ranges::range Rx>
-Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
+Eigen::VectorXd min_deriv_1d(const Rt & dt_r, const Rx & dx_r)
 {
   const std::size_t N = std::min(std::ranges::size(dt_r), std::ranges::size(dx_r));
 
@@ -144,7 +147,7 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
 
   assert(N_coef >= N_eq);
 
-  // create matrices A, b s.t. A x = b models constraints
+  // CONSTRAINT MATRICES A, b
 
   Eigen::MatrixXd A = Eigen::MatrixXd::Zero(N_eq, N_coef);
   Eigen::VectorXd b = Eigen::VectorXd::Zero(N_eq);
@@ -158,21 +161,27 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
     b(M++)                     = 0;
   }
 
+  auto it_dt = std::ranges::begin(dt_r);
+  auto it_dx = std::ranges::begin(dx_r);
+
   for (auto i = 0u; i < N; ++i) {
     // interval beg + end constraint
     A(M, i * (K + 1))     = 1;
     b(M++)                = 0;
     A(M, i * (K + 1) + K) = 1;
-    b(M++)                = dx_r[i];
+    b(M++)                = *it_dx;
 
     // inner derivative continuity constraints
     if (i + 1 < N) {
       for (auto d = 1u; d <= D; ++d) {
-        A.row(M).segment(i * (K + 1), K + 1)       = U1tB.row(d) / dt_r[i];
-        A.row(M).segment((i + 1) * (K + 1), K + 1) = -U0tB.row(d) / dt_r[i + 1];
+        A.row(M).segment(i * (K + 1), K + 1)       = U1tB.row(d) / std::pow(*it_dt, d);
+        A.row(M).segment((i + 1) * (K + 1), K + 1) = -U0tB.row(d) / std::pow(*(it_dt + 1), d);
         b(M++)                                     = 0;
       }
     }
+
+    ++it_dt;
+    ++it_dx;
   }
 
   // curve end derivative zero constraints
@@ -180,6 +189,8 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
     A.row(M).segment((K + 1) * (N - 1), K + 1) = U1tB.row(d);
     b(M++)                                     = 0;
   }
+
+  // OBJECTIVE MATRIX P
 
   // need optimization matrix s.t. x' P x = \int p^(d) (t) dt
   //
@@ -191,12 +202,13 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
   //
   // Then the integral over p(t)^2 is equal to x' B M B' x.
 
-  static constexpr auto Mmat   = monomial_integral_coefmat<K, D>();
-  static constexpr auto BMBt_s = B_s * Mmat * B_s.transpose();
+  static constexpr auto Mmat = monomial_integral_coefmat<K, D>();
+  static constexpr auto P_s  = B_s.transpose() * Mmat * B_s;
 
-  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> BMBt(BMBt_s[0].data());
+  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> P(P_s[0].data());
 
-  // Solve QP
+  // SOLVE QP
+
   //  min_a  (1/2) x' Q x
   //  s.t.   A x = b
   // by solving the KKT equations via LDLt factorization
@@ -204,8 +216,11 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
 
   Eigen::MatrixXd H(N_eq + N_coef, N_eq + N_coef);
   H.topLeftCorner(N_coef, N_coef) = Eigen::VectorXd::Constant(N_coef, 1e-6).asDiagonal();
+
+  it_dt = std::ranges::begin(dt_r);
   for (auto i = 0u; i < N; ++i) {
-    H.block(i * (K + 1), i * (K + 1), K + 1, K + 1) += dt_r[i] * BMBt;
+    H.block(i * (K + 1), i * (K + 1), K + 1, K + 1) += P * std::pow(*it_dt, 1 - 2 * D);
+    ++it_dt;
   }
   H.topRightCorner(N_coef, N_eq) = A.transpose();
   H.bottomRightCorner(N_eq, N_eq).setZero();
@@ -214,9 +229,12 @@ Eigen::VectorXd fit_polynomial_1d(const Rt & dt_r, const Rx & dx_r)
   rhs.head(N_coef).setZero();
   rhs.tail(N_eq) = b;
 
-  Eigen::LDLT<decltype(H), Eigen::Upper> ldlt(H);
-
-  Eigen::VectorXd sol = ldlt.solve(rhs);
+  const Eigen::LDLT<decltype(H), Eigen::Upper> ldlt(H);
+  const Eigen::VectorXd sol = ldlt.solve(rhs);
 
   return sol.head(N_coef);
 }
+
+}  // namespace smooth
+
+#endif  // SMOOTH__SPLINE__MIN_DERIV_HPP_

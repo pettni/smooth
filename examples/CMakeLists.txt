@@ -19,6 +19,9 @@ target_link_libraries(nls smooth)
 add_executable(snippets snippets.cpp)
 target_link_libraries(snippets smooth)
 
+add_executable(min_deriv min_deriv.cpp)
+target_link_libraries(min_deriv smooth)
+
 find_package(Matplot++ QUIET)
 if(${Matplot++_FOUND})
   set(CMAKE_CXX_STANDARD 20)  # thanks Matplot++
@@ -36,6 +39,9 @@ if(${Matplot++_FOUND})
 
   target_compile_definitions(odeint_diff PRIVATE ENABLE_PLOTTING)
   target_link_libraries(odeint_diff Matplot++::matplot)
+
+  target_compile_definitions(min_deriv PRIVATE ENABLE_PLOTTING)
+  target_link_libraries(min_deriv Matplot++::matplot)
 else()
   message(WARNING "Matplot++ not found, plotting disabled")
 endif()
