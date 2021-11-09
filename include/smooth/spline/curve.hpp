@@ -31,8 +31,6 @@
  * @brief bezier splines on lie groups.
  */
 
-#include <boost/numeric/odeint.hpp>
-
 #include <algorithm>
 #include <cassert>
 #include <ranges>

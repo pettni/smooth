@@ -38,15 +38,10 @@ namespace detail {
 /**
  * @brief Bspline coefficient matrix.
  *
- * Returns matrix B s.t. Bspline basis functions can be evaluated as
+ * Returns a row-major matrix B s.t. degree K Bspline basis functions can be evaluated as
  * \[
- *   \begin{bmatrix}
- *     b_{0, K}(u)  \\
- *     b_{1, K}(u)  \\
- *      \vdots      \\
- *     b_{K, K}(u)
- *   \end{bmatrix}
- *   = B * \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix}.
+ *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
+ *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
  * \]
  */
 template<typename Scalar, std::size_t K>
@@ -81,17 +76,12 @@ constexpr ::smooth::utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
 }
 
 /**
- * @brief Bezier coefficient matrix.
+ * @brief Bernstein coefficient matrix.
  *
- * Returns matrix B s.t. bezier basis functions can be evaluated as
+ * Returns a row-major matrix B s.t. degree K Bernstein basis functions can be evaluated as
  * \[
- *   \begin{bmatrix}
- *     b_{0, K}(u)  \\
- *     b_{1, K}(u)  \\
- *      \vdots      \\
- *     b_{K, K}(u)
- *   \end{bmatrix}
- *   = B * \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix}.
+ *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
+ *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
  * \]
  */
 template<typename Scalar, std::size_t N>

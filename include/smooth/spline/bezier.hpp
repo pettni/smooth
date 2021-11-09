@@ -251,7 +251,8 @@ PiecewiseBezier<0, G> fit_constant_bezier(const Rt & tt, const Rg & gg)
     segments[i] = Bezier<0, G>(*it_g, std::array<Tangent<G>, 0>{});
   }
 
-  auto take_view = tt | std::views::take(N + 1);
+  // gcc 11.1 bug can handle uint64_t
+  auto take_view = tt | std::views::take(int64_t(N + 1));
   std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
 
   return PiecewiseBezier<0, G>(std::move(knots), std::move(segments));
@@ -285,7 +286,8 @@ PiecewiseBezier<1, G> fit_linear_bezier(const Rt & tt, const Rg & gg)
     segments[i] = Bezier<1, G>(*it_g, std::array<Tangent<G>, 1>{rminus(*(it_g + 1), *it_g)});
   }
 
-  auto take_view = tt | std::views::take(N + 1);
+  // gcc 11.1 bug can handle uint64_t
+  auto take_view = tt | std::views::take(int64_t(N + 1));
   std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
 
   return PiecewiseBezier<1, G>(std::move(knots), std::move(segments));
@@ -334,7 +336,8 @@ PiecewiseBezier<2, G> fit_quadratic_bezier(const Rt & tt, const Rg & gg)
     v0 = v2 * 2 / dt;
   }
 
-  auto take_view = tt | std::views::take(N + 1);
+  // gcc 11.1 bug can handle uint64_t
+  auto take_view = tt | std::views::take(int64_t(N + 1));
   std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
 
   return PiecewiseBezier<2, G>(std::move(knots), std::move(segments));
@@ -509,7 +512,8 @@ PiecewiseBezier<3, G> fit_cubic_bezier(const Rt & tt,
       *it_g, std::array<Tangent<G>, 3>{std::move(v1), std::move(v2), std::move(v3)});
   }
 
-  auto take_view = tt | std::views::take(N + 1);
+  // gcc 11.1 bug can handle uint64_t
+  auto take_view = tt | std::views::take(int64_t(N + 1));
   std::vector<double> knots(std::ranges::begin(take_view), std::ranges::end(take_view));
 
   return PiecewiseBezier<3, G>(std::move(knots), std::move(segments));

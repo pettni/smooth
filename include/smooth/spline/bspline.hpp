@@ -165,8 +165,9 @@ public:
     constexpr auto Mstatic = detail::cum_coefmat<CSplineType::BSPLINE, double, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(Mstatic[0].data());
 
+    // gcc 11.1 bug can handle uint64_t
     G g = cspline_eval<K>(
-      ctrl_pts_ | std::views::drop(istar) | std::views::take(K + 1), M, u, vel, acc);
+      ctrl_pts_ | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, vel, acc);
 
     if (vel.has_value()) { vel.value() /= dt_; }
     if (acc.has_value()) { acc.value() /= (dt_ * dt_); }
@@ -228,8 +229,9 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
       const double u      = (*t_iter - t0 - istar * dt) / dt;
 
       Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_vali_pts;
+      // gcc 11.1 bug can handle uint64_t
       auto g_spline = cspline_eval<K>(
-        var | std::views::drop(istar) | std::views::take(K + 1), M, u, {}, {}, d_vali_pts);
+        var | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);
 
       const Tangent<G> resi = rminus(g_spline, *g_iter);
 
