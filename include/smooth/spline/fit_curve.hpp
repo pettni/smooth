@@ -23,8 +23,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__SPLINE__MIN_DERIV_HPP_
-#define SMOOTH__SPLINE__MIN_DERIV_HPP_
+#ifndef SMOOTH__SPLINE__FIT_CURVE_HPP_
+#define SMOOTH__SPLINE__FIT_CURVE_HPP_
 
 #include <Eigen/Cholesky>
 #include <Eigen/Core>
@@ -32,114 +32,10 @@
 #include <cassert>
 #include <ranges>
 
-#include "common.hpp"
+#include "basis.hpp"
+#include "cumulative_spline.hpp"
 
 namespace smooth {
-
-/**
- * @brief Calculate matrix of integrated squared monomial P-derivatives
- *
- * @tparam Scalar scalar type
- * @tparam K maximal monomial degree
- * @tparam P differentiation order
- * @return K+1 x K+1 matrix M s.t. M(i, j) = ∫ (d^P/du^P) u^i * (d^P/dx^P) u^j) du,   u:  0 -> 1
- */
-template<typename Scalar, std::size_t K, std::size_t P>
-constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> monomial_integral_coefmat()
-{
-  utils::StaticMatrix<Scalar, K + 1, K + 1> ret;
-  for (auto i = 0u; i <= K; ++i) {
-    for (auto j = i; j <= K; ++j) {
-      if (i >= P && j >= P) {
-        std::size_t c = 1;
-        for (auto _i = i - P + 1; _i <= i; ++_i) { c *= _i; }
-        for (auto _j = j - P + 1; _j <= j; ++_j) { c *= _j; }
-        ret[i][j] = static_cast<Scalar>(c) / (i + j - 2 * P + 1);
-      } else {
-        ret[i][j] = 0;
-      }
-      ret[j][i] = ret[i][j];
-    }
-  }
-  return ret;
-}
-
-/**
- * @brief Calculate array of monomial derivatives.
- *
- * @tparam Scalar scalar type
- * @tparam K maximal monomial degree
- * @param u monomial parameter
- * @param p differentiation order
- * @return array U s.t. U[k] = (d^p/dt^p) u^k
- */
-template<typename Scalar, std::size_t K>
-constexpr std::array<Scalar, K + 1> monomial_derivative_coefvec(const Scalar & u, std::size_t p = 0)
-{
-  std::array<double, K + 1> ret;
-
-  if (p > K) {
-    ret.fill(0);
-    return ret;
-  }
-
-  for (auto i = 0u; i < p; ++i) { ret[i] = 0; }
-  Scalar P1      = 1;
-  std::size_t P2 = 1;
-  for (auto j = 2u; j <= p; ++j) { P2 *= j; }
-  ret[p] = P1 * P2;
-  for (auto i = p + 1; i <= K; ++i) {
-    P1 *= u;
-    P2 *= i;
-    P2 /= i - p;
-    ret[i] = P1 * P2;
-  }
-
-  return ret;
-}
-
-/**
- * @brief Calculate row-major (P+1 x K+1) matrix U s.t. U[p][k] = (d^p / dt^p) u^k
- *
- * @tparam Scalar scalar type
- * @tparam K maximal monomial degree
- * @tparam P maximal differentiation order
- * @param u monomial parameter
- * @return array U s.t. U[k] = (d^p/dt^p) u^k
- */
-template<typename Scalar, std::size_t K, std::size_t P>
-constexpr utils::StaticMatrix<double, P + 1, K + 1> monomial_derivative_coefmat(const Scalar & u)
-{
-  utils::StaticMatrix<double, P + 1, K + 1> ret;
-  for (auto p = 0u; p <= P; ++p) { ret[p] = monomial_derivative_coefvec<double, K>(u, p); }
-  return ret;
-}
-
-/**
- * @brief Evaluate the d:th derivative of a one-dimensional degree K Bernstein polynomial.
- *
- * A Bernstein polynomial is defined as
- * \[
- *   p(u) = \sum_{\nu=0}^K x_\nu b_{\nu, K}(u),
- * \]
- * where \f$ \{ b_{\nu, K} \} \f$ is the Bernstein basis of order \f$K\f$.
- *
- * @tparam Scalar scalar type
- * @param x Bernstein coefficients
- * @param u point to evaluate polynomial at
- * @param d differentiation order
- */
-template<typename Scalar, std::size_t K, typename Derived>
-Scalar evaluate_bernstein(const Eigen::MatrixBase<Derived> & coefs, const Scalar & u, int d = 0)
-{
-  const auto U_s     = monomial_derivative_coefvec<Scalar, K>(u, d);
-  constexpr auto B_s = detail::bernstein_coefmat<Scalar, K>();
-
-  Eigen::Map<const Eigen::Matrix<Scalar, K + 1, 1>> U(U_s.data());
-  Eigen::Map<const Eigen::Matrix<Scalar, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
-
-  return (U.transpose() * B).dot(coefs);
-}
 
 /**
  * @brief Find N degree K Bernstein polynomials p_i(t) for i = 0, ..., N s.t.
@@ -166,7 +62,7 @@ Scalar evaluate_bernstein(const Eigen::MatrixBase<Derived> & coefs, const Scalar
  */
 template<int K, int D, std::ranges::range Rt, std::ranges::range Rx>
   requires(std::is_same_v<std::ranges::range_value_t<Rt>, std::ranges::range_value_t<Rx>>)
-Eigen::VectorXd min_deriv_1d(const Rt & dt_r, const Rx & dx_r)
+Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r)
 {
   const std::size_t N = std::min(std::ranges::size(dt_r), std::ranges::size(dx_r));
 
@@ -175,9 +71,9 @@ Eigen::VectorXd min_deriv_1d(const Rt & dt_r, const Rx & dx_r)
   // where p_i(t) = \sum_k x_i[k] * b_{i,k}(t) defines p on [tvec(i), tvec(i+1)]
 
   // compile-time matrix algebra
-  static constexpr auto B_s    = smooth::detail::bernstein_coefmat<double, K>();
-  static constexpr auto U0_s   = monomial_derivative_coefmat<double, K, D>(0);
-  static constexpr auto U1_s   = monomial_derivative_coefmat<double, K, D>(1);
+  static constexpr auto B_s    = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+  static constexpr auto U0_s   = monomial_derivatives<double, K, D>(0);
+  static constexpr auto U1_s   = monomial_derivatives<double, K, D>(1);
   static constexpr auto U0tB_s = U0_s * B_s;
   static constexpr auto U1tB_s = U1_s * B_s;
 
@@ -290,4 +186,4 @@ Eigen::VectorXd min_deriv_1d(const Rt & dt_r, const Rx & dx_r)
 
 }  // namespace smooth
 
-#endif  // SMOOTH__SPLINE__MIN_DERIV_HPP_
+#endif  // SMOOTH__SPLINE__FIT_CURVE_HPP_

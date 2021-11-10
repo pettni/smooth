@@ -48,22 +48,21 @@ namespace smooth {
  * A Curve is a continuous function \f$ x : \mathbb{R} \rightarrow \mathbb{G} \f$ defined on an
  * interval \f$ [0, T] \f$ such that \f$ x(0) = e \f$.
  *
- * Internally a Curve is represented via third-order polynomials, similar to a PiecewiseBezier of
- * order 3.
+ * Internally a Curve is a piecewise function of TangentBezier segments.
  */
-template<LieGroup G>
+template<LieGroup G, std::size_t K = 3>
 class Curve
 {
 public:
   Curve() : end_t_{}, end_g_{}, vs_{}, seg_T0_{}, seg_Del_{} {}
 
   /**
-   * @brief Create Curve with one segment and given velocities
+   * @brief Create Curve with one segment and given velocity control points
    *
    * @param T duration (must be strictly positive)
    * @param vs velocities for segment
    */
-  Curve(double T, std::array<Tangent<G>, 3> && vs)
+  Curve(double T, Eigen::Matrix<double, Dof<G>, K + 1> && vs)
       : end_t_{T}, vs_{std::move(vs)}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
@@ -76,7 +75,7 @@ public:
    * @brief Create Curve with one segment and given velocities
    *
    * @param T duration (must be strictly positive)
-   * @param vs velocity constants (must be of size 3)
+   * @param vs velocity constants (must be of size K)
    */
   template<std::ranges::range Rv>
     // \cond
@@ -85,10 +84,11 @@ public:
   Curve(double T, const Rv & vs) : end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
-    assert(std::ranges::size(vs) == 3);
+    assert(std::ranges::size(vs) == K);
 
     vs_.resize(1);
-    std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_[0].begin());
+    vs_[0].col(0).setZero();
+    for (auto i = 1u; const auto & v : vs) { vs_[0].col(i++) = v; }
 
     end_g_.resize(1);
     end_g_[0] = operator()(T);
@@ -105,31 +105,6 @@ public:
 
   /// @brief Move assignment
   Curve & operator=(Curve &&) = default;
-
-  /// @brief Construct from cubic PiecewiseBezier
-  Curve(const PiecewiseBezier<3, G> & bez)
-  {
-    std::size_t N = bez.segments_.size();
-
-    end_t_.resize(N);
-    end_g_.resize(N);
-    vs_.resize(N);
-    seg_T0_.assign(N, 0);
-    seg_Del_.assign(N, 1);
-
-    if (N == 0) { return; }
-
-    double t0     = bez.knots_.front();
-    const G g0inv = inverse(bez.segments_.front().g0_);
-
-    for (auto i = 0u; i != N; ++i) {
-      end_t_[i] = bez.knots_[i + 1] - t0;
-      if (i + 1 < N) { end_g_[i] = composition(g0inv, bez.segments_[i + 1].g0_); }
-      vs_[i] = bez.segments_[i].vs_;
-    }
-
-    end_g_[N - 1] = operator()(end_t_.back());
-  }
 
   /// @brief Destructor
   ~Curve() = default;
@@ -167,9 +142,14 @@ public:
     if (T <= 0) {
       return Curve();
     } else {
-      std::array<Tangent<G>, 3> vs;
-      vs.fill(T * v / 3);
-      return Curve(T, vs);
+      constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+      Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
+
+      Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
+      rhs.row(1)                               = T * v;
+
+      Eigen::Matrix<double, Dof<G>, K + 1> V = B.lu().solve(rhs).transpose();
+      return Curve(T, std::move(V));
     }
   }
 
@@ -180,13 +160,43 @@ public:
    * @param va, vb start and end velocities
    * @param T duration
    */
-  static Curve FixedCubic(const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T = 1)
+  static Curve FixedCubic(
+    const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T = 1) requires(K == 3)
   {
-    std::array<Tangent<G>, 3> vs;
-    vs[0] = T * va / 3;
-    vs[2] = T * vb / 3;
-    vs[1] = log(composition(::smooth::exp<G>(-vs[0]), gb, ::smooth::exp<G>(-vs[2])));
-    return Curve(T, std::move(vs));
+    constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
+
+    constexpr auto U0_s = monomial_derivative<double, K>(0, 0);
+    constexpr auto U1_s = monomial_derivative<double, K>(1, 0);
+
+    constexpr auto dU0_s = monomial_derivative<double, K>(0, 1);
+    constexpr auto dU1_s = monomial_derivative<double, K>(1, 1);
+
+    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> U0(U0_s.data());
+    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> U1(U1_s.data());
+
+    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> dU0(dU0_s.data());
+    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> dU1(dU1_s.data());
+
+    Eigen::Matrix<double, K + 1, K + 1> lhs  = Eigen::Matrix<double, K + 1, K + 1>::Zero();
+    Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
+
+    lhs.row(0) = U0.transpose() * B;
+    rhs.row(0).setZero();
+
+    lhs.row(1) = dU0.transpose() * B;
+    rhs.row(1) = T * va;
+
+    lhs.row(2) = U1.transpose() * B;
+    rhs.row(2) = log(gb);
+
+    lhs.row(3) = dU1.transpose() * B;
+    rhs.row(3) = T * vb;
+
+    for (auto i = 4u; i < K + 1; ++i) { lhs.row(i) = Eigen::Matrix<double, 1, K + 1>::Unit(i) * B; }
+
+    Eigen::Matrix<double, Dof<G>, K + 1> V = lhs.lu().solve(rhs).transpose();
+    return Curve(T, std::move(V));
   }
 
   /**
@@ -323,22 +333,30 @@ public:
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
 
-    constexpr auto M_s = detail::cum_coefmat<PolynomialBasis::Bernstein, double, 3>().transpose();
+    constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bernstein, double, 3>().transpose();
     Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     G g0 = istar == 0 ? Identity<G>() : end_g_[istar - 1];
 
-    // compensate for cropped intervals
-    if (seg_T0_[istar] > 0) {
-      g0 = composition(g0, inverse(cspline_eval_diff<3, G>(vs_[istar], M, seg_T0_[istar])));
+    if (vel.has_value()) {
+      *vel = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(vs_[istar].colwise(), u, 1);
+      vel.value() *= Del / T;
+    }
+    if (acc.has_value()) {
+      *acc = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(vs_[istar].colwise(), u, 2);
+      acc.value() *= Del * Del / (T * T);
     }
 
-    const G g = composition(g0, cspline_eval_diff<3, G>(vs_[istar], M, u, vel, acc));
+    // compensate for cropped intervals
+    if (seg_T0_[istar] > 0) {
+      const Tangent<G> v = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(
+        vs_[istar].colwise(), seg_T0_[istar], 0);
+      g0 = composition(g0, inverse(::smooth::exp<G>(v)));
+    }
 
-    if (vel.has_value()) { vel.value() *= Del / T; }
-    if (acc.has_value()) { acc.value() *= Del * Del / (T * T); }
-
-    return g;
+    const Tangent<G> v =
+      evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(vs_[istar].colwise(), u, 0);
+    return composition(g0, ::smooth::exp<G>(v));
   }
 
   /**
@@ -352,18 +370,19 @@ public:
    *
    * @note This function is approximate for Lie groups with curvature.
    */
-  Tangent<G> arclength(double t) const
+  Tangent<G> arclength(double t) const requires(K == 3)
   {
     Tangent<G> ret = Tangent<G>::Zero();
+
+    constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
     for (auto i = 0u; i < end_t_.size(); ++i) {
       // check if we have reached t
       if (i > 0 && t <= end_t_[i - 1]) { break; }
 
-      // polynomial coefficients: dx/dt = At^2 + Bt + C
-      const Tangent<G> A = 3 * vs_[i][0] - 6 * vs_[i][1] + 3 * vs_[i][2];
-      const Tangent<G> B = -6 * vs_[i][0] + 6 * vs_[i][1];
-      const Tangent<G> C = 3 * vs_[i][0];
+      // polynomial coefficients a0 + a1 x + a2 x2 + a3 x3
+      const Eigen::Matrix<double, K + 1, Dof<G>> coefs = B * vs_[i].transpose();
 
       const double ta = i == 0 ? 0 : end_t_[i - 1];
       const double tb = end_t_[i];
@@ -371,9 +390,10 @@ public:
       const double ua = seg_T0_[i];
       const double ub = ua + seg_Del_[i] * (std::min<double>(t, tb) - ta) / (tb - ta);
 
-      // integrate | A u2 + B u + C |  for  u \in [ua, ub]
       for (auto k = 0u; k < Dof<G>; ++k) {
-        ret(k) += detail::integrate_absolute_polynomial(ua, ub, A(k), B(k), C(k));
+        // derivative b0 + b1 x + b2 x2 has coefficients [b0, b1, b2] = [a1, 2a2, 3a3]
+        ret(k) +=
+          integrate_absolute_polynomial(ua, ub, 3 * coefs(3, k), 2 * coefs(2, k), coefs(1, k));
       }
     }
 
@@ -408,7 +428,7 @@ public:
 
     std::vector<double> end_t(Nseg);
     std::vector<G> end_g(Nseg);
-    std::vector<std::array<Tangent<G>, 3>> vs(Nseg);
+    std::vector<Eigen::Matrix<double, Dof<G>, K + 1>> vs(Nseg);
     std::vector<double> seg_T0(Nseg), seg_Del(Nseg);
 
     // copy over all relevant segments
@@ -493,7 +513,7 @@ private:
   std::vector<G> end_g_;
 
   // segment bezier velocities
-  std::vector<std::array<Tangent<G>, 3>> vs_;
+  std::vector<Eigen::Matrix<double, Dof<G>, K + 1>> vs_;
 
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;

@@ -50,7 +50,7 @@ int main(int, char const **)
     smooth::SE2d::Random(),
     smooth::SE2d::Random()};
 
-  Curve c(smooth::fit_cubic_bezier(tt, gg));
+  Curve c;
   c *= Curve::ConstantVelocity(Eigen::Vector3d(1.2, 0, 0), 5);
   c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
   c *= Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);

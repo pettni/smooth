@@ -27,8 +27,8 @@
  * @file min_deriv.cpp Minimum derivative example.
  */
 
-#include "smooth/spline/min_deriv.hpp"
 #include "smooth/internal/utils.hpp"
+#include "smooth/spline/fit_curve.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include "plot_tools.hpp"
@@ -47,7 +47,7 @@ int main(int, char const **)
   std::partial_sum(dt_v.begin(), dt_v.end(), std::back_inserter(t_v));
   std::partial_sum(dx_v.begin(), dx_v.end(), std::back_inserter(x_v));
 
-  const auto coefs = smooth::min_deriv_1d<K, D>(dt_v, dx_v);
+  const auto coefs = smooth::fit_poly_1d<K, D>(dt_v, dx_v);
 
   const auto f = [&](double t, int d) {
     const auto i = std::distance(t_v.cbegin(), smooth::utils::binary_interval_search(t_v, t));
@@ -55,7 +55,8 @@ int main(int, char const **)
     const double dt = t_v[i + 1] - t_v[i];
     const double u  = (t - t_v[i]) / dt;
 
-    return smooth::evaluate_bernstein<double, K>(coefs.segment(i * (K + 1), K + 1), u, d)
+    return smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
+             coefs.segment(i * (K + 1), K + 1), u, d)
          / std::pow(dt, d);
   };
 

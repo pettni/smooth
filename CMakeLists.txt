@@ -144,13 +144,17 @@ if(BUILD_TESTING)
   target_link_libraries(test_spline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_spline)
 
-  add_executable(test_min_deriv test/test_min_deriv.cpp)
-  target_link_libraries(test_min_deriv PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_min_deriv)
-
   add_executable(test_curve test/test_curve.cpp)
   target_link_libraries(test_curve PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_curve)
+
+  add_executable(test_fit_curve test/test_fit_curve.cpp)
+  target_link_libraries(test_fit_curve PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_fit_curve)
+
+  add_executable(test_spline_basis test/test_spline_basis.cpp)
+  target_link_libraries(test_spline_basis PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_spline_basis)
 
   add_executable(test_diff test/test_diff.cpp)
   target_link_libraries(test_diff PRIVATE smooth GTest::Main)

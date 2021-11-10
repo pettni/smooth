@@ -395,48 +395,6 @@ TEST(Curve, Dubins)
   }
 }
 
-TEST(Curve, FromBezier)
-{
-  std::vector<double> tt;
-  std::vector<smooth::SO3d> gg;
-
-  std::srand(10);
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-  gg.push_back(smooth::SO3d::Random());
-
-  auto spline = smooth::fit_cubic_bezier(tt, gg);
-
-  // constructor
-  smooth::Curve<smooth::SO3d> c(spline);
-
-  ASSERT_EQ(c.t_max(), spline.t_max() - spline.t_min());
-
-  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05) {
-    ASSERT_TRUE(spline(t).isApprox(spline(spline.t_min()) * c(t - spline.t_min())));
-  }
-
-  // assignment
-  c = spline;
-
-  ASSERT_EQ(c.t_max(), spline.t_max() - spline.t_min());
-
-  for (double t = spline.t_min(); t < spline.t_max(); t += 0.05) {
-    ASSERT_TRUE(spline(t).isApprox(spline(spline.t_min()) * c(t - spline.t_min())));
-  }
-}
-
 TEST(Curve, Reparameterize)
 {
   smooth::Curve<smooth::SE2d> c;
@@ -470,45 +428,45 @@ TEST(Curve, Reparameterize)
   }
 }
 
-TEST(Curve, ReparameterizeSpline)
-{
-  std::srand(100);
+// TEST(Curve, ReparameterizeSpline)
+// {
+//   std::srand(100);
 
-  std::vector<double> tt{1, 2, 3, 4, 5, 6};
-  std::vector<smooth::SE2d> gg{smooth::SE2d::Random(),
-    smooth::SE2d::Random(),
-    smooth::SE2d::Random(),
-    smooth::SE2d::Random(),
-    smooth::SE2d::Random(),
-    smooth::SE2d::Random()};
+//   std::vector<double> tt{1, 2, 3, 4, 5, 6};
+//   std::vector<smooth::SE2d> gg{smooth::SE2d::Random(),
+//     smooth::SE2d::Random(),
+//     smooth::SE2d::Random(),
+//     smooth::SE2d::Random(),
+//     smooth::SE2d::Random(),
+//     smooth::SE2d::Random()};
 
-  smooth::Curve<smooth::SE2d> c(smooth::fit_cubic_bezier(tt, gg));
+//   smooth::Curve<smooth::SE2d> c(smooth::fit_cubic_bezier(tt, gg));
 
-  Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
+//   Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
-  auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+//   auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
 
-  double tmp;
-  ASSERT_EQ(sfun(0, tmp, tmp), 0);
-  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+//   double tmp;
+//   ASSERT_EQ(sfun(0, tmp, tmp), 0);
+//   ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
 
-  for (double t = 0; t < sfun.t_max(); t += 0.1) {
-    double ds, d2s;
-    double s = sfun(t, ds, d2s);
+//   for (double t = 0; t < sfun.t_max(); t += 0.1) {
+//     double ds, d2s;
+//     double s = sfun(t, ds, d2s);
 
-    Eigen::Vector3d vel, acc;
-    c(s, vel, acc);
+//     Eigen::Vector3d vel, acc;
+//     c(s, vel, acc);
 
-    Eigen::Vector3d repar_vel = vel * ds;
-    // Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+//     Eigen::Vector3d repar_vel = vel * ds;
+//     // Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
 
-    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
-    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+//     ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+//     ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
 
-    /* ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
-    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05); */
-  }
-}
+//     /* ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+//     ASSERT_GE((repar_acc + amax).minCoeff(), -0.05); */
+//   }
+// }
 
 TEST(Curve, ReparameterizeZero)
 {
@@ -629,17 +587,6 @@ TEST(Curve, Adapted)
   static_cast<void>(x);
 }
 
-TEST(Curve, IntegratePolynomial)
-{
-  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 0, 0, 3), 27, 1e-2);
-
-  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 0, 2, 3), 126, 1e-2);
-  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 0, -2, 3), 72.5, 1e-2);
-
-  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, 1, 2, 3), 459, 1e-2);
-  ASSERT_NEAR(smooth::detail::integrate_absolute_polynomial(1, 10, -1, 2, 3), 217.67, 1e-2);
-}
-
 TEST(Curve, ArcLengthConstant)
 {
   smooth::Curve<Eigen::Vector2d> c;
@@ -665,9 +612,12 @@ TEST(Curve, ArcLengthConstant)
 TEST(Curve, ArcLengthNonConstant)
 {
   std::vector<Eigen::Vector2d> vs{
-    Eigen::Vector2d{1, -1}, Eigen::Vector2d{-2, 2}, Eigen::Vector2d{1, -1}};
+    Eigen::Vector2d{1, -2},
+    Eigen::Vector2d{-2, 1},
+    Eigen::Vector2d{1, -2},
+  };
   smooth::Curve<Eigen::Vector2d> c(1, vs);
 
-  ASSERT_NEAR(c.arclength(c.t_max()).x(), 1.1547, 1e-4);
-  ASSERT_NEAR(c.arclength(c.t_max()).y(), 1.1547, 1e-4);
+  ASSERT_NEAR(c.arclength(c.t_max()).x(), 2.1758, 1e-4);
+  ASSERT_NEAR(c.arclength(c.t_max()).y(), 2.3435, 1e-4);
 }

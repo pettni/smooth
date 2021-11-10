@@ -55,6 +55,8 @@ int main(int, char const **)
     data_t.push_back(data_t.back() + (1 + i % 2) * dt);
   }
 
+  std::cout << "Fitting splines" << std::endl;
+
   auto bspline = smooth::fit_bspline<K>(data_t, data_g, 2.5 * dt);
   auto bezier1 = smooth::fit_linear_bezier(data_t, data_g);
   auto bezier2 = smooth::fit_quadratic_bezier(data_t, data_g);
@@ -65,6 +67,8 @@ int main(int, char const **)
 
   std::vector<Eigen::Vector3d> bspline_v, bezier1_v,
     bezier2_v, bezier3_v;
+
+  std::cout << "Evaluating splines" << std::endl;
 
   for (double t = bspline.t_min(); t < bspline.t_max(); t += 0.05) {
     Eigen::Vector3d v;
@@ -85,6 +89,8 @@ int main(int, char const **)
   }
 
 #ifdef ENABLE_PLOTTING
+  std::cout << "Plotting splines" << std::endl;
+
   matplot::figure();
   matplot::hold(matplot::on);
 

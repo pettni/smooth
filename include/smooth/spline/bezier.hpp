@@ -28,7 +28,7 @@
 
 /**
  * @file
- * @brief bezier splines on lie groups.
+ * @brief Bezier polynomials on lie groups.
  */
 
 #include <algorithm>
@@ -38,18 +38,14 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseLU>
 
-#include "common.hpp"
+#include "basis.hpp"
+#include "cumulative_spline.hpp"
 
 namespace smooth {
 
-// \cond
-template<LieGroup G>
-class Curve;
-// \endcond
-
 /**
- * @brief Bezier curve on [0, 1].
- * @tparam N Polonimial degree of curve.
+ * @brief Bezier spline on [0, 1].
+ * @tparam K Polonimial degree of spline.
  * @tparam G LieGroup type.
  *
  * The curve is defined by
@@ -59,14 +55,14 @@ class Curve;
  * where \f$\tilde B_i(t)\f$ are cumulative Bernstein basis functions and
  * \f$v_i = g_i \ominus g_{i-1}\f$ are the control point differences.
  */
-template<std::size_t N, LieGroup G>
+template<std::size_t K, LieGroup G>
 class Bezier
 {
 public:
   /**
    * @brief Default constructor creates a constant curve on [0, 1] equal to identity.
    */
-  Bezier() : g0_(Identity<G>()) { vs_.fill(Tangent<G>::Zero()); }
+  Bezier() : g0_(Identity<G>()) { V_.setZero(); }
 
   /**
    * @brief Create curve from rvalue parameter values.
@@ -74,7 +70,7 @@ public:
    * @param g0 starting value
    * @param vs differences [v_1, ..., v_n] between control points
    */
-  Bezier(G && g0, std::array<Tangent<G>, N> && vs) : g0_(std::move(g0)), vs_(std::move(vs)) {}
+  Bezier(G && g0, Eigen::Matrix<double, Dof<G>, K> && V) : g0_(std::move(g0)), V_(std::move(V)) {}
 
   /**
    * @brief Create curve from parameter values.
@@ -88,8 +84,10 @@ public:
   template<std::ranges::range Rv>
   Bezier(const G & g0, const Rv & vs) : g0_(g0)
   {
-    assert(std::ranges::size(vs) == N);
-    std::copy(std::ranges::begin(vs), std::ranges::end(vs), vs_.begin());
+    assert(std::ranges::size(vs) == K);
+    if constexpr (K > 0) {
+      for (auto i = 0u; const auto & v : vs) { V_.col(i++) = v; }
+    }
   }
 
   /// @brief Copy constructor
@@ -115,19 +113,112 @@ public:
    */
   G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
-    double tc = std::clamp<double>(t, 0, 1);
+    if constexpr (K == 0) {
+      if (vel.has_value()) { vel.value().setZero(); }
+      if (acc.has_value()) { acc.value().setZero(); }
+      return g0_;
+    } else {
+      constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bernstein, double, K>().transpose();
+      Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
-    constexpr auto Mstatic = detail::cum_coefmat<PolynomialBasis::Bernstein, double, N>().transpose();
-    Eigen::Map<const Eigen::Matrix<double, N + 1, N + 1, Eigen::RowMajor>> M(Mstatic[0].data());
-
-    return composition(g0_, cspline_eval_diff<N, G>(vs_, M, tc, vel, acc));
+      return composition(
+        g0_, cspline_eval_diff<K, G>(V_.colwise(), M, std::clamp<double>(t, 0, 1), vel, acc));
+    }
   }
 
 private:
   G g0_;
-  std::array<Tangent<G>, N> vs_;
+  Eigen::Matrix<double, Dof<G>, K> V_;
+};
 
-  friend class Curve<G>;
+/**
+ * @brief Tangent Bezier curve on [0, 1].
+ * @tparam K Polonimial degree of curve.
+ * @tparam G LieGroup type.
+ *
+ * The curve is defined by
+ * \f[
+ *  g(t) = g_0 * \exp( B_1(t) v_1 + ... + B_N(t) v_N )
+ * \f]
+ * where \f$B_i(t)\f$ are Bernstein basis functions and \f$v_i\f$ are the velocity control points.
+ */
+template<std::size_t K, LieGroup G>
+class TangentBezier
+{
+public:
+  /**
+   * @brief Default constructor creates a constant curve on [0, 1] equal to identity.
+   */
+  TangentBezier() : g0_(Identity<G>()) { V_.setZero(); }
+
+  /**
+   * @brief Create curve from rvalue parameter values.
+   *
+   * @param g0 starting value
+   * @param V velocity control points [v_1, ..., v_n]
+   */
+  TangentBezier(G && g0, Eigen::Matrix<double, Dof<G>, K> && V)
+      : g0_(std::move(g0)), V_(std::move(V))
+  {}
+
+  /**
+   * @brief Create curve from parameter values.
+   *
+   * @tparam Rv range containing control point differences
+   * @param g0 starting value
+   * @param vs velocity control points [v_1, ..., v_n]
+   *
+   * @note Range value type of \p Rv must be the tangent type of \p G.
+   */
+  template<std::ranges::range Rv>
+  TangentBezier(const G & g0, const Rv & vs) : g0_(g0)
+  {
+    assert(std::ranges::size(vs) == K);
+    V_.col(0).setZero();
+    for (auto i = 1u; const auto & v : vs) { V_.col(i++) = v; }
+  }
+
+  /// @brief Copy constructor
+  TangentBezier(const TangentBezier &) = default;
+  /// @brief Move constructor
+  TangentBezier(TangentBezier &&) = default;
+  /// @brief Copy assignment
+  TangentBezier & operator=(const TangentBezier &) = default;
+  /// @brief Move assignment
+  TangentBezier & operator=(TangentBezier &&) = default;
+  /// @brief Destructor
+  ~TangentBezier() = default;
+
+  /**
+   * @brief Evaluate TangentBezier curve.
+   *
+   * @param[in] t time point to evaluate at
+   * @param[out] vel output body velocity at evaluation time
+   * @param[out] acc output body acceleration at evaluation time
+   * @return spline value at time t
+   *
+   * @note Input \p t is clamped to interval [0, 1]
+   */
+  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  {
+    double tc = std::clamp<double>(t, 0, 1);
+
+    const Tangent<G> v =
+      evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(V_.colwise(), tc, 0);
+
+    if (vel.has_value()) {
+      *vel = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(V_.colwise(), tc, 1);
+    }
+    if (acc.has_value()) {
+      *acc = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(V_.colwise(), tc, 2);
+    }
+
+    return composition(g0_, ::smooth::exp<G>(v));
+  }
+
+private:
+  G g0_;
+  Eigen::Matrix<double, Dof<G>, K + 1> V_;
 };
 
 /**
@@ -140,14 +231,14 @@ private:
  * for \f$ t \in [t_i, t_{i+1}]\f$
  * where \f$p_i\f$ is a Bezier curve on \f$[0, 1]\f$.
  */
-template<std::size_t N, LieGroup G>
+template<std::size_t K, LieGroup G>
 class PiecewiseBezier
 {
 public:
   /**
    * @brief Default constructor creates a constant curve defined on [0, 1] equal to identity.
    */
-  PiecewiseBezier() : knots_{0, 1}, segments_{Bezier<N, G>{}} {}
+  PiecewiseBezier() : knots_{0, 1}, segments_{Bezier<K, G>{}} {}
 
   /**
    * @brief Create a PiecewiseBezier from knot times and Bezier segments.
@@ -155,7 +246,7 @@ public:
    * @param knots points \f$ t_i \f$
    * @param segments Bezier curves \f$ p_i \f$
    */
-  PiecewiseBezier(std::vector<double> && knots, std::vector<Bezier<N, G>> && segments)
+  PiecewiseBezier(std::vector<double> && knots, std::vector<Bezier<K, G>> && segments)
       : knots_(std::move(knots)), segments_(std::move(segments))
   {}
 
@@ -220,9 +311,7 @@ public:
 
 private:
   std::vector<double> knots_;
-  std::vector<Bezier<N, G>> segments_;
-
-  friend class Curve<G>;
+  std::vector<Bezier<K, G>> segments_;
 };
 
 /**
