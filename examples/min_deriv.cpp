@@ -47,26 +47,16 @@ int main(int, char const **)
   std::partial_sum(dt_v.begin(), dt_v.end(), std::back_inserter(t_v));
   std::partial_sum(dx_v.begin(), dx_v.end(), std::back_inserter(x_v));
 
-  auto coefs = smooth::min_deriv_1d<K, D>(dt_v, dx_v);
+  const auto coefs = smooth::min_deriv_1d<K, D>(dt_v, dx_v);
 
-  auto f = [&](double t, int d) {
-    auto it = smooth::utils::binary_interval_search(t_v, t);
-    auto i  = std::distance(t_v.cbegin(), it);
+  const auto f = [&](double t, int d) {
+    const auto i = std::distance(t_v.cbegin(), smooth::utils::binary_interval_search(t_v, t));
 
     const double dt = t_v[i + 1] - t_v[i];
     const double u  = (t - t_v[i]) / dt;
 
-    const auto U_s            = smooth::monomial_derivative_coefmat<double, K, 4>(u);
-    static constexpr auto B_s = smooth::detail::bernstein_coefmat<double, K>();
-
-    Eigen::Map<const Eigen::Matrix<double, K + 1, 5, Eigen::RowMajor>> U(U_s[0].data());
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
-
-    if (d == 0) {
-      return x_v[i] + (U.col(d).transpose() * B * coefs.segment(i * (K + 1), K + 1)).x();
-    } else {
-      return (U.col(d).transpose() * B * coefs.segment(i * (K + 1), K + 1)).x() / std::pow(dt, d);
-    }
+    return smooth::evaluate_bernstein<double, K>(coefs.segment(i * (K + 1), K + 1), u, d)
+         / std::pow(dt, d);
   };
 
   std::vector<double> tt, xx, vv, aa, jj, ss;
