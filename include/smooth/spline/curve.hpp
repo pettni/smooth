@@ -171,37 +171,29 @@ public:
    * @param va, vb start and end velocities
    * @param T duration
    */
-  static Curve FixedCubic(
-    const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T = 1) requires(K == 3)
+  static Curve FixedCubic(const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T = 1)
+    // \cond
+    requires(K >= 3)
+  // \endcond
   {
     constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
-    constexpr auto U0_s = monomial_derivative<double, K>(0, 0);
-    constexpr auto U1_s = monomial_derivative<double, K>(1, 0);
-
+    constexpr auto U0_s  = monomial_derivative<double, K>(0, 0);
+    constexpr auto U1_s  = monomial_derivative<double, K>(1, 0);
     constexpr auto dU0_s = monomial_derivative<double, K>(0, 1);
     constexpr auto dU1_s = monomial_derivative<double, K>(1, 1);
-
-    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> U0(U0_s.data());
-    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> U1(U1_s.data());
-
-    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> dU0(dU0_s.data());
-    Eigen::Map<const Eigen::Matrix<double, K + 1, 1>> dU1(dU1_s.data());
 
     Eigen::Matrix<double, K + 1, K + 1> lhs  = Eigen::Matrix<double, K + 1, K + 1>::Zero();
     Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
 
-    lhs.row(0) = U0.transpose() * B;
+    lhs.row(0) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U0_s.data()).transpose() * B;
     rhs.row(0).setZero();
-
-    lhs.row(1) = dU0.transpose() * B;
+    lhs.row(1) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU0_s.data()).transpose() * B;
     rhs.row(1) = T * va;
-
-    lhs.row(2) = U1.transpose() * B;
+    lhs.row(2) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U1_s.data()).transpose() * B;
     rhs.row(2) = log(gb);
-
-    lhs.row(3) = dU1.transpose() * B;
+    lhs.row(3) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU1_s.data()).transpose() * B;
     rhs.row(3) = T * vb;
 
     for (auto i = 4u; i < K + 1; ++i) { lhs.row(i) = Eigen::Matrix<double, 1, K + 1>::Unit(i) * B; }
