@@ -29,6 +29,7 @@
 
 #include "smooth/spline/curve.hpp"
 #include "smooth/se2.hpp"
+#include "smooth/spline/fit_curve.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include <matplot/matplot.h>
@@ -50,7 +51,7 @@ int main(int, char const **)
     smooth::SE2d::Random(),
     smooth::SE2d::Random()};
 
-  Curve c;
+  Curve c = smooth::fit_curve<smooth::SplineType::FixedVelCubic, smooth::SE2d>(tt, gg);
   c += Curve::ConstantVelocity(Eigen::Vector3d(1.2, 0, 0), 5);
   c += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
   c += Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);

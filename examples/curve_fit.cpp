@@ -28,6 +28,7 @@
  */
 
 #include "smooth/internal/utils.hpp"
+#include "smooth/se2.hpp"
 #include "smooth/spline/fit_curve.hpp"
 
 #ifdef ENABLE_PLOTTING
@@ -37,49 +38,55 @@
 
 int main(int, char const **)
 {
-  static constexpr auto K = 7;
-  static constexpr auto D = 4;
+  using G = smooth::SE2d;
 
-  std::vector<double> dt_v{1, 2, 3, 4, 5};
-  std::vector<double> dx_v{1, -1, 0.5, 4, 2};
-
-  std::vector<double> t_v{0}, x_v{0};
-  std::partial_sum(dt_v.begin(), dt_v.end(), std::back_inserter(t_v));
-  std::partial_sum(dx_v.begin(), dx_v.end(), std::back_inserter(x_v));
-
-  const auto coefs = smooth::fit_poly_1d<K>(dt_v, dx_v, smooth::FixedDerivative<4>{});
-
-  const auto f = [&](double t, int d) {
-    const auto i = std::distance(t_v.cbegin(), smooth::utils::binary_interval_search(t_v, t));
-
-    const double dt = t_v[i + 1] - t_v[i];
-    const double u  = (t - t_v[i]) / dt;
-
-    return smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-             coefs.segment(i * (K + 1), K + 1), u, d)
-         / std::pow(dt, d);
+  std::vector<double> x{0, 1, 2.5, 3, 4, 5};
+  std::vector<G> y{
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
   };
 
-  std::vector<double> tt, xx, vv, aa, jj, ss;
-  for (double t = 0; t < t_v.back(); t += 0.01) {
-    tt.push_back(t);
-    xx.push_back(f(t, 0));
-    vv.push_back(f(t, 1));
-    aa.push_back(f(t, 2));
-    jj.push_back(f(t, 3));
-    ss.push_back(f(t, 4));
-  }
+  const auto c0   = smooth::fit_curve<smooth::SplineType::PiecewiseConstant, G>(x, y);
+  const auto c1   = smooth::fit_curve<smooth::SplineType::PiecewiseLinear, G>(x, y);
+  const auto c3_f = smooth::fit_curve<smooth::SplineType::FixedVelCubic, G>(x, y);
+  const auto c3_n = smooth::fit_curve<smooth::SplineType::NaturalCubic, G>(x, y);
+  const auto c5   = smooth::fit_curve<smooth::SplineType::MinJerk, G>(x, y);
+  const auto c6   = smooth::fit_curve<smooth::SplineType::MinSnap, G>(x, y);
 
 #ifdef ENABLE_PLOTTING
-  matplot::figure();
+  std::vector<double> tt = matplot::linspace(-1, 6, 500);
 
+  matplot::figure();
   matplot::hold(matplot::on);
-  matplot::plot(tt, xx)->line_width(2);
-  matplot::plot(tt, vv)->line_width(2);
-  matplot::plot(tt, aa)->line_width(2);
-  matplot::plot(tt, jj)->line_width(2);
-  matplot::plot(tt, ss)->line_width(2);
-  matplot::legend({"pos", "vel", "acc", "jerk", "snap"});
+  // clang-format off
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c0(t).so2().angle(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c1(t).so2().angle(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c3_f(t).so2().angle(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c3_n(t).so2().angle(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c5(t).so2().angle(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c6(t).so2().angle(); })))->line_width(2);
+  // clang-format on
+  matplot::title("Values");
+  matplot::legend({"c0", "c1", "c3_f", "c3_n", "min_jerk", "min_snap"});
+
+  for (int p = 1; p <= 2; ++p) {
+    matplot::figure();
+    matplot::hold(matplot::on);
+    // clang-format off
+    matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c0.der(t, p).z(); })))->line_width(2);
+    matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c1.der(t, p).z(); })))->line_width(2);
+    matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c3_f.der(t, p).z(); })))->line_width(2);
+    matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c3_n.der(t, p).z(); })))->line_width(2);
+    matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c5.der(t, p).z(); })))->line_width(2);
+    matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c6.der(t, p).z(); })))->line_width(2);
+    // clang-format on
+    matplot::title("Derivative" + std::to_string(p));
+    matplot::legend({"c0", "c1", "c3_f", "c3_n", "min_jerk", "min_snap"});
+  }
 
   matplot::show();
 #endif

@@ -47,16 +47,40 @@ concept SplineSpec = requires(T t)
   // clang-format on
 };
 
+struct PiecewiseConstant
+{
+  static constexpr int OptDeg = -1;
+  static constexpr int InnCnt = -1;
+
+  static constexpr std::array<int, 0> LeftDeg{};
+  std::array<double, 0> left_values{};
+
+  static constexpr std::array<int, 0> RghtDeg{};
+  std::array<double, 0> rght_values{};
+};
+
 struct PiecewiseLinear
 {
   static constexpr int OptDeg = -1;
   static constexpr int InnCnt = 0;
 
   static constexpr std::array<int, 0> LeftDeg{};
-  std::array<int, 0> left_values{};
+  std::array<double, 0> left_values{};
 
   static constexpr std::array<int, 0> RghtDeg{};
-  std::array<int, 0> rght_values{};
+  std::array<double, 0> rght_values{};
+};
+
+struct FixedVelCubic
+{
+  static constexpr int OptDeg = -1;
+  static constexpr int InnCnt = 2;
+
+  static constexpr std::array<int, 1> LeftDeg{1};
+  std::array<double, 1> left_values{0};
+
+  static constexpr std::array<int, 1> RghtDeg{1};
+  std::array<double, 1> rght_values{0};
 };
 
 struct NaturalCubic
@@ -65,10 +89,10 @@ struct NaturalCubic
   static constexpr int InnCnt = 2;
 
   static constexpr std::array<int, 1> LeftDeg{2};
-  std::array<int, 1> left_values{0};
+  std::array<double, 1> left_values{0};
 
   static constexpr std::array<int, 1> RghtDeg{2};
-  std::array<int, 1> rght_values{0};
+  std::array<double, 1> rght_values{0};
 };
 
 template<std::size_t P = 3>
@@ -113,11 +137,15 @@ constexpr int max_deriv()
 
 /**
  * @brief Find N degree K Bernstein polynomials p_i(t) for i = 0, ..., N s.t that satisfies
- * constraints.
+ * constraints and s.t.
+ * \f[
+ *   p_i(0) = 0 \\
+ *   p_i(dt) = dx
+ * \f]
  *
  * @tparam K polynomial degree
  * @param dt_r range of parameter differences
- * @param dt_r range of value differences
+ * @param dx_r range of value differences
  * @return vector of size (K + 1) * N s.t. the segment \alpha = [i * (K + 1), (i + 1) * (K + 1))
  * defines polynomial i as
  * \f[
@@ -257,6 +285,15 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
   }
 }
 
+enum class SplineType {
+  PiecewiseConstant,
+  PiecewiseLinear,
+  FixedVelCubic,
+  NaturalCubic,
+  MinJerk,
+  MinSnap
+};
+
 /**
  * @brief Fit a Curve to given points.
  *
@@ -264,14 +301,27 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
  * @tparam K Curve degree
  * @param ts range of times
  * @param gs range of values
+ * @param va boundary constraint 1
+ * @param vb boundary constraint 2
  * @return curve c s.t. c(t_i) = g_i for (t_i, g_i) \in zip(ts, gs)
  */
-template<std::size_t K, LieGroup G, std::ranges::range Rt, std::ranges::range Rg>
-Curve<K, G> fit_curve(const Rt & ts, const Rg & gs)
+template<SplineType ST, LieGroup G, std::ranges::range Rt, std::ranges::range Rg>
+auto fit_curve(const Rt & ts,
+  const Rg & gs,
+  const Tangent<G> & va = Tangent<G>::Zero(),
+  const Tangent<G> & vb = Tangent<G>::Zero())
 {
   using namespace std::views;
 
   const std::size_t N = std::min(std::ranges::size(ts), std::ranges::size(gs));
+  const std::size_t K = [&]() {
+    if constexpr (ST == SplineType::PiecewiseConstant) { return 0; }
+    if constexpr (ST == SplineType::PiecewiseLinear) { return 1; }
+    if constexpr (ST == SplineType::FixedVelCubic) { return 3; }
+    if constexpr (ST == SplineType::NaturalCubic) { return 3; }
+    if constexpr (ST == SplineType::MinJerk) { return 5; }
+    if constexpr (ST == SplineType::MinSnap) { return 6; }
+  }();
 
   assert(N >= 2);
 
@@ -281,18 +331,43 @@ Curve<K, G> fit_curve(const Rt & ts, const Rg & gs)
   std::ranges::transform(
     ts, ts | drop(1), dts.begin(), [](const auto & t1, const auto & t2) { return t2 - t1; });
   std::ranges::transform(
-    gs, gs | drop(1), dgs.begin(), [](const auto & g1, const auto & g2) { return g2 - g1; });
+    gs, gs | drop(1), dgs.begin(), [](const auto & g1, const auto & g2) { return rminus(g2, g1); });
 
   Eigen::Matrix<double, Dof<G>, -1> V(Dof<G>, (N - 1) * (K + 1));
 
   for (auto k = 0u; k < Dof<G>; ++k) {
-    V.row(k) =
-      fit_poly_1d<K>(dts, dgs | transform([k](const auto & v) { return v(k); }), NaturalCubic{});
+    const auto tf = [k](const auto & v) { return v(k); };
+
+    if constexpr (ST == SplineType::PiecewiseConstant) {
+      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), PiecewiseConstant{});
+    }
+    if constexpr (ST == SplineType::PiecewiseLinear) {
+      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), PiecewiseLinear{});
+    }
+    if constexpr (ST == SplineType::FixedVelCubic) {
+      FixedVelCubic c{.left_values = {va(k)}, .rght_values = {vb(k)}};
+      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), c);
+    }
+    if constexpr (ST == SplineType::NaturalCubic) {
+      NaturalCubic c{.left_values = {va(k)}, .rght_values = {vb(k)}};
+      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), c);
+    }
+    if constexpr (ST == SplineType::MinJerk) {
+      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), FixedDerivative<3>{});
+    }
+    if constexpr (ST == SplineType::MinSnap) {
+      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), FixedDerivative<4>{});
+    }
   }
 
   Curve<K, G> ret;
-  for (auto i = 0u; i + 1 < N; ++i) {
-    ret += Curve<K, G>(dts[i], V.template block<Dof<G>, K + 1>(0, i * (K + 1)));
+  for (auto i = 0u; const auto & g : gs) {
+    if (i + 1 < N) {
+      ret.concat_global(Curve<K, G>(dts[i], V.template block<Dof<G>, K + 1>(0, i * (K + 1)), g));
+    } else {
+      ret.concat_global(g);
+    }
+    ++i;
   }
   return ret;
 }

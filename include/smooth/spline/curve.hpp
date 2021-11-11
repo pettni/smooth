@@ -420,6 +420,27 @@ public:
   }
 
   /**
+   * @brief Evaluate derivative of Curve at given time
+   * @param t time point to evaluate at
+   * @param p differentiation order (must be greater than or equal to 1)
+   */
+  Tangent<G> der(double t, int p = 1) const
+  {
+    if (empty() || t < 0 || t > t_max()) { return Tangent<G>::Zero(); }
+
+    const auto istar = find_idx(t);
+
+    const double ta = istar == 0 ? 0 : end_t_[istar - 1];
+    const double T  = end_t_[istar] - ta;
+
+    const double Del = seg_Del_[istar];
+    const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
+
+    return evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, p)
+         * std::pow(Del / T, p);
+  }
+
+  /**
    * @brief Get approximate arclength traversed at time T.
    *
    * The arclength is defined as

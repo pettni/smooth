@@ -138,7 +138,7 @@ TEST(FitCurve, Basic)
     smooth::SO3d::Random(),
   };
 
-  auto c = smooth::fit_curve<3, smooth::SO3d>(ts, gs);
+  auto c = smooth::fit_curve<smooth::SplineType::NaturalCubic, smooth::SO3d>(ts, gs);
 
   ASSERT_DOUBLE_EQ(c.t_min(), 0);
   ASSERT_DOUBLE_EQ(c.t_max(), 3);
