@@ -154,11 +154,11 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
   // The i:th derivative at zero is equal to U[:, i]' * B * alpha
 
   const std::size_t N_coef = (K + 1) * N;
-  const std::size_t N_eq   = ss.LeftDeg.size()                            //
-                         + N                                              //
-                         + (SS::InnCnt >= 0 ? N : 0)                      //
-                         + (SS::InnCnt > 0 ? (N - 1) * (SS::InnCnt) : 0)  //
-                         + ss.RghtDeg.size();
+  const std::size_t N_eq   = ss.LeftDeg.size()                            // left endpoint
+                         + N                                              // value
+                         + (SS::InnCnt >= 0 ? N : 0)                      // value continuity
+                         + (SS::InnCnt > 0 ? (N - 1) * (SS::InnCnt) : 0)  // derivative continuity
+                         + ss.RghtDeg.size();                             // right endpiont
 
   assert(N_coef >= N_eq);
 
