@@ -42,63 +42,59 @@ template<typename T>
 concept SplineSpec = requires(T t)
 {
   // clang-format off
+  { T::Degree } -> std::convertible_to<int>;
   { T::OptDeg } -> std::convertible_to<int>;
   { T::InnCnt } -> std::convertible_to<int>;
+  { t.LeftDeg };
+  { t.RghtDeg };
   // clang-format on
 };
 
+template<LieGroup G>
 struct PiecewiseConstant
 {
+  static constexpr int Degree = 0;
   static constexpr int OptDeg = -1;
   static constexpr int InnCnt = -1;
 
   static constexpr std::array<int, 0> LeftDeg{};
-  std::array<double, 0> left_values{};
-
   static constexpr std::array<int, 0> RghtDeg{};
-  std::array<double, 0> rght_values{};
+  std::array<Tangent<G>, 0> left_values{};
+  std::array<Tangent<G>, 0> rght_values{};
 };
 
+template<LieGroup G>
 struct PiecewiseLinear
 {
+  static constexpr int Degree = 1;
   static constexpr int OptDeg = -1;
   static constexpr int InnCnt = 0;
 
   static constexpr std::array<int, 0> LeftDeg{};
-  std::array<double, 0> left_values{};
-
   static constexpr std::array<int, 0> RghtDeg{};
-  std::array<double, 0> rght_values{};
+  std::array<Tangent<G>, 0> left_values{};
+  std::array<Tangent<G>, 0> rght_values{};
 };
 
-struct FixedVelCubic
+template<LieGroup G, std::size_t P = 2>
+struct FixedDerCubic
 {
+  static constexpr int Degree = 3;
   static constexpr int OptDeg = -1;
   static constexpr int InnCnt = 2;
 
-  static constexpr std::array<int, 1> LeftDeg{1};
-  std::array<double, 1> left_values{0};
+  static constexpr std::array<int, 1> LeftDeg{P};
+  std::array<Tangent<G>, 1> left_values{Tangent<G>::Zero()};
 
-  static constexpr std::array<int, 1> RghtDeg{1};
-  std::array<double, 1> rght_values{0};
+  static constexpr std::array<int, 1> RghtDeg{P};
+  std::array<Tangent<G>, 1> rght_values{Tangent<G>::Zero()};
 };
 
-struct NaturalCubic
+template<LieGroup G, std::size_t K = 6, std::size_t O = 3, std::size_t P = 3>
+struct MinDerivative
 {
-  static constexpr int OptDeg = -1;
-  static constexpr int InnCnt = 2;
-
-  static constexpr std::array<int, 1> LeftDeg{2};
-  std::array<double, 1> left_values{0};
-
-  static constexpr std::array<int, 1> RghtDeg{2};
-  std::array<double, 1> rght_values{0};
-};
-
-template<std::size_t P = 3>
-struct FixedDerivative
-{
-  static constexpr int OptDeg = P;
+  static constexpr int Degree = K;
+  static constexpr int OptDeg = O;
   static constexpr int InnCnt = P;
 
   static constexpr std::array<int, P - 1> LeftDeg = []() {
@@ -112,14 +108,14 @@ struct FixedDerivative
     return ret;
   }();
 
-  std::array<double, P - 1> left_values = []() {
-    std::array<double, P - 1> ret;
-    ret.fill(0);
+  std::array<Tangent<G>, P - 1> left_values = []() {
+    std::array<Tangent<G>, P - 1> ret;
+    ret.fill(Tangent<G>::Zero());
     return ret;
   }();
-  std::array<double, P - 1> rght_values = []() {
-    std::array<double, P - 1> ret;
-    ret.fill(0);
+  std::array<Tangent<G>, P - 1> rght_values = []() {
+    std::array<Tangent<G>, P - 1> ret;
+    ret.fill(Tangent<G>::Zero());
     return ret;
   }();
 };
@@ -133,6 +129,42 @@ constexpr int max_deriv()
   for (const auto & x : SS::RghtDeg) { max_deriv = std::max(max_deriv, x); }
 
   return max_deriv;
+}
+
+template<SplineSpec T>
+struct extract;
+
+template<template<LieGroup, std::size_t...> typename T, LieGroup G, std::size_t... Is>
+struct extract<T<G, Is...>>
+{
+  using group = G;
+};
+
+template<SplineSpec T, LieGroup Gnew>
+struct rebind;
+
+template<template<LieGroup, std::size_t...> typename T,
+  LieGroup Gold,
+  LieGroup Gnew,
+  std::size_t... Is>
+struct rebind<T<Gold, Is...>, Gnew>
+{
+  using type = T<Gnew, Is...>;
+};
+
+template<SplineSpec SS>
+auto ss_project(const SS & ss, int k)
+{
+  using Scalar = Scalar<typename extract<SS>::group>;
+
+  typename rebind<SS, Scalar>::type ret;
+  for (auto i = 0u; i < ss.LeftDeg.size(); ++i) {
+    ret.left_values[i] = ss.left_values[i].template segment<1>(k);
+  }
+  for (auto i = 0u; i < ss.RghtDeg.size(); ++i) {
+    ret.rght_values[i] = ss.rght_values[i].template segment<1>(k);
+  }
+  return ret;
 }
 
 /**
@@ -153,7 +185,7 @@ constexpr int max_deriv()
  * \f]
  * where \f$ \delta t \f$ is the i:th member of dt_r.
  */
-template<std::size_t K, SplineSpec SS, std::ranges::range Rt, std::ranges::range Rx>
+template<SplineSpec SS, std::ranges::range Rt, std::ranges::range Rx>
   requires(std::is_same_v<std::ranges::range_value_t<Rt>, std::ranges::range_value_t<Rx>>)
 Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS{})
 {
@@ -163,6 +195,7 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
   //   [ x0 x1   ...   Xn ]
   // where p_i(t) = \sum_k x_i[k] * b_{i,k}(t) defines p on [tvec(i), tvec(i+1)]
 
+  static constexpr auto K = SS::Degree;
   static constexpr auto D = max_deriv<SS>();
 
   static_assert(K >= D, "K >= D");
@@ -202,7 +235,7 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
   // curve beg constraints
   for (auto i = 0u; i < ss.LeftDeg.size(); ++i) {
     A.row(M).segment(0, K + 1) = U0tB.row(ss.LeftDeg[i]);
-    b(M++)                     = ss.left_values[i];
+    b(M++)                     = ss.left_values[i].x();
   }
 
   auto it_dt = std::ranges::begin(dt_r);
@@ -231,7 +264,7 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
   // curve end derivative zero constraints
   for (auto i = 0u; i < ss.RghtDeg.size(); ++i) {
     A.row(M).segment((K + 1) * (N - 1), K + 1) = U1tB.row(ss.RghtDeg[i]);
-    b(M++)                                     = ss.rght_values[i];
+    b(M++)                                     = ss.rght_values[i].x();
   }
 
   if constexpr (SS::OptDeg < 0) {
@@ -285,15 +318,6 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
   }
 }
 
-enum class SplineType {
-  PiecewiseConstant,
-  PiecewiseLinear,
-  FixedVelCubic,
-  NaturalCubic,
-  MinJerk,
-  MinSnap
-};
-
 /**
  * @brief Fit a Curve to given points.
  *
@@ -301,27 +325,17 @@ enum class SplineType {
  * @tparam K Curve degree
  * @param ts range of times
  * @param gs range of values
- * @param va boundary constraint 1
- * @param vb boundary constraint 2
  * @return curve c s.t. c(t_i) = g_i for (t_i, g_i) \in zip(ts, gs)
  */
-template<SplineType ST, LieGroup G, std::ranges::range Rt, std::ranges::range Rg>
-auto fit_curve(const Rt & ts,
-  const Rg & gs,
-  const Tangent<G> & va = Tangent<G>::Zero(),
-  const Tangent<G> & vb = Tangent<G>::Zero())
+template<std::ranges::range Rt, std::ranges::range Rg, SplineSpec SS>
+auto fit_curve(const Rt & ts, const Rg & gs, const SS & ss)
 {
   using namespace std::views;
 
-  const std::size_t N = std::min(std::ranges::size(ts), std::ranges::size(gs));
-  const std::size_t K = [&]() {
-    if constexpr (ST == SplineType::PiecewiseConstant) { return 0; }
-    if constexpr (ST == SplineType::PiecewiseLinear) { return 1; }
-    if constexpr (ST == SplineType::FixedVelCubic) { return 3; }
-    if constexpr (ST == SplineType::NaturalCubic) { return 3; }
-    if constexpr (ST == SplineType::MinJerk) { return 5; }
-    if constexpr (ST == SplineType::MinSnap) { return 6; }
-  }();
+  const auto N     = std::min(std::ranges::size(ts), std::ranges::size(gs));
+
+  constexpr auto K = SS::Degree;
+  using G = typename extract<SS>::group;
 
   assert(N >= 2);
 
@@ -336,28 +350,8 @@ auto fit_curve(const Rt & ts,
   Eigen::Matrix<double, Dof<G>, -1> V(Dof<G>, (N - 1) * (K + 1));
 
   for (auto k = 0u; k < Dof<G>; ++k) {
-    const auto tf = [k](const auto & v) { return v(k); };
-
-    if constexpr (ST == SplineType::PiecewiseConstant) {
-      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), PiecewiseConstant{});
-    }
-    if constexpr (ST == SplineType::PiecewiseLinear) {
-      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), PiecewiseLinear{});
-    }
-    if constexpr (ST == SplineType::FixedVelCubic) {
-      FixedVelCubic c{.left_values = {va(k)}, .rght_values = {vb(k)}};
-      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), c);
-    }
-    if constexpr (ST == SplineType::NaturalCubic) {
-      NaturalCubic c{.left_values = {va(k)}, .rght_values = {vb(k)}};
-      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), c);
-    }
-    if constexpr (ST == SplineType::MinJerk) {
-      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), FixedDerivative<3>{});
-    }
-    if constexpr (ST == SplineType::MinSnap) {
-      V.row(k) = fit_poly_1d<K>(dts, dgs | transform(tf), FixedDerivative<4>{});
-    }
+    const auto ss_proj = ss_project(ss, k);
+    V.row(k) = fit_poly_1d(dts, dgs | transform([k](const auto & v) { return v(k); }), ss_proj);
   }
 
   Curve<K, G> ret;

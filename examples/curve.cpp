@@ -44,14 +44,16 @@ int main(int, char const **)
   std::srand(100);
 
   std::vector<double> tt{1, 2, 3, 4, 5, 6};
-  std::vector<smooth::SE2d> gg{smooth::SE2d::Random(),
+  std::vector<smooth::SE2d> gg{
     smooth::SE2d::Random(),
     smooth::SE2d::Random(),
     smooth::SE2d::Random(),
     smooth::SE2d::Random(),
-    smooth::SE2d::Random()};
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+  };
 
-  Curve c = smooth::fit_curve<smooth::SplineType::FixedVelCubic, smooth::SE2d>(tt, gg);
+  Curve c = smooth::fit_curve(tt, gg, smooth::FixedDerCubic<smooth::SE2d, 1>{});
   c += Curve::ConstantVelocity(Eigen::Vector3d(1.2, 0, 0), 5);
   c += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
   c += Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);

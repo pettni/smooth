@@ -50,12 +50,12 @@ int main(int, char const **)
     smooth::SE2d::Random(),
   };
 
-  const auto c0   = smooth::fit_curve<smooth::SplineType::PiecewiseConstant, G>(x, y);
-  const auto c1   = smooth::fit_curve<smooth::SplineType::PiecewiseLinear, G>(x, y);
-  const auto c3_f = smooth::fit_curve<smooth::SplineType::FixedVelCubic, G>(x, y);
-  const auto c3_n = smooth::fit_curve<smooth::SplineType::NaturalCubic, G>(x, y);
-  const auto c5   = smooth::fit_curve<smooth::SplineType::MinJerk, G>(x, y);
-  const auto c6   = smooth::fit_curve<smooth::SplineType::MinSnap, G>(x, y);
+  const auto c0   = smooth::fit_curve(x, y, smooth::PiecewiseConstant<G>{});
+  const auto c1   = smooth::fit_curve(x, y, smooth::PiecewiseLinear<G>{});
+  const auto c3_f = smooth::fit_curve(x, y, smooth::FixedDerCubic<G, 1>{});
+  const auto c3_n = smooth::fit_curve(x, y, smooth::FixedDerCubic<G, 2>{});
+  const auto c5   = smooth::fit_curve(x, y, smooth::MinDerivative<G, 6, 3, 4>{});
+  const auto c6   = smooth::fit_curve(x, y, smooth::MinDerivative<G, 6, 4, 4>{});
 
 #ifdef ENABLE_PLOTTING
   std::vector<double> tt = matplot::linspace(-1, 6, 500);
@@ -73,7 +73,7 @@ int main(int, char const **)
   matplot::title("Values");
   matplot::legend({"c0", "c1", "c3_f", "c3_n", "min_jerk", "min_snap"});
 
-  for (int p = 1; p <= 2; ++p) {
+  for (int p = 1; p <= 4; ++p) {
     matplot::figure();
     matplot::hold(matplot::on);
     // clang-format off

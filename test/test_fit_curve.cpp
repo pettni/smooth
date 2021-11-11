@@ -34,7 +34,9 @@ TEST(FitCurve, OneDim)
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{1, 2};
 
-  const auto coefs = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
+  smooth::MinDerivative<double, K, 3> ss{};
+
+  const auto coefs = smooth::fit_poly_1d(dtvec, dxvec, ss);
 
   double f1_0 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
     coefs.segment(0, K + 1), 0);
@@ -78,7 +80,8 @@ TEST(FitCurve, MinJerk5)
   std::vector<double> dtvec{1.5};
   std::vector<double> dxvec{2.5};
 
-  const auto alpha = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
+  smooth::MinDerivative<double, K, 3> ss{};
+  const auto alpha = smooth::fit_poly_1d(dtvec, dxvec, ss);
 
   constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, double, K>();
   Eigen::MatrixXd M =
@@ -100,7 +103,9 @@ TEST(FitCurve, MinJerk6)
 
   std::vector<double> dtvec{1.5};
   std::vector<double> dxvec{2.5};
-  const auto alpha = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
+
+  smooth::MinDerivative<double, K, 3> ss{};
+  const auto alpha = smooth::fit_poly_1d(dtvec, dxvec, ss);
 
   constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, double, K>();
   Eigen::MatrixXd M =
@@ -119,11 +124,10 @@ TEST(FitCurve, MinJerk6)
 
 TEST(FitCurve, Minimize)
 {
-  static constexpr auto K = 6;
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{0, 0};
 
-  const auto alpha = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
+  const auto alpha = smooth::fit_poly_1d(dtvec, dxvec, smooth::FixedDerCubic<double>{});
   ASSERT_LE(alpha.norm(), 1e-8);
 }
 
@@ -138,7 +142,7 @@ TEST(FitCurve, Basic)
     smooth::SO3d::Random(),
   };
 
-  auto c = smooth::fit_curve<smooth::SplineType::NaturalCubic, smooth::SO3d>(ts, gs);
+  auto c = smooth::fit_curve(ts, gs, smooth::FixedDerCubic<smooth::SO3d>{});
 
   ASSERT_DOUBLE_EQ(c.t_min(), 0);
   ASSERT_DOUBLE_EQ(c.t_max(), 3);
