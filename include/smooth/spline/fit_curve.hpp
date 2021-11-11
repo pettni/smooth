@@ -179,7 +179,7 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
   auto it_dt = std::ranges::begin(dt_r);
   auto it_dx = std::ranges::begin(dx_r);
 
-  for (auto i = 0u; i < N; ++i) {
+  for (auto i = 0u; i < N; ++i, ++it_dt, ++it_dx) {
     // interval beg + end constraint
     A(M, i * (K + 1)) = 1;
     b(M++)            = 0;
@@ -197,9 +197,6 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
         b(M++)                                     = 0;
       }
     }
-
-    ++it_dt;
-    ++it_dx;
   }
 
   // curve end derivative zero constraints

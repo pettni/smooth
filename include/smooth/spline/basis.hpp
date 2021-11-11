@@ -116,10 +116,10 @@ constexpr utils::StaticMatrix<Scalar, N + 1, N + 1> bernstein_coefmat()
 }  // namespace detail
 
 /// @brief Polynomial basis types.
-enum class PolynomialBasis { Bernstein, Bspline };
+enum class PolynomialBasis { Monomial, Bernstein, Bspline };
 
 /**
- * @brief Coefficient matrix for given basis.
+ * @brief Compile-time coefficient matrix for given basis.
  *
  * Returns a row-major matrix B s.t. a polynomial
  * \f[
@@ -130,12 +130,17 @@ enum class PolynomialBasis { Bernstein, Bspline };
  *   p(x)
  *   = \begin{bmatrix} 1 \\ x \\ \vdots \\ x^K \end{bmatrix}
  *     B
- *     \begin{bmatrix} \nu_0 \\ \vdots \\ \nu_K \end{bmatrix}
+ *     \begin{bmatrix} \beta_0 \\ \vdots \\ \\beta_K \end{bmatrix}
  * \]
  */
 template<PolynomialBasis Basis, typename Scalar, std::size_t K>
 constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> basis_coefmat()
 {
+  if constexpr (Basis == PolynomialBasis::Monomial) {
+    utils::StaticMatrix<Scalar, K + 1, K + 1> ret;
+    for (auto k = 0u; k <= K; ++k) { ret[k][k] = k; }
+    return ret;
+  }
   if constexpr (Basis == PolynomialBasis::Bernstein) {
     return detail::bernstein_coefmat<double, K>();
   }
