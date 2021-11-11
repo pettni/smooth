@@ -38,15 +38,13 @@
 #include "smooth/internal/utils.hpp"
 
 #include "bezier.hpp"
-#include "dubins.hpp"
 
 namespace smooth {
 
 /**
  * @brief Single-parameter Lie group-valued function.
  *
- * A Curve is a continuous function \f$ x : \mathbb{R} \rightarrow \mathbb{G} \f$ defined on an
- * interval \f$ [0, T] \f$ such that \f$ x(0) = e \f$.
+ * A Curve is a continuous function \f$ x : [0, T] \rightarrow \mathbb{G} \f$.
  *
  * Internally a Curve is a piecewise function of TangentBezier segments.
  */
@@ -54,32 +52,40 @@ template<std::size_t K, LieGroup G>
 class Curve
 {
 public:
-  Curve() : end_t_{}, end_g_{}, vs_{}, seg_T0_{}, seg_Del_{} {}
+  /**
+   * @brief Default constructor creates an empty curve starting at a given point.
+   * @param ga curve starting point (defaults to identity)
+   */
+  Curve(const G & ga = Identity<G>()) : g0_{ga}, end_t_{}, end_g_{}, Vs_{}, seg_T0_{}, seg_Del_{} {}
 
   /**
    * @brief Create Curve with one segment and given velocity control points
    *
    * @param T duration (must be strictly positive)
-   * @param vs velocities for segment
+   * @param V velocities for segment
+   * @param ga curve starting point (defaults to identity)
    */
-  Curve(double T, Eigen::Matrix<double, Dof<G>, K + 1> && vs)
-      : end_t_{T}, vs_{std::move(vs)}, seg_T0_{0}, seg_Del_{1}
+  Curve(double T, Eigen::Matrix<double, Dof<G>, K + 1> && V, const G & ga = Identity<G>())
+      : g0_{ga}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
 
     end_g_.resize(1);
-    end_g_[0] = operator()(T);
+    end_g_[0] = composition(ga,
+      ::smooth::exp<G>(
+        evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[0].colwise(), 1, 0)));
   }
 
   /**
    * @brief Create Curve with one segment and given velocity control points
    *
    * @param T duration (must be strictly positive)
-   * @param vs velocities for segment
+   * @param V velocities for segment
+   * @param ga curve starting point (defaults to identity)
    */
   template<typename Derived>
-  Curve(double T, const Eigen::MatrixBase<Derived> & vs)
-      : Curve(T, Eigen::Matrix<double, Dof<G>, K + 1>(vs))
+  Curve(double T, const Eigen::MatrixBase<Derived> & V, const G & ga = Identity<G>())
+      : Curve(T, Eigen::Matrix<double, Dof<G>, K + 1>(V), ga)
   {}
 
   /**
@@ -87,22 +93,26 @@ public:
    *
    * @param T duration (must be strictly positive)
    * @param vs velocity constants (must be of size K)
+   * @param ga curve starting point (defaults to identity)
    */
   template<std::ranges::range Rv>
     // \cond
     requires(std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
   // \endcond
-  Curve(double T, const Rv & vs) : end_t_{T}, seg_T0_{0}, seg_Del_{1}
+  Curve(double T, const Rv & vs, const G & ga = Identity<G>())
+      : g0_(ga), end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
     assert(std::ranges::size(vs) == K);
 
-    vs_.resize(1);
-    vs_[0].col(0).setZero();
-    for (auto i = 1u; const auto & v : vs) { vs_[0].col(i++) = v; }
+    Vs_.resize(1);
+    Vs_[0].col(0).setZero();
+    for (auto i = 1u; const auto & v : vs) { Vs_[0].col(i++) = v; }
 
     end_g_.resize(1);
-    end_g_[0] = operator()(T);
+    end_g_[0] = composition(ga,
+      ::smooth::exp<G>(
+        evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[0].colwise(), 1, 0)));
   }
 
   /// @brief Copy constructor
@@ -128,13 +138,14 @@ public:
    *   x(t) = \exp( (t / T) \log(g) ), \quad t \in [0, T].
    * \f]
    *
-   * @param g target state
+   * @param g curve target point
    * @param T duration (must be positive)
+   * @param ga curve starting point
    */
-  static Curve ConstantVelocityGoal(const G & g, double T = 1)
+  static Curve ConstantVelocityGoal(const G & g, double T = 1, const G & ga = Identity<G>())
   {
     assert(T > 0);
-    return ConstantVelocity(::smooth::log(g) / T, T);
+    return ConstantVelocity((g - ga) / T, T, ga);
   }
 
   /**
@@ -147,42 +158,48 @@ public:
    *
    * @param v body velocity
    * @param T duration
+   * @param ga curve starting point
    */
-  static Curve ConstantVelocity(const Tangent<G> & v, double T = 1)
+  static Curve ConstantVelocity(const Tangent<G> & v, double T = 1, const G & ga = Identity<G>())
   {
     if (T <= 0) {
       return Curve();
     } else {
-      constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+      static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
       Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
       Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
       rhs.row(1)                               = T * v;
 
       Eigen::Matrix<double, Dof<G>, K + 1> V = B.lu().solve(rhs).transpose();
-      return Curve(T, std::move(V));
+      return Curve(T, std::move(V), ga);
     }
   }
 
   /**
    * @brief Create Curve with a given start and end velocities, and a given end position.
    *
-   * @param gb end position
+   * @param gb curve target point
    * @param va, vb start and end velocities
    * @param T duration
+   * @param ga curve starting point
    */
-  static Curve FixedCubic(const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T = 1)
+  static Curve FixedCubic(const G & gb,
+    const Tangent<G> & va,
+    const Tangent<G> & vb,
+    double T     = 1,
+    const G & ga = Identity<G>())
     // \cond
     requires(K >= 3)
   // \endcond
   {
-    constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
-    constexpr auto U0_s  = monomial_derivative<double, K>(0, 0);
-    constexpr auto U1_s  = monomial_derivative<double, K>(1, 0);
-    constexpr auto dU0_s = monomial_derivative<double, K>(0, 1);
-    constexpr auto dU1_s = monomial_derivative<double, K>(1, 1);
+    static constexpr auto U0_s  = monomial_derivative<double, K>(0, 0);
+    static constexpr auto U1_s  = monomial_derivative<double, K>(1, 0);
+    static constexpr auto dU0_s = monomial_derivative<double, K>(0, 1);
+    static constexpr auto dU1_s = monomial_derivative<double, K>(1, 1);
 
     Eigen::Matrix<double, K + 1, K + 1> lhs  = Eigen::Matrix<double, K + 1, K + 1>::Zero();
     Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
@@ -192,41 +209,14 @@ public:
     lhs.row(1) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU0_s.data()).transpose() * B;
     rhs.row(1) = T * va;
     lhs.row(2) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U1_s.data()).transpose() * B;
-    rhs.row(2) = log(gb);
+    rhs.row(2) = gb - ga;
     lhs.row(3) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU1_s.data()).transpose() * B;
     rhs.row(3) = T * vb;
 
     for (auto i = 4u; i < K + 1; ++i) { lhs.row(i) = Eigen::Matrix<double, 1, K + 1>::Unit(i) * B; }
 
     Eigen::Matrix<double, Dof<G>, K + 1> V = lhs.lu().solve(rhs).transpose();
-    return Curve(T, std::move(V));
-  }
-
-  /**
-   * @brief Create Curve with a given start and end velocities, and a given end position.
-   *
-   * @param gb end position
-   * @param R turning radius
-   */
-  static Curve Dubins(const G & gb, double R = 1)
-    // \cond
-    requires(std::is_base_of_v<smooth::SE2Base<G>, G>)
-  // \endcond
-  {
-    const auto desc = dubins(gb, R);
-
-    Curve ret;
-    for (auto i = 0u; i != 3; ++i) {
-      const auto & [c, l] = desc[i];
-      if (c == DubinsSegment::Left) {
-        ret += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1. / R), R * l);
-      } else if (c == DubinsSegment::Right) {
-        ret += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, -1. / R), R * l);
-      } else {
-        ret += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), l);
-      }
-    }
-    return ret;
+    return Curve(T, std::move(V), ga);
   }
 
   /// @brief Number of Curve segments.
@@ -246,17 +236,63 @@ public:
   }
 
   /// @brief Curve start (always equal to identity).
-  G start() const { return Identity<G>(); }
+  G start() const { return g0_; }
 
   /// @brief Curve end.
   G end() const
   {
-    if (empty()) { return Identity<G>(); }
+    if (empty()) { return g0_; }
     return end_g_.back();
   }
 
+  /// @brief Move start of curve to Identity()
+  void make_local() { g0_ = Identity<G>(); }
+
   /**
-   * @brief In-place curve concatenation.
+   * @brief In-place concatenation with a global curve.
+   *
+   * @param other Curve to append at the end of this Curve.
+   *
+   * The resulting Curve \f$ y(t) \f$ is s.t.
+   * \f[
+   *  y(t) = \begin{cases}
+   *    x_1(t)  & 0 \leq t < t_1 \\
+   *    x_2(t)  & t_1 \leq t \leq t_1 + t_2
+   *  \end{cases}
+   * \f]
+   */
+  Curve & concat_global(const Curve & other)
+  {
+    const std::size_t N1 = size();
+    const std::size_t N2 = other.size();
+
+    const double tend = t_max();
+
+    if (empty()) {
+      g0_ = other.g0_;
+    } else {
+      end_g_[N1 - 1] = other.g0_;
+    }
+
+    end_t_.resize(N1 + N2);
+    end_g_.resize(N1 + N2);
+    Vs_.resize(N1 + N2);
+    seg_T0_.resize(N1 + N2);
+    seg_Del_.resize(N1 + N2);
+
+    for (auto i = 0u; i < N2; ++i) {
+      end_t_[N1 + i]   = tend + other.end_t_[i];
+      end_g_[N1 + i]   = other.end_g_[i];
+      Vs_[N1 + i]      = other.Vs_[i];
+      seg_T0_[N1 + i]  = other.seg_T0_[i];
+      seg_Del_[N1 + i] = other.seg_Del_[i];
+    }
+
+    return *this;
+  }
+
+  /**
+   * @brief In-place local concatenation.
    *
    * @param other Curve to append at the end of this Curve.
    *
@@ -267,8 +303,11 @@ public:
    *    x_1(t_1) \circ x_2(t)  & t_1 \leq t \leq t_1 + t_2
    *  \end{cases}
    * \f]
+   *
+   * That is, other is considered a curve in the local frame of end(). For global concatenation see
+   * concat_global.
    */
-  Curve & operator+=(const Curve & other)
+  Curve & concat_local(const Curve & other)
   {
     std::size_t N1 = size();
     std::size_t N2 = other.size();
@@ -276,16 +315,22 @@ public:
     const double tend = t_max();
     const G gend      = end();
 
+    if (empty()) {
+      g0_ = composition(g0_, other.g0_);
+    } else {
+      end_g_.back() = composition(end_g_.back(), other.g0_);
+    }
+
     end_t_.resize(N1 + N2);
     end_g_.resize(N1 + N2);
-    vs_.resize(N1 + N2);
+    Vs_.resize(N1 + N2);
     seg_T0_.resize(N1 + N2);
     seg_Del_.resize(N1 + N2);
 
     for (auto i = 0u; i < N2; ++i) {
       end_t_[N1 + i]   = tend + other.end_t_[i];
       end_g_[N1 + i]   = composition(gend, other.end_g_[i]);
-      vs_[N1 + i]      = other.vs_[i];
+      Vs_[N1 + i]      = other.Vs_[i];
       seg_T0_[N1 + i]  = other.seg_T0_[i];
       seg_Del_[N1 + i] = other.seg_Del_[i];
     }
@@ -294,7 +339,18 @@ public:
   }
 
   /**
-   * @brief Curve concatenation.
+   * @brief Operator overload for local concatenation.
+   *
+   * @param other Curve to append at the end of this Curve.
+   *
+   * @see concat_local()
+   */
+  Curve & operator+=(const Curve & other) { return concat_local(other); }
+
+  /**
+   * @brief Local Curve concatenation.
+   *
+   * @see concat_local()
    */
   Curve operator+(const Curve & other)
   {
@@ -319,7 +375,7 @@ public:
     if (empty() || t < 0) {
       if (vel.has_value()) { vel.value().setZero(); }
       if (acc.has_value()) { acc.value().setZero(); }
-      return Identity<G>();
+      return g0_;
     }
 
     if (t > t_max()) {
@@ -336,29 +392,30 @@ public:
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
 
-    constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bernstein, double, 3>().transpose();
+    static constexpr auto M_s =
+      basis_cum_coefmat<PolynomialBasis::Bernstein, double, 3>().transpose();
     Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
-    G g0 = istar == 0 ? Identity<G>() : end_g_[istar - 1];
+    G g0 = istar == 0 ? g0_ : end_g_[istar - 1];
 
     if (vel.has_value()) {
-      *vel = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(vs_[istar].colwise(), u, 1);
+      *vel = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, 1);
       vel.value() *= Del / T;
     }
     if (acc.has_value()) {
-      *acc = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(vs_[istar].colwise(), u, 2);
+      *acc = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, 2);
       acc.value() *= Del * Del / (T * T);
     }
 
     // compensate for cropped intervals
     if (seg_T0_[istar] > 0) {
       const Tangent<G> v = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(
-        vs_[istar].colwise(), seg_T0_[istar], 0);
+        Vs_[istar].colwise(), seg_T0_[istar], 0);
       g0 = composition(g0, inverse(::smooth::exp<G>(v)));
     }
 
     const Tangent<G> v =
-      evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(vs_[istar].colwise(), u, 0);
+      evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, 0);
     return composition(g0, ::smooth::exp<G>(v));
   }
 
@@ -377,7 +434,7 @@ public:
   {
     Tangent<G> ret = Tangent<G>::Zero();
 
-    constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
     for (auto i = 0u; i < end_t_.size(); ++i) {
@@ -385,7 +442,7 @@ public:
       if (i > 0 && t <= end_t_[i - 1]) { break; }
 
       // polynomial coefficients a0 + a1 x + a2 x2 + a3 x3
-      const Eigen::Matrix<double, K + 1, Dof<G>> coefs = B * vs_[i].transpose();
+      const Eigen::Matrix<double, K + 1, Dof<G>> coefs = B * Vs_[i].transpose();
 
       const double ta = i == 0 ? 0 : end_t_[i - 1];
       const double tb = end_t_[i];
@@ -407,13 +464,20 @@ public:
    * @brief Crop curve
    *
    * @param ta, tb interval for cropped Curve
+   * @param localize make cropped curve start at identity: y(0) = I
    *
    * The resulting Curve \f$ y(t) \f$ defined on \f$ [0, t_b - t_a] \f$ is s.t.
    * \f[
    *  y(t) = x(t_a).inverse() * x(t - t_a)
    * \f]
+   * if localize = true, and
+   * \f[
+   *  y(t) = x(t - t_a)
+   * \f]
+   * otherwise.
    */
-  Curve crop(double ta, double tb = std::numeric_limits<double>::infinity()) const
+  Curve crop(
+    double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
   {
     ta = std::max<double>(ta, 0);
     tb = std::min<double>(tb, t_max());
@@ -427,7 +491,7 @@ public:
     if (Nseg >= 2 && end_t_[i0 + Nseg - 2] == tb) { --Nseg; }
 
     // state at new from beginning of curve
-    const G ga = operator()(ta);
+    G ga = operator()(ta);
 
     std::vector<double> end_t(Nseg);
     std::vector<G> end_g(Nseg);
@@ -443,7 +507,7 @@ public:
         end_t[i] = end_t_[i0 + i] - ta;
         end_g[i] = composition(inverse(ga), end_g_[i0 + i]);
       }
-      vs[i]      = vs_[i0 + i];
+      vs[i]      = Vs_[i0 + i];
       seg_T0[i]  = seg_T0_[i0 + i];
       seg_Del[i] = seg_Del_[i0 + i];
     }
@@ -472,9 +536,10 @@ public:
 
     // create new curve with appropriate body velocities
     Curve<K, G> ret;
+    ret.g0_      = localize ? Identity<G>() : std::move(ga);
     ret.end_t_   = std::move(end_t);
     ret.end_g_   = std::move(end_g);
-    ret.vs_      = std::move(vs);
+    ret.Vs_      = std::move(vs);
     ret.seg_T0_  = std::move(seg_T0);
     ret.seg_Del_ = std::move(seg_Del);
     return ret;
@@ -500,7 +565,7 @@ private:
   //
   //  - time interval:  end_t_[i-1], end_t_[i]
   //  - g interval:     end_g_[i-1], end_g_[i]
-  //  - velocities:     vs_[i]
+  //  - velocities:     Vs_[i]
   //  - crop:           seg_T0_[i], seg_Del_[i]
   //
   // s.t.
@@ -509,6 +574,9 @@ private:
   //
   //  x(t) = xu(u(t))  where xu is spline defined in [0, 1]
 
+  // curve starting point
+  G g0_;
+
   // segment end times
   std::vector<double> end_t_;
 
@@ -516,7 +584,7 @@ private:
   std::vector<G> end_g_;
 
   // segment bezier velocities
-  std::vector<Eigen::Matrix<double, Dof<G>, K + 1>> vs_;
+  std::vector<Eigen::Matrix<double, Dof<G>, K + 1>> Vs_;
 
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;

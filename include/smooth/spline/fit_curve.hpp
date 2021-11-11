@@ -28,6 +28,7 @@
 
 #include <Eigen/Cholesky>
 #include <Eigen/Core>
+#include <Eigen/LU>
 
 #include <cassert>
 #include <ranges>
@@ -223,8 +224,8 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
     // Let M = \int_{0}^1 u^{(D)} u^{(D)}' du   u : 0 -> 1, then the cost matrix P
     // is (1 / T)^{2D - 1} * B' * M * B
 
-    constexpr auto Mmat = monomial_integral_coefmat<double, K, SS::OptDeg>();
-    constexpr utils::StaticMatrix<double, K + 1, K + 1> P_s = B_s.transpose() * Mmat * B_s;
+    static constexpr auto Mmat = monomial_integral_coefmat<double, K, SS::OptDeg>();
+    static constexpr utils::StaticMatrix<double, K + 1, K + 1> P_s = B_s.transpose() * Mmat * B_s;
 
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> P(P_s[0].data());
 
@@ -243,15 +244,14 @@ Eigen::VectorXd fit_poly_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS
       H.block(i * (K + 1), i * (K + 1), K + 1, K + 1) += std::pow(dt, 1 - 2 * int(D)) * P;
       ++i;
     }
-    H.topRightCorner(N_coef, N_eq) = A.transpose();
+    H.bottomLeftCorner(N_eq, N_coef) = A;
     H.bottomRightCorner(N_eq, N_eq).setZero();
 
     Eigen::VectorXd rhs(N_coef + N_eq);
     rhs.head(N_coef).setZero();
     rhs.tail(N_eq) = b;
 
-    const Eigen::LDLT<decltype(H), Eigen::Upper> ldlt(H);
-    const Eigen::VectorXd sol = ldlt.solve(rhs);
+    const Eigen::VectorXd sol = H.ldlt().solve(rhs);
 
     return sol.head(N_coef);
   }

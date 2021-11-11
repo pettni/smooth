@@ -27,6 +27,7 @@
 
 #include "smooth/so3.hpp"
 #include "smooth/spline/curve.hpp"
+#include "smooth/spline/dubins.hpp"
 
 #include "adapted.hpp"
 
@@ -34,28 +35,57 @@ TEST(Curve, ConstantVelocity1)
 {
   Eigen::Vector3d v1 = Eigen::Vector3d::Random();
 
-  auto c1 = smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(v1, 5.);
+  {
+    auto c1 = smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(v1, 5.);
 
-  ASSERT_EQ(c1.t_min(), 0);
-  ASSERT_EQ(c1.t_max(), 5);
+    ASSERT_EQ(c1.t_min(), 0);
+    ASSERT_EQ(c1.t_max(), 5);
 
-  ASSERT_TRUE(c1.start().isApprox(smooth::SO3d::Identity()));
-  ASSERT_TRUE(c1.end().isApprox(smooth::SO3d::exp(5 * v1)));
+    ASSERT_TRUE(c1.start().isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(c1.end().isApprox(smooth::SO3d::exp(5 * v1)));
 
-  smooth::SO3d gtest;
-  Eigen::Vector3d vtest;
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
 
-  gtest = c1(0, vtest);
-  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
-  ASSERT_TRUE(vtest.isApprox(v1));
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(vtest.isApprox(v1));
 
-  gtest = c1(2.5, vtest);
-  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(2.5 * v1)));
-  ASSERT_TRUE(vtest.isApprox(v1));
+    gtest = c1(2.5, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(2.5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
 
-  gtest = c1(5, vtest);
-  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(5 * v1)));
-  ASSERT_TRUE(vtest.isApprox(v1));
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
+  }
+
+  {
+    smooth::SO3d g0 = smooth::SO3d::Random();
+
+    auto c1 = smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(v1, 5., g0);
+
+    ASSERT_EQ(c1.t_min(), 0);
+    ASSERT_EQ(c1.t_max(), 5);
+
+    ASSERT_TRUE(c1.start().isApprox(g0));
+    ASSERT_TRUE(c1.end().isApprox(g0 * smooth::SO3d::exp(5 * v1)));
+
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
+
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0));
+    ASSERT_TRUE(vtest.isApprox(v1));
+
+    gtest = c1(2.5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0 * smooth::SO3d::exp(2.5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
+
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0 * smooth::SO3d::exp(5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
+  }
 }
 
 TEST(Curve, ConstantVelocity2)
@@ -96,25 +126,43 @@ TEST(Curve, ConstantVelocity2)
 
 TEST(Curve, FixedCubic)
 {
-  smooth::SO3d g;
-  g.setRandom();
+  smooth::SO3d g0, g1;
+  g0.setRandom();
+  g1.setRandom();
 
   Eigen::Vector3d v1, v2;
   v1.setRandom();
   v2.setRandom();
 
-  auto c1 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
+  {
+    auto c1 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g1, v1, v2, 5.);
 
-  smooth::SO3d gtest;
-  Eigen::Vector3d vtest;
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
 
-  gtest = c1(0, vtest);
-  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
-  ASSERT_TRUE(vtest.isApprox(v1));
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(vtest.isApprox(v1));
 
-  gtest = c1(5, vtest);
-  ASSERT_TRUE(gtest.isApprox(g));
-  ASSERT_TRUE(vtest.isApprox(v2));
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g1));
+    ASSERT_TRUE(vtest.isApprox(v2));
+  }
+
+  {
+    auto c1 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g1, v1, v2, 5., g0);
+
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
+
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0));
+    ASSERT_TRUE(vtest.isApprox(v1));
+
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g1));
+    ASSERT_TRUE(vtest.isApprox(v2));
+  }
 }
 
 TEST(Curve, Extend)
@@ -151,6 +199,114 @@ TEST(Curve, Extend)
     ASSERT_TRUE((c1_copy.end() * gt1).isApprox(gt2));
     ASSERT_TRUE(vt1.isApprox(vt2));
   }
+}
+
+TEST(Curve, PiecewiseConstantLocal)
+{
+  smooth::Curve<0, double> c(1);
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 1);
+
+  c.concat_local(smooth::Curve<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 2);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.001), 2);
+
+  c.concat_local(smooth::Curve<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 3);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 3);
+  ASSERT_EQ(c(1.001), 3);
+  ASSERT_EQ(c(1.999), 3);
+  ASSERT_EQ(c(2), 3);
+  ASSERT_EQ(c(2.001), 3);
+
+  c.concat_local(smooth::Curve<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 4);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 3);
+  ASSERT_EQ(c(1.999), 3);
+  ASSERT_EQ(c(2), 4);
+  ASSERT_EQ(c(2.999), 4);
+  ASSERT_EQ(c(3), 4);
+  ASSERT_EQ(c(3.001), 4);
+
+  c.concat_local(smooth::Curve<0, double>(1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 5);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 3);
+  ASSERT_EQ(c(1.999), 3);
+  ASSERT_EQ(c(2), 4);
+  ASSERT_EQ(c(2.999), 4);
+  ASSERT_EQ(c(3), 4);
+  ASSERT_EQ(c(3.001), 5);
+}
+
+TEST(Curve, PiecewiseConstantGlobal)
+{
+  smooth::Curve<0, double> c;
+  ASSERT_EQ(c.start(), 0);
+  ASSERT_EQ(c.end(), 0);
+
+  c.concat_global(smooth::Curve<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 1);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 1);
+  ASSERT_EQ(c(1.001), 1);
+
+  c.concat_global(smooth::Curve<0, double>(1, smooth::Tangent<double>::Zero(), 2));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 2);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.001), 2);
+  ASSERT_EQ(c(1.999), 2);
+  ASSERT_EQ(c(2), 2);
+  ASSERT_EQ(c(2.001), 2);
+
+  c.concat_global(smooth::Curve<0, double>(1, smooth::Tangent<double>::Zero(), 3));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 3);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.999), 2);
+  ASSERT_EQ(c(2), 3);
+  ASSERT_EQ(c(2.999), 3);
+  ASSERT_EQ(c(3), 3);
+  ASSERT_EQ(c(3.001), 3);
+
+  c.concat_global(smooth::Curve<0, double>(4));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 4);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.999), 2);
+  ASSERT_EQ(c(2), 3);
+  ASSERT_EQ(c(2.999), 3);
+  ASSERT_EQ(c(3), 3);
+  ASSERT_EQ(c(3.001), 4);
 }
 
 TEST(Curve, CropSingle)
@@ -379,7 +535,7 @@ TEST(Curve, Dubins)
   });
 
   for (auto & [target, length] : dubins_pbms) {
-    const auto c = smooth::CubicCurve<smooth::SE2d>::Dubins(target);
+    const auto c = smooth::dubins_curve<3>(target);
     ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
     ASSERT_TRUE(c.end().isApprox(target));
     ASSERT_NEAR(c.t_max(), length, 1e-8);
@@ -388,7 +544,7 @@ TEST(Curve, Dubins)
   // same with double radius
   for (auto & [target, length] : dubins_pbms) {
     smooth::SE2d scaled_target(target.so2(), 2 * target.r2());
-    const auto c = smooth::CubicCurve<smooth::SE2d>::Dubins(scaled_target, 2);
+    const auto c = smooth::dubins_curve<3>(scaled_target, 2);
     ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
     ASSERT_TRUE(c.end().isApprox(scaled_target));
     ASSERT_NEAR(c.t_max(), 2 * length, 1e-8);

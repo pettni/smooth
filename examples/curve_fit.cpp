@@ -47,7 +47,7 @@ int main(int, char const **)
   std::partial_sum(dt_v.begin(), dt_v.end(), std::back_inserter(t_v));
   std::partial_sum(dx_v.begin(), dx_v.end(), std::back_inserter(x_v));
 
-  const auto coefs = smooth::fit_poly_1d<K, D>(dt_v, dx_v);
+  const auto coefs = smooth::fit_poly_1d<K>(dt_v, dx_v, smooth::FixedDerivative<4>{});
 
   const auto f = [&](double t, int d) {
     const auto i = std::distance(t_v.cbegin(), smooth::utils::binary_interval_search(t_v, t));
