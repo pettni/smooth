@@ -50,7 +50,7 @@ namespace smooth {
  *
  * Internally a Curve is a piecewise function of TangentBezier segments.
  */
-template<LieGroup G, std::size_t K = 3>
+template<std::size_t K, LieGroup G>
 class Curve
 {
 public:
@@ -70,6 +70,17 @@ public:
     end_g_.resize(1);
     end_g_[0] = operator()(T);
   }
+
+  /**
+   * @brief Create Curve with one segment and given velocity control points
+   *
+   * @param T duration (must be strictly positive)
+   * @param vs velocities for segment
+   */
+  template<typename Derived>
+  Curve(double T, const Eigen::MatrixBase<Derived> & vs)
+      : Curve(T, Eigen::Matrix<double, Dof<G>, K + 1>(vs))
+  {}
 
   /**
    * @brief Create Curve with one segment and given velocities
@@ -216,11 +227,11 @@ public:
     for (auto i = 0u; i != 3; ++i) {
       const auto & [c, l] = desc[i];
       if (c == DubinsSegment::Left) {
-        ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1. / R), R * l);
+        ret += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1. / R), R * l);
       } else if (c == DubinsSegment::Right) {
-        ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, -1. / R), R * l);
+        ret += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, -1. / R), R * l);
       } else {
-        ret *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), l);
+        ret += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 0), l);
       }
     }
     return ret;
@@ -265,7 +276,7 @@ public:
    *  \end{cases}
    * \f]
    */
-  Curve & operator*=(const Curve & other)
+  Curve & operator+=(const Curve & other)
   {
     std::size_t N1 = size();
     std::size_t N2 = other.size();
@@ -293,10 +304,10 @@ public:
   /**
    * @brief Curve concatenation.
    */
-  Curve operator*(const Curve & other)
+  Curve operator+(const Curve & other)
   {
     Curve ret = *this;
-    ret *= other;
+    ret += other;
     return ret;
   }
 
@@ -468,7 +479,7 @@ public:
     }
 
     // create new curve with appropriate body velocities
-    Curve<G> ret;
+    Curve<K, G> ret;
     ret.end_t_   = std::move(end_t);
     ret.end_g_   = std::move(end_g);
     ret.vs_      = std::move(vs);
@@ -602,7 +613,7 @@ private:
  * resulting velocities will be lower than the desired values.
  */
 template<LieGroup G>
-Reparameterization reparameterize_curve(const Curve<G> & curve,
+Reparameterization reparameterize_curve(const Curve<3, G> & curve,
   const Tangent<G> & vel_min,
   const Tangent<G> & vel_max,
   const Tangent<G> & acc_min,
@@ -735,6 +746,9 @@ Reparameterization reparameterize_curve(const Curve<G> & curve,
 
   return Reparameterization(curve.t_max(), std::move(dd));
 }
+
+template<LieGroup G>
+using CubicCurve = Curve<3, G>;
 
 }  // namespace smooth
 

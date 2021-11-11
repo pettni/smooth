@@ -34,7 +34,7 @@ TEST(Curve, ConstantVelocity1)
 {
   Eigen::Vector3d v1 = Eigen::Vector3d::Random();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::ConstantVelocity(v1, 5.);
+  auto c1 = smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(v1, 5.);
 
   ASSERT_EQ(c1.t_min(), 0);
   ASSERT_EQ(c1.t_max(), 5);
@@ -62,7 +62,7 @@ TEST(Curve, ConstantVelocity2)
 {
   smooth::SO3d g1 = smooth::SO3d::Random();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::ConstantVelocityGoal(g1, 5.);
+  auto c1 = smooth::CubicCurve<smooth::SO3d>::ConstantVelocityGoal(g1, 5.);
 
   ASSERT_EQ(c1.t_min(), 0);
   ASSERT_EQ(c1.t_max(), 5);
@@ -103,7 +103,7 @@ TEST(Curve, FixedCubic)
   v1.setRandom();
   v2.setRandom();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
+  auto c1 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
 
   smooth::SO3d gtest;
   Eigen::Vector3d vtest;
@@ -123,11 +123,11 @@ TEST(Curve, Extend)
   v1.setRandom();
   v2.setRandom();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::ConstantVelocity(v1, 2);
-  auto c2 = smooth::Curve<smooth::SO3d>::ConstantVelocity(v2, 3);
+  auto c1 = smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(v1, 2);
+  auto c2 = smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(v2, 3);
 
   auto c1_copy = c1;
-  c1 *= c2;
+  c1 += c2;
 
   ASSERT_EQ(c1.t_min(), 0);
   ASSERT_EQ(c1.t_max(), c1_copy.t_max() + c2.t_max());
@@ -162,7 +162,7 @@ TEST(Curve, CropSingle)
   v1.setRandom();
   v2.setRandom();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
+  auto c1 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
 
   // first crop
 
@@ -223,12 +223,12 @@ TEST(Curve, CropMultiple)
   v1.setRandom();
   v2.setRandom();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
+  auto c1 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
 
-  c1 *= smooth::Curve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 2);
-  c1 *= smooth::Curve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 3);
-  c1 *= smooth::Curve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 4);
-  c1 *= smooth::Curve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 5);
+  c1 += smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 2);
+  c1 += smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 3);
+  c1 += smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 4);
+  c1 += smooth::CubicCurve<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 5);
 
   ASSERT_EQ(c1.t_min(), 0);
   ASSERT_EQ(c1.t_max(), 19);
@@ -265,8 +265,8 @@ TEST(Curve, ExtendCropped)
   Eigen::Vector3d v1 = Eigen::Vector3d::Random(), v2 = Eigen::Vector3d::Random();
   Eigen::Vector3d v3 = Eigen::Vector3d::Random(), v4 = Eigen::Vector3d::Random();
 
-  auto c1 = smooth::Curve<smooth::SO3d>::FixedCubic(g1, v1, v2, 5.);
-  auto c2 = smooth::Curve<smooth::SO3d>::FixedCubic(g2, v3, v4, 5.);
+  auto c1 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g1, v1, v2, 5.);
+  auto c2 = smooth::CubicCurve<smooth::SO3d>::FixedCubic(g2, v3, v4, 5.);
 
   const auto c1_at_1 = c1(1);
   const auto c1_at_3 = c1(3);
@@ -286,7 +286,7 @@ TEST(Curve, ExtendCropped)
   ASSERT_TRUE(cc2.start().isApprox(smooth::SO3d::Identity()));
   ASSERT_TRUE(cc2.end().isApprox(c2_at_2.inverse() * c2_at_4));
 
-  auto t2 = cc1 * cc2;
+  auto t2 = cc1 + cc2;
 
   smooth::SO3d gt1, gt3;
   Eigen::Vector3d vt1, vt3;
@@ -379,7 +379,7 @@ TEST(Curve, Dubins)
   });
 
   for (auto & [target, length] : dubins_pbms) {
-    const auto c = smooth::Curve<smooth::SE2d>::Dubins(target);
+    const auto c = smooth::CubicCurve<smooth::SE2d>::Dubins(target);
     ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
     ASSERT_TRUE(c.end().isApprox(target));
     ASSERT_NEAR(c.t_max(), length, 1e-8);
@@ -388,7 +388,7 @@ TEST(Curve, Dubins)
   // same with double radius
   for (auto & [target, length] : dubins_pbms) {
     smooth::SE2d scaled_target(target.so2(), 2 * target.r2());
-    const auto c = smooth::Curve<smooth::SE2d>::Dubins(scaled_target, 2);
+    const auto c = smooth::CubicCurve<smooth::SE2d>::Dubins(scaled_target, 2);
     ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
     ASSERT_TRUE(c.end().isApprox(scaled_target));
     ASSERT_NEAR(c.t_max(), 2 * length, 1e-8);
@@ -397,10 +397,10 @@ TEST(Curve, Dubins)
 
 TEST(Curve, Reparameterize)
 {
-  smooth::Curve<smooth::SE2d> c;
-  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
-  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1));
-  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  smooth::CubicCurve<smooth::SE2d> c;
+  c += smooth::CubicCurve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  c += smooth::CubicCurve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1));
+  c += smooth::CubicCurve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
@@ -440,7 +440,7 @@ TEST(Curve, Reparameterize)
 //     smooth::SE2d::Random(),
 //     smooth::SE2d::Random()};
 
-//   smooth::Curve<smooth::SE2d> c(smooth::fit_cubic_bezier(tt, gg));
+//   smooth::CubicCurve<smooth::SE2d> c(smooth::fit_cubic_bezier(tt, gg));
 
 //   Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
@@ -470,8 +470,8 @@ TEST(Curve, Reparameterize)
 
 TEST(Curve, ReparameterizeZero)
 {
-  smooth::Curve<smooth::SE2d> c;
-  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
+  smooth::CubicCurve<smooth::SE2d> c;
+  c += smooth::CubicCurve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
@@ -500,10 +500,10 @@ TEST(Curve, ReparameterizeZero)
 
 TEST(Curve, ReparameterizeZeroMiddle)
 {
-  smooth::Curve<smooth::SE2d> c;
-  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
-  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
-  c *= smooth::Curve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  smooth::CubicCurve<smooth::SE2d> c;
+  c += smooth::CubicCurve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  c += smooth::CubicCurve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
+  c += smooth::CubicCurve<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
@@ -533,15 +533,16 @@ TEST(Curve, ReparameterizeZeroMiddle)
 
 TEST(Curve, ReparameterizeTurnInPlace)
 {
-  smooth::Curve<smooth::SE2d> c;
-  c *= smooth::Curve<smooth::SE2d>::FixedCubic(
+  smooth::CubicCurve<smooth::SE2d> c;
+  c += smooth::CubicCurve<smooth::SE2d>::FixedCubic(
     smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d::Zero()),
     Eigen::Vector3d::Zero(),
     Eigen::Vector3d::Zero());
-  c *= smooth::Curve<smooth::SE2d>::FixedCubic(smooth::SE2d(smooth::SO2d(0), Eigen::Vector2d(1, 0)),
+  c += smooth::CubicCurve<smooth::SE2d>::FixedCubic(
+    smooth::SE2d(smooth::SO2d(0), Eigen::Vector2d(1, 0)),
     Eigen::Vector3d::Zero(),
     Eigen::Vector3d::Zero());
-  c *= smooth::Curve<smooth::SE2d>::FixedCubic(
+  c += smooth::CubicCurve<smooth::SE2d>::FixedCubic(
     smooth::SE2d(smooth::SO2d(-M_PI), Eigen::Vector2d::Zero()),
     Eigen::Vector3d::Zero(),
     Eigen::Vector3d::Zero());
@@ -576,11 +577,11 @@ TEST(Curve, ReparameterizeTurnInPlace)
 
 TEST(Curve, Adapted)
 {
-  smooth::Curve<MyGroup<double>> c;
+  smooth::CubicCurve<MyGroup<double>> c;
 
-  c *= smooth::Curve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
-  c *= smooth::Curve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(0));
-  c *= smooth::Curve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
+  c += smooth::CubicCurve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
+  c += smooth::CubicCurve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(0));
+  c += smooth::CubicCurve<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
 
   auto x = c(0.5);
 
@@ -589,10 +590,10 @@ TEST(Curve, Adapted)
 
 TEST(Curve, ArcLengthConstant)
 {
-  smooth::Curve<Eigen::Vector2d> c;
-  c *= smooth::Curve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{1, 0});
-  c *= smooth::Curve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{0, 1});
-  c *= smooth::Curve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{-1, 0});
+  smooth::CubicCurve<Eigen::Vector2d> c;
+  c += smooth::CubicCurve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{1, 0});
+  c += smooth::CubicCurve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{0, 1});
+  c += smooth::CubicCurve<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{-1, 0});
 
   ASSERT_NEAR(c.arclength(c.t_max()).x(), 2, 1e-6);
   ASSERT_NEAR(c.arclength(c.t_max()).y(), 1, 1e-6);
@@ -616,7 +617,7 @@ TEST(Curve, ArcLengthNonConstant)
     Eigen::Vector2d{-2, 1},
     Eigen::Vector2d{1, -2},
   };
-  smooth::Curve<Eigen::Vector2d> c(1, vs);
+  smooth::CubicCurve<Eigen::Vector2d> c(1, vs);
 
   ASSERT_NEAR(c.arclength(c.t_max()).x(), 2.1758, 1e-4);
   ASSERT_NEAR(c.arclength(c.t_max()).y(), 2.3435, 1e-4);

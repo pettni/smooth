@@ -25,15 +25,16 @@
 
 #include <gtest/gtest.h>
 
+#include "smooth/so3.hpp"
 #include "smooth/spline/fit_curve.hpp"
 
-TEST(Interp, PassThrough)
+TEST(FitCurve, OneDim)
 {
   static constexpr auto K = 6;
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{1, 2};
 
-  const auto coefs = smooth::fit_poly_1d<K, 3>(dtvec, dxvec);
+  const auto coefs = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
 
   double f1_0 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
     coefs.segment(0, K + 1), 0);
@@ -70,13 +71,14 @@ TEST(Interp, PassThrough)
   ASSERT_NEAR(df2_1, 0, 1e-4);
 }
 
-TEST(Interp, MinJerk5)
+TEST(FitCurve, MinJerk5)
 {
   static constexpr auto K = 5;
 
   std::vector<double> dtvec{1.5};
   std::vector<double> dxvec{2.5};
-  const auto alpha = smooth::fit_poly_1d<K, 3>(dtvec, dxvec);
+
+  const auto alpha = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
 
   constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, double, K>();
   Eigen::MatrixXd M =
@@ -92,13 +94,13 @@ TEST(Interp, MinJerk5)
   ASSERT_NEAR(mon_coefs(5), dxvec[0] * 6, 1e-5);
 }
 
-TEST(Interp, MinJerk6)
+TEST(FitCurve, MinJerk6)
 {
   static constexpr auto K = 6;
 
   std::vector<double> dtvec{1.5};
   std::vector<double> dxvec{2.5};
-  const auto alpha = smooth::fit_poly_1d<K, 3>(dtvec, dxvec);
+  const auto alpha = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
 
   constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, double, K>();
   Eigen::MatrixXd M =
@@ -115,12 +117,35 @@ TEST(Interp, MinJerk6)
   ASSERT_NEAR(mon_coefs(6), 0, 1e-5);
 }
 
-TEST(Interp, Minimize)
+TEST(FitCurve, Minimize)
 {
   static constexpr auto K = 6;
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{0, 0};
 
-  const auto alpha = smooth::fit_poly_1d<K, 3>(dtvec, dxvec);
+  const auto alpha = smooth::fit_poly_1d<K>(dtvec, dxvec, smooth::FixedDerivative<3>{});
   ASSERT_LE(alpha.norm(), 1e-8);
+}
+
+TEST(FitCurve, Basic)
+{
+  std::vector<double> ts{0, 1, 1.5, 2, 3};
+  std::vector<smooth::SO3d> gs{
+    smooth::SO3d::Identity(),
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+  };
+
+  auto c = smooth::fit_curve<3, smooth::SO3d>(ts, gs);
+
+  ASSERT_DOUBLE_EQ(c.t_min(), 0);
+  ASSERT_DOUBLE_EQ(c.t_max(), 3);
+
+  ASSERT_TRUE(c(0).isApprox(gs[0], 1e-6));
+  ASSERT_TRUE(c(1).isApprox(gs[1], 1e-6));
+  ASSERT_TRUE(c(1.5).isApprox(gs[2], 1e-6));
+  ASSERT_TRUE(c(2).isApprox(gs[3], 1e-6));
+  ASSERT_TRUE(c(3).isApprox(gs[4], 1e-6));
 }
