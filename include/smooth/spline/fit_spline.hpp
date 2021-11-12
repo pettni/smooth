@@ -131,33 +131,35 @@ constexpr int max_deriv()
   return max_deriv;
 }
 
+namespace detail {
+
 template<SplineSpec T>
-struct extract;
+struct splinespec_extract;
 
 template<template<LieGroup, std::size_t...> typename T, LieGroup G, std::size_t... Is>
-struct extract<T<G, Is...>>
+struct splinespec_extract<T<G, Is...>>
 {
   using group = G;
 };
 
 template<SplineSpec T, LieGroup Gnew>
-struct rebind;
+struct splinespec_rebind;
 
 template<template<LieGroup, std::size_t...> typename T,
   LieGroup Gold,
   LieGroup Gnew,
   std::size_t... Is>
-struct rebind<T<Gold, Is...>, Gnew>
+struct splinespec_rebind<T<Gold, Is...>, Gnew>
 {
   using type = T<Gnew, Is...>;
 };
 
 template<SplineSpec SS>
-auto ss_project(const SS & ss, int k)
+auto splinespec_project(const SS & ss, std::size_t k)
 {
-  using Scalar = Scalar<typename extract<SS>::group>;
+  using Scalar = Scalar<typename splinespec_extract<SS>::group>;
 
-  typename rebind<SS, Scalar>::type ret;
+  typename splinespec_rebind<SS, Scalar>::type ret;
   for (auto i = 0u; i < ss.LeftDeg.size(); ++i) {
     ret.left_values[i] = ss.left_values[i].template segment<1>(k);
   }
@@ -166,6 +168,8 @@ auto ss_project(const SS & ss, int k)
   }
   return ret;
 }
+
+}  // namespace detail
 
 /**
  * @brief Find N degree K Bernstein polynomials p_i(t) for i = 0, ..., N s.t that satisfies
@@ -210,15 +214,13 @@ Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = 
   Eigen::Map<const Eigen::Matrix<double, D + 1, K + 1, Eigen::RowMajor>> U0tB(U0tB_s[0].data());
   Eigen::Map<const Eigen::Matrix<double, D + 1, K + 1, Eigen::RowMajor>> U1tB(U1tB_s[0].data());
 
-  // d:th derivative of Bernstein polynomial at 0 (resp. 1) is now U0tB.row(d) * x (resp.
-  // U1tB.row(d) * x), where x are the coefficients.
-
-  // The i:th derivative at zero is equal to U[:, i]' * B * alpha
+  // d:th derivative of basis polynomial at 0 (resp. 1) is now U0tB.row(d) * x (resp. U1tB.row(d) *
+  // x), where x are the coefficients.
 
   const std::size_t N_coef = (K + 1) * N;
   const std::size_t N_eq   = ss.LeftDeg.size()                            // left endpoint
-                         + N                                              // value
-                         + (SS::InnCnt >= 0 ? N : 0)                      // value continuity
+                         + N                                              // value left-segment
+                         + (SS::InnCnt >= 0 ? N : 0)                      // value rght-segment
                          + (SS::InnCnt > 0 ? (N - 1) * (SS::InnCnt) : 0)  // derivative continuity
                          + ss.RghtDeg.size();                             // right endpiont
 
@@ -226,54 +228,63 @@ Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = 
 
   // CONSTRAINT MATRICES A, b
 
-  Eigen::SparseMatrix<double> A(N_eq, N_coef);
-  Eigen::VectorXd b = Eigen::VectorXd::Zero(N_eq);
+  Eigen::SparseMatrix<double, Eigen::ColMajor> A(N_eq, N_coef);
+  Eigen::VectorX<int> A_pattern(N_coef);
+  A_pattern.head(K + 1).setConstant(1 + ss.LeftDeg.size() + (SS::InnCnt >= 0 ? 1 + SS::InnCnt : 0));
+  if (N >= 2) {
+    A_pattern.segment(K + 1, (N - 2) * (K + 1))
+      .setConstant(1 + (SS::InnCnt >= 0 ? 1 + 2 * SS::InnCnt : 0));
+  }
+  A_pattern.tail(K + 1).setConstant(1 + ss.RghtDeg.size() + (SS::InnCnt >= 0 ? 1 + SS::InnCnt : 0));
+  A.reserve(A_pattern);
 
-  // TODO pre-allocate H
+  Eigen::VectorXd b = Eigen::VectorXd::Zero(N_eq);
 
   // current inequality counter
   std::size_t M = 0;
 
-  // curve beg constraints
+  // curve beg derivative constraints
   for (auto i = 0u; i < ss.LeftDeg.size(); ++i) {
-    for (int j = 0u; j < K + 1; ++j) { A.insert(M, j) = U0tB(ss.LeftDeg[i], j); }
+    for (auto j = 0u; j < K + 1; ++j) { A.insert(M, j) = U0tB(ss.LeftDeg[i], j); }
     b(M++) = ss.left_values[i].x();
   }
 
-  auto it_dt = std::ranges::begin(dt_r);
+  // interval beg + end value constraint
   auto it_dx = std::ranges::begin(dx_r);
-
-  for (auto i = 0u; i < N; ++i, ++it_dt, ++it_dx) {
-    // interval beg + end constraint
-    A.insert(M, i * (K + 1)) = 1;
-    b(M++)                   = 0;
-
+  for (auto i = 0u; i < N; ++i, ++it_dx) {
+    for (auto j = 0; j < K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U0tB(0, j); }
+    b(M++) = 0;
     if (SS::InnCnt >= 0) {
-      A.insert(M, i * (K + 1) + K) = 1;
-      b(M++)                       = *it_dx;
-    }
-
-    // inner derivative continuity constraints
-    if (i + 1 < N) {
-      for (auto d = 1; d <= SS::InnCnt; ++d) {
-        for (auto j = 0; j < K + 1; ++j) {
-          A.insert(M, i * (K + 1) + j) = U1tB(d, j) / std::pow(*it_dt, d);
-        }
-        for (auto j = 0; j < K + 1; ++j) {
-          A.insert(M, (i + 1) * (K + 1) + j) = -U0tB(d, j) / std::pow(*(it_dt + 1), d);
-        }
-        b(M++) = 0;
-      }
+      for (auto j = 0; j < K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U1tB(0, j); }
+      b(M++) = *it_dx;
     }
   }
 
-  // curve end derivative zero constraints
+  // inner derivative continuity constraints
+  auto it_dt = std::ranges::begin(dt_r);
+  it_dx      = std::ranges::begin(dx_r);
+  for (auto k = 0u; k + 1 < N; ++k, ++it_dt, ++it_dx) {
+    for (auto d = 1; d <= SS::InnCnt; ++d) {
+      const double fac1 = 1. / std::pow(*it_dt, d);
+      const double fac2 = 1. / std::pow(*(it_dt + 1), d);
+      for (auto j = 0; j < K + 1; ++j) {
+        A.insert(M, k * (K + 1) + j)       = U1tB(d, j) * fac1;
+        A.insert(M, (k + 1) * (K + 1) + j) = -U0tB(d, j) * fac2;
+      }
+      b(M++) = 0;
+    }
+  }
+
+  // curve end derivative constraints
   for (auto i = 0u; i < ss.RghtDeg.size(); ++i) {
-    for (int j = 0u; j < K + 1; ++j) {
+    for (auto j = 0u; j < K + 1; ++j) {
       A.insert(M, (K + 1) * (N - 1) + j) = U1tB(ss.RghtDeg[i], j);
     }
     b(M++) = ss.rght_values[i].x();
   }
+
+  A.prune(1e-9);  // there are typically a lot of zeros (depends on basis)..
+  A.makeCompressed();
 
   if constexpr (SS::OptDeg < 0) {
     // No optimization, solve directly
@@ -308,7 +319,13 @@ Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = 
 
     Eigen::SparseMatrix<double> H(N_coef + N_eq, N_coef + N_eq);
 
-    // TODO pre-allocate H
+    Eigen::Matrix<int, -1, 1> H_pattern(N_coef + N_eq);
+    for (auto i = 0u; i != N_coef; ++i) {
+      H_pattern(i) = (K + 1) + A.outerIndexPtr()[i + 1] - A.outerIndexPtr()[i];
+    }
+    H_pattern.tail(N_eq).setZero();
+
+    H.reserve(H_pattern);
 
     for (auto i = 0u; const auto & dt : dt_r | std::views::take(int64_t(N))) {
       const double fac = std::pow(dt, 1 - 2 * int(D));
@@ -320,22 +337,20 @@ Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = 
       ++i;
     }
 
-    using AIter = typename Eigen::SparseMatrix<double, Eigen::ColMajor>::InnerIterator;
-
     for (auto col = 0u; col != N_coef; ++col) {
-      for (AIter it(A, col); it; ++it) { H.insert(N_coef + it.index(), col) = it.value(); }
+      for (typename decltype(A)::InnerIterator it(A, col); it; ++it) {
+        H.insert(N_coef + it.index(), col) = it.value();
+      }
     }
 
-    // H.bottomLeftCorner(N_eq, N_coef) = A;
+    H.makeCompressed();
 
     Eigen::VectorXd rhs(N_coef + N_eq);
     rhs.head(N_coef).setZero();
     rhs.tail(N_eq) = b;
 
-    Eigen::SimplicialLDLT<decltype(H), Eigen::Lower> ldlt(H);
-    const Eigen::VectorXd sol = ldlt.solve(rhs);
-
-    return sol.head(N_coef);
+    const Eigen::SimplicialLDLT<decltype(H), Eigen::Lower> ldlt(H);
+    return ldlt.solve(rhs).head(N_coef);
   }
 }
 
@@ -346,6 +361,7 @@ Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = 
  * @tparam K Spline degree
  * @param ts range of times
  * @param gs range of values
+ * @param ss spline specification
  * @return curve c s.t. c(t_i) = g_i for (t_i, g_i) \in zip(ts, gs)
  */
 template<std::ranges::range Rt, std::ranges::range Rg, SplineSpec SS>
@@ -353,9 +369,9 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
 {
   using namespace std::views;
 
-  const auto N     = std::min(std::ranges::size(ts), std::ranges::size(gs));
-  constexpr auto K = SS::Degree;
-  using G          = typename extract<SS>::group;
+  using G                 = typename detail::splinespec_extract<SS>::group;
+  static constexpr auto K = SS::Degree;
+  const auto N            = std::min(std::ranges::size(ts), std::ranges::size(gs));
 
   assert(N >= 2);
 
@@ -370,7 +386,7 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
   Eigen::Matrix<double, Dof<G>, -1> V(Dof<G>, (N - 1) * (K + 1));
 
   for (auto k = 0u; k < Dof<G>; ++k) {
-    const auto ss_proj = ss_project(ss, k);
+    const auto ss_proj = detail::splinespec_project(ss, k);
     V.row(k) = fit_spline_1d(dts, dgs | transform([k](const auto & v) { return v(k); }), ss_proj);
   }
 

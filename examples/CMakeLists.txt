@@ -1,3 +1,5 @@
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+
 add_executable(bspline bspline.cpp)
 target_link_libraries(bspline smooth)
 

@@ -92,7 +92,7 @@ int main(int, char const **)
   for (double h = -0.9; h < 0.95; h += 0.2) {
     auto xsph = r2v(phi | transform([&](double p) { return std::sqrt(1. - h * h) * std::cos(p); }));
     auto ysph = r2v(phi | transform([&](double p) { return std::sqrt(1. - h * h) * std::sin(p); }));
-    auto zsph = r2v(phi | transform([&](double p) { return h; }));
+    auto zsph = r2v(phi | transform([&](double) { return h; }));
     matplot::plot3(xsph, ysph, zsph)->line_width(0.25).color("gray");
     matplot::plot3(ysph, zsph, xsph)->line_width(0.25).color("gray");
     matplot::plot3(zsph, xsph, ysph)->line_width(0.25).color("gray");

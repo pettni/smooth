@@ -73,7 +73,7 @@ int main(int, char const **)
   matplot::title("Values");
   matplot::legend({"c0", "c1", "c3_f", "c3_n", "min_jerk", "min_snap"});
 
-  for (int p = 1; p <= 4; ++p) {
+  for (int p = 1; p <= 2; ++p) {
     matplot::figure();
     matplot::hold(matplot::on);
     // clang-format off
