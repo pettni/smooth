@@ -34,8 +34,8 @@
 
 #include <numbers>
 
-#include "curve.hpp"
 #include "smooth/se2.hpp"
+#include "spline.hpp"
 
 using namespace std::numbers;
 
@@ -252,30 +252,30 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 }
 
 /**
- * @brief Create dubins Curve.
+ * @brief Create dubins Spline.
  *
- * @tparam K degree of resulding Curve.
+ * @tparam K degree of resulding Spline.
  * @param gb end position.
  * @param R turning radius.
- * @return Curve representing a Dubins motion.
+ * @return Spline representing a Dubins motion.
  */
 template<std::size_t K>
   // \cond
   requires(K >= 1)
 // \endcond
-Curve<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
+Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
 {
   const auto desc = dubins(gb, R);
 
-  Curve<K, smooth::SE2d> ret;
+  Spline<K, smooth::SE2d> ret;
   for (auto i = 0u; i != 3; ++i) {
     const auto & [c, l] = desc[i];
     if (c == DubinsSegment::Left) {
-      ret += Curve<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1. / R), R * l);
+      ret += Spline<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1. / R), R * l);
     } else if (c == DubinsSegment::Right) {
-      ret += Curve<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, -1. / R), R * l);
+      ret += Spline<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, -1. / R), R * l);
     } else {
-      ret += Curve<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0), l);
+      ret += Spline<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0), l);
     }
   }
   return ret;

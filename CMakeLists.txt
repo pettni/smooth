@@ -140,17 +140,17 @@ if(BUILD_TESTING)
 
   # ALGO TESTS
 
+  add_executable(test_cspline test/test_cspline.cpp)
+  target_link_libraries(test_cspline PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_cspline)
+
   add_executable(test_spline test/test_spline.cpp)
   target_link_libraries(test_spline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_spline)
 
-  add_executable(test_curve test/test_curve.cpp)
-  target_link_libraries(test_curve PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_curve)
-
-  add_executable(test_fit_curve test/test_fit_curve.cpp)
-  target_link_libraries(test_fit_curve PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_fit_curve)
+  add_executable(test_fit_spline test/test_fit_spline.cpp)
+  target_link_libraries(test_fit_spline PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_fit_spline)
 
   add_executable(test_spline_basis test/test_spline_basis.cpp)
   target_link_libraries(test_spline_basis PRIVATE smooth GTest::Main)

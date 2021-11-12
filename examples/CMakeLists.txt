@@ -1,8 +1,8 @@
 add_executable(bspline bspline.cpp)
 target_link_libraries(bspline smooth)
 
-add_executable(curve curve.cpp)
-target_link_libraries(curve smooth)
+add_executable(spline_reparameterize spline_reparameterize.cpp)
+target_link_libraries(spline_reparameterize smooth)
 
 add_executable(spline_fit spline_fit.cpp)
 target_link_libraries(spline_fit smooth)
@@ -19,17 +19,14 @@ target_link_libraries(nls smooth)
 add_executable(snippets snippets.cpp)
 target_link_libraries(snippets smooth)
 
-add_executable(curve_fit curve_fit.cpp)
-target_link_libraries(curve_fit smooth)
-
 find_package(Matplot++ QUIET)
 if(${Matplot++_FOUND})
   set(CMAKE_CXX_STANDARD 20)  # thanks Matplot++
   target_compile_definitions(bspline PRIVATE ENABLE_PLOTTING)
   target_link_libraries(bspline Matplot++::matplot)
 
-  target_compile_definitions(curve PRIVATE ENABLE_PLOTTING)
-  target_link_libraries(curve Matplot++::matplot)
+  target_compile_definitions(spline_reparameterize PRIVATE ENABLE_PLOTTING)
+  target_link_libraries(spline_reparameterize Matplot++::matplot)
 
   target_compile_definitions(spline_fit PRIVATE ENABLE_PLOTTING)
   target_link_libraries(spline_fit Matplot++::matplot)
@@ -39,9 +36,6 @@ if(${Matplot++_FOUND})
 
   target_compile_definitions(odeint_diff PRIVATE ENABLE_PLOTTING)
   target_link_libraries(odeint_diff Matplot++::matplot)
-
-  target_compile_definitions(curve_fit PRIVATE ENABLE_PLOTTING)
-  target_link_libraries(curve_fit Matplot++::matplot)
 else()
   message(WARNING "Matplot++ not found, plotting disabled")
 endif()

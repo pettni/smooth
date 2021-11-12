@@ -23,12 +23,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__SPLINE__CURVE__HPP_
-#define SMOOTH__SPLINE__CURVE__HPP_
+#ifndef SMOOTH__SPLINE__SPLINE_HPP_
+#define SMOOTH__SPLINE__SPLINE_HPP_
 
 /**
  * @file
- * @brief bezier splines on lie groups.
+ * @brief Piecewise polynomial splines on lie groups.
  */
 
 #include <algorithm>
@@ -37,35 +37,39 @@
 
 #include "smooth/internal/utils.hpp"
 
-#include "bezier.hpp"
+#include "basis.hpp"
+#include "cumulative_spline.hpp"
 
 namespace smooth {
 
 /**
  * @brief Single-parameter Lie group-valued function.
  *
- * A Curve is a continuous function \f$ x : [0, T] \rightarrow \mathbb{G} \f$.
+ * @tparam Spline degree
+ * @tparam G Lie group
  *
- * Internally a Curve is a piecewise function of TangentBezier segments.
+ * A Spline is a continuous function \f$ x : [0, T] \rightarrow \mathbb{G} \f$.
+ * Internally it is a piecewise collection of TangentBezier segments.
  */
 template<std::size_t K, LieGroup G>
-class Curve
+class Spline
 {
 public:
   /**
    * @brief Default constructor creates an empty curve starting at a given point.
    * @param ga curve starting point (defaults to identity)
    */
-  Curve(const G & ga = Identity<G>()) : g0_{ga}, end_t_{}, end_g_{}, Vs_{}, seg_T0_{}, seg_Del_{} {}
+  Spline(const G & ga = Identity<G>()) : g0_{ga}, end_t_{}, end_g_{}, Vs_{}, seg_T0_{}, seg_Del_{}
+  {}
 
   /**
-   * @brief Create Curve with one segment and given velocity control points
+   * @brief Create Spline with one segment and given velocity control points
    *
    * @param T duration (must be strictly positive)
    * @param V velocities for segment
    * @param ga curve starting point (defaults to identity)
    */
-  Curve(double T, Eigen::Matrix<double, Dof<G>, K + 1> && V, const G & ga = Identity<G>())
+  Spline(double T, Eigen::Matrix<double, Dof<G>, K + 1> && V, const G & ga = Identity<G>())
       : g0_{ga}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
@@ -77,19 +81,19 @@ public:
   }
 
   /**
-   * @brief Create Curve with one segment and given velocity control points
+   * @brief Create Spline with one segment and given velocity control points
    *
    * @param T duration (must be strictly positive)
    * @param V velocities for segment
    * @param ga curve starting point (defaults to identity)
    */
   template<typename Derived>
-  Curve(double T, const Eigen::MatrixBase<Derived> & V, const G & ga = Identity<G>())
-      : Curve(T, Eigen::Matrix<double, Dof<G>, K + 1>(V), ga)
+  Spline(double T, const Eigen::MatrixBase<Derived> & V, const G & ga = Identity<G>())
+      : Spline(T, Eigen::Matrix<double, Dof<G>, K + 1>(V), ga)
   {}
 
   /**
-   * @brief Create Curve with one segment and given velocities
+   * @brief Create Spline with one segment and given velocities
    *
    * @param T duration (must be strictly positive)
    * @param vs velocity constants (must be of size K)
@@ -99,7 +103,7 @@ public:
     // \cond
     requires(std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
   // \endcond
-  Curve(double T, const Rv & vs, const G & ga = Identity<G>())
+  Spline(double T, const Rv & vs, const G & ga = Identity<G>())
       : g0_(ga), end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
@@ -116,22 +120,22 @@ public:
   }
 
   /// @brief Copy constructor
-  Curve(const Curve &) = default;
+  Spline(const Spline &) = default;
 
   /// @brief Move constructor
-  Curve(Curve &&) = default;
+  Spline(Spline &&) = default;
 
   /// @brief Copy assignment
-  Curve & operator=(const Curve &) = default;
+  Spline & operator=(const Spline &) = default;
 
   /// @brief Move assignment
-  Curve & operator=(Curve &&) = default;
+  Spline & operator=(Spline &&) = default;
 
   /// @brief Destructor
-  ~Curve() = default;
+  ~Spline() = default;
 
   /**
-   * @brief Create constant-velocity Curve that reaches a given target state.
+   * @brief Create constant-velocity Spline that reaches a given target state.
    *
    * The resulting curve is
    * \f[
@@ -142,14 +146,14 @@ public:
    * @param T duration (must be positive)
    * @param ga curve starting point
    */
-  static Curve ConstantVelocityGoal(const G & g, double T = 1, const G & ga = Identity<G>())
+  static Spline ConstantVelocityGoal(const G & g, double T = 1, const G & ga = Identity<G>())
   {
     assert(T > 0);
     return ConstantVelocity((g - ga) / T, T, ga);
   }
 
   /**
-   * @brief Create constant-velocity Curve.
+   * @brief Create constant-velocity Spline.
    *
    * The resulting curve is
    * \f[
@@ -160,10 +164,10 @@ public:
    * @param T duration
    * @param ga curve starting point
    */
-  static Curve ConstantVelocity(const Tangent<G> & v, double T = 1, const G & ga = Identity<G>())
+  static Spline ConstantVelocity(const Tangent<G> & v, double T = 1, const G & ga = Identity<G>())
   {
     if (T <= 0) {
-      return Curve();
+      return Spline();
     } else {
       static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
       Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
@@ -172,19 +176,19 @@ public:
       rhs.row(1)                               = T * v;
 
       Eigen::Matrix<double, Dof<G>, K + 1> V = B.lu().solve(rhs).transpose();
-      return Curve(T, std::move(V), ga);
+      return Spline(T, std::move(V), ga);
     }
   }
 
   /**
-   * @brief Create Curve with a given start and end velocities, and a given end position.
+   * @brief Create Spline with a given start and end velocities, and a given end position.
    *
    * @param gb curve target point
    * @param va, vb start and end velocities
    * @param T duration
    * @param ga curve starting point
    */
-  static Curve FixedCubic(const G & gb,
+  static Spline FixedCubic(const G & gb,
     const Tangent<G> & va,
     const Tangent<G> & vb,
     double T     = 1,
@@ -216,13 +220,13 @@ public:
     for (auto i = 4u; i < K + 1; ++i) { lhs.row(i) = Eigen::Matrix<double, 1, K + 1>::Unit(i) * B; }
 
     Eigen::Matrix<double, Dof<G>, K + 1> V = lhs.lu().solve(rhs).transpose();
-    return Curve(T, std::move(V), ga);
+    return Spline(T, std::move(V), ga);
   }
 
-  /// @brief Number of Curve segments.
+  /// @brief Number of Spline segments.
   std::size_t size() const { return end_t_.size(); }
 
-  /// @brief Number of Curve segments.
+  /// @brief Number of Spline segments.
   bool empty() const { return size() == 0; }
 
   /// @brief Start time of curve (always equal to zero).
@@ -235,10 +239,10 @@ public:
     return end_t_.back();
   }
 
-  /// @brief Curve start (always equal to identity).
+  /// @brief Spline start (always equal to identity).
   G start() const { return g0_; }
 
-  /// @brief Curve end.
+  /// @brief Spline end.
   G end() const
   {
     if (empty()) { return g0_; }
@@ -251,9 +255,9 @@ public:
   /**
    * @brief In-place concatenation with a global curve.
    *
-   * @param other Curve to append at the end of this Curve.
+   * @param other Spline to append at the end of this Spline.
    *
-   * The resulting Curve \f$ y(t) \f$ is s.t.
+   * The resulting Spline \f$ y(t) \f$ is s.t.
    * \f[
    *  y(t) = \begin{cases}
    *    x_1(t)  & 0 \leq t < t_1 \\
@@ -261,7 +265,7 @@ public:
    *  \end{cases}
    * \f]
    */
-  Curve & concat_global(const Curve & other)
+  Spline & concat_global(const Spline & other)
   {
     const std::size_t N1 = size();
     const std::size_t N2 = other.size();
@@ -294,9 +298,9 @@ public:
   /**
    * @brief In-place local concatenation.
    *
-   * @param other Curve to append at the end of this Curve.
+   * @param other Spline to append at the end of this Spline.
    *
-   * The resulting Curve \f$ y(t) \f$ is s.t.
+   * The resulting Spline \f$ y(t) \f$ is s.t.
    * \f[
    *  y(t) = \begin{cases}
    *    x_1(t)  & 0 \leq t \leq t_1 \\
@@ -307,7 +311,7 @@ public:
    * That is, other is considered a curve in the local frame of end(). For global concatenation see
    * concat_global.
    */
-  Curve & concat_local(const Curve & other)
+  Spline & concat_local(const Spline & other)
   {
     std::size_t N1 = size();
     std::size_t N2 = other.size();
@@ -341,26 +345,26 @@ public:
   /**
    * @brief Operator overload for local concatenation.
    *
-   * @param other Curve to append at the end of this Curve.
+   * @param other Spline to append at the end of this Spline.
    *
    * @see concat_local()
    */
-  Curve & operator+=(const Curve & other) { return concat_local(other); }
+  Spline & operator+=(const Spline & other) { return concat_local(other); }
 
   /**
-   * @brief Local Curve concatenation.
+   * @brief Local Spline concatenation.
    *
    * @see concat_local()
    */
-  Curve operator+(const Curve & other)
+  Spline operator+(const Spline & other)
   {
-    Curve ret = *this;
+    Spline ret = *this;
     ret += other;
     return ret;
   }
 
   /**
-   * @brief Evaluate Curve at given time.
+   * @brief Evaluate Spline at given time.
    *
    * @param[in] t time point to evaluate at
    * @param[out] vel output body velocity at evaluation time
@@ -420,7 +424,7 @@ public:
   }
 
   /**
-   * @brief Evaluate derivative of Curve at given time
+   * @brief Evaluate derivative of Spline at given time
    * @param t time point to evaluate at
    * @param p differentiation order (must be greater than or equal to 1)
    */
@@ -484,10 +488,10 @@ public:
   /**
    * @brief Crop curve
    *
-   * @param ta, tb interval for cropped Curve
+   * @param ta, tb interval for cropped Spline
    * @param localize make cropped curve start at identity: y(0) = I
    *
-   * The resulting Curve \f$ y(t) \f$ defined on \f$ [0, t_b - t_a] \f$ is s.t.
+   * The resulting Spline \f$ y(t) \f$ defined on \f$ [0, t_b - t_a] \f$ is s.t.
    * \f[
    *  y(t) = x(t_a).inverse() * x(t - t_a)
    * \f]
@@ -497,13 +501,13 @@ public:
    * \f]
    * otherwise.
    */
-  Curve crop(
+  Spline crop(
     double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
   {
     ta = std::max<double>(ta, 0);
     tb = std::min<double>(tb, t_max());
 
-    if (tb <= ta) { return Curve(); }
+    if (tb <= ta) { return Spline(); }
 
     const std::size_t i0 = find_idx(ta);
     std::size_t Nseg     = find_idx(tb) + 1 - i0;
@@ -556,7 +560,7 @@ public:
     }
 
     // create new curve with appropriate body velocities
-    Curve<K, G> ret;
+    Spline<K, G> ret;
     ret.g0_      = localize ? Identity<G>() : std::move(ga);
     ret.end_t_   = std::move(end_t);
     ret.end_g_   = std::move(end_g);
@@ -611,226 +615,10 @@ private:
   std::vector<double> seg_T0_, seg_Del_;
 };
 
-/**
- * @brief Spline-like object that represents a Reparameterization as a function \f$ t \rightarrow
- * s(t) \f$.
- */
-class Reparameterization
-{
-public:
-  /// @brief Reparameterization data
-  struct Data
-  {
-    /// time t
-    double t;
-    /// position s
-    double s;
-    /// ds/dt
-    double v;
-    /// d2s/dt2
-    double a;
-  };
-
-  /**
-   * @brief Create Reparameterization
-   * @param smax maximal value of \f$ s \f$.
-   * @param d data vector
-   */
-  Reparameterization(double smax, std::vector<Data> && d) : smax_(smax), d_(std::move(d)) {}
-
-  /// @brief Minimal t value
-  double t_min() const { return 0; }
-
-  /// @brief Maximal t value
-  double t_max() const { return d_.back().t; }
-
-  /**
-   * @brief Evaluate reparameterization function
-   * @param[in] t time
-   * @param[out] ds return first derivative \f$ s'(t) \f$
-   * @param[out] d2s return second derivative \f$ s''(t) \f$
-   */
-  double operator()(double t, double & ds, double & d2s) const
-  {
-    if (d_.size() == 1) {
-      ds  = 0;
-      d2s = 0;
-      return std::min(d_.front().s, smax_);
-    }
-
-    auto it =
-      utils::binary_interval_search(d_, t, [](const Data & d, double t) { return d.t <=> t; });
-    const double tau = t - it->t;
-
-    ds  = it->v + it->a * tau;
-    d2s = it->a;
-
-    return std::clamp(it->s + it->v * tau + it->a * tau * tau / 2, 0., smax_);
-  }
-
-private:
-  double smax_;
-  std::vector<Data> d_;
-};
-
-/**
- * @brief Reparameterize a curve to approximately satisfy velocity and acceleration constraints.
- *
- * If \f$ x(\cdot) \f$ is a Curve, then this function generates a function \f$ s(t) \f$ the
- * reparamterized curve \f$ x(s(t)) \f$ has body velocity bounded between vel_min and vel_max, and
- * body acceleration bounded between acc_min and acc_max.
- *
- * @param curve Curve \f$ x(t) \f$ to reparameterize.
- * @param vel_min, vel_max velocity bounds, must be s.t. vel_min < 0 < vel_max (component-wise).
- * @param acc_min, acc_max acceleration bounds, must be s.t. acc_min < 0 < acc_max (component-wise).
- * @param start_vel target value for \f$ s'(0) \f$ (must be non-negative).
- * @param end_vel target value for \f$ s'(t_{max}) \f$ (must be non-negative).
- * @param slower_only result is s.t. \f$ s'(t) <= 1 \f$.
- * @param dt time discretization step (smaller step gives a more accurate solution).
- * @param eps parameter that controls max and min velocities, and step size for unconstrained
- * segments
- *
- * @note It may not be feasible to satisfy the target boundary velocities. In those cases the
- * resulting velocities will be lower than the desired values.
- */
-template<LieGroup G>
-Reparameterization reparameterize_curve(const Curve<3, G> & curve,
-  const Tangent<G> & vel_min,
-  const Tangent<G> & vel_max,
-  const Tangent<G> & acc_min,
-  const Tangent<G> & acc_max,
-  double start_vel = 1,
-  double end_vel   = std::numeric_limits<double>::infinity(),
-  bool slower_only = false,
-  double dt        = 0.05,
-  double eps       = 1e-2)
-{
-  // BACKWARDS PASS WITH MINIMAL ACCELERATION
-
-  Eigen::Vector2d state(curve.t_max(), end_vel);  // s, v
-  std::vector<double> xx, yy;
-
-  do {
-    Tangent<G> vel, acc;
-    curve(state.x(), vel, acc);
-
-    // clamp velocity to not exceed constraints
-    for (auto i = 0u; i != Dof<G>; ++i) {
-      // regular velocity constraint
-      if (vel(i) > eps) {
-        state.y() = std::min<double>(state.y(), vel_max(i) / vel(i));
-      } else if (vel(i) < -eps) {
-        state.y() = std::min<double>(state.y(), vel_min(i) / vel(i));
-      }
-
-      // ensure a = 0 is feasible for acceleration constraint
-      if (acc(i) > eps) {
-        state.y() = std::min<double>(state.y(), std::sqrt(acc_max(i) / acc(i)));
-      } else if (acc(i) < -eps) {
-        state.y() = std::min<double>(state.y(), std::sqrt(acc_min(i) / acc(i)));
-      }
-    }
-
-    if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
-    // ensure v stays positive
-    state.y() = std::max(state.y(), eps);
-
-    if (xx.empty() || state.x() < xx.back()) {
-      xx.push_back(state.x());
-      yy.push_back(state.y());
-    }
-
-    double a = 0;
-    if (vel.cwiseAbs().maxCoeff() > eps) {
-      // figure minimal allowed acceleration
-      a                      = -std::numeric_limits<double>::infinity();
-      const Tangent<G> upper = (acc_max - acc * state.y() * state.y()).cwiseMax(Tangent<G>::Zero());
-      const Tangent<G> lower = (acc_min - acc * state.y() * state.y()).cwiseMin(Tangent<G>::Zero());
-      for (auto i = 0u; i != Dof<G>; ++i) {
-        if (vel(i) > eps) {
-          a = std::max<double>(a, lower(i) / vel(i));
-        } else if (vel(i) < -eps) {
-          a = std::max<double>(a, upper(i) / vel(i));
-        }
-      }
-    }
-
-    state.x() -= state.y() * dt - a * dt * dt / 2;
-    state.y() -= dt * a;
-  } while (state.x() > 0);
-
-  if (xx.empty() || state.x() < xx.back()) {
-    xx.push_back(state.x());
-    yy.push_back(state.y());
-  }
-
-  // fit a spline to get v(s)
-
-  std::reverse(xx.begin(), xx.end());
-  std::reverse(yy.begin(), yy.end());
-  auto v_func = fit_linear_bezier(xx, yy);  // linear guarantees positive velocities
-
-  // FORWARD PASS WITH MAXIMAL ACCELERATION
-
-  std::vector<Reparameterization::Data> dd;
-  state << 0, start_vel;
-
-  // clamp velocity to not exceed upper bound
-  state.y() = std::clamp<double>(state.y(), eps, v_func(0));
-  if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
-
-  do {
-    Tangent<G> vel, acc;
-    curve(state.x(), vel, acc);
-
-    double a = 0;
-    if (vel.cwiseAbs().maxCoeff() > eps) {
-      // figure maximal allowed acceleration
-      a                      = std::numeric_limits<double>::infinity();
-      const Tangent<G> upper = (acc_max - acc * state.y() * state.y()).cwiseMax(Tangent<G>::Zero());
-      const Tangent<G> lower = (acc_min - acc * state.y() * state.y()).cwiseMin(Tangent<G>::Zero());
-      for (auto i = 0u; i != Dof<G>; ++i) {
-        if (vel(i) > eps) {
-          a = std::min<double>(a, upper(i) / vel(i));
-        } else if (vel(i) < -eps) {
-          a = std::min<double>(a, lower(i) / vel(i));
-        }
-      }
-
-      const double new_s = state.x() + state.y() * dt + a * dt * dt / 2;
-      double new_v       = state.y() + dt * a;
-
-      // clamp velocity to not exceed upper bound
-      new_v = std::clamp<double>(new_v, eps, v_func(new_s));
-      if (slower_only) { new_v = std::min<double>(new_v, 1); }
-
-      a = (new_v - state.y()) / dt;
-    }
-
-    dd.push_back({
-      .t = dd.empty() ? 0 : dd.back().t + dt,
-      .s = state.x(),
-      .v = state.y(),
-      .a = a,
-    });
-
-    state.x() += dd.back().v * dt + dd.back().a * dt * dt / 2;
-    state.y() += dd.back().a * dt;
-  } while (state.x() < curve.t_max());
-
-  dd.push_back({
-    .t = dd.empty() ? 0 : dd.back().t + dt,
-    .s = state.x(),
-    .v = state.y(),
-    .a = 0,
-  });
-
-  return Reparameterization(curve.t_max(), std::move(dd));
-}
 
 template<LieGroup G>
-using CubicCurve = Curve<3, G>;
+using CubicSpline = Spline<3, G>;
 
 }  // namespace smooth
 
-#endif  // SMOOTH__SPLINE__CURVE__HPP_
+#endif  // SMOOTH__SPLINE__SPLINE_HPP_

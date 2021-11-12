@@ -28,6 +28,8 @@
 
 #include "smooth/lie_group.hpp"
 
+#include <optional>
+
 namespace smooth {
 
 namespace detail {

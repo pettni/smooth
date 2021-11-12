@@ -25,543 +25,717 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/bundle.hpp"
-#include "smooth/diff.hpp"
-#include "smooth/se2.hpp"
-#include "smooth/se3.hpp"
-#include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/spline/bezier.hpp"
-#include "smooth/spline/bspline.hpp"
+#include "smooth/spline/dubins.hpp"
+#include "smooth/spline/reparameterize.hpp"
+#include "smooth/spline/spline.hpp"
 
 #include "adapted.hpp"
 
-template<typename G>
-class Spline : public ::testing::Test
-{};
-
-using GroupsToTest = ::testing::Types<Eigen::Vector2d, smooth::SO3d>;
-
-TYPED_TEST_SUITE(Spline, GroupsToTest);
-
-TYPED_TEST(Spline, BSplineConstantCtrlpts)
+TEST(Spline, ConstantVelocity1)
 {
-  std::srand(5);
+  Eigen::Vector3d v1 = Eigen::Vector3d::Random();
 
-  using Tangent = smooth::Tangent<TypeParam>;
+  {
+    auto c1 = smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(v1, 5.);
 
-  smooth::utils::static_for<6>([](auto k) {
-    static constexpr uint32_t K = k + 1;
+    ASSERT_EQ(c1.t_min(), 0);
+    ASSERT_EQ(c1.t_max(), 5);
 
-    std::vector<TypeParam> ctrl_pts;
-    ctrl_pts.push_back(TypeParam::Random());
-    for (auto i = 0u; i != K; ++i) { ctrl_pts.push_back(ctrl_pts.back()); }
+    ASSERT_TRUE(c1.start().isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(c1.end().isApprox(smooth::SO3d::exp(5 * v1)));
 
-    constexpr auto M_s =
-      smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, double, K>().transpose();
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
 
-    for (double u = 0.; u < 1; u += 0.05) {
-      Tangent vel, acc;
-      auto g = smooth::cspline_eval<K>(ctrl_pts, M, u, vel, acc);
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(vtest.isApprox(v1));
 
-      ASSERT_TRUE(g.isApprox(ctrl_pts.front()));
-      ASSERT_TRUE(vel.norm() <= 1e-8);
-      ASSERT_TRUE(acc.norm() <= 1e-8);
-    }
+    gtest = c1(2.5, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(2.5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
 
-    ctrl_pts.push_back(ctrl_pts.back());
-  });
-}
-
-TYPED_TEST(Spline, BSplineConstantDiffvec)
-{
-  std::srand(5);
-
-  using Tangent = smooth::Tangent<TypeParam>;
-
-  smooth::utils::static_for<6>([](auto k) {
-    static constexpr uint32_t K = k + 1;
-
-    TypeParam g0 = TypeParam::Random();
-
-    std::vector<Tangent> diff_vec;
-    for (auto i = 0u; i != K; ++i) { diff_vec.push_back(Tangent::Zero()); }
-
-    constexpr auto M_s =
-      smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, double, K>().transpose();
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
-
-    for (double u = 0.; u < 1; u += 0.05) {
-      Tangent vel, acc;
-      auto g =
-        smooth::composition(g0, smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc));
-
-      ASSERT_TRUE(g.isApprox(g0));
-      ASSERT_TRUE(vel.norm() <= 1e-8);
-      ASSERT_TRUE(acc.norm() <= 1e-8);
-    }
-
-    diff_vec.push_back(diff_vec.back());
-  });
-}
-
-TYPED_TEST(Spline, DerivBspline)
-{
-  TypeParam g0  = TypeParam::Random();
-  using Tangent = smooth::Tangent<TypeParam>;
-
-  std::vector<Tangent> diff_pts;
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
-
-  constexpr auto M_s =
-    smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>().transpose();
-  Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
-
-  Tangent vel;
-
-  for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
-
-    auto g1 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
-    auto g2 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
-
-    auto df = ((g2 - g1) / 2e-4).eval();
-
-    ASSERT_TRUE(df.isApprox(vel, 1e-4));
-  }
-}
-
-TYPED_TEST(Spline, DerivBezier)
-{
-  TypeParam g0  = TypeParam::Random();
-  using Tangent = smooth::Tangent<TypeParam>;
-
-  std::vector<Tangent> diff_pts;
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
-
-  constexpr auto M_s =
-    smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bernstein, double, 3>().transpose();
-  Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
-
-  Tangent vel;
-
-  for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
-
-    auto g1 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
-    auto g2 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
-
-    Tangent df = (g2 - g1) / 2e-4;
-
-    ASSERT_TRUE(df.isApprox(vel, 1e-4));
-  }
-}
-
-TEST(Spline, BSplineConstructors)
-{
-  std::srand(5);
-
-  std::vector<smooth::SO3d> c1;
-  for (auto i = 0u; i != 50; ++i) { c1.push_back(smooth::SO3d::Random()); }
-
-  typename smooth::SO3d::Tangent vel, acc;
-
-  smooth::BSpline<5, smooth::SO3d> spl0;
-  smooth::BSpline<5, smooth::SO3d> spl1(0, 1, c1);
-  smooth::BSpline<5, smooth::SO3d> spl2(0, 1, std::move(c1));
-
-  ASSERT_TRUE(spl0(0.5).isApprox(smooth::SO3d::Identity()));
-
-  for (double t = 0; t != spl1.t_max(); t += 0.5) { ASSERT_TRUE(spl1(t).isApprox(spl2(t))); }
-}
-
-TEST(Spline, BSplineOutside)
-{
-  std::srand(5);
-
-  std::vector<smooth::SO3d> c1;
-  for (auto i = 0u; i != 50; ++i) { c1.push_back(smooth::SO3d::Random()); }
-
-  smooth::BSpline<5, smooth::SO3d> spl(0, 1, c1);
-
-  ASSERT_TRUE(spl(-2).isApprox(spl(0)));
-  ASSERT_TRUE(spl(-1).isApprox(spl(0)));
-  ASSERT_FALSE(spl(45).isApprox(spl(44)));
-  ASSERT_TRUE(spl(45).isApprox(spl(46)));
-  ASSERT_TRUE(spl(45).isApprox(spl(47)));
-  ASSERT_TRUE(spl(45).isApprox(spl(48)));
-}
-
-TEST(Spline, BSplineDerivT1)
-{
-  std::srand(5);
-  std::vector<smooth::Bundle<Eigen::Matrix<double, 1, 1>>> c1;
-  for (auto i = 0u; i != 4; ++i) {
-    c1.push_back(smooth::Bundle<Eigen::Matrix<double, 1, 1>>::Random());
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
   }
 
-  double u = 0.5;
-
-  constexpr auto M_s =
-    smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>().transpose();
-  Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(M_s[0].data());
-
-  Eigen::Matrix<double, 1, 4> jac;
-  auto g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
-
-  Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
-  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>()(0) += eps(i); }
-
-  // expect gp \approx g0 + jac * eps
-  auto gp       = g0 + (jac * eps);
-  auto gp_exact = smooth::cspline_eval<3>(c1, M, u);
-
-  ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
-}
-
-TEST(Spline, BSplineDerivSO3)
-{
-  for (double u = 0.1; u < 1; u += 0.2) {
-    std::srand(5);
-
-    std::vector<smooth::SO3d> c1;
-    for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::SO3d::Random()); }
-
-    constexpr auto M_s =
-      smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>().transpose();
-    Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(M_s[0].data());
-
-    Eigen::Matrix<double, 3, 12> jac;
-    smooth::SO3d g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
-
-    Eigen::Matrix<double, 12, 1> eps = 1e-6 * Eigen::Matrix<double, 12, 1>::Random();
-    for (auto i = 0u; i != 4; ++i) { c1[i] += eps.segment<3>(i * 3); }
-
-    // expect gp \approx g0 + jac * eps
-    smooth::SO3d gp       = g0 + (jac * eps).eval();
-    smooth::SO3d gp_exact = smooth::cspline_eval<3>(c1, M, u);
-
-    ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
-  }
-}
-
-TYPED_TEST(Spline, BSplineFit)
-{
-  std::vector<double> tt;
-  std::vector<TypeParam> gg;
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-
-  auto spline = smooth::fit_bspline<3>(tt, gg, 1);
-
-  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
-  ASSERT_GE(spline.t_max(), 6);
-}
-
-TEST(Spline, BezierConstruct)
-{
-  std::vector<double> tt{1, 2, 3};
-  std::vector<smooth::Bezier<3, smooth::SO3d>> bb(3);
-
-  auto spline       = smooth::PiecewiseBezier<3, smooth::SO3d>(tt, bb);
-  auto spline_moved = std::move(spline);
-
-  ASSERT_EQ(spline_moved.t_min(), 1);
-  ASSERT_EQ(spline_moved.t_max(), 3);
-}
-
-TYPED_TEST(Spline, Bezier0Fit)
-{
-  std::vector<double> tt;
-  std::vector<TypeParam> gg;
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-
-  auto spline = smooth::fit_constant_bezier(tt, gg);
-
-  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
-  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
-
-  ASSERT_TRUE(spline(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.1).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.2).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.3).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.4).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
-}
-
-TYPED_TEST(Spline, Bezier1Fit)
-{
-  std::vector<double> tt;
-  std::vector<TypeParam> gg;
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-
-  auto spline = smooth::fit_linear_bezier(tt, gg);
-
-  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
-  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
-
-  ASSERT_TRUE(spline(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline(7).isApprox(gg[5]));
-}
-
-TYPED_TEST(Spline, Bezier2Fit)
-{
-  std::vector<double> tt;
-  std::vector<TypeParam> gg;
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-
-  auto spline = smooth::fit_quadratic_bezier(tt, gg);
-
-  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
-  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
-
-  ASSERT_TRUE(spline(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline(7).isApprox(gg[5]));
-
-  // check continuity of derivative
-  for (auto tt = 2.5; tt < 6; ++tt) {
-    smooth::Tangent<TypeParam> va, vb;
-    spline(tt - 1e-5, va);
-    spline(tt + 1e-5, vb);
-    ASSERT_TRUE(va.isApprox(vb, 1e-3));
-  }
-}
-
-TYPED_TEST(Spline, Bezier3Fit)
-{
-  std::vector<double> tt;
-  std::vector<TypeParam> gg;
-
-  std::srand(10);
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-
-  auto spline = smooth::fit_cubic_bezier(tt, gg);
-
-  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
-  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
-
-  ASSERT_TRUE(spline(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline(7).isApprox(gg[5]));
-
-  // check continuity of derivative
-  for (auto t_test = 2.5; t_test < 6; ++t_test) {
-    typename smooth::Tangent<TypeParam> va, vb;
-    spline(t_test - 1e-5, va);
-    spline(t_test + 1e-5, vb);
-    ASSERT_TRUE(va.isApprox(vb, 1e-3));
-  }
-}
-
-TYPED_TEST(Spline, Bezier3LocalFit)
-{
-  std::vector<double> tt;
-  std::vector<TypeParam> gg;
-
-  std::srand(10);
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-
-  auto spline = smooth::fit_cubic_bezier_local(tt, gg);
-
-  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
-  ASSERT_NEAR(spline.t_max(), 6, 1e-6);
-
-  ASSERT_TRUE(spline(1).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2).isApprox(gg[0]));
-  ASSERT_TRUE(spline(2.5).isApprox(gg[1]));
-  ASSERT_TRUE(spline(3.5).isApprox(gg[2]));
-  ASSERT_TRUE(spline(4.5).isApprox(gg[3]));
-  ASSERT_TRUE(spline(5.5).isApprox(gg[4]));
-  ASSERT_TRUE(spline(6).isApprox(gg[5]));
-  ASSERT_TRUE(spline(7).isApprox(gg[5]));
-
-  // check continuity of derivative
-  for (auto t_test = 2.5; t_test < 6; ++t_test) {
-    smooth::Tangent<TypeParam> va, vb;
-    spline(t_test - 1e-5, va);
-    spline(t_test + 1e-5, vb);
-    ASSERT_TRUE(va.isApprox(vb, 1e-3));
-  }
-}
-
-TEST(Spline, BezierInitialvel)
-{
-  std::srand(14);
-
-  for (auto i = 0u; i != 5; ++i) {
-    std::vector<double> tt{1, 2, 3, 4};
-    std::vector<smooth::SO3d> gg;
-    gg.push_back(smooth::SO3d::Random());
-    gg.push_back(smooth::SO3d::Random());
-    gg.push_back(smooth::SO3d::Random());
-    gg.push_back(smooth::SO3d::Random());
-
-    Eigen::Vector3d v0 = Eigen::Vector3d::Random();
-    Eigen::Vector3d v1 = Eigen::Vector3d::Random();
-
-    auto spline = smooth::fit_cubic_bezier(tt, gg, v0, v1);
-
-    Eigen::Vector3d test1, test2;
-    spline(1, test1);
-    spline(4, test2);
-
-    ASSERT_TRUE(test1.isApprox(v0));
-    ASSERT_TRUE(test2.isApprox(v1));
-  }
-}
-
-TEST(Spline, CustomAdaptedGroup)
-{
-  std::vector<double> tt{
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-  };
-  std::vector<MyGroup<double>> gg{
-    MyGroup<double>{1},
-    MyGroup<double>{2},
-    MyGroup<double>{3},
-    MyGroup<double>{4},
-    MyGroup<double>{5},
-    MyGroup<double>{6},
-  };
-
-  auto spl1 = smooth::fit_bspline<3>(tt, gg, 1);
-  auto spl2 = smooth::fit_cubic_bezier(tt, gg);
-
-  auto g1 = spl1(2.5);
-  auto g2 = spl2(2.5);
-
-  static_cast<void>(g1);
-  static_cast<void>(g2);
-}
-
-TEST(Spline, TangentBezier)
-{
-  std::srand(14);
-  static constexpr auto K = 3;
-
-  for (auto i = 0u; i != 5; ++i) {
+  {
     smooth::SO3d g0 = smooth::SO3d::Random();
-    Eigen::Matrix<double, 3, K> V = Eigen::Matrix<double, 3, K>::Random();
-    smooth::TangentBezier<K, smooth::SO3d> bz(g0, V.colwise());
+
+    auto c1 = smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(v1, 5., g0);
+
+    ASSERT_EQ(c1.t_min(), 0);
+    ASSERT_EQ(c1.t_max(), 5);
+
+    ASSERT_TRUE(c1.start().isApprox(g0));
+    ASSERT_TRUE(c1.end().isApprox(g0 * smooth::SO3d::exp(5 * v1)));
+
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
+
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0));
+    ASSERT_TRUE(vtest.isApprox(v1));
+
+    gtest = c1(2.5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0 * smooth::SO3d::exp(2.5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
+
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0 * smooth::SO3d::exp(5 * v1)));
+    ASSERT_TRUE(vtest.isApprox(v1));
+  }
+}
+
+TEST(Spline, ConstantVelocity2)
+{
+  smooth::SO3d g1 = smooth::SO3d::Random();
+
+  auto c1 = smooth::CubicSpline<smooth::SO3d>::ConstantVelocityGoal(g1, 5.);
+
+  ASSERT_EQ(c1.t_min(), 0);
+  ASSERT_EQ(c1.t_max(), 5);
+
+  ASSERT_TRUE(c1.start().isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(c1.end().isApprox(g1));
+
+  smooth::SO3d gtest;
+  Eigen::Vector3d vtest;
+
+  gtest = c1(-1, vtest);
+  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(vtest.isApprox(Eigen::Vector3d::Zero()));
+
+  gtest = c1(0, vtest);
+  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+
+  gtest = c1(2.5, vtest);
+  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(g1.log() / 2)));
+  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+
+  gtest = c1(5, vtest);
+  ASSERT_TRUE(gtest.isApprox(g1));
+  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+
+  gtest = c1(7, vtest);
+  ASSERT_TRUE(gtest.isApprox(g1));
+  ASSERT_TRUE(vtest.isApprox(Eigen::Vector3d::Zero()));
+}
+
+TEST(Spline, FixedCubic)
+{
+  smooth::SO3d g0, g1;
+  g0.setRandom();
+  g1.setRandom();
+
+  Eigen::Vector3d v1, v2;
+  v1.setRandom();
+  v2.setRandom();
+
+  {
+    auto c1 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g1, v1, v2, 5.);
+
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
+
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(vtest.isApprox(v1));
+
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g1));
+    ASSERT_TRUE(vtest.isApprox(v2));
+  }
+
+  {
+    auto c1 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g1, v1, v2, 5., g0);
+
+    smooth::SO3d gtest;
+    Eigen::Vector3d vtest;
+
+    gtest = c1(0, vtest);
+    ASSERT_TRUE(gtest.isApprox(g0));
+    ASSERT_TRUE(vtest.isApprox(v1));
+
+    gtest = c1(5, vtest);
+    ASSERT_TRUE(gtest.isApprox(g1));
+    ASSERT_TRUE(vtest.isApprox(v2));
+  }
+}
+
+TEST(Spline, Extend)
+{
+  Eigen::Vector3d v1, v2;
+  v1.setRandom();
+  v2.setRandom();
+
+  auto c1 = smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(v1, 2);
+  auto c2 = smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(v2, 3);
+
+  auto c1_copy = c1;
+  c1 += c2;
+
+  ASSERT_EQ(c1.t_min(), 0);
+  ASSERT_EQ(c1.t_max(), c1_copy.t_max() + c2.t_max());
+  ASSERT_TRUE(c1.end().isApprox(c1_copy.end() * c2.end()));
+
+  smooth::SO3d gt1, gt2;
+  Eigen::Vector3d vt1, vt2;
+
+  for (double t = 0; t < 2; t += 0.05) {
+    gt1 = c1_copy(t, vt1);
+    gt2 = c1(t, vt2);
+
+    ASSERT_TRUE(gt1.isApprox(gt2));
+    ASSERT_TRUE(vt1.isApprox(vt2));
+  }
+
+  for (double t = 2; t < 5; t += 0.05) {
+    gt1 = c2(t - 2, vt1);
+    gt2 = c1(t, vt2);
+
+    ASSERT_TRUE((c1_copy.end() * gt1).isApprox(gt2));
+    ASSERT_TRUE(vt1.isApprox(vt2));
+  }
+}
+
+TEST(Spline, PiecewiseConstantLocal)
+{
+  smooth::Spline<0, double> c(1);
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 1);
+
+  c.concat_local(smooth::Spline<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 2);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.001), 2);
+
+  c.concat_local(smooth::Spline<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 3);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 3);
+  ASSERT_EQ(c(1.001), 3);
+  ASSERT_EQ(c(1.999), 3);
+  ASSERT_EQ(c(2), 3);
+  ASSERT_EQ(c(2.001), 3);
+
+  c.concat_local(smooth::Spline<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 4);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 3);
+  ASSERT_EQ(c(1.999), 3);
+  ASSERT_EQ(c(2), 4);
+  ASSERT_EQ(c(2.999), 4);
+  ASSERT_EQ(c(3), 4);
+  ASSERT_EQ(c(3.001), 4);
+
+  c.concat_local(smooth::Spline<0, double>(1));
+  ASSERT_EQ(c.start(), 2);
+  ASSERT_EQ(c.end(), 5);
+  ASSERT_EQ(c(0), 2);
+  ASSERT_EQ(c(0.001), 2);
+  ASSERT_EQ(c(0.999), 2);
+  ASSERT_EQ(c(1), 3);
+  ASSERT_EQ(c(1.999), 3);
+  ASSERT_EQ(c(2), 4);
+  ASSERT_EQ(c(2.999), 4);
+  ASSERT_EQ(c(3), 4);
+  ASSERT_EQ(c(3.001), 5);
+}
+
+TEST(Spline, PiecewiseConstantGlobal)
+{
+  smooth::Spline<0, double> c;
+  ASSERT_EQ(c.start(), 0);
+  ASSERT_EQ(c.end(), 0);
+
+  c.concat_global(smooth::Spline<0, double>(1, smooth::Tangent<double>::Zero(), 1));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 1);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 1);
+  ASSERT_EQ(c(1.001), 1);
+
+  c.concat_global(smooth::Spline<0, double>(1, smooth::Tangent<double>::Zero(), 2));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 2);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.001), 2);
+  ASSERT_EQ(c(1.999), 2);
+  ASSERT_EQ(c(2), 2);
+  ASSERT_EQ(c(2.001), 2);
+
+  c.concat_global(smooth::Spline<0, double>(1, smooth::Tangent<double>::Zero(), 3));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 3);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.999), 2);
+  ASSERT_EQ(c(2), 3);
+  ASSERT_EQ(c(2.999), 3);
+  ASSERT_EQ(c(3), 3);
+  ASSERT_EQ(c(3.001), 3);
+
+  c.concat_global(smooth::Spline<0, double>(4));
+  ASSERT_EQ(c.start(), 1);
+  ASSERT_EQ(c.end(), 4);
+  ASSERT_EQ(c(0), 1);
+  ASSERT_EQ(c(0.001), 1);
+  ASSERT_EQ(c(0.999), 1);
+  ASSERT_EQ(c(1), 2);
+  ASSERT_EQ(c(1.999), 2);
+  ASSERT_EQ(c(2), 3);
+  ASSERT_EQ(c(2.999), 3);
+  ASSERT_EQ(c(3), 3);
+  ASSERT_EQ(c(3.001), 4);
+}
+
+TEST(Spline, CropSingle)
+{
+  smooth::SO3d g;
+  g.setRandom();
+
+  Eigen::Vector3d v1, v2;
+  v1.setRandom();
+  v2.setRandom();
+
+  auto c1 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
+
+  // first crop
+
+  auto c2 = c1.crop(1, 4);
+
+  ASSERT_EQ(c2.t_min(), 0);
+  ASSERT_EQ(c2.t_max(), 3);
+  ASSERT_TRUE(c2.start().isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(c2.end().isApprox(c1(1).inverse() * c1(4)));
+
+  smooth::SO3d gt1, gt2;
+  Eigen::Vector3d vt1, vt2;
+
+  const auto c1_at_1 = c1(1);
+
+  for (double t = 1; t < 4; t += 0.1) {
+    gt1 = c1(t, vt1);
+    gt2 = c2(t - 1, vt2);
+    ASSERT_TRUE(gt1.isApprox(c1_at_1 * gt2));
+    ASSERT_TRUE(vt1.isApprox(vt2));
+  }
+
+  gt1 = c1(4, vt1);
+  gt2 = c2(4 - 1, vt2);
+  ASSERT_TRUE(gt1.isApprox(c1_at_1 * gt2));
+  ASSERT_TRUE(vt1.isApprox(vt2));
+
+  // second crop corresponds to cropping c1 on [2, 3]
+
+  auto c3 = c2.crop(1, 2);
+
+  ASSERT_EQ(c3.t_min(), 0);
+  ASSERT_EQ(c3.t_max(), 1);
+  ASSERT_TRUE(c3.start().isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(c3.end().isApprox(c1(2).inverse() * c1(3)));
+
+  const auto c1_at_2 = c1(2);
+
+  for (double t = 2; t < 3; t += 0.1) {
+    gt1 = c1(t, vt1);
+    gt2 = c3(t - 2, vt2);
+    ASSERT_TRUE(gt1.isApprox(c1_at_2 * gt2));
+    ASSERT_TRUE(vt1.isApprox(vt2));
+  }
+
+  gt1 = c1(3, vt1);
+  gt2 = c3(3 - 2, vt2);
+  ASSERT_TRUE(gt1.isApprox(c1_at_2 * gt2));
+  ASSERT_TRUE(vt1.isApprox(vt2));
+}
+
+TEST(Spline, CropMultiple)
+{
+  smooth::SO3d g;
+  g.setRandom();
+
+  Eigen::Vector3d v1, v2;
+  v1.setRandom();
+  v2.setRandom();
+
+  auto c1 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g, v1, v2, 5.);
+
+  c1 += smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 2);
+  c1 += smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 3);
+  c1 += smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 4);
+  c1 += smooth::CubicSpline<smooth::SO3d>::ConstantVelocity(Eigen::Vector3d::Random(), 5);
+
+  ASSERT_EQ(c1.t_min(), 0);
+  ASSERT_EQ(c1.t_max(), 19);
+
+  auto c2 = c1.crop(3, 17);
+
+  smooth::SO3d gt1, gt2;
+  Eigen::Vector3d vt1, vt2;
+
+  const auto g_partial = c1(3);
+
+  for (double t = 3; t < 17; t += 0.1) {
+    gt1 = c1(t, vt1);
+    gt2 = c2(t - 3, vt2);
+    ASSERT_TRUE(gt1.isApprox(g_partial * gt2));
+    ASSERT_TRUE(vt1.isApprox(vt2));
+  }
+
+  gt1 = c1(17, vt1);
+  gt2 = c2(14, vt2);
+  ASSERT_TRUE(gt1.isApprox(g_partial * gt2));
+  ASSERT_TRUE(vt1.isApprox(vt1));
+
+  auto c3a = c2.crop(4, 4);
+  ASSERT_TRUE(c3a.empty());
+
+  auto c3b = c2.crop(100, -4);
+  ASSERT_TRUE(c3a.empty());
+}
+
+TEST(Spline, ExtendCropped)
+{
+  smooth::SO3d g1 = smooth::SO3d::Random(), g2 = smooth::SO3d::Random();
+  Eigen::Vector3d v1 = Eigen::Vector3d::Random(), v2 = Eigen::Vector3d::Random();
+  Eigen::Vector3d v3 = Eigen::Vector3d::Random(), v4 = Eigen::Vector3d::Random();
+
+  auto c1 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g1, v1, v2, 5.);
+  auto c2 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g2, v3, v4, 5.);
+
+  const auto c1_at_1 = c1(1);
+  const auto c1_at_3 = c1(3);
+  const auto c2_at_2 = c2(2);
+  const auto c2_at_4 = c2(4);
+
+  auto cc1 = c1.crop(1, 3);
+  auto cc2 = c2.crop(2, 4);
+
+  ASSERT_EQ(cc1.t_min(), 0);
+  ASSERT_EQ(cc2.t_max(), 2);
+  ASSERT_TRUE(cc1.start().isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(cc1.end().isApprox(c1_at_1.inverse() * c1_at_3));
+
+  ASSERT_EQ(cc2.t_min(), 0);
+  ASSERT_EQ(cc2.t_max(), 2);
+  ASSERT_TRUE(cc2.start().isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(cc2.end().isApprox(c2_at_2.inverse() * c2_at_4));
+
+  auto t2 = cc1 + cc2;
+
+  smooth::SO3d gt1, gt3;
+  Eigen::Vector3d vt1, vt3;
+
+  for (double t = 0; t < 2; t += 0.05) {
+    gt1 = c1(1 + t, vt1);
+    gt3 = t2(t, vt3);
+    ASSERT_TRUE((c1_at_1.inverse() * gt1).isApprox(gt3));
+    ASSERT_TRUE(vt1.isApprox(vt3));
+  }
+
+  for (double t = 2; t < 4; t += 0.05) {
+    gt1 = c2(t, vt1);
+    gt3 = t2(t, vt3);
+    ASSERT_TRUE((c1_at_1.inverse() * c1_at_3 * c2_at_2.inverse() * gt1).isApprox(gt3));
+    ASSERT_TRUE(vt1.isApprox(vt3));
+  }
+}
+
+TEST(Spline, Dubins)
+{
+  std::vector<std::pair<smooth::SE2d, double>> dubins_pbms;
+
+  // straight (CSC)
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d::Identity(), Eigen::Vector2d(2.5, 0)),
+    2.5,
+  });
+
+  // left turn (CSC)
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI_2), Eigen::Vector2d(1, 1)),
+    M_PI_2,
+  });
+
+  // LSR
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d::Identity(), Eigen::Vector2d(2, 5)),
+    3 + 2 * M_PI_2,
+  });
+
+  // LSL
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, 5)),
+    3 + 2 * M_PI_2,
+  });
+
+  // RSL
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d::Identity(), Eigen::Vector2d(2, -5)),
+    3 + 2 * M_PI_2,
+  });
+
+  // RSR
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, -5)),
+    3 + 2 * M_PI_2,
+  });
+
+  // RLR
+  dubins_pbms.push_back({
+    smooth::SE2d(
+      smooth::SO2d(3 * M_PI / 4), Eigen::Vector2d(2 - std::sin(M_PI_4), 1 - std::sin(M_PI_4))),
+    2 * M_PI + M_PI / 4,
+  });
+
+  // RLR / LRL
+  dubins_pbms.push_back({
+    smooth::SE2d(
+      smooth::SO2d(5 * M_PI / 4), Eigen::Vector2d(2 - std::sin(M_PI_4), -1 + std::sin(M_PI_4))),
+    2 * M_PI + M_PI / 4,
+  });
+
+  // RLR / LRL
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, 0)),
+    2 * M_PI + M_PI / 3,
+  });
+
+  // RLR
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, 0.1)),
+    7.2139175083822469,
+  });
+
+  // LRL
+  dubins_pbms.push_back({
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d(0, -0.1)),
+    7.2139175083822469,
+  });
+
+  for (auto & [target, length] : dubins_pbms) {
+    const auto c = smooth::dubins_curve<3>(target);
+    ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
+    ASSERT_TRUE(c.end().isApprox(target));
+    ASSERT_NEAR(c.t_max(), length, 1e-8);
+  }
+
+  // same with double radius
+  for (auto & [target, length] : dubins_pbms) {
+    smooth::SE2d scaled_target(target.so2(), 2 * target.r2());
+    const auto c = smooth::dubins_curve<3>(scaled_target, 2);
+    ASSERT_TRUE(c.start().isApprox(smooth::SE2d::Identity()));
+    ASSERT_TRUE(c.end().isApprox(scaled_target));
+    ASSERT_NEAR(c.t_max(), 2 * length, 1e-8);
+  }
+}
+
+TEST(Spline, Reparameterize)
+{
+  smooth::CubicSpline<smooth::SE2d> c;
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1));
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+
+  Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
+
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+
+  double tmp;
+  ASSERT_EQ(sfun(0, tmp, tmp), 0);
+  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
-    const auto beg = bz(0, vel, acc);
-    ASSERT_TRUE(beg.isApprox(g0));
-    ASSERT_TRUE(vel.isApprox(3 * V.col(0)));
+    c(s, vel, acc);
 
-    bz(1, vel, acc);
-    ASSERT_TRUE(vel.isApprox(3 * (V.col(2) - V.col(1))));
+    Eigen::Vector3d repar_vel = vel * ds;
+    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
   }
+}
+
+TEST(Spline, ReparameterizeZero)
+{
+  smooth::CubicSpline<smooth::SE2d> c;
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
+
+  Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
+
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+
+  double tmp;
+  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun(t, ds, d2s);
+
+    Eigen::Vector3d vel, acc;
+    c(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds;
+    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
+  }
+}
+
+TEST(Spline, ReparameterizeZeroMiddle)
+{
+  smooth::CubicSpline<smooth::SE2d> c;
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(0, 0, 0));
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
+
+  Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
+
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+
+  double tmp;
+  ASSERT_EQ(sfun(0, tmp, tmp), 0);
+  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun(t, ds, d2s);
+
+    Eigen::Vector3d vel, acc;
+    c(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds;
+    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
+  }
+}
+
+TEST(Spline, ReparameterizeTurnInPlace)
+{
+  smooth::CubicSpline<smooth::SE2d> c;
+  c += smooth::CubicSpline<smooth::SE2d>::FixedCubic(
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d::Zero()),
+    Eigen::Vector3d::Zero(),
+    Eigen::Vector3d::Zero());
+  c += smooth::CubicSpline<smooth::SE2d>::FixedCubic(
+    smooth::SE2d(smooth::SO2d(0), Eigen::Vector2d(1, 0)),
+    Eigen::Vector3d::Zero(),
+    Eigen::Vector3d::Zero());
+  c += smooth::CubicSpline<smooth::SE2d>::FixedCubic(
+    smooth::SE2d(smooth::SO2d(-M_PI), Eigen::Vector2d::Zero()),
+    Eigen::Vector3d::Zero(),
+    Eigen::Vector3d::Zero());
+
+  Eigen::Vector3d vmin(-2, -1, -1);
+  Eigen::Vector3d vmax(3, 1, 1);
+  Eigen::Vector3d amin(-0.05, -1, -1);
+  Eigen::Vector3d amax(0.1, 1, 1);
+
+  auto sfun = smooth::reparameterize_spline(c, vmin, vmax, amin, amax, 0, 0, false, 0.01);
+
+  double tmp;
+  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    double ds, d2s;
+    double s = sfun(t, ds, d2s);
+
+    Eigen::Vector3d vel, acc;
+    c(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds;
+    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+
+    ASSERT_GE((repar_vel - vmin).minCoeff(), -0.05);
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+
+    ASSERT_GE((repar_acc - amin).minCoeff(), -0.05);
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+  }
+}
+
+TEST(Spline, Adapted)
+{
+  smooth::CubicSpline<MyGroup<double>> c;
+
+  c += smooth::CubicSpline<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
+  c += smooth::CubicSpline<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(0));
+  c += smooth::CubicSpline<MyGroup<double>>::ConstantVelocity(Eigen::Matrix<double, 1, 1>(1));
+
+  auto x = c(0.5);
+
+  static_cast<void>(x);
+}
+
+TEST(Spline, ArcLengthConstant)
+{
+  smooth::CubicSpline<Eigen::Vector2d> c;
+  c += smooth::CubicSpline<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{1, 0});
+  c += smooth::CubicSpline<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{0, 1});
+  c += smooth::CubicSpline<Eigen::Vector2d>::ConstantVelocity(Eigen::Vector2d{-1, 0});
+
+  ASSERT_NEAR(c.arclength(c.t_max()).x(), 2, 1e-6);
+  ASSERT_NEAR(c.arclength(c.t_max()).y(), 1, 1e-6);
+
+  ASSERT_NEAR(c.arclength(1.5).x(), 1, 1e-6);
+  ASSERT_NEAR(c.arclength(1.5).y(), 0.5, 1e-6);
+
+  auto c_partial = c.crop(0.5, 2.5);
+
+  ASSERT_NEAR(c_partial.arclength(c_partial.t_max()).x(), 1, 1e-6);
+  ASSERT_NEAR(c_partial.arclength(c_partial.t_max()).x(), 1, 1e-6);
+
+  ASSERT_NEAR(c_partial.arclength(1).y(), 0.5, 1e-6);
+  ASSERT_NEAR(c_partial.arclength(1).y(), 0.5, 1e-6);
+}
+
+TEST(Spline, ArcLengthNonConstant)
+{
+  std::vector<Eigen::Vector2d> vs{
+    Eigen::Vector2d{1, -2},
+    Eigen::Vector2d{-2, 1},
+    Eigen::Vector2d{1, -2},
+  };
+  smooth::CubicSpline<Eigen::Vector2d> c(1, vs);
+
+  ASSERT_NEAR(c.arclength(c.t_max()).x(), 2.1758, 1e-4);
+  ASSERT_NEAR(c.arclength(c.t_max()).y(), 2.3435, 1e-4);
 }
