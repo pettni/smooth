@@ -45,20 +45,14 @@ TEST(Spline, ConstantVelocity1)
     ASSERT_TRUE(c1.start().isApprox(smooth::SO3d::Identity()));
     ASSERT_TRUE(c1.end().isApprox(smooth::SO3d::exp(5 * v1)));
 
-    smooth::SO3d gtest;
-    Eigen::Vector3d vtest;
+    ASSERT_TRUE(c1(0).isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(c1.der(0).isApprox(v1));
 
-    gtest = c1(0, vtest);
-    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
-    ASSERT_TRUE(vtest.isApprox(v1));
+    ASSERT_TRUE(c1(2.5).isApprox(smooth::SO3d::exp(2.5 * v1)));
+    ASSERT_TRUE(c1.der(2.5).isApprox(v1));
 
-    gtest = c1(2.5, vtest);
-    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(2.5 * v1)));
-    ASSERT_TRUE(vtest.isApprox(v1));
-
-    gtest = c1(5, vtest);
-    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(5 * v1)));
-    ASSERT_TRUE(vtest.isApprox(v1));
+    ASSERT_TRUE(c1(5).isApprox(smooth::SO3d::exp(5 * v1)));
+    ASSERT_TRUE(c1.der(5).isApprox(v1));
   }
 
   {
@@ -72,20 +66,14 @@ TEST(Spline, ConstantVelocity1)
     ASSERT_TRUE(c1.start().isApprox(g0));
     ASSERT_TRUE(c1.end().isApprox(g0 * smooth::SO3d::exp(5 * v1)));
 
-    smooth::SO3d gtest;
-    Eigen::Vector3d vtest;
+    ASSERT_TRUE(c1(0).isApprox(g0));
+    ASSERT_TRUE(c1.der(0).isApprox(v1));
 
-    gtest = c1(0, vtest);
-    ASSERT_TRUE(gtest.isApprox(g0));
-    ASSERT_TRUE(vtest.isApprox(v1));
+    ASSERT_TRUE(c1(2.5).isApprox(g0 * smooth::SO3d::exp(2.5 * v1)));
+    ASSERT_TRUE(c1.der(2.5).isApprox(v1));
 
-    gtest = c1(2.5, vtest);
-    ASSERT_TRUE(gtest.isApprox(g0 * smooth::SO3d::exp(2.5 * v1)));
-    ASSERT_TRUE(vtest.isApprox(v1));
-
-    gtest = c1(5, vtest);
-    ASSERT_TRUE(gtest.isApprox(g0 * smooth::SO3d::exp(5 * v1)));
-    ASSERT_TRUE(vtest.isApprox(v1));
+    ASSERT_TRUE(c1(5).isApprox(g0 * smooth::SO3d::exp(5 * v1)));
+    ASSERT_TRUE(c1.der(5).isApprox(v1));
   }
 }
 
@@ -101,28 +89,20 @@ TEST(Spline, ConstantVelocity2)
   ASSERT_TRUE(c1.start().isApprox(smooth::SO3d::Identity()));
   ASSERT_TRUE(c1.end().isApprox(g1));
 
-  smooth::SO3d gtest;
-  Eigen::Vector3d vtest;
+  ASSERT_TRUE(c1(-1).isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(c1.der(-1).isApprox(Eigen::Vector3d::Zero()));
 
-  gtest = c1(-1, vtest);
-  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
-  ASSERT_TRUE(vtest.isApprox(Eigen::Vector3d::Zero()));
+  ASSERT_TRUE(c1(0).isApprox(smooth::SO3d::Identity()));
+  ASSERT_TRUE(c1.der(0).isApprox(g1.log() / 5));
 
-  gtest = c1(0, vtest);
-  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
-  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+  ASSERT_TRUE(c1(2.5).isApprox(smooth::SO3d::exp(g1.log() / 2)));
+  ASSERT_TRUE(c1.der(2.5).isApprox(g1.log() / 5));
 
-  gtest = c1(2.5, vtest);
-  ASSERT_TRUE(gtest.isApprox(smooth::SO3d::exp(g1.log() / 2)));
-  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
+  ASSERT_TRUE(c1(5).isApprox(g1));
+  ASSERT_TRUE(c1.der(5).isApprox(g1.log() / 5));
 
-  gtest = c1(5, vtest);
-  ASSERT_TRUE(gtest.isApprox(g1));
-  ASSERT_TRUE(vtest.isApprox(g1.log() / 5));
-
-  gtest = c1(7, vtest);
-  ASSERT_TRUE(gtest.isApprox(g1));
-  ASSERT_TRUE(vtest.isApprox(Eigen::Vector3d::Zero()));
+  ASSERT_TRUE(c1(7).isApprox(g1));
+  ASSERT_TRUE(c1.der(7).isApprox(Eigen::Vector3d::Zero()));
 }
 
 TEST(Spline, FixedCubic)
@@ -138,31 +118,21 @@ TEST(Spline, FixedCubic)
   {
     auto c1 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g1, v1, v2, 5.);
 
-    smooth::SO3d gtest;
-    Eigen::Vector3d vtest;
+    ASSERT_TRUE(c1(0).isApprox(smooth::SO3d::Identity()));
+    ASSERT_TRUE(c1.der(0).isApprox(v1));
 
-    gtest = c1(0, vtest);
-    ASSERT_TRUE(gtest.isApprox(smooth::SO3d::Identity()));
-    ASSERT_TRUE(vtest.isApprox(v1));
-
-    gtest = c1(5, vtest);
-    ASSERT_TRUE(gtest.isApprox(g1));
-    ASSERT_TRUE(vtest.isApprox(v2));
+    ASSERT_TRUE(c1(5).isApprox(g1));
+    ASSERT_TRUE(c1.der(5).isApprox(v2));
   }
 
   {
     auto c1 = smooth::CubicSpline<smooth::SO3d>::FixedCubic(g1, v1, v2, 5., g0);
 
-    smooth::SO3d gtest;
-    Eigen::Vector3d vtest;
+    ASSERT_TRUE(c1(0).isApprox(g0));
+    ASSERT_TRUE(c1.der(0).isApprox(v1));
 
-    gtest = c1(0, vtest);
-    ASSERT_TRUE(gtest.isApprox(g0));
-    ASSERT_TRUE(vtest.isApprox(v1));
-
-    gtest = c1(5, vtest);
-    ASSERT_TRUE(gtest.isApprox(g1));
-    ASSERT_TRUE(vtest.isApprox(v2));
+    ASSERT_TRUE(c1(5).isApprox(g1));
+    ASSERT_TRUE(c1.der(5).isApprox(v2));
   }
 }
 
@@ -182,23 +152,14 @@ TEST(Spline, Extend)
   ASSERT_EQ(c1.t_max(), c1_copy.t_max() + c2.t_max());
   ASSERT_TRUE(c1.end().isApprox(c1_copy.end() * c2.end()));
 
-  smooth::SO3d gt1, gt2;
-  Eigen::Vector3d vt1, vt2;
-
   for (double t = 0; t < 2; t += 0.05) {
-    gt1 = c1_copy(t, vt1);
-    gt2 = c1(t, vt2);
-
-    ASSERT_TRUE(gt1.isApprox(gt2));
-    ASSERT_TRUE(vt1.isApprox(vt2));
+    ASSERT_TRUE(c1(t).isApprox(c1_copy(t)));
+    ASSERT_TRUE(c1.der(t).isApprox(c1_copy.der(t)));
   }
 
   for (double t = 2; t < 5; t += 0.05) {
-    gt1 = c2(t - 2, vt1);
-    gt2 = c1(t, vt2);
-
-    ASSERT_TRUE((c1_copy.end() * gt1).isApprox(gt2));
-    ASSERT_TRUE(vt1.isApprox(vt2));
+    ASSERT_TRUE((c1_copy.end() * c2(t - 2)).isApprox(c1(t)));
+    ASSERT_TRUE(c2.der(t - 2).isApprox(c1.der(t)));
   }
 }
 
@@ -330,22 +291,15 @@ TEST(Spline, CropSingle)
   ASSERT_TRUE(c2.start().isApprox(smooth::SO3d::Identity()));
   ASSERT_TRUE(c2.end().isApprox(c1(1).inverse() * c1(4)));
 
-  smooth::SO3d gt1, gt2;
-  Eigen::Vector3d vt1, vt2;
-
   const auto c1_at_1 = c1(1);
 
   for (double t = 1; t < 4; t += 0.1) {
-    gt1 = c1(t, vt1);
-    gt2 = c2(t - 1, vt2);
-    ASSERT_TRUE(gt1.isApprox(c1_at_1 * gt2));
-    ASSERT_TRUE(vt1.isApprox(vt2));
+    ASSERT_TRUE(c1(t).isApprox(c1_at_1 * c2(t - 1)));
+    ASSERT_TRUE(c1.der(t).isApprox(c2.der(t - 1)));
   }
 
-  gt1 = c1(4, vt1);
-  gt2 = c2(4 - 1, vt2);
-  ASSERT_TRUE(gt1.isApprox(c1_at_1 * gt2));
-  ASSERT_TRUE(vt1.isApprox(vt2));
+  ASSERT_TRUE(c1(4).isApprox(c1_at_1 * c2(4 - 1)));
+  ASSERT_TRUE(c1.der(4).isApprox(c2.der(4 - 1)));
 
   // second crop corresponds to cropping c1 on [2, 3]
 
@@ -359,16 +313,12 @@ TEST(Spline, CropSingle)
   const auto c1_at_2 = c1(2);
 
   for (double t = 2; t < 3; t += 0.1) {
-    gt1 = c1(t, vt1);
-    gt2 = c3(t - 2, vt2);
-    ASSERT_TRUE(gt1.isApprox(c1_at_2 * gt2));
-    ASSERT_TRUE(vt1.isApprox(vt2));
+    ASSERT_TRUE(c1(t).isApprox(c1_at_2 * c3(t - 2)));
+    ASSERT_TRUE(c1.der(t).isApprox(c3.der(t - 2)));
   }
 
-  gt1 = c1(3, vt1);
-  gt2 = c3(3 - 2, vt2);
-  ASSERT_TRUE(gt1.isApprox(c1_at_2 * gt2));
-  ASSERT_TRUE(vt1.isApprox(vt2));
+  ASSERT_TRUE(c1(3).isApprox(c1_at_2 * c3(3 - 2)));
+  ASSERT_TRUE(c1.der(3).isApprox(c3.der(3 - 2)));
 }
 
 TEST(Spline, CropMultiple)
@@ -390,24 +340,16 @@ TEST(Spline, CropMultiple)
   ASSERT_EQ(c1.t_min(), 0);
   ASSERT_EQ(c1.t_max(), 19);
 
-  auto c2 = c1.crop(3, 17);
-
-  smooth::SO3d gt1, gt2;
-  Eigen::Vector3d vt1, vt2;
-
+  auto c2              = c1.crop(3, 17);
   const auto g_partial = c1(3);
 
   for (double t = 3; t < 17; t += 0.1) {
-    gt1 = c1(t, vt1);
-    gt2 = c2(t - 3, vt2);
-    ASSERT_TRUE(gt1.isApprox(g_partial * gt2));
-    ASSERT_TRUE(vt1.isApprox(vt2));
+    ASSERT_TRUE(c1(t).isApprox(g_partial * c2(t - 3)));
+    ASSERT_TRUE(c1.der(t).isApprox(c2.der(t - 3)));
   }
 
-  gt1 = c1(17, vt1);
-  gt2 = c2(14, vt2);
-  ASSERT_TRUE(gt1.isApprox(g_partial * gt2));
-  ASSERT_TRUE(vt1.isApprox(vt1));
+  ASSERT_TRUE(c1(17).isApprox(g_partial * c2(14)));
+  ASSERT_TRUE(c1.der(17).isApprox(c2.der(14)));
 
   auto c3a = c2.crop(4, 4);
   ASSERT_TRUE(c3a.empty());
@@ -445,21 +387,14 @@ TEST(Spline, ExtendCropped)
 
   auto t2 = cc1 + cc2;
 
-  smooth::SO3d gt1, gt3;
-  Eigen::Vector3d vt1, vt3;
-
   for (double t = 0; t < 2; t += 0.05) {
-    gt1 = c1(1 + t, vt1);
-    gt3 = t2(t, vt3);
-    ASSERT_TRUE((c1_at_1.inverse() * gt1).isApprox(gt3));
-    ASSERT_TRUE(vt1.isApprox(vt3));
+    ASSERT_TRUE((c1_at_1.inverse() * c1(1 + t)).isApprox(t2(t)));
+    ASSERT_TRUE(c1.der(1 + t).isApprox(t2.der(t)));
   }
 
   for (double t = 2; t < 4; t += 0.05) {
-    gt1 = c2(t, vt1);
-    gt3 = t2(t, vt3);
-    ASSERT_TRUE((c1_at_1.inverse() * c1_at_3 * c2_at_2.inverse() * gt1).isApprox(gt3));
-    ASSERT_TRUE(vt1.isApprox(vt3));
+    ASSERT_TRUE((c1_at_1.inverse() * c1_at_3 * c2_at_2.inverse() * c2(t)).isApprox(t2(t)));
+    ASSERT_TRUE(c2.der(t).isApprox(t2.der(t)));
   }
 }
 
@@ -571,8 +506,8 @@ TEST(Spline, Reparameterize)
     double ds, d2s;
     double s = sfun(t, ds, d2s);
 
-    Eigen::Vector3d vel, acc;
-    c(s, vel, acc);
+    Eigen::Vector3d vel = c.der(s, 1);
+    Eigen::Vector3d acc = c.der(s, 2);
 
     Eigen::Vector3d repar_vel = vel * ds;
     Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
@@ -601,8 +536,8 @@ TEST(Spline, ReparameterizeZero)
     double ds, d2s;
     double s = sfun(t, ds, d2s);
 
-    Eigen::Vector3d vel, acc;
-    c(s, vel, acc);
+    Eigen::Vector3d vel = c.der(s, 1);
+    Eigen::Vector3d acc = c.der(s, 2);
 
     Eigen::Vector3d repar_vel = vel * ds;
     Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
@@ -634,8 +569,8 @@ TEST(Spline, ReparameterizeZeroMiddle)
     double ds, d2s;
     double s = sfun(t, ds, d2s);
 
-    Eigen::Vector3d vel, acc;
-    c(s, vel, acc);
+    Eigen::Vector3d vel = c.der(s, 1);
+    Eigen::Vector3d acc = c.der(s, 2);
 
     Eigen::Vector3d repar_vel = vel * ds;
     Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
@@ -678,8 +613,8 @@ TEST(Spline, ReparameterizeTurnInPlace)
     double ds, d2s;
     double s = sfun(t, ds, d2s);
 
-    Eigen::Vector3d vel, acc;
-    c(s, vel, acc);
+    Eigen::Vector3d vel = c.der(s, 1);
+    Eigen::Vector3d acc = c.der(s, 2);
 
     Eigen::Vector3d repar_vel = vel * ds;
     Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;

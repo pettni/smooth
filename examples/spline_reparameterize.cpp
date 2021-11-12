@@ -72,8 +72,8 @@ int main(int, char const **)
     double ds, d2s;
     double s = sfun(t, ds, d2s);
 
-    Eigen::Vector3d vel, acc;
-    c(s, vel, acc);
+    Eigen::Vector3d vel = c.der(s, 1);
+    Eigen::Vector3d acc = c.der(s, 2);
 
     Eigen::Vector3d vel_reparam = vel * ds;
     Eigen::Vector3d acc_reparam = vel * d2s + acc * ds * ds;

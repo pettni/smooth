@@ -131,8 +131,8 @@ Reparameterization reparameterize_spline(const Spline<3, G> & curve,
   std::vector<double> xx, yy;
 
   do {
-    Tangent<G> vel, acc;
-    curve(state.x(), vel, acc);
+    const Tangent<G> vel = curve.der(state.x(), 1);
+    const Tangent<G> acc = curve.der(state.x(), 2);
 
     // clamp velocity to not exceed constraints
     for (auto i = 0u; i != Dof<G>; ++i) {
@@ -202,8 +202,8 @@ Reparameterization reparameterize_spline(const Spline<3, G> & curve,
   if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
   do {
-    Tangent<G> vel, acc;
-    curve(state.x(), vel, acc);
+    const Tangent<G> vel = curve.der(state.x(), 1);
+    const Tangent<G> acc = curve.der(state.x(), 2);
 
     double a = 0;
     if (vel.cwiseAbs().maxCoeff() > eps) {

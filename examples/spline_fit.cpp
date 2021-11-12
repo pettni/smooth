@@ -71,7 +71,7 @@ int main(int, char const **)
   matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c6(t).so2().angle(); })))->line_width(2);
   // clang-format on
   matplot::title("Values");
-  matplot::legend({"c0", "c1", "c3_f", "c3_n", "min_jerk", "min_snap"});
+  matplot::legend({"deg0", "deg1", "deg3_f", "deg3_n", "min_{jerk}", "min_{snap}"});
 
   for (int p = 1; p <= 2; ++p) {
     matplot::figure();
@@ -85,7 +85,7 @@ int main(int, char const **)
     matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c6.der(t, p).z(); })))->line_width(2);
     // clang-format on
     matplot::title("Derivative" + std::to_string(p));
-    matplot::legend({"c0", "c1", "c3_f", "c3_n", "min_jerk", "min_snap"});
+    matplot::legend({"deg0", "deg1", "deg3_f", "deg3_n", "min_{jerk}", "min_{snap}"});
   }
 
   matplot::show();

@@ -366,27 +366,16 @@ public:
   /**
    * @brief Evaluate Spline at given time.
    *
-   * @param[in] t time point to evaluate at
-   * @param[out] vel output body velocity at evaluation time
-   * @param[out] acc output body acceleration at evaluation time
-   * @return value at time t
+   * @param t time point to evaluate at
+   * @return Spline value at time t
    *
-   * @note Outside the support [t_min(), t_max()] the result is clamped to the end points, and
-   * the acceleration and velocity is zero.
+   * @note Outside the support [t_min(), t_max()] the result is clamped to the end points
    */
-  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  G val(double t) const
   {
-    if (empty() || t < 0) {
-      if (vel.has_value()) { vel.value().setZero(); }
-      if (acc.has_value()) { acc.value().setZero(); }
-      return g0_;
-    }
+    if (empty() || t < 0) { return g0_; }
 
-    if (t > t_max()) {
-      if (vel.has_value()) { vel.value().setZero(); }
-      if (acc.has_value()) { acc.value().setZero(); }
-      return end_g_.back();
-    }
+    if (t > t_max()) { return end_g_.back(); }
 
     const auto istar = find_idx(t);
 
@@ -402,15 +391,6 @@ public:
 
     G g0 = istar == 0 ? g0_ : end_g_[istar - 1];
 
-    if (vel.has_value()) {
-      *vel = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, 1);
-      vel.value() *= Del / T;
-    }
-    if (acc.has_value()) {
-      *acc = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, 2);
-      acc.value() *= Del * Del / (T * T);
-    }
-
     // compensate for cropped intervals
     if (seg_T0_[istar] > 0) {
       const Tangent<G> v = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(
@@ -422,6 +402,13 @@ public:
       evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, 0);
     return composition(g0, ::smooth::exp<G>(v));
   }
+
+  /**
+   * @brief Evaluate spline.
+   *
+   * @see val()
+   */
+  G operator()(double t) const { return val(t); }
 
   /**
    * @brief Evaluate derivative of Spline at given time
@@ -614,7 +601,6 @@ private:
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;
 };
-
 
 template<LieGroup G>
 using CubicSpline = Spline<3, G>;
