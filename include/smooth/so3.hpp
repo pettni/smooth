@@ -155,7 +155,7 @@ class SO3;
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<SO3<_Scalar>>
+struct liebase_info<SO3<_Scalar>>
 {
   static constexpr bool is_mutable = true;
 
@@ -196,7 +196,7 @@ public:
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<SO3<_Scalar>>> : public lie_traits<SO3<_Scalar>>
+struct liebase_info<Map<SO3<_Scalar>>> : public liebase_info<SO3<_Scalar>>
 {};
 // \endcond
 
@@ -215,7 +215,7 @@ class Map<SO3<_Scalar>> : public SO3Base<Map<SO3<_Scalar>>>
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<const SO3<_Scalar>>> : public lie_traits<SO3<_Scalar>>
+struct liebase_info<Map<const SO3<_Scalar>>> : public liebase_info<SO3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };

@@ -42,45 +42,27 @@ template<typename... _Args>
   requires(Manifold<std::decay_t<_Args>> &&...)
 auto wrt(_Args &&... args) { return std::forward_as_tuple(std::forward<_Args>(args)...); }
 
+// \cond
+namespace detail {
+
 template<typename T>
-struct wrt_dof
+struct wrt_dof_impl
 {};
 
-/**
- * @brief Compile-time size of a tuple of variables.
- *
- * If at least one variable is dynamically sized (dof -1), this returns -1.
- */
 template<typename... Wrt>
-struct wrt_dof<std::tuple<Wrt...>>
+struct wrt_dof_impl<std::tuple<Wrt...>>
 {
   /// @brief Trait value
   static constexpr int value =
     std::min<int>({Dof<std::decay_t<Wrt>>...}) == -1 ? -1 : (Dof<std::decay_t<Wrt>> + ...);
 };
 
-// \cond
-namespace detail {
 template<typename Scalar, typename Wrt, std::size_t... Idx>
 auto wrt_cast_impl(Wrt && wrt, std::index_sequence<Idx...>)
 {
   return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
 }
-}  // namespace detail
-// \endcond
 
-/**
- * @brief Cast a tuple of variables to a new scalar type.
- */
-template<typename Scalar, typename Wrt>
-auto wrt_cast(Wrt && wrt)
-{
-  return detail::wrt_cast_impl<Scalar>(
-    std::forward<Wrt>(wrt), std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
-}
-
-// \cond
-namespace detail {
 template<typename Wrt, typename Derived, std::size_t... Idx>
 auto wrt_rplus_impl(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
 {
@@ -99,21 +81,6 @@ auto wrt_rplus_impl(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index
   );
   // clang-format on
 }
-}  // namespace detail
-// \endcond
-
-/**
- * @brief Calculate rplus(x_i, a[bi: bi + ni]) for a tuple
- */
-template<typename Wrt, typename Derived>
-auto wrt_rplus(Wrt && wrt, const Eigen::MatrixBase<Derived> & a)
-{
-  return detail::wrt_rplus_impl(
-    std::forward<Wrt>(wrt), a, std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
-}
-
-// \cond
-namespace detail {
 
 /**
  * @brief Trait for removing constness from reference types.
@@ -137,6 +104,37 @@ struct remove_const_ref<const T &>
 
 }  // namespace detail
 // \endcond
+
+/**
+ * @brief Compile-time size of a tuple of variables.
+ *
+ * If at least one variable is dynamically sized (dof -1), this returns -1.
+ */
+template<typename T>
+constexpr int wrt_dof()
+{
+  return detail::wrt_dof_impl<T>::value;
+}
+
+/**
+ * @brief Cast a tuple of variables to a new scalar type.
+ */
+template<typename Scalar, typename Wrt>
+auto wrt_cast(Wrt && wrt)
+{
+  return detail::wrt_cast_impl<Scalar>(
+    std::forward<Wrt>(wrt), std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
+}
+
+/**
+ * @brief Calculate rplus(x_i, a[bi: bi + ni]) for a tuple
+ */
+template<typename Wrt, typename Derived>
+auto wrt_rplus(Wrt && wrt, const Eigen::MatrixBase<Derived> & a)
+{
+  return detail::wrt_rplus_impl(
+    std::forward<Wrt>(wrt), a, std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
+}
 
 /**
  * @brief Copy a tuple to make all elements modifiable.

@@ -69,7 +69,7 @@ auto dr_numerical(_F && f, _Wrt && x)
   Result val = std::apply(f, x_nc);
 
   // static sizes
-  static constexpr Eigen::Index Nx = wrt_dof<std::decay_t<_Wrt>>::value;
+  static constexpr Eigen::Index Nx = wrt_dof<std::decay_t<_Wrt>>();
   static constexpr Eigen::Index Ny = Dof<Result>;
 
   // dynamic sizes

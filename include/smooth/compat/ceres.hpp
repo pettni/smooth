@@ -91,7 +91,7 @@ auto dr_ceres(_F && f, _Wrt && x)
 
   Result fval = std::apply(f, x);
 
-  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>::value;
+  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>();
   static constexpr Eigen::Index Ny = Dof<Result>;
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
   const Eigen::Index ny = dof<Result>(fval);

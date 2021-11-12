@@ -100,10 +100,8 @@ public:
    * @param ga Spline starting point (defaults to identity)
    */
   template<std::ranges::range Rv>
-    // \cond
-    requires(std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
-  // \endcond
-  Spline(double T, const Rv & vs, const G & ga = Identity<G>())
+  Spline(double T, const Rv & vs, const G & ga = Identity<G>()) requires(
+    std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
       : g0_(ga), end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);

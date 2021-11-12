@@ -260,10 +260,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
  * @return Spline representing a Dubins motion starting at Identity.
  */
 template<std::size_t K>
-  // \cond
-  requires(K >= 1)
-// \endcond
-Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
+Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1) requires(K >= 1)
 {
   const auto desc = dubins(gb, R);
 

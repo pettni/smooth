@@ -83,11 +83,11 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
 
 // generic
 
-// \cond
 //! Map message DATATYPE as implementation LIETYPE with CRTP base BASETYPE
 #define CREATE_MAPS(DATATYPE, LIETYPE, BASETYPE)                                      \
+  /*! @brief Specialize liebase_info       . */                                         \
   template<>                                                                          \
-  struct smooth::lie_traits<smooth::Map<DATATYPE>> : public lie_traits<LIETYPE>       \
+  struct smooth::lie_traitslie_traits<smooth::Map<DATATYPE>> : public lie_traitslie_traits<LIETYPE>       \
   {};                                                                                 \
                                                                                       \
   /*! @brief Memory mapping of ROS message as Lie group type. */                      \
@@ -97,6 +97,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     using Base = BASETYPE<smooth::Map<DATATYPE>>;                                     \
                                                                                       \
   public:                                                                             \
+    /*! @brief Define types. */                                                       \
     SMOOTH_INHERIT_TYPEDEFS;                                                          \
                                                                                       \
     /*! Map message as Lie group type. */                                             \
@@ -116,10 +117,11 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     Storage coeffs_;                                                                  \
   };                                                                                  \
                                                                                       \
+  /*! @brief Specialize liebase_info       . */                                         \
   template<>                                                                          \
-  struct smooth::lie_traits<smooth::Map<const DATATYPE>> : public lie_traits<LIETYPE> \
+  struct smooth::liebase_info<smooth::Map<const DATATYPE>> : public liebase_info<LIETYPE> \
   {                                                                                   \
-    /*! @brief Const mapping is not mutable. */
+    /*! @brief Const mapping is not mutable. */                                       \
     static constexpr bool is_mutable = false;                                         \
   };                                                                                  \
                                                                                       \
@@ -130,6 +132,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     using Base = BASETYPE<smooth::Map<const DATATYPE>>;                               \
                                                                                       \
   public:                                                                             \
+    /*! @brief Define types. */                                                       \
     SMOOTH_INHERIT_TYPEDEFS;                                                          \
                                                                                       \
     /*! Const map message as Lie group type. */                                       \
@@ -146,7 +149,6 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
   };                                                                                  \
                                                                                       \
   static_assert(true, "")
-// \endconnd
 
 
 CREATE_MAPS(geometry_msgs::msg::Quaternion, smooth::SO3d, smooth::SO3Base);

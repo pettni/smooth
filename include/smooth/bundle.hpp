@@ -36,10 +36,10 @@
 namespace smooth {
 
 // \cond
-// Specializing lie_traits for Eigen vectors makes it possible to use
+// Specializing liebase_info for Eigen vectors makes it possible to use
 // Eigen vectors in the Bundle
 template<int _N, typename _Scalar>
-struct lie_traits<Eigen::Matrix<_Scalar, _N, 1>>
+struct liebase_info<Eigen::Matrix<_Scalar, _N, 1>>
 {
   //! Lie group operations.
   using Impl = TnImpl<_N, _Scalar>;
@@ -72,7 +72,7 @@ template<typename _Derived>
 class BundleBase : public LieGroupBase<_Derived>
 {
   using Base = LieGroupBase<_Derived>;
-  using Impl = typename lie_traits<_Derived>::Impl;
+  using Impl = typename liebase_info<_Derived>::Impl;
 
 protected:
   BundleBase() = default;
@@ -84,7 +84,7 @@ public:
    * @brief Type of element in Bundle.
    */
   template<std::size_t Idx>
-  using PartType = typename lie_traits<_Derived>::template PartPlainObject<Idx>;
+  using PartType = typename liebase_info<_Derived>::template PartPlainObject<Idx>;
 
   /**
    * @brief Access part no Idx of Bundle.
@@ -107,12 +107,12 @@ public:
   }
 };
 
-/// Type for which lie_traits is properly specified.
+/// Type for which liebase_info is properly specified.
 template<typename T>
 concept LieImplemented = requires
 {
-  typename lie_traits<T>::Scalar;
-  typename lie_traits<T>::Impl;
+  typename liebase_info<T>::Scalar;
+  typename liebase_info<T>::Impl;
 };
 
 // \cond
@@ -122,21 +122,21 @@ class Bundle;
 
 // \cond
 template<LieImplemented... _Gs>
-struct lie_traits<Bundle<_Gs...>>
+struct liebase_info<Bundle<_Gs...>>
 {
   static constexpr bool is_mutable = true;
 
-  using Impl   = BundleImpl<typename lie_traits<_Gs>::Impl...>;
-  using Scalar = std::common_type_t<typename lie_traits<_Gs>::Scalar...>;
+  using Impl   = BundleImpl<typename liebase_info<_Gs>::Impl...>;
+  using Scalar = std::common_type_t<typename liebase_info<_Gs>::Scalar...>;
 
-  static_assert((std::is_same_v<Scalar, typename lie_traits<_Gs>::Scalar> && ...),
+  static_assert((std::is_same_v<Scalar, typename liebase_info<_Gs>::Scalar> && ...),
     "Scalar type must be identical");
 
   template<typename NewScalar>
-  using PlainObject = Bundle<typename lie_traits<_Gs>::template PlainObject<NewScalar>...>;
+  using PlainObject = Bundle<typename liebase_info<_Gs>::template PlainObject<NewScalar>...>;
 
   template<std::size_t Idx>
-  using PartPlainObject = typename lie_traits<
+  using PartPlainObject = typename liebase_info<
     std::tuple_element_t<Idx, std::tuple<_Gs...>>>::template PlainObject<Scalar>;
 };
 // \endcond
@@ -169,7 +169,7 @@ public:
 
 // \cond
 template<LieImplemented... _Gs>
-struct lie_traits<Map<Bundle<_Gs...>>> : public lie_traits<Bundle<_Gs...>>
+struct liebase_info<Map<Bundle<_Gs...>>> : public liebase_info<Bundle<_Gs...>>
 {};
 // \endcond
 
@@ -188,7 +188,7 @@ class Map<Bundle<_Gs...>> : public BundleBase<Map<Bundle<_Gs...>>>
 
 // \cond
 template<LieImplemented... _Gs>
-struct lie_traits<Map<const Bundle<_Gs...>>> : public lie_traits<Bundle<_Gs...>>
+struct liebase_info<Map<const Bundle<_Gs...>>> : public liebase_info<Bundle<_Gs...>>
 {
   static constexpr bool is_mutable = false;
 };

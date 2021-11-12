@@ -131,9 +131,11 @@ These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implement
 
 * `LieGroup`: a `Manifold` that also implements Lie group operations (`exp`, `log`, `Ad`, etc...)
   * Example: `smooth::SO3<float>`
-  * Example: `smooth::Bundle<LieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
+  * Example: `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
   * Example: `Eigen::Vector3d`
   * Example: `Eigen::VectorXf`
+
+* `NativeLieGroup`: a type that implements a Lie group interface as class methods
 
 Both Manifold and LieGroup are defined via external type traits that can be specialized in order
 to define a Manifold or LieGroup interface for a third-party type.

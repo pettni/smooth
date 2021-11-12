@@ -166,7 +166,7 @@ class SE3;
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<SE3<_Scalar>>
+struct liebase_info<SE3<_Scalar>>
 {
   static constexpr bool is_mutable = true;
 
@@ -216,7 +216,7 @@ public:
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<SE3<_Scalar>>> : public lie_traits<SE3<_Scalar>>
+struct liebase_info<Map<SE3<_Scalar>>> : public liebase_info<SE3<_Scalar>>
 {};
 // \endcond
 
@@ -235,7 +235,7 @@ class Map<SE3<_Scalar>> : public SE3Base<Map<SE3<_Scalar>>>
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<const SE3<_Scalar>>> : public lie_traits<SE3<_Scalar>>
+struct liebase_info<Map<const SE3<_Scalar>>> : public liebase_info<SE3<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };

@@ -79,9 +79,7 @@ struct BoostOdeintOps
 
     //! Scaled addition operation.
     template<Manifold T1, Manifold T2, typename... Ts>
-      // \cond
       requires(std::is_same_v<T1, T2> && std::conjunction_v<std::is_same<Tangent<T1>, Ts>...>)
-    // \endcond
     inline void operator()(T1 & y, const T2 & x, const Ts &... as) noexcept
     {
       y = smooth::rplus(x, helper(std::make_index_sequence<sizeof...(Ts)>(), as...));
@@ -135,7 +133,7 @@ struct BoostOdeintOps
   // \endcond
 };
 
-}  // namespace smooth
+}  // namespace smooth::detail
 
 /**
  * @brief SFINAE dispatcher for Manifold types.
