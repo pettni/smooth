@@ -32,7 +32,7 @@ struct MyGroup
 };
 
 template<typename _Scalar>
-struct smooth::lie<MyGroup<_Scalar>>
+struct smooth::traits::lie<MyGroup<_Scalar>>
 {
   using Scalar      = _Scalar;
   using PlainObject = MyGroup<Scalar>;

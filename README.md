@@ -126,18 +126,20 @@ Check out the [Documentation][doc-link] and the [`examples`](https://github.com/
 These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
 
 * `Manifold`: type that supports `operator+()` (geodesic addition) and `operator-()` (geodesic subtraction)
+  * Example: All LieGroup types are also Manifold types
   * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---a type to facilitate optimization over a dynamic number of `Manifold`s
-  * Example: `Eigen::Vector3d`
-  * Example: `Eigen::VectorXf`
 
 * `LieGroup`: a `Manifold` that also implements Lie group operations (`exp`, `log`, `Ad`, etc...)
   * Example: `smooth::SO3<float>`
   * Example: `smooth::Bundle<LieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
+  * Example: `Eigen::Vector3d`
+  * Example: `Eigen::VectorXf`
+
+Both Manifold and LieGroup are defined via external type traits that can be specialized in order
+to define a Manifold or LieGroup interface for a third-party type.
 
 
 ## Algorithms
-
-Algorithms for `LieGroup` types can be used on regular Euclidean spaces via the `smooth::Tn` type.
 
 ### Tangent space differentiation
 
@@ -200,11 +202,11 @@ smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 // Now g1 == g2.inverse()
 ```
 
-### Bezier curve evaluation and fitting
+### Piecewise polynomial curve evaluation and fitting
 
 Available for `LieGroup` types, see spline/bezier.hpp.
 
-Bezier splines are piecewise defined via
+These splines are piecewise defined via
 [Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through
 the control points. See examples/spline_fit.cpp for usage.
 
@@ -214,7 +216,7 @@ the control points. See examples/spline_fit.cpp for usage.
 Available for `LieGroup` types, see spline/bspline.hpp.
 
 B-splines have local support and generally do not pass through the control points.
-See examples/bspline.cpp and examples/spline_fit.cpp for usage.
+See examples/bspline.cpp for usage.
 
 
 ## Compatibility

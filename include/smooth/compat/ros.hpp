@@ -83,13 +83,12 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
 
 // generic
 
+// \cond
 //! Map message DATATYPE as implementation LIETYPE with CRTP base BASETYPE
 #define CREATE_MAPS(DATATYPE, LIETYPE, BASETYPE)                                      \
-  /* \cond */                                                                         \
   template<>                                                                          \
   struct smooth::lie_traits<smooth::Map<DATATYPE>> : public lie_traits<LIETYPE>       \
   {};                                                                                 \
-  /* \endcond */                                                                      \
                                                                                       \
   /*! @brief Memory mapping of ROS message as Lie group type. */                      \
   template<>                                                                          \
@@ -147,6 +146,8 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
   };                                                                                  \
                                                                                       \
   static_assert(true, "")
+// \endconnd
+
 
 CREATE_MAPS(geometry_msgs::msg::Quaternion, smooth::SO3d, smooth::SO3Base);
 CREATE_MAPS(geometry_msgs::msg::Pose, smooth::SE3d, smooth::SE3Base);

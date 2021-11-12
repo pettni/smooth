@@ -164,7 +164,7 @@ public:
  * @brief Manifold interface for ManifoldVector
  */
 template<Manifold M>
-struct man<ManifoldVector<M>>
+struct traits::man<ManifoldVector<M>>
 {
   // \cond
   using Scalar      = ::smooth::Scalar<M>;

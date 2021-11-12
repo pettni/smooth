@@ -35,57 +35,61 @@
 
 namespace smooth {
 
+namespace traits {
+
 /**
  * @brief Trait class for making a class a Manifold instance via specialization.
  */
 template<typename T>
 struct man;
 
+}  // namespace traits
+
 // clang-format off
 
 /**
- * @brief Class-external Manifold interface defined through the man trait class.
+ * @brief Class-external Manifold interface defined through the traits::man trait class.
  */
 template<typename M>
 concept Manifold =
 requires {
   // Underlying scalar type
-  typename man<M>::Scalar;
+  typename traits::man<M>::Scalar;
   // Default representation
-  typename man<M>::PlainObject;
+  typename traits::man<M>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
-  {man<M>::Dof}->std::convertible_to<Eigen::Index>;
+  {traits::man<M>::Dof}->std::convertible_to<Eigen::Index>;
   // A default-initialized Manifold object
-  {man<M>::Default()}->std::convertible_to<typename man<M>::PlainObject>;
+  {traits::man<M>::Default()}->std::convertible_to<typename traits::man<M>::PlainObject>;
 } &&
-requires(const M & m1, const M & m2, const Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1> & a) {
+requires(const M & m1, const M & m2, const Eigen::Matrix<typename traits::man<M>::Scalar, traits::man<M>::Dof, 1> & a) {
   // Run-time degrees of freedom (tangent space dimension)
-  {man<M>::dof(m1)}->std::convertible_to<Eigen::Index>;
+  {traits::man<M>::dof(m1)}->std::convertible_to<Eigen::Index>;
   // Right-plus: add a tangent vector to a Manifold element to obtain a new Manifold element
-  {man<M>::rplus(m1, a)}->std::convertible_to<typename man<M>::PlainObject>;
+  {traits::man<M>::rplus(m1, a)}->std::convertible_to<typename traits::man<M>::PlainObject>;
   // Right-minus: subtract a Manifold element from another to obtain the difference tangent vector
-  {man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>>;
+  {traits::man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Matrix<typename traits::man<M>::Scalar, traits::man<M>::Dof, 1>>;
 } && (
-  !std::is_convertible_v<typename man<M>::Scalar, double> ||
+  !std::is_convertible_v<typename traits::man<M>::Scalar, double> ||
   requires (const M & m) {
-    {man<M>::template cast<double>(m)}->std::convertible_to<typename man<M>::template CastT<double>>;
+    {traits::man<M>::template cast<double>(m)}->std::convertible_to<typename traits::man<M>::template CastT<double>>;
   }
 ) && (
-  !std::is_convertible_v<typename man<M>::Scalar, float> ||
+  !std::is_convertible_v<typename traits::man<M>::Scalar, float> ||
   requires (const M & m) {
-    {man<M>::template cast<float>(m)}->std::convertible_to<typename man<M>::template CastT<float>>;
+    {traits::man<M>::template cast<float>(m)}->std::convertible_to<typename traits::man<M>::template CastT<float>>;
   }
 ) &&
 // PlainObject must be default-constructible
-std::is_default_constructible_v<typename man<M>::PlainObject> &&
-std::is_copy_constructible_v<typename man<M>::PlainObject> &&
+std::is_default_constructible_v<typename traits::man<M>::PlainObject> &&
+std::is_copy_constructible_v<typename traits::man<M>::PlainObject> &&
 // PlainObject must be assignable from M
-std::is_assignable_v<typename man<M>::PlainObject &, M>;
+std::is_assignable_v<typename traits::man<M>::PlainObject &, M>;
 
 // clang-format on
 
 ////////////////////////////////////////////////
-//// Free functions that dispatch to man<M> ////
+//// Free functions that dispatch to traits::man<M> ////
 ////////////////////////////////////////////////
 
 // Static constants
@@ -96,7 +100,7 @@ std::is_assignable_v<typename man<M>::PlainObject &, M>;
  * @note Equal to -1 for a dynamically sized Manifold
  */
 template<Manifold M>
-static inline constexpr Eigen::Index Dof = man<M>::Dof;
+static inline constexpr Eigen::Index Dof = traits::man<M>::Dof;
 
 // Types
 
@@ -104,25 +108,25 @@ static inline constexpr Eigen::Index Dof = man<M>::Dof;
  * @brief Manifold scalar type
  */
 template<Manifold M>
-using Scalar = typename man<M>::Scalar;
+using Scalar = typename traits::man<M>::Scalar;
 
 /**
  * @brief Manifold default type
  */
 template<Manifold M>
-using PlainObject = typename man<M>::PlainObject;
+using PlainObject = typename traits::man<M>::PlainObject;
 
 /**
  * @brief Cast'ed type
  */
 template<typename NewScalar, Manifold M>
-using CastT = typename man<M>::template CastT<NewScalar>;
+using CastT = typename traits::man<M>::template CastT<NewScalar>;
 
 /**
  * @brief Tangent as a Dof-lenth Eigen vector
  */
 template<Manifold M>
-using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
+using Tangent = Eigen::Matrix<typename traits::man<M>::Scalar, traits::man<M>::Dof, 1>;
 
 // Functions
 
@@ -130,9 +134,9 @@ using Tangent = Eigen::Matrix<typename man<M>::Scalar, man<M>::Dof, 1>;
  * @brief Default-initialized Manifold
  */
 template<Manifold M>
-inline typename man<M>::PlainObject Default()
+inline typename traits::man<M>::PlainObject Default()
 {
-  return man<M>::Default();
+  return traits::man<M>::Default();
 }
 
 /**
@@ -141,7 +145,7 @@ inline typename man<M>::PlainObject Default()
 template<Manifold M>
 inline Eigen::Index dof(const M & m)
 {
-  return man<M>::dof(m);
+  return traits::man<M>::dof(m);
 }
 
 /**
@@ -150,7 +154,7 @@ inline Eigen::Index dof(const M & m)
 template<typename NewScalar, Manifold M>
 inline CastT<NewScalar, M> cast(const M & m)
 {
-  return man<M>::template cast<NewScalar>(m);
+  return traits::man<M>::template cast<NewScalar>(m);
 }
 
 /**
@@ -159,7 +163,7 @@ inline CastT<NewScalar, M> cast(const M & m)
 template<Manifold M, typename Derived>
 inline PlainObject<M> rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
 {
-  return man<M>::rplus(m, a);
+  return traits::man<M>::rplus(m, a);
 }
 
 /**
@@ -168,7 +172,7 @@ inline PlainObject<M> rplus(const M & m, const Eigen::MatrixBase<Derived> & a)
 template<Manifold M, Manifold Mo>
 inline Tangent<M> rminus(const M & g1, const Mo & g2)
 {
-  return man<M>::rminus(g1, g2);
+  return traits::man<M>::rminus(g1, g2);
 }
 
 }  // namespace smooth

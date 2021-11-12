@@ -35,7 +35,7 @@
 
 #include "smooth/manifold.hpp"
 
-namespace smooth {
+namespace smooth::detail {
 
 /**
  * @brief \p boost::odeint Stepper operations for Manifold types.
@@ -144,7 +144,7 @@ struct BoostOdeintOps
 template<smooth::Manifold G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
-  using operations_type = ::smooth::BoostOdeintOps;
+  using operations_type = ::smooth::detail::BoostOdeintOps;
 };
 // \endcond
 
