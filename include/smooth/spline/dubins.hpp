@@ -29,7 +29,7 @@
 
 /**
  * @file
- * @brief bezier splines on lie groups.
+ * @brief Generate Dubins curves as Spline.
  */
 
 #include <numbers>
@@ -254,10 +254,10 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
 /**
  * @brief Create dubins Spline.
  *
- * @tparam K degree of resulding Spline.
+ * @tparam K degree of resulting Spline (must be at least 1).
  * @param gb end position.
  * @param R turning radius.
- * @return Spline representing a Dubins motion.
+ * @return Spline representing a Dubins motion starting at Identity.
  */
 template<std::size_t K>
   // \cond

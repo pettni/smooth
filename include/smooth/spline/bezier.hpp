@@ -63,7 +63,7 @@ public:
    * @brief Create curve from rvalue parameter values.
    *
    * @param g0 starting value
-   * @param vs differences [v_1, ..., v_n] between control points
+   * @param V differences [v_1, ..., v_n] between control points
    */
   Bezier(G && g0, Eigen::Matrix<double, Dof<G>, K> && V) : g0_(std::move(g0)), V_(std::move(V)) {}
 
@@ -196,16 +196,15 @@ public:
    */
   G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
-    double tc = std::clamp<double>(t, 0, 1);
+    const double tc = std::clamp<double>(t, 0, 1);
 
-    const Tangent<G> v =
-      evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(V_.colwise(), tc, 0);
+    const Tangent<G> v = evaluate_polynomial<PolynomialBasis::Bernstein, K>(V_.colwise(), tc, 0);
 
     if (vel.has_value()) {
-      *vel = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(V_.colwise(), tc, 1);
+      *vel = evaluate_polynomial<PolynomialBasis::Bernstein, K>(V_.colwise(), tc, 1);
     }
     if (acc.has_value()) {
-      *acc = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(V_.colwise(), tc, 2);
+      *acc = evaluate_polynomial<PolynomialBasis::Bernstein, K>(V_.colwise(), tc, 2);
     }
 
     return composition(g0_, ::smooth::exp<G>(v));

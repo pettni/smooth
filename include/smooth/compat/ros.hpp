@@ -98,9 +98,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     using Base = BASETYPE<smooth::Map<DATATYPE>>;                                     \
                                                                                       \
   public:                                                                             \
-    /* \cond */                                                                       \
     SMOOTH_INHERIT_TYPEDEFS;                                                          \
-    /* \endcond */                                                                    \
                                                                                       \
     /*! Map message as Lie group type. */                                             \
     Map(DATATYPE & msg) : coeffs_(reinterpret_cast<double *>(&msg)) {}                \
@@ -119,13 +117,12 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     Storage coeffs_;                                                                  \
   };                                                                                  \
                                                                                       \
-  /* \cond */                                                                         \
   template<>                                                                          \
   struct smooth::lie_traits<smooth::Map<const DATATYPE>> : public lie_traits<LIETYPE> \
   {                                                                                   \
+    /*! @brief Const mapping is not mutable. */
     static constexpr bool is_mutable = false;                                         \
   };                                                                                  \
-  /* \endcond */                                                                      \
                                                                                       \
   /*! @brief Const memory mapping of ROS message as Lie group type. */                \
   template<>                                                                          \
@@ -134,9 +131,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     using Base = BASETYPE<smooth::Map<const DATATYPE>>;                               \
                                                                                       \
   public:                                                                             \
-    /* \cond */                                                                       \
     SMOOTH_INHERIT_TYPEDEFS;                                                          \
-    /* \endcond */                                                                    \
                                                                                       \
     /*! Const map message as Lie group type. */                                       \
     Map(const DATATYPE & msg) : coeffs_(reinterpret_cast<const double *>(&msg)) {}    \

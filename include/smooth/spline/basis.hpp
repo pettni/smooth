@@ -26,6 +26,11 @@
 #ifndef SMOOTH__SPLINE__BASIS_HPP_
 #define SMOOTH__SPLINE__BASIS_HPP_
 
+/**
+ * @file
+ * @brief Compile-time polynomial algebra.
+ */
+
 #include <cassert>
 
 #include "smooth/internal/utils.hpp"
@@ -38,12 +43,12 @@ namespace detail {
  * @brief Bspline coefficient matrix.
  *
  * Returns a row-major matrix B s.t. degree K Bspline basis functions can be evaluated as
- * \[
+ * \f[
  *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
  *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
- * \]
+ * \f]
  */
-template<typename Scalar, std::size_t K>
+template<std::size_t K, typename Scalar = double>
 constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
 {
   utils::StaticMatrix<Scalar, K + 1, K + 1> ret;
@@ -51,7 +56,7 @@ constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
     ret[0][0] = 1;
     return ret;
   } else {
-    constexpr auto coeff_mat_km1 = bspline_coefmat<Scalar, K - 1>();
+    constexpr auto coeff_mat_km1 = bspline_coefmat<K - 1, Scalar>();
     utils::StaticMatrix<Scalar, K + 1, K> low, high;
     utils::StaticMatrix<Scalar, K, K + 1> left, right;
 
@@ -78,12 +83,12 @@ constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> bspline_coefmat()
  * @brief Bernstein coefficient matrix.
  *
  * Returns a row-major matrix B s.t. degree K Bernstein basis functions can be evaluated as
- * \[
+ * \f[
  *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
  *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
- * \]
+ * \f]
  */
-template<typename Scalar, std::size_t N>
+template<std::size_t N, typename Scalar = double>
 constexpr utils::StaticMatrix<Scalar, N + 1, N + 1> bernstein_coefmat()
 {
   utils::StaticMatrix<Scalar, N + 1, N + 1> ret;
@@ -91,7 +96,7 @@ constexpr utils::StaticMatrix<Scalar, N + 1, N + 1> bernstein_coefmat()
     ret[0][0] = 1;
     return ret;
   } else {
-    constexpr auto coeff_mat_km1 = bernstein_coefmat<Scalar, N - 1>();
+    constexpr auto coeff_mat_km1 = bernstein_coefmat<N - 1, Scalar>();
     utils::StaticMatrix<Scalar, N + 1, N> low, high;
     utils::StaticMatrix<Scalar, N, N + 1> left, right;
 
@@ -126,25 +131,25 @@ enum class PolynomialBasis { Monomial, Bernstein, Bspline };
  *   p(x) = \sum_{\nu=0}^K \beta_\nu b_{\nu, K}(x)
  * \f]
  * can be evaluated as
- * \[
+ * \f[
  *   p(x)
  *   = \begin{bmatrix} 1 \\ x \\ \vdots \\ x^K \end{bmatrix}
  *     B
  *     \begin{bmatrix} \beta_0 \\ \vdots \\ \\beta_K \end{bmatrix}
- * \]
+ * \f]
  */
-template<PolynomialBasis Basis, typename Scalar, std::size_t K>
+template<PolynomialBasis Basis, std::size_t K, typename Scalar = double>
 constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> basis_coefmat()
 {
   if constexpr (Basis == PolynomialBasis::Monomial) {
     utils::StaticMatrix<Scalar, K + 1, K + 1> ret;
-    for (auto k = 0u; k <= K; ++k) { ret[k][k] = k; }
+    for (auto k = 0u; k <= K; ++k) { ret[k][k] = Scalar(1); }
     return ret;
   }
   if constexpr (Basis == PolynomialBasis::Bernstein) {
-    return detail::bernstein_coefmat<double, K>();
+    return detail::bernstein_coefmat<K, Scalar>();
   }
-  if constexpr (Basis == PolynomialBasis::Bspline) { return detail::bspline_coefmat<double, K>(); }
+  if constexpr (Basis == PolynomialBasis::Bspline) { return detail::bspline_coefmat<K, Scalar>(); }
 }
 
 /**
@@ -155,17 +160,17 @@ constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> basis_coefmat()
  *   p(x) = \sum_{\nu=0}^K \tilde \beta_\nu \tilde b_{\nu, K}(x)
  * \f]
  * can be evaluated as
- * \[
+ * \f[
  *   p(x)
  *   = \begin{bmatrix} 1 \\ x \\ \vdots \\ x^K \end{bmatrix}
  *     B
  *     \begin{bmatrix} \nu_0 \\ \vdots \\ \nu_K \end{bmatrix}
- * \]
+ * \f]
  */
-template<PolynomialBasis Basis, typename Scalar, std::size_t K>
+template<PolynomialBasis Basis, std::size_t K, typename Scalar = double>
 constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> basis_cum_coefmat()
 {
-  auto M = basis_coefmat<Basis, Scalar, K>();
+  auto M = basis_coefmat<Basis, K, Scalar>();
   for (std::size_t i = 0; i != K + 1; ++i) {
     for (std::size_t j = 0; j != K; ++j) { M[i][K - 1 - j] += M[i][K - j]; }
   }
@@ -179,9 +184,9 @@ constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> basis_cum_coefmat()
  * @tparam K maximal monomial degree
  * @param u monomial parameter
  * @param p differentiation order
- * @return array U s.t. U[k] = (d^p/dt^p) u^k
+ * @return array U s.t. U[k] = (d^p/du^p) u^k
  */
-template<typename Scalar, std::size_t K>
+template<std::size_t K, typename Scalar>
 constexpr std::array<Scalar, K + 1> monomial_derivative(const Scalar & u, std::size_t p = 0)
 {
   std::array<double, K + 1> ret;
@@ -191,7 +196,7 @@ constexpr std::array<Scalar, K + 1> monomial_derivative(const Scalar & u, std::s
     return ret;
   }
 
-  for (auto i = 0u; i < p; ++i) { ret[i] = 0; }
+  for (auto i = 0u; i < p; ++i) { ret[i] = Scalar(0); }
   Scalar P1      = 1;
   std::size_t P2 = 1;
   for (auto j = 2u; j <= p; ++j) { P2 *= j; }
@@ -207,7 +212,7 @@ constexpr std::array<Scalar, K + 1> monomial_derivative(const Scalar & u, std::s
 }
 
 /**
- * @brief Monomial derivatives.
+ * @brief Monomial derivatives up to order.
  *
  * Calculates a row-major (P+1 x K+1) matrix U s.t. U[p][k] = (d^p / dt^p) u^k
  *
@@ -215,13 +220,13 @@ constexpr std::array<Scalar, K + 1> monomial_derivative(const Scalar & u, std::s
  * @tparam K maximal monomial degree
  * @tparam P maximal differentiation order
  * @param u monomial parameter
- * @return array U s.t. U[k] = (d^p/dt^p) u^k
+ * @return matrix
  */
-template<typename Scalar, std::size_t K, std::size_t P>
-constexpr utils::StaticMatrix<double, P + 1, K + 1> monomial_derivatives(const Scalar & u)
+template<std::size_t K, std::size_t P, typename Scalar>
+constexpr utils::StaticMatrix<Scalar, P + 1, K + 1> monomial_derivatives(const Scalar & u)
 {
-  utils::StaticMatrix<double, P + 1, K + 1> ret;
-  for (auto p = 0u; p <= P; ++p) { ret[p] = monomial_derivative<double, K>(u, p); }
+  utils::StaticMatrix<Scalar, P + 1, K + 1> ret;
+  for (auto p = 0u; p <= P; ++p) { ret[p] = monomial_derivative<K, Scalar>(u, p); }
   return ret;
 }
 
@@ -233,7 +238,7 @@ constexpr utils::StaticMatrix<double, P + 1, K + 1> monomial_derivatives(const S
  * @tparam P differentiation order
  * @return K+1 x K+1 matrix M s.t. M(i, j) = ∫ (d^P/du^P) u^i * (d^P/dx^P) u^j) du,   u:  0 -> 1
  */
-template<typename Scalar, std::size_t K, std::size_t P>
+template<std::size_t K, std::size_t P, typename Scalar = double>
 constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> monomial_integral_coefmat()
 {
   utils::StaticMatrix<Scalar, K + 1, K + 1> ret;
@@ -256,27 +261,29 @@ constexpr utils::StaticMatrix<Scalar, K + 1, K + 1> monomial_integral_coefmat()
 /**
  * @brief Evaluate the p:th derivative of a degree K polynomial in a given basis.
  *
- * A polynomial has the form defined as
- * \[
- *   p(u) = \sum_{\nu=0}^K x_\nu b_{\nu, K}(u),
- * \]
+ * A polynomial has the form
+ * \f[
+ *   f(u) = \sum_{\nu=0}^K x_\nu b_{\nu, K}(u),
+ * \f]
  * where \f$ \{ b_{\nu, K} \} \f$ is a polynomial basis of order \f$K\f$.
  *
+ * @tparam Basis polynomial basis
+ * @tparam K polynomial degree
  * @tparam Scalar scalar type
- * @param x polynomial coefficients (scalar or eigen type)
+ * @param x polynomial coefficients (scalar or eigen type, must be of size K+1)
  * @param u point to evaluate polynomial at
  * @param p differentiation order
- * @return p(u)
+ * @return the p:th derivative of f at u
  */
-template<PolynomialBasis Basis, typename Scalar, std::size_t K, std::ranges::range R>
+template<PolynomialBasis Basis, std::size_t K, typename Scalar, std::ranges::range R>
 auto evaluate_polynomial(const R & x, const Scalar & u, int p = 0)
 {
   assert(std::ranges::size(x) == K + 1);
 
-  constexpr auto B_s = basis_coefmat<Basis, Scalar, K>();
-  const auto U_s     = monomial_derivative<Scalar, K>(u, p);
+  constexpr auto B_s = basis_coefmat<Basis, K, double>();
+  const auto U_s     = monomial_derivative<K>(u, p);
 
-  Eigen::Map<const Eigen::Matrix<Scalar, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
+  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
   Eigen::Map<const Eigen::Matrix<Scalar, K + 1, 1>> U(U_s.data());
 
   using RT   = std::ranges::range_value_t<R>;
@@ -286,14 +293,14 @@ auto evaluate_polynomial(const R & x, const Scalar & u, int p = 0)
 
   RetT ret = Default<RetT>();
 
-  const Eigen::Matrix<Scalar, 1, K + 1> w = U.transpose() * B;
+  const Eigen::Matrix<Scalar, 1, K + 1> w = U.transpose() * B.template cast<Scalar>();
   for (auto i = 0u; const auto & xi : x) { ret += w[i++] * xi; }
 
   return ret;
 }
 
 /**
- * @brief Integrate the absolute value of a squared 1D polynomial.
+ * @brief Integrate the absolute value of a quadratic 1D polynomial.
  *
  * Evaluates the integral
  * \f[

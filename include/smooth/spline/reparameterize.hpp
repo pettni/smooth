@@ -26,7 +26,12 @@
 #ifndef SMOOTH__SPLINE__REPARAMETERIZE_HPP_
 #define SMOOTH__SPLINE__REPARAMETERIZE_HPP_
 
-#include "fit_spline.hpp"
+/**
+ * @file
+ * @brief Reparamterize a Spline to satisfy derivative constraints.
+ */
+
+#include "fit.hpp"
 #include "spline.hpp"
 
 namespace smooth {
@@ -190,7 +195,7 @@ Reparameterization reparameterize_spline(const Spline<3, G> & curve,
   std::reverse(yy.begin(), yy.end());
 
   // linear spline guarantees positive velocities
-  auto v_func = fit_spline(xx, yy, PiecewiseLinear<double>{});
+  auto v_func = fit_spline(xx, yy, spline_specs::PiecewiseLinear<double>{});
 
   // FORWARD PASS WITH MAXIMAL ACCELERATION
 

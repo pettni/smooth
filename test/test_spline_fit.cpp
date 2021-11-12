@@ -26,41 +26,31 @@
 #include <gtest/gtest.h>
 
 #include "smooth/so3.hpp"
-#include "smooth/spline/fit_spline.hpp"
+#include "smooth/spline/fit.hpp"
 
 TEST(FitCurve, OneDim)
 {
   static constexpr auto K = 6;
+  static constexpr auto B = smooth::PolynomialBasis::Bernstein;
+
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{1, 2};
 
-  smooth::MinDerivative<double, K, 3> ss{};
+  smooth::spline_specs::MinDerivative<double, K, 3> ss{};
 
   const auto coefs = smooth::fit_spline_1d(dtvec, dxvec, ss);
 
-  double f1_0 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-    coefs.segment(0, K + 1), 0);
-  double df1_0 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-                   coefs.segment(0, K + 1), 0, 1)
-               / dtvec[0];
+  double f1_0  = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 0.);
+  double df1_0 = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 0., 1) / dtvec[0];
 
-  double f1_1 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-    coefs.segment(0, K + 1), 1);
-  double df1_1 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-                   coefs.segment(0, K + 1), 1, 1)
-               / dtvec[0];
+  double f1_1  = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 1.);
+  double df1_1 = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 1., 1) / dtvec[0];
 
-  double f2_0 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-    coefs.segment(K + 1, K + 1), 0);
-  double df2_0 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-                   coefs.segment(K + 1, K + 1), 0, 1)
-               / dtvec[1];
+  double f2_0  = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 0.);
+  double df2_0 = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 0., 1) / dtvec[1];
 
-  double f2_1 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-    coefs.segment(K + 1, K + 1), 1);
-  double df2_1 = smooth::evaluate_polynomial<smooth::PolynomialBasis::Bernstein, double, K>(
-                   coefs.segment(K + 1, K + 1), 1, 1)
-               / dtvec[1];
+  double f2_1  = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 1.);
+  double df2_1 = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 1., 1) / dtvec[1];
 
   ASSERT_NEAR(f1_0, 0, 1e-4);
   ASSERT_NEAR(f1_1, dxvec[0], 1e-4);
@@ -80,10 +70,10 @@ TEST(FitCurve, MinJerk5)
   std::vector<double> dtvec{1.5};
   std::vector<double> dxvec{2.5};
 
-  smooth::MinDerivative<double, K, 3> ss{};
+  smooth::spline_specs::MinDerivative<double, K, 3> ss{};
   const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, ss);
 
-  constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, double, K>();
+  constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, K>();
   Eigen::MatrixXd M =
     Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 
@@ -104,10 +94,10 @@ TEST(FitCurve, MinJerk6)
   std::vector<double> dtvec{1.5};
   std::vector<double> dxvec{2.5};
 
-  smooth::MinDerivative<double, K, 3> ss{};
+  smooth::spline_specs::MinDerivative<double, K, 3> ss{};
   const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, ss);
 
-  constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, double, K>();
+  constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, K>();
   Eigen::MatrixXd M =
     Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 
@@ -127,7 +117,8 @@ TEST(FitCurve, Minimize)
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{0, 0};
 
-  const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, smooth::FixedDerCubic<double>{});
+  const auto alpha =
+    smooth::fit_spline_1d(dtvec, dxvec, smooth::spline_specs::FixedDerCubic<double>{});
   ASSERT_LE(alpha.norm(), 1e-8);
 }
 
@@ -142,7 +133,7 @@ TEST(FitCurve, Basic)
     smooth::SO3d::Random(),
   };
 
-  auto c = smooth::fit_spline(ts, gs, smooth::FixedDerCubic<smooth::SO3d>{});
+  auto c = smooth::fit_spline(ts, gs, smooth::spline_specs::FixedDerCubic<smooth::SO3d>{});
 
   ASSERT_DOUBLE_EQ(c.t_min(), 0);
   ASSERT_DOUBLE_EQ(c.t_max(), 3);

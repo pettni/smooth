@@ -29,7 +29,7 @@
 
 #include "smooth/internal/utils.hpp"
 #include "smooth/se2.hpp"
-#include "smooth/spline/fit_spline.hpp"
+#include "smooth/spline/fit.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include "plot_tools.hpp"
@@ -50,12 +50,12 @@ int main(int, char const **)
     smooth::SE2d::Random(),
   };
 
-  const auto c0   = smooth::fit_spline(x, y, smooth::PiecewiseConstant<G>{});
-  const auto c1   = smooth::fit_spline(x, y, smooth::PiecewiseLinear<G>{});
-  const auto c3_f = smooth::fit_spline(x, y, smooth::FixedDerCubic<G, 1>{});
-  const auto c3_n = smooth::fit_spline(x, y, smooth::FixedDerCubic<G, 2>{});
-  const auto c5   = smooth::fit_spline(x, y, smooth::MinDerivative<G, 6, 3, 4>{});
-  const auto c6   = smooth::fit_spline(x, y, smooth::MinDerivative<G, 6, 4, 4>{});
+  const auto c0   = smooth::fit_spline(x, y, smooth::spline_specs::PiecewiseConstant<G>{});
+  const auto c1   = smooth::fit_spline(x, y, smooth::spline_specs::PiecewiseLinear<G>{});
+  const auto c3_f = smooth::fit_spline(x, y, smooth::spline_specs::FixedDerCubic<G, 1>{});
+  const auto c3_n = smooth::fit_spline(x, y, smooth::spline_specs::FixedDerCubic<G, 2>{});
+  const auto c5   = smooth::fit_spline(x, y, smooth::spline_specs::MinDerivative<G, 6, 3, 4>{});
+  const auto c6   = smooth::fit_spline(x, y, smooth::spline_specs::MinDerivative<G, 6, 4, 4>{});
 
 #ifdef ENABLE_PLOTTING
   std::vector<double> tt = matplot::linspace(-1, 6, 500);

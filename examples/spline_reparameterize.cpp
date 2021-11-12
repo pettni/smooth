@@ -28,7 +28,7 @@
  */
 
 #include "smooth/se2.hpp"
-#include "smooth/spline/fit_spline.hpp"
+#include "smooth/spline/fit.hpp"
 #include "smooth/spline/reparameterize.hpp"
 #include "smooth/spline/spline.hpp"
 
@@ -54,7 +54,7 @@ int main(int, char const **)
     smooth::SE2d::Random(),
   };
 
-  Curve c = smooth::fit_spline(tt, gg, smooth::FixedDerCubic<smooth::SE2d, 1>{});
+  Curve c = smooth::fit_spline(tt, gg, smooth::spline_specs::FixedDerCubic<smooth::SE2d, 1>{});
   c += Curve::ConstantVelocity(Eigen::Vector3d(1.2, 0, 0), 5);
   c += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
   c += Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);

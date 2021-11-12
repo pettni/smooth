@@ -56,8 +56,8 @@ class Spline
 {
 public:
   /**
-   * @brief Default constructor creates an empty curve starting at a given point.
-   * @param ga curve starting point (defaults to identity)
+   * @brief Default constructor creates an empty Spline starting at a given point.
+   * @param ga Spline starting point (defaults to identity)
    */
   Spline(const G & ga = Identity<G>()) : g0_{ga}, end_t_{}, end_g_{}, Vs_{}, seg_T0_{}, seg_Del_{}
   {}
@@ -67,7 +67,7 @@ public:
    *
    * @param T duration (must be strictly positive)
    * @param V velocities for segment
-   * @param ga curve starting point (defaults to identity)
+   * @param ga Spline starting point (defaults to identity)
    */
   Spline(double T, Eigen::Matrix<double, Dof<G>, K + 1> && V, const G & ga = Identity<G>())
       : g0_{ga}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
@@ -77,7 +77,7 @@ public:
     end_g_.resize(1);
     end_g_[0] = composition(ga,
       ::smooth::exp<G>(
-        evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[0].colwise(), 1, 0)));
+        evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[0].colwise(), 1., 0.)));
   }
 
   /**
@@ -85,7 +85,7 @@ public:
    *
    * @param T duration (must be strictly positive)
    * @param V velocities for segment
-   * @param ga curve starting point (defaults to identity)
+   * @param ga Spline starting point (defaults to identity)
    */
   template<typename Derived>
   Spline(double T, const Eigen::MatrixBase<Derived> & V, const G & ga = Identity<G>())
@@ -97,7 +97,7 @@ public:
    *
    * @param T duration (must be strictly positive)
    * @param vs velocity constants (must be of size K)
-   * @param ga curve starting point (defaults to identity)
+   * @param ga Spline starting point (defaults to identity)
    */
   template<std::ranges::range Rv>
     // \cond
@@ -116,7 +116,7 @@ public:
     end_g_.resize(1);
     end_g_[0] = composition(ga,
       ::smooth::exp<G>(
-        evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[0].colwise(), 1, 0)));
+        evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[0].colwise(), 1., 0)));
   }
 
   /// @brief Copy constructor
@@ -137,39 +137,39 @@ public:
   /**
    * @brief Create constant-velocity Spline that reaches a given target state.
    *
-   * The resulting curve is
+   * The resulting Spline is
    * \f[
-   *   x(t) = \exp( (t / T) \log(g) ), \quad t \in [0, T].
+   *   x(t) = g_a \circ \exp\left( \frac{t}{T} (g_b \ominus g_a) \right), \quad t \in [0, T].
    * \f]
    *
-   * @param g curve target point
+   * @param gb Spline target point
    * @param T duration (must be positive)
-   * @param ga curve starting point
+   * @param ga Spline starting point (defaults to Identity)
    */
-  static Spline ConstantVelocityGoal(const G & g, double T = 1, const G & ga = Identity<G>())
+  static Spline ConstantVelocityGoal(const G & gb, double T = 1, const G & ga = Identity<G>())
   {
     assert(T > 0);
-    return ConstantVelocity((g - ga) / T, T, ga);
+    return ConstantVelocity((gb - ga) / T, T, ga);
   }
 
   /**
    * @brief Create constant-velocity Spline.
    *
-   * The resulting curve is
+   * The resulting Spline is
    * \f[
-   *   x(t) = \exp(t v), \quad t \in [0, T].
+   *   x(t) = g_a \exp(t v), \quad t \in [0, T].
    * \f]
    *
    * @param v body velocity
    * @param T duration
-   * @param ga curve starting point
+   * @param ga Spline starting point
    */
   static Spline ConstantVelocity(const Tangent<G> & v, double T = 1, const G & ga = Identity<G>())
   {
     if (T <= 0) {
       return Spline();
     } else {
-      static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+      static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, K>();
       Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
       Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
@@ -181,29 +181,26 @@ public:
   }
 
   /**
-   * @brief Create Spline with a given start and end velocities, and a given end position.
+   * @brief Create Spline with given start and end position and velocities.
    *
-   * @param gb curve target point
+   * @param gb Spline target point
    * @param va, vb start and end velocities
    * @param T duration
-   * @param ga curve starting point
+   * @param ga Spline starting point (default Identity)
    */
   static Spline FixedCubic(const G & gb,
     const Tangent<G> & va,
     const Tangent<G> & vb,
     double T     = 1,
-    const G & ga = Identity<G>())
-    // \cond
-    requires(K >= 3)
-  // \endcond
+    const G & ga = Identity<G>()) requires(K >= 3)
   {
-    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, K>();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
-    static constexpr auto U0_s  = monomial_derivative<double, K>(0, 0);
-    static constexpr auto U1_s  = monomial_derivative<double, K>(1, 0);
-    static constexpr auto dU0_s = monomial_derivative<double, K>(0, 1);
-    static constexpr auto dU1_s = monomial_derivative<double, K>(1, 1);
+    static constexpr auto U0_s  = monomial_derivative<K, double>(0., 0);
+    static constexpr auto U1_s  = monomial_derivative<K, double>(1., 0);
+    static constexpr auto dU0_s = monomial_derivative<K, double>(0., 1);
+    static constexpr auto dU1_s = monomial_derivative<K, double>(1., 1);
 
     Eigen::Matrix<double, K + 1, K + 1> lhs  = Eigen::Matrix<double, K + 1, K + 1>::Zero();
     Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
@@ -226,34 +223,34 @@ public:
   /// @brief Number of Spline segments.
   std::size_t size() const { return end_t_.size(); }
 
-  /// @brief Number of Spline segments.
+  /// @brief True if Spline has zero size()
   bool empty() const { return size() == 0; }
 
-  /// @brief Start time of curve (always equal to zero).
+  /// @brief Start time of Spline (always equal to zero).
   double t_min() const { return 0; }
 
-  /// @brief End time of curve.
+  /// @brief End time of Spline.
   double t_max() const
   {
     if (empty()) { return 0; }
     return end_t_.back();
   }
 
-  /// @brief Spline start (always equal to identity).
+  /// @brief Spline start value (always equal to identity).
   G start() const { return g0_; }
 
-  /// @brief Spline end.
+  /// @brief Spline end value.
   G end() const
   {
     if (empty()) { return g0_; }
     return end_g_.back();
   }
 
-  /// @brief Move start of curve to Identity()
+  /// @brief Move start of Spline to Identity()
   void make_local() { g0_ = Identity<G>(); }
 
   /**
-   * @brief In-place concatenation with a global curve.
+   * @brief In-place concatenation with a global Spline.
    *
    * @param other Spline to append at the end of this Spline.
    *
@@ -303,12 +300,12 @@ public:
    * The resulting Spline \f$ y(t) \f$ is s.t.
    * \f[
    *  y(t) = \begin{cases}
-   *    x_1(t)  & 0 \leq t \leq t_1 \\
+   *    x_1(t)  & 0 \leq t < t_1 \\
    *    x_1(t_1) \circ x_2(t)  & t_1 \leq t \leq t_1 + t_2
    *  \end{cases}
    * \f]
    *
-   * That is, other is considered a curve in the local frame of end(). For global concatenation see
+   * That is, other is considered a Spline in the local frame of end(). For global concatenation see
    * concat_global.
    */
   Spline & concat_local(const Spline & other)
@@ -385,21 +382,20 @@ public:
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
 
-    static constexpr auto M_s =
-      basis_cum_coefmat<PolynomialBasis::Bernstein, double, 3>().transpose();
+    static constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bernstein, 3>().transpose();
     Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     G g0 = istar == 0 ? g0_ : end_g_[istar - 1];
 
     // compensate for cropped intervals
     if (seg_T0_[istar] > 0) {
-      const Tangent<G> v = evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(
-        Vs_[istar].colwise(), seg_T0_[istar], 0);
+      const Tangent<G> v =
+        evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[istar].colwise(), seg_T0_[istar], 0);
       g0 = composition(g0, inverse(::smooth::exp<G>(v)));
     }
 
     const Tangent<G> v =
-      evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, 0);
+      evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[istar].colwise(), u, 0);
     return composition(g0, ::smooth::exp<G>(v));
   }
 
@@ -417,6 +413,8 @@ public:
    */
   Tangent<G> der(double t, int p = 1) const
   {
+    assert(p >= 1);
+
     if (empty() || t < 0 || t > t_max()) { return Tangent<G>::Zero(); }
 
     const auto istar = find_idx(t);
@@ -427,7 +425,7 @@ public:
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
 
-    return evaluate_polynomial<PolynomialBasis::Bernstein, double, K>(Vs_[istar].colwise(), u, p)
+    return evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[istar].colwise(), u, p)
          * std::pow(Del / T, p);
   }
 
@@ -446,7 +444,7 @@ public:
   {
     Tangent<G> ret = Tangent<G>::Zero();
 
-    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, double, K>();
+    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, K>();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
     for (auto i = 0u; i < end_t_.size(); ++i) {
@@ -473,20 +471,20 @@ public:
   }
 
   /**
-   * @brief Crop curve
+   * @brief Crop Spline
    *
    * @param ta, tb interval for cropped Spline
-   * @param localize make cropped curve start at identity: y(0) = I
+   * @param localize cropped Spline start at identity
    *
    * The resulting Spline \f$ y(t) \f$ defined on \f$ [0, t_b - t_a] \f$ is s.t.
+   *  - If localize = true:
    * \f[
-   *  y(t) = x(t_a).inverse() * x(t - t_a)
+   *  y(t) = x(t_a)^{-1} \circ x(t - t_a)
    * \f]
-   * if localize = true, and
+   *  - If localize = false:
    * \f[
    *  y(t) = x(t - t_a)
    * \f]
-   * otherwise.
    */
   Spline crop(
     double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
@@ -502,7 +500,7 @@ public:
     // prevent last segment from being empty
     if (Nseg >= 2 && end_t_[i0 + Nseg - 2] == tb) { --Nseg; }
 
-    // state at new from beginning of curve
+    // state at new from beginning of Spline
     G ga = operator()(ta);
 
     std::vector<double> end_t(Nseg);
@@ -546,7 +544,7 @@ public:
       seg_Del[Nseg - 1] *= (sb - sa) / (ttb - tta);
     }
 
-    // create new curve with appropriate body velocities
+    // create new Spline with appropriate body velocities
     Spline<K, G> ret;
     ret.g0_      = localize ? Identity<G>() : std::move(ga);
     ret.end_t_   = std::move(end_t);
@@ -586,7 +584,7 @@ private:
   //
   //  x(t) = xu(u(t))  where xu is spline defined in [0, 1]
 
-  // curve starting point
+  // Spline starting point
   G g0_;
 
   // segment end times
@@ -602,6 +600,9 @@ private:
   std::vector<double> seg_T0_, seg_Del_;
 };
 
+/**
+ * @brief Alias for degree 3 Spline
+ */
 template<LieGroup G>
 using CubicSpline = Spline<3, G>;
 

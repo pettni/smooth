@@ -148,9 +148,9 @@ if(BUILD_TESTING)
   target_link_libraries(test_spline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_spline)
 
-  add_executable(test_fit_spline test/test_fit_spline.cpp)
-  target_link_libraries(test_fit_spline PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_fit_spline)
+  add_executable(test_spline_fit test/test_spline_fit.cpp)
+  target_link_libraries(test_spline_fit PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_spline_fit)
 
   add_executable(test_spline_basis test/test_spline_basis.cpp)
   target_link_libraries(test_spline_basis PRIVATE smooth GTest::Main)

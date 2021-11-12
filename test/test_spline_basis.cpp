@@ -29,7 +29,7 @@
 
 TEST(Basis, MonomialDerivative)
 {
-  constexpr auto c = smooth::monomial_derivatives<double, 6, 3>(0.5);
+  constexpr auto c = smooth::monomial_derivatives<6, 3>(0.5);
 
   static_assert(c[0][0] == 1.);
   static_assert(c[0][1] == 0.5);
@@ -65,7 +65,7 @@ TEST(Basis, MonomialDerivativeVec)
   constexpr double u = 0.5;
 
   {
-    constexpr auto c = smooth::monomial_derivative<double, 4>(u, 0);
+    constexpr auto c = smooth::monomial_derivative<4>(u, 0);
     static_assert(c[0] == 1);
     static_assert(c[1] == u);
     static_assert(c[2] == u * u);
@@ -74,7 +74,7 @@ TEST(Basis, MonomialDerivativeVec)
   }
 
   {
-    constexpr auto c = smooth::monomial_derivative<double, 4>(u, 1);
+    constexpr auto c = smooth::monomial_derivative<4>(u, 1);
     static_assert(c[0] == 0);
     static_assert(c[1] == 1);
     static_assert(c[2] == 2 * u);
@@ -83,7 +83,7 @@ TEST(Basis, MonomialDerivativeVec)
   }
 
   {
-    constexpr auto c = smooth::monomial_derivative<double, 4>(u, 2);
+    constexpr auto c = smooth::monomial_derivative<4>(u, 2);
     static_assert(c[0] == 0);
     static_assert(c[1] == 0);
     static_assert(c[2] == 2);
@@ -92,7 +92,7 @@ TEST(Basis, MonomialDerivativeVec)
   }
 
   {
-    constexpr auto c = smooth::monomial_derivative<double, 4>(u, 3);
+    constexpr auto c = smooth::monomial_derivative<4>(u, 3);
     static_assert(c[0] == 0);
     static_assert(c[1] == 0);
     static_assert(c[2] == 0);
@@ -101,7 +101,7 @@ TEST(Basis, MonomialDerivativeVec)
   }
 
   {
-    constexpr auto c = smooth::monomial_derivative<double, 4>(u, 4);
+    constexpr auto c = smooth::monomial_derivative<4>(u, 4);
     static_assert(c[0] == 0);
     static_assert(c[1] == 0);
     static_assert(c[2] == 0);
@@ -110,7 +110,7 @@ TEST(Basis, MonomialDerivativeVec)
   }
 
   {
-    constexpr auto c = smooth::monomial_derivative<double, 4>(u, 5);
+    constexpr auto c = smooth::monomial_derivative<4>(u, 5);
     static_assert(c[0] == 0);
     static_assert(c[1] == 0);
     static_assert(c[2] == 0);
@@ -121,7 +121,7 @@ TEST(Basis, MonomialDerivativeVec)
 
 TEST(Basis, Coefmat)
 {
-  constexpr auto c0 = smooth::monomial_integral_coefmat<double, 4, 0>();
+  constexpr auto c0 = smooth::monomial_integral_coefmat<4, 0>();
   static_assert(c0[0][0] == 1.);
   static_assert(c0[0][1] == 1. / 2);
   static_assert(c0[0][2] == 1. / 3);
@@ -133,7 +133,7 @@ TEST(Basis, Coefmat)
   static_assert(c0[2][3] == 1. / 6);
   static_assert(c0[3][3] == 1. / 7);
 
-  constexpr auto c1 = smooth::monomial_integral_coefmat<double, 4, 1>();
+  constexpr auto c1 = smooth::monomial_integral_coefmat<4, 1>();
   static_assert(c1[0][0] == 0.);
   static_assert(c1[0][1] == 0.);
   static_assert(c1[0][2] == 0.);
@@ -145,7 +145,7 @@ TEST(Basis, Coefmat)
   static_assert(c1[2][3] == 6. / 4);
   static_assert(c1[3][3] == 9. / 5);
 
-  constexpr auto c2 = smooth::monomial_integral_coefmat<double, 4, 2>();
+  constexpr auto c2 = smooth::monomial_integral_coefmat<4, 2>();
   static_assert(c2[0][0] == 0.);
   static_assert(c2[0][1] == 0.);
   static_assert(c2[0][2] == 0.);
@@ -157,7 +157,7 @@ TEST(Basis, Coefmat)
   static_assert(c2[2][3] == 12. / 2);
   static_assert(c2[3][3] == 6. * 6. / 3);
 
-  constexpr auto c3 = smooth::monomial_integral_coefmat<double, 4, 3>();
+  constexpr auto c3 = smooth::monomial_integral_coefmat<4, 3>();
   static_assert(c3[0][0] == 0.);
   static_assert(c3[0][1] == 0.);
   static_assert(c3[0][2] == 0.);
@@ -169,7 +169,7 @@ TEST(Basis, Coefmat)
   static_assert(c3[2][3] == 0.);
   static_assert(c3[3][3] == 6 * 6);
 
-  constexpr auto c4 = smooth::monomial_integral_coefmat<double, 4, 4>();
+  constexpr auto c4 = smooth::monomial_integral_coefmat<4, 4>();
   static_assert(c4[0][0] == 0.);
   static_assert(c4[0][1] == 0.);
   static_assert(c4[0][2] == 0.);
@@ -184,7 +184,7 @@ TEST(Basis, Coefmat)
 
 TEST(Basis, Bspline)
 {
-  constexpr auto c3 = smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, double, 3>();
+  constexpr auto c3 = smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, 3>();
   static_assert(std::abs(c3[0][0] - 1) < 1e-8);
   static_assert(std::abs(c3[0][1] - 5. / 6) < 1e-8);
   static_assert(std::abs(c3[0][2] - 1. / 6) < 1e-8);
@@ -208,7 +208,7 @@ TEST(Basis, Bspline)
 
 TEST(Basis, Bezier)
 {
-  constexpr auto c3 = smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bernstein, double, 3>();
+  constexpr auto c3 = smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bernstein, 3>();
   static_assert(std::abs(c3[0][0] - 1) < 1e-8);
   static_assert(std::abs(c3[0][1] - 0) < 1e-8);
   static_assert(std::abs(c3[0][2] - 0) < 1e-8);

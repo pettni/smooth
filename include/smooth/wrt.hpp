@@ -54,6 +54,7 @@ struct wrt_dof
 template<typename... Wrt>
 struct wrt_dof<std::tuple<Wrt...>>
 {
+  /// @brief Trait value
   static constexpr int value =
     std::min<int>({Dof<std::decay_t<Wrt>>...}) == -1 ? -1 : (Dof<std::decay_t<Wrt>> + ...);
 };
@@ -111,20 +112,31 @@ auto wrt_rplus(Wrt && wrt, const Eigen::MatrixBase<Derived> & a)
     std::forward<Wrt>(wrt), a, std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 
+// \cond
+namespace detail {
+
 /**
  * @brief Trait for removing constness from reference types.
  */
 template<typename T>
 struct remove_const_ref
 {
+  /// @brief Trait value
   using type = T;
 };
 
+/**
+ * @brief Trait for removing constness from reference types.
+ */
 template<typename T>
 struct remove_const_ref<const T &>
 {
+  /// @brief Trait value
   using type = T;
 };
+
+}  // namespace detail
+// \endcond
 
 /**
  * @brief Copy a tuple to make all elements modifiable.
@@ -132,9 +144,10 @@ struct remove_const_ref<const T &>
  * Copies are created form const & members, rest is forwarded.
  */
 template<typename... T>
-std::tuple<typename remove_const_ref<T>::type...> wrt_copy_if_const(const std::tuple<T...> & in)
+std::tuple<typename detail::remove_const_ref<T>::type...> wrt_copy_if_const(
+  const std::tuple<T...> & in)
 {
-  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(in);
+  return std::make_from_tuple<std::tuple<typename detail::remove_const_ref<T>::type...>>(in);
 }
 
 /**
@@ -143,9 +156,10 @@ std::tuple<typename remove_const_ref<T>::type...> wrt_copy_if_const(const std::t
  * Copies are created form const & members, rest is forwarded.
  */
 template<typename... T>
-std::tuple<typename remove_const_ref<T>::type...> wrt_copy_if_const(std::tuple<T...> && in)
+std::tuple<typename detail::remove_const_ref<T>::type...> wrt_copy_if_const(std::tuple<T...> && in)
 {
-  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(std::move(in));
+  return std::make_from_tuple<std::tuple<typename detail::remove_const_ref<T>::type...>>(
+    std::move(in));
 }
 
 }  // namespace smooth

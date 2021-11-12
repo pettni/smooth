@@ -107,8 +107,7 @@ auto dr_numerical(_F && f, _Wrt && x)
 }  // namespace detail
 
 /**
- * @enum smooth::diff::Type
- * @brief Differentiation methods
+ * @brief Available differentiation methods
  */
 enum class Type {
   NUMERICAL,  ///< Numerical (forward) derivatives
