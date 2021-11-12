@@ -372,14 +372,36 @@ TYPED_TEST(LieGroupInterface, Jacobians)
   // check that they are each others inverses
   for (auto i = 0u; i != 10; ++i) {
     const typename TypeParam::Tangent a = TypeParam::Tangent::Random();
-    const auto dr_exp_a                 = TypeParam::dr_exp(a);
-    const auto dr_expinv_a              = TypeParam::dr_expinv(a);
 
-    const auto M1 = (dr_exp_a * dr_expinv_a).eval();
-    const auto M2 = (dr_expinv_a * dr_exp_a).eval();
+    const typename TypeParam::TangentMap Ad_expa      = TypeParam::exp(a).Ad();
+    const typename TypeParam::TangentMap Ad_expma     = TypeParam::exp(-a).Ad();
+    const typename TypeParam::TangentMap ad_a         = TypeParam::ad(a);
+    const typename TypeParam::TangentMap dr_exp_a     = TypeParam::dr_exp(a);
+    const typename TypeParam::TangentMap dr_expinv_a  = TypeParam::dr_expinv(a);
+    const typename TypeParam::TangentMap dl_exp_a     = TypeParam::dl_exp(a);
+    const typename TypeParam::TangentMap dl_expinv_a  = TypeParam::dl_expinv(a);
+    const typename TypeParam::TangentMap dr_exp_ma    = TypeParam::dr_exp(-a);
+    const typename TypeParam::TangentMap dr_expinv_ma = TypeParam::dr_expinv(-a);
+    const typename TypeParam::TangentMap dl_exp_ma    = TypeParam::dl_exp(-a);
+    const typename TypeParam::TangentMap dl_expinv_ma = TypeParam::dl_expinv(-a);
 
-    ASSERT_TRUE(M1.isApprox(TypeParam::TangentMap::Identity(), eps));
-    ASSERT_TRUE(M2.isApprox(TypeParam::TangentMap::Identity(), eps));
+    // check inverses
+    ASSERT_TRUE((dr_exp_a * dr_expinv_a).isApprox(TypeParam::TangentMap::Identity(), eps));
+    ASSERT_TRUE((dr_expinv_a * dr_exp_a).isApprox(TypeParam::TangentMap::Identity(), eps));
+    ASSERT_TRUE((dl_exp_a * dl_expinv_a).isApprox(TypeParam::TangentMap::Identity(), eps));
+    ASSERT_TRUE((dl_expinv_a * dl_exp_a).isApprox(TypeParam::TangentMap::Identity(), eps));
+
+    // check minus relationships
+    ASSERT_TRUE(dr_exp_ma.isApprox(dl_exp_a, eps));
+    ASSERT_TRUE(dl_exp_ma.isApprox(dr_exp_a, eps));
+    ASSERT_TRUE(dr_expinv_ma.isApprox(dl_expinv_a, eps));
+    ASSERT_TRUE(dl_expinv_ma.isApprox(dr_expinv_a, eps));
+
+    // other relationships
+    ASSERT_TRUE((Ad_expa * dr_exp_a).isApprox(dl_exp_a, eps));
+    ASSERT_TRUE((-ad_a + dr_expinv_a).isApprox(dl_expinv_a, eps));
+    ASSERT_TRUE(Ad_expa.isApprox(dl_exp_a * dr_expinv_a, eps));
+    ASSERT_TRUE(Ad_expma.isApprox(dr_exp_a * dl_expinv_a, eps));
   }
 
   if constexpr (std::is_same_v<typename TypeParam::Scalar, float>) {

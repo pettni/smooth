@@ -270,7 +270,7 @@ inline typename Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::D
 template<LieGroup G, typename Derived>
 inline TangentMap<G> dl_exp(const Eigen::MatrixBase<Derived> & a)
 {
-  return Ad(::smooth::exp<G>(a)) * dr_exp<G>(a);
+  return dr_exp<G>(-a);
 }
 
 /**
@@ -279,7 +279,7 @@ inline TangentMap<G> dl_exp(const Eigen::MatrixBase<Derived> & a)
 template<LieGroup G, typename Derived>
 inline TangentMap<G> dl_expinv(const Eigen::MatrixBase<Derived> & a)
 {
-  return -ad<G>(a) + dr_expinv<G>(a);
+  return dr_expinv<G>(-a);
 }
 
 ////////////////////////////////////////////////

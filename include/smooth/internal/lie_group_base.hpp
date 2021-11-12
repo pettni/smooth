@@ -378,7 +378,7 @@ public:
   template<typename TangentDerived>
   static TangentMap dl_exp(const Eigen::MatrixBase<TangentDerived> & a)
   {
-    return exp(a).Ad() * dr_exp(a);
+    return dr_exp(-a);
   }
 
   /**
@@ -389,7 +389,7 @@ public:
   template<typename TangentDerived>
   static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & a)
   {
-    return -ad(a) + dr_expinv(a);
+    return dr_expinv(-a);
   }
 };
 

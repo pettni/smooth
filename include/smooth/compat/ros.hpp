@@ -85,9 +85,9 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
 
 //! Map message DATATYPE as implementation LIETYPE with CRTP base BASETYPE
 #define CREATE_MAPS(DATATYPE, LIETYPE, BASETYPE)                                      \
-  /*! @brief Specialize liebase_info       . */                                         \
+  /*! @brief Specialize liebase_info       . */                                       \
   template<>                                                                          \
-  struct smooth::lie_traitslie_traits<smooth::Map<DATATYPE>> : public lie_traitslie_traits<LIETYPE>       \
+  struct smooth::liebase_info<smooth::Map<DATATYPE>> : public liebase_info<LIETYPE>   \
   {};                                                                                 \
                                                                                       \
   /*! @brief Memory mapping of ROS message as Lie group type. */                      \
@@ -117,7 +117,7 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     Storage coeffs_;                                                                  \
   };                                                                                  \
                                                                                       \
-  /*! @brief Specialize liebase_info       . */                                         \
+  /*! @brief Specialize liebase_info. */                                              \
   template<>                                                                          \
   struct smooth::liebase_info<smooth::Map<const DATATYPE>> : public liebase_info<LIETYPE> \
   {                                                                                   \
