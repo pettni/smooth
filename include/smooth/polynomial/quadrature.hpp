@@ -23,13 +23,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef SMOOTH__POLYNOMIAL__QUADRATURE_HPP_
+#define SMOOTH__POLYNOMIAL__QUADRATURE_HPP_
+
 /**
  * @file
  * @brief Compile-time quadrature scheme generation.
  */
-
-#ifndef SMOOTH__POLYNOMIAL__QUADRATURE_HPP_
-#define SMOOTH__POLYNOMIAL__QUADRATURE_HPP_
 
 #include <array>
 #include <cmath>

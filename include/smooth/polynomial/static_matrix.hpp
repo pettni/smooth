@@ -23,21 +23,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#ifndef SMOOTH__POLYNOMIAL__STATIC_MATRIX_HPP_
+#define SMOOTH__POLYNOMIAL__STATIC_MATRIX_HPP_
+
 /**
  * @file
  * @brief Utilities for compile-time matrix algebra
  */
 
-#ifndef SMOOTH__POLYNOMIAL__STATIC_MATRIX_HPP_
-#define SMOOTH__POLYNOMIAL__STATIC_MATRIX_HPP_
-
 #include <array>
 #include <cmath>
-#include <numbers>
 
 #include "smooth/internal/utils.hpp"
-
-using namespace std::numbers;
 
 namespace smooth {
 
