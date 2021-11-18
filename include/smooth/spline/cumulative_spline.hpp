@@ -52,7 +52,7 @@ using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Do
  * @tparam K spline order (number of basis functions)
  * @tparam G lie group type
  * @param[in] diff_points range of differences v_i (must be of size K)
- * @param[in] cum_coef_mat matrix of cumulative base coefficients (size K+1 x K+1)
+ * @param[in] BC matrix of cumulative base coefficients (size K+1 x K+1)
  * @param[in] u normalized parameter: u \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
@@ -60,7 +60,7 @@ using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Do
  */
 template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
 inline G cspline_eval_diff(const Range & diff_points,
-  const Eigen::MatrixBase<Derived> & cum_coef_mat,
+  const Eigen::MatrixBase<Derived> & BC,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
   detail::OptTangent<G> acc     = {},
@@ -87,17 +87,17 @@ inline G cspline_eval_diff(const Range & diff_points,
 
   G g = Identity<G>();
   for (std::size_t j = 1; const auto & v : diff_points) {
-    const Scalar<G> Btilde = uvec.dot(cum_coef_mat.row(j));
+    const Scalar<G> Btilde = uvec.dot(BC.row(j));
     g                      = composition(g, ::smooth::exp<G>(Btilde * v));
 
     if (vel.has_value() || acc.has_value()) {
-      const Scalar<G> dBtilde = duvec.dot(cum_coef_mat.row(j));
+      const Scalar<G> dBtilde = duvec.dot(BC.row(j));
       const auto Ad_bt_v      = Ad(::smooth::exp<G>(-Btilde * v));
       vel.value().applyOnTheLeft(Ad_bt_v);
       vel.value() += dBtilde * v;
 
       if (acc.has_value()) {
-        const Scalar<G> d2Btilde = d2uvec.dot(cum_coef_mat.row(j));
+        const Scalar<G> d2Btilde = d2uvec.dot(BC.row(j));
         acc.value().applyOnTheLeft(Ad_bt_v);
         acc.value() += dBtilde * ad<G>(vel.value()) * v + d2Btilde * v;
       }
@@ -112,7 +112,7 @@ inline G cspline_eval_diff(const Range & diff_points,
 
     for (int j = K; j >= 0; --j) {
       if (j != K) {
-        const Scalar<G> Btilde_jp = uvec.dot(cum_coef_mat.row(j + 1));
+        const Scalar<G> Btilde_jp = uvec.dot(BC.row(j + 1));
         const Tangent<G> & vjp    = *(std::ranges::begin(diff_points) + j);
         const Tangent<G> sjp      = Btilde_jp * vjp;
 
@@ -122,7 +122,7 @@ inline G cspline_eval_diff(const Range & diff_points,
         z2inv = composition(z2inv, ::smooth::exp<G>(-sjp));
       }
 
-      const Scalar<G> Btilde_j = uvec.dot(cum_coef_mat.row(j));
+      const Scalar<G> Btilde_j = uvec.dot(BC.row(j));
       if (j != 0) {
         const Tangent<G> & vj = *(std::ranges::begin(diff_points) + j - 1);
         der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>) +=
@@ -146,7 +146,7 @@ inline G cspline_eval_diff(const Range & diff_points,
  * @tparam K spline order
  * @param[in] gs LieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K +
  * 1)
- * @param[in] cum_coef_mat matrix of cumulative base coefficients (size K+1 x K+1)
+ * @param[in] BC matrix of cumulative base coefficients (size K+1 x K+1)
  * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
@@ -157,7 +157,7 @@ template<std::size_t K,
   typename Derived,
   LieGroup G = std::ranges::range_value_t<R>>
 inline G cspline_eval(const R & gs,
-  const Eigen::MatrixBase<Derived> & cum_coef_mat,
+  const Eigen::MatrixBase<Derived> & BC,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
   detail::OptTangent<G> acc     = {},
@@ -169,7 +169,7 @@ inline G cspline_eval(const R & gs,
   for (auto i = 0u; i != K; ++i) { diff_pts[i] = rminus(*b2++, *b1++); }
 
   return composition(
-    *std::ranges::begin(gs), cspline_eval_diff<K, G>(diff_pts, cum_coef_mat, u, vel, acc, der));
+    *std::ranges::begin(gs), cspline_eval_diff<K, G>(diff_pts, BC, u, vel, acc, der));
 }
 
 }  // namespace smooth

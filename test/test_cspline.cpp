@@ -58,7 +58,7 @@ TYPED_TEST(CSpline, BSplineConstantCtrlpts)
     for (auto i = 0u; i != K; ++i) { ctrl_pts.push_back(ctrl_pts.back()); }
 
     constexpr auto M_s =
-      smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, K>().transpose();
+      smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     for (double u = 0.; u < 1; u += 0.05) {
@@ -89,7 +89,7 @@ TYPED_TEST(CSpline, BSplineConstantDiffvec)
     for (auto i = 0u; i != K; ++i) { diff_vec.push_back(Tangent::Zero()); }
 
     constexpr auto M_s =
-      smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, K>().transpose();
+      smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     for (double u = 0.; u < 1; u += 0.05) {
@@ -116,7 +116,8 @@ TYPED_TEST(CSpline, DerivBspline)
   diff_pts.push_back(Tangent::Random());
   diff_pts.push_back(Tangent::Random());
 
-  constexpr auto M_s = smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, 3>().transpose();
+  constexpr auto M_s =
+    smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, 3>().transpose();
   Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
   Tangent vel;
@@ -146,7 +147,7 @@ TYPED_TEST(CSpline, DerivBezier)
   diff_pts.push_back(Tangent::Random());
 
   constexpr auto M_s =
-    smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bernstein, 3>().transpose();
+    smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bernstein, 3>().transpose();
   Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
   Tangent vel;
@@ -210,7 +211,8 @@ TEST(CSpline, BSplineDerivT1)
 
   double u = 0.5;
 
-  constexpr auto M_s = smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, 3>().transpose();
+  constexpr auto M_s =
+    smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, 3>().transpose();
   Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(M_s[0].data());
 
   Eigen::Matrix<double, 1, 4> jac;
@@ -235,7 +237,7 @@ TEST(CSpline, BSplineDerivSO3)
     for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::SO3d::Random()); }
 
     constexpr auto M_s =
-      smooth::basis_cum_coefmat<smooth::PolynomialBasis::Bspline, 3>().transpose();
+      smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, 3>().transpose();
     Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(M_s[0].data());
 
     Eigen::Matrix<double, 3, 12> jac;

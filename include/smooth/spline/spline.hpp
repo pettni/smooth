@@ -35,9 +35,8 @@
 #include <cassert>
 #include <ranges>
 
-#include "smooth/internal/utils.hpp"
+#include "smooth/polynomial/basis.hpp"
 
-#include "basis.hpp"
 #include "cumulative_spline.hpp"
 
 namespace smooth {
@@ -167,13 +166,14 @@ public:
     if (T <= 0) {
       return Spline();
     } else {
-      static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, K>();
+      static constexpr auto B_s = polynomial_basis<PolynomialBasis::Bernstein, K>();
       Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
       Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
       rhs.row(1)                               = T * v;
 
       Eigen::Matrix<double, Dof<G>, K + 1> V = B.lu().solve(rhs).transpose();
+
       return Spline(T, std::move(V), ga);
     }
   }
@@ -192,7 +192,7 @@ public:
     double T     = 1,
     const G & ga = Identity<G>()) requires(K >= 3)
   {
-    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, K>();
+    static constexpr auto B_s = polynomial_basis<PolynomialBasis::Bernstein, K>();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
     static constexpr auto U0_s  = monomial_derivative<K, double>(0., 0);
@@ -203,13 +203,13 @@ public:
     Eigen::Matrix<double, K + 1, K + 1> lhs  = Eigen::Matrix<double, K + 1, K + 1>::Zero();
     Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
 
-    lhs.row(0) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U0_s.data()).transpose() * B;
+    lhs.row(0) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U0_s[0].data()).transpose() * B;
     rhs.row(0).setZero();
-    lhs.row(1) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU0_s.data()).transpose() * B;
+    lhs.row(1) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU0_s[0].data()).transpose() * B;
     rhs.row(1) = T * va;
-    lhs.row(2) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U1_s.data()).transpose() * B;
+    lhs.row(2) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U1_s[0].data()).transpose() * B;
     rhs.row(2) = gb - ga;
-    lhs.row(3) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU1_s.data()).transpose() * B;
+    lhs.row(3) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU1_s[0].data()).transpose() * B;
     rhs.row(3) = T * vb;
 
     for (auto i = 4u; i < K + 1; ++i) { lhs.row(i) = Eigen::Matrix<double, 1, K + 1>::Unit(i) * B; }
@@ -380,7 +380,8 @@ public:
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
 
-    static constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bernstein, 3>().transpose();
+    static constexpr auto M_s =
+      polynomial_cumulative_basis<PolynomialBasis::Bernstein, 3>().transpose();
     Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     G g0 = istar == 0 ? g0_ : end_g_[istar - 1];
@@ -442,7 +443,7 @@ public:
   {
     Tangent<G> ret = Tangent<G>::Zero();
 
-    static constexpr auto B_s = basis_coefmat<PolynomialBasis::Bernstein, K>();
+    static constexpr auto B_s = polynomial_basis<PolynomialBasis::Bernstein, K>();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
 
     for (auto i = 0u; i < end_t_.size(); ++i) {

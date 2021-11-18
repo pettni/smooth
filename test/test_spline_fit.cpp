@@ -73,7 +73,7 @@ TEST(FitCurve, MinJerk5)
   smooth::spline_specs::MinDerivative<double, K, 3> ss{};
   const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, ss);
 
-  constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, K>();
+  constexpr auto Ms = smooth::polynomial_basis<smooth::PolynomialBasis::Bernstein, K>();
   Eigen::MatrixXd M =
     Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 
@@ -97,7 +97,7 @@ TEST(FitCurve, MinJerk6)
   smooth::spline_specs::MinDerivative<double, K, 3> ss{};
   const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, ss);
 
-  constexpr auto Ms = smooth::basis_coefmat<smooth::PolynomialBasis::Bernstein, K>();
+  constexpr auto Ms = smooth::polynomial_basis<smooth::PolynomialBasis::Bernstein, K>();
   Eigen::MatrixXd M =
     Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 

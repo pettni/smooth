@@ -39,8 +39,8 @@
 
 #include "smooth/manifold_vector.hpp"
 #include "smooth/optim.hpp"
+#include "smooth/polynomial/basis.hpp"
 
-#include "basis.hpp"
 #include "cumulative_spline.hpp"
 
 namespace smooth {
@@ -163,10 +163,10 @@ public:
       u = (t - t0_ - istar * dt_) / dt_;
     }
 
-    constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bspline, K>().transpose();
+    constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>().transpose();
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
-    // gcc 11.1 bug can handle uint64_t
+    // gcc 11.1 bug can't handle uint64_t
     G g = cspline_eval<K>(
       ctrl_pts_ | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, vel, acc);
 
@@ -212,7 +212,7 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
   const std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));
   const std::size_t NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
 
-  constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bspline, K>().transpose();
+  constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>().transpose();
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
   auto f = [&](const auto & var) {
@@ -230,7 +230,7 @@ BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
       const double u      = (*t_iter - t0 - istar * dt) / dt;
 
       Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_vali_pts;
-      // gcc 11.1 bug can handle uint64_t
+      // gcc 11.1 bug can't handle uint64_t
       auto g_spline = cspline_eval<K>(
         var | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);
 

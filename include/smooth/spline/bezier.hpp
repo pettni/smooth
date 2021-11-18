@@ -33,8 +33,8 @@
 
 #include <cassert>
 
-#include "basis.hpp"
 #include "cumulative_spline.hpp"
+#include "smooth/polynomial/basis.hpp"
 
 namespace smooth {
 
@@ -113,7 +113,8 @@ public:
       if (acc.has_value()) { acc.value().setZero(); }
       return g0_;
     } else {
-      constexpr auto M_s = basis_cum_coefmat<PolynomialBasis::Bernstein, double, K>().transpose();
+      constexpr auto M_s =
+        polynomial_cumulative_basis<PolynomialBasis::Bernstein, double, K>().transpose();
       Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
       return composition(
