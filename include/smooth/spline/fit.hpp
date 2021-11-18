@@ -433,14 +433,36 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
   }
 
   Spline<K, G> ret;
-  for (auto i = 0u; const auto & g : gs) {
+  for (auto i = 0u; i < N; ++i) {
     if (i + 1 < N) {
-      ret.concat_global(Spline<K, G>(dts[i], V.template block<Dof<G>, K + 1>(0, i * (K + 1)), g));
+      const Eigen::Matrix<double, Dof<G>, K + 1> coefs =
+        V.template block<Dof<G>, K + 1>(0, i * (K + 1));
+      // spline is in cumulative form, need to get cumulative coefficients
+      Eigen::Matrix<double, Dof<G>, K> cum_coefs = coefs.rightCols(K) - coefs.leftCols(K);
+
+      if constexpr (K > 2) {
+        // modify segment to ensure it is interpolating
+        // want exp(v1) * ... * exp(vK) = inv(g) * gnext
+        std::size_t mid = K / 2;
+
+        G midval = composition<G>(inverse<G>(gs[i]), gs[i + 1]);
+        for (int k = mid - 1; k >= 0; --k) {
+          midval = composition<G>(::smooth::exp<G>(-cum_coefs.col(k)), midval);
+        }
+        for (int k = K - 1; k > int(mid); --k) {
+          midval = composition<G>(midval, ::smooth::exp<G>(-cum_coefs.col(k)));
+        }
+        cum_coefs.col(mid) = log<G>(midval);
+      }
+
+      ret.concat_global(Spline<K, G>(dts[i], cum_coefs, gs[i]));
     } else {
-      ret.concat_global(g);
+      ret.concat_global(gs[i]);
     }
-    ++i;
   }
+
+  // TODO: modify spline to ensure it is interpolating
+
   return ret;
 }
 

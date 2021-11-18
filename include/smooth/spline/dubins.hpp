@@ -259,8 +259,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
  * @param R turning radius.
  * @return Spline representing a Dubins motion starting at Identity.
  */
-template<std::size_t K>
-Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1) requires(K >= 1)
+template<std::size_t K = 3>
+  requires(K >= 1)
+Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
 {
   const auto desc = dubins(gb, R);
 

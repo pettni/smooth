@@ -124,9 +124,9 @@ TEST(FitCurve, Minimize)
 
 TEST(FitCurve, Basic)
 {
-  std::vector<double> ts{0, 1, 1.5, 2, 3};
+  std::vector<double> ts{0, 1, 1.5, 2, 3, 4};
   std::vector<smooth::SO3d> gs{
-    smooth::SO3d::Identity(),
+    smooth::SO3d::Random(),
     smooth::SO3d::Random(),
     smooth::SO3d::Random(),
     smooth::SO3d::Random(),

@@ -273,22 +273,3 @@ TYPED_TEST(CSpline, BSplineFit)
   ASSERT_GE(spline.t_max(), 6);
 }
 
-TEST(CSpline, TangentBezier)
-{
-  std::srand(14);
-  static constexpr auto K = 3;
-
-  for (auto i = 0u; i != 5; ++i) {
-    smooth::SO3d g0               = smooth::SO3d::Random();
-    Eigen::Matrix<double, 3, K> V = Eigen::Matrix<double, 3, K>::Random();
-    smooth::TangentBezier<K, smooth::SO3d> bz(g0, V.colwise());
-
-    Eigen::Vector3d vel, acc;
-    const auto beg = bz(0, vel, acc);
-    ASSERT_TRUE(beg.isApprox(g0));
-    ASSERT_TRUE(vel.isApprox(3 * V.col(0)));
-
-    bz(1, vel, acc);
-    ASSERT_TRUE(vel.isApprox(3 * (V.col(2) - V.col(1))));
-  }
-}

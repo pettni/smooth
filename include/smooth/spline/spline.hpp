@@ -53,6 +53,11 @@ namespace smooth {
 template<std::size_t K, LieGroup G>
 class Spline
 {
+private:
+  static constexpr auto B_s_ = polynomial_cumulative_basis<PolynomialBasis::Bernstein, K, double>();
+  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B_ =
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(B_s_[0].data());
+
 public:
   /**
    * @brief Default constructor creates an empty Spline starting at a given point.
@@ -64,56 +69,59 @@ public:
   /**
    * @brief Create Spline with one segment and given velocity control points
    *
-   * @param T duration (must be strictly positive)
+   * @param T duration (strictly positive)
    * @param V velocities for segment
    * @param ga Spline starting point (defaults to identity)
    */
-  Spline(double T, Eigen::Matrix<double, Dof<G>, K + 1> && V, const G & ga = Identity<G>())
+  Spline(double T, Eigen::Matrix<double, Dof<G>, K> && V, const G & ga = Identity<G>())
       : g0_{ga}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
 
     end_g_.resize(1);
-    end_g_[0] = composition(ga,
-      ::smooth::exp<G>(
-        evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[0].colwise(), 1., 0.)));
+    if constexpr (K == 0) {
+      end_g_[0] = g0_;
+    } else {
+      end_g_[0] = composition(g0_, cspline_eval_diff<K, G>(Vs_[0].colwise(), B_, 1.));
+    }
   }
 
   /**
    * @brief Create Spline with one segment and given velocity control points
    *
-   * @param T duration (must be strictly positive)
+   * @param T duration (strictly positive)
    * @param V velocities for segment
    * @param ga Spline starting point (defaults to identity)
    */
   template<typename Derived>
   Spline(double T, const Eigen::MatrixBase<Derived> & V, const G & ga = Identity<G>())
-      : Spline(T, Eigen::Matrix<double, Dof<G>, K + 1>(V), ga)
+      : Spline(T, Eigen::Matrix<double, Dof<G>, K>(V), ga)
   {}
 
   /**
    * @brief Create Spline with one segment and given velocities
    *
-   * @param T duration (must be strictly positive)
-   * @param vs velocity constants (must be of size K)
+   * @param T duration (strictly positive)
+   * @param vs velocity constants (size K)
    * @param ga Spline starting point (defaults to identity)
    */
   template<std::ranges::range Rv>
-  Spline(double T, const Rv & vs, const G & ga = Identity<G>()) requires(
-    std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
+    requires(std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
+  Spline(double T, const Rv & vs, const G & ga = Identity<G>())
       : g0_(ga), end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
     assert(std::ranges::size(vs) == K);
 
     Vs_.resize(1);
-    Vs_[0].col(0).setZero();
-    for (auto i = 1u; const auto & v : vs) { Vs_[0].col(i++) = v; }
+    for (auto i = 0u; const auto & v : vs) { Vs_[0].col(i++) = v; }
 
     end_g_.resize(1);
-    end_g_[0] = composition(ga,
-      ::smooth::exp<G>(
-        evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[0].colwise(), 1., 0)));
+    if constexpr (K == 0) {
+      end_g_[0] = g0_;
+    } else {
+      end_g_[0] = composition(g0_, cspline_eval_diff<K, G>(Vs_[0].colwise(), B_, 1.));
+    }
   }
 
   /// @brief Copy constructor
@@ -166,14 +174,7 @@ public:
     if (T <= 0) {
       return Spline();
     } else {
-      static constexpr auto B_s = polynomial_basis<PolynomialBasis::Bernstein, K>();
-      Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
-
-      Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
-      rhs.row(1)                               = T * v;
-
-      Eigen::Matrix<double, Dof<G>, K + 1> V = B.lu().solve(rhs).transpose();
-
+      Eigen::Matrix<double, Dof<G>, K> V = (T / 3) * v.replicate(1, K);
       return Spline(T, std::move(V), ga);
     }
   }
@@ -190,31 +191,13 @@ public:
     const Tangent<G> & va,
     const Tangent<G> & vb,
     double T     = 1,
-    const G & ga = Identity<G>()) requires(K >= 3)
+    const G & ga = Identity<G>()) requires(K == 3)
   {
-    static constexpr auto B_s = polynomial_basis<PolynomialBasis::Bernstein, K>();
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
-
-    static constexpr auto U0_s  = monomial_derivative<K, double>(0., 0);
-    static constexpr auto U1_s  = monomial_derivative<K, double>(1., 0);
-    static constexpr auto dU0_s = monomial_derivative<K, double>(0., 1);
-    static constexpr auto dU1_s = monomial_derivative<K, double>(1., 1);
-
-    Eigen::Matrix<double, K + 1, K + 1> lhs  = Eigen::Matrix<double, K + 1, K + 1>::Zero();
-    Eigen::Matrix<double, K + 1, Dof<G>> rhs = Eigen::Matrix<double, K + 1, Dof<G>>::Zero();
-
-    lhs.row(0) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U0_s[0].data()).transpose() * B;
-    rhs.row(0).setZero();
-    lhs.row(1) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU0_s[0].data()).transpose() * B;
-    rhs.row(1) = T * va;
-    lhs.row(2) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(U1_s[0].data()).transpose() * B;
-    rhs.row(2) = gb - ga;
-    lhs.row(3) = Eigen::Map<const Eigen::Matrix<double, K + 1, 1>>(dU1_s[0].data()).transpose() * B;
-    rhs.row(3) = T * vb;
-
-    for (auto i = 4u; i < K + 1; ++i) { lhs.row(i) = Eigen::Matrix<double, 1, K + 1>::Unit(i) * B; }
-
-    Eigen::Matrix<double, Dof<G>, K + 1> V = lhs.lu().solve(rhs).transpose();
+    Eigen::Matrix<double, Dof<G>, K> V;
+    V.col(0) = T * va / 3;
+    V.col(2) = T * vb / 3;
+    V.col(1) = log(composition(
+      ::smooth::exp<G>(-V.col(0)), composition(inverse(ga), gb), ::smooth::exp<G>(-V.col(2))));
     return Spline(T, std::move(V), ga);
   }
 
@@ -359,18 +342,29 @@ public:
   }
 
   /**
-   * @brief Evaluate Spline at given time.
+   * @brief Evaluate Curve at given time.
    *
-   * @param t time point to evaluate at
-   * @return Spline value at time t
+   * @param[in] t time point to evaluate at
+   * @param[out] vel output body velocity at evaluation time
+   * @param[out] acc output body acceleration at evaluation time
+   * @return value at time t
    *
-   * @note Outside the support [t_min(), t_max()] the result is clamped to the end points
+   * @note Outside the support [t_min(), t_max()] the result is clamped to the end points, and
+   * the acceleration and velocity is zero.
    */
-  G val(double t) const
+  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
   {
-    if (empty() || t < 0) { return g0_; }
+    if (empty() || t < 0) {
+      if (vel.has_value()) { vel.value().setZero(); }
+      if (acc.has_value()) { acc.value().setZero(); }
+      return Identity<G>();
+    }
 
-    if (t > t_max()) { return end_g_.back(); }
+    if (t > t_max()) {
+      if (vel.has_value()) { vel.value().setZero(); }
+      if (acc.has_value()) { acc.value().setZero(); }
+      return end_g_.back();
+    }
 
     const auto istar = find_idx(t);
 
@@ -379,53 +373,25 @@ public:
 
     const double Del = seg_Del_[istar];
     const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
-
-    static constexpr auto M_s =
-      polynomial_cumulative_basis<PolynomialBasis::Bernstein, 3>().transpose();
-    Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     G g0 = istar == 0 ? g0_ : end_g_[istar - 1];
 
-    // compensate for cropped intervals
-    if (seg_T0_[istar] > 0) {
-      const Tangent<G> v =
-        evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[istar].colwise(), seg_T0_[istar], 0);
-      g0 = composition(g0, inverse(::smooth::exp<G>(v)));
+    if constexpr (K == 0) {
+      // piecewise constant, nothing to evaluate
+      if (vel.has_value()) { vel.value().setZero(); }
+      if (acc.has_value()) { acc.value().setZero(); }
+      return g0;
+    } else {
+      // compensate for cropped intervals
+      if (seg_T0_[istar] > 0) {
+        g0 = composition(
+          g0, inverse(cspline_eval_diff<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
+      }
+      const G g = composition(g0, cspline_eval_diff<K, G>(Vs_[istar].colwise(), B_, u, vel, acc));
+      if (vel.has_value()) { vel.value() *= Del / T; }
+      if (acc.has_value()) { acc.value() *= Del * Del / (T * T); }
+      return g;
     }
-
-    const Tangent<G> v =
-      evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[istar].colwise(), u, 0);
-    return composition(g0, ::smooth::exp<G>(v));
-  }
-
-  /**
-   * @brief Evaluate spline.
-   *
-   * @see val()
-   */
-  G operator()(double t) const { return val(t); }
-
-  /**
-   * @brief Evaluate derivative of Spline at given time
-   * @param t time point to evaluate at
-   * @param p differentiation order (must be greater than or equal to 1)
-   */
-  Tangent<G> der(double t, int p = 1) const
-  {
-    assert(p >= 1);
-
-    if (empty() || t < 0 || t > t_max()) { return Tangent<G>::Zero(); }
-
-    const auto istar = find_idx(t);
-
-    const double ta = istar == 0 ? 0 : end_t_[istar - 1];
-    const double T  = end_t_[istar] - ta;
-
-    const double Del = seg_Del_[istar];
-    const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
-
-    return evaluate_polynomial<PolynomialBasis::Bernstein, K>(Vs_[istar].colwise(), u, p)
-         * std::pow(Del / T, p);
   }
 
   /**
@@ -443,15 +409,12 @@ public:
   {
     Tangent<G> ret = Tangent<G>::Zero();
 
-    static constexpr auto B_s = polynomial_basis<PolynomialBasis::Bernstein, K>();
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
-
     for (auto i = 0u; i < end_t_.size(); ++i) {
       // check if we have reached t
       if (i > 0 && t <= end_t_[i - 1]) { break; }
 
       // polynomial coefficients a0 + a1 x + a2 x2 + a3 x3
-      const Eigen::Matrix<double, K + 1, Dof<G>> coefs = B * Vs_[i].transpose();
+      const Eigen::Matrix<double, K + 1, Dof<G>> coefs = B_.rightCols(K) * Vs_[i].transpose();
 
       const double ta = i == 0 ? 0 : end_t_[i - 1];
       const double tb = end_t_[i];
@@ -504,7 +467,7 @@ public:
 
     std::vector<double> end_t(Nseg);
     std::vector<G> end_g(Nseg);
-    std::vector<Eigen::Matrix<double, Dof<G>, K + 1>> vs(Nseg);
+    std::vector<Eigen::Matrix<double, Dof<G>, K>> vs(Nseg);
     std::vector<double> seg_T0(Nseg), seg_Del(Nseg);
 
     // copy over all relevant segments
@@ -593,7 +556,7 @@ private:
   std::vector<G> end_g_;
 
   // segment bezier velocities
-  std::vector<Eigen::Matrix<double, Dof<G>, K + 1>> Vs_;
+  std::vector<Eigen::Matrix<double, Dof<G>, K>> Vs_;
 
   // segment crop information
   std::vector<double> seg_T0_, seg_Del_;
