@@ -119,32 +119,103 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> bernstein_basis()
 }
 
 /**
- * @brief Legendre polynomial basis coefficients.
+ * @brief Hermite coefficient matrix.
+ *
+ * Returns a row-major matrix B s.t. Hermite polynomials up to degree K can be evaluated as
+ * \f[
+ *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
+ *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
+ * \f]
+ */
+template<std::size_t K, typename Scalar = double>
+constexpr StaticMatrix<Scalar, K + 1, K + 1> hermite_basis()
+{
+  StaticMatrix<Scalar, K + 1, K + 1> ret;
+  ret[0][0] = 1;
+
+  if constexpr (K > 0) { ret[1][1] = 2; }
+
+  if constexpr (K > 1) {
+    for (auto k = 2u; k < K + 1; ++k) {
+      for (auto i = 0u; i < k; ++i) { ret[i + 1][k] += 2 * ret[i][k - 1]; }
+      for (auto i = 0u; i + 1 < k; ++i) { ret[i][k] -= 2 * (k - 1) * ret[i][k - 2]; }
+    }
+  }
+  return ret;
+}
+
+/**
+ * @brief Laguerre coefficient matrix.
+ *
+ * Returns a row-major matrix B s.t. Laguerre polynomials up to degree K can be evaluated as
+ * \f[
+ *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
+ *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
+ * \f]
+ */
+template<std::size_t K, typename Scalar = double>
+constexpr StaticMatrix<Scalar, K + 1, K + 1> laguerre_basis()
+{
+  StaticMatrix<Scalar, K + 1, K + 1> ret;
+  ret[0][0] = 1;
+
+  if constexpr (K > 0) {
+    ret[0][1] = 1.;
+    ret[1][1] = -1;
+  }
+
+  if constexpr (K > 1) {
+    for (auto k = 2u; k < K + 1; ++k) {
+      for (auto i = 0u; i < k; ++i) {
+        ret[i][k] += (2 * k - 1) * ret[i][k - 1] / k;
+        ret[i + 1][k] -= ret[i][k - 1] / k;
+      }
+      for (auto i = 0u; i + 1 < k; ++i) {
+        ret[i][k] -= static_cast<double>(k - 1) * ret[i][k - 2] / k;
+      }
+    }
+  }
+  return ret;
+}
+
+/**
+ * @brief Jacobi polynomial basis coefficients.
  *
  * @tparam K polynomial degree
- *
- * TODO Generalize to Jacobi polynomials
+ * @param alpha first Jacobi parameter
+ * @param beta second Jacobi parameter
  *
  * Computes a matrix B s.t.
  *  [p_0(x) p_1(x) ... p_K(x)] = [1 x x^2 ... x^K] * B
- * where p_i are the Legendre polynomials.
+ * where p_i are the (\alpha, \beta)-Jacobi polynomials.
+ *
+ * @note The Legebdre polynomials are the special case alpha = beta = 0
+ *
+ * @note The Chebyshev polynomials are the special case alpha = beta = -1/2
  */
 template<std::size_t K, typename Scalar = double>
-constexpr StaticMatrix<Scalar, K + 1, K + 1> legendre_basis()
+constexpr StaticMatrix<Scalar, K + 1, K + 1> jacobi_basis(double alpha, double beta)
 {
   StaticMatrix<Scalar, K + 1, K + 1> ret;
-
   ret[0][0] = 1;
-  if constexpr (K == 0) { return ret; }
 
-  ret[1][1] = 1;
+  if constexpr (K > 0) {
+    ret[0][1] = alpha + 1. - (alpha + beta + 2) / 2;
+    ret[1][1] = (alpha + beta + 2.) / 2;
+  }
 
-  for (auto k = 2u; k < K + 1; ++k) {
-    for (auto i = 0u; i < k; ++i) {
-      ret[i + 1][k] += static_cast<Scalar>(2 * k - 1) * ret[i][k - 1] / k;
-    }
-    for (auto i = 0u; i + 1 < k; ++i) {
-      ret[i][k] -= static_cast<Scalar>(k - 1) * ret[i][k - 2] / k;
+  if constexpr (K > 1) {
+    for (auto k = 2u; k < K + 1; ++k) {
+      const auto frac = 1. / ((2 * k) * (k + alpha + beta) * (2 * k + alpha + beta - 2));
+      const auto c1   = (2 * k + alpha + beta - 1) * (alpha * alpha - beta * beta);
+      const auto c2 =
+        (2 * k + alpha + beta - 1) * (2 * k + alpha + beta) * (2 * k + alpha + beta - 2);
+      const auto c3 = 2 * (k + alpha - 1) * (k + beta - 1) * (2 * k + alpha + beta);
+      for (auto i = 0u; i < k; ++i) {
+        ret[i][k] += c1 * ret[i][k - 1] * frac;
+        ret[i + 1][k] += c2 * ret[i][k - 1] * frac;
+      }
+      for (auto i = 0u; i + 1 < k; ++i) { ret[i][k] -= c3 * ret[i][k - 2] * frac; }
     }
   }
 
@@ -154,7 +225,24 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> legendre_basis()
 }  // namespace detail
 
 /// @brief Polynomial basis types.
-enum class PolynomialBasis { Bernstein, Bspline, Legendre, Monomial };
+enum class PolynomialBasis {
+  /// @brief Basis on [0, 1] with left->right ordering
+  Bernstein,
+  /// @brief Basis with left->right ordering and shifting support
+  Bspline,
+  /// @brief Orthogonal basis on [-1, 1] w.r.t the weight 1 / sqrt(1-x^2)
+  Chebyshev1st,
+  /// @brief Orthogonal basis on [-1, 1] w.r.t the weight sqrt(1-x^2)
+  Chebyshev2nd,
+  /// @brief Orthogonal basis on [-inf, inf] w.r.t the weight exp(-x^2)
+  Hermite,
+  /// @brief Orthogonal basis on [0, inf] w.r.t the weight exp(-x)
+  Laguerre,
+  /// @brief Orthogonal basis on [-1, 1]
+  Legendre,
+  /// @brief The usual monomial basis (1, x, x^2, ...)
+  Monomial,
+};
 
 /**
  * @brief Compile-time coefficient matrix for given basis.
@@ -182,7 +270,27 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_basis()
   if constexpr (Basis == PolynomialBasis::Bernstein) {
     return detail::bernstein_basis<K, Scalar>();
   }
-  if constexpr (Basis == PolynomialBasis::Legendre) { return detail::legendre_basis<K, Scalar>(); }
+  if constexpr (Basis == PolynomialBasis::Laguerre) { return detail::laguerre_basis<K, Scalar>(); }
+  if constexpr (Basis == PolynomialBasis::Hermite) { return detail::hermite_basis<K, Scalar>(); }
+  if constexpr (Basis == PolynomialBasis::Legendre) {
+    return detail::jacobi_basis<K, Scalar>(0, 0);
+  }
+  if constexpr (Basis == PolynomialBasis::Chebyshev1st) {
+    auto ret       = detail::jacobi_basis<K, Scalar>(-0.5, -0.5);
+    const auto fac = monomial_derivative<K>(1.) * ret;
+    for (auto k = 0u; k < K + 1; ++k) {
+      for (auto r = 0u; r < K + 1; ++r) { ret[r][k] /= fac[0][k]; }
+    }
+    return ret;
+  }
+  if constexpr (Basis == PolynomialBasis::Chebyshev2nd) {
+    auto ret       = detail::jacobi_basis<K, Scalar>(0.5, 0.5);
+    const auto fac = monomial_derivative<K>(1.) * ret;
+    for (auto k = 0u; k < K + 1; ++k) {
+      for (auto r = 0u; r < K + 1; ++r) { ret[r][k] *= static_cast<Scalar>(k + 1) / fac[0][k]; }
+    }
+    return ret;
+  }
   if constexpr (Basis == PolynomialBasis::Bspline) { return detail::bspline_basis<K, Scalar>(); }
 }
 

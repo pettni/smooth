@@ -443,13 +443,13 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
       if constexpr (K > 2) {
         // modify segment to ensure it is interpolating
         // want exp(v1) * ... * exp(vK) = inv(g) * gnext
-        std::size_t mid = K / 2;
+        auto mid = K / 2;
 
         G midval = composition<G>(inverse<G>(gs[i]), gs[i + 1]);
-        for (int k = mid - 1; k >= 0; --k) {
+        for (auto k = 0; k < mid; ++k) {
           midval = composition<G>(::smooth::exp<G>(-cum_coefs.col(k)), midval);
         }
-        for (int k = K - 1; k > int(mid); --k) {
+        for (auto k = K - 1; k > mid; --k) {
           midval = composition<G>(midval, ::smooth::exp<G>(-cum_coefs.col(k)));
         }
         cum_coefs.col(mid) = log<G>(midval);
@@ -460,8 +460,6 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
       ret.concat_global(gs[i]);
     }
   }
-
-  // TODO: modify spline to ensure it is interpolating
 
   return ret;
 }

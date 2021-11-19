@@ -290,6 +290,194 @@ TEST(Polynomial, Legendre)
   static_assert(U_B[0][5] == 0.08984375);
 }
 
+TEST(Polynomial, Chebyshev1st)
+{
+  constexpr auto B = smooth::polynomial_basis<smooth::PolynomialBasis::Chebyshev1st, 5>();
+
+  static_assert(B[0][0] == 1.);
+  static_assert(B[1][0] == 0.);
+  static_assert(B[2][0] == 0.);
+  static_assert(B[3][0] == 0.);
+  static_assert(B[4][0] == 0.);
+  static_assert(B[5][0] == 0);
+
+  static_assert(B[0][1] == 0);
+  static_assert(B[1][1] == 1);
+  static_assert(B[2][1] == 0);
+  static_assert(B[3][1] == 0);
+  static_assert(B[4][1] == 0);
+  static_assert(B[5][1] == 0);
+
+  static_assert(B[0][2] == -1.);
+  static_assert(B[1][2] == 0);
+  static_assert(B[2][2] == 2.);
+  static_assert(B[3][2] == 0);
+  static_assert(B[4][2] == 0);
+  static_assert(B[5][2] == 0);
+
+  static_assert(B[0][3] == 0.);
+  static_assert(B[1][3] == -3.);
+  static_assert(B[2][3] == 0.);
+  static_assert(B[3][3] == 4.);
+  static_assert(B[4][3] == 0);
+  static_assert(B[5][3] == 0);
+
+  static_assert(B[0][4] == 1.);
+  static_assert(B[1][4] == 0);
+  static_assert(B[2][4] == -8.);
+  static_assert(B[3][4] == 0);
+  static_assert(B[4][4] == 8.);
+  static_assert(B[5][4] == 0);
+
+  static_assert(B[0][5] == 0.);
+  static_assert(B[1][5] == 5.);
+  static_assert(B[2][5] == 0.);
+  static_assert(B[3][5] == -20.);
+  static_assert(B[4][5] == 0.);
+  static_assert(B[5][5] == 16.);
+}
+
+TEST(Polynomial, Chebyshev2nd)
+{
+  constexpr auto B = smooth::polynomial_basis<smooth::PolynomialBasis::Chebyshev2nd, 5>();
+
+  static_assert(B[0][0] == 1.);
+  static_assert(B[1][0] == 0.);
+  static_assert(B[2][0] == 0.);
+  static_assert(B[3][0] == 0.);
+  static_assert(B[4][0] == 0.);
+  static_assert(B[5][0] == 0);
+
+  static_assert(B[0][1] == 0);
+  static_assert(B[1][1] == 2);
+  static_assert(B[2][1] == 0);
+  static_assert(B[3][1] == 0);
+  static_assert(B[4][1] == 0);
+  static_assert(B[5][1] == 0);
+
+  static_assert(B[0][2] == -1.);
+  static_assert(B[1][2] == 0);
+  static_assert(B[2][2] == 4.);
+  static_assert(B[3][2] == 0);
+  static_assert(B[4][2] == 0);
+  static_assert(B[5][2] == 0);
+
+  static_assert(B[0][3] == 0.);
+  static_assert(B[1][3] == -4.);
+  static_assert(B[2][3] == 0.);
+  static_assert(B[3][3] == 8.);
+  static_assert(B[4][3] == 0);
+  static_assert(B[5][3] == 0);
+
+  static_assert(B[0][4] == 1.);
+  static_assert(B[1][4] == 0);
+  static_assert(B[2][4] == -12.);
+  static_assert(B[3][4] == 0);
+  static_assert(B[4][4] == 16.);
+  static_assert(B[5][4] == 0);
+
+  static_assert(B[0][5] == 0.);
+  static_assert(B[1][5] == 6.);
+  static_assert(B[2][5] == 0.);
+  static_assert(B[3][5] == -32.);
+  static_assert(B[4][5] == 0.);
+  static_assert(B[5][5] == 32.);
+}
+
+TEST(Polynomial, Hermite)
+{
+  constexpr auto B = smooth::polynomial_basis<smooth::PolynomialBasis::Hermite, 5>();
+
+  static_assert(B[0][0] == 1.);
+  static_assert(B[1][0] == 0.);
+  static_assert(B[2][0] == 0.);
+  static_assert(B[3][0] == 0.);
+  static_assert(B[4][0] == 0.);
+  static_assert(B[5][0] == 0);
+
+  static_assert(B[0][1] == 0);
+  static_assert(B[1][1] == 2);
+  static_assert(B[2][1] == 0);
+  static_assert(B[3][1] == 0);
+  static_assert(B[4][1] == 0);
+  static_assert(B[5][1] == 0);
+
+  static_assert(B[0][2] == -2.);
+  static_assert(B[1][2] == 0);
+  static_assert(B[2][2] == 4.);
+  static_assert(B[3][2] == 0);
+  static_assert(B[4][2] == 0);
+  static_assert(B[5][2] == 0);
+
+  static_assert(B[0][3] == 0.);
+  static_assert(B[1][3] == -12.);
+  static_assert(B[2][3] == 0.);
+  static_assert(B[3][3] == 8.);
+  static_assert(B[4][3] == 0);
+  static_assert(B[5][3] == 0);
+
+  static_assert(B[0][4] == 12.);
+  static_assert(B[1][4] == 0);
+  static_assert(B[2][4] == -48.);
+  static_assert(B[3][4] == 0);
+  static_assert(B[4][4] == 16.);
+  static_assert(B[5][4] == 0);
+
+  static_assert(B[0][5] == 0.);
+  static_assert(B[1][5] == 120.);
+  static_assert(B[2][5] == 0.);
+  static_assert(B[3][5] == -160.);
+  static_assert(B[4][5] == 0.);
+  static_assert(B[5][5] == 32.);
+}
+
+TEST(Polynomial, Laguerre)
+{
+  constexpr auto B = smooth::polynomial_basis<smooth::PolynomialBasis::Laguerre, 5>();
+
+  static_assert(B[0][0] == 1.);
+  static_assert(B[1][0] == 0.);
+  static_assert(B[2][0] == 0.);
+  static_assert(B[3][0] == 0.);
+  static_assert(B[4][0] == 0.);
+  static_assert(B[5][0] == 0);
+
+  static_assert(B[0][1] == 1);
+  static_assert(B[1][1] == -1);
+  static_assert(B[2][1] == 0);
+  static_assert(B[3][1] == 0);
+  static_assert(B[4][1] == 0);
+  static_assert(B[5][1] == 0);
+
+  static_assert(B[0][2] == 1.);
+  static_assert(B[1][2] == -2);
+  static_assert(B[2][2] == 0.5);
+  static_assert(B[3][2] == 0);
+  static_assert(B[4][2] == 0);
+  static_assert(B[5][2] == 0);
+
+  static_assert(std::abs(B[0][3] - 1.) < 1e-10);
+  static_assert(std::abs(B[1][3] - -18. / 6) < 1e-10);
+  static_assert(std::abs(B[2][3] - 9. / 6) < 1e-10);
+  static_assert(std::abs(B[3][3] - -1. / 6) < 1e-10);
+  static_assert(std::abs(B[4][3] - 0) < 1e-10);
+  static_assert(std::abs(B[5][3] - 0) < 1e-10);
+
+  static_assert(std::abs(B[0][4] - 1.) < 1e-10);
+  static_assert(std::abs(B[1][4] - -96. / 24) < 1e-10);
+  static_assert(std::abs(B[2][4] - 72. / 24) < 1e-10);
+  static_assert(std::abs(B[3][4] - -16. / 24) < 1e-10);
+  static_assert(std::abs(B[4][4] - 1. / 24) < 1e-10);
+  static_assert(std::abs(B[5][4] - 0) < 1e-10);
+
+  static_assert(std::abs(B[0][5] - 1.) < 1e-10);
+  static_assert(std::abs(B[1][5] - -600. / 120.) < 1e-10);
+  static_assert(std::abs(B[2][5] - 600. / 120) < 1e-10);
+  static_assert(std::abs(B[3][5] - -200. / 120) < 1e-10);
+  static_assert(std::abs(B[4][5] - 25. / 120) < 1e-10);
+  static_assert(std::abs(B[5][5] - -1. / 120) < 1e-10);
+}
+
 TEST(Polynomial, LGR)
 {
   static constexpr auto lgr2 = smooth::lgr_nodes<2>();

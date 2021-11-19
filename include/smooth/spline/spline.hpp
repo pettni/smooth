@@ -357,7 +357,7 @@ public:
     if (empty() || t < 0) {
       if (vel.has_value()) { vel.value().setZero(); }
       if (acc.has_value()) { acc.value().setZero(); }
-      return Identity<G>();
+      return g0_;
     }
 
     if (t > t_max()) {

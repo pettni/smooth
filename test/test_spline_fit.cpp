@@ -138,9 +138,11 @@ TEST(FitCurve, Basic)
   ASSERT_DOUBLE_EQ(c.t_min(), 0);
   ASSERT_DOUBLE_EQ(c.t_max(), 3);
 
+  ASSERT_TRUE(c(-1).isApprox(gs[0], 1e-6));
   ASSERT_TRUE(c(0).isApprox(gs[0], 1e-6));
   ASSERT_TRUE(c(1).isApprox(gs[1], 1e-6));
   ASSERT_TRUE(c(1.5).isApprox(gs[2], 1e-6));
   ASSERT_TRUE(c(2).isApprox(gs[3], 1e-6));
   ASSERT_TRUE(c(3).isApprox(gs[4], 1e-6));
+  ASSERT_TRUE(c(4).isApprox(gs[4], 1e-6));
 }
