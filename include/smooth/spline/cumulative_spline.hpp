@@ -26,6 +26,10 @@
 #ifndef SMOOTH__SPLINE__CUMULATIVE_SPLINE_HPP_
 #define SMOOTH__SPLINE__CUMULATIVE_SPLINE_HPP_
 
+/**
+ * @file Functions to evaluate cumulative splines.
+ */
+
 #include "smooth/lie_group.hpp"
 #include "smooth/polynomial/basis.hpp"
 

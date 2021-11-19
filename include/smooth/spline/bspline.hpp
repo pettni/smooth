@@ -37,8 +37,6 @@
 
 #include <Eigen/Sparse>
 
-#include "smooth/manifold_vector.hpp"
-#include "smooth/optim.hpp"
 #include "smooth/polynomial/basis.hpp"
 
 #include "cumulative_spline.hpp"
@@ -160,7 +158,7 @@ public:
       istar = ctrl_pts_.size() - K - 1;
       u     = 1;
     } else {
-      u = (t - t0_ - istar * dt_) / dt_;
+      u = std::clamp<double>((t - t0_ - istar * dt_) / dt_, 0., 1.);
     }
 
     constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
@@ -180,104 +178,6 @@ private:
   double t0_, dt_;
   std::vector<G> ctrl_pts_;
 };
-
-/**
- * @brief Fit a bpsline to data points \f$(t_i, g_i)\f$
- *        by solving the optimization problem
- *
- * \f[
- *   \min_{p}  \left\| p(t_i) - g_i \right\|^2
- * \f]
- *
- * @tparam K bspline degree
- * @param tt time values t_i (doubles, strictly increasing)
- * @param gg data values t_i
- * @param dt distance between spline control points
- */
-template<std::size_t K,
-  std::ranges::range Rt,
-  std::ranges::range Rg,
-  LieGroup G = std::ranges::range_value_t<Rg>>
-BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
-{
-  static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");
-
-  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
-
-  auto [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
-
-  const double t0 = *tmin_ptr;
-  const double t1 = *tmax_ptr;
-
-  const std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));
-  const std::size_t NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
-
-  constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
-  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
-
-  auto f = [&](const auto & var) {
-    Eigen::VectorXd ret(Dof<G> * NumData);
-
-    Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;
-    Jac.resize(Dof<G> * NumData, Dof<G> * NumPts);
-    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(Dof<G> * NumData, Dof<G> * (K + 1)));
-
-    auto t_iter = std::ranges::begin(tt);
-    auto g_iter = std::ranges::begin(gg);
-
-    for (auto i = 0u; i != NumData; ++t_iter, ++g_iter, ++i) {
-      const int64_t istar = static_cast<int64_t>((*t_iter - t0) / dt);
-      const double u      = (*t_iter - t0 - istar * dt) / dt;
-
-      Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_vali_pts;
-      // gcc 11.1 bug can't handle uint64_t
-      auto g_spline = cspline_eval<K>(
-        var | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);
-
-      const Tangent<G> resi = rminus(g_spline, *g_iter);
-
-      ret.segment<Dof<G>>(i * Dof<G>) = resi;
-
-      const Eigen::Matrix<double, Dof<G>, Dof<G>> d_resi_vali          = dr_expinv<G>(resi);
-      const Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_resi_pts = d_resi_vali * d_vali_pts;
-
-      for (auto r = 0u; r != Dof<G>; ++r) {
-        for (auto c = 0u; c != Dof<G> * (K + 1); ++c) {
-          Jac.insert(i * Dof<G> + r, istar * Dof<G> + c) = d_resi_pts(r, c);
-        }
-      }
-    }
-
-    Jac.makeCompressed();
-
-    return std::make_pair(std::move(ret), Eigen::MatrixXd(Jac));
-  };
-
-  // create optimization variable
-  ManifoldVector<G> ctrl_pts(NumPts);
-
-  // create initial guess
-  auto t_iter = std::ranges::begin(tt);
-  auto g_iter = std::ranges::begin(gg);
-  for (auto i = 0u; i != NumPts; ++i) {
-    const double t_target = t0 + (i - static_cast<double>(K - 1) / 2) * dt;
-    while (t_iter + 1 < std::ranges::end(tt)
-           && std::abs(t_target - *(t_iter + 1)) < std::abs(t_target - *t_iter)) {
-      ++t_iter;
-      ++g_iter;
-    }
-    ctrl_pts[i] = *g_iter;
-  }
-
-  // fit to data with loose convergence criteria
-  MinimizeOptions opts;
-  opts.ftol     = 1e-3;
-  opts.ptol     = 1e-3;
-  opts.max_iter = 10;
-  minimize<diff::Type::ANALYTIC>(f, smooth::wrt(ctrl_pts), opts);
-
-  return BSpline<K, G>(t0, dt, std::move(ctrl_pts));
-}
 
 }  // namespace smooth
 

@@ -28,7 +28,7 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/fit.hpp"
 
-TEST(FitCurve, OneDim)
+TEST(SplineFit, OneDim)
 {
   static constexpr auto K = 6;
   static constexpr auto B = smooth::PolynomialBasis::Bernstein;
@@ -63,7 +63,7 @@ TEST(FitCurve, OneDim)
   ASSERT_NEAR(df2_1, 0, 1e-4);
 }
 
-TEST(FitCurve, MinJerk5)
+TEST(SplineFit, MinJerk5)
 {
   static constexpr auto K = 5;
 
@@ -87,7 +87,7 @@ TEST(FitCurve, MinJerk5)
   ASSERT_NEAR(mon_coefs(5), dxvec[0] * 6, 1e-5);
 }
 
-TEST(FitCurve, MinJerk6)
+TEST(SplineFit, MinJerk6)
 {
   static constexpr auto K = 6;
 
@@ -112,7 +112,7 @@ TEST(FitCurve, MinJerk6)
   ASSERT_NEAR(mon_coefs(6), 0, 1e-5);
 }
 
-TEST(FitCurve, Minimize)
+TEST(SplineFit, Minimize)
 {
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{0, 0};
@@ -122,7 +122,7 @@ TEST(FitCurve, Minimize)
   ASSERT_LE(alpha.norm(), 1e-8);
 }
 
-TEST(FitCurve, Basic)
+TEST(SplineFit, Basic)
 {
   std::vector<double> ts{0, 1, 1.5, 2, 3, 4};
   std::vector<smooth::SO3d> gs{
@@ -145,4 +145,29 @@ TEST(FitCurve, Basic)
   ASSERT_TRUE(c(2).isApprox(gs[3], 1e-6));
   ASSERT_TRUE(c(3).isApprox(gs[4], 1e-6));
   ASSERT_TRUE(c(4).isApprox(gs[4], 1e-6));
+}
+
+TEST(SplineFit, Bspline)
+{
+  std::vector<double> tt;
+  std::vector<smooth::SO3d> gg;
+
+  tt.push_back(2);
+  tt.push_back(2.5);
+  tt.push_back(3.5);
+  tt.push_back(4.5);
+  tt.push_back(5.5);
+  tt.push_back(6);
+
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+  gg.push_back(smooth::SO3d::Random());
+
+  auto spline = smooth::fit_bspline<3>(tt, gg, 1);
+
+  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
+  ASSERT_GE(spline.t_max(), 6);
 }

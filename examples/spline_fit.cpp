@@ -56,6 +56,7 @@ int main(int, char const **)
   const auto c3_n = smooth::fit_spline(x, y, smooth::spline_specs::FixedDerCubic<G, 2>{});
   const auto c5   = smooth::fit_spline(x, y, smooth::spline_specs::MinDerivative<G, 6, 3, 4>{});
   const auto c6   = smooth::fit_spline(x, y, smooth::spline_specs::MinDerivative<G, 6, 4, 4>{});
+  const auto b    = smooth::fit_bspline<5>(x, y, 0.5);
 
 #ifdef ENABLE_PLOTTING
   std::vector<double> tt = matplot::linspace(-1, 6, 500);
@@ -69,10 +70,11 @@ int main(int, char const **)
   matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c3_n(t).quat().w(); })))->line_width(2);
   matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c5(t).quat().w(); })))->line_width(2);
   matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c6(t).quat().w(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return b(t).quat().w(); })))->line_width(2);
   matplot::plot(x, r2v(y | std::views::transform([&](auto g) { return g.quat().w(); })), "x")->marker_size(20);
   // clang-format on
   matplot::title("Values");
-  matplot::legend({"deg0", "deg1", "deg3_f", "deg3_n", "min_{jerk}", "min_{snap}"});
+  matplot::legend({"deg0", "deg1", "deg3_f", "deg3_n", "min_{jerk}", "min_{snap}", "bspline"});
 
   matplot::show();
 #endif

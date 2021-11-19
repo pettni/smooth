@@ -31,7 +31,6 @@
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/spline/bezier.hpp"
 #include "smooth/spline/bspline.hpp"
 
 #include "adapted.hpp"
@@ -133,35 +132,6 @@ TYPED_TEST(CSpline, DerivBspline)
   }
 }
 
-TYPED_TEST(CSpline, DerivBezier)
-{
-  TypeParam g0  = TypeParam::Random();
-  using Tangent = smooth::Tangent<TypeParam>;
-
-  std::vector<Tangent> diff_pts;
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
-
-  constexpr auto M_s = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bernstein, 3>();
-  Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
-
-  Tangent vel;
-
-  for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
-
-    auto g1 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
-    auto g2 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
-
-    Tangent df = (g2 - g1) / 2e-4;
-
-    ASSERT_TRUE(df.isApprox(vel, 1e-4));
-  }
-}
-
 TEST(CSpline, BSplineConstructors)
 {
   std::srand(5);
@@ -247,29 +217,3 @@ TEST(CSpline, BSplineDerivSO3)
     ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
   }
 }
-
-TYPED_TEST(CSpline, BSplineFit)
-{
-  std::vector<double> tt;
-  std::vector<TypeParam> gg;
-
-  tt.push_back(2);
-  tt.push_back(2.5);
-  tt.push_back(3.5);
-  tt.push_back(4.5);
-  tt.push_back(5.5);
-  tt.push_back(6);
-
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-  gg.push_back(TypeParam::Random());
-
-  auto spline = smooth::fit_bspline<3>(tt, gg, 1);
-
-  ASSERT_NEAR(spline.t_min(), 2, 1e-6);
-  ASSERT_GE(spline.t_max(), 6);
-}
-
