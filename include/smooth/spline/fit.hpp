@@ -449,14 +449,14 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
         // want exp(v1) * ... * exp(vK) = inv(g) * gnext
         auto mid = K / 2;
 
-        G midval = composition<G>(inverse<G>(gs[i]), gs[i + 1]);
+        G midval = composition<G>(::smooth::inverse<G>(gs[i]), gs[i + 1]);
         for (auto k = 0; k < mid; ++k) {
           midval = composition<G>(::smooth::exp<G>(-cum_coefs.col(k)), midval);
         }
         for (auto k = K - 1; k > mid; --k) {
           midval = composition<G>(midval, ::smooth::exp<G>(-cum_coefs.col(k)));
         }
-        cum_coefs.col(mid) = log<G>(midval);
+        cum_coefs.col(mid) = ::smooth::log<G>(midval);
       }
 
       ret.concat_global(Spline<K, G>(dts[i], cum_coefs, gs[i]));
@@ -466,6 +466,19 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
   }
 
   return ret;
+}
+
+/**
+ * @brief Fit a cubic Spline with natural boundary conditions
+ *
+ * @param ts range of times
+ * @param gs range of values
+ * @return Spline c s.t. \f$ c(t_i) = g_i \f$ for \f$(t_i, g_i) \in zip(ts, gs) \f$
+ */
+template<std::ranges::range Rt, std::ranges::range Rg>
+auto fit_spline_cubic(const Rt & ts, const Rg & gs)
+{
+  return fit_spline(ts, gs, spline_specs::FixedDerCubic<std::ranges::range_value_t<Rg>, 2, 2>{});
 }
 
 /**
