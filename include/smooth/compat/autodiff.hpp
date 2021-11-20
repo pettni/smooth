@@ -40,7 +40,16 @@
 #include "smooth/manifold.hpp"
 #include "smooth/wrt.hpp"
 
-namespace smooth::diff {
+namespace smooth {
+
+/// @brief Specialize trait to make autodiff type a Manifold
+template<std::floating_point F>
+struct traits::scalar_trait<autodiff::Dual<F, F>>
+{
+  static constexpr bool value = true;
+};
+
+namespace diff {
 
 /**
  * @brief Automatic differentiation in tangent space using the autodiff library.
@@ -82,6 +91,7 @@ auto dr_autodiff(_F && f, _Wrt && x)
   return std::make_pair(std::move(fval), std::move(jac));
 }
 
-}  // namespace smooth::diff
+}  // namespace diff
+}  // namespace smooth
 
 #endif  // SMOOTH__COMPAT__AUTODIFF_HPP_

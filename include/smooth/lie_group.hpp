@@ -393,12 +393,6 @@ struct lie<G>
 ///////////////////////////////////////////////
 
 /**
- * @brief Concept to identify Eigen column vectors
- */
-template<typename G>
-concept RnType = std::is_base_of_v<Eigen::MatrixBase<G>, G> && G::ColsAtCompileTime == 1;
-
-/**
  * @brief LieGroup interface for RnType
  */
 template<RnType G>
@@ -469,15 +463,9 @@ struct lie<G>
 ///////////////////////////////////////////////////////////////
 
 /**
- * @brief Concept to identify built-in scalars
+ * @brief LieGroup interface for ScalarType
  */
-template<typename G>
-concept FloatingPointType = std::is_floating_point_v<G>;
-
-/**
- * @brief LieGroup interface for FloatingPointType
- */
-template<FloatingPointType G>
+template<ScalarType G>
 struct lie<G>
 {
   // \cond
@@ -537,9 +525,10 @@ struct lie<G>
 };
 
 /**
- * @brief Manifold interface for LieGroup
+ * @brief Manifold interface for LieGroup that are not already Manifold.
  */
 template<LieGroup G>
+  requires(!RnType<G> && !ScalarType<G>)
 struct man<G>
 {
   // \cond

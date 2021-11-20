@@ -88,6 +88,102 @@ std::is_assignable_v<typename traits::man<M>::PlainObject &, M>;
 
 // clang-format on
 
+namespace traits {
+
+/**
+ * @brief Concept to identify Eigen column vectors
+ */
+template<typename G>
+concept RnType = std::is_base_of_v<Eigen::MatrixBase<G>, G> && G::ColsAtCompileTime == 1;
+
+/**
+ * @brief Manifold interface for RnType
+ */
+template<RnType M>
+struct man<M>
+{
+  static constexpr int Dof = M::SizeAtCompileTime;
+
+  using Scalar      = typename M::Scalar;
+  using PlainObject = typename M::PlainObject;
+  template<typename NewScalar>
+  using CastT = Eigen::Matrix<NewScalar, M::SizeAtCompileTime, 1>;
+
+  static inline PlainObject Default() { return M::Zero(); }
+
+  static inline Eigen::Index dof(const M & m) { return m.size(); }
+
+  template<typename NewScalar>
+  static inline CastT<NewScalar> cast(const M & m)
+  {
+    return m.template cast<NewScalar>();
+  }
+
+  template<typename Derived>
+  static inline PlainObject rplus(const M & g, const Eigen::MatrixBase<Derived> & a)
+  {
+    return g + a;
+  }
+
+  template<typename Derived>
+  static inline Eigen::Matrix<Scalar, M::SizeAtCompileTime, 1> rminus(const M & m1, const Eigen::MatrixBase<Derived> & m2)
+  {
+    return m1 - m2;
+  }
+};
+
+/**
+ * @brief Trait class to mark external types as scalars.
+ */
+template<typename T>
+struct scalar_trait
+{
+  static constexpr bool value = false;
+};
+
+/**
+ * @brief Concept to identify built-in scalars
+ */
+template<typename T>
+concept ScalarType = std::is_floating_point_v<T> || traits::scalar_trait<T>::value;
+
+/**
+ * @brief Manifold interface for ScalarType
+ */
+template<ScalarType M>
+struct man<M>
+{
+  static constexpr int Dof = 1;
+
+  using Scalar      = M;
+  using PlainObject = M;
+  template<typename NewScalar>
+  using CastT = NewScalar;
+
+  static inline PlainObject Default() { return M(0); }
+
+  static inline Eigen::Index dof(const M &) { return 1; }
+
+  template<typename NewScalar>
+  static inline CastT<NewScalar> cast(const M & m)
+  {
+    return static_cast<NewScalar>(m);
+  }
+
+  template<typename Derived>
+  static inline PlainObject rplus(const M & g, const Eigen::MatrixBase<Derived> & a)
+  {
+    return g + a.x();
+  }
+
+  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const M & m1, const M & m2)
+  {
+    return Eigen::Matrix<Scalar, Dof, 1>(m1 - m2);
+  }
+};
+
+}  // namespace traits
+
 ////////////////////////////////////////////////
 //// Free functions that dispatch to traits::man<M> ////
 ////////////////////////////////////////////////
