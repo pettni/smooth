@@ -102,6 +102,7 @@ concept RnType = std::is_base_of_v<Eigen::MatrixBase<G>, G> && G::ColsAtCompileT
 template<RnType M>
 struct man<M>
 {
+  // \cond
   static constexpr int Dof = M::SizeAtCompileTime;
 
   using Scalar      = typename M::Scalar;
@@ -126,10 +127,12 @@ struct man<M>
   }
 
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, M::SizeAtCompileTime, 1> rminus(const M & m1, const Eigen::MatrixBase<Derived> & m2)
+  static inline Eigen::Matrix<Scalar, M::SizeAtCompileTime, 1> rminus(
+    const M & m1, const Eigen::MatrixBase<Derived> & m2)
   {
     return m1 - m2;
   }
+  // \endcond
 };
 
 /**
@@ -138,6 +141,7 @@ struct man<M>
 template<typename T>
 struct scalar_trait
 {
+  /// @brief true if type T is a scalar
   static constexpr bool value = false;
 };
 
@@ -150,9 +154,11 @@ concept ScalarType = std::is_floating_point_v<T> || traits::scalar_trait<T>::val
 /**
  * @brief Manifold interface for ScalarType
  */
+
 template<ScalarType M>
 struct man<M>
 {
+  // \cond
   static constexpr int Dof = 1;
 
   using Scalar      = M;
@@ -180,6 +186,7 @@ struct man<M>
   {
     return Eigen::Matrix<Scalar, Dof, 1>(m1 - m2);
   }
+  // \endcond
 };
 
 }  // namespace traits
@@ -219,10 +226,17 @@ template<typename NewScalar, Manifold M>
 using CastT = typename traits::man<M>::template CastT<NewScalar>;
 
 /**
- * @brief Tangent as a Dof-lenth Eigen vector
+ * @brief Tangent as a Dof-lenth vector
  */
 template<Manifold M>
 using Tangent = Eigen::Matrix<typename traits::man<M>::Scalar, traits::man<M>::Dof, 1>;
+
+/**
+ * @brief Matrix of size Dof x Dof
+ */
+template<Manifold G>
+using TangentMap =
+  Eigen::Matrix<typename traits::man<G>::Scalar, traits::man<G>::Dof, traits::man<G>::Dof>;
 
 // Functions
 

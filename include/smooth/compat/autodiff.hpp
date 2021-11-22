@@ -46,7 +46,9 @@ namespace smooth {
 template<std::floating_point F>
 struct traits::scalar_trait<autodiff::Dual<F, F>>
 {
+  // \cond
   static constexpr bool value = true;
+  // \endcond
 };
 
 namespace diff {

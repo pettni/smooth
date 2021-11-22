@@ -1,4 +1,4 @@
-# smooth: Lie Theory for Robotics
+# Lie Theory for Robotics
 
 [![CI Build and Test][ci-shield]][ci-link]
 [![Code coverage][cov-shield]][cov-link]
@@ -18,7 +18,7 @@ If you are looking for something stable and established, check out
 In robotics it is often convenient to work in non-Euclidean manifolds.
 [Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are 
 easy to work with due to their symmetries, and that are also good models for many robotic
-systems. The objective of this header-only C++20 library is to facilitate Lie groups in
+systems. This header-only C++20 library facilitates Lie groups in
 robotics software, by enabling:
 
  * Algebraic manipulation
@@ -39,9 +39,9 @@ The following common Lie groups are implemented:
 The guiding principles for `smooth` are **brevity, reliability and compatability**. 
 
 
-## Getting started
+# Getting started
 
-### Download and Build
+## Download and Build
 
 Clone the repository and install it
 ```bash
@@ -63,7 +63,7 @@ workspace with a compiler that supports C++20. Example with colcon:
 colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10
 ```
 
-### Use with cmake
+## Use with cmake
 
 To utilize `smooth` in your own project, include something along these lines in your `CMakeLists.txt`
 ```cmake
@@ -73,12 +73,14 @@ add_executable(my_executable main.cpp)
 target_link_libraries(my_executable smooth::smooth)
 ```
 
-### Explore the API
+## Explore the API
 
 Check out the [Documentation][doc-link] and the [`examples`](https://github.com/pettni/smooth/tree/master/examples).
 
 
-## Group algebra examples
+# Using the library
+
+## Algebraic Manipulations
 
  ```cpp
  // Also works with other types: SO2d, SE2d, SE3d, Bundle<SO3d, T3d> etc...
@@ -129,7 +131,7 @@ These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implement
   * Example: All LieGroup types are also Manifold types
   * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---a type to facilitate optimization over a dynamic number of `Manifold`s
 
-* `LieGroup`: a `Manifold` that also implements Lie group operations (`exp`, `log`, `Ad`, etc...)
+* `LieGroup`: a type implements Lie group operations (`exp`, `log`, `Ad`, etc...)
   * Example: `smooth::SO3<float>`
   * Example: `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
   * Example: `Eigen::Vector3d`
@@ -221,7 +223,7 @@ B-splines have local support and generally do not pass through the control point
 See examples/bspline.cpp for usage.
 
 
-## Compatibility
+# Compatibility
 
 Utility headers for interfacing with adjacent software are included.
 
@@ -231,7 +233,7 @@ Utility headers for interfacing with adjacent software are included.
 * compat/ros.hpp: Memory mapping of [ROS/ROS2](https://www.ros.org/) message types
 
 
-## Related Projects
+# Related Projects
 
 Two projects that have served as inspiration for `smooth` are [`manif`][manif-link]---which
 also has an accompanying [paper][manif-paper-link] that is a great practical introduction to

@@ -40,13 +40,8 @@ namespace smooth {
 namespace detail {
 
 /**
- * @brief Bspline coefficient matrix.
- *
- * Returns a row-major matrix B s.t. degree K Bspline basis functions can be evaluated as
- * \f[
- *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
- *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
- * \f]
+ * @brief Bspline basis coefficient matrix.
+ * @tparam K polynomial degree
  */
 template<std::size_t K, typename Scalar = double>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> bspline_basis()
@@ -80,13 +75,8 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> bspline_basis()
 }
 
 /**
- * @brief Bernstein coefficient matrix.
- *
- * Returns a row-major matrix B s.t. degree K Bernstein basis functions can be evaluated as
- * \f[
- *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
- *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
- * \f]
+ * @brief Bernstein basis coefficient matrix.
+ * @tparam K polynomial degree
  */
 template<std::size_t K, typename Scalar = double>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> bernstein_basis()
@@ -119,13 +109,8 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> bernstein_basis()
 }
 
 /**
- * @brief Hermite coefficient matrix.
- *
- * Returns a row-major matrix B s.t. Hermite polynomials up to degree K can be evaluated as
- * \f[
- *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
- *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
- * \f]
+ * @brief Hermite basis coefficient matrix.
+ * @tparam K polynomial degree
  */
 template<std::size_t K, typename Scalar = double>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> hermite_basis()
@@ -145,13 +130,8 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> hermite_basis()
 }
 
 /**
- * @brief Laguerre coefficient matrix.
- *
- * Returns a row-major matrix B s.t. Laguerre polynomials up to degree K can be evaluated as
- * \f[
- *   \begin{bmatrix} b_{0, K}(u) & b_{1, K}(u) & \ldots b_{K, K}(u) & \end{bmatrix}
- *   = \begin{bmatrix} 1 \\ u \\ \vdots \\ u^K \end{bmatrix} B
- * \f]
+ * @brief Laguerre basis coefficient matrix.
+ * @tparam K polynomial degree
  */
 template<std::size_t K, typename Scalar = double>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> laguerre_basis()
@@ -179,19 +159,15 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> laguerre_basis()
 }
 
 /**
- * @brief Jacobi polynomial basis coefficients.
+ * @brief Jacobi basis coefficient matrix.
  *
  * @tparam K polynomial degree
  * @param alpha first Jacobi parameter
  * @param beta second Jacobi parameter
  *
- * Computes a matrix B s.t.
- *  [p_0(x) p_1(x) ... p_K(x)] = [1 x x^2 ... x^K] * B
- * where p_i are the (\alpha, \beta)-Jacobi polynomials.
- *
- * @note The Legebdre polynomials are the special case alpha = beta = 0
- *
- * @note The Chebyshev polynomials are the special case alpha = beta = -1/2
+ * @note The Legebdre polynomials correspond to \f$ \alpha = \beta = 0 \f$.
+ * @note The Chebyshev polynomials of the first kind correspond to \f$ \alpha = \beta = -1/2 \f$.
+ * @note The Chebyshev polynomials of the second kind correspond to \f$ \alpha = \beta = 1/2  \f$.
  */
 template<std::size_t K, typename Scalar = double>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> jacobi_basis(double alpha, double beta)
@@ -226,9 +202,9 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> jacobi_basis(double alpha, double b
 
 /// @brief Polynomial basis types.
 enum class PolynomialBasis {
-  /// @brief Basis on [0, 1] with left->right ordering
+  /// @brief Basis on [0, 1] with left to right ordering
   Bernstein,
-  /// @brief Basis with left->right ordering and shifting support
+  /// @brief Basis on [0, 1] with left to right ordering
   Bspline,
   /// @brief Orthogonal basis on [-1, 1] w.r.t the weight 1 / sqrt(1-x^2)
   Chebyshev1st,
@@ -240,7 +216,7 @@ enum class PolynomialBasis {
   Laguerre,
   /// @brief Orthogonal basis on [-1, 1]
   Legendre,
-  /// @brief The usual monomial basis (1, x, x^2, ...)
+  /// @brief The standard monomial basis (1, x, x^2, ...)
   Monomial,
 };
 
@@ -254,9 +230,9 @@ enum class PolynomialBasis {
  * can be evaluated as
  * \f[
  *   p(x)
- *   = \begin{bmatrix} 1 \\ x \\ \vdots \\ x^K \end{bmatrix}
+ *   = \begin{bmatrix} 1 & x & \cdots & x^K \end{bmatrix}
  *     B
- *     \begin{bmatrix} \beta_0 \\ \vdots \\ \\beta_K \end{bmatrix}
+ *     \begin{bmatrix} \beta_0 \\ \vdots \\ \beta_K \end{bmatrix}.
  * \f]
  */
 template<PolynomialBasis Basis, std::size_t K, typename Scalar = double>
@@ -303,9 +279,14 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_basis()
  * K + 1 control points define a degree K polynomial K which has K + 1 basis functions p_0 ... p_K.
  *
  * Computes a matrix B s.t.
- *  [p_0(t) p_1(t) ... p_K(t)] = [1 t t^2 ... t^K] * B
+ * \f[
+ *  \begin{bmatrix} p_0(t) & p_1(t) & \ldots & p_K(t) \end{bmatrix}
+ *    = \begin{bmatrix} 1 & t & t^2 & \ldots & t^K \end{bmatrix} B
+ * \f]
  * where the Lagrange polynomials are
- *  p_i(t) = \Prod_{j \in [0,K], j \neq i} (t - t_j) / (t_i - t_j).
+ * \f[
+ *  p_i(t) = \prod_{j \in [0,K], j \neq i} \frac{t - t_j}{t_i - t_j}.
+ * \f]
  */
 template<std::size_t K,
   std::ranges::random_access_range R,
@@ -340,9 +321,8 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> lagrange_basis(const R & ts)
  * @param B polonomial basis
  * @param ts points to evaluate derivative coefficients at (must be of size N)
  *
- * Computes a matrix D s.t.
- *  D[i][j] = (d / dt) p_i(t[j])
- * where p_i are Lagrange basis polynomials with control points ts.
+ * Computes a matrix D s.t. \f$ D_{i,j} = \frac{\mathrm{d}}{\mathrm{d}t} p_i(t_j) \f$
+ * where \f$ p_i \f$ are Lagrange basis polynomials with control points ts.
  */
 template<std::size_t K, std::size_t N, typename Scalar, std::ranges::sized_range R>
 constexpr StaticMatrix<Scalar, K + 1, N> polynomial_basis_derivatives(
@@ -365,16 +345,19 @@ constexpr StaticMatrix<Scalar, K + 1, N> polynomial_basis_derivatives(
 /**
  * @brief Cumulative coefficient matrix for given basis.
  *
- * Returns a row-major matrix B s.t. a cumulative polynomial
+ * @tparam B polonomial basis
+ * @tparam K polynomial degree
+ *
+ * Returns a row-major matrix \f$ \tilde B \f$ s.t. a cumulative polynomial
  * \f[
  *   p(x) = \sum_{\nu=0}^K \tilde \beta_\nu \tilde b_{\nu, K}(x)
  * \f]
  * can be evaluated as
  * \f[
  *   p(x)
- *   = \begin{bmatrix} 1 \\ x \\ \vdots \\ x^K \end{bmatrix}
+ *   = \begin{bmatrix} 1 & x & \ldots & x^K \end{bmatrix}
  *     B
- *     \begin{bmatrix} \nu_0 \\ \vdots \\ \nu_K \end{bmatrix}
+ *     \begin{bmatrix} \tilde \beta_0 \\ \vdots \\ \tilde \beta_K \end{bmatrix}
  * \f]
  */
 template<PolynomialBasis Basis, std::size_t K, typename Scalar = double>
@@ -394,7 +377,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_cumulative_basis()
  * @tparam K maximal monomial degree
  * @param u monomial parameter
  * @param p differentiation order
- * @return array U s.t. U[k] = (d^p/du^p) u^k
+ * @return array U s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
  */
 template<std::size_t K, typename Scalar>
 constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size_t p = 0)
@@ -421,7 +404,8 @@ constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size
 /**
  * @brief Monomial derivatives up to order.
  *
- * Calculates a row-major (P+1 x K+1) matrix U s.t. U[p][k] = (d^p / dt^p) u^k
+ * Calculates a row-major \f$(P+1) \times (K+1)\f$ matrix U s.t. \f$ U_{p, k} =
+ * \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
  *
  * @tparam Scalar scalar type
  * @tparam K maximal monomial degree

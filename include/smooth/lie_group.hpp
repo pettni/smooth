@@ -117,13 +117,6 @@ std::is_assignable_v<typename traits::lie<G>::PlainObject &, G>;
 
 // Types
 
-/**
- * @brief Matrix of size Dof x Dof
- */
-template<LieGroup G>
-using TangentMap =
-  Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>;
-
 // Group interface
 
 /**

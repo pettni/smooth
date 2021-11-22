@@ -27,7 +27,8 @@
 #define SMOOTH__SPLINE__CUMULATIVE_SPLINE_HPP_
 
 /**
- * @file Functions to evaluate cumulative splines.
+ * @file
+ * @brief Evaluation of cumulative Lie group splines.
  */
 
 #include "smooth/lie_group.hpp"
@@ -39,26 +40,28 @@ namespace smooth {
 
 namespace detail {
 
+/// @brief Optional argument for spline time derivatives
 template<LieGroup G>
 using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
 
+/// @brief Optional argument for spline control point derivatives
 template<LieGroup G, std::size_t K>
 using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)>>>;
 
 }  // namespace detail
 
 /**
- * @brief Evaluate a cumulative basis spline of order K and its derivatives
- *
- *   g = \Prod_{i=1}^{K} exp ( Btilde_i(u) * v_i )
- *
- * Where Btilde are cumulative basis functins and v_i = g_i - g_{i-1}.
+ * @brief Evaluate a cumulative spline of order \f$ K \f$ defined as
+ * \f[
+ *   g = \prod_{i=1}^{K} \exp ( \tilde B_i(u) * v_i )
+ * \f]
+ * where \f$ \tilde B_i \f$ are cumulative basis functins and \f$ v_i = g_i - g_{i-1} \f$.
  *
  * @tparam K spline order (number of basis functions)
  * @tparam G lie group type
  * @param[in] diff_points range of differences v_i (must be of size K)
  * @param[in] Bcum matrix of cumulative base coefficients (size K+1 x K+1)
- * @param[in] u normalized parameter: u \in [0, 1)
+ * @param[in] u time point to evaluate spline at (clamped to [0, 1])
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
@@ -136,7 +139,7 @@ inline G cspline_eval_diff(const Range & diff_points,
 /**
  * @brief Evaluate a cumulative basis spline of order K and calculate derivatives
  * \f[
- *   g = g_0 * \Prod_{i=1}^{K} \exp ( \tilde B_i(u) * v_i ),
+ *   g = g_0 * \prod_{i=1}^{K} \exp ( \tilde B_i(u) * v_i ),
  * \f]
  * where \f$ \tilde B \f$ are cumulative basis functions and \f$ v_i = g_i - g_{i-1} \f$.
  *
@@ -144,7 +147,7 @@ inline G cspline_eval_diff(const Range & diff_points,
  * @param[in] gs LieGroup control points \f$ g_0, g_1, \ldots, g_K \f$ (must be of size K +
  * 1)
  * @param[in] Bcum matrix of cumulative base coefficients (size K+1 x K+1)
- * @param[in] u interval location: u = (t - ti) / dt \in [0, 1)
+ * @param[in] u time point to evaluate spline at (clamped to [0, 1])
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives w.r.t. the K+1 control points

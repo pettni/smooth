@@ -46,8 +46,10 @@ namespace smooth {
 template<typename _Scalar, std::size_t _Rows, std::size_t _Cols>
 struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
 {
-  std::size_t Rows = _Rows;
-  std::size_t Cols = _Cols;
+  /// @brief Number of rows in matrix
+  static constexpr std::size_t Rows = _Rows;
+  /// @brief Number of columns in matrix
+  static constexpr std::size_t Cols = _Cols;
 
   using std::array<std::array<_Scalar, _Cols>, _Rows>::operator[];
 
