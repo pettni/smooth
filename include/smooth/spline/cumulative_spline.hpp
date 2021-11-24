@@ -34,6 +34,7 @@
 #include "smooth/lie_group.hpp"
 #include "smooth/polynomial/basis.hpp"
 
+#include <cassert>
 #include <optional>
 
 namespace smooth {
@@ -74,11 +75,15 @@ inline G cspline_eval_diff(const Range & diff_points,
   detail::OptTangent<G> acc     = {},
   detail::OptJacobian<G, K> der = {}) noexcept
 {
+  assert(std::ranges::size(diff_points) == K);
+  assert(Bcum.cols() == K + 1);
+  assert(Bcum.rows() == K + 1);
+
   const auto U = monomial_derivatives<K, 2, Scalar<G>>(u);
 
-  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K+1>> uvec(U[0].data());
-  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K+1>> duvec(U[1].data());
-  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K+1>> d2uvec(U[2].data());
+  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> uvec(U[0].data());
+  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> duvec(U[1].data());
+  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> d2uvec(U[2].data());
 
   if (vel.has_value() || acc.has_value()) {
     vel.value().setZero();

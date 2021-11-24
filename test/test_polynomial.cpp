@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include <Eigen/LU>
 #include <gtest/gtest.h>
 
 #include "smooth/polynomial/basis.hpp"
@@ -118,6 +119,65 @@ TEST(Polynomial, MonomialDerivativeVec)
     static_assert(c[0][2] == 0);
     static_assert(c[0][3] == 0);
     static_assert(c[0][4] == 0);
+  }
+}
+
+TEST(Polynomial, MonomialDerivativeRuntime)
+{
+  double u = 0.5;
+
+  {
+    auto c = smooth::monomial_derivative_runtime(u, 4, 0);
+    ASSERT_DOUBLE_EQ(c[0], 1);
+    ASSERT_DOUBLE_EQ(c[1], u);
+    ASSERT_DOUBLE_EQ(c[2], u * u);
+    ASSERT_DOUBLE_EQ(c[3], u * u * u);
+    ASSERT_DOUBLE_EQ(c[4], u * u * u * u);
+  }
+
+  {
+    auto c = smooth::monomial_derivative_runtime(u, 4, 1);
+    ASSERT_DOUBLE_EQ(c[0], 0);
+    ASSERT_DOUBLE_EQ(c[1], 1);
+    ASSERT_DOUBLE_EQ(c[2], 2 * u);
+    ASSERT_DOUBLE_EQ(c[3], 3 * u * u);
+    ASSERT_DOUBLE_EQ(c[4], 4 * u * u * u);
+  }
+
+  {
+    auto c = smooth::monomial_derivative_runtime(u, 4, 2);
+    ASSERT_DOUBLE_EQ(c[0], 0);
+    ASSERT_DOUBLE_EQ(c[1], 0);
+    ASSERT_DOUBLE_EQ(c[2], 2);
+    ASSERT_DOUBLE_EQ(c[3], 3 * 2 * u);
+    ASSERT_DOUBLE_EQ(c[4], 4 * 3 * u * u);
+  }
+
+  {
+    auto c = smooth::monomial_derivative_runtime(u, 4, 3);
+    ASSERT_DOUBLE_EQ(c[0], 0);
+    ASSERT_DOUBLE_EQ(c[1], 0);
+    ASSERT_DOUBLE_EQ(c[2], 0);
+    ASSERT_DOUBLE_EQ(c[3], 3 * 2);
+    ASSERT_DOUBLE_EQ(c[4], 4 * 3 * 2 * u);
+  }
+
+  {
+    auto c = smooth::monomial_derivative_runtime(u, 4, 4);
+    ASSERT_DOUBLE_EQ(c[0], 0);
+    ASSERT_DOUBLE_EQ(c[1], 0);
+    ASSERT_DOUBLE_EQ(c[2], 0);
+    ASSERT_DOUBLE_EQ(c[3], 0);
+    ASSERT_DOUBLE_EQ(c[4], 4 * 3 * 2);
+  }
+
+  {
+    auto c = smooth::monomial_derivative_runtime(u, 4, 5);
+    ASSERT_DOUBLE_EQ(c[0], 0);
+    ASSERT_DOUBLE_EQ(c[1], 0);
+    ASSERT_DOUBLE_EQ(c[2], 0);
+    ASSERT_DOUBLE_EQ(c[3], 0);
+    ASSERT_DOUBLE_EQ(c[4], 0);
   }
 }
 
@@ -562,8 +622,9 @@ TEST(Polynomial, Lagrange)
 TEST(Polynomial, LagrangeDeriv)
 {
   static constexpr std::array<double, 5> ts{-3, -1, 0, 2, 5};
-  static constexpr auto B = smooth::lagrange_basis<4>(ts);
-  static constexpr auto D = smooth::polynomial_basis_derivatives<4, 5>(B, ts);
+  static constexpr smooth::StaticMatrix<double, 5, 5> B = smooth::lagrange_basis<4>(ts);
+  static constexpr smooth::StaticMatrix<double, 5, 5> D =
+    smooth::polynomial_basis_derivatives<4, 5>(B, ts);
 
   static_assert(std::abs(D[0][0] - -139. / 120) < 1e-10);
   static_assert(std::abs(D[0][1] - -3. / 40) < 1e-10);
@@ -582,6 +643,14 @@ TEST(Polynomial, LagrangeDeriv)
   static_assert(std::abs(D[4][2] - -1. / 120) < 1e-10);
   static_assert(std::abs(D[4][3] - 1. / 24) < 1e-10);
   static_assert(std::abs(D[4][4] - 33. / 40) < 1e-10);
+
+  Eigen::Matrix<double, 5, 4> De =
+    Eigen::Map<const Eigen::Matrix<double, 5, 5, Eigen::RowMajor>>(D[0].data()).leftCols(4);
+
+  ASSERT_LE((Eigen::Matrix<double, 1, 5>::Ones() * De).norm(), 1e-10);
+  ASSERT_LE(
+    (De.topRows(1) * De.bottomRows(4).inverse() + Eigen::Matrix<double, 1, 4>::Ones()).norm(),
+    1e-10);
 }
 
 TEST(Polynomial, IntegrateAbsolute)

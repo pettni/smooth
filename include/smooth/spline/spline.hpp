@@ -48,7 +48,7 @@ namespace smooth {
  * @tparam G Lie group
  *
  * A Spline is a continuous function \f$ x : [0, T] \rightarrow \mathbb{G} \f$.
- * Internally it is a piecewise collection of TangentBezier segments.
+ * Internally it is a piecewise collection of cumulative polynomial segments.
  */
 template<std::size_t K, LieGroup G>
 class Spline

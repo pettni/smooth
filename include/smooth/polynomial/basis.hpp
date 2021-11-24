@@ -322,7 +322,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> lagrange_basis(const R & ts)
  * @param ts points to evaluate derivative coefficients at (must be of size N)
  *
  * Computes a matrix D s.t. \f$ D_{i,j} = \frac{\mathrm{d}}{\mathrm{d}t} p_i(t_j) \f$
- * where \f$ p_i \f$ are Lagrange basis polynomials with control points ts.
+ * where \f$ p_i \f$ are basis polynomials defined by B.
  */
 template<std::size_t K, std::size_t N, typename Scalar, std::ranges::sized_range R>
 constexpr StaticMatrix<Scalar, K + 1, N> polynomial_basis_derivatives(
@@ -371,13 +371,13 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_cumulative_basis()
 }
 
 /**
- * @brief Monomial derivative.
+ * @brief Monomial derivative (compile-time version).
  *
  * @tparam Scalar scalar type
  * @tparam K maximal monomial degree
  * @param u monomial parameter
  * @param p differentiation order
- * @return array U s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
+ * @return row vector U of size K+1 s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
  */
 template<std::size_t K, typename Scalar>
 constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size_t p = 0)
@@ -396,6 +396,38 @@ constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size
     P2 *= i;
     P2 /= i - p;
     ret[0][i] = P1 * P2;
+  }
+
+  return ret;
+}
+
+/**
+ * @brief Monomial derivative (runtime version).
+ *
+ * @tparam Scalar scalar type
+ * @param u monomial parameter
+ * @param k maximal monomial degree
+ * @param p differentiation order
+ * @return row vector U of size k+1 s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
+ */
+template<typename Scalar>
+Eigen::RowVectorX<Scalar> monomial_derivative_runtime(Scalar u, std::size_t k, std::size_t p = 0)
+{
+  Eigen::RowVectorX<Scalar> ret(k + 1);
+  ret.setZero();
+
+  if (p > k) { return ret; }
+
+  for (auto i = 0u; i < p; ++i) { ret(i) = Scalar(0); }
+  Scalar P1      = 1;
+  std::size_t P2 = 1;
+  for (auto j = 2u; j <= p; ++j) { P2 *= j; }
+  ret(p) = P1 * P2;
+  for (auto i = p + 1; i <= k; ++i) {
+    P1 *= u;
+    P2 *= i;
+    P2 /= i - p;
+    ret(i) = P1 * P2;
   }
 
   return ret;
