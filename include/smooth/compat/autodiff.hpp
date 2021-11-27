@@ -65,6 +65,7 @@ auto dr_autodiff(_F && f, _Wrt && x)
 {
   using Result = decltype(std::apply(f, x));
   using Scalar = ::smooth::Scalar<Result>;
+  using Eigen::Matrix;
 
   static_assert(Manifold<Result>, "f(x) is not a Manifold");
 
@@ -80,15 +81,15 @@ auto dr_autodiff(_F && f, _Wrt && x)
   const auto x_ad                       = wrt_cast<AdScalar>(x);
   const CastT<AdScalar, Result> fval_ad = cast<AdScalar>(fval);
 
-  // zero-valued tangent element
-  Eigen::Matrix<AdScalar, Nx, 1> a_ad = Eigen::Matrix<AdScalar, Nx, 1>::Zero(nx);
+  // zero-valued tangent element (can not be const...)
+  Matrix<AdScalar, Nx, 1> a_ad = Matrix<AdScalar, Nx, 1>::Zero(nx);
 
-  Eigen::Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(
-    [&f, &fval_ad, &x_ad](Eigen::Matrix<AdScalar, Nx, 1> & var) -> Eigen::Matrix<AdScalar, Ny, 1> {
-      return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), fval_ad);
-    },
-    autodiff::wrt(a_ad),
-    autodiff::at(a_ad));
+  // function to differentiate
+  const auto f_ad = [&](Matrix<AdScalar, Nx, 1> & var) -> Matrix<AdScalar, Ny, 1> {
+    return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), fval_ad);
+  };
+
+  Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad));
 
   return std::make_pair(std::move(fval), std::move(jac));
 }

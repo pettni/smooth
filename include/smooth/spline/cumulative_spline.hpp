@@ -67,7 +67,7 @@ using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Do
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
-template<std::size_t K, LieGroup G, std::ranges::range Range, typename Derived>
+template<std::size_t K, LieGroup G, std::ranges::sized_range Range, typename Derived>
 inline G cspline_eval_diff(const Range & diff_points,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
@@ -85,55 +85,65 @@ inline G cspline_eval_diff(const Range & diff_points,
   Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> duvec(U[1].data());
   Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> d2uvec(U[2].data());
 
-  if (vel.has_value() || acc.has_value()) {
-    vel.value().setZero();
-    if (acc.has_value()) { acc.value().setZero(); }
-  }
+  if (vel.has_value()) { vel.value().setZero(); }
+  if (acc.has_value()) { acc.value().setZero(); }
 
   G g = Identity<G>();
-  for (std::size_t j = 1; const auto & v : diff_points) {
+
+  for (auto j = 1u; const auto & v : diff_points) {
     const Scalar<G> Btilde = uvec.dot(Bcum.col(j));
-    g                      = composition(g, ::smooth::exp<G>(Btilde * v));
+
+    const G exp_Bt_v = ::smooth::exp<G>(Btilde * v);
+
+    g = composition(g, exp_Bt_v);
 
     if (vel.has_value() || acc.has_value()) {
       const Scalar<G> dBtilde = duvec.dot(Bcum.col(j));
-      const auto Ad_bt_v      = Ad(::smooth::exp<G>(-Btilde * v));
-      vel.value().applyOnTheLeft(Ad_bt_v);
-      vel.value() += dBtilde * v;
+      const auto Adj          = Ad(inverse(exp_Bt_v));
+
+      if (vel.has_value()) {
+        vel.value().applyOnTheLeft(Adj);
+        vel.value().noalias() += dBtilde * v;
+      }
 
       if (acc.has_value()) {
         const Scalar<G> d2Btilde = d2uvec.dot(Bcum.col(j));
-        acc.value().applyOnTheLeft(Ad_bt_v);
-        acc.value() += dBtilde * ad<G>(vel.value()) * v + d2Btilde * v;
+        acc.value().applyOnTheLeft(Adj);
+        acc.value().noalias() += dBtilde * ad<G>(vel.value()) * v;
+        acc.value().noalias() += d2Btilde * v;
       }
     }
+
     ++j;
   }
 
   if (der.has_value()) {
-    G z2inv = Identity<G>();
-
     der.value().setZero();
 
-    for (int j = K; j >= 0; --j) {
+    G z2inv = Identity<G>();
+
+    for (auto jrev = 0u; jrev <= K; ++jrev) {
+      const auto j = K - jrev;  // j: K -> 0
+
       if (j != K) {
         const Scalar<G> Btilde_jp = uvec.dot(Bcum.col(j + 1));
-        const Tangent<G> & vjp    = *(std::ranges::begin(diff_points) + j);
+        const Tangent<G> & vjp    = *std::ranges::next(std::ranges::cbegin(diff_points), j);
         const Tangent<G> sjp      = Btilde_jp * vjp;
 
-        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>) -=
+        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>).noalias() -=
           Btilde_jp * Ad(z2inv) * dr_exp<G>(sjp) * dl_expinv<G>(vjp);
 
         z2inv = composition(z2inv, ::smooth::exp<G>(-sjp));
       }
 
       const Scalar<G> Btilde_j = uvec.dot(Bcum.col(j));
-      if (j != 0) {
-        const Tangent<G> & vj = *(std::ranges::begin(diff_points) + j - 1);
-        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>) +=
+
+      if (j != 0u) {
+        const Tangent<G> & vj = *std::ranges::next(std::ranges::cbegin(diff_points), j - 1);
+        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>).noalias() +=
           Btilde_j * Ad(z2inv) * dr_exp<G>(Btilde_j * vj) * dr_expinv<G>(vj);
       } else {
-        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += Btilde_j * Ad(z2inv);
+        der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>).noalias() += Btilde_j * Ad(z2inv);
       }
     }
   }
@@ -168,8 +178,10 @@ inline G cspline_eval(const R & gs,
   detail::OptTangent<G> acc     = {},
   detail::OptJacobian<G, K> der = {}) noexcept
 {
-  auto b1 = std::ranges::begin(gs);
-  auto b2 = std::ranges::begin(gs) + 1;
+  assert(std::ranges::size(gs) == K + 1);
+
+  auto b1 = std::ranges::cbegin(gs);
+  auto b2 = std::ranges::cbegin(gs) + 1;
   std::array<Tangent<G>, K> diff_pts;
   for (auto i = 0u; i != K; ++i) { diff_pts[i] = rminus(*b2++, *b1++); }
 

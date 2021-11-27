@@ -62,14 +62,14 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
   }
 
   /**
-   * @brief Extract sub-block
+   * @brief Extract sub-block of size _NRows x _NCols anchored at (row0, col0)
    */
-  template<std::size_t NewRows, std::size_t NewCols>
-  constexpr StaticMatrix<_Scalar, NewRows, NewCols> block(std::size_t row0, std::size_t col0) const
+  template<std::size_t _NRows, std::size_t _NCols>
+  constexpr StaticMatrix<_Scalar, _NRows, _NCols> block(std::size_t row0, std::size_t col0) const
   {
-    StaticMatrix<_Scalar, NewRows, NewCols> ret;
-    for (auto i = 0u; i < NewRows; ++i) {
-      for (auto j = 0u; j < NewCols; ++j) { ret[i][j] = operator[](row0 + i)[col0 + j]; }
+    StaticMatrix<_Scalar, _NRows, _NCols> ret;
+    for (auto i = 0u; i < _NRows; ++i) {
+      for (auto j = 0u; j < _NCols; ++j) { ret[i][j] = operator[](row0 + i)[col0 + j]; }
     }
     return ret;
   }
@@ -102,13 +102,13 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
   /**
    * @brief Matrix multiplication
    */
-  template<std::size_t _ColsNew>
-  constexpr StaticMatrix<_Scalar, _Rows, _ColsNew> operator*(
-    StaticMatrix<_Scalar, _Cols, _ColsNew> o) const
+  template<std::size_t _NCols>
+  constexpr StaticMatrix<_Scalar, _Rows, _NCols> operator*(
+    StaticMatrix<_Scalar, _Cols, _NCols> o) const
   {
-    StaticMatrix<_Scalar, _Rows, _ColsNew> ret;
+    StaticMatrix<_Scalar, _Rows, _NCols> ret;
     for (auto i = 0u; i < _Rows; ++i) {
-      for (auto j = 0u; j < _ColsNew; ++j) {
+      for (auto j = 0u; j < _NCols; ++j) {
         for (auto k = 0u; k < _Cols; ++k) { ret[i][j] += operator[](i)[k] * o[k][j]; }
       }
     }

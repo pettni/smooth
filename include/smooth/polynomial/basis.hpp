@@ -37,6 +37,89 @@
 
 namespace smooth {
 
+/**
+ * @brief Monomial derivative (compile-time version).
+ *
+ * @tparam Scalar scalar type
+ * @tparam K maximal monomial degree
+ * @param u monomial parameter
+ * @param p differentiation order
+ * @return row vector U of size K+1 s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
+ */
+template<std::size_t K, typename Scalar>
+constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size_t p = 0)
+{
+  StaticMatrix<Scalar, 1, K + 1> ret;
+
+  if (p > K) { return ret; }
+
+  for (auto i = 0u; i < p; ++i) { ret[0][i] = Scalar(0); }
+  Scalar P1      = 1;
+  std::size_t P2 = 1;
+  for (auto j = 2u; j <= p; ++j) { P2 *= j; }
+  ret[0][p] = P1 * P2;
+  for (auto i = p + 1; i <= K; ++i) {
+    P1 *= u;
+    P2 *= i;
+    P2 /= i - p;
+    ret[0][i] = P1 * P2;
+  }
+
+  return ret;
+}
+
+/**
+ * @brief Monomial derivative (runtime version).
+ *
+ * @tparam Scalar scalar type
+ * @param u monomial parameter
+ * @param k maximal monomial degree
+ * @param p differentiation order
+ * @return row vector U of size k+1 s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
+ */
+template<typename Scalar>
+Eigen::RowVectorX<Scalar> monomial_derivative_runtime(Scalar u, std::size_t k, std::size_t p = 0)
+{
+  Eigen::RowVectorX<Scalar> ret(k + 1);
+  ret.setZero();
+
+  if (p > k) { return ret; }
+
+  for (auto i = 0u; i < p; ++i) { ret(i) = Scalar(0); }
+  Scalar P1      = 1;
+  std::size_t P2 = 1;
+  for (auto j = 2u; j <= p; ++j) { P2 *= j; }
+  ret(p) = P1 * P2;
+  for (auto i = p + 1; i <= k; ++i) {
+    P1 *= u;
+    P2 *= i;
+    P2 /= i - p;
+    ret(i) = P1 * P2;
+  }
+
+  return ret;
+}
+
+/**
+ * @brief Monomial derivatives up to order.
+ *
+ * Calculates a row-major \f$(P+1) \times (K+1)\f$ matrix U s.t. \f$ U_{p, k} =
+ * \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
+ *
+ * @tparam Scalar scalar type
+ * @tparam K maximal monomial degree
+ * @tparam P maximal differentiation order
+ * @param u monomial parameter
+ * @return matrix
+ */
+template<std::size_t K, std::size_t P, typename Scalar>
+constexpr StaticMatrix<Scalar, P + 1, K + 1> monomial_derivatives(Scalar u)
+{
+  StaticMatrix<Scalar, P + 1, K + 1> ret;
+  for (auto p = 0u; p <= P; ++p) { ret[p] = monomial_derivative<K, Scalar>(u, p)[0]; }
+  return ret;
+}
+
 namespace detail {
 
 /**
@@ -368,89 +451,6 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_cumulative_basis()
     for (std::size_t j = 0; j != K; ++j) { M[i][K - 1 - j] += M[i][K - j]; }
   }
   return M;
-}
-
-/**
- * @brief Monomial derivative (compile-time version).
- *
- * @tparam Scalar scalar type
- * @tparam K maximal monomial degree
- * @param u monomial parameter
- * @param p differentiation order
- * @return row vector U of size K+1 s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
- */
-template<std::size_t K, typename Scalar>
-constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size_t p = 0)
-{
-  StaticMatrix<Scalar, 1, K + 1> ret;
-
-  if (p > K) { return ret; }
-
-  for (auto i = 0u; i < p; ++i) { ret[0][i] = Scalar(0); }
-  Scalar P1      = 1;
-  std::size_t P2 = 1;
-  for (auto j = 2u; j <= p; ++j) { P2 *= j; }
-  ret[0][p] = P1 * P2;
-  for (auto i = p + 1; i <= K; ++i) {
-    P1 *= u;
-    P2 *= i;
-    P2 /= i - p;
-    ret[0][i] = P1 * P2;
-  }
-
-  return ret;
-}
-
-/**
- * @brief Monomial derivative (runtime version).
- *
- * @tparam Scalar scalar type
- * @param u monomial parameter
- * @param k maximal monomial degree
- * @param p differentiation order
- * @return row vector U of size k+1 s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
- */
-template<typename Scalar>
-Eigen::RowVectorX<Scalar> monomial_derivative_runtime(Scalar u, std::size_t k, std::size_t p = 0)
-{
-  Eigen::RowVectorX<Scalar> ret(k + 1);
-  ret.setZero();
-
-  if (p > k) { return ret; }
-
-  for (auto i = 0u; i < p; ++i) { ret(i) = Scalar(0); }
-  Scalar P1      = 1;
-  std::size_t P2 = 1;
-  for (auto j = 2u; j <= p; ++j) { P2 *= j; }
-  ret(p) = P1 * P2;
-  for (auto i = p + 1; i <= k; ++i) {
-    P1 *= u;
-    P2 *= i;
-    P2 /= i - p;
-    ret(i) = P1 * P2;
-  }
-
-  return ret;
-}
-
-/**
- * @brief Monomial derivatives up to order.
- *
- * Calculates a row-major \f$(P+1) \times (K+1)\f$ matrix U s.t. \f$ U_{p, k} =
- * \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
- *
- * @tparam Scalar scalar type
- * @tparam K maximal monomial degree
- * @tparam P maximal differentiation order
- * @param u monomial parameter
- * @return matrix
- */
-template<std::size_t K, std::size_t P, typename Scalar>
-constexpr StaticMatrix<Scalar, P + 1, K + 1> monomial_derivatives(Scalar u)
-{
-  StaticMatrix<Scalar, P + 1, K + 1> ret;
-  for (auto p = 0u; p <= P; ++p) { ret[p] = monomial_derivative<K, Scalar>(u, p)[0]; }
-  return ret;
 }
 
 /**

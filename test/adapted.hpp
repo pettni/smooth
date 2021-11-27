@@ -53,13 +53,17 @@ public:
   static PlainObject Identity() { return PlainObject{0}; }
   static PlainObject Random()
   {
-    return PlainObject(Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
+    return PlainObject(
+      Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
   }
   static TangentMap Ad(PlainObject) { return TangentMap{1}; }
-  static PlainObject composition(PlainObject g1, PlainObject g2) { return PlainObject(g1.data + g2.data); }
+  static PlainObject composition(PlainObject g1, PlainObject g2)
+  {
+    return PlainObject{.data = g1.data + g2.data};
+  }
   static Eigen::Index dof(PlainObject) { return 1; }
   static Eigen::Index dim(PlainObject) { return 2; }
-  static PlainObject inverse(PlainObject g) { return PlainObject(-g.data); }
+  static PlainObject inverse(PlainObject g) { return PlainObject{.data = -g.data}; }
   static bool isApprox(PlainObject g1, PlainObject g2, Scalar eps)
   {
     using std::abs;

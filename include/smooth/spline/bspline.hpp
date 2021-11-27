@@ -35,11 +35,8 @@
 #include <cassert>
 #include <ranges>
 
-#include <Eigen/Sparse>
-
-#include "smooth/polynomial/basis.hpp"
-
 #include "cumulative_spline.hpp"
+#include "smooth/polynomial/basis.hpp"
 
 namespace smooth {
 
@@ -161,12 +158,9 @@ public:
       u = std::clamp<double>((t - t0_ - istar * dt_) / dt_, 0., 1.);
     }
 
-    constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
-
     // gcc 11.1 bug can't handle uint64_t
     G g = cspline_eval<K>(
-      ctrl_pts_ | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, vel, acc);
+      ctrl_pts_ | std::views::drop(istar) | std::views::take(int64_t(K + 1)), B_, u, vel, acc);
 
     if (vel.has_value()) { vel.value() /= dt_; }
     if (acc.has_value()) { acc.value() /= (dt_ * dt_); }
@@ -175,6 +169,11 @@ public:
   }
 
 private:
+  // cumulative basis functions
+  static constexpr auto B_s_ = polynomial_cumulative_basis<PolynomialBasis::Bspline, K, double>();
+  inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B_ =
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(B_s_[0].data());
+
   double t0_, dt_;
   std::vector<G> ctrl_pts_;
 };

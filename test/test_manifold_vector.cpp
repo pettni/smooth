@@ -77,9 +77,8 @@ TEST(ManifoldVector, Cast)
 
 TEST(ManifoldVector, Optimize)
 {
-  auto f = [](const auto & var) {
-    using Scalar = typename std::decay_t<decltype(var)>::Scalar;
-    Eigen::Matrix<Scalar, 3, 1> ret;
+  auto f = []<typename T>(const smooth::ManifoldVector<smooth::SO3<T>> & var) -> Eigen::Vector3<T> {
+    Eigen::Vector3<T> ret;
     ret.setZero();
     for (const auto & gi : var) { ret += gi.log().cwiseAbs2(); }
     return ret;

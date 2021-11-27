@@ -94,11 +94,11 @@ public:
    */
   Eigen::Index dof() const
   {
-    if constexpr (Dof < M >> 0) {
+    if constexpr (Dof<M> > 0) {
       return size() * Dof<M>;
     } else {
-      return std::accumulate(this->begin(), this->end(), 0u, [](auto & v1, const auto & item) {
-        return v1 + ::smooth::dof<M>();
+      return std::accumulate(this->begin(), this->end(), 0u, [](auto s, const auto & item) {
+        return s + ::smooth::dof<M>(item);
       });
     }
   }

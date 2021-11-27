@@ -42,6 +42,30 @@ using namespace std::numbers;
 
 namespace smooth {
 
+// \cond
+namespace detail {
+
+/// @brief Constexpr pow
+template<std::size_t K, typename T>
+  requires(K >= 1)
+constexpr T pow_s(const T x) noexcept
+{
+  T ret = x;
+  for (auto i = 1u; i < K; ++i) { ret *= x; }
+  return ret;
+}
+
+/// @brief Constexpr cos that is moderately accurate on [0, pi]
+template<typename T>
+constexpr T cos_s(const T x) noexcept
+{
+  return T(1.) - pow_s<2>(x) / 2 + pow_s<4>(x) / 24 - pow_s<6>(x) / 720 + pow_s<8>(x) / 40320
+       - pow_s<10>(x) / 3628800;
+}
+
+}  // namespace detail
+// \end cond
+
 /**
  * @brief Chebyshev-Gauss-Radau nodes on [-1, 1].
  *
@@ -51,7 +75,7 @@ template<std::size_t K>
 constexpr std::array<double, K> cgr_nodes()
 {
   std::array<double, K> x;
-  for (auto i = 0u; i < K; ++i) { x[i] = -std::cos(2. * pi_v<double> * i / (2 * K - 1)); }
+  for (auto i = 0u; i < K; ++i) { x[i] = -detail::cos_s(2. * pi_v<double> * i / (2 * K - 1)); }
   return x;
 }
 

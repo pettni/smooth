@@ -53,11 +53,6 @@ namespace smooth {
 template<std::size_t K, LieGroup G>
 class Spline
 {
-private:
-  static constexpr auto B_s_ = polynomial_cumulative_basis<PolynomialBasis::Bernstein, K, double>();
-  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B_ =
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(B_s_[0].data());
-
 public:
   /**
    * @brief Default constructor creates an empty Spline starting at a given point.
@@ -532,6 +527,11 @@ private:
 
     return istar;
   }
+
+  // cumulative basis functions
+  static constexpr auto B_s_ = polynomial_cumulative_basis<PolynomialBasis::Bernstein, K, double>();
+  inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B_ =
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(B_s_[0].data());
 
   // segment i is defined by
   //

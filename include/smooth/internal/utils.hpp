@@ -54,12 +54,12 @@ namespace smooth::utils {
  * @param r sorted range to search in
  * @param t value to search for
  * @param wo comparison operation with signature \p std::weak_ordering(const
- * std::ranges::range_value_t<R> &, const T &)
+ * std::ranges::range_value_t<_R> &, const _T &)
  *
  * @return range iterator it according to the above rules
  */
-template<std::ranges::range R, typename T, typename WO>
-auto binary_interval_search(const R & r, const T & t, WO && wo) noexcept
+template<std::ranges::range _R, typename _T, typename _WO>
+auto binary_interval_search(const _R & r, const _T & t, _WO && wo) noexcept
 {
   auto left = std::ranges::begin(r);
   auto rght = std::ranges::end(r);
@@ -74,8 +74,8 @@ auto binary_interval_search(const R & r, const T & t, WO && wo) noexcept
 
   while (left + 1 < rght) {
     double alpha;
-    if constexpr (std::is_convertible_v<std::ranges::range_value_t<R>,
-                    double> && std::is_convertible_v<T, double>) {
+    if constexpr (std::is_convertible_v<std::ranges::range_value_t<_R>,
+                    double> && std::is_convertible_v<_T, double>) {
       alpha = (static_cast<double>(t) - static_cast<double>(*left))
             / static_cast<double>(*(rght - 1) - *left);
     } else {
@@ -99,10 +99,10 @@ auto binary_interval_search(const R & r, const T & t, WO && wo) noexcept
 /**
  * @brief Find interval in sorted range with binary search using default comparison.
  */
-template<std::ranges::range R, typename T, typename S = std::ranges::range_value_t<R>>
-auto binary_interval_search(const R & r, const T & t) noexcept
+template<std::ranges::range _R, typename _T, typename _S = std::ranges::range_value_t<_R>>
+auto binary_interval_search(const _R & r, const _T & t) noexcept
 {
-  return binary_interval_search(r, t, [](const S & _s, const T & _t) { return _s <=> _t; });
+  return binary_interval_search(r, t, [](const _S & _s, const _T & _t) { return _s <=> _t; });
 }
 
 /////////////////////
@@ -134,11 +134,11 @@ inline static constexpr auto static_for(_F && f)
 /**
  * @brief Prefix-sum an array starting at zero
  */
-template<typename T, std::size_t L>
-constexpr std::array<T, L + 1> array_psum(const std::array<T, L> & x)
+template<typename _T, std::size_t _L>
+constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x)
 {
-  std::array<T, L + 1> ret;
-  ret[0] = T(0);
+  std::array<_T, _L + 1> ret;
+  ret[0] = _T(0);
   std::partial_sum(x.begin(), x.end(), ret.begin() + 1);
   return ret;
 }

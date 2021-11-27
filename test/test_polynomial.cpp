@@ -580,7 +580,25 @@ TEST(Polynomial, LGR)
   static_assert(std::abs(lgr6.first[4] - 0.603973) < 1e-6);
 
   static constexpr auto lgr15 = smooth::lgr_nodes<15>();
-  for (auto i = 0; i + 1 < 15; ++i) { ASSERT_LE(lgr15.first[i], lgr15.first[i + 1]); }
+  for (auto i = 0; i + 1 < 15; ++i) {
+    ASSERT_LE(-1, lgr15.first[i]);
+    ASSERT_LE(lgr15.first[i], lgr15.first[i + 1]);
+    ASSERT_LE(lgr15.first[i], 1.);
+  }
+
+  auto lgr30 = smooth::lgr_nodes<30>();
+  for (auto i = 0; i + 1 < 30; ++i) {
+    ASSERT_LE(-1, lgr30.first[i]);
+    ASSERT_LE(lgr30.first[i], lgr30.first[i + 1]);
+    ASSERT_LE(lgr30.first[i], 1.);
+  }
+
+  auto lgr40 = smooth::lgr_nodes<40>();
+  for (auto i = 0; i + 1 < 40; ++i) {
+    ASSERT_LE(-1, lgr40.first[i]);
+    ASSERT_LE(lgr40.first[i], lgr40.first[i + 1]);
+    ASSERT_LE(lgr40.first[i], 1.);
+  }
 }
 
 TEST(Polynomial, Lagrange)

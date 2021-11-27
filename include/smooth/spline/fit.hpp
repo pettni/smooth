@@ -61,125 +61,124 @@ concept SplineSpec = requires(T t)
   // clang-format on
 };
 
-namespace spline_specs
+namespace spline_specs {
+
+/**
+ * @brief SplineSpec without boundary constraints
+ *
+ * @tparam K spline degree (must be 0 or 1)
+ */
+template<LieGroup G, std::size_t K>
+struct NoConstraints
 {
+  /// @brief Polynomial degree
+  static constexpr int Degree = K;
+  /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
+  static constexpr int OptDeg = -1;
+  /// @brief Number of derivatives to enforce continuity for
+  static constexpr int InnCnt = int(K) - 1;
 
-  /**
-   * @brief SplineSpec without boundary constraints
-   *
-   * @tparam K spline degree (must be 0 or 1)
-   */
-  template<LieGroup G, std::size_t K>
-  struct NoConstraints
-  {
-    /// @brief Polynomial degree
-    static constexpr int Degree = K;
-    /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
-    static constexpr int OptDeg = -1;
-    /// @brief Number of derivatives to enforce continuity for
-    static constexpr int InnCnt = int(K) - 1;
+  /// @brief Degrees of left-side boundary constraints (no constraints)
+  static constexpr std::array<int, 0> LeftDeg{};
+  /// @brief Values of left-side boundary constraints
+  std::array<Tangent<G>, 0> left_values{};
 
-    /// @brief Degrees of left-side boundary constraints (no constraints)
-    static constexpr std::array<int, 0> LeftDeg{};
-    /// @brief Values of left-side boundary constraints
-    std::array<Tangent<G>, 0> left_values{};
+  /// @brief Degrees of right-side boundary constraints (no constraints)
+  static constexpr std::array<int, 0> RghtDeg{};
+  /// @brief Values of right-side boundary constraints
+  std::array<Tangent<G>, 0> rght_values{};
+};
 
-    /// @brief Degrees of right-side boundary constraints (no constraints)
-    static constexpr std::array<int, 0> RghtDeg{};
-    /// @brief Values of right-side boundary constraints
-    std::array<Tangent<G>, 0> rght_values{};
-  };
+/// @brief SplineSpec for a piecewise constant function
+template<LieGroup G>
+using PiecewiseConstant = NoConstraints<G, 0>;
 
-  /// @brief SplineSpec for a piecewise constant function
-  template<LieGroup G>
-  using PiecewiseConstant = NoConstraints<G, 0>;
+/// @brief SplineSpec for a piecewise linear function
+template<LieGroup G>
+using PiecewiseLinear = NoConstraints<G, 1>;
 
-  /// @brief SplineSpec for a piecewise linear function
-  template<LieGroup G>
-  using PiecewiseLinear = NoConstraints<G, 1>;
+/**
+ * @brief SplineSpec for a cubic spline with two boundary conditions.
+ *
+ * @tparam P1 order of left boundary contraint (must be 1 or 2).
+ * @tparam P2 order of right boundary contraint (must be 1 or 2).
+ */
+template<LieGroup G, std::size_t P1 = 2, std::size_t P2 = P1>
+struct FixedDerCubic
+{
+  /// @brief Polynomial degree
+  static constexpr int Degree = 3;
+  /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
+  static constexpr int OptDeg = -1;
+  /// @brief Number of derivatives to enforce continuity for
+  static constexpr int InnCnt = 2;
 
-  /**
-   * @brief SplineSpec for a cubic spline with two boundary conditions.
-   *
-   * @tparam P1 order of left boundary contraint (must be 1 or 2).
-   * @tparam P2 order of right boundary contraint (must be 1 or 2).
-   */
-  template<LieGroup G, std::size_t P1 = 2, std::size_t P2 = P1>
-  struct FixedDerCubic
-  {
-    /// @brief Polynomial degree
-    static constexpr int Degree = 3;
-    /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
-    static constexpr int OptDeg = -1;
-    /// @brief Number of derivatives to enforce continuity for
-    static constexpr int InnCnt = 2;
+  /// @brief Degrees of left-side boundary constraints: P1
+  static constexpr std::array<int, 1> LeftDeg{P1};
+  /// @brief Values of left-side boundary constraints
+  std::array<Tangent<G>, 1> left_values{Tangent<G>::Zero()};
 
-    /// @brief Degrees of left-side boundary constraints: P1
-    static constexpr std::array<int, 1> LeftDeg{P1};
-    /// @brief Values of left-side boundary constraints
-    std::array<Tangent<G>, 1> left_values{Tangent<G>::Zero()};
+  /// @brief Degrees of right-side boundary constraints: P2
+  static constexpr std::array<int, 1> RghtDeg{P2};
+  /// @brief Values of right-side boundary constraints
+  std::array<Tangent<G>, 1> rght_values{Tangent<G>::Zero()};
+};
 
-    /// @brief Degrees of right-side boundary constraints: P2
-    static constexpr std::array<int, 1> RghtDeg{P2};
-    /// @brief Values of right-side boundary constraints
-    std::array<Tangent<G>, 1> rght_values{Tangent<G>::Zero()};
-  };
+/**
+ * @brief SplineSpec for optimized spline.
+ *
+ * @tparam K spline degree
+ * @tparam O order to optimize
+ * @tparam P continuity order
+ */
+template<LieGroup G, std::size_t K = 6, std::size_t O = 3, std::size_t P = 3>
+struct MinDerivative
+{
+  /// @brief Polynomial degree
+  static constexpr int Degree = K;
+  /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
+  static constexpr int OptDeg = O;
+  /// @brief Number of derivatives to enforce continuity for
+  static constexpr int InnCnt = P;
 
-  /**
-   * @brief SplineSpec for a optimized spline.
-   *
-   * @tparam K spline degree
-   * @tparam O order to optimize
-   * @tparam P continuity order
-   */
-  template<LieGroup G, std::size_t K = 6, std::size_t O = 3, std::size_t P = 3>
-  struct MinDerivative
-  {
-    /// @brief Polynomial degree
-    static constexpr int Degree = K;
-    /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
-    static constexpr int OptDeg = O;
-    /// @brief Number of derivatives to enforce continuity for
-    static constexpr int InnCnt = P;
+  /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
+  static constexpr std::array<int, P - 1> LeftDeg = []() {
+    std::array<int, P - 1> ret;
+    for (auto i = 0u; i < P - 1; ++i) { ret[i] = i + 1; }
+    return ret;
+  }();
 
-    /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
-    static constexpr std::array<int, P - 1> LeftDeg = []() {
-      std::array<int, P - 1> ret;
-      for (auto i = 0u; i < P - 1; ++i) { ret[i] = i + 1; }
-      return ret;
-    }();
+  /// @brief Values of left-side boundary constraints
+  std::array<Tangent<G>, P - 1> left_values = []() {
+    std::array<Tangent<G>, P - 1> ret;
+    ret.fill(Tangent<G>::Zero());
+    return ret;
+  }();
 
-    /// @brief Values of left-side boundary constraints
-    std::array<Tangent<G>, P - 1> left_values = []() {
-      std::array<Tangent<G>, P - 1> ret;
-      ret.fill(Tangent<G>::Zero());
-      return ret;
-    }();
-
-    /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
-    static constexpr std::array<int, P - 1> RghtDeg = LeftDeg;
-    /// @brief Values of right-side boundary constraints
-    std::array<Tangent<G>, P - 1> rght_values = left_values;
-  };
+  /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
+  static constexpr std::array<int, P - 1> RghtDeg = LeftDeg;
+  /// @brief Values of right-side boundary constraints
+  std::array<Tangent<G>, P - 1> rght_values = left_values;
+};
 
 }  // namespace spline_specs
+
+// \cond
+namespace detail {
 
 /**
  * @brief Compile-time calculation of the maximal differentiation order for a SplineSpec.
  */
 template<SplineSpec SS>
-constexpr int max_deriv()
+constexpr int splinespec_max_deriv()
 {
-  int max_deriv = std::max<int>(0, SS::InnCnt);
+  int ret = std::max<int>(0, SS::InnCnt);
 
-  for (const auto & x : SS::LeftDeg) { max_deriv = std::max(max_deriv, x); }
-  for (const auto & x : SS::RghtDeg) { max_deriv = std::max(max_deriv, x); }
+  for (const auto & x : SS::LeftDeg) { ret = std::max(ret, x); }
+  for (const auto & x : SS::RghtDeg) { ret = std::max(ret, x); }
 
-  return max_deriv;
+  return ret;
 }
-
-// \cond
-namespace detail {
 
 template<SplineSpec T>
 struct splinespec_extract;
@@ -246,7 +245,7 @@ Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = 
   // where p_i(t) = \sum_k x_i[k] * b_{i,k}(t) defines p on [tvec(i), tvec(i+1)]
 
   static constexpr auto K = SS::Degree;
-  static constexpr auto D = max_deriv<SS>();
+  static constexpr auto D = detail::splinespec_max_deriv<SS>();
 
   static_assert(K >= D, "K >= D");
 
@@ -414,6 +413,8 @@ template<std::ranges::range Rt, std::ranges::range Rg, SplineSpec SS>
 auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
 {
   using namespace std::views;
+
+  assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());
 
   using G                 = typename detail::splinespec_extract<SS>::group;
   static constexpr auto K = SS::Degree;
