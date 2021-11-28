@@ -67,10 +67,15 @@ public:
    * @param d data vector
    */
   Reparameterization(double smax, std::vector<Data> && d) : smax_(smax), d_(std::move(d)) {}
+  /// @brief Default copy constructor
   Reparameterization(const Reparameterization &) = default;
+  /// @brief Default move constructor
   Reparameterization(Reparameterization &&)      = default;
+  /// @brief Default copy assignment
   Reparameterization & operator=(const Reparameterization &) = default;
+  /// @brief Default move assignment
   Reparameterization & operator=(Reparameterization &&) = default;
+  /// @brief Default destructor
   ~Reparameterization()                                 = default;
 
   /// @brief Minimal t value

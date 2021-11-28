@@ -127,22 +127,22 @@ Check out the [Documentation][doc-link] and the [`examples`](https://github.com/
 
 These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
 
-* `Manifold`: type that supports `rplus` (geodesic addition) and `rminus` (geodesic subtraction). Examples:
+* `Manifold`: type for which `rplus` (geodesic addition) and `rminus` (geodesic subtraction) are defined. Examples:
   * All `LieGroup` types
   * `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---facilitates e.g. optimization and differentiation w.r.t. a dynamic number of `Manifold`s
   * `Eigen::VectorXd`
 
-* `LieGroup`: a type for which Lie group operations (`exp`, `log`, `Ad`, etc...) are defined. Examples:
+* `LieGroup`: type for which Lie group operations (`exp`, `log`, `Ad`, etc...) are defined. Examples:
   * All `NativeLieGroup` types
   * `Eigen::Vector3d`
   * `double`
 
-* `NativeLieGroup`: a type that implements a Lie group interface as class methods. Examples:
+* `NativeLieGroup`: type that implements the Lie group operations as class methods. Examples:
   * `smooth::SO3<float>`
   * `smooth::C1<double>`
   * `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
 
-Both Manifold and LieGroup are defined via external type traits (`traits::man` and `traits::lie`) that can be specialized in order to define a Manifold or LieGroup interface for a third-party type.
+Both `Manifold` and `LieGroup` are defined via external type traits (`traits::man` and `traits::lie`) that can be specialized in order to define a `Manifold` or `LieGroup` interface for a third-party type.
 
 
 ## Algorithms

@@ -918,7 +918,17 @@ RECURSIVE              = YES
 # run.
 
 EXCLUDE                = examples/README.md \
-                         include/smooth/internal
+                         include/smooth/internal/bundle.hpp \
+                         include/smooth/internal/c1.hpp \
+                         include/smooth/internal/common.hpp \
+                         include/smooth/internal/lmpar.hpp \
+                         include/smooth/internal/lmpar_sparse.hpp \
+                         include/smooth/internal/macro.hpp \
+                         include/smooth/internal/se2.hpp \
+                         include/smooth/internal/se3.hpp \
+                         include/smooth/internal/so2.hpp \
+                         include/smooth/internal/so3.hpp \
+                         include/smooth/internal/tn.hpp
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
