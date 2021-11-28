@@ -124,9 +124,9 @@ $(function() {
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">// \endcond</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Derived&gt;</div>
-<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classsmooth_1_1C1Base.html">   86</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1C1Base.html">C1Base</a> : <span class="keyword">public</span> LieGroupBase&lt;_Derived&gt;</div>
+<div class="line"><a name="l00086"></a><span class="lineno"><a class="line" href="classsmooth_1_1C1Base.html">   86</a></span>&#160;<span class="keyword">class </span><a class="code" href="classsmooth_1_1C1Base.html">C1Base</a> : <span class="keyword">public</span> <a class="code" href="classsmooth_1_1LieGroupBase.html">LieGroupBase</a>&lt;_Derived&gt;</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;{</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keyword">using</span> Base = LieGroupBase&lt;_Derived&gt;;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keyword">using</span> <a class="code" href="classsmooth_1_1LieGroupBase.html">Base</a> = <a class="code" href="classsmooth_1_1LieGroupBase.html">LieGroupBase&lt;_Derived&gt;</a>;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="keyword">protected</span>:</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <a class="code" href="classsmooth_1_1C1Base.html">C1Base</a>() = <span class="keywordflow">default</span>;</div>
@@ -230,7 +230,7 @@ $(function() {
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;<span class="comment">// \cond</span></div>
 <div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> _Scalar&gt;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="keyword">struct </span>liebase_info&lt;<a class="code" href="classsmooth_1_1Map.html">Map</a>&lt;const <a class="code" href="classsmooth_1_1C1.html">C1</a>&lt;_Scalar&gt;&gt;&gt; : <span class="keyword">public</span> liebase_info&lt;C1&lt;_Scalar&gt;&gt;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="keyword">struct </span><a class="code" href="structsmooth_1_1liebase__info.html">liebase_info</a>&lt;<a class="code" href="classsmooth_1_1Map.html">Map</a>&lt;const <a class="code" href="classsmooth_1_1C1.html">C1</a>&lt;_Scalar&gt;&gt;&gt; : <span class="keyword">public</span> <a class="code" href="structsmooth_1_1liebase__info.html">liebase_info</a>&lt;C1&lt;_Scalar&gt;&gt;</div>
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;{</div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_mutable = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;};</div>
@@ -261,9 +261,11 @@ $(function() {
 <div class="ttc" id="aclasssmooth_1_1C1_html_a132951444e246b87e06dc38d0fc45f2e"><div class="ttname"><a href="classsmooth_1_1C1.html#a132951444e246b87e06dc38d0fc45f2e">smooth::C1::C1</a></div><div class="ttdeci">C1(const std::complex&lt; Scalar &gt; &amp;c)</div><div class="ttdoc">Construct from complex number.</div><div class="ttdef"><b>Definition:</b> <a href="c1_8hpp_source.html#l00200">c1.hpp:200</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1C1_html_a9508be7a3644c35fb79805d1da028155"><div class="ttname"><a href="classsmooth_1_1C1.html#a9508be7a3644c35fb79805d1da028155">smooth::C1::Scalar</a></div><div class="ttdeci">typename Base::Scalar Scalar</div><div class="ttdoc">Scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="c1_8hpp_source.html#l00178">c1.hpp:178</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1C1_html_ab87918e0e3d332a8ddae847263c6e71b"><div class="ttname"><a href="classsmooth_1_1C1.html#ab87918e0e3d332a8ddae847263c6e71b">smooth::C1::C1</a></div><div class="ttdeci">C1(const Scalar &amp;scaling, const Scalar &amp;angle)</div><div class="ttdoc">Construct from scaling and angle.</div><div class="ttdef"><b>Definition:</b> <a href="c1_8hpp_source.html#l00187">c1.hpp:187</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html">smooth::LieGroupBase</a></div><div class="ttdoc">Base class for Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00049">lie_group_base.hpp:50</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1Map_html"><div class="ttname"><a href="classsmooth_1_1Map.html">smooth::Map</a></div><div class="ttdoc">Memory mapping of internal Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="map_8hpp_source.html#l00037">map.hpp:37</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1SO2_html"><div class="ttname"><a href="classsmooth_1_1SO2.html">smooth::SO2</a></div><div class="ttdoc">Storage implementation of SO2 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="so2_8hpp_source.html#l00162">so2.hpp:163</a></div></div>
 <div class="ttc" id="alie__group_8hpp_html"><div class="ttname"><a href="lie__group_8hpp.html">lie_group.hpp</a></div></div>
+<div class="ttc" id="astructsmooth_1_1liebase__info_html"><div class="ttname"><a href="structsmooth_1_1liebase__info.html">smooth::liebase_info</a></div><div class="ttdoc">Type trait that maps a type to Lie group operations.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00042">lie_group_base.hpp:43</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

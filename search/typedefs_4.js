@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['result_5ftype_499',['result_type',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#aa1e16c90930ca56d61c044cfc0bac6e1',1,'smooth::detail::BoostOdeintOps::scale_sum']]]
+  ['optjacobian_518',['OptJacobian',['../cumulative__spline_8hpp.html#acdb1bd7527fc2f84d6ae3b67d75215eb',1,'smooth::detail']]],
+  ['opttangent_519',['OptTangent',['../cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10',1,'smooth::detail']]]
 ];
