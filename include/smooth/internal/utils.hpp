@@ -61,8 +61,8 @@ namespace smooth::utils {
 template<std::ranges::range _R, typename _T, typename _WO>
 auto binary_interval_search(const _R & r, const _T & t, _WO && wo) noexcept
 {
-  auto left = std::ranges::begin(r);
-  auto rght = std::ranges::end(r);
+  auto left = std::ranges::cbegin(r);
+  auto rght = std::ranges::cend(r);
 
   if (std::ranges::empty(r) || wo(*left, t) > 0) {
     return rght;

@@ -151,9 +151,9 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
     // update trust region following Moré (1978)
     if (rho < 0.25) {
-      double mu;
+      double mu = 0.5;
       if (r_cand_norm <= r_norm) {
-        mu = 0.5;
+        // leave at 0.5
       } else if (r_cand_norm <= 10 * r_norm) {
         const double gamma = -fra2 - fra3;
         mu                 = std::clamp(gamma / (2. * gamma + act_red), 0.1, 0.5);

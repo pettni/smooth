@@ -57,17 +57,27 @@ public:
   };
 
   /**
-   * @brief Create Reparameterization
+   * @brief Create empty reparameterization.
+   */
+  Reparameterization() : smax_(0) {}
+
+  /**
+   * @brief Create Reparameterization.
    * @param smax maximal value of \f$ s \f$.
    * @param d data vector
    */
   Reparameterization(double smax, std::vector<Data> && d) : smax_(smax), d_(std::move(d)) {}
+  Reparameterization(const Reparameterization &) = default;
+  Reparameterization(Reparameterization &&)      = default;
+  Reparameterization & operator=(const Reparameterization &) = default;
+  Reparameterization & operator=(Reparameterization &&) = default;
+  ~Reparameterization()                                 = default;
 
   /// @brief Minimal t value
   double t_min() const { return 0; }
 
   /// @brief Maximal t value
-  double t_max() const { return d_.back().t; }
+  double t_max() const { return d_.empty() ? 0. : d_.back().t; }
 
   /**
    * @brief Evaluate reparameterization function
@@ -77,14 +87,15 @@ public:
    */
   double operator()(double t, double & ds, double & d2s) const
   {
-    if (d_.size() == 1) {
+    const auto it =
+      utils::binary_interval_search(d_, t, [](const Data & d, double t) { return d.t <=> t; });
+
+    if (it == d_.end()) {
       ds  = 0;
       d2s = 0;
-      return std::min(d_.front().s, smax_);
+      return d_.empty() ? 0. : std::clamp<double>(d_.front().s, 0., smax_);
     }
 
-    auto it =
-      utils::binary_interval_search(d_, t, [](const Data & d, double t) { return d.t <=> t; });
     const double tau = t - it->t;
 
     ds  = it->v + it->a * tau;
