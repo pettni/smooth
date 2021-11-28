@@ -34,8 +34,8 @@
 #include "smooth/so3.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include <matplot/matplot.h>
 #include "plot_tools.hpp"
+#include <matplot/matplot.h>
 
 using matplot::plot;
 using std::views::transform;
@@ -100,7 +100,8 @@ int main(int, char const **)
   // plot the trajectory
   auto xyz =
     gvec | transform([](auto s) { return s.template part<0>() * Eigen::Vector3d::UnitZ(); });
-  matplot::plot3(r2v(xyz | transform([](auto s) { return s.x(); })),
+  matplot::plot3(
+    r2v(xyz | transform([](auto s) { return s.x(); })),
     r2v(xyz | transform([](auto s) { return s.y(); })),
     r2v(xyz | transform([](auto s) { return s.z(); })))
     ->line_width(4)

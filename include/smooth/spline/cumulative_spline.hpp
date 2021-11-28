@@ -68,7 +68,8 @@ using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Do
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
 template<std::size_t K, LieGroup G, typename Derived>
-inline G cspline_eval_diff(const std::ranges::sized_range auto & diff_points,
+inline G cspline_eval_diff(
+  const std::ranges::sized_range auto & diff_points,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
@@ -167,11 +168,13 @@ inline G cspline_eval_diff(const std::ranges::sized_range auto & diff_points,
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives w.r.t. the K+1 control points
  */
-template<std::size_t K,
+template<
+  std::size_t K,
   std::ranges::range R,
   typename Derived,
   LieGroup G = std::ranges::range_value_t<R>>
-inline G cspline_eval(const R & gs,
+inline G cspline_eval(
+  const R & gs,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},

@@ -182,7 +182,8 @@ public:
    * @param T duration
    * @param ga Spline starting point (default Identity)
    */
-  static Spline FixedCubic(const G & gb,
+  static Spline FixedCubic(
+    const G & gb,
     const Tangent<G> & va,
     const Tangent<G> & vb,
     double T     = 1,
@@ -443,8 +444,8 @@ public:
    *  y(t) = x(t - t_a)
    * \f]
    */
-  Spline crop(
-    double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
+  Spline
+  crop(double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
   {
     ta = std::max<double>(ta, 0);
     tb = std::min<double>(tb, t_max());

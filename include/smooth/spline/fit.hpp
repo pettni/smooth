@@ -193,7 +193,9 @@ struct splinespec_extract<T<G, Is...>>
 template<SplineSpec T, LieGroup Gnew>
 struct splinespec_rebind;
 
-template<template<LieGroup, std::size_t...> typename T,
+template<
+  template<LieGroup, std::size_t...>
+  typename T,
   LieGroup Gold,
   LieGroup Gnew,
   std::size_t... Is>
@@ -235,7 +237,8 @@ auto splinespec_project(const SS & ss, std::size_t k)
  * + 1) } \f$ defines polynomial \f$ p_i \f$ as \f[ p_i(t) = \sum_{\nu = 0}^K \beta_\nu b_{\nu, k}
  * \left( \frac{t}{\delta t} \right), \f] where \f$ \delta t \f$ is the i:th member of \p dt_r.
  */
-Eigen::VectorXd fit_spline_1d(const std::ranges::range auto & dt_r,
+Eigen::VectorXd fit_spline_1d(
+  const std::ranges::range auto & dt_r,
   const std::ranges::range auto & dx_r,
   const SplineSpec auto & ss)
 {
@@ -412,7 +415,8 @@ Eigen::VectorXd fit_spline_1d(const std::ranges::range auto & dt_r,
  * @param ss spline specification
  * @return Spline c s.t. \f$ c(t_i) = g_i \f$ for \f$(t_i, g_i) \in zip(ts, gs) \f$
  */
-auto fit_spline(const std::ranges::range auto & ts,
+auto fit_spline(
+  const std::ranges::range auto & ts,
   const std::ranges::range auto & gs,
   const SplineSpec auto & ss)
 {

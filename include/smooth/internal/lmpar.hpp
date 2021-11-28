@@ -62,15 +62,15 @@ namespace smooth::detail {
  * NOTE To maximize performance in the sparse case R should be Row-Major
  */
 template<int N>
-Eigen::Vector<double, N> solve_ls(auto & R,
+Eigen::Vector<double, N> solve_ls(
+  auto & R,
   const Eigen::Vector<double, N> & Qt_r,
   const auto & P,
   const Eigen::Vector<double, N> & d)
 {
   // true if R is sparse
-  static constexpr bool is_sparse =
-    std::is_base_of_v<Eigen::SparseMatrixBase<std::decay_t<decltype(R)>>,
-      std::decay_t<decltype(R)>>;
+  static constexpr bool is_sparse = std::
+    is_base_of_v<Eigen::SparseMatrixBase<std::decay_t<decltype(R)>>, std::decay_t<decltype(R)>>;
 
   const auto n               = R.cols();
   Eigen::Vector<double, N> a = Qt_r;
@@ -154,16 +154,17 @@ Eigen::Vector<double, N> solve_ls(auto & R,
  * @param r vector with same number of elements as there are rows in J
  */
 template<int N, int M>
-Eigen::Vector<double, N> solve_ls(
-  const auto & J_qr, const Eigen::Vector<double, N> & d, const Eigen::Vector<double, M> & r)
+Eigen::Vector<double, N>
+solve_ls(const auto & J_qr, const Eigen::Vector<double, N> & d, const Eigen::Vector<double, M> & r)
 {
   // true if it's a sparse decomposition
-  static constexpr bool is_sparse =
-    std::is_base_of_v<Eigen::SparseMatrixBase<std::decay_t<decltype(J_qr)>>,
-      std::decay_t<decltype(J_qr)>>;
+  static constexpr bool is_sparse = std::is_base_of_v<
+    Eigen::SparseMatrixBase<std::decay_t<decltype(J_qr)>>,
+    std::decay_t<decltype(J_qr)>>;
 
   // figure type to use for A matrix
-  using AType = std::conditional_t<is_sparse,
+  using AType = std::conditional_t<
+    is_sparse,
     Eigen::SparseMatrix<double, Eigen::RowMajor>,
     Eigen::Matrix<double, N, N>>;
 
@@ -215,7 +216,8 @@ Eigen::Vector<double, N> solve_ls(
  * Consider using lmpar_sparse instead.
  */
 template<int N, int M>
-std::pair<double, Eigen::Vector<double, N>> lmpar(const auto & J,
+std::pair<double, Eigen::Vector<double, N>> lmpar(
+  const auto & J,
   const Eigen::Vector<double, N> & d,
   const Eigen::Vector<double, M> & r,
   double Delta)
@@ -234,7 +236,8 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(const auto & J,
   const auto nm_rest = n - nm_min;
 
   // calculate qr decomposition of J
-  std::conditional_t<is_sparse,
+  std::conditional_t<
+    is_sparse,
     Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<int>>,
     Eigen::ColPivHouseholderQR<MatrixT>>
     J_qr;
@@ -294,7 +297,8 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(const auto & J,
     if (!(l < alpha && alpha < u)) { alpha = std::max<double>(0.001 * u, sqrt(l * u)); }
 
     // solve least-squares problem
-    using RType = std::conditional_t<is_sparse,
+    using RType = std::conditional_t<
+      is_sparse,
       Eigen::SparseMatrix<double, Eigen::RowMajor>,
       Eigen::Matrix<double, N, N>>;
     RType R(n, n);

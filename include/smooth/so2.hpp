@@ -104,7 +104,8 @@ public:
    */
   std::complex<Scalar> u1() const
   {
-    return std::complex<Scalar>(static_cast<const _Derived &>(*this).coeffs().y(),
+    return std::complex<Scalar>(
+      static_cast<const _Derived &>(*this).coeffs().y(),
       static_cast<const _Derived &>(*this).coeffs().x());
   }
 

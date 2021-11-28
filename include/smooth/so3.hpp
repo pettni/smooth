@@ -113,8 +113,8 @@ public:
    * \f$ Rot_{i_1}(a_1) * Rot_{i_2}(a_2) * Rot_{i_3}(a_3). \f$
    * where \f$ Rot_i(a) \f$ rotates an angle \f$a\f$ around the \f$i\f$:th axis.
    */
-  Eigen::Vector3<Scalar> eulerAngles(
-    Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
+  Eigen::Vector3<Scalar>
+  eulerAngles(Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
   {
     return quat().toRotationMatrix().eulerAngles(i1, i2, i3);
   }
@@ -140,7 +140,8 @@ public:
     using std::atan2;
 
     const auto q = quat();
-    Scalar yaw   = atan2(Scalar(2) * (q.w() * q.z() + q.x() * q.y()),
+    Scalar yaw   = atan2(
+      Scalar(2) * (q.w() * q.z() + q.x() * q.y()),
       Scalar(1) - Scalar(2) * (q.y() * q.y() + q.z() * q.z()));
     return SO2<Scalar>(yaw);
   }

@@ -26,11 +26,10 @@
 #include <gtest/gtest.h>
 
 #include "smooth/bundle.hpp"
-#include "smooth/so2.hpp"
-#include "smooth/so3.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
-
+#include "smooth/so2.hpp"
+#include "smooth/so3.hpp"
 
 using namespace smooth;
 
@@ -57,7 +56,7 @@ TEST(Bundle, Construct)
 
   auto so2 = SO2d::Random();
   auto so3 = SO3d::Random();
-  auto e3 = Eigen::Vector3d::Random().eval();
+  auto e3  = Eigen::Vector3d::Random().eval();
 
   mybundle b(so2, so3, e3);
 
@@ -88,7 +87,7 @@ TEST(Bundle, BundleOfBundle)
 
   auto so2 = SO2d::Random();
   auto so3 = SO3d::Random();
-  auto e3 = Eigen::Vector3d::Random().eval();
+  auto e3  = Eigen::Vector3d::Random().eval();
   auto se2 = SE2d::Random();
 
   SubBundle sb(so3, e3);

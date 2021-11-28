@@ -3,7 +3,8 @@
 
 #include <Eigen/Core>
 
-inline auto Misra1a() {
+inline auto Misra1a()
+{
   auto f = [](double y, double x, const Eigen::VectorXd & p) -> double {
     return y - (p(0) * (1 - exp(-p(1) * x)));
   };
@@ -35,10 +36,12 @@ inline auto Misra1a() {
       5.5015643181E-04;
   // clang-format on
 
-  return std::make_tuple(std::move(f), std::move(data), std::move(start1), std::move(start2), std::move(optim));
+  return std::make_tuple(
+    std::move(f), std::move(data), std::move(start1), std::move(start2), std::move(optim));
 }
 
-inline auto Kirby2() {
+inline auto Kirby2()
+{
   auto f = [](double y, double x, const Eigen::VectorXd & p) -> double {
     return y - (p(0) + p(1) * x + p(2) * x * x) / (1. + p(3) * x + p(4) * x * x);
   };
@@ -225,7 +228,8 @@ inline auto Kirby2() {
   return std::make_tuple(std::move(f), data, start1, start2, optim);
 }
 
-inline auto MGH09() {
+inline auto MGH09()
+{
   auto f = [](double y, double x, const Eigen::VectorXd & p) -> double {
     return y - p(0) * (x * x + x * p(1)) / (x * x + x * p(2) + p(3));
   };

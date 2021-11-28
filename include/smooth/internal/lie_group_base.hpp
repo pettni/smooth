@@ -154,7 +154,8 @@ public:
    */
   template<typename OtherDerived>
     requires(std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  bool isApprox(const LieGroupBase<OtherDerived> & o,
+  bool isApprox(
+    const LieGroupBase<OtherDerived> & o,
     const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
   {
     return cderived().coeffs().isApprox(static_cast<const OtherDerived &>(o).coeffs(), eps);

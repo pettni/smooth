@@ -31,8 +31,8 @@
 #include "smooth/so3.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include <matplot/matplot.h>
 #include "plot_tools.hpp"
+#include <matplot/matplot.h>
 
 using matplot::plot;
 using std::views::transform;

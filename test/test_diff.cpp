@@ -43,8 +43,7 @@ template<smooth::Manifold G>
 class DiffTest : public ::testing::Test
 {};
 
-using GroupsToTest =
-  testing::Types<smooth::SO2d, smooth::SE2d, smooth::SO3d, smooth::SE3d>;
+using GroupsToTest = testing::Types<smooth::SO2d, smooth::SE2d, smooth::SO3d, smooth::SE3d>;
 
 TYPED_TEST_SUITE(DiffTest, GroupsToTest);
 
@@ -116,9 +115,7 @@ void run_exp_test()
   a.setRandom();
 
   auto [f, jac] = smooth::diff::dr<dm>(
-    [](auto var) {
-      return TypeParam::template CastT<typename decltype(var)::Scalar>::exp(var);
-    },
+    [](auto var) { return TypeParam::template CastT<typename decltype(var)::Scalar>::exp(var); },
     smooth::wrt(a));
 
   static_assert(decltype(jac)::RowsAtCompileTime == TypeParam::Dof, "Error");

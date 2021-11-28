@@ -128,8 +128,8 @@ struct man<M>
   }
 
   template<typename Derived>
-  static inline Eigen::Vector<Scalar, M::SizeAtCompileTime> rminus(
-    const M & m1, const Eigen::MatrixBase<Derived> & m2)
+  static inline Eigen::Vector<Scalar, M::SizeAtCompileTime>
+  rminus(const M & m1, const Eigen::MatrixBase<Derived> & m2)
   {
     return m1 - m2;
   }

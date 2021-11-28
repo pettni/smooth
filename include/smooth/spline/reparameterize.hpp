@@ -119,7 +119,8 @@ private:
  * resulting velocities will be lower than the desired values.
  */
 template<LieGroup G>
-Reparameterization reparameterize_spline(const Spline<3, G> & curve,
+Reparameterization reparameterize_spline(
+  const Spline<3, G> & curve,
   const Tangent<G> & vel_min,
   const Tangent<G> & vel_max,
   const Tangent<G> & acc_min,

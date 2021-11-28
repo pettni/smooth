@@ -185,14 +185,14 @@ struct traits::man<ManifoldVector<M>>
   }
 
   template<typename Derived>
-  static inline ManifoldVector<M> rplus(
-    const ManifoldVector<M> & m, const Eigen::MatrixBase<Derived> & a)
+  static inline ManifoldVector<M>
+  rplus(const ManifoldVector<M> & m, const Eigen::MatrixBase<Derived> & a)
   {
     return m + a;
   }
 
-  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(
-    const ManifoldVector<M> & m1, const ManifoldVector<M> & m2)
+  static inline Eigen::Matrix<Scalar, Dof, 1>
+  rminus(const ManifoldVector<M> & m1, const ManifoldVector<M> & m2)
   {
     return m1 - m2;
   }

@@ -401,14 +401,14 @@ struct man<G>
  * @brief Group identity element
  */
 template<LieGroup G>
-  requires (Dof<G> > 0)
+  requires(Dof<G> > 0)
 inline PlainObject<G> Identity() { return traits::lie<G>::Identity(); }
 
 /**
  * @brief Random group element
  */
 template<LieGroup G>
-  requires (Dof<G> > 0)
+  requires(Dof<G> > 0)
 inline PlainObject<G> Random() { return traits::lie<G>::Random(); }
 
 /**
@@ -451,7 +451,8 @@ inline PlainObject<G> inverse(const G & g)
  * @brief Check if two group elements are approximately equal
  */
 template<LieGroup G, typename Arg>
-inline bool isApprox(const G & g,
+inline bool isApprox(
+  const G & g,
   Arg && a,
   typename traits::lie<G>::Scalar eps =
     Eigen::NumTraits<typename traits::lie<G>::Scalar>::dummy_precision())

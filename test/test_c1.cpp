@@ -60,7 +60,7 @@ TEST(C1, Action)
   std::srand(14);
 
   for (auto i = 0; i != 5; ++i) {
-    const auto g1 = smooth::C1d::Random();
+    const auto g1          = smooth::C1d::Random();
     Eigen::Vector2d ex_rot = g1 * Eigen::Vector2d::UnitX();
     Eigen::Vector2d ey_rot = g1 * Eigen::Vector2d::UnitY();
 
@@ -70,10 +70,9 @@ TEST(C1, Action)
 
   for (auto i = 0; i != 5; ++i) {
     const smooth::C1d g1(5, 0);
-    Eigen::Vector2d v = Eigen::Vector2d::Random();
+    Eigen::Vector2d v     = Eigen::Vector2d::Random();
     Eigen::Vector2d v_rot = g1 * v;
 
     ASSERT_TRUE(v_rot.isApprox(5 * v));
   }
 }
-

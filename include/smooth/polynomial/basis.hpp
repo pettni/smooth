@@ -371,7 +371,8 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_basis()
  *  p_i(t) = \prod_{j \in [0,K], j \neq i} \frac{t - t_j}{t_i - t_j}.
  * \f]
  */
-template<std::size_t K,
+template<
+  std::size_t K,
   std::ranges::random_access_range R,
   typename Scalar = std::ranges::range_value_t<R>>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> lagrange_basis(const R & ts)
@@ -408,8 +409,8 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> lagrange_basis(const R & ts)
  * where \f$ p_i \f$ are basis polynomials defined by B.
  */
 template<std::size_t K, std::size_t N, typename Scalar, std::ranges::sized_range R>
-constexpr StaticMatrix<Scalar, K + 1, N> polynomial_basis_derivatives(
-  const StaticMatrix<Scalar, K + 1, K + 1> & B, const R & ts)
+constexpr StaticMatrix<Scalar, K + 1, N>
+polynomial_basis_derivatives(const StaticMatrix<Scalar, K + 1, K + 1> & B, const R & ts)
 {
   assert(std::ranges::size(ts) == N);
 
@@ -510,7 +511,8 @@ auto evaluate_polynomial(const R & x, const Scalar & u, int p = 0)
   Eigen::Map<const Eigen::Matrix<Scalar, K + 1, 1>> U(U_s[0].data());
 
   using RT   = std::ranges::range_value_t<R>;
-  using RetT = std::conditional_t<std::is_base_of_v<Eigen::MatrixBase<RT>, RT>,
+  using RetT = std::conditional_t<
+    std::is_base_of_v<Eigen::MatrixBase<RT>, RT>,
     Eigen::Matrix<Scalar, Dof<RT>, 1>,
     Scalar>;
 

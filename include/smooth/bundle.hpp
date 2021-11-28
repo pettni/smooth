@@ -129,7 +129,8 @@ struct liebase_info<Bundle<_Gs...>>
   using Impl   = BundleImpl<typename liebase_info<_Gs>::Impl...>;
   using Scalar = std::common_type_t<typename liebase_info<_Gs>::Scalar...>;
 
-  static_assert((std::is_same_v<Scalar, typename liebase_info<_Gs>::Scalar> && ...),
+  static_assert(
+    (std::is_same_v<Scalar, typename liebase_info<_Gs>::Scalar> && ...),
     "Scalar types must be identical");
 
   template<typename NewScalar>

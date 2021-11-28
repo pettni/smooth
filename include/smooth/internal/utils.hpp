@@ -74,8 +74,10 @@ auto binary_interval_search(const _R & r, const _T & t, _WO && wo) noexcept
 
   while (left + 1 < rght) {
     double alpha;
-    if constexpr (std::is_convertible_v<std::ranges::range_value_t<_R>,
-                    double> && std::is_convertible_v<_T, double>) {
+    if constexpr (
+      std::is_convertible_v<
+        std::ranges::range_value_t<_R>,
+        double> && std::is_convertible_v<_T, double>) {
       alpha = (static_cast<double>(t) - static_cast<double>(*left))
             / static_cast<double>(*(rght - 1) - *left);
     } else {
@@ -124,7 +126,8 @@ inline static constexpr auto static_for_impl(_F && f, std::index_sequence<_Idx..
 template<std::size_t _I, typename _F>
 inline static constexpr auto static_for(_F && f)
 {
-  const auto fiter = [&]<std::size_t ... _Idx>(std::index_sequence<_Idx...>) {
+  const auto fiter = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>)
+  {
     return (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
   };
 
