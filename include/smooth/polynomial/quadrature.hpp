@@ -49,7 +49,7 @@ namespace detail {
 template<std::size_t K>
 constexpr auto pow_s(const auto x) noexcept
 {
-  auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
+  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
   {
     return ((static_cast<void>(Is), x) * ... * 1.);
   };
@@ -60,14 +60,14 @@ constexpr auto pow_s(const auto x) noexcept
 template<std::size_t K>
 constexpr auto factorial_s() noexcept
 {
-  auto f = []<auto... Is>(std::index_sequence<Is...>) { return ((Is + 1) * ... * 1.); };
+  const auto f = []<auto... Is>(std::index_sequence<Is...>) { return ((Is + 1) * ... * 1.); };
   return f(std::make_index_sequence<K>{});
 }
 
 /// @brief Constexpr cos that is moderately accurate on [0, pi]
 constexpr auto cos_s(const auto x) noexcept
 {
-  auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
+  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
   {
     return ((pow_s<Is>(-1.) * pow_s<2 * Is>(x) / factorial_s<2 * Is>()) + ...);
   };

@@ -124,7 +124,13 @@ inline static constexpr auto static_for_impl(_F && f, std::index_sequence<_Idx..
 template<std::size_t _I, typename _F>
 inline static constexpr auto static_for(_F && f)
 {
-  return static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
+  const auto fiter = [&]<std::size_t ... _Idx>(std::index_sequence<_Idx...>) {
+    return (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
+  };
+
+  return fiter(std::make_index_sequence<_I>{});
+
+  // return static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
 }
 
 /////////////////
@@ -135,7 +141,7 @@ inline static constexpr auto static_for(_F && f)
  * @brief Prefix-sum an array starting at zero
  */
 template<typename _T, std::size_t _L>
-constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x)
+inline static constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x) noexcept
 {
   std::array<_T, _L + 1> ret;
   ret[0] = _T(0);

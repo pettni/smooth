@@ -296,11 +296,6 @@ TYPED_TEST(LieGroupInterface, LogAndExp)
     ASSERT_TRUE(g.isApprox(g_copy));
     ASSERT_TRUE(log.isApprox(log_copy));
 
-    // check that log = vee o Log o hat
-    // matrix log is non-unique, so we compare the results through exp
-    const auto log1 = TypeParam::vee(g.matrix().log().eval());
-    ASSERT_TRUE(TypeParam::exp(log1).isApprox(g));
-
     // check that exp = vee o Exp o hat
     const auto G = TypeParam::hat(log).exp().eval();
     ASSERT_TRUE(G.isApprox(g.matrix()));

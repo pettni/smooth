@@ -112,7 +112,7 @@ public:
    * @brief Rotation action on 2D vector.
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
+  Eigen::Vector2<Scalar> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return Base::matrix() * v;
   }

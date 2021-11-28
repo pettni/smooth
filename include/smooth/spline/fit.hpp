@@ -61,105 +61,106 @@ concept SplineSpec = requires(T t)
   // clang-format on
 };
 
-namespace spline_specs {
-
-/**
- * @brief SplineSpec without boundary constraints
- *
- * @tparam K spline degree (must be 0 or 1)
- */
-template<LieGroup G, std::size_t K>
-struct NoConstraints
+namespace spline_specs
 {
-  /// @brief Polynomial degree
-  static constexpr int Degree = K;
-  /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
-  static constexpr int OptDeg = -1;
-  /// @brief Number of derivatives to enforce continuity for
-  static constexpr int InnCnt = int(K) - 1;
 
-  /// @brief Degrees of left-side boundary constraints (no constraints)
-  static constexpr std::array<int, 0> LeftDeg{};
-  /// @brief Values of left-side boundary constraints
-  std::array<Tangent<G>, 0> left_values{};
+  /**
+   * @brief SplineSpec without boundary constraints
+   *
+   * @tparam K spline degree (must be 0 or 1)
+   */
+  template<LieGroup G, std::size_t K>
+  struct NoConstraints
+  {
+    /// @brief Polynomial degree
+    static constexpr int Degree = K;
+    /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
+    static constexpr int OptDeg = -1;
+    /// @brief Number of derivatives to enforce continuity for
+    static constexpr int InnCnt = int(K) - 1;
 
-  /// @brief Degrees of right-side boundary constraints (no constraints)
-  static constexpr std::array<int, 0> RghtDeg{};
-  /// @brief Values of right-side boundary constraints
-  std::array<Tangent<G>, 0> rght_values{};
-};
+    /// @brief Degrees of left-side boundary constraints (no constraints)
+    static constexpr std::array<int, 0> LeftDeg{};
+    /// @brief Values of left-side boundary constraints
+    std::array<Tangent<G>, 0> left_values{};
 
-/// @brief SplineSpec for a piecewise constant function
-template<LieGroup G>
-using PiecewiseConstant = NoConstraints<G, 0>;
+    /// @brief Degrees of right-side boundary constraints (no constraints)
+    static constexpr std::array<int, 0> RghtDeg{};
+    /// @brief Values of right-side boundary constraints
+    std::array<Tangent<G>, 0> rght_values{};
+  };
 
-/// @brief SplineSpec for a piecewise linear function
-template<LieGroup G>
-using PiecewiseLinear = NoConstraints<G, 1>;
+  /// @brief SplineSpec for a piecewise constant function
+  template<LieGroup G>
+  using PiecewiseConstant = NoConstraints<G, 0>;
 
-/**
- * @brief SplineSpec for a cubic spline with two boundary conditions.
- *
- * @tparam P1 order of left boundary contraint (must be 1 or 2).
- * @tparam P2 order of right boundary contraint (must be 1 or 2).
- */
-template<LieGroup G, std::size_t P1 = 2, std::size_t P2 = P1>
-struct FixedDerCubic
-{
-  /// @brief Polynomial degree
-  static constexpr int Degree = 3;
-  /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
-  static constexpr int OptDeg = -1;
-  /// @brief Number of derivatives to enforce continuity for
-  static constexpr int InnCnt = 2;
+  /// @brief SplineSpec for a piecewise linear function
+  template<LieGroup G>
+  using PiecewiseLinear = NoConstraints<G, 1>;
 
-  /// @brief Degrees of left-side boundary constraints: P1
-  static constexpr std::array<int, 1> LeftDeg{P1};
-  /// @brief Values of left-side boundary constraints
-  std::array<Tangent<G>, 1> left_values{Tangent<G>::Zero()};
+  /**
+   * @brief SplineSpec for a cubic spline with two boundary conditions.
+   *
+   * @tparam P1 order of left boundary contraint (must be 1 or 2).
+   * @tparam P2 order of right boundary contraint (must be 1 or 2).
+   */
+  template<LieGroup G, std::size_t P1 = 2, std::size_t P2 = P1>
+  struct FixedDerCubic
+  {
+    /// @brief Polynomial degree
+    static constexpr int Degree = 3;
+    /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
+    static constexpr int OptDeg = -1;
+    /// @brief Number of derivatives to enforce continuity for
+    static constexpr int InnCnt = 2;
 
-  /// @brief Degrees of right-side boundary constraints: P2
-  static constexpr std::array<int, 1> RghtDeg{P2};
-  /// @brief Values of right-side boundary constraints
-  std::array<Tangent<G>, 1> rght_values{Tangent<G>::Zero()};
-};
+    /// @brief Degrees of left-side boundary constraints: P1
+    static constexpr std::array<int, 1> LeftDeg{P1};
+    /// @brief Values of left-side boundary constraints
+    std::array<Tangent<G>, 1> left_values{Tangent<G>::Zero()};
 
-/**
- * @brief SplineSpec for optimized spline.
- *
- * @tparam K spline degree
- * @tparam O order to optimize
- * @tparam P continuity order
- */
-template<LieGroup G, std::size_t K = 6, std::size_t O = 3, std::size_t P = 3>
-struct MinDerivative
-{
-  /// @brief Polynomial degree
-  static constexpr int Degree = K;
-  /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
-  static constexpr int OptDeg = O;
-  /// @brief Number of derivatives to enforce continuity for
-  static constexpr int InnCnt = P;
+    /// @brief Degrees of right-side boundary constraints: P2
+    static constexpr std::array<int, 1> RghtDeg{P2};
+    /// @brief Values of right-side boundary constraints
+    std::array<Tangent<G>, 1> rght_values{Tangent<G>::Zero()};
+  };
 
-  /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
-  static constexpr std::array<int, P - 1> LeftDeg = []() {
-    std::array<int, P - 1> ret;
-    for (auto i = 0u; i < P - 1; ++i) { ret[i] = i + 1; }
-    return ret;
-  }();
+  /**
+   * @brief SplineSpec for optimized spline.
+   *
+   * @tparam K spline degree
+   * @tparam O order to optimize
+   * @tparam P continuity order
+   */
+  template<LieGroup G, std::size_t K = 6, std::size_t O = 3, std::size_t P = 3>
+  struct MinDerivative
+  {
+    /// @brief Polynomial degree
+    static constexpr int Degree = K;
+    /// @brief Optimization degree (absolute integral of derivative OptDeg is minimized)
+    static constexpr int OptDeg = O;
+    /// @brief Number of derivatives to enforce continuity for
+    static constexpr int InnCnt = P;
 
-  /// @brief Values of left-side boundary constraints
-  std::array<Tangent<G>, P - 1> left_values = []() {
-    std::array<Tangent<G>, P - 1> ret;
-    ret.fill(Tangent<G>::Zero());
-    return ret;
-  }();
+    /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
+    static constexpr std::array<int, P - 1> LeftDeg = []() {
+      std::array<int, P - 1> ret;
+      for (auto i = 0u; i < P - 1; ++i) { ret[i] = i + 1; }
+      return ret;
+    }();
 
-  /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
-  static constexpr std::array<int, P - 1> RghtDeg = LeftDeg;
-  /// @brief Values of right-side boundary constraints
-  std::array<Tangent<G>, P - 1> rght_values = left_values;
-};
+    /// @brief Values of left-side boundary constraints
+    std::array<Tangent<G>, P - 1> left_values = []() {
+      std::array<Tangent<G>, P - 1> ret;
+      ret.fill(Tangent<G>::Zero());
+      return ret;
+    }();
+
+    /// @brief Degrees of left-side boundary constraints: 1, 2, ..., P-1
+    static constexpr std::array<int, P - 1> RghtDeg = LeftDeg;
+    /// @brief Values of right-side boundary constraints
+    std::array<Tangent<G>, P - 1> rght_values = left_values;
+  };
 
 }  // namespace spline_specs
 
@@ -234,10 +235,12 @@ auto splinespec_project(const SS & ss, std::size_t k)
  * + 1) } \f$ defines polynomial \f$ p_i \f$ as \f[ p_i(t) = \sum_{\nu = 0}^K \beta_\nu b_{\nu, k}
  * \left( \frac{t}{\delta t} \right), \f] where \f$ \delta t \f$ is the i:th member of \p dt_r.
  */
-template<SplineSpec SS, std::ranges::range Rt, std::ranges::range Rx>
-  requires(std::is_same_v<std::ranges::range_value_t<Rt>, std::ranges::range_value_t<Rx>>)
-Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = SS{})
+Eigen::VectorXd fit_spline_1d(const std::ranges::range auto & dt_r,
+  const std::ranges::range auto & dx_r,
+  const SplineSpec auto & ss)
 {
+  using SS = std::decay_t<decltype(ss)>;
+
   const std::size_t N = std::min(std::ranges::size(dt_r), std::ranges::size(dx_r));
 
   // coefficient layout is
@@ -409,14 +412,16 @@ Eigen::VectorXd fit_spline_1d(const Rt & dt_r, const Rx & dx_r, const SS & ss = 
  * @param ss spline specification
  * @return Spline c s.t. \f$ c(t_i) = g_i \f$ for \f$(t_i, g_i) \in zip(ts, gs) \f$
  */
-template<std::ranges::range Rt, std::ranges::range Rg, SplineSpec SS>
-auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
+auto fit_spline(const std::ranges::range auto & ts,
+  const std::ranges::range auto & gs,
+  const SplineSpec auto & ss)
 {
   using namespace std::views;
+  using SS = std::decay_t<decltype(ss)>;
+  using G  = std::ranges::range_value_t<std::decay_t<decltype(gs)>>;
 
   assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());
 
-  using G                 = typename detail::splinespec_extract<SS>::group;
   static constexpr auto K = SS::Degree;
   const auto N            = std::min(std::ranges::size(ts), std::ranges::size(gs));
 
@@ -476,10 +481,10 @@ auto fit_spline(const Rt & ts, const Rg & gs, const SS & ss)
  * @param gs range of values
  * @return Spline c s.t. \f$ c(t_i) = g_i \f$ for \f$(t_i, g_i) \in zip(ts, gs) \f$
  */
-template<std::ranges::range Rt, std::ranges::range Rg>
-auto fit_spline_cubic(const Rt & ts, const Rg & gs)
+auto fit_spline_cubic(const std::ranges::range auto & ts, const std::ranges::range auto & gs)
 {
-  return fit_spline(ts, gs, spline_specs::FixedDerCubic<std::ranges::range_value_t<Rg>, 2, 2>{});
+  using G = std::ranges::range_value_t<std::decay_t<decltype(gs)>>;
+  return fit_spline(ts, gs, spline_specs::FixedDerCubic<G, 2, 2>{});
 }
 
 /**
@@ -495,13 +500,10 @@ auto fit_spline_cubic(const Rt & ts, const Rg & gs)
  * @param gg data values t_i
  * @param dt distance between spline control points
  */
-template<std::size_t K,
-  std::ranges::range Rt,
-  std::ranges::range Rg,
-  LieGroup G = std::ranges::range_value_t<Rg>>
-BSpline<K, G> fit_bspline(const Rt & tt, const Rg & gg, double dt)
+template<std::size_t K>
+auto fit_bspline(const std::ranges::range auto & tt, const std::ranges::range auto & gg, double dt)
 {
-  static_assert(std::is_same_v<std::ranges::range_value_t<Rt>, double>, "Rt value type is double");
+  using G = std::ranges::range_value_t<std::decay_t<decltype(gg)>>;
 
   assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
 

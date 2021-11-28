@@ -27,6 +27,7 @@
 #define SMOOTH__MANIFOLD_HPP_
 
 #include <Eigen/Core>
+
 #include <concepts>
 
 /**
@@ -62,13 +63,13 @@ requires {
   // A default-initialized Manifold object
   {traits::man<M>::Default()}->std::convertible_to<typename traits::man<M>::PlainObject>;
 } &&
-requires(const M & m1, const M & m2, const Eigen::Matrix<typename traits::man<M>::Scalar, traits::man<M>::Dof, 1> & a) {
+requires(const M & m1, const M & m2, const Eigen::Vector<typename traits::man<M>::Scalar, traits::man<M>::Dof> & a) {
   // Run-time degrees of freedom (tangent space dimension)
   {traits::man<M>::dof(m1)}->std::convertible_to<Eigen::Index>;
   // Right-plus: add a tangent vector to a Manifold element to obtain a new Manifold element
   {traits::man<M>::rplus(m1, a)}->std::convertible_to<typename traits::man<M>::PlainObject>;
   // Right-minus: subtract a Manifold element from another to obtain the difference tangent vector
-  {traits::man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Matrix<typename traits::man<M>::Scalar, traits::man<M>::Dof, 1>>;
+  {traits::man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Vector<typename traits::man<M>::Scalar, traits::man<M>::Dof>>;
 } && (
   !std::is_convertible_v<typename traits::man<M>::Scalar, double> ||
   requires (const M & m) {
@@ -108,7 +109,7 @@ struct man<M>
   using Scalar      = typename M::Scalar;
   using PlainObject = typename M::PlainObject;
   template<typename NewScalar>
-  using CastT = Eigen::Matrix<NewScalar, M::SizeAtCompileTime, 1>;
+  using CastT = Eigen::Vector<NewScalar, M::SizeAtCompileTime>;
 
   static inline PlainObject Default() { return M::Zero(); }
 
@@ -127,7 +128,7 @@ struct man<M>
   }
 
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, M::SizeAtCompileTime, 1> rminus(
+  static inline Eigen::Vector<Scalar, M::SizeAtCompileTime> rminus(
     const M & m1, const Eigen::MatrixBase<Derived> & m2)
   {
     return m1 - m2;
@@ -182,9 +183,9 @@ struct man<M>
     return g + a.x();
   }
 
-  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const M & m1, const M & m2)
+  static inline Eigen::Vector<Scalar, Dof> rminus(const M & m1, const M & m2)
   {
-    return Eigen::Matrix<Scalar, Dof, 1>(m1 - m2);
+    return Eigen::Vector<Scalar, Dof>(m1 - m2);
   }
   // \endcond
 };
@@ -226,17 +227,16 @@ template<typename NewScalar, Manifold M>
 using CastT = typename traits::man<M>::template CastT<NewScalar>;
 
 /**
- * @brief Tangent as a Dof-lenth vector
+ * @brief Tangent as a Dof-length vector
  */
 template<Manifold M>
-using Tangent = Eigen::Matrix<typename traits::man<M>::Scalar, traits::man<M>::Dof, 1>;
+using Tangent = Eigen::Vector<Scalar<M>, Dof<M>>;
 
 /**
  * @brief Matrix of size Dof x Dof
  */
-template<Manifold G>
-using TangentMap =
-  Eigen::Matrix<typename traits::man<G>::Scalar, traits::man<G>::Dof, traits::man<G>::Dof>;
+template<Manifold M>
+using TangentMap = Eigen::Matrix<Scalar<M>, Dof<M>, Dof<M>>;
 
 // Functions
 
@@ -244,7 +244,7 @@ using TangentMap =
  * @brief Default-initialized Manifold
  */
 template<Manifold M>
-inline typename traits::man<M>::PlainObject Default()
+inline PlainObject<M> Default()
 {
   return traits::man<M>::Default();
 }

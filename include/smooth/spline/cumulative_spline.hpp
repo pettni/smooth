@@ -67,8 +67,8 @@ using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Do
  * @param[out] acc calculate second order derivative w.r.t. u
  * @param[out] der derivatives of g w.r.t. the K+1 control points g_0, g_1, ... g_K
  */
-template<std::size_t K, LieGroup G, std::ranges::sized_range Range, typename Derived>
-inline G cspline_eval_diff(const Range & diff_points,
+template<std::size_t K, LieGroup G, typename Derived>
+inline G cspline_eval_diff(const std::ranges::sized_range auto & diff_points,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
@@ -81,9 +81,9 @@ inline G cspline_eval_diff(const Range & diff_points,
 
   const auto U = monomial_derivatives<K, 2, Scalar<G>>(u);
 
-  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> uvec(U[0].data());
-  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> duvec(U[1].data());
-  Eigen::Map<const Eigen::Matrix<Scalar<G>, 1, K + 1>> d2uvec(U[2].data());
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> uvec(U[0].data());
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> duvec(U[1].data());
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> d2uvec(U[2].data());
 
   if (vel.has_value()) { vel.value().setZero(); }
   if (acc.has_value()) { acc.value().setZero(); }

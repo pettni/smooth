@@ -113,7 +113,7 @@ public:
    * \f$ Rot_{i_1}(a_1) * Rot_{i_2}(a_2) * Rot_{i_3}(a_3). \f$
    * where \f$ Rot_i(a) \f$ rotates an angle \f$a\f$ around the \f$i\f$:th axis.
    */
-  Eigen::Matrix<Scalar, 3, 1> eulerAngles(
+  Eigen::Vector3<Scalar> eulerAngles(
     Eigen::Index i1 = 2, Eigen::Index i2 = 1, Eigen::Index i3 = 0) const
   {
     return quat().toRotationMatrix().eulerAngles(i1, i2, i3);
@@ -123,7 +123,7 @@ public:
    * @brief Rotation action on 3D vector.
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
+  Eigen::Vector3<Scalar> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return quat() * v;
   }

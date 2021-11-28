@@ -117,18 +117,17 @@ public:
   /**
    * @brief Access R3 part.
    */
-  Eigen::Map<Eigen::Matrix<Scalar, 3, 1>> r3() requires is_mutable
+  Eigen::Map<Eigen::Vector3<Scalar>> r3() requires is_mutable
   {
-    return Eigen::Map<Eigen::Matrix<Scalar, 3, 1>>(static_cast<_Derived &>(*this).data());
+    return Eigen::Map<Eigen::Vector3<Scalar>>(static_cast<_Derived &>(*this).data());
   }
 
   /**
    * @brief Const access R3 part.
    */
-  Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>> r3() const
+  Eigen::Map<const Eigen::Vector3<Scalar>> r3() const
   {
-    return Eigen::Map<const Eigen::Matrix<Scalar, 3, 1>>(
-      static_cast<const _Derived &>(*this).data());
+    return Eigen::Map<const Eigen::Vector3<Scalar>>(static_cast<const _Derived &>(*this).data());
   }
 
   /**
@@ -143,7 +142,7 @@ public:
    * @brief Tranformation action on 3D vector.
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 3, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
+  Eigen::Vector3<Scalar> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return so3() * v + r3();
   }
@@ -210,7 +209,7 @@ public:
   SE3(const Eigen::Transform<Scalar, 3, Eigen::Isometry> & t)
   {
     Base::so3() = smooth::SO3<Scalar>(Eigen::Quaternion<Scalar>(t.rotation()));
-    Base::r3() = t.translation();
+    Base::r3()  = t.translation();
   }
 };
 

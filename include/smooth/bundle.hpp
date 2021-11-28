@@ -130,7 +130,7 @@ struct liebase_info<Bundle<_Gs...>>
   using Scalar = std::common_type_t<typename liebase_info<_Gs>::Scalar...>;
 
   static_assert((std::is_same_v<Scalar, typename liebase_info<_Gs>::Scalar> && ...),
-    "Scalar type must be identical");
+    "Scalar types must be identical");
 
   template<typename NewScalar>
   using PlainObject = Bundle<typename liebase_info<_Gs>::template PlainObject<NewScalar>...>;
@@ -161,7 +161,7 @@ public:
     requires(std::is_assignable_v<_Gs, S> &&...)
   Bundle(S &&... gs)
   {
-    auto tpl = std::forward_as_tuple(gs...);
+    const auto tpl = std::forward_as_tuple(gs...);
     utils::static_for<sizeof...(_Gs)>(
       [this, &tpl](auto i) { Base::template part<i>() = std::get<i>(tpl); });
   }

@@ -46,10 +46,10 @@ namespace smooth::detail {
  * @return Triplet \f$(x, \phi(\alpha), \phi'(\alpha))\f$ where \f$x\f$ is a solution to \f$ J^T J +
  * \alpha D^T D = -J^T r\f$.
  */
-template<int N, int M, typename MatrixT>
-std::tuple<Eigen::Matrix<double, N, 1>, double, double> calc_phi(const MatrixT & J,
-  const Eigen::Matrix<double, N, 1> & d,
-  const Eigen::Matrix<double, M, 1> & r,
+template<int N, int M>
+std::tuple<Eigen::Vector<double, N>, double, double> calc_phi(const auto & J,
+  const Eigen::Vector<double, N> & d,
+  const Eigen::Vector<double, M> & r,
   double Delta,
   double alpha)
 {
@@ -73,18 +73,18 @@ std::tuple<Eigen::Matrix<double, N, 1>, double, double> calc_phi(const MatrixT &
   }
 
   // calculate q
-  const Eigen::Matrix<double, N, 1> x = ldlt.solve(-J.transpose() * r);
-  const Eigen::Matrix<double, N, 1> q = -d.cwiseProduct(x);
+  const Eigen::Vector<double, N> x = ldlt.solve(-J.transpose() * r);
+  const Eigen::Vector<double, N> q = -d.cwiseProduct(x);
 
   // calculate phi
   const double phi = q.stableNorm() - Delta;
 
   // calculate dphi
-  const Eigen::Matrix<double, N, 1> d_q  = d.cwiseProduct(q);
-  const Eigen::Matrix<double, N, 1> y    = ldlt.solve(d_q);
-  const Eigen::Matrix<double, 1, 1> dphi = -d.cwiseProduct(q.normalized()).transpose() * y;
+  const Eigen::Vector<double, N> d_q = d.cwiseProduct(q);
+  const Eigen::Vector<double, N> y   = ldlt.solve(d_q);
+  const double dphi                  = -d.cwiseProduct(q.normalized()).dot(y);
 
-  return std::make_tuple(x, phi, dphi(0));
+  return std::make_tuple(x, phi, dphi);
 }
 
 /**
@@ -104,9 +104,9 @@ std::tuple<Eigen::Matrix<double, N, 1>, double, double> calc_phi(const MatrixT &
  *
  * @return pair(lambda, x) where x solves the least-squares problem for lambda
  */
-template<int N, int M, typename MatrixT>
-std::pair<double, Eigen::Matrix<double, N, 1>> lmpar_sparse(const MatrixT & J,
-  const Eigen::Matrix<double, N, 1> & d,
+template<int N, int M>
+std::pair<double, Eigen::Vector<double, N>> lmpar_sparse(const auto & J,
+  const Eigen::Vector<double, N> & d,
   const Eigen::Matrix<double, M, 1> & r,
   double Delta)
 {

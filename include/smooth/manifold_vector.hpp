@@ -94,7 +94,7 @@ public:
    */
   Eigen::Index dof() const
   {
-    if constexpr (Dof<M> > 0) {
+    if constexpr (Dof < M >> 0) {
       return size() * Dof<M>;
     } else {
       return std::accumulate(this->begin(), this->end(), 0u, [](auto s, const auto & item) {
@@ -139,7 +139,7 @@ public:
    *
    * @note It must hold that `dof() == o.dof()`
    */
-  Eigen::Matrix<Scalar<M>, -1, 1> operator-(const ManifoldVector<M> & o) const
+  Eigen::VectorX<Scalar<M>> operator-(const ManifoldVector<M> & o) const
   {
     std::size_t dof_cnts = 0;
     if (Dof < M >> 0) {
@@ -148,7 +148,7 @@ public:
       for (auto i = 0u; i != size(); ++i) { dof_cnts += ::smooth::dof<M>(this->operator[](i)); }
     }
 
-    Eigen::Matrix<Scalar<M>, -1, 1> ret(dof_cnts);
+    Eigen::VectorX<Scalar<M>> ret(dof_cnts);
     Eigen::Index idx = 0;
     for (auto i = 0u; i != size(); ++i) {
       const auto & size_i                       = ::smooth::dof<M>(this->operator[](i));
@@ -201,7 +201,7 @@ struct traits::man<ManifoldVector<M>>
 
 }  // namespace smooth
 
-template<typename Stream, typename M>
+template<typename Stream, smooth::Manifold M>
 Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
 {
   s << "ManifoldVector with " << g.size() << " elements:" << std::endl;

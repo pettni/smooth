@@ -60,8 +60,7 @@ namespace diff {
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
-template<typename _F, typename _Wrt>
-auto dr_autodiff(_F && f, _Wrt && x)
+auto dr_autodiff(auto && f, auto && x)
 {
   using Result = decltype(std::apply(f, x));
   using Scalar = ::smooth::Scalar<Result>;
@@ -73,7 +72,7 @@ auto dr_autodiff(_F && f, _Wrt && x)
 
   Result fval = std::apply(f, x);
 
-  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>();
+  static constexpr Eigen::Index Nx = wrt_Dof<decltype(x)>();
   static constexpr Eigen::Index Ny = Dof<Result>;
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
 

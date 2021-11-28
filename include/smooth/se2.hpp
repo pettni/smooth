@@ -117,18 +117,17 @@ public:
   /**
    * @brief Access R2 part.
    */
-  Eigen::Map<Eigen::Matrix<Scalar, 2, 1>> r2() requires is_mutable
+  Eigen::Map<Eigen::Vector2<Scalar>> r2() requires is_mutable
   {
-    return Eigen::Map<Eigen::Matrix<Scalar, 2, 1>>(static_cast<_Derived &>(*this).data());
+    return Eigen::Map<Eigen::Vector2<Scalar>>(static_cast<_Derived &>(*this).data());
   }
 
   /**
    * @brief Const access R2 part.
    */
-  Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>> r2() const
+  Eigen::Map<const Eigen::Vector2<Scalar>> r2() const
   {
-    return Eigen::Map<const Eigen::Matrix<Scalar, 2, 1>>(
-      static_cast<const _Derived &>(*this).data());
+    return Eigen::Map<const Eigen::Vector2<Scalar>>(static_cast<const _Derived &>(*this).data());
   }
 
   /**
@@ -143,7 +142,7 @@ public:
    * @brief Tranformation action on 2D vector.
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
+  Eigen::Vector2<Scalar> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return so2() * v + r2();
   }
@@ -155,8 +154,7 @@ public:
    */
   SE3<Scalar> lift_se3() const
   {
-    return SE3<Scalar>(
-      so2().lift_so3(), Eigen::Matrix<Scalar, 3, 1>(r2().x(), r2().y(), Scalar(0)));
+    return SE3<Scalar>(so2().lift_so3(), Eigen::Vector3<Scalar>(r2().x(), r2().y(), Scalar(0)));
   }
 };
 
@@ -211,10 +209,10 @@ public:
   SE2(const Eigen::Transform<Scalar, 2, Eigen::Isometry> & t)
   {
     Eigen::Matrix2<Scalar> rotmat = t.rotation();
-    coeffs().x() = t.translation().x();
-    coeffs().y() = t.translation().y();
-    coeffs().z() = rotmat(1, 0);  // sin(angle)
-    coeffs().w() = rotmat(0, 0);  // cos(angle)
+    coeffs().x()                  = t.translation().x();
+    coeffs().y()                  = t.translation().y();
+    coeffs().z()                  = rotmat(1, 0);  // sin(angle)
+    coeffs().w()                  = rotmat(0, 0);  // cos(angle)
   }
 };
 

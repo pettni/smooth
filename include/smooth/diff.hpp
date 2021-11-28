@@ -54,9 +54,9 @@ namespace detail {
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
-template<typename _F, typename _Wrt>
-auto dr_numerical(_F && f, _Wrt && x)
+auto dr_numerical(auto && f, auto && x)
 {
+  using Wrt    = decltype(x);
   using Result = decltype(std::apply(f, x));
   using Scalar = ::smooth::Scalar<Result>;
 
@@ -65,11 +65,11 @@ auto dr_numerical(_F && f, _Wrt && x)
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
   // arguments are modified below, so we create a copy of those that come in as const
-  auto x_nc  = wrt_copy_if_const(std::forward<_Wrt>(x));
+  auto x_nc  = wrt_copy_if_const(std::forward<Wrt>(x));
   Result val = std::apply(f, x_nc);
 
   // static sizes
-  static constexpr Eigen::Index Nx = wrt_dof<std::decay_t<_Wrt>>();
+  static constexpr Eigen::Index Nx = wrt_Dof<Wrt>();
   static constexpr Eigen::Index Ny = Dof<Result>;
 
   // dynamic sizes
@@ -80,7 +80,7 @@ auto dr_numerical(_F && f, _Wrt && x)
   Eigen::Matrix<Scalar, Ny, Nx> jac(ny, nx);
 
   Eigen::Index index_pos = 0;
-  utils::static_for<std::tuple_size_v<std::decay_t<_Wrt>>>([&](auto i) {
+  utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i) {
     auto & w = std::get<i>(x_nc);
     using W  = std::decay_t<decltype(w)>;
 
@@ -94,9 +94,9 @@ auto dr_numerical(_F && f, _Wrt && x)
         eps_j *= abs(w[j]);
         if (eps_j == 0.) { eps_j = eps; }
       }
-      w = rplus<W>(w, (eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
+      w = rplus<W>(w, (eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
       jac.col(index_pos + j) = rminus<Result>(std::apply(f, x_nc), val) / eps_j;
-      w = rplus<W>(w, (-eps_j * Eigen::Matrix<Scalar, Nx_j, 1>::Unit(nx_j, j)).eval());
+      w = rplus<W>(w, (-eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
     }
     index_pos += nx_j;
   });
@@ -132,7 +132,7 @@ static constexpr Type DefaultType =
 /**
  * @brief Differentiation in tangent space
  *
- * @tparam dm differentiation method to use
+ * @tparam D differentiation method to use
  *
  * @param f function to differentiate
  * @param x reference tuple of function arguments
@@ -141,27 +141,30 @@ static constexpr Type DefaultType =
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
-template<Type dm, typename _F, typename _Wrt>
-auto dr(_F && f, _Wrt && x)
+template<Type D>
+auto dr(auto && f, auto && x)
 {
-  if constexpr (dm == Type::NUMERICAL) {
-    return detail::dr_numerical(std::forward<_F>(f), std::forward<_Wrt>(x));
-  } else if constexpr (dm == Type::AUTODIFF) {
+  using F   = decltype(f);
+  using Wrt = decltype(x);
+
+  if constexpr (D == Type::NUMERICAL) {
+    return detail::dr_numerical(std::forward<F>(f), std::forward<Wrt>(x));
+  } else if constexpr (D == Type::AUTODIFF) {
 #ifdef SMOOTH_DIFF_AUTODIFF
-    return dr_autodiff(std::forward<_F>(f), std::forward<_Wrt>(x));
+    return dr_autodiff(std::forward<F>(f), std::forward<Wrt>(x));
 #else
-    static_assert(dm != Type::AUTODIFF, "compat/autodiff.hpp header not included");
+    static_assert(D != Type::AUTODIFF, "compat/autodiff.hpp header not included");
 #endif
-  } else if constexpr (dm == Type::CERES) {
+  } else if constexpr (D == Type::CERES) {
 #ifdef SMOOTH_DIFF_CERES
-    return dr_ceres(std::forward<_F>(f), std::forward<_Wrt>(x));
+    return dr_ceres(std::forward<F>(f), std::forward<Wrt>(x));
 #else
-    static_assert(dm != Type::CERES, "compat/ceres.hpp header not included");
+    static_assert(D != Type::CERES, "compat/ceres.hpp header not included");
 #endif
-  } else if constexpr (dm == Type::ANALYTIC) {
-    return std::apply(f, std::forward<_Wrt>(x));
-  } else if constexpr (dm == Type::DEFAULT) {
-    return dr<DefaultType>(std::forward<_F>(f), std::forward<_Wrt>(x));
+  } else if constexpr (D == Type::ANALYTIC) {
+    return std::apply(f, std::forward<Wrt>(x));
+  } else if constexpr (D == Type::DEFAULT) {
+    return dr<DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
   }
 }
 
@@ -175,10 +178,9 @@ auto dr(_F && f, _Wrt && x)
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
-template<typename _F, typename _Wrt>
-auto dr(_F && f, _Wrt && x)
+auto dr(auto && f, auto && x)
 {
-  return dr<Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(x));
+  return dr<Type::DEFAULT>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x));
 }
 
 }  // namespace diff
