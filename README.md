@@ -1,4 +1,4 @@
-# smooth: Lie Theory for Robotics
+# Lie Theory for Robotics
 
 [![CI Build and Test][ci-shield]][ci-link]
 [![Code coverage][cov-shield]][cov-link]
@@ -18,7 +18,7 @@ If you are looking for something stable and established, check out
 In robotics it is often convenient to work in non-Euclidean manifolds.
 [Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are 
 easy to work with due to their symmetries, and that are also good models for many robotic
-systems. The objective of this header-only C++20 library is to facilitate Lie groups in
+systems. This header-only C++20 library facilitates leveraging Lie theory in
 robotics software, by enabling:
 
  * Algebraic manipulation
@@ -39,9 +39,9 @@ The following common Lie groups are implemented:
 The guiding principles for `smooth` are **brevity, reliability and compatability**. 
 
 
-## Getting started
+# Getting started
 
-### Download and Build
+## Download and Build
 
 Clone the repository and install it
 ```bash
@@ -63,7 +63,7 @@ workspace with a compiler that supports C++20. Example with colcon:
 colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10
 ```
 
-### Use with cmake
+## Use with cmake
 
 To utilize `smooth` in your own project, include something along these lines in your `CMakeLists.txt`
 ```cmake
@@ -73,12 +73,14 @@ add_executable(my_executable main.cpp)
 target_link_libraries(my_executable smooth::smooth)
 ```
 
-### Explore the API
+## Explore the API
 
 Check out the [Documentation][doc-link] and the [`examples`](https://github.com/pettni/smooth/tree/master/examples).
 
 
-## Group algebra examples
+# Using the library
+
+## Algebraic Manipulations
 
  ```cpp
  // Also works with other types: SO2d, SE2d, SE3d, Bundle<SO3d, T3d> etc...
@@ -125,19 +127,25 @@ Check out the [Documentation][doc-link] and the [`examples`](https://github.com/
 
 These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
 
-* `Manifold`: type that supports `operator+()` (geodesic addition) and `operator-()` (geodesic subtraction)
-  * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---a type to facilitate optimization over a dynamic number of `Manifold`s
-  * Example: `Eigen::Vector3d`
-  * Example: `Eigen::VectorXf`
+* `Manifold`: type that supports `rplus` (geodesic addition) and `rminus` (geodesic subtraction). Examples:
+  * All `LieGroup` types
+  * `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---facilitates e.g. optimization and differentiation w.r.t. a dynamic number of `Manifold`s
+  * `Eigen::VectorXd`
 
-* `LieGroup`: a `Manifold` that also implements Lie group operations (`exp`, `log`, `Ad`, etc...)
-  * Example: `smooth::SO3<float>`
-  * Example: `smooth::Bundle<LieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
+* `LieGroup`: a type for which Lie group operations (`exp`, `log`, `Ad`, etc...) are defined. Examples:
+  * All `NativeLieGroup` types
+  * `Eigen::Vector3d`
+  * `double`
+
+* `NativeLieGroup`: a type that implements a Lie group interface as class methods. Examples:
+  * `smooth::SO3<float>`
+  * `smooth::C1<double>`
+  * `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
+
+Both Manifold and LieGroup are defined via external type traits (`traits::man` and `traits::lie`) that can be specialized in order to define a Manifold or LieGroup interface for a third-party type.
 
 
 ## Algorithms
-
-Algorithms for `LieGroup` types can be used on regular Euclidean spaces via the `smooth::Tn` type.
 
 ### Tangent space differentiation
 
@@ -145,8 +153,8 @@ Available for `Manifold` types, see diff.hpp.
 
 Supported techniques (see smooth::diff::Type):
 * Numerical derivatives (default)
-* Automatic differentiation using `autodiff` (must #include <smooth/compat/autodiff.hpp>)
-* Automatic differentiation using Ceres 2.x (must #include <smooth/compat/ceres.hpp>)
+* Automatic differentiation using [`autodiff`](https://autodiff.github.io) (must #include <smooth/compat/autodiff.hpp>)
+* Automatic differentiation using [Ceres 2.x](http://ceres-solver.org/) (must #include <smooth/compat/ceres.hpp>)
 
 Example: calculate ![](https://latex.codecogs.com/png.latex?\mathrm{d}^r&space;(\log(g_1&space;\circ&space;g_2))_{g_i}) for i=1, 2
 
@@ -200,11 +208,11 @@ smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 // Now g1 == g2.inverse()
 ```
 
-### Bezier curve evaluation and fitting
+### Piecewise polynomial curve evaluation and fitting
 
-Available for `LieGroup` types, see spline/bezier.hpp.
+Available for `LieGroup` types, see spline/spline.hpp.
 
-Bezier splines are piecewise defined via
+These splines are piecewise defined via
 [Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through
 the control points. See examples/spline_fit.cpp for usage.
 
@@ -213,11 +221,11 @@ the control points. See examples/spline_fit.cpp for usage.
 
 Available for `LieGroup` types, see spline/bspline.hpp.
 
-B-splines have local support and generally do not pass through the control points.
-See examples/bspline.cpp and examples/spline_fit.cpp for usage.
+The B-spline basis functions have local support, A B-spline generally does not pass through its control points.
+See examples/spline_fit.cpp and examples/bspline.cpp for usage.
 
 
-## Compatibility
+# Compatibility
 
 Utility headers for interfacing with adjacent software are included.
 
@@ -227,7 +235,9 @@ Utility headers for interfacing with adjacent software are included.
 * compat/ros.hpp: Memory mapping of [ROS/ROS2](https://www.ros.org/) message types
 
 
-## Related Projects
+# Related Projects
+
+* [smooth_feedback](https://pettni.github.io/smooth_feedback) utilizes `smooth` for control and estimation on Lie groups.
 
 Two projects that have served as inspiration for `smooth` are [`manif`][manif-link]---which
 also has an accompanying [paper][manif-paper-link] that is a great practical introduction to

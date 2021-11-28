@@ -40,7 +40,18 @@
 #include "smooth/manifold.hpp"
 #include "smooth/wrt.hpp"
 
-namespace smooth::diff {
+namespace smooth {
+
+/// @brief Specialize trait to make autodiff type a Manifold
+template<std::floating_point F>
+struct traits::scalar_trait<autodiff::Dual<F, F>>
+{
+  // \cond
+  static constexpr bool value = true;
+  // \endcond
+};
+
+namespace diff {
 
 /**
  * @brief Automatic differentiation in tangent space using the autodiff library.
@@ -49,11 +60,11 @@ namespace smooth::diff {
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
-template<typename _F, typename _Wrt>
-auto dr_autodiff(_F && f, _Wrt && x)
+auto dr_autodiff(auto && f, auto && x)
 {
   using Result = decltype(std::apply(f, x));
   using Scalar = ::smooth::Scalar<Result>;
+  using Eigen::Matrix;
 
   static_assert(Manifold<Result>, "f(x) is not a Manifold");
 
@@ -61,7 +72,7 @@ auto dr_autodiff(_F && f, _Wrt && x)
 
   Result fval = std::apply(f, x);
 
-  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>::value;
+  static constexpr Eigen::Index Nx = wrt_Dof<decltype(x)>();
   static constexpr Eigen::Index Ny = Dof<Result>;
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
 
@@ -69,19 +80,20 @@ auto dr_autodiff(_F && f, _Wrt && x)
   const auto x_ad                       = wrt_cast<AdScalar>(x);
   const CastT<AdScalar, Result> fval_ad = cast<AdScalar>(fval);
 
-  // zero-valued tangent element
-  Eigen::Matrix<AdScalar, Nx, 1> a_ad = Eigen::Matrix<AdScalar, Nx, 1>::Zero(nx);
+  // zero-valued tangent element (can not be const...)
+  Matrix<AdScalar, Nx, 1> a_ad = Matrix<AdScalar, Nx, 1>::Zero(nx);
 
-  Eigen::Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(
-    [&f, &fval_ad, &x_ad](Eigen::Matrix<AdScalar, Nx, 1> & var) -> Eigen::Matrix<AdScalar, Ny, 1> {
-      return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), fval_ad);
-    },
-    autodiff::wrt(a_ad),
-    autodiff::at(a_ad));
+  // function to differentiate
+  const auto f_ad = [&](Matrix<AdScalar, Nx, 1> & var) -> Matrix<AdScalar, Ny, 1> {
+    return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), fval_ad);
+  };
+
+  Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad));
 
   return std::make_pair(std::move(fval), std::move(jac));
 }
 
-}  // namespace smooth::diff
+}  // namespace diff
+}  // namespace smooth
 
 #endif  // SMOOTH__COMPAT__AUTODIFF_HPP_

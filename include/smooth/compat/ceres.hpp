@@ -77,8 +77,7 @@ class CeresLocalParameterization
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
-template<typename _F, typename _Wrt>
-auto dr_ceres(_F && f, _Wrt && x)
+auto dr_ceres(auto && f, auto && x)
 {
   // There is potential to improve thie speed of this by reducing casting.
   // The ceres Jet type supports binary operations with e.g. double, but currently
@@ -91,7 +90,7 @@ auto dr_ceres(_F && f, _Wrt && x)
 
   Result fval = std::apply(f, x);
 
-  static constexpr Eigen::Index Nx = wrt_dof<_Wrt>::value;
+  static constexpr Eigen::Index Nx = wrt_Dof<decltype(x)>();
   static constexpr Eigen::Index Ny = Dof<Result>;
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
   const Eigen::Index ny = dof<Result>(fval);

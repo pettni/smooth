@@ -34,8 +34,8 @@
 #include "smooth/so3.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include <matplot/matplot.h>
 #include "plot_tools.hpp"
+#include <matplot/matplot.h>
 
 using matplot::plot;
 using std::views::transform;
@@ -78,7 +78,7 @@ int main(int, char const **)
     });
 
   boost::numeric::odeint::integrate_const(
-    stepper, ode, state2, 0., 10., 0.01, [&](const state_t & s, double t) {
+    stepper, ode, state2, 0., 10., 0.01, [&](const state_t & s, double) {
       v2.push_back(s.part<1>() - s.part<0>());
     });
 

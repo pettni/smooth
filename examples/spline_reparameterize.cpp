@@ -27,8 +27,10 @@
  * @file bspline.cpp Curve example.
  */
 
-#include "smooth/spline/curve.hpp"
 #include "smooth/se2.hpp"
+#include "smooth/spline/fit.hpp"
+#include "smooth/spline/reparameterize.hpp"
+#include "smooth/spline/spline.hpp"
 
 #ifdef ENABLE_PLOTTING
 #include <matplot/matplot.h>
@@ -39,26 +41,28 @@
  */
 int main(int, char const **)
 {
-  using Curve = smooth::Curve<smooth::SE2d>;
+  using Curve = smooth::CubicSpline<smooth::SE2d>;
   std::srand(100);
 
   std::vector<double> tt{1, 2, 3, 4, 5, 6};
-  std::vector<smooth::SE2d> gg{smooth::SE2d::Random(),
+  std::vector<smooth::SE2d> gg{
     smooth::SE2d::Random(),
     smooth::SE2d::Random(),
     smooth::SE2d::Random(),
     smooth::SE2d::Random(),
-    smooth::SE2d::Random()};
+    smooth::SE2d::Random(),
+    smooth::SE2d::Random(),
+  };
 
-  Curve c(smooth::fit_cubic_bezier(tt, gg));
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(1.2, 0, 0), 5);
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);
-  c *= Curve::ConstantVelocity(Eigen::Vector3d(0.5, 1.5, 0), 10);
+  Curve c = smooth::fit_spline(tt, gg, smooth::spline_specs::FixedDerCubic<smooth::SE2d, 1>{});
+  c += Curve::ConstantVelocity(Eigen::Vector3d(1.2, 0, 0), 5);
+  c += Curve::ConstantVelocity(Eigen::Vector3d(1, 0, 1), 2);
+  c += Curve::ConstantVelocity(Eigen::Vector3d(0, 0, 0), 2);
+  c += Curve::ConstantVelocity(Eigen::Vector3d(0.5, 1.5, 0), 10);
 
   Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
-  auto sfun = smooth::reparameterize_curve(c, -vmax, vmax, -amax, amax, 1, 0);
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 0);
 
   std::vector<double> tvec, svec, vvec, avec;
   std::vector<double> vx, vy, w, ax, ay, dw;

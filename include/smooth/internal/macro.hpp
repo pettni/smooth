@@ -42,6 +42,7 @@ namespace smooth {
   static_assert(true, "")
 
 #define SMOOTH_GROUP_API(X)                                   \
+                                                              \
 public:                                                       \
   SMOOTH_INHERIT_TYPEDEFS;                                    \
   /*! @brief Construct uninitialized object */                \
@@ -79,6 +80,7 @@ private:                                                      \
   static_assert(true, "")
 
 #define SMOOTH_MAP_API()                                         \
+                                                                 \
 public:                                                          \
   SMOOTH_INHERIT_TYPEDEFS;                                       \
   /*! @brief Map memory as Lie type */                           \
@@ -110,6 +112,7 @@ private:                                                         \
   static_assert(true, "")
 
 #define SMOOTH_CONST_MAP_API()                                         \
+                                                                       \
 public:                                                                \
   SMOOTH_INHERIT_TYPEDEFS;                                             \
   /*! @brief Const map memory as Lie type */                           \

@@ -38,82 +38,85 @@ namespace smooth {
  *
  * A tuple of references is created from the input arguments.
  */
-template<typename... _Args>
-  requires(Manifold<std::decay_t<_Args>> &&...)
-auto wrt(_Args &&... args) { return std::forward_as_tuple(std::forward<_Args>(args)...); }
-
-template<typename T>
-struct wrt_dof
-{};
+auto wrt(auto &&... args)
+  requires(Manifold<std::decay_t<decltype(args)>> &&...)
+{
+  return std::forward_as_tuple(std::forward<decltype(args)>(args)...);
+}
 
 /**
  * @brief Compile-time size of a tuple of variables.
  *
- * If at least one variable is dynamically sized (dof -1), this returns -1.
+ * If at least one variable is dynamically sized (Dof -1), this returns -1, otherwise returns sum of
+ * all Dof's.
  */
-template<typename... Wrt>
-struct wrt_dof<std::tuple<Wrt...>>
+template<typename Wrt>
+constexpr int wrt_Dof()
 {
-  static constexpr int value =
-    std::min<int>({Dof<std::decay_t<Wrt>>...}) == -1 ? -1 : (Dof<std::decay_t<Wrt>> + ...);
-};
+  using DWrt = std::decay_t<Wrt>;
 
-// \cond
-namespace detail {
-template<typename Scalar, typename Wrt, std::size_t... Idx>
-auto wrt_cast_impl(Wrt && wrt, std::index_sequence<Idx...>)
-{
-  return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)->int
+  {
+    constexpr auto min_dof = std::min<int>({Dof<std::decay_t<std::tuple_element_t<Idx, DWrt>>>...});
+
+    if constexpr (min_dof == -1) {
+      return -1;
+    } else {
+      return (Dof<std::decay_t<std::tuple_element_t<Idx, DWrt>>> + ...);
+    }
+  };
+
+  return f(std::make_index_sequence<std::tuple_size_v<DWrt>>{});
 }
-}  // namespace detail
-// \endcond
 
 /**
  * @brief Cast a tuple of variables to a new scalar type.
  */
-template<typename Scalar, typename Wrt>
-auto wrt_cast(Wrt && wrt)
+template<typename Scalar>
+auto wrt_cast(auto && wrt)
 {
-  return detail::wrt_cast_impl<Scalar>(
-    std::forward<Wrt>(wrt), std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
+  using Wrt = std::decay_t<decltype(wrt)>;
+
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)
+  {
+    return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
+  };
+
+  return f(std::make_index_sequence<std::tuple_size_v<Wrt>>{});
 }
-
-// \cond
-namespace detail {
-template<typename Wrt, typename Derived, std::size_t... Idx>
-auto wrt_rplus_impl(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
-{
-  static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{
-    Dof<std::decay_t<std::tuple_element_t<Idx, std::decay_t<Wrt>>>>...};
-  std::array<Eigen::Index, sizeof...(Idx)> nx{dof(std::get<Idx>(wrt))...};
-
-  const auto psum = utils::array_psum(nx);
-
-  // clang-format off
-  return std::make_tuple(
-      rplus(
-        std::get<Idx>(wrt),
-        a.template segment<std::get<Idx>(Nx)>(std::get<Idx>(psum), std::get<Idx>(nx))
-      )...
-  );
-  // clang-format on
-}
-}  // namespace detail
-// \endcond
 
 /**
  * @brief Calculate rplus(x_i, a[bi: bi + ni]) for a tuple
  */
-template<typename Wrt, typename Derived>
-auto wrt_rplus(Wrt && wrt, const Eigen::MatrixBase<Derived> & a)
+template<typename Derived>
+auto wrt_rplus(auto && wrt, const Eigen::MatrixBase<Derived> & a)
 {
-  return detail::wrt_rplus_impl(
-    std::forward<Wrt>(wrt), a, std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
+  using Wrt = std::decay_t<decltype(wrt)>;
+
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)
+  {
+    static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{
+      Dof<std::decay_t<std::tuple_element_t<Idx, Wrt>>>...};
+
+    const std::array<Eigen::Index, sizeof...(Idx)> ilen{dof(std::get<Idx>(wrt))...};
+    const auto ibeg = utils::array_psum(ilen);
+
+    // clang-format off
+    return std::make_tuple(
+        rplus(
+          std::get<Idx>(wrt),
+          a.template segment<std::get<Idx>(Nx)>(std::get<Idx>(ibeg), std::get<Idx>(ilen))
+        )...
+    );
+    // clang-format on
+  };
+
+  return f(std::make_index_sequence<std::tuple_size_v<Wrt>>{});
 }
 
-/**
- * @brief Trait for removing constness from reference types.
- */
+// \cond
+namespace detail {
+
 template<typename T>
 struct remove_const_ref
 {
@@ -126,15 +129,18 @@ struct remove_const_ref<const T &>
   using type = T;
 };
 
+}  // namespace detail
+// \endcond
+
 /**
  * @brief Copy a tuple to make all elements modifiable.
  *
  * Copies are created form const & members, rest is forwarded.
  */
 template<typename... T>
-std::tuple<typename remove_const_ref<T>::type...> wrt_copy_if_const(const std::tuple<T...> & in)
+constexpr auto wrt_copy_if_const(const std::tuple<T...> & in)
 {
-  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(in);
+  return std::make_from_tuple<std::tuple<typename detail::remove_const_ref<T>::type...>>(in);
 }
 
 /**
@@ -143,9 +149,10 @@ std::tuple<typename remove_const_ref<T>::type...> wrt_copy_if_const(const std::t
  * Copies are created form const & members, rest is forwarded.
  */
 template<typename... T>
-std::tuple<typename remove_const_ref<T>::type...> wrt_copy_if_const(std::tuple<T...> && in)
+constexpr auto wrt_copy_if_const(std::tuple<T...> && in)
 {
-  return std::make_from_tuple<std::tuple<typename remove_const_ref<T>::type...>>(std::move(in));
+  return std::make_from_tuple<std::tuple<typename detail::remove_const_ref<T>::type...>>(
+    std::move(in));
 }
 
 }  // namespace smooth

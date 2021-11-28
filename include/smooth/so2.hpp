@@ -104,7 +104,8 @@ public:
    */
   std::complex<Scalar> u1() const
   {
-    return std::complex<Scalar>(static_cast<const _Derived &>(*this).coeffs().y(),
+    return std::complex<Scalar>(
+      static_cast<const _Derived &>(*this).coeffs().y(),
       static_cast<const _Derived &>(*this).coeffs().x());
   }
 
@@ -112,7 +113,7 @@ public:
    * @brief Rotation action on 2D vector.
    */
   template<typename EigenDerived>
-  Eigen::Matrix<Scalar, 2, 1> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
+  Eigen::Vector2<Scalar> operator*(const Eigen::MatrixBase<EigenDerived> & v) const
   {
     return Base::matrix() * v;
   }
@@ -140,7 +141,7 @@ class SO2;
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<SO2<_Scalar>>
+struct liebase_info<SO2<_Scalar>>
 {
   static constexpr bool is_mutable = true;
 
@@ -213,7 +214,7 @@ public:
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<SO2<_Scalar>>> : public lie_traits<SO2<_Scalar>>
+struct liebase_info<Map<SO2<_Scalar>>> : public liebase_info<SO2<_Scalar>>
 {};
 // \endcond
 
@@ -232,7 +233,7 @@ class Map<SO2<_Scalar>> : public SO2Base<Map<SO2<_Scalar>>>
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<const SO2<_Scalar>>> : public lie_traits<SO2<_Scalar>>
+struct liebase_info<Map<const SO2<_Scalar>>> : public liebase_info<SO2<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };

@@ -54,15 +54,15 @@ namespace smooth::utils {
  * @param r sorted range to search in
  * @param t value to search for
  * @param wo comparison operation with signature \p std::weak_ordering(const
- * std::ranges::range_value_t<R> &, const T &)
+ * std::ranges::range_value_t<_R> &, const _T &)
  *
  * @return range iterator it according to the above rules
  */
-template<std::ranges::range R, typename T, typename WO>
-auto binary_interval_search(const R & r, const T & t, WO && wo) noexcept
+template<std::ranges::range _R, typename _T, typename _WO>
+auto binary_interval_search(const _R & r, const _T & t, _WO && wo) noexcept
 {
-  auto left = std::ranges::begin(r);
-  auto rght = std::ranges::end(r);
+  auto left = std::ranges::cbegin(r);
+  auto rght = std::ranges::cend(r);
 
   if (std::ranges::empty(r) || wo(*left, t) > 0) {
     return rght;
@@ -74,8 +74,10 @@ auto binary_interval_search(const R & r, const T & t, WO && wo) noexcept
 
   while (left + 1 < rght) {
     double alpha;
-    if constexpr (std::is_convertible_v<std::ranges::range_value_t<R>,
-                    double> && std::is_convertible_v<T, double>) {
+    if constexpr (
+      std::is_convertible_v<
+        std::ranges::range_value_t<_R>,
+        double> && std::is_convertible_v<_T, double>) {
       alpha = (static_cast<double>(t) - static_cast<double>(*left))
             / static_cast<double>(*(rght - 1) - *left);
     } else {
@@ -99,10 +101,10 @@ auto binary_interval_search(const R & r, const T & t, WO && wo) noexcept
 /**
  * @brief Find interval in sorted range with binary search using default comparison.
  */
-template<std::ranges::range R, typename T, typename S = std::ranges::range_value_t<R>>
-auto binary_interval_search(const R & r, const T & t) noexcept
+template<std::ranges::range _R, typename _T, typename _S = std::ranges::range_value_t<_R>>
+auto binary_interval_search(const _R & r, const _T & t) noexcept
 {
-  return binary_interval_search(r, t, [](const S & _s, const T & _t) { return _s <=> _t; });
+  return binary_interval_search(r, t, [](const _S & _s, const _T & _t) { return _s <=> _t; });
 }
 
 /////////////////////
@@ -124,7 +126,14 @@ inline static constexpr auto static_for_impl(_F && f, std::index_sequence<_Idx..
 template<std::size_t _I, typename _F>
 inline static constexpr auto static_for(_F && f)
 {
-  return static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
+  const auto fiter = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>)
+  {
+    return (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
+  };
+
+  return fiter(std::make_index_sequence<_I>{});
+
+  // return static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
 }
 
 /////////////////
@@ -134,79 +143,14 @@ inline static constexpr auto static_for(_F && f)
 /**
  * @brief Prefix-sum an array starting at zero
  */
-template<typename T, std::size_t L>
-constexpr std::array<T, L + 1> array_psum(const std::array<T, L> & x)
+template<typename _T, std::size_t _L>
+inline static constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x) noexcept
 {
-  std::array<T, L + 1> ret;
-  ret[0] = T(0);
+  std::array<_T, _L + 1> ret;
+  ret[0] = _T(0);
   std::partial_sum(x.begin(), x.end(), ret.begin() + 1);
   return ret;
 }
-
-/////////////////////////////////
-// COMPILE-TIME MATRIX ALGEBRA //
-/////////////////////////////////
-
-/**
- * @brief Elementary structure for compile-time matrix algebra
- */
-template<typename _Scalar, std::size_t _Rows, std::size_t _Cols>
-struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
-{
-  std::size_t Rows = _Rows;
-  std::size_t Cols = _Cols;
-
-  using std::array<std::array<_Scalar, _Cols>, _Rows>::operator[];
-
-  /**
-   * @brief Construct a matrix filled with zeros
-   */
-  constexpr StaticMatrix() : std::array<std::array<_Scalar, _Cols>, _Rows>{}
-  {
-    for (auto i = 0u; i != _Rows; ++i) { operator[](i).fill(_Scalar(0)); }
-  }
-
-  /**
-   * @brief Add two matrices
-   */
-  constexpr StaticMatrix<_Scalar, _Rows, _Cols> operator+(
-    StaticMatrix<_Scalar, _Rows, _Cols> o) const
-  {
-    StaticMatrix<_Scalar, _Rows, _Cols> ret;
-    for (auto i = 0u; i < _Rows; ++i) {
-      for (auto j = 0u; j < _Cols; ++j) { ret[i][j] = operator[](i)[j] + o[i][j]; }
-    }
-    return ret;
-  }
-
-  /**
-   * @brief Return transpose of a matrix
-   */
-  constexpr StaticMatrix<_Scalar, _Rows, _Cols> transpose() const
-  {
-    StaticMatrix<_Scalar, _Rows, _Cols> ret;
-    for (auto i = 0u; i < _Rows; ++i) {
-      for (auto j = 0u; j < _Cols; ++j) { ret[j][i] = operator[](i)[j]; }
-    }
-    return ret;
-  }
-
-  /**
-   * @brief Multiply two matrices
-   */
-  template<std::size_t _ColsNew>
-  constexpr StaticMatrix<_Scalar, _Rows, _ColsNew> operator*(
-    StaticMatrix<_Scalar, _Cols, _ColsNew> o) const
-  {
-    StaticMatrix<_Scalar, _Rows, _ColsNew> ret;
-    for (auto i = 0u; i < _Rows; ++i) {
-      for (auto j = 0u; j < _ColsNew; ++j) {
-        for (auto k = 0u; k < _Cols; ++k) { ret[i][j] += operator[](i)[k] * o[k][j]; }
-      }
-    }
-    return ret;
-  }
-};
 
 }  // namespace smooth::utils
 

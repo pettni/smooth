@@ -68,7 +68,8 @@ template<smooth::LieGroup G>
 class LieGroupInterface : public ::testing::Test
 {};
 
-using GroupsToTest = ::testing::Types<Eigen::Vector2d,
+using GroupsToTest = ::testing::Types<
+  Eigen::Vector2d,
   double,
   smooth::SE2d,
   smooth::SE2f,

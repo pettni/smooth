@@ -35,7 +35,7 @@
 
 #include "smooth/manifold.hpp"
 
-namespace smooth {
+namespace smooth::detail {
 
 /**
  * @brief \p boost::odeint Stepper operations for Manifold types.
@@ -79,9 +79,7 @@ struct BoostOdeintOps
 
     //! Scaled addition operation.
     template<Manifold T1, Manifold T2, typename... Ts>
-      // \cond
       requires(std::is_same_v<T1, T2> && std::conjunction_v<std::is_same<Tangent<T1>, Ts>...>)
-    // \endcond
     inline void operator()(T1 & y, const T2 & x, const Ts &... as) noexcept
     {
       y = smooth::rplus(x, helper(std::make_index_sequence<sizeof...(Ts)>(), as...));
@@ -135,7 +133,7 @@ struct BoostOdeintOps
   // \endcond
 };
 
-}  // namespace smooth
+}  // namespace smooth::detail
 
 /**
  * @brief SFINAE dispatcher for Manifold types.
@@ -144,7 +142,7 @@ struct BoostOdeintOps
 template<smooth::Manifold G>
 struct boost::numeric::odeint::operations_dispatcher_sfinae<G, void>
 {
-  using operations_type = ::smooth::BoostOdeintOps;
+  using operations_type = ::smooth::detail::BoostOdeintOps;
 };
 // \endcond
 

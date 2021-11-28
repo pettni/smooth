@@ -97,8 +97,8 @@ public:
     if constexpr (Dof < M >> 0) {
       return size() * Dof<M>;
     } else {
-      return std::accumulate(this->begin(), this->end(), 0u, [](auto & v1, const auto & item) {
-        return v1 + ::smooth::dof<M>();
+      return std::accumulate(this->begin(), this->end(), 0u, [](auto s, const auto & item) {
+        return s + ::smooth::dof<M>(item);
       });
     }
   }
@@ -139,7 +139,7 @@ public:
    *
    * @note It must hold that `dof() == o.dof()`
    */
-  Eigen::Matrix<Scalar<M>, -1, 1> operator-(const ManifoldVector<M> & o) const
+  Eigen::VectorX<Scalar<M>> operator-(const ManifoldVector<M> & o) const
   {
     std::size_t dof_cnts = 0;
     if (Dof < M >> 0) {
@@ -148,7 +148,7 @@ public:
       for (auto i = 0u; i != size(); ++i) { dof_cnts += ::smooth::dof<M>(this->operator[](i)); }
     }
 
-    Eigen::Matrix<Scalar<M>, -1, 1> ret(dof_cnts);
+    Eigen::VectorX<Scalar<M>> ret(dof_cnts);
     Eigen::Index idx = 0;
     for (auto i = 0u; i != size(); ++i) {
       const auto & size_i                       = ::smooth::dof<M>(this->operator[](i));
@@ -164,7 +164,7 @@ public:
  * @brief Manifold interface for ManifoldVector
  */
 template<Manifold M>
-struct man<ManifoldVector<M>>
+struct traits::man<ManifoldVector<M>>
 {
   // \cond
   using Scalar      = ::smooth::Scalar<M>;
@@ -185,14 +185,14 @@ struct man<ManifoldVector<M>>
   }
 
   template<typename Derived>
-  static inline ManifoldVector<M> rplus(
-    const ManifoldVector<M> & m, const Eigen::MatrixBase<Derived> & a)
+  static inline ManifoldVector<M>
+  rplus(const ManifoldVector<M> & m, const Eigen::MatrixBase<Derived> & a)
   {
     return m + a;
   }
 
-  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(
-    const ManifoldVector<M> & m1, const ManifoldVector<M> & m2)
+  static inline Eigen::Matrix<Scalar, Dof, 1>
+  rminus(const ManifoldVector<M> & m1, const ManifoldVector<M> & m2)
   {
     return m1 - m2;
   }
@@ -201,7 +201,7 @@ struct man<ManifoldVector<M>>
 
 }  // namespace smooth
 
-template<typename Stream, typename M>
+template<typename Stream, smooth::Manifold M>
 Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
 {
   s << "ManifoldVector with " << g.size() << " elements:" << std::endl;

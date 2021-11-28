@@ -100,7 +100,8 @@ public:
   {
     using std::atan2;
 
-    return atan2(static_cast<const _Derived &>(*this).coeffs().x(),
+    return atan2(
+      static_cast<const _Derived &>(*this).coeffs().x(),
       static_cast<const _Derived &>(*this).coeffs().y());
   }
 
@@ -111,10 +112,11 @@ public:
   {
     using std::sqrt;
 
-    return sqrt(static_cast<const _Derived &>(*this).coeffs().x()
-                  * static_cast<const _Derived &>(*this).coeffs().x()
-                + static_cast<const _Derived &>(*this).coeffs().y()
-                    * static_cast<const _Derived &>(*this).coeffs().y());
+    return sqrt(
+      static_cast<const _Derived &>(*this).coeffs().x()
+        * static_cast<const _Derived &>(*this).coeffs().x()
+      + static_cast<const _Derived &>(*this).coeffs().y()
+          * static_cast<const _Derived &>(*this).coeffs().y());
   }
 
   /**
@@ -130,7 +132,8 @@ public:
    */
   std::complex<Scalar> c1() const
   {
-    return std::complex<Scalar>(static_cast<const _Derived &>(*this).coeffs().y(),
+    return std::complex<Scalar>(
+      static_cast<const _Derived &>(*this).coeffs().y(),
       static_cast<const _Derived &>(*this).coeffs().x());
   }
 
@@ -151,7 +154,7 @@ class C1;
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<C1<_Scalar>>
+struct liebase_info<C1<_Scalar>>
 {
   static constexpr bool is_mutable = true;
 
@@ -203,7 +206,7 @@ public:
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<C1<_Scalar>>> : public lie_traits<C1<_Scalar>>
+struct liebase_info<Map<C1<_Scalar>>> : public liebase_info<C1<_Scalar>>
 {};
 // \endcond
 
@@ -222,7 +225,7 @@ class Map<C1<_Scalar>> : public C1Base<Map<C1<_Scalar>>>
 
 // \cond
 template<typename _Scalar>
-struct lie_traits<Map<const C1<_Scalar>>> : public lie_traits<C1<_Scalar>>
+struct liebase_info<Map<const C1<_Scalar>>> : public liebase_info<C1<_Scalar>>
 {
   static constexpr bool is_mutable = false;
 };

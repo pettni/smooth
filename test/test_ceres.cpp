@@ -33,15 +33,16 @@
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 
-
 template<smooth::LieGroup G>
 class CeresLocalParam : public ::testing::Test
 {};
 
 using GroupsToTest = ::testing::Types<
-  smooth::SO2d, smooth::SO3d, smooth::SE2d, smooth::SE3d,
-  smooth::Bundle<smooth::SO3d, Eigen::Vector4d, smooth::SE2d>
->;
+  smooth::SO2d,
+  smooth::SO3d,
+  smooth::SE2d,
+  smooth::SE3d,
+  smooth::Bundle<smooth::SO3d, Eigen::Vector4d, smooth::SE2d>>;
 
 TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest);
 
@@ -58,10 +59,9 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
   ASSERT_EQ(param.LocalSize(), n);
   ASSERT_EQ(param.GlobalSize(), p);
 
-
   for (std::size_t i = 0; i != 10; ++i) {
     // random group element and tangent vector
-    TypeParam g = TypeParam::Random();
+    TypeParam g                   = TypeParam::Random();
     Eigen::Matrix<double, n, 1> b = 1e-4 * Eigen::Matrix<double, n, 1>::Random();
 
     TypeParam gp = g + b;
@@ -78,10 +78,9 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
     // expect vee(hat(g) + b) \approx g + jac * b
     // where  hat(g) maps from parameters to the group
     // and    vee does the opposite
-    ParamsT param = Eigen::Map<const ParamsT>(g.data());
+    ParamsT param      = Eigen::Map<const ParamsT>(g.data());
     ParamsT param_plus = Eigen::Map<const ParamsT>(gp.data());
 
     ASSERT_TRUE(param_plus.isApprox(param + jac * b, 1e-6));
   }
 }
-

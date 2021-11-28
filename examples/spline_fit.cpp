@@ -23,107 +23,58 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+/**
+ * @file min_deriv.cpp Minimum derivative example.
+ */
+
+#include "smooth/internal/utils.hpp"
 #include "smooth/so3.hpp"
-#include "smooth/spline/bezier.hpp"
-#include "smooth/spline/bspline.hpp"
+#include "smooth/spline/fit.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include <matplot/matplot.h>
 #include "plot_tools.hpp"
-
-using matplot::plot;
-using std::views::transform;
+#include <matplot/matplot.h>
 #endif
 
 int main(int, char const **)
 {
-  // spline degree
-  constexpr std::size_t K = 5;
+  using G = smooth::SO3d;
 
-  std::srand(5);
+  std::vector<double> x{0, 1, 2.5, 3, 4, 5};
+  std::vector<G> y{
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+    smooth::SO3d::Random(),
+  };
 
-  double dt = 4;
-
-  std::vector<double> data_t;
-  std::vector<smooth::SO3d> data_g;
-
-  data_g.push_back(smooth::SO3d::Random());
-  data_t.push_back(0);
-
-  for (auto i = 0u; i != 15; ++i) {
-    data_g.push_back(data_g.back() + 0.25 * Eigen::Vector3d::Random());
-    data_t.push_back(data_t.back() + (1 + i % 2) * dt);
-  }
-
-  auto bspline = smooth::fit_bspline<K>(data_t, data_g, 2.5 * dt);
-  auto bezier1 = smooth::fit_linear_bezier(data_t, data_g);
-  auto bezier2 = smooth::fit_quadratic_bezier(data_t, data_g);
-  auto bezier3 = smooth::fit_cubic_bezier(data_t, data_g);
-
-  std::vector<double> tvec;
-  std::vector<smooth::SO3d> bspline_vec, bezier1_vec, bezier2_vec, bezier3_vec;
-
-  std::vector<Eigen::Vector3d> bspline_v, bezier1_v,
-    bezier2_v, bezier3_v;
-
-  for (double t = bspline.t_min(); t < bspline.t_max(); t += 0.05) {
-    Eigen::Vector3d v;
-
-    tvec.push_back(t);
-
-    bspline_vec.push_back(bspline(t, v));
-    bspline_v.push_back(v);
-
-    bezier1_vec.push_back(bezier1(t, v));
-    bezier1_v.push_back(v);
-
-    bezier2_vec.push_back(bezier2(t, v));
-    bezier2_v.push_back(v);
-
-    bezier3_vec.push_back(bezier3(t, v));
-    bezier3_v.push_back(v);
-  }
+  const auto c0   = smooth::fit_spline(x, y, smooth::spline_specs::PiecewiseConstant<G>{});
+  const auto c1   = smooth::fit_spline(x, y, smooth::spline_specs::PiecewiseLinear<G>{});
+  const auto c3_f = smooth::fit_spline(x, y, smooth::spline_specs::FixedDerCubic<G, 1>{});
+  const auto c3_n = smooth::fit_spline(x, y, smooth::spline_specs::FixedDerCubic<G, 2>{});
+  const auto c5   = smooth::fit_spline(x, y, smooth::spline_specs::MinDerivative<G, 6, 3, 4>{});
+  const auto c6   = smooth::fit_spline(x, y, smooth::spline_specs::MinDerivative<G, 6, 4, 4>{});
+  const auto b    = smooth::fit_bspline<5>(x, y, 0.5);
 
 #ifdef ENABLE_PLOTTING
-  matplot::figure();
-  matplot::hold(matplot::on);
-
-  // clang-tidy off
-  plot(tvec, r2v(bezier1_vec | transform([](auto s) { return s.quat().x(); })), "b")->line_width(2);
-  plot(tvec, r2v(bezier1_vec | transform([](auto s) { return s.quat().y(); })), "r")->line_width(2);
-  plot(tvec, r2v(bezier1_vec | transform([](auto s) { return s.quat().z(); })), "g")->line_width(2);
-  plot(tvec, r2v(bezier1_vec | transform([](auto s) { return s.quat().w(); })), "k")->line_width(2);
-
-  plot(tvec, r2v(bezier2_vec | transform([](auto s) { return s.quat().x(); })), ":b")->line_width(2);
-  plot(tvec, r2v(bezier2_vec | transform([](auto s) { return s.quat().y(); })), ":r")->line_width(2);
-  plot(tvec, r2v(bezier2_vec | transform([](auto s) { return s.quat().z(); })), ":g")->line_width(2);
-  plot(tvec, r2v(bezier2_vec | transform([](auto s) { return s.quat().w(); })), ":k")->line_width(2);
-
-  plot(tvec, r2v(bezier3_vec | transform([](auto s) { return s.quat().x(); })), "--b")->line_width(2);
-  plot(tvec, r2v(bezier3_vec | transform([](auto s) { return s.quat().y(); })), "--r")->line_width(2);
-  plot(tvec, r2v(bezier3_vec | transform([](auto s) { return s.quat().z(); })), "--g")->line_width(2);
-  plot(tvec, r2v(bezier3_vec | transform([](auto s) { return s.quat().w(); })), "--k")->line_width(2);
-
-  plot(tvec, r2v(bspline_vec | transform([](auto s) { return s.quat().x(); })), "-.b")->line_width(2);
-  plot(tvec, r2v(bspline_vec | transform([](auto s) { return s.quat().y(); })), "-.r")->line_width(2);
-  plot(tvec, r2v(bspline_vec | transform([](auto s) { return s.quat().z(); })), "-.g")->line_width(2);
-  plot(tvec, r2v(bspline_vec | transform([](auto s) { return s.quat().w(); })), "-.k")->line_width(2);
-
-  plot(data_t, r2v(data_g | transform([](auto s) { return s.quat().x(); })), "ob")->marker_size(10).marker_face_color("b");
-  plot(data_t, r2v(data_g | transform([](auto s) { return s.quat().y(); })), "or")->marker_size(10).marker_face_color("r");
-  plot(data_t, r2v(data_g | transform([](auto s) { return s.quat().z(); })), "og")->marker_size(10).marker_face_color("g");
-  plot(data_t, r2v(data_g | transform([](auto s) { return s.quat().w(); })), "ok")->marker_size(10).marker_face_color("k");
-
-  matplot::title("Quaternion");
+  std::vector<double> tt = matplot::linspace(-1, 6, 500);
 
   matplot::figure();
   matplot::hold(matplot::on);
-
-  plot(tvec, r2v(bezier1_v | transform([](auto s) { return s[0]; })), "b")->line_width(2);
-  plot(tvec, r2v(bezier2_v | transform([](auto s) { return s[0]; })), ":b")->line_width(2);
-  plot(tvec, r2v(bezier3_v | transform([](auto s) { return s[0]; })), "--b")->line_width(2);
-  plot(tvec, r2v(bspline_v | transform([](auto s) { return s[0]; })), "-.b")->line_width(2);
-  // clang-tidy on
+  // clang-format off
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c0(t).quat().w(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c1(t).quat().w(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c3_f(t).quat().w(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c3_n(t).quat().w(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c5(t).quat().w(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return c6(t).quat().w(); })))->line_width(2);
+  matplot::plot(tt, r2v(tt | std::views::transform([&](double t) { return b(t).quat().w(); })))->line_width(2);
+  matplot::plot(x, r2v(y | std::views::transform([&](auto g) { return g.quat().w(); })), "x")->marker_size(20);
+  // clang-format on
+  matplot::title("Values");
+  matplot::legend({"deg0", "deg1", "deg3_f", "deg3_n", "min_{jerk}", "min_{snap}", "bspline"});
 
   matplot::show();
 #endif

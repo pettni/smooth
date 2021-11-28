@@ -77,7 +77,8 @@ TEST(OdeInt, CashKarp54)
 
   auto system = [](const state_t &, deriv_t & d, double) { d.setConstant(1); };
 
-  boost::numeric::odeint::runge_kutta_cash_karp54<state_t,
+  boost::numeric::odeint::runge_kutta_cash_karp54<
+    state_t,
     double,
     deriv_t,
     double,
@@ -99,7 +100,8 @@ TEST(OdeInt, Fehlberg78)
 
   auto system = [](const state_t &, deriv_t & d, double) { d.setConstant(1); };
 
-  boost::numeric::odeint::runge_kutta_fehlberg78<state_t,
+  boost::numeric::odeint::runge_kutta_fehlberg78<
+    state_t,
     double,
     deriv_t,
     double,

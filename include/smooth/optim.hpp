@@ -71,7 +71,7 @@ struct MinimizeOptions
  *  \min_{x} \sum_i \| f(x)_i \|^2
  * \f]
  *
- * @tparam Diff differentiation method to use in solver (see diff::Type in diff.hpp)
+ * @tparam D differentiation method to use in solver (see diff::Type in diff.hpp)
  * @param f residuals to minimize
  * @param x reference tuple of arguments to f
  * @param opts solver options
@@ -79,11 +79,11 @@ struct MinimizeOptions
  * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
-template<diff::Type Diff, typename _F, typename _Wrt>
-void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions{})
+template<diff::Type D>
+void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptions{})
 {
   // evaluate residuals and jacobian at initial point
-  auto [r, J] = diff::dr<Diff>(f, x);
+  auto [r, J] = diff::dr<D>(f, x);
 
   // extract some properties from jacobian
   static constexpr bool is_sparse =
@@ -92,9 +92,9 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
   const int nx            = J.cols();
 
   // scaling parameters
-  Eigen::Matrix<double, Nx, 1> d(nx);
+  Eigen::Vector<double, Nx> d(nx);
   if constexpr (is_sparse) {
-    d = (Eigen::Matrix<double, 1, -1>::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose();
+    d = (Eigen::RowVectorXd::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose();
   } else {
     d = J.colwise().stableNorm().transpose();
   }
@@ -126,7 +126,7 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
 
   for (; iter < opts.max_iter; ++iter) {
     // calculate step a via LM parameter algorithm
-    Eigen::Matrix<double, Nx, 1> a(nx);
+    Eigen::Vector<double, Nx> a(nx);
     double lambda;
     if constexpr (is_sparse) {
       std::tie(lambda, a) = detail::lmpar_sparse(J, d, r, Delta);
@@ -136,13 +136,13 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
 
     // evaluate function and jacobian at x + a
     const auto x_plus_a         = wrt_rplus(x, a);
-    const auto [r_cand, J_cand] = diff::dr<Diff>(f, x_plus_a);
+    const auto [r_cand, J_cand] = diff::dr<D>(f, x_plus_a);
 
     const double r_cand_norm = r_cand.stableNorm();
     const double Da_norm     = d.cwiseProduct(a).stableNorm();
 
     // calculate actual to predicted reduction
-    const Eigen::Matrix<double, decltype(J)::RowsAtCompileTime, 1> Ja = J * a;
+    const Eigen::Vector<double, decltype(J)::RowsAtCompileTime> Ja = J * a;
     const double act_red  = 1. - Eigen::numext::abs2(r_cand_norm / r_norm);
     const double fra2     = Eigen::numext::abs2(Ja.stableNorm() / r_norm);
     const double fra3     = Eigen::numext::abs2(std::sqrt(lambda) * Da_norm / r_norm);
@@ -151,9 +151,9 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
 
     // update trust region following Moré (1978)
     if (rho < 0.25) {
-      double mu;
+      double mu = 0.5;
       if (r_cand_norm <= r_norm) {
-        mu = 0.5;
+        // leave at 0.5
       } else if (r_cand_norm <= 10 * r_norm) {
         const double gamma = -fra2 - fra3;
         mu                 = std::clamp(gamma / (2. * gamma + act_red), 0.1, 0.5);
@@ -188,9 +188,8 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
 
       // update scaling
       if constexpr (is_sparse) {
-        d = d.cwiseMax((Eigen::Matrix<double, 1, -1>::Ones(J.rows()) * J.cwiseProduct(J))
-                         .cwiseSqrt()
-                         .transpose());
+        d = d.cwiseMax(
+          (Eigen::RowVectorXd::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose());
       } else {
         d = d.cwiseMax(J.colwise().stableNorm().transpose());
       }
@@ -233,10 +232,9 @@ void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions
  * All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
-template<typename _F, typename _Wrt>
-void minimize(_F && f, _Wrt && x, const MinimizeOptions & opts = MinimizeOptions{})
+void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptions{})
 {
-  minimize<diff::Type::DEFAULT>(std::forward<_F>(f), std::forward<_Wrt>(x), opts);
+  minimize<diff::Type::DEFAULT>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x), opts);
 }
 
 }  // namespace smooth

@@ -49,7 +49,8 @@ struct BundleImpl
 {
   using Scalar = std::common_type_t<typename GsImpl::Scalar...>;
 
-  static_assert((std::is_same_v<Scalar, typename GsImpl::Scalar> && ...),
+  static_assert(
+    (std::is_same_v<Scalar, typename GsImpl::Scalar> && ...),
     "Implementation Scalar types must be the same");
 
   static constexpr std::array<Eigen::Index, sizeof...(GsImpl)> RepSizes{GsImpl::RepSize...};

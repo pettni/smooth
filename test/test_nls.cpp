@@ -285,8 +285,8 @@ TEST(NLS, MultipleArgsStatic)
   };
 
   smooth::MinimizeOptions opts;
-  opts.ftol = 1e-12;
-  opts.ptol = 1e-12;
+  opts.ftol    = 1e-12;
+  opts.ptol    = 1e-12;
   opts.verbose = true;
 
   smooth::minimize(f, smooth::wrt(g1, g2), opts);
@@ -308,8 +308,8 @@ TEST(NLS, MultipleArgsDynamic)
   };
 
   smooth::MinimizeOptions opts;
-  opts.ftol = 1e-12;
-  opts.ptol = 1e-12;
+  opts.ftol    = 1e-12;
+  opts.ptol    = 1e-12;
   opts.verbose = true;
 
   smooth::minimize(f, smooth::wrt(g1, g2), opts);

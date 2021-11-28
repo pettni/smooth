@@ -1,8 +1,10 @@
+add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+
 add_executable(bspline bspline.cpp)
 target_link_libraries(bspline smooth)
 
-add_executable(curve curve.cpp)
-target_link_libraries(curve smooth)
+add_executable(spline_reparameterize spline_reparameterize.cpp)
+target_link_libraries(spline_reparameterize smooth)
 
 add_executable(spline_fit spline_fit.cpp)
 target_link_libraries(spline_fit smooth)
@@ -25,8 +27,8 @@ if(${Matplot++_FOUND})
   target_compile_definitions(bspline PRIVATE ENABLE_PLOTTING)
   target_link_libraries(bspline Matplot++::matplot)
 
-  target_compile_definitions(curve PRIVATE ENABLE_PLOTTING)
-  target_link_libraries(curve Matplot++::matplot)
+  target_compile_definitions(spline_reparameterize PRIVATE ENABLE_PLOTTING)
+  target_link_libraries(spline_reparameterize Matplot++::matplot)
 
   target_compile_definitions(spline_fit PRIVATE ENABLE_PLOTTING)
   target_link_libraries(spline_fit Matplot++::matplot)

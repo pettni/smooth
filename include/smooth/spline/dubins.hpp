@@ -29,12 +29,13 @@
 
 /**
  * @file
- * @brief bezier splines on lie groups.
+ * @brief Generate Dubins curves as Spline.
  */
 
 #include <numbers>
 
 #include "smooth/se2.hpp"
+#include "spline.hpp"
 
 using namespace std::numbers;
 
@@ -59,8 +60,8 @@ inline double dubins_angle(const smooth::SO2d & x1, const smooth::SO2d & x2, Dub
 }
 
 /// @brief Calculate segment lengths for a CCC Dubin's curve with fixed segment types.
-inline std::array<double, 3> dubins_ccc(
-  const smooth::SE2d & target, double R, DubinsSegment c13, DubinsSegment c2)
+inline std::array<double, 3>
+dubins_ccc(const smooth::SE2d & target, double R, DubinsSegment c13, DubinsSegment c2)
 {
   static constexpr double inf = std::numeric_limits<double>::infinity();
 
@@ -109,8 +110,8 @@ inline std::array<double, 3> dubins_ccc(
 }
 
 /// @brief Calculate segment lengths for a CSC Dubin's curve with fixed segment types.
-inline std::array<double, 3> dubins_csc(
-  const smooth::SE2d & target, double R, DubinsSegment c1, DubinsSegment c3)
+inline std::array<double, 3>
+dubins_csc(const smooth::SE2d & target, double R, DubinsSegment c1, DubinsSegment c3)
 {
   static constexpr double inf = std::numeric_limits<double>::infinity();
 
@@ -247,6 +248,34 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     }
   }
 
+  return ret;
+}
+
+/**
+ * @brief Create dubins Spline.
+ *
+ * @tparam K degree of resulting Spline (must be at least 1).
+ * @param gb end position.
+ * @param R turning radius.
+ * @return Spline representing a Dubins motion starting at Identity.
+ */
+template<std::size_t K = 3>
+  requires(K >= 1)
+Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
+{
+  const auto desc = dubins(gb, R);
+
+  Spline<K, smooth::SE2d> ret;
+  for (auto i = 0u; i != 3; ++i) {
+    const auto & [c, l] = desc[i];
+    if (c == DubinsSegment::Left) {
+      ret += Spline<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1. / R), R * l);
+    } else if (c == DubinsSegment::Right) {
+      ret += Spline<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, -1. / R), R * l);
+    } else {
+      ret += Spline<K, smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0), l);
+    }
+  }
   return ret;
 }
 

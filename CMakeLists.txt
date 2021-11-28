@@ -106,6 +106,10 @@ if(BUILD_TESTING)
   target_link_libraries(test_utils PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_utils)
 
+  add_executable(test_polynomial test/test_polynomial.cpp)
+  target_link_libraries(test_polynomial PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_polynomial)
+
   add_executable(test_lie_api test/test_liegroup.cpp)
   target_link_libraries(test_lie_api PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_lie_api)
@@ -140,13 +144,25 @@ if(BUILD_TESTING)
 
   # ALGO TESTS
 
+  add_executable(test_cspline test/test_cspline.cpp)
+  target_link_libraries(test_cspline PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_cspline)
+
   add_executable(test_spline test/test_spline.cpp)
   target_link_libraries(test_spline PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_spline)
 
-  add_executable(test_curve test/test_curve.cpp)
-  target_link_libraries(test_curve PRIVATE smooth GTest::Main)
-  gtest_discover_tests(test_curve)
+  add_executable(test_spline_fit test/test_spline_fit.cpp)
+  target_link_libraries(test_spline_fit PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_spline_fit)
+
+  add_executable(test_spline_dubins test/test_spline_dubins.cpp)
+  target_link_libraries(test_spline_dubins PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_spline_dubins)
+
+  add_executable(test_spline_reparameterize test/test_spline_reparameterize.cpp)
+  target_link_libraries(test_spline_reparameterize PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_spline_reparameterize)
 
   add_executable(test_diff test/test_diff.cpp)
   target_link_libraries(test_diff PRIVATE smooth GTest::Main)
