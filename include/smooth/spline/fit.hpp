@@ -167,9 +167,6 @@ namespace spline_specs
 // \cond
 namespace detail {
 
-/**
- * @brief Compile-time calculation of the maximal differentiation order for a SplineSpec.
- */
 template<SplineSpec SS>
 constexpr int splinespec_max_deriv()
 {

@@ -75,7 +75,7 @@ constexpr auto cos_s(const auto x) noexcept
 }
 
 }  // namespace detail
-// \end cond
+// \endcond
 
 /**
  * @brief Chebyshev-Gauss-Radau nodes on [-1, 1].

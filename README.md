@@ -127,20 +127,20 @@ Check out the [Documentation][doc-link] and the [`examples`](https://github.com/
 
 These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
 
-* `Manifold`: type that supports `rplus` (geodesic addition) and `rminus` (geodesic subtraction)
-  * Example: All `LieGroup` types
-  * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---facilitates e.g. optimization and differentiation w.r.t. a dynamic number of `Manifold`s
-  * Example: `Eigen::VectorXd`
+* `Manifold`: type that supports `rplus` (geodesic addition) and `rminus` (geodesic subtraction). Examples:
+  * All `LieGroup` types
+  * `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---facilitates e.g. optimization and differentiation w.r.t. a dynamic number of `Manifold`s
+  * `Eigen::VectorXd`
 
-* `LieGroup`: a type for which Lie group operations (`exp`, `log`, `Ad`, etc...) are defined
-  * Example: All `NativeLieGroup` types
-  * Example: `Eigen::Vector3d`
-  * Example: `double`
+* `LieGroup`: a type for which Lie group operations (`exp`, `log`, `Ad`, etc...) are defined. Examples:
+  * All `NativeLieGroup` types
+  * `Eigen::Vector3d`
+  * `double`
 
-* `NativeLieGroup`: a type that implements a Lie group interface as class methods. 
-  * Example: `smooth::SO3<float>`
-  * Example: `smooth::C1<double>`
-  * Example: `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
+* `NativeLieGroup`: a type that implements a Lie group interface as class methods. Examples:
+  * `smooth::SO3<float>`
+  * `smooth::C1<double>`
+  * `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
 
 Both Manifold and LieGroup are defined via external type traits (`traits::man` and `traits::lie`) that can be specialized in order to define a Manifold or LieGroup interface for a third-party type.
 
@@ -221,7 +221,7 @@ the control points. See examples/spline_fit.cpp for usage.
 
 Available for `LieGroup` types, see spline/bspline.hpp.
 
-B-splines have local support and generally do not pass through the control points.
+The B-spline basis functions have local support, A B-spline generally does not pass through its control points.
 See examples/spline_fit.cpp and examples/bspline.cpp for usage.
 
 
@@ -236,6 +236,8 @@ Utility headers for interfacing with adjacent software are included.
 
 
 # Related Projects
+
+* [smooth_feedback](https://pettni.github.io/smooth_feedback) utilizes `smooth` for control and estimation on Lie groups.
 
 Two projects that have served as inspiration for `smooth` are [`manif`][manif-link]---which
 also has an accompanying [paper][manif-paper-link] that is a great practical introduction to

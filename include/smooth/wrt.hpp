@@ -38,7 +38,8 @@ namespace smooth {
  *
  * A tuple of references is created from the input arguments.
  */
-auto wrt(auto &&... args) requires(Manifold<std::decay_t<decltype(args)>> &&...)
+auto wrt(auto &&... args)
+  requires(Manifold<std::decay_t<decltype(args)>> &&...)
 {
   return std::forward_as_tuple(std::forward<decltype(args)>(args)...);
 }
@@ -116,18 +117,12 @@ auto wrt_rplus(auto && wrt, const Eigen::MatrixBase<Derived> & a)
 // \cond
 namespace detail {
 
-/**
- * @brief Trait for removing constness from reference types.
- */
 template<typename T>
 struct remove_const_ref
 {
   using type = T;
 };
 
-/**
- * @brief Trait for removing constness from reference types.
- */
 template<typename T>
 struct remove_const_ref<const T &>
 {
