@@ -18,7 +18,7 @@ If you are looking for something stable and established, check out
 In robotics it is often convenient to work in non-Euclidean manifolds.
 [Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are 
 easy to work with due to their symmetries, and that are also good models for many robotic
-systems. This header-only C++20 library facilitates Lie groups in
+systems. This header-only C++20 library facilitates leveraging Lie theory in
 robotics software, by enabling:
 
  * Algebraic manipulation
@@ -127,20 +127,22 @@ Check out the [Documentation][doc-link] and the [`examples`](https://github.com/
 
 These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implemented in `concepts.hpp`.
 
-* `Manifold`: type that supports `operator+()` (geodesic addition) and `operator-()` (geodesic subtraction)
-  * Example: All LieGroup types are also Manifold types
-  * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---a type to facilitate optimization over a dynamic number of `Manifold`s
+* `Manifold`: type that supports `rplus` (geodesic addition) and `rminus` (geodesic subtraction)
+  * Example: All `LieGroup` types
+  * Example: `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---facilitates e.g. optimization and differentiation w.r.t. a dynamic number of `Manifold`s
+  * Example: `Eigen::VectorXd`
 
-* `LieGroup`: a type implements Lie group operations (`exp`, `log`, `Ad`, etc...)
-  * Example: `smooth::SO3<float>`
-  * Example: `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
+* `LieGroup`: a type for which Lie group operations (`exp`, `log`, `Ad`, etc...) are defined
+  * Example: All `NativeLieGroup` types
   * Example: `Eigen::Vector3d`
-  * Example: `Eigen::VectorXf`
+  * Example: `double`
 
-* `NativeLieGroup`: a type that implements a Lie group interface as class methods
+* `NativeLieGroup`: a type that implements a Lie group interface as class methods. 
+  * Example: `smooth::SO3<float>`
+  * Example: `smooth::C1<double>`
+  * Example: `smooth::Bundle<NativeLieGroup | Eigen::Matrix<Scalar, N, 1> ...>`
 
-Both Manifold and LieGroup are defined via external type traits that can be specialized in order
-to define a Manifold or LieGroup interface for a third-party type.
+Both Manifold and LieGroup are defined via external type traits (`traits::man` and `traits::lie`) that can be specialized in order to define a Manifold or LieGroup interface for a third-party type.
 
 
 ## Algorithms
@@ -151,8 +153,8 @@ Available for `Manifold` types, see diff.hpp.
 
 Supported techniques (see smooth::diff::Type):
 * Numerical derivatives (default)
-* Automatic differentiation using `autodiff` (must #include <smooth/compat/autodiff.hpp>)
-* Automatic differentiation using Ceres 2.x (must #include <smooth/compat/ceres.hpp>)
+* Automatic differentiation using [`autodiff`](https://autodiff.github.io) (must #include <smooth/compat/autodiff.hpp>)
+* Automatic differentiation using [Ceres 2.x](http://ceres-solver.org/) (must #include <smooth/compat/ceres.hpp>)
 
 Example: calculate ![](https://latex.codecogs.com/png.latex?\mathrm{d}^r&space;(\log(g_1&space;\circ&space;g_2))_{g_i}) for i=1, 2
 
@@ -208,7 +210,7 @@ smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 
 ### Piecewise polynomial curve evaluation and fitting
 
-Available for `LieGroup` types, see spline/bezier.hpp.
+Available for `LieGroup` types, see spline/spline.hpp.
 
 These splines are piecewise defined via
 [Bernstein polynomials](https://en.wikipedia.org/wiki/Bernstein_polynomial) and pass through
@@ -220,7 +222,7 @@ the control points. See examples/spline_fit.cpp for usage.
 Available for `LieGroup` types, see spline/bspline.hpp.
 
 B-splines have local support and generally do not pass through the control points.
-See examples/bspline.cpp for usage.
+See examples/spline_fit.cpp and examples/bspline.cpp for usage.
 
 
 # Compatibility
