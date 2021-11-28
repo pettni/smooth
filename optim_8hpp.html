@@ -106,15 +106,15 @@ Include dependency graph for optim.hpp:</div>
 <area shape="rect" title=" " alt="" coords="333,80,399,107"/>
 <area shape="rect" title=" " alt="" coords="423,80,495,107"/>
 <area shape="rect" title=" " alt="" coords="520,80,588,107"/>
-<area shape="rect" href="diff_8hpp.html" title="Differentiation on Lie groups." alt="" coords="664,80,727,107"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="423,155,517,181"/>
-<area shape="rect" title=" " alt="" coords="839,155,903,181"/>
-<area shape="rect" title=" " alt="" coords="803,80,927,107"/>
-<area shape="rect" title=" " alt="" coords="951,80,1122,107"/>
-<area shape="rect" title=" " alt="" coords="591,229,677,256"/>
-<area shape="rect" title=" " alt="" coords="733,155,815,181"/>
-<area shape="rect" title=" " alt="" coords="541,155,657,181"/>
-<area shape="rect" title=" " alt="" coords="433,229,507,256"/>
+<area shape="rect" href="diff_8hpp.html" title="Differentiation on Lie groups." alt="" coords="612,80,675,107"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="711,229,805,256"/>
+<area shape="rect" href="wrt_8hpp_source.html" title=" " alt="" coords="611,155,675,181"/>
+<area shape="rect" title=" " alt="" coords="801,80,925,107"/>
+<area shape="rect" title=" " alt="" coords="950,80,1121,107"/>
+<area shape="rect" title=" " alt="" coords="497,304,582,331"/>
+<area shape="rect" title=" " alt="" coords="603,229,686,256"/>
+<area shape="rect" title=" " alt="" coords="463,229,579,256"/>
+<area shape="rect" title=" " alt="" coords="721,304,795,331"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -122,10 +122,9 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="optim_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2optim_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2optim_8hppdep" id="ainclude_2smooth_2optim_8hppdep">
-<area shape="rect" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="81,5,252,32"/>
-<area shape="rect" href="bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="93,80,241,121"/>
-<area shape="rect" href="bspline_8cpp.html" title=" " alt="" coords="5,169,152,196"/>
-<area shape="rect" href="spline__fit_8cpp_source.html" title=" " alt="" coords="177,169,333,196"/>
+<area shape="rect" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="5,5,176,32"/>
+<area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="17,80,165,121"/>
+<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="17,169,165,211"/>
 </map>
 </div>
 </div>
@@ -139,38 +138,34 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af178cd6078aacc223a42016bce92794d"><td class="memTemplParams" colspan="2">template&lt;diff::Type Diff, typename _F , typename _Wrt &gt; </td></tr>
-<tr class="memitem:af178cd6078aacc223a42016bce92794d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">smooth::minimize</a> (_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</td></tr>
-<tr class="memdesc:af178cd6078aacc223a42016bce92794d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a minimum of the non-linear least-squares problem.  <a href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">More...</a><br /></td></tr>
-<tr class="separator:af178cd6078aacc223a42016bce92794d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abdcda4a51f33784c03a0e09852d8e8fa"><td class="memTemplParams" colspan="2">template&lt;typename _F , typename _Wrt &gt; </td></tr>
-<tr class="memitem:abdcda4a51f33784c03a0e09852d8e8fa"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="optim_8hpp.html#abdcda4a51f33784c03a0e09852d8e8fa">smooth::minimize</a> (_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</td></tr>
-<tr class="memdesc:abdcda4a51f33784c03a0e09852d8e8fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a minimum of the non-linear least-squares problem.  <a href="optim_8hpp.html#abdcda4a51f33784c03a0e09852d8e8fa">More...</a><br /></td></tr>
-<tr class="separator:abdcda4a51f33784c03a0e09852d8e8fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3245a617d1892ce7899227ba049ee4d"><td class="memTemplParams" colspan="2">template&lt;diff::Type D&gt; </td></tr>
+<tr class="memitem:ac3245a617d1892ce7899227ba049ee4d"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="optim_8hpp.html#ac3245a617d1892ce7899227ba049ee4d">smooth::minimize</a> (auto &amp;&amp;f, auto &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</td></tr>
+<tr class="memdesc:ac3245a617d1892ce7899227ba049ee4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find a minimum of the non-linear least-squares problem.  <a href="optim_8hpp.html#ac3245a617d1892ce7899227ba049ee4d">More...</a><br /></td></tr>
+<tr class="separator:ac3245a617d1892ce7899227ba049ee4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Non-linear least squares optimization on Manifolds. </p>
 
 <p class="definition">Definition in file <a class="el" href="optim_8hpp_source.html">optim.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="af178cd6078aacc223a42016bce92794d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af178cd6078aacc223a42016bce92794d">&#9670;&nbsp;</a></span>minimize() <span class="overload">[1/2]</span></h2>
+<a id="ac3245a617d1892ce7899227ba049ee4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3245a617d1892ce7899227ba049ee4d">&#9670;&nbsp;</a></span>minimize()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;diff::Type Diff, typename _F , typename _Wrt &gt; </div>
+template&lt;diff::Type D&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void smooth::minimize </td>
           <td>(</td>
-          <td class="paramtype">_F &amp;&amp;&#160;</td>
+          <td class="paramtype">auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">_Wrt &amp;&amp;&#160;</td>
+          <td class="paramtype">auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>x</em>, </td>
         </tr>
         <tr>
@@ -193,7 +188,7 @@ template&lt;diff::Type Diff, typename _F , typename _Wrt &gt; </div>
 </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Diff</td><td>differentiation method to use in solver (see diff::Type in <a class="el" href="diff_8hpp.html" title="Differentiation on Lie groups.">diff.hpp</a>) </td></tr>
+    <tr><td class="paramname">D</td><td>differentiation method to use in solver (see diff::Type in <a class="el" href="diff_8hpp.html" title="Differentiation on Lie groups.">diff.hpp</a>) </td></tr>
   </table>
   </dd>
 </dl>
@@ -205,47 +200,7 @@ template&lt;diff::Type Diff, typename _F , typename _Wrt &gt; </div>
   </table>
   </dd>
 </dl>
-<p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
-
-<p class="definition">Definition at line <a class="el" href="optim_8hpp_source.html#l00083">83</a> of file <a class="el" href="optim_8hpp_source.html">optim.hpp</a>.</p>
-
-</div>
-</div>
-<a id="abdcda4a51f33784c03a0e09852d8e8fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abdcda4a51f33784c03a0e09852d8e8fa">&#9670;&nbsp;</a></span>minimize() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename _F , typename _Wrt &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void smooth::minimize </td>
-          <td>(</td>
-          <td class="paramtype">_F &amp;&amp;&#160;</td>
-          <td class="paramname"><em>f</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">_Wrt &amp;&amp;&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a> &amp;&#160;</td>
-          <td class="paramname"><em>opts</em> = <code><a class="el" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a>{}</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Find a minimum of the non-linear least-squares problem. </p>
+<p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept.</p>
 <p class="formulaDsp">
 \[ \min_{x} \sum_i \| f(x)_i \|^2 \]
 </p>
@@ -259,7 +214,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
 </dl>
 <p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
 
-<p class="definition">Definition at line <a class="el" href="optim_8hpp_source.html#l00237">237</a> of file <a class="el" href="optim_8hpp_source.html">optim.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optim_8hpp_source.html#l00083">83</a> of file <a class="el" href="optim_8hpp_source.html">optim.hpp</a>.</p>
 
 </div>
 </div>

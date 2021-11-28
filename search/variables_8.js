@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['repsize_437',['RepSize',['../classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'smooth::LieGroupBase']]],
-  ['rntype_438',['RnType',['../lie__group_8hpp.html#a77615f337de1ec1bb048589deac46b27',1,'smooth']]]
+  ['optdeg_476',['OptDeg',['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a2aa4628346d14f4a498215a2600f6f4d',1,'smooth::spline_specs::NoConstraints::OptDeg()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a062079db495d8c2dc679d2ce2f0a4b11',1,'smooth::spline_specs::FixedDerCubic::OptDeg()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#af3ca1ebc05b109b3c40c2058e92abfd4',1,'smooth::spline_specs::MinDerivative::OptDeg()']]]
 ];

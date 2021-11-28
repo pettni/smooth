@@ -1,12 +1,11 @@
 var searchData=
 [
-  ['fit_5fbspline_70',['fit_bspline',['../bspline_8hpp.html#a2b6b1a5c1e3400b8b1569b5ccda000d9',1,'smooth']]],
-  ['fit_5fconstant_5fbezier_71',['fit_constant_bezier',['../bezier_8hpp.html#ace0681ed3e203b90854fdb7144d4ca74',1,'smooth']]],
-  ['fit_5fcubic_5fbezier_72',['fit_cubic_bezier',['../bezier_8hpp.html#a76edf55f22729fb019658fbc7191d4b8',1,'smooth']]],
-  ['fit_5fcubic_5fbezier_5flocal_73',['fit_cubic_bezier_local',['../bezier_8hpp.html#ac211961febd1e558f669a98a36490f3c',1,'smooth']]],
-  ['fit_5flinear_5fbezier_74',['fit_linear_bezier',['../bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724',1,'smooth']]],
-  ['fit_5fquadratic_5fbezier_75',['fit_quadratic_bezier',['../bezier_8hpp.html#a5bae08a2dd5837204af3f7fc03ade7a8',1,'smooth']]],
-  ['fixedcubic_76',['FixedCubic',['../classsmooth_1_1Curve.html#a587c707dadf51fc67f2b25a4578a7aef',1,'smooth::Curve']]],
-  ['floatingpointtype_77',['FloatingPointType',['../lie__group_8hpp.html#ae50f0623f16d66df915d96eb48370e0f',1,'smooth']]],
-  ['ftol_78',['ftol',['../structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b',1,'smooth::MinimizeOptions']]]
+  ['fit_2ehpp_73',['fit.hpp',['../fit_8hpp.html',1,'']]],
+  ['fit_5fbspline_74',['fit_bspline',['../fit_8hpp.html#a90a8e289bb91aff4856569598310bd78',1,'smooth']]],
+  ['fit_5fspline_75',['fit_spline',['../fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb',1,'smooth']]],
+  ['fit_5fspline_5f1d_76',['fit_spline_1d',['../fit_8hpp.html#a5ca687909d8d31db58b41fe6152e8b60',1,'smooth']]],
+  ['fit_5fspline_5fcubic_77',['fit_spline_cubic',['../fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b',1,'smooth']]],
+  ['fixedcubic_78',['FixedCubic',['../classsmooth_1_1Spline.html#ab1852edee1ef4bc68677eb37b256349c',1,'smooth::Spline']]],
+  ['fixeddercubic_79',['FixedDerCubic',['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html',1,'smooth::spline_specs']]],
+  ['ftol_80',['ftol',['../structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b',1,'smooth::MinimizeOptions']]]
 ];

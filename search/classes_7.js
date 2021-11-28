@@ -1,30 +1,4 @@
 var searchData=
 [
-  ['scale_5fsum_273',['scale_sum',['../structsmooth_1_1BoostOdeintOps_1_1scale__sum.html',1,'smooth::BoostOdeintOps']]],
-  ['se2_274',['SE2',['../classsmooth_1_1SE2.html',1,'smooth']]],
-  ['se2base_275',['SE2Base',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se2base_3c_20map_3c_20const_20se2_3c_20_5fscalar_20_3e_20_3e_20_3e_276',['SE2Base&lt; Map&lt; const SE2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se2base_3c_20map_3c_20se2_3c_20_5fscalar_20_3e_20_3e_20_3e_277',['SE2Base&lt; Map&lt; SE2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se2base_3c_20se2_3c_20_5fscalar_20_3e_20_3e_278',['SE2Base&lt; SE2&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SE2Base.html',1,'smooth']]],
-  ['se3_279',['SE3',['../classsmooth_1_1SE3.html',1,'smooth']]],
-  ['se3base_280',['SE3Base',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20map_3c_20const_20se3_3c_20_5fscalar_20_3e_20_3e_20_3e_281',['SE3Base&lt; Map&lt; const SE3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20map_3c_20se3_3c_20_5fscalar_20_3e_20_3e_20_3e_282',['SE3Base&lt; Map&lt; SE3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20se3_3c_20_5fscalar_20_3e_20_3e_283',['SE3Base&lt; SE3&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20smooth_3a_3amap_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3apose_20_3e_20_3e_284',['SE3Base&lt; smooth::Map&lt; const geometry_msgs::msg::Pose &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20smooth_3a_3amap_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3atransform_20_3e_20_3e_285',['SE3Base&lt; smooth::Map&lt; const geometry_msgs::msg::Transform &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20smooth_3a_3amap_3c_20geometry_5fmsgs_3a_3amsg_3a_3apose_20_3e_20_3e_286',['SE3Base&lt; smooth::Map&lt; geometry_msgs::msg::Pose &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['se3base_3c_20smooth_3a_3amap_3c_20geometry_5fmsgs_3a_3amsg_3a_3atransform_20_3e_20_3e_287',['SE3Base&lt; smooth::Map&lt; geometry_msgs::msg::Transform &gt; &gt;',['../classsmooth_1_1SE3Base.html',1,'smooth']]],
-  ['so2_288',['SO2',['../classsmooth_1_1SO2.html',1,'smooth']]],
-  ['so2base_289',['SO2Base',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so2base_3c_20map_3c_20const_20so2_3c_20_5fscalar_20_3e_20_3e_20_3e_290',['SO2Base&lt; Map&lt; const SO2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so2base_3c_20map_3c_20so2_3c_20_5fscalar_20_3e_20_3e_20_3e_291',['SO2Base&lt; Map&lt; SO2&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so2base_3c_20so2_3c_20_5fscalar_20_3e_20_3e_292',['SO2Base&lt; SO2&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SO2Base.html',1,'smooth']]],
-  ['so3_293',['SO3',['../classsmooth_1_1SO3.html',1,'smooth']]],
-  ['so3base_294',['SO3Base',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20map_3c_20const_20so3_3c_20_5fscalar_20_3e_20_3e_20_3e_295',['SO3Base&lt; Map&lt; const SO3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20map_3c_20so3_3c_20_5fscalar_20_3e_20_3e_20_3e_296',['SO3Base&lt; Map&lt; SO3&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20smooth_3a_3amap_3c_20const_20geometry_5fmsgs_3a_3amsg_3a_3aquaternion_20_3e_20_3e_297',['SO3Base&lt; smooth::Map&lt; const geometry_msgs::msg::Quaternion &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20smooth_3a_3amap_3c_20geometry_5fmsgs_3a_3amsg_3a_3aquaternion_20_3e_20_3e_298',['SO3Base&lt; smooth::Map&lt; geometry_msgs::msg::Quaternion &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]],
-  ['so3base_3c_20so3_3c_20_5fscalar_20_3e_20_3e_299',['SO3Base&lt; SO3&lt; _Scalar &gt; &gt;',['../classsmooth_1_1SO3Base.html',1,'smooth']]]
+  ['reparameterization_304',['Reparameterization',['../classsmooth_1_1Reparameterization.html',1,'smooth']]]
 ];

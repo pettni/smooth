@@ -1,0 +1,17 @@
+<map id="include/smooth/spline/spline.hpp" name="include/smooth/spline/spline.hpp">
+<area shape="rect" id="node1" title="Piecewise polynomial splines on lie groups." alt="" coords="175,5,323,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,80,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="233,244,298,271"/>
+<area shape="rect" id="node4" title=" " alt="" coords="472,95,533,121"/>
+<area shape="rect" id="node5" href="$basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="155,169,344,196"/>
+<area shape="rect" id="node10" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="297,95,447,121"/>
+<area shape="rect" id="node6" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="88,244,208,271"/>
+<area shape="rect" id="node7" title=" " alt="" coords="44,319,95,345"/>
+<area shape="rect" id="node8" title=" " alt="" coords="119,319,177,345"/>
+<area shape="rect" id="node9" title=" " alt="" coords="201,319,364,345"/>
+<area shape="rect" id="node11" href="$lie__group_8hpp.html" title=" " alt="" coords="419,169,565,196"/>
+<area shape="rect" id="node15" title=" " alt="" coords="589,169,656,196"/>
+<area shape="rect" id="node12" title=" " alt="" coords="527,319,612,345"/>
+<area shape="rect" id="node13" title=" " alt="" coords="396,319,471,345"/>
+<area shape="rect" id="node14" href="$manifold_8hpp.html" title=" " alt="" coords="445,244,539,271"/>
+</map>

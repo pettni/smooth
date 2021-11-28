@@ -94,14 +94,16 @@ Include dependency graph for ceres.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="ceres_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2compat_2ceres_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2compat_2ceres_8hpp" id="ainclude_2smooth_2compat_2ceres_8hpp">
-<area shape="rect" title="ceres compatability header." alt="" coords="337,5,494,47"/>
+<area shape="rect" title="ceres compatability header." alt="" coords="279,5,437,47"/>
 <area shape="rect" title=" " alt="" coords="5,95,140,136"/>
 <area shape="rect" title=" " alt="" coords="164,102,320,129"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="344,102,487,129"/>
-<area shape="rect" title=" " alt="" coords="511,102,629,129"/>
-<area shape="rect" title=" " alt="" coords="653,102,764,129"/>
-<area shape="rect" title=" " alt="" coords="321,184,406,211"/>
-<area shape="rect" title=" " alt="" coords="430,184,505,211"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="337,184,480,211"/>
+<area shape="rect" href="map_8hpp_source.html" title=" " alt="" coords="195,184,313,211"/>
+<area shape="rect" href="wrt_8hpp_source.html" title=" " alt="" coords="468,102,579,129"/>
+<area shape="rect" title=" " alt="" coords="237,259,322,285"/>
+<area shape="rect" title=" " alt="" coords="371,259,446,285"/>
+<area shape="rect" title=" " alt="" coords="503,184,586,211"/>
+<area shape="rect" title=" " alt="" coords="611,184,727,211"/>
 </map>
 </div>
 </div>
@@ -115,34 +117,31 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a85da13459d0f5147a5a0475ebce263c0"><td class="memTemplParams" colspan="2">template&lt;typename _F , typename _Wrt &gt; </td></tr>
-<tr class="memitem:a85da13459d0f5147a5a0475ebce263c0"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">smooth::dr_ceres</a> (_F &amp;&amp;f, _Wrt &amp;&amp;x)</td></tr>
-<tr class="memdesc:a85da13459d0f5147a5a0475ebce263c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automatic differentiation in tangent space.  <a href="ceres_8hpp.html#a85da13459d0f5147a5a0475ebce263c0">More...</a><br /></td></tr>
-<tr class="separator:a85da13459d0f5147a5a0475ebce263c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad42f5ad6a0991cd8fcacb644fc5fa0c8"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ceres_8hpp.html#ad42f5ad6a0991cd8fcacb644fc5fa0c8">smooth::dr_ceres</a> (auto &amp;&amp;f, auto &amp;&amp;x)</td></tr>
+<tr class="memdesc:ad42f5ad6a0991cd8fcacb644fc5fa0c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automatic differentiation in tangent space.  <a href="ceres_8hpp.html#ad42f5ad6a0991cd8fcacb644fc5fa0c8">More...</a><br /></td></tr>
+<tr class="separator:ad42f5ad6a0991cd8fcacb644fc5fa0c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>ceres compatability header. </p>
 
 <p class="definition">Definition in file <a class="el" href="ceres_8hpp_source.html">ceres.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a85da13459d0f5147a5a0475ebce263c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85da13459d0f5147a5a0475ebce263c0">&#9670;&nbsp;</a></span>dr_ceres()</h2>
+<a id="ad42f5ad6a0991cd8fcacb644fc5fa0c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad42f5ad6a0991cd8fcacb644fc5fa0c8">&#9670;&nbsp;</a></span>dr_ceres()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<div class="memtemplate">
-template&lt;typename _F , typename _Wrt &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">auto smooth::dr_ceres </td>
           <td>(</td>
-          <td class="paramtype">_F &amp;&amp;&#160;</td>
+          <td class="paramtype">auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">_Wrt &amp;&amp;&#160;</td>
+          <td class="paramtype">auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>x</em>&#160;</td>
         </tr>
         <tr>
@@ -163,7 +162,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ceres_8hpp_source.html#l00081">81</a> of file <a class="el" href="ceres_8hpp_source.html">ceres.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ceres_8hpp_source.html#l00080">80</a> of file <a class="el" href="ceres_8hpp_source.html">ceres.hpp</a>.</p>
 
 </div>
 </div>

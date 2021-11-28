@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['parttype_447',['PartType',['../classsmooth_1_1BundleBase.html#a18c9895025213dbaced9cb6c15aa541f',1,'smooth::BundleBase']]],
-  ['plainobject_448',['PlainObject',['../classsmooth_1_1LieGroupBase.html#ac327be62b1c469fd965d244d02c0ba5b',1,'smooth::LieGroupBase::PlainObject()'],['../manifold_8hpp.html#a2013b6854bc307f0cfff495ae895163f',1,'smooth::PlainObject()']]]
+  ['result_5ftype_499',['result_type',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#aa1e16c90930ca56d61c044cfc0bac6e1',1,'smooth::detail::BoostOdeintOps::scale_sum']]]
 ];

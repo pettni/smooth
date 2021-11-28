@@ -75,7 +75,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
@@ -101,19 +100,20 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="lie__group_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2lie__group_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2lie__group_8hppdep" id="ainclude_2smooth_2lie__group_8hppdep">
-<area shape="rect" title=" " alt="" coords="481,5,608,47"/>
-<area shape="rect" href="bundle_8hpp_source.html" title=" " alt="" coords="41,95,217,121"/>
-<area shape="rect" href="c1_8hpp_source.html" title=" " alt="" coords="705,169,857,196"/>
-<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="881,169,1040,196"/>
-<area shape="rect" href="se3_8hpp_source.html" title=" " alt="" coords="169,169,328,196"/>
-<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="701,95,860,121"/>
-<area shape="rect" href="so3_8hpp_source.html" title=" " alt="" coords="347,95,505,121"/>
-<area shape="rect" href="odeint_8cpp.html" title=" " alt="" coords="5,169,145,196"/>
-<area shape="rect" href="dubins_8hpp.html" title="bezier splines on lie groups." alt="" coords="887,244,1035,285"/>
-<area shape="rect" href="curve_8hpp.html" title="bezier splines on lie groups." alt="" coords="887,333,1035,375"/>
-<area shape="rect" href="ros_8hpp.html" title="ROS message compatablity header." alt="" coords="170,244,327,285"/>
-<area shape="rect" href="bspline_8cpp.html" title=" " alt="" coords="353,169,499,196"/>
-<area shape="rect" href="spline__fit_8cpp_source.html" title=" " alt="" coords="524,169,680,196"/>
+<area shape="rect" title=" " alt="" coords="390,5,517,47"/>
+<area shape="rect" href="bundle_8hpp_source.html" title=" " alt="" coords="5,102,181,129"/>
+<area shape="rect" href="c1_8hpp_source.html" title=" " alt="" coords="107,191,259,218"/>
+<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="283,191,442,218"/>
+<area shape="rect" href="se3_8hpp_source.html" title=" " alt="" coords="810,191,969,218"/>
+<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="257,102,415,129"/>
+<area shape="rect" href="so3_8hpp_source.html" title=" " alt="" coords="794,102,953,129"/>
+<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="491,95,645,136"/>
+<area shape="rect" href="dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="322,273,470,315"/>
+<area shape="rect" href="ros_8hpp.html" title="ROS message compatablity header." alt="" coords="811,273,968,315"/>
+<area shape="rect" href="bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="638,184,786,225"/>
+<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="466,184,614,225"/>
+<area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="578,273,726,315"/>
+<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="522,363,670,404"/>
 </map>
 </div>
 </div>
@@ -121,91 +121,79 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1lie_3_01G_01_4.html">smooth::lie&lt; G &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">LieGroup interface for NativeLieGroup.  <a href="structsmooth_1_1lie_3_01G_01_4.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1traits_1_1lie_3_01G_01_4.html">smooth::traits::lie&lt; G &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">LieGroup interface for NativeLieGroup.  <a href="structsmooth_1_1traits_1_1lie_3_01G_01_4.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1man_3_01G_01_4.html">smooth::man&lt; G &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manifold interface for LieGroup.  <a href="structsmooth_1_1man_3_01G_01_4.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:a8a36071bada93e7037d08395d97d8156"><td class="memTemplParams" colspan="2"><a id="a8a36071bada93e7037d08395d97d8156"></a>
-template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a8a36071bada93e7037d08395d97d8156"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a8a36071bada93e7037d08395d97d8156">smooth::TangentMap</a> = Eigen::Matrix&lt; typename lie&lt; G &gt;::Scalar, lie&lt; G &gt;::Dof, lie&lt; G &gt;::Dof &gt;</td></tr>
-<tr class="memdesc:a8a36071bada93e7037d08395d97d8156"><td class="mdescLeft">&#160;</td><td class="mdescRight">Matrix of size Dof x Dof. <br /></td></tr>
-<tr class="separator:a8a36071bada93e7037d08395d97d8156"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7038d2e4a2d9fee0ca11626fdc372fa5"><td class="memTemplParams" colspan="2"><a id="a7038d2e4a2d9fee0ca11626fdc372fa5"></a>
+<tr class="memitem:a955863cb68f245f274a5554ab2be602a"><td class="memTemplParams" colspan="2"><a id="a955863cb68f245f274a5554ab2be602a"></a>
 template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a7038d2e4a2d9fee0ca11626fdc372fa5"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a7038d2e4a2d9fee0ca11626fdc372fa5">smooth::Identity</a> ()</td></tr>
-<tr class="memdesc:a7038d2e4a2d9fee0ca11626fdc372fa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group identity element. <br /></td></tr>
-<tr class="separator:a7038d2e4a2d9fee0ca11626fdc372fa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f60b7b12d2c49e6edaa687129e50346"><td class="memTemplParams" colspan="2"><a id="a8f60b7b12d2c49e6edaa687129e50346"></a>
+<tr class="memitem:a955863cb68f245f274a5554ab2be602a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">smooth::traits::requires</a> (!RnType&lt; G &gt; &amp;&amp;!ScalarType&lt; G &gt;) struct man&lt; G &gt;</td></tr>
+<tr class="memdesc:a955863cb68f245f274a5554ab2be602a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manifold interface for LieGroup that are not already Manifold. <br /></td></tr>
+<tr class="separator:a955863cb68f245f274a5554ab2be602a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49d10309779e791721f8659c41125ecf"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
+<tr class="memitem:a49d10309779e791721f8659c41125ecf"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a49d10309779e791721f8659c41125ecf">smooth::requires</a> (Dof&lt; G &gt; &gt; 0) inline PlainObject&lt; G &gt; Identity()</td></tr>
+<tr class="memdesc:a49d10309779e791721f8659c41125ecf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group identity element.  <a href="lie__group_8hpp.html#a49d10309779e791721f8659c41125ecf">More...</a><br /></td></tr>
+<tr class="separator:a49d10309779e791721f8659c41125ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa55ad07e5286e2b005fa634633a1348e"><td class="memTemplParams" colspan="2"><a id="aa55ad07e5286e2b005fa634633a1348e"></a>
 template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a8f60b7b12d2c49e6edaa687129e50346"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a8f60b7b12d2c49e6edaa687129e50346">smooth::Random</a> ()</td></tr>
-<tr class="memdesc:a8f60b7b12d2c49e6edaa687129e50346"><td class="mdescLeft">&#160;</td><td class="mdescRight">Random group element. <br /></td></tr>
-<tr class="separator:a8f60b7b12d2c49e6edaa687129e50346"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2d574ef6897bf92a5411485d80f2f46"><td class="memTemplParams" colspan="2"><a id="af2d574ef6897bf92a5411485d80f2f46"></a>
-template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:af2d574ef6897bf92a5411485d80f2f46"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#af2d574ef6897bf92a5411485d80f2f46">smooth::Ad</a> (const G &amp;g)</td></tr>
-<tr class="memdesc:af2d574ef6897bf92a5411485d80f2f46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group adjoint \( Ad_g a \coloneq (G * \hat(a) * G^{-1})^{\wedge} \). <br /></td></tr>
-<tr class="separator:af2d574ef6897bf92a5411485d80f2f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c958ca1d5148960ffcebd8f35d3d558"><td class="memTemplParams" colspan="2"><a id="a2c958ca1d5148960ffcebd8f35d3d558"></a>
+<tr class="memitem:aa55ad07e5286e2b005fa634633a1348e"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#aa55ad07e5286e2b005fa634633a1348e">smooth::Ad</a> (const G &amp;g)</td></tr>
+<tr class="memdesc:aa55ad07e5286e2b005fa634633a1348e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group adjoint \( Ad_g a \coloneq (G * \hat(a) * G^{-1})^{\wedge} \). <br /></td></tr>
+<tr class="separator:aa55ad07e5286e2b005fa634633a1348e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae295900890fc5b0a3392f4842c79ef2f"><td class="memTemplParams" colspan="2"><a id="ae295900890fc5b0a3392f4842c79ef2f"></a>
 template&lt;LieGroup G, typename Arg &gt; </td></tr>
-<tr class="memitem:a2c958ca1d5148960ffcebd8f35d3d558"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a2c958ca1d5148960ffcebd8f35d3d558">smooth::composition</a> (const G &amp;g, Arg &amp;&amp;a)</td></tr>
-<tr class="memdesc:a2c958ca1d5148960ffcebd8f35d3d558"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group binary composition. <br /></td></tr>
-<tr class="separator:a2c958ca1d5148960ffcebd8f35d3d558"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac8118eb1041c747290b09cc29f67677"><td class="memTemplParams" colspan="2"><a id="aac8118eb1041c747290b09cc29f67677"></a>
+<tr class="memitem:ae295900890fc5b0a3392f4842c79ef2f"><td class="memTemplItemLeft" align="right" valign="top">PlainObject&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ae295900890fc5b0a3392f4842c79ef2f">smooth::composition</a> (const G &amp;g, Arg &amp;&amp;a)</td></tr>
+<tr class="memdesc:ae295900890fc5b0a3392f4842c79ef2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group binary composition. <br /></td></tr>
+<tr class="separator:ae295900890fc5b0a3392f4842c79ef2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a61bf302e143065aba4d6d1bde070a5c2"><td class="memTemplParams" colspan="2"><a id="a61bf302e143065aba4d6d1bde070a5c2"></a>
 template&lt;LieGroup G, typename Arg , typename... Args&gt; </td></tr>
-<tr class="memitem:aac8118eb1041c747290b09cc29f67677"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#aac8118eb1041c747290b09cc29f67677">smooth::composition</a> (const G &amp;g, Arg &amp;&amp;a, Args &amp;&amp;... as)</td></tr>
-<tr class="memdesc:aac8118eb1041c747290b09cc29f67677"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group multinary composition. <br /></td></tr>
-<tr class="separator:aac8118eb1041c747290b09cc29f67677"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2accdd522ccf5e37b51fad01f903b8c9"><td class="memTemplParams" colspan="2"><a id="a2accdd522ccf5e37b51fad01f903b8c9"></a>
+<tr class="memitem:a61bf302e143065aba4d6d1bde070a5c2"><td class="memTemplItemLeft" align="right" valign="top">PlainObject&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a61bf302e143065aba4d6d1bde070a5c2">smooth::composition</a> (const G &amp;g, Arg &amp;&amp;a, Args &amp;&amp;... as)</td></tr>
+<tr class="memdesc:a61bf302e143065aba4d6d1bde070a5c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group multinary composition. <br /></td></tr>
+<tr class="separator:a61bf302e143065aba4d6d1bde070a5c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15303495c151c8b8db41cc5bd47a2aae"><td class="memTemplParams" colspan="2"><a id="a15303495c151c8b8db41cc5bd47a2aae"></a>
 template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a2accdd522ccf5e37b51fad01f903b8c9"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a2accdd522ccf5e37b51fad01f903b8c9">smooth::inverse</a> (const G &amp;g)</td></tr>
-<tr class="memdesc:a2accdd522ccf5e37b51fad01f903b8c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group inverse. <br /></td></tr>
-<tr class="separator:a2accdd522ccf5e37b51fad01f903b8c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac15b281ad970995be5440f5d36f095cf"><td class="memTemplParams" colspan="2"><a id="ac15b281ad970995be5440f5d36f095cf"></a>
+<tr class="memitem:a15303495c151c8b8db41cc5bd47a2aae"><td class="memTemplItemLeft" align="right" valign="top">PlainObject&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a15303495c151c8b8db41cc5bd47a2aae">smooth::inverse</a> (const G &amp;g)</td></tr>
+<tr class="memdesc:a15303495c151c8b8db41cc5bd47a2aae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group inverse. <br /></td></tr>
+<tr class="separator:a15303495c151c8b8db41cc5bd47a2aae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac790a82691486f1f10ce5f7d30ccb776"><td class="memTemplParams" colspan="2"><a id="ac790a82691486f1f10ce5f7d30ccb776"></a>
 template&lt;LieGroup G, typename Arg &gt; </td></tr>
-<tr class="memitem:ac15b281ad970995be5440f5d36f095cf"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ac15b281ad970995be5440f5d36f095cf">smooth::isApprox</a> (const G &amp;g, Arg &amp;&amp;a, typename lie&lt; G &gt;::Scalar eps=Eigen::NumTraits&lt; typename lie&lt; G &gt;::Scalar &gt;::dummy_precision())</td></tr>
-<tr class="memdesc:ac15b281ad970995be5440f5d36f095cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if two group elements are approximately equal. <br /></td></tr>
-<tr class="separator:ac15b281ad970995be5440f5d36f095cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65eb5cc9d308072ffddc94fd6b4ac5ae"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a65eb5cc9d308072ffddc94fd6b4ac5ae"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a65eb5cc9d308072ffddc94fd6b4ac5ae">smooth::log</a> (const G &amp;g)</td></tr>
-<tr class="memdesc:a65eb5cc9d308072ffddc94fd6b4ac5ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group logarithm.  <a href="lie__group_8hpp.html#a65eb5cc9d308072ffddc94fd6b4ac5ae">More...</a><br /></td></tr>
-<tr class="separator:a65eb5cc9d308072ffddc94fd6b4ac5ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad787cb191b72f4d3f50eb13432655a9b"><td class="memTemplParams" colspan="2"><a id="ad787cb191b72f4d3f50eb13432655a9b"></a>
+<tr class="memitem:ac790a82691486f1f10ce5f7d30ccb776"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ac790a82691486f1f10ce5f7d30ccb776">smooth::isApprox</a> (const G &amp;g, Arg &amp;&amp;a, typename traits::lie&lt; G &gt;::Scalar eps=Eigen::NumTraits&lt; typename traits::lie&lt; G &gt;::Scalar &gt;::dummy_precision())</td></tr>
+<tr class="memdesc:ac790a82691486f1f10ce5f7d30ccb776"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if two group elements are approximately equal. <br /></td></tr>
+<tr class="separator:ac790a82691486f1f10ce5f7d30ccb776"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a640ac6cef17362966e86afc6cfbebaf4"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
+<tr class="memitem:a640ac6cef17362966e86afc6cfbebaf4"><td class="memTemplItemLeft" align="right" valign="top">Tangent&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a640ac6cef17362966e86afc6cfbebaf4">smooth::log</a> (const G &amp;g)</td></tr>
+<tr class="memdesc:a640ac6cef17362966e86afc6cfbebaf4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Group logarithm.  <a href="lie__group_8hpp.html#a640ac6cef17362966e86afc6cfbebaf4">More...</a><br /></td></tr>
+<tr class="separator:a640ac6cef17362966e86afc6cfbebaf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac33b4a5c86765dd39224cd2f7c270706"><td class="memTemplParams" colspan="2"><a id="ac33b4a5c86765dd39224cd2f7c270706"></a>
 template&lt;LieGroup G, typename Arg &gt; </td></tr>
-<tr class="memitem:ad787cb191b72f4d3f50eb13432655a9b"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ad787cb191b72f4d3f50eb13432655a9b">smooth::ad</a> (Arg &amp;&amp;a)</td></tr>
-<tr class="memdesc:ad787cb191b72f4d3f50eb13432655a9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lie algebra adjoint \( ad_a b = [a, b] \). <br /></td></tr>
-<tr class="separator:ad787cb191b72f4d3f50eb13432655a9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0be71aeb463f8ba4c579489c41d4ffb8"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Arg &gt; </td></tr>
-<tr class="memitem:a0be71aeb463f8ba4c579489c41d4ffb8"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a0be71aeb463f8ba4c579489c41d4ffb8">smooth::exp</a> (Arg &amp;&amp;a)</td></tr>
-<tr class="memdesc:a0be71aeb463f8ba4c579489c41d4ffb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lie algebra exponential.  <a href="lie__group_8hpp.html#a0be71aeb463f8ba4c579489c41d4ffb8">More...</a><br /></td></tr>
-<tr class="separator:a0be71aeb463f8ba4c579489c41d4ffb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d29193b3111611a73149ca22c231b6a"><td class="memTemplParams" colspan="2"><a id="a7d29193b3111611a73149ca22c231b6a"></a>
+<tr class="memitem:ac33b4a5c86765dd39224cd2f7c270706"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ac33b4a5c86765dd39224cd2f7c270706">smooth::ad</a> (Arg &amp;&amp;a)</td></tr>
+<tr class="memdesc:ac33b4a5c86765dd39224cd2f7c270706"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lie algebra adjoint \( ad_a b = [a, b] \). <br /></td></tr>
+<tr class="separator:ac33b4a5c86765dd39224cd2f7c270706"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a788118e47b3c68cf671408c9ad18ec1f"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Arg &gt; </td></tr>
+<tr class="memitem:a788118e47b3c68cf671408c9ad18ec1f"><td class="memTemplItemLeft" align="right" valign="top">PlainObject&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a788118e47b3c68cf671408c9ad18ec1f">smooth::exp</a> (Arg &amp;&amp;a)</td></tr>
+<tr class="memdesc:a788118e47b3c68cf671408c9ad18ec1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lie algebra exponential.  <a href="lie__group_8hpp.html#a788118e47b3c68cf671408c9ad18ec1f">More...</a><br /></td></tr>
+<tr class="separator:a788118e47b3c68cf671408c9ad18ec1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc3ce95a1b2a8895cb6b1a8839ecfded"><td class="memTemplParams" colspan="2"><a id="abc3ce95a1b2a8895cb6b1a8839ecfded"></a>
 template&lt;LieGroup G, typename Arg &gt; </td></tr>
-<tr class="memitem:a7d29193b3111611a73149ca22c231b6a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a7d29193b3111611a73149ca22c231b6a">smooth::dr_exp</a> (Arg &amp;&amp;a)</td></tr>
-<tr class="memdesc:a7d29193b3111611a73149ca22c231b6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right derivative of exponential map. <br /></td></tr>
-<tr class="separator:a7d29193b3111611a73149ca22c231b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab153f8a61293cd1891370d3cd79684dc"><td class="memTemplParams" colspan="2"><a id="ab153f8a61293cd1891370d3cd79684dc"></a>
+<tr class="memitem:abc3ce95a1b2a8895cb6b1a8839ecfded"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#abc3ce95a1b2a8895cb6b1a8839ecfded">smooth::dr_exp</a> (Arg &amp;&amp;a)</td></tr>
+<tr class="memdesc:abc3ce95a1b2a8895cb6b1a8839ecfded"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right derivative of exponential map. <br /></td></tr>
+<tr class="separator:abc3ce95a1b2a8895cb6b1a8839ecfded"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7291a7fdbfab6cca6acb96d3df1bbbe8"><td class="memTemplParams" colspan="2"><a id="a7291a7fdbfab6cca6acb96d3df1bbbe8"></a>
 template&lt;LieGroup G, typename Arg &gt; </td></tr>
-<tr class="memitem:ab153f8a61293cd1891370d3cd79684dc"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ab153f8a61293cd1891370d3cd79684dc">smooth::dr_expinv</a> (Arg &amp;&amp;a)</td></tr>
-<tr class="memdesc:ab153f8a61293cd1891370d3cd79684dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right derivative of exponential map inverse. <br /></td></tr>
-<tr class="separator:ab153f8a61293cd1891370d3cd79684dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a514c1555ec21c3586704dbf72927c1fe"><td class="memTemplParams" colspan="2"><a id="a514c1555ec21c3586704dbf72927c1fe"></a>
+<tr class="memitem:a7291a7fdbfab6cca6acb96d3df1bbbe8"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a7291a7fdbfab6cca6acb96d3df1bbbe8">smooth::dr_expinv</a> (Arg &amp;&amp;a)</td></tr>
+<tr class="memdesc:a7291a7fdbfab6cca6acb96d3df1bbbe8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right derivative of exponential map inverse. <br /></td></tr>
+<tr class="separator:a7291a7fdbfab6cca6acb96d3df1bbbe8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae53732feddeac7b2ac9163a960aa8146"><td class="memTemplParams" colspan="2"><a id="ae53732feddeac7b2ac9163a960aa8146"></a>
 template&lt;LieGroup G, typename Derived &gt; </td></tr>
-<tr class="memitem:a514c1555ec21c3586704dbf72927c1fe"><td class="memTemplItemLeft" align="right" valign="top">lie&lt; G &gt;::PlainObject&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a514c1555ec21c3586704dbf72927c1fe">smooth::lplus</a> (const G &amp;g, const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
-<tr class="memdesc:a514c1555ec21c3586704dbf72927c1fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left-plus. <br /></td></tr>
-<tr class="separator:a514c1555ec21c3586704dbf72927c1fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39a3b02367c981cabae49d1d972a909a"><td class="memTemplParams" colspan="2"><a id="a39a3b02367c981cabae49d1d972a909a"></a>
+<tr class="memitem:ae53732feddeac7b2ac9163a960aa8146"><td class="memTemplItemLeft" align="right" valign="top">PlainObject&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ae53732feddeac7b2ac9163a960aa8146">smooth::lplus</a> (const G &amp;g, const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
+<tr class="memdesc:ae53732feddeac7b2ac9163a960aa8146"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left-plus. <br /></td></tr>
+<tr class="separator:ae53732feddeac7b2ac9163a960aa8146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71dfba9fc182f29f9d3070c2102a6357"><td class="memTemplParams" colspan="2"><a id="a71dfba9fc182f29f9d3070c2102a6357"></a>
 template&lt;LieGroup G, LieGroup Go&gt; </td></tr>
-<tr class="memitem:a39a3b02367c981cabae49d1d972a909a"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; typename lie&lt; G &gt;::Scalar, lie&lt; G &gt;::Dof, 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a39a3b02367c981cabae49d1d972a909a">smooth::lminus</a> (const G &amp;g1, const Go &amp;g2)</td></tr>
-<tr class="memdesc:a39a3b02367c981cabae49d1d972a909a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left-minus. <br /></td></tr>
-<tr class="separator:a39a3b02367c981cabae49d1d972a909a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71dfba9fc182f29f9d3070c2102a6357"><td class="memTemplItemLeft" align="right" valign="top">Tangent&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a71dfba9fc182f29f9d3070c2102a6357">smooth::lminus</a> (const G &amp;g1, const Go &amp;g2)</td></tr>
+<tr class="memdesc:a71dfba9fc182f29f9d3070c2102a6357"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left-minus. <br /></td></tr>
+<tr class="separator:a71dfba9fc182f29f9d3070c2102a6357"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a257f00c8749b46f8e2a77c19a144ff50"><td class="memTemplParams" colspan="2"><a id="a257f00c8749b46f8e2a77c19a144ff50"></a>
 template&lt;LieGroup G, typename Derived &gt; </td></tr>
 <tr class="memitem:a257f00c8749b46f8e2a77c19a144ff50"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a257f00c8749b46f8e2a77c19a144ff50">smooth::dl_exp</a> (const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
@@ -222,30 +210,20 @@ Variables</h2></td></tr>
 <tr class="memitem:aa5ac6cbd43fb18cb0a5b50327627e716"><td class="memTemplParams" colspan="2"><a id="aa5ac6cbd43fb18cb0a5b50327627e716"></a>
 template&lt;typename G &gt; </td></tr>
 <tr class="memitem:aa5ac6cbd43fb18cb0a5b50327627e716"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">smooth::LieGroup</a></td></tr>
-<tr class="memdesc:aa5ac6cbd43fb18cb0a5b50327627e716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class-external Lie group interface defined through the lie trait class. <br /></td></tr>
+<tr class="memdesc:aa5ac6cbd43fb18cb0a5b50327627e716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Class-external Lie group interface defined through the <a class="el" href="structsmooth_1_1traits_1_1lie.html" title="Trait class for making a class a LieGroup instance via specialization.">traits::lie</a> trait class. <br /></td></tr>
 <tr class="separator:aa5ac6cbd43fb18cb0a5b50327627e716"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08f7b83e6e2f98323382899350bacbd5"><td class="memTemplParams" colspan="2">template&lt;typename G &gt; </td></tr>
 <tr class="memitem:a08f7b83e6e2f98323382899350bacbd5"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5">smooth::NativeLieGroup</a></td></tr>
 <tr class="memdesc:a08f7b83e6e2f98323382899350bacbd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concept defining class with an internal Lie group interface.  <a href="lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5">More...</a><br /></td></tr>
 <tr class="separator:a08f7b83e6e2f98323382899350bacbd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77615f337de1ec1bb048589deac46b27"><td class="memTemplParams" colspan="2"><a id="a77615f337de1ec1bb048589deac46b27"></a>
-template&lt;typename G &gt; </td></tr>
-<tr class="memitem:a77615f337de1ec1bb048589deac46b27"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a77615f337de1ec1bb048589deac46b27">smooth::RnType</a> = std::is_base_of_v&lt;Eigen::MatrixBase&lt;G&gt;, G&gt; &amp;&amp; G::ColsAtCompileTime == 1</td></tr>
-<tr class="memdesc:a77615f337de1ec1bb048589deac46b27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concept to identify Eigen column vectors. <br /></td></tr>
-<tr class="separator:a77615f337de1ec1bb048589deac46b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae50f0623f16d66df915d96eb48370e0f"><td class="memTemplParams" colspan="2"><a id="ae50f0623f16d66df915d96eb48370e0f"></a>
-template&lt;typename G &gt; </td></tr>
-<tr class="memitem:ae50f0623f16d66df915d96eb48370e0f"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ae50f0623f16d66df915d96eb48370e0f">smooth::FloatingPointType</a> = std::is_floating_point_v&lt;G&gt;</td></tr>
-<tr class="memdesc:ae50f0623f16d66df915d96eb48370e0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concept to identify built-in scalars. <br /></td></tr>
-<tr class="separator:ae50f0623f16d66df915d96eb48370e0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Internal and external LieGroup interfaces and free LieGroup functions. </p>
 
 <p class="definition">Definition in file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a0be71aeb463f8ba4c579489c41d4ffb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0be71aeb463f8ba4c579489c41d4ffb8">&#9670;&nbsp;</a></span>exp()</h2>
+<a id="a788118e47b3c68cf671408c9ad18ec1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a788118e47b3c68cf671408c9ad18ec1f">&#9670;&nbsp;</a></span>exp()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -256,7 +234,7 @@ template&lt;LieGroup G, typename Arg &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto smooth::exp </td>
+          <td class="memname">PlainObject&lt;G&gt; smooth::exp </td>
           <td>(</td>
           <td class="paramtype">Arg &amp;&amp;&#160;</td>
           <td class="paramname"><em>a</em></td><td>)</td>
@@ -271,14 +249,14 @@ template&lt;LieGroup G, typename Arg &gt; </div>
 </div><div class="memdoc">
 
 <p>Lie algebra exponential. </p>
-<dl class="section see"><dt>See also</dt><dd>log </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__group_8hpp.html#a640ac6cef17362966e86afc6cfbebaf4" title="Group logarithm.">log()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00217">217</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00491">491</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a65eb5cc9d308072ffddc94fd6b4ac5ae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65eb5cc9d308072ffddc94fd6b4ac5ae">&#9670;&nbsp;</a></span>log()</h2>
+<a id="a640ac6cef17362966e86afc6cfbebaf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a640ac6cef17362966e86afc6cfbebaf4">&#9670;&nbsp;</a></span>log()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -289,7 +267,7 @@ template&lt;LieGroup G&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">auto smooth::log </td>
+          <td class="memname">Tangent&lt;G&gt; smooth::log </td>
           <td>(</td>
           <td class="paramtype">const G &amp;&#160;</td>
           <td class="paramname"><em>g</em></td><td>)</td>
@@ -304,9 +282,44 @@ template&lt;LieGroup G&gt; </div>
 </div><div class="memdoc">
 
 <p>Group logarithm. </p>
-<dl class="section see"><dt>See also</dt><dd>exp </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__group_8hpp.html#a788118e47b3c68cf671408c9ad18ec1f" title="Lie algebra exponential.">exp()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00195">195</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00469">469</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a49d10309779e791721f8659c41125ecf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49d10309779e791721f8659c41125ecf">&#9670;&nbsp;</a></span>requires()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;LieGroup G&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">smooth::requires </td>
+          <td>(</td>
+          <td class="paramtype">Dof&lt; G &gt;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">0&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Group identity element. </p>
+<p>Random group element. </p>
+
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00404">404</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -324,7 +337,7 @@ template&lt;typename G &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= requires</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">requires</a></div>
 <div class="line">{</div>
 <div class="line">  <span class="keyword">typename</span> G::Scalar;</div>
 <div class="line">  <span class="keyword">typename</span> G::Tangent;</div>
@@ -335,25 +348,26 @@ template&lt;typename G &gt; </div>
 <div class="line">} &amp;&amp;</div>
 <div class="line">(G::Dof &gt;= 1) &amp;&amp;</div>
 <div class="line">(G::Tangent::SizeAtCompileTime == G::Dof) &amp;&amp;</div>
-<div class="line">requires(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
+<div class="line"><a class="code" href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">requires</a>(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
 <div class="line">  {g1.dof()}-&gt;std::convertible_to&lt;Eigen::Index&gt;;  </div>
 <div class="line">  {g1.Ad()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {g1 * g2}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {g1.inverse()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {g1.isApprox(g2, eps)}-&gt;std::convertible_to&lt;<span class="keywordtype">bool</span>&gt;;</div>
-<div class="line">  {g1.log()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, 1&gt;&gt;;</div>
+<div class="line">  {g1.log()}-&gt;std::convertible_to&lt;Eigen::Vector&lt;typename G::Scalar, G::Dof&gt;&gt;;</div>
 <div class="line">} &amp;&amp;</div>
-<div class="line">requires(<span class="keyword">const</span> Eigen::Matrix&lt;typename G::Scalar, G::Dof, 1&gt; &amp; a) {</div>
+<div class="line"><a class="code" href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;typename G::Scalar, G::Dof&gt; &amp; a) {</div>
 <div class="line">  {G::ad(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {G::exp(a)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {G::dr_exp(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {G::dr_expinv(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">}</div>
+<div class="ttc" id="alie__group_8hpp_html_a955863cb68f245f274a5554ab2be602a"><div class="ttname"><a href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">smooth::traits::requires</a></div><div class="ttdeci">requires(!RnType&lt; G &gt; &amp;&amp;!ScalarType&lt; G &gt;) struct man&lt; G &gt;</div><div class="ttdoc">Manifold interface for LieGroup that are not already Manifold.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00357">lie_group.hpp:357</a></div></div>
 </div><!-- fragment -->
 <p>Concept defining class with an internal Lie group interface. </p>
 <p>Concept satisfied if G has members that correspond to the LieGroup concept. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00291">291</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00123">123</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>

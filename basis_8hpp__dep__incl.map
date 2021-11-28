@@ -1,0 +1,10 @@
+<map id="include/smooth/polynomial/basis.hpp" name="include/smooth/polynomial/basis.hpp">
+<area shape="rect" id="node1" title="Compile&#45;time polynomial algebra." alt="" coords="188,5,363,47"/>
+<area shape="rect" id="node2" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,95,180,136"/>
+<area shape="rect" id="node3" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="172,184,320,225"/>
+<area shape="rect" id="node6" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="255,95,410,136"/>
+<area shape="rect" id="node7" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="344,184,492,225"/>
+<area shape="rect" id="node4" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="201,273,349,315"/>
+<area shape="rect" id="node5" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="257,363,405,404"/>
+<area shape="rect" id="node8" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="425,273,573,315"/>
+</map>

@@ -1,7 +1,6 @@
 <map id="include/smooth/diff.hpp" name="include/smooth/diff.hpp">
-<area shape="rect" id="node1" title="Differentiation on Lie groups." alt="" coords="89,5,244,32"/>
-<area shape="rect" id="node2" href="$optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="81,80,252,107"/>
-<area shape="rect" id="node3" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="93,155,241,196"/>
-<area shape="rect" id="node4" href="$bspline_8cpp.html" title=" " alt="" coords="5,244,152,271"/>
-<area shape="rect" id="node5" href="$spline__fit_8cpp_source.html" title=" " alt="" coords="177,244,333,271"/>
+<area shape="rect" id="node1" title="Differentiation on Lie groups." alt="" coords="13,5,168,32"/>
+<area shape="rect" id="node2" href="$optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="5,80,176,107"/>
+<area shape="rect" id="node3" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="17,155,165,196"/>
+<area shape="rect" id="node4" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="17,244,165,285"/>
 </map>

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['ceres_459',['CERES',['../diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a3cc7d3d35ab91905e272dcf657790118',1,'smooth::diff']]]
+  ['bernstein_509',['Bernstein',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a6b8e5e9520304bfdbf74fa045375911f',1,'smooth']]],
+  ['bspline_510',['Bspline',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb',1,'smooth']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['s_439',['s',['../structsmooth_1_1Reparameterization_1_1Data.html#abad3183aac82b87174c2d70fed9292e0',1,'smooth::Reparameterization::Data']]]
+  ['ptol_477',['ptol',['../structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530',1,'smooth::MinimizeOptions']]]
 ];

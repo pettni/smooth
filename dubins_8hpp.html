@@ -82,39 +82,42 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>bezier splines on lie groups.  
+<p>Generate Dubins curves as Spline.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;numbers&gt;</code><br />
 <code>#include &quot;smooth/se2.hpp&quot;</code><br />
+<code>#include &quot;<a class="el" href="spline_8hpp_source.html">spline.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for dubins.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="dubins_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2dubins_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2dubins_8hpp" id="ainclude_2smooth_2spline_2dubins_8hpp">
-<area shape="rect" title="bezier splines on lie groups." alt="" coords="192,5,340,47"/>
-<area shape="rect" title=" " alt="" coords="172,95,244,121"/>
-<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="268,95,382,121"/>
-<area shape="rect" title=" " alt="" coords="446,408,532,435"/>
-<area shape="rect" title=" " alt="" coords="52,169,166,196"/>
-<area shape="rect" title=" " alt="" coords="38,251,108,278"/>
-<area shape="rect" href="lie__group__base_8hpp_source.html" title=" " alt="" coords="474,244,594,285"/>
-<area shape="rect" title=" " alt="" coords="133,251,261,278"/>
-<area shape="rect" title=" " alt="" coords="383,169,496,196"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="618,251,717,278"/>
-<area shape="rect" title=" " alt="" coords="742,251,812,278"/>
-<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="292,169,358,196"/>
-<area shape="rect" title=" " alt="" coords="630,408,705,435"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="578,333,672,360"/>
-<area shape="rect" title=" " alt="" coords="336,251,450,278"/>
-</map>
-</div>
-</div><div class="textblock"><div class="dynheader">
-This graph shows which files directly or indirectly include this file:</div>
-<div class="dyncontent">
-<div class="center"><img src="dubins_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2dubins_8hppdep" alt=""/></div>
-<map name="ainclude_2smooth_2spline_2dubins_8hppdep" id="ainclude_2smooth_2spline_2dubins_8hppdep">
-<area shape="rect" title="bezier splines on lie groups." alt="" coords="5,5,153,47"/>
-<area shape="rect" href="curve_8hpp.html" title="bezier splines on lie groups." alt="" coords="5,95,153,136"/>
+<area shape="rect" title="Generate Dubins curves as Spline." alt="" coords="334,5,482,47"/>
+<area shape="rect" title=" " alt="" coords="255,95,327,121"/>
+<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="351,95,465,121"/>
+<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="921,95,1001,121"/>
+<area shape="rect" title=" " alt="" coords="448,408,533,435"/>
+<area shape="rect" title=" " alt="" coords="471,169,585,196"/>
+<area shape="rect" title=" " alt="" coords="26,251,97,278"/>
+<area shape="rect" title=" " alt="" coords="121,244,241,285"/>
+<area shape="rect" title=" " alt="" coords="551,251,679,278"/>
+<area shape="rect" title=" " alt="" coords="610,169,723,196"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="703,251,801,278"/>
+<area shape="rect" href="map_8hpp_source.html" title=" " alt="" coords="455,251,526,278"/>
+<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="279,169,345,196"/>
+<area shape="rect" title=" " alt="" coords="672,408,747,435"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="619,333,714,360"/>
+<area shape="rect" title=" " alt="" coords="266,251,379,278"/>
+<area shape="rect" title=" " alt="" coords="799,169,873,196"/>
+<area shape="rect" title=" " alt="" coords="1014,333,1079,360"/>
+<area shape="rect" title=" " alt="" coords="897,169,959,196"/>
+<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="1175,251,1364,278"/>
+<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="1034,169,1185,196"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="1209,333,1329,360"/>
+<area shape="rect" title=" " alt="" coords="1375,408,1425,435"/>
+<area shape="rect" title=" " alt="" coords="1105,408,1164,435"/>
+<area shape="rect" title=" " alt="" coords="1188,408,1351,435"/>
+<area shape="rect" title=" " alt="" coords="1084,251,1151,278"/>
 </map>
 </div>
 </div>
@@ -153,9 +156,16 @@ std::array&lt; double, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"
 <tr class="memitem:ac78d27b4a7a088a15f2a81675010310c"><td class="memItemLeft" align="right" valign="top">DubinsDescription&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="dubins_8hpp.html#ac78d27b4a7a088a15f2a81675010310c">smooth::dubins</a> (const <a class="el" href="classsmooth_1_1SE2.html">smooth::SE2d</a> &amp;target, double R)</td></tr>
 <tr class="memdesc:ac78d27b4a7a088a15f2a81675010310c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate Dubins path (shortest time path) from the origin to <code>target</code>.  <a href="dubins_8hpp.html#ac78d27b4a7a088a15f2a81675010310c">More...</a><br /></td></tr>
 <tr class="separator:ac78d27b4a7a088a15f2a81675010310c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a996171a6cc1198317b69bb164c16a506"><td class="memTemplParams" colspan="2">template&lt;std::size_t K = 3&gt; </td></tr>
+<tr class="memitem:a996171a6cc1198317b69bb164c16a506"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="dubins_8hpp.html#a996171a6cc1198317b69bb164c16a506">smooth::requires</a> (K &gt;=1) Spline&lt; K</td></tr>
+<tr class="memdesc:a996171a6cc1198317b69bb164c16a506"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create dubins <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>.  <a href="dubins_8hpp.html#a996171a6cc1198317b69bb164c16a506">More...</a><br /></td></tr>
+<tr class="separator:a996171a6cc1198317b69bb164c16a506"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba4f142168edf5e1f4b037418d57b48b"><td class="memItemLeft" align="right" valign="top"><a id="aba4f142168edf5e1f4b037418d57b48b"></a>
+<a class="el" href="classsmooth_1_1SE2.html">smooth::SE2d</a>&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::dubins_curve</b> (const <a class="el" href="classsmooth_1_1SE2.html">smooth::SE2d</a> &amp;gb, double R=1)</td></tr>
+<tr class="separator:aba4f142168edf5e1f4b037418d57b48b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>bezier splines on lie groups. </p>
+<div class="textblock"><p>Generate Dubins curves as Spline. </p>
 
 <p class="definition">Definition in file <a class="el" href="dubins_8hpp_source.html">dubins.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
@@ -202,7 +212,43 @@ std::array&lt; double, 3 &gt;&#160;</td><td class="memItemRight" valign="bottom"
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="dubins_8hpp_source.html#l00165">165</a> of file <a class="el" href="dubins_8hpp_source.html">dubins.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="dubins_8hpp_source.html#l00166">166</a> of file <a class="el" href="dubins_8hpp_source.html">dubins.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a996171a6cc1198317b69bb164c16a506"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a996171a6cc1198317b69bb164c16a506">&#9670;&nbsp;</a></span>requires()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t K = 3&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">smooth::requires </td>
+          <td>(</td>
+          <td class="paramtype">K &gt;=&#160;</td>
+          <td class="paramname"><em>1</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create dubins Spline. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">K</td><td>degree of resulting Spline (must be at least 1). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gb</td><td>end position. </td></tr>
+    <tr><td class="paramname">R</td><td>turning radius. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Spline representing a Dubins motion starting at Identity. </dd></dl>
 
 </div>
 </div>

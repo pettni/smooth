@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -97,45 +98,50 @@ Include dependency graph for autodiff.hpp:</div>
 <area shape="rect" title=" " alt="" coords="5,102,168,129"/>
 <area shape="rect" title=" " alt="" coords="192,95,331,136"/>
 <area shape="rect" title=" " alt="" coords="355,102,517,129"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="542,102,685,129"/>
-<area shape="rect" title=" " alt="" coords="709,102,819,129"/>
-<area shape="rect" title=" " alt="" coords="519,184,604,211"/>
-<area shape="rect" title=" " alt="" coords="628,184,703,211"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="473,184,615,211"/>
+<area shape="rect" href="wrt_8hpp_source.html" title=" " alt="" coords="614,102,725,129"/>
+<area shape="rect" title=" " alt="" coords="449,259,535,285"/>
+<area shape="rect" title=" " alt="" coords="559,259,633,285"/>
+<area shape="rect" title=" " alt="" coords="639,184,721,211"/>
+<area shape="rect" title=" " alt="" coords="746,184,862,211"/>
 </map>
 </div>
 </div>
 <p><a href="autodiff_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1traits_1_1scalar__trait_3_01autodiff_1_1Dual_3_01F_00_01F_01_4_01_4.html">smooth::traits::scalar_trait&lt; autodiff::Dual&lt; F, F &gt; &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specialize trait to make autodiff type a Manifold.  <a href="structsmooth_1_1traits_1_1scalar__trait_3_01autodiff_1_1Dual_3_01F_00_01F_01_4_01_4.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae718173f8a3811690c31d7628fa0c023"><td class="memTemplParams" colspan="2">template&lt;typename _F , typename _Wrt &gt; </td></tr>
-<tr class="memitem:ae718173f8a3811690c31d7628fa0c023"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">smooth::diff::dr_autodiff</a> (_F &amp;&amp;f, _Wrt &amp;&amp;x)</td></tr>
-<tr class="memdesc:ae718173f8a3811690c31d7628fa0c023"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automatic differentiation in tangent space using the autodiff library.  <a href="autodiff_8hpp.html#ae718173f8a3811690c31d7628fa0c023">More...</a><br /></td></tr>
-<tr class="separator:ae718173f8a3811690c31d7628fa0c023"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a616a82abf1d78738fd389f81bf8df42a"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="autodiff_8hpp.html#a616a82abf1d78738fd389f81bf8df42a">smooth::diff::dr_autodiff</a> (auto &amp;&amp;f, auto &amp;&amp;x)</td></tr>
+<tr class="memdesc:a616a82abf1d78738fd389f81bf8df42a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Automatic differentiation in tangent space using the autodiff library.  <a href="autodiff_8hpp.html#a616a82abf1d78738fd389f81bf8df42a">More...</a><br /></td></tr>
+<tr class="separator:a616a82abf1d78738fd389f81bf8df42a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>autodiff compatability header. </p>
 
 <p class="definition">Definition in file <a class="el" href="autodiff_8hpp_source.html">autodiff.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ae718173f8a3811690c31d7628fa0c023"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae718173f8a3811690c31d7628fa0c023">&#9670;&nbsp;</a></span>dr_autodiff()</h2>
+<a id="a616a82abf1d78738fd389f81bf8df42a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a616a82abf1d78738fd389f81bf8df42a">&#9670;&nbsp;</a></span>dr_autodiff()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<div class="memtemplate">
-template&lt;typename _F , typename _Wrt &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">auto smooth::diff::dr_autodiff </td>
           <td>(</td>
-          <td class="paramtype">_F &amp;&amp;&#160;</td>
+          <td class="paramtype">auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">_Wrt &amp;&amp;&#160;</td>
+          <td class="paramtype">auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>x</em>&#160;</td>
         </tr>
         <tr>
@@ -156,7 +162,7 @@ template&lt;typename _F , typename _Wrt &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="autodiff_8hpp_source.html#l00053">53</a> of file <a class="el" href="autodiff_8hpp_source.html">autodiff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="autodiff_8hpp_source.html#l00063">63</a> of file <a class="el" href="autodiff_8hpp_source.html">autodiff.hpp</a>.</p>
 
 </div>
 </div>

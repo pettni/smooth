@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['identity_81',['Identity',['../classsmooth_1_1LieGroupBase.html#a2d07c997add59d0c5fe899f1bcdf05fa',1,'smooth::LieGroupBase::Identity()'],['../lie__group_8hpp.html#a7038d2e4a2d9fee0ca11626fdc372fa5',1,'smooth::Identity()']]],
-  ['impl_82',['Impl',['../classsmooth_1_1LieGroupBase.html#a55f732e687efa0c2b44c3174f1e620fb',1,'smooth::LieGroupBase']]],
-  ['inverse_83',['inverse',['../classsmooth_1_1LieGroupBase.html#ac4d9c75f3514a5a755eb4d296e1bba17',1,'smooth::LieGroupBase::inverse()'],['../lie__group_8hpp.html#a2accdd522ccf5e37b51fad01f903b8c9',1,'smooth::inverse()']]],
-  ['is_5fmutable_84',['is_mutable',['../classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9',1,'smooth::LieGroupBase']]],
-  ['isapprox_85',['isApprox',['../classsmooth_1_1LieGroupBase.html#a180348c000f0a6db2c05b5c619e82128',1,'smooth::LieGroupBase::isApprox()'],['../lie__group_8hpp.html#ac15b281ad970995be5440f5d36f095cf',1,'smooth::isApprox()']]],
-  ['isometry_86',['isometry',['../classsmooth_1_1SE2Base.html#aaa50a4c6939769bb1bc8cdbbd1fd6bfb',1,'smooth::SE2Base::isometry()'],['../classsmooth_1_1SE3Base.html#aad1aefcb8d0f3ecda8105ba68c1224ff',1,'smooth::SE3Base::isometry()']]]
+  ['inncnt_84',['InnCnt',['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a51ffd9ddf4ac02054bd71a7e9dbf2672',1,'smooth::spline_specs::NoConstraints::InnCnt()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#adbe7cdb963f0e61c27580e6be3e82572',1,'smooth::spline_specs::FixedDerCubic::InnCnt()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#a2e6c6259b4faf597aba511b67cff05e2',1,'smooth::spline_specs::MinDerivative::InnCnt()']]],
+  ['integrate_5fabsolute_5fpolynomial_85',['integrate_absolute_polynomial',['../basis_8hpp.html#a0d68b47de10384a793f2cf6fa70d020c',1,'smooth']]],
+  ['inverse_86',['inverse',['../lie__group_8hpp.html#a15303495c151c8b8db41cc5bd47a2aae',1,'smooth']]],
+  ['is_5fmutable_87',['is_mutable',['../structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4_01_4.html#a2337702f859350952f2e50447e1ed5e2',1,'smooth::liebase_info&lt; smooth::Map&lt; const geometry_msgs::msg::Quaternion &gt; &gt;::is_mutable()'],['../structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4_01_4.html#ab35f152440860f7ae4f9cfef7601e8b0',1,'smooth::liebase_info&lt; smooth::Map&lt; const geometry_msgs::msg::Pose &gt; &gt;::is_mutable()'],['../structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4_01_4.html#aa92b0799a594640024f0f4dd51156afe',1,'smooth::liebase_info&lt; smooth::Map&lt; const geometry_msgs::msg::Transform &gt; &gt;::is_mutable()']]],
+  ['isapprox_88',['isApprox',['../lie__group_8hpp.html#ac790a82691486f1f10ce5f7d30ccb776',1,'smooth']]],
+  ['isometry_89',['isometry',['../classsmooth_1_1SE2Base.html#aaa50a4c6939769bb1bc8cdbbd1fd6bfb',1,'smooth::SE2Base::isometry()'],['../classsmooth_1_1SE3Base.html#aad1aefcb8d0f3ecda8105ba68c1224ff',1,'smooth::SE3Base::isometry()']]]
 ];

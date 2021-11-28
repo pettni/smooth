@@ -1,0 +1,10 @@
+<map id="include/smooth/polynomial/quadrature.hpp" name="include/smooth/polynomial/quadrature.hpp">
+<area shape="rect" id="node1" title="Compile&#45;time quadrature scheme generation." alt="" coords="143,5,318,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,244,56,271"/>
+<area shape="rect" id="node3" title=" " alt="" coords="276,244,335,271"/>
+<area shape="rect" id="node4" title=" " alt="" coords="353,95,425,121"/>
+<area shape="rect" id="node5" href="$basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="192,95,269,121"/>
+<area shape="rect" id="node7" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="68,169,188,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="213,169,278,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="80,244,243,271"/>
+</map>

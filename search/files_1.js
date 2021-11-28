@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['bezier_2ehpp_301',['bezier.hpp',['../bezier_8hpp.html',1,'']]],
-  ['bspline_2ecpp_302',['bspline.cpp',['../bspline_8cpp.html',1,'']]],
-  ['bspline_2ehpp_303',['bspline.hpp',['../bspline_8hpp.html',1,'']]]
+  ['basis_2ehpp_337',['basis.hpp',['../basis_8hpp.html',1,'']]],
+  ['bspline_2ehpp_338',['bspline.hpp',['../bspline_8hpp.html',1,'']]]
 ];

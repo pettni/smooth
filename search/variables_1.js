@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['dim_426',['Dim',['../classsmooth_1_1LieGroupBase.html#a8ba8c8eb8c57edb2e41284fbf38ce544',1,'smooth::LieGroupBase']]],
-  ['dof_427',['Dof',['../classsmooth_1_1LieGroupBase.html#a4da93204442eb7a91e11d39c465f9dc3',1,'smooth::LieGroupBase']]]
+  ['cols_464',['Cols',['../structsmooth_1_1StaticMatrix.html#a9b8e6e2181a1e4347538f9d13b04fa1f',1,'smooth::StaticMatrix']]]
 ];

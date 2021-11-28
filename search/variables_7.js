@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ptol_436',['ptol',['../structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530',1,'smooth::MinimizeOptions']]]
+  ['nativeliegroup_475',['NativeLieGroup',['../lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5',1,'smooth']]]
 ];

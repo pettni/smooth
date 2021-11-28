@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['fit_5fbspline_353',['fit_bspline',['../bspline_8hpp.html#a2b6b1a5c1e3400b8b1569b5ccda000d9',1,'smooth']]],
-  ['fit_5fconstant_5fbezier_354',['fit_constant_bezier',['../bezier_8hpp.html#ace0681ed3e203b90854fdb7144d4ca74',1,'smooth']]],
-  ['fit_5fcubic_5fbezier_355',['fit_cubic_bezier',['../bezier_8hpp.html#a76edf55f22729fb019658fbc7191d4b8',1,'smooth']]],
-  ['fit_5fcubic_5fbezier_5flocal_356',['fit_cubic_bezier_local',['../bezier_8hpp.html#ac211961febd1e558f669a98a36490f3c',1,'smooth']]],
-  ['fit_5flinear_5fbezier_357',['fit_linear_bezier',['../bezier_8hpp.html#abb3bf22a4262593ab6abdb20f0fa6724',1,'smooth']]],
-  ['fit_5fquadratic_5fbezier_358',['fit_quadratic_bezier',['../bezier_8hpp.html#a5bae08a2dd5837204af3f7fc03ade7a8',1,'smooth']]],
-  ['fixedcubic_359',['FixedCubic',['../classsmooth_1_1Curve.html#a587c707dadf51fc67f2b25a4578a7aef',1,'smooth::Curve']]]
+  ['fit_5fbspline_392',['fit_bspline',['../fit_8hpp.html#a90a8e289bb91aff4856569598310bd78',1,'smooth']]],
+  ['fit_5fspline_393',['fit_spline',['../fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb',1,'smooth']]],
+  ['fit_5fspline_5f1d_394',['fit_spline_1d',['../fit_8hpp.html#a5ca687909d8d31db58b41fe6152e8b60',1,'smooth']]],
+  ['fit_5fspline_5fcubic_395',['fit_spline_cubic',['../fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b',1,'smooth']]],
+  ['fixedcubic_396',['FixedCubic',['../classsmooth_1_1Spline.html#ab1852edee1ef4bc68677eb37b256349c',1,'smooth::Spline']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>smooth: smooth: Lie Theory for Robotics</title>
+<title>smooth: Lie Theory for Robotics</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,7 +70,7 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">smooth: Lie Theory for Robotics </div>  </div>
+<div class="title">Lie Theory for Robotics </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://github.com/pettni/lie/actions/workflows/build_and_test.yml"><img src="https://img.shields.io/github/workflow/status/pettni/smooth/build_and_test/master?style=flat-square" alt="CI Build and Test" class="inline"/></a> <a href="https://codecov.io/gh/pettni/smooth"><img src="https://img.shields.io/codecov/c/gh/pettni/smooth/master?style=flat-square" alt="Code coverage" class="inline"/></a> <a href="https://github.com/pettni/smooth/blob/master/LICENSE"><img src="https://img.shields.io/github/license/pettni/smooth.svg?style=flat-square" alt="License" style="pointer-events: none;" class="inline"/></a></p>
@@ -82,12 +82,12 @@ $(function() {
 <li>Written in an extensible functional programming style</li>
 </ul>
 <p><em>This project is currently being developed&mdash;breaking changes and bugs should be expected. If you are looking for something stable and established, check out <a href="https://github.com/artivis/manif/">manif</a> and <a href="https://github.com/strasdat/Sophus/">Sophus</a>.</em></p>
-<p>In robotics it is often convenient to work in non-Euclidean manifolds. <a href="https://en.wikipedia.org/wiki/Lie_group">Lie groups</a> are a class of manifolds that are easy to work with due to their symmetries, and that are also good models for many robotic systems. The objective of this header-only C++20 library is to facilitate Lie groups in robotics software, by enabling:</p>
+<p>In robotics it is often convenient to work in non-Euclidean manifolds. <a href="https://en.wikipedia.org/wiki/Lie_group">Lie groups</a> are a class of manifolds that are easy to work with due to their symmetries, and that are also good models for many robotic systems. This header-only C++20 library facilitates leveraging Lie theory in robotics software, by enabling:</p>
 <ul>
 <li>Algebraic manipulation</li>
 <li>Automatic differentiation</li>
-<li>Interpolation (right figure shows a B-spline of order 5 on <a class="el" href="classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group.">smooth::SO3</a>, see <code><a class="el" href="bspline_8cpp.html">examples/bspline.cpp</a></code>)</li>
-<li>Numerical integration (left figure shows the solution of an ODE on <img src="https://latex.codecogs.com/png.latex?\mathbb{SO}(3)\times\mathbb{R}^3" alt="" class="inline"/>, see <code><a class="el" href="odeint_8cpp.html">examples/odeint.cpp</a></code>)</li>
+<li>Interpolation (right figure shows a B-spline of order 5 on <a class="el" href="classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group.">smooth::SO3</a>, see <code>examples/bspline.cpp</code>)</li>
+<li>Numerical integration (left figure shows the solution of an ODE on <img src="https://latex.codecogs.com/png.latex?\mathbb{SO}(3)\times\mathbb{R}^3" alt="" class="inline"/>, see <code>examples/odeint.cpp</code>)</li>
 <li>Optimization</li>
 </ul>
 <p>The following common Lie groups are implemented:</p><ul>
@@ -124,36 +124,38 @@ Use with cmake</h2>
 Explore the API</h2>
 <p>Check out the <a href="https://pettni.github.io/smooth">Documentation</a> and the <a href="https://github.com/pettni/smooth/tree/master/examples"><code>examples</code></a>.</p>
 <h1><a class="anchor" id="autotoc_md5"></a>
-Group algebra examples</h1>
+Using the library</h1>
+<h2><a class="anchor" id="autotoc_md6"></a>
+Algebraic Manipulations</h2>
 <div class="fragment"><div class="line"><span class="comment">// Also works with other types: SO2d, SE2d, SE3d, Bundle&lt;SO3d, T3d&gt; etc...</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent</a> = <span class="keyword">typename</span> <a class="code" href="classsmooth_1_1SO3.html#a091c6e1a369ee0ce07296ec4d07464f6">smooth::SO3d::Tangent</a>;</div>
+<div class="line"><span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent</a> = <span class="keyword">typename</span> <a class="code" href="classsmooth_1_1SO3.html#a091c6e1a369ee0ce07296ec4d07464f6">smooth::SO3d::Tangent</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// construct a random group element and a random tangent element</span></div>
-<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g = <a class="code" href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::SO3d::Random</a>();</div>
-<div class="line"><a class="code" href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">Tangent</a> a = Tangent::Random();</div>
+<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g = smooth::SO3d::Random();</div>
+<div class="line"><a class="code" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent</a> a = Tangent::Random();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// lie group exponential</span></div>
-<div class="line"><span class="keyword">auto</span> exp_a = <a class="code" href="classsmooth_1_1LieGroupBase.html#ab38a5d4fcd63b818f3af5427f0cba79e">smooth::SO3d::exp</a>(a);</div>
+<div class="line"><span class="keyword">auto</span> exp_a = smooth::SO3d::exp(a);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// lie group logarithm</span></div>
-<div class="line"><span class="keyword">auto</span> g_log = g.<a class="code" href="classsmooth_1_1LieGroupBase.html#acbb567be67f2064077df69fbbb8f3297">log</a>();</div>
+<div class="line"><span class="keyword">auto</span> g_log = g.log();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// lie algebra hat and vee maps</span></div>
-<div class="line"><span class="keyword">auto</span> a_hat = <a class="code" href="classsmooth_1_1LieGroupBase.html#a2cae98409bb6513fb784f35c92ba47e0">smooth::SO3d::hat</a>(a);</div>
-<div class="line"><span class="keyword">auto</span> a_hat_vee = <a class="code" href="classsmooth_1_1LieGroupBase.html#a4c747e39c27bc864fe7497fc992503d7">smooth::SO3d::vee</a>(a_hat);</div>
+<div class="line"><span class="keyword">auto</span> a_hat = smooth::SO3d::hat(a);</div>
+<div class="line"><span class="keyword">auto</span> a_hat_vee = smooth::SO3d::vee(a_hat);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// group adjoint</span></div>
-<div class="line"><span class="keyword">auto</span> Ad_g = g.<a class="code" href="classsmooth_1_1LieGroupBase.html#aefdebdcfadd9d69b0f244fa1532ef771">Ad</a>();</div>
+<div class="line"><span class="keyword">auto</span> Ad_g = g.Ad();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// lie algebra adjoint</span></div>
-<div class="line"><span class="keyword">auto</span> ad_a = <a class="code" href="classsmooth_1_1LieGroupBase.html#a8d6f728e3b5623a2cfd2a72634ce89ab">smooth::SO3d::ad</a>(a);</div>
+<div class="line"><span class="keyword">auto</span> ad_a = smooth::SO3d::ad(a);</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// derivatives of the exponential map</span></div>
-<div class="line"><span class="keyword">auto</span> dr_exp_v = <a class="code" href="classsmooth_1_1LieGroupBase.html#a05411b7fb3ca373aec682fea11450c45">smooth::SO3d::dr_exp</a>(a);   <span class="comment">// right derivative</span></div>
-<div class="line"><span class="keyword">auto</span> dl_exp_v = <a class="code" href="classsmooth_1_1LieGroupBase.html#a64fc91d40ef233b5b51284dfec59b0cb">smooth::SO3d::dl_exp</a>(a);   <span class="comment">// left derivative</span></div>
-<div class="line"><span class="keyword">auto</span> dr_expinv_v = <a class="code" href="classsmooth_1_1LieGroupBase.html#a3a2f9040aea2c89c895e71966f0f496e">smooth::SO3d::dr_expinv</a>(a);   <span class="comment">// inverse of right derivative</span></div>
-<div class="line"><span class="keyword">auto</span> dl_expinv_v = <a class="code" href="classsmooth_1_1LieGroupBase.html#ad06a6b2f0fa196396d38d144b199d01c">smooth::SO3d::dl_expinv</a>(a);   <span class="comment">// inverse of left derivative</span></div>
+<div class="line"><span class="keyword">auto</span> dr_exp_v = smooth::SO3d::dr_exp(a);   <span class="comment">// right derivative</span></div>
+<div class="line"><span class="keyword">auto</span> dl_exp_v = smooth::SO3d::dl_exp(a);   <span class="comment">// left derivative</span></div>
+<div class="line"><span class="keyword">auto</span> dr_expinv_v = smooth::SO3d::dr_expinv(a);   <span class="comment">// inverse of right derivative</span></div>
+<div class="line"><span class="keyword">auto</span> dl_expinv_v = smooth::SO3d::dl_expinv(a);   <span class="comment">// inverse of left derivative</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// group action</span></div>
 <div class="line">Eigen::Vector3d v = Eigen::Vector3d::Random();</div>
@@ -162,46 +164,42 @@ Group algebra examples</h1>
 <div class="line"><span class="comment">// memory mapping using Eigen::Map</span></div>
 <div class="line">std::array&lt;double, smooth::SO3d::RepSize&gt; mem;</div>
 <div class="line">Eigen::Map&lt;const smooth::SO3d&gt; m_g(mem.data());</div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_a05411b7fb3ca373aec682fea11450c45"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#a05411b7fb3ca373aec682fea11450c45">smooth::LieGroupBase::dr_exp</a></div><div class="ttdeci">static TangentMap dr_exp(const Eigen::MatrixBase&lt; TangentDerived &gt; &amp;a)</div><div class="ttdoc">Right jacobian of the exponential map.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00365">lie_group_base.hpp:365</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_a2cae98409bb6513fb784f35c92ba47e0"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#a2cae98409bb6513fb784f35c92ba47e0">smooth::LieGroupBase::hat</a></div><div class="ttdeci">static Matrix hat(const Eigen::MatrixBase&lt; TangentDerived &gt; &amp;a)</div><div class="ttdoc">Lie algebra hat map.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00309">lie_group_base.hpp:309</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_a3a2f9040aea2c89c895e71966f0f496e"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#a3a2f9040aea2c89c895e71966f0f496e">smooth::LieGroupBase::dr_expinv</a></div><div class="ttdeci">static TangentMap dr_expinv(const Eigen::MatrixBase&lt; TangentDerived &gt; &amp;a)</div><div class="ttdoc">Inverse of right jacobian of the exponential map.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00378">lie_group_base.hpp:378</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_a4c747e39c27bc864fe7497fc992503d7"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#a4c747e39c27bc864fe7497fc992503d7">smooth::LieGroupBase::vee</a></div><div class="ttdeci">static Tangent vee(const Eigen::MatrixBase&lt; MatrixDerived &gt; &amp;A)</div><div class="ttdoc">Lie alebra vee map.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00325">lie_group_base.hpp:325</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_a64fc91d40ef233b5b51284dfec59b0cb"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#a64fc91d40ef233b5b51284dfec59b0cb">smooth::LieGroupBase::dl_exp</a></div><div class="ttdeci">static TangentMap dl_exp(const Eigen::MatrixBase&lt; TangentDerived &gt; &amp;a)</div><div class="ttdoc">Left jacobian of the exponential map.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00391">lie_group_base.hpp:391</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_a8d6f728e3b5623a2cfd2a72634ce89ab"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#a8d6f728e3b5623a2cfd2a72634ce89ab">smooth::LieGroupBase::ad</a></div><div class="ttdeci">static TangentMap ad(const Eigen::MatrixBase&lt; TangentDerived &gt; &amp;a)</div><div class="ttdoc">Lie algebra adjoint.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00339">lie_group_base.hpp:339</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_ab38a5d4fcd63b818f3af5427f0cba79e"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#ab38a5d4fcd63b818f3af5427f0cba79e">smooth::LieGroupBase::exp</a></div><div class="ttdeci">static PlainObject exp(const Eigen::MatrixBase&lt; TangentDerived &gt; &amp;a)</div><div class="ttdoc">Lie group exponential map.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00292">lie_group_base.hpp:292</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_acbb567be67f2064077df69fbbb8f3297"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#acbb567be67f2064077df69fbbb8f3297">smooth::LieGroupBase::log</a></div><div class="ttdeci">Tangent log() const</div><div class="ttdoc">Lie group logarithm.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00221">lie_group_base.hpp:221</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_ad06a6b2f0fa196396d38d144b199d01c"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#ad06a6b2f0fa196396d38d144b199d01c">smooth::LieGroupBase::dl_expinv</a></div><div class="ttdeci">static TangentMap dl_expinv(const Eigen::MatrixBase&lt; TangentDerived &gt; &amp;a)</div><div class="ttdoc">Inverse of left jacobian of the exponential map.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00402">lie_group_base.hpp:402</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_aefdebdcfadd9d69b0f244fa1532ef771"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#aefdebdcfadd9d69b0f244fa1532ef771">smooth::LieGroupBase::Ad</a></div><div class="ttdeci">TangentMap Ad() const</div><div class="ttdoc">Lie group adjoint.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00234">lie_group_base.hpp:234</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_affb405319b0c006dcfabbf1a961224a7"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::LieGroupBase::Random</a></div><div class="ttdeci">static PlainObject Random()</div><div class="ttdoc">Construct a random element.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00136">lie_group_base.hpp:136</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SO3_html"><div class="ttname"><a href="classsmooth_1_1SO3.html">smooth::SO3</a></div><div class="ttdoc">Storage implementation of SO3 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="so3_8hpp_source.html#l00176">so3.hpp:177</a></div></div>
-<div class="ttc" id="aclasssmooth_1_1SO3_html_a091c6e1a369ee0ce07296ec4d07464f6"><div class="ttname"><a href="classsmooth_1_1SO3.html#a091c6e1a369ee0ce07296ec4d07464f6">smooth::SO3::Tangent</a></div><div class="ttdeci">typename Base::Tangent Tangent</div><div class="ttdoc">Tangent type.</div><div class="ttdef"><b>Definition:</b> <a href="so3_8hpp_source.html#l00180">so3.hpp:180</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_a0b6ece907c34ab6914dfe57f2b051a9c"><div class="ttname"><a href="manifold_8hpp.html#a0b6ece907c34ab6914dfe57f2b051a9c">smooth::Tangent</a></div><div class="ttdeci">Eigen::Matrix&lt; typename man&lt; M &gt;::Scalar, man&lt; M &gt;::Dof, 1 &gt; Tangent</div><div class="ttdoc">Tangent as a Dof-lenth Eigen vector.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00125">manifold.hpp:125</a></div></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md6"></a>
-Concepts and Types</h1>
+<div class="ttc" id="aclasssmooth_1_1SO3_html"><div class="ttname"><a href="classsmooth_1_1SO3.html">smooth::SO3</a></div><div class="ttdoc">Storage implementation of SO3 Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="so3_8hpp_source.html#l00177">so3.hpp:178</a></div></div>
+<div class="ttc" id="aclasssmooth_1_1SO3_html_a091c6e1a369ee0ce07296ec4d07464f6"><div class="ttname"><a href="classsmooth_1_1SO3.html#a091c6e1a369ee0ce07296ec4d07464f6">smooth::SO3::Tangent</a></div><div class="ttdeci">typename Base::Tangent Tangent</div><div class="ttdoc">Tangent type.</div><div class="ttdef"><b>Definition:</b> <a href="so3_8hpp_source.html#l00181">so3.hpp:181</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_a1050d2ff261807ed963b67efe0b40eba"><div class="ttname"><a href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">smooth::Tangent</a></div><div class="ttdeci">Eigen::Vector&lt; Scalar&lt; M &gt;, Dof&lt; M &gt; &gt; Tangent</div><div class="ttdoc">Tangent as a Dof-length vector.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00233">manifold.hpp:233</a></div></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
+Concepts and Types</h2>
 <p>These <a href="https://en.cppreference.com/w/cpp/concepts">C++20 concepts</a> are implemented in <code>concepts.hpp</code>.</p>
 <ul>
-<li><code>Manifold</code>: type that supports <code>operator+()</code> (geodesic addition) and <code>operator-()</code> (geodesic subtraction)<ul>
-<li>Example: <code><a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">smooth::ManifoldVector</a>&lt;Manifold&gt;</code> from <code><a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a></code>&mdash;a type to facilitate optimization over a dynamic number of <code>Manifold</code>s</li>
-<li>Example: <code>Eigen::Vector3d</code></li>
-<li>Example: <code>Eigen::VectorXf</code></li>
+<li><code>Manifold</code>: type that supports <code>rplus</code> (geodesic addition) and <code>rminus</code> (geodesic subtraction). Examples:<ul>
+<li>All <code>LieGroup</code> types</li>
+<li><code><a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">smooth::ManifoldVector</a>&lt;Manifold&gt;</code> from <code><a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a></code>&mdash;facilitates e.g. optimization and differentiation w.r.t. a dynamic number of <code>Manifold</code>s</li>
+<li><code>Eigen::VectorXd</code></li>
 </ul>
 </li>
-<li><code>LieGroup</code>: a <code>Manifold</code> that also implements Lie group operations (<code>exp</code>, <code>log</code>, <code>Ad</code>, etc...)<ul>
-<li>Example: <code><a class="el" href="classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group.">smooth::SO3</a>&lt;float&gt;</code></li>
-<li>Example: <code><a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">smooth::Bundle</a>&lt;LieGroup | Eigen::Matrix&lt;Scalar, N, 1&gt; ...&gt;</code></li>
+<li><code>LieGroup</code>: a type for which Lie group operations (<code>exp</code>, <code>log</code>, <code>Ad</code>, etc...) are defined. Examples:<ul>
+<li>All <code>NativeLieGroup</code> types</li>
+<li><code>Eigen::Vector3d</code></li>
+<li><code>double</code></li>
+</ul>
+</li>
+<li><code>NativeLieGroup</code>: a type that implements a Lie group interface as class methods. Examples:<ul>
+<li><code><a class="el" href="classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group.">smooth::SO3</a>&lt;float&gt;</code></li>
+<li><code><a class="el" href="classsmooth_1_1C1.html" title="Storage implementation of C1 Lie group.">smooth::C1</a>&lt;double&gt;</code></li>
+<li><code><a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">smooth::Bundle</a>&lt;NativeLieGroup | Eigen::Matrix&lt;Scalar, N, 1&gt; ...&gt;</code></li>
 </ul>
 </li>
 </ul>
-<h1><a class="anchor" id="autotoc_md7"></a>
-Algorithms</h1>
-<p>Algorithms for <code>LieGroup</code> types can be used on regular Euclidean spaces via the <code>smooth::Tn</code> type.</p>
+<p>Both Manifold and LieGroup are defined via external type traits (<code>traits::man</code> and <code>traits::lie</code>) that can be specialized in order to define a Manifold or LieGroup interface for a third-party type.</p>
 <h2><a class="anchor" id="autotoc_md8"></a>
-Tangent space differentiation</h2>
+Algorithms</h2>
+<h3><a class="anchor" id="autotoc_md9"></a>
+Tangent space differentiation</h3>
 <p>Available for <code>Manifold</code> types, see <a class="el" href="diff_8hpp.html" title="Differentiation on Lie groups.">diff.hpp</a>.</p>
 <p>Supported techniques (see smooth::diff::Type):</p><ul>
 <li>Numerical derivatives (default)</li>
-<li>Automatic differentiation using <code>autodiff</code> (must #include &lt;<a class="el" href="autodiff_8hpp.html" title="autodiff compatability header.">smooth/compat/autodiff.hpp</a>&gt;)</li>
-<li>Automatic differentiation using Ceres 2.x (must #include &lt;<a class="el" href="ceres_8hpp.html" title="ceres compatability header.">smooth/compat/ceres.hpp</a>&gt;)</li>
+<li>Automatic differentiation using <a href="https://autodiff.github.io"><code>autodiff</code></a> (must #include &lt;<a class="el" href="autodiff_8hpp.html" title="autodiff compatability header.">smooth/compat/autodiff.hpp</a>&gt;)</li>
+<li>Automatic differentiation using <a href="http://ceres-solver.org/">Ceres 2.x</a> (must #include &lt;<a class="el" href="ceres_8hpp.html" title="ceres compatability header.">smooth/compat/ceres.hpp</a>&gt;)</li>
 </ul>
 <p>Example: calculate <img src="https://latex.codecogs.com/png.latex?\mathrm{d}^r&space;(\log(g_1&space;\circ&space;g_2))_{g_i}" alt="" class="inline"/> for i=1, 2</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="diff_8hpp.html">smooth/diff.hpp</a>&gt;</span></div>
@@ -209,25 +207,25 @@ Tangent space differentiation</h2>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> f = [](<span class="keyword">auto</span> v1, <span class="keyword">auto</span> v2) { <span class="keywordflow">return</span> (v1 * v2).log(); };</div>
 <div class="line"> </div>
-<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g1 = <a class="code" href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::SO3d::Random</a>();</div>
-<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g2 = <a class="code" href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::SO3d::Random</a>();</div>
+<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g1 = smooth::SO3d::Random();</div>
+<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g2 = smooth::SO3d::Random();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// differentiate f at (g1, g2) w.r.t. first argument</span></div>
-<div class="line"><span class="keyword">auto</span> [fval1, J1] = <a class="code" href="diff_8hpp.html#ae3f072cfea26c99e6234d87d1e7f588d">smooth::diff::dr</a>(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));</div>
+<div class="line"><span class="keyword">auto</span> [fval1, J1] = <a class="code" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a>(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// differentiate f at (g1, g2) w.r.t. second argument</span></div>
-<div class="line"><span class="keyword">auto</span> [fval2, J2] = <a class="code" href="diff_8hpp.html#ae3f072cfea26c99e6234d87d1e7f588d">smooth::diff::dr</a>(std::bind(f, g1, std::placeholders::_1), smooth::wrt(g2));</div>
+<div class="line"><span class="keyword">auto</span> [fval2, J2] = <a class="code" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a>(std::bind(f, g1, std::placeholders::_1), smooth::wrt(g2));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// differentiate f at (g1, g2) w.r.t. both arguments</span></div>
-<div class="line"><span class="keyword">auto</span> [fval, J] = <a class="code" href="diff_8hpp.html#ae3f072cfea26c99e6234d87d1e7f588d">smooth::diff::dr</a>(f, smooth::wrt(g1, g2));</div>
+<div class="line"><span class="keyword">auto</span> [fval, J] = <a class="code" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a>(f, smooth::wrt(g1, g2));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Now J == [J1, J2]</span></div>
 <div class="ttc" id="adiff_8hpp_html"><div class="ttname"><a href="diff_8hpp.html">diff.hpp</a></div><div class="ttdoc">Differentiation on Lie groups.</div></div>
-<div class="ttc" id="adiff_8hpp_html_ae3f072cfea26c99e6234d87d1e7f588d"><div class="ttname"><a href="diff_8hpp.html#ae3f072cfea26c99e6234d87d1e7f588d">smooth::diff::dr</a></div><div class="ttdeci">auto dr(_F &amp;&amp;f, _Wrt &amp;&amp;x)</div><div class="ttdoc">Differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00146">diff.hpp:146</a></div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md9"></a>
-Non-linear least squares optimization</h2>
+<div class="ttc" id="adiff_8hpp_html_a336ed568f913d4bcf16ea1d612e1e431"><div class="ttname"><a href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a></div><div class="ttdeci">auto dr(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00145">diff.hpp:145</a></div></div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md10"></a>
+Non-linear least squares optimization</h3>
 <p>Available for <code>Manifold</code> types, see <a class="el" href="optim_8hpp.html" title="Non-linear least squares optimization on Manifolds.">optim.hpp</a>.</p>
-<p>The <a class="el" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d" title="Find a minimum of the non-linear least-squares problem.">minimize()</a> function implements a Levenberg-Marquardt trust-region procedure to find a local minimum. All derivatives and computations are done in the tangent space as opposed to e.g. Ceres which uses derivatives w.r.t. the parameterization.</p>
+<p>The <a class="el" href="optim_8hpp.html#ac3245a617d1892ce7899227ba049ee4d" title="Find a minimum of the non-linear least-squares problem.">minimize()</a> function implements a Levenberg-Marquardt trust-region procedure to find a local minimum. All derivatives and computations are done in the tangent space as opposed to e.g. Ceres which uses derivatives w.r.t. the parameterization.</p>
 <p>A sparse solver is implemented, but it is currently only available when analytical derivatives are provided.</p>
 <p>Example: Calculate <img src="https://latex.codecogs.com/svg.image?\mathrm{argmin}_{g_1}&space;\|\log(g_1&space;\circ&space;g_2&space;)&space;\||" alt="" class="inline"/></p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="optim_8hpp.html">smooth/optim.hpp</a>&gt;</span></div>
@@ -236,24 +234,24 @@ Non-linear least squares optimization</h2>
 <div class="line"><span class="comment">// function defining residual</span></div>
 <div class="line"><span class="keyword">auto</span> f = [](<span class="keyword">auto</span> v1, <span class="keyword">auto</span> v2) { <span class="keywordflow">return</span> (v1 * v2).log(); };</div>
 <div class="line"> </div>
-<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g1 = <a class="code" href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::SO3d::Random</a>();</div>
-<div class="line"><span class="keyword">const</span> <a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g2 = <a class="code" href="classsmooth_1_1LieGroupBase.html#affb405319b0c006dcfabbf1a961224a7">smooth::SO3d::Random</a>();</div>
+<div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g1 = smooth::SO3d::Random();</div>
+<div class="line"><span class="keyword">const</span> <a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g2 = smooth::SO3d::Random();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// minimize || f ||^2 w.r.t. first argument (g1 is modified in-place)</span></div>
-<div class="line"><a class="code" href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">smooth::minimize</a>(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));</div>
+<div class="line"><a class="code" href="optim_8hpp.html#ac3245a617d1892ce7899227ba049ee4d">smooth::minimize</a>(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Now g1 == g2.inverse()</span></div>
 <div class="ttc" id="aoptim_8hpp_html"><div class="ttname"><a href="optim_8hpp.html">optim.hpp</a></div><div class="ttdoc">Non-linear least squares optimization on Manifolds.</div></div>
-<div class="ttc" id="aoptim_8hpp_html_af178cd6078aacc223a42016bce92794d"><div class="ttname"><a href="optim_8hpp.html#af178cd6078aacc223a42016bce92794d">smooth::minimize</a></div><div class="ttdeci">void minimize(_F &amp;&amp;f, _Wrt &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</div><div class="ttdoc">Find a minimum of the non-linear least-squares problem.</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00083">optim.hpp:83</a></div></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md10"></a>
-Bezier curve evaluation and fitting</h2>
-<p>Available for <code>LieGroup</code> types, see <a class="el" href="bezier_8hpp.html" title="bezier splines on lie groups.">spline/bezier.hpp</a>.</p>
-<p>Bezier splines are piecewise defined via <a href="https://en.wikipedia.org/wiki/Bernstein_polynomial">Bernstein polynomials</a> and pass through the control points. See <a class="el" href="spline__fit_8cpp_source.html">examples/spline_fit.cpp</a> for usage.</p>
-<h2><a class="anchor" id="autotoc_md11"></a>
-B-spline evaluation and fitting</h2>
+<div class="ttc" id="aoptim_8hpp_html_ac3245a617d1892ce7899227ba049ee4d"><div class="ttname"><a href="optim_8hpp.html#ac3245a617d1892ce7899227ba049ee4d">smooth::minimize</a></div><div class="ttdeci">void minimize(auto &amp;&amp;f, auto &amp;&amp;x, const MinimizeOptions &amp;opts=MinimizeOptions{})</div><div class="ttdoc">Find a minimum of the non-linear least-squares problem.</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00083">optim.hpp:83</a></div></div>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md11"></a>
+Piecewise polynomial curve evaluation and fitting</h3>
+<p>Available for <code>LieGroup</code> types, see <a class="el" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups.">spline/spline.hpp</a>.</p>
+<p>These splines are piecewise defined via <a href="https://en.wikipedia.org/wiki/Bernstein_polynomial">Bernstein polynomials</a> and pass through the control points. See examples/spline_fit.cpp for usage.</p>
+<h3><a class="anchor" id="autotoc_md12"></a>
+B-spline evaluation and fitting</h3>
 <p>Available for <code>LieGroup</code> types, see <a class="el" href="bspline_8hpp.html" title="B-splines on Lie groups.">spline/bspline.hpp</a>.</p>
-<p>B-splines have local support and generally do not pass through the control points. See <a class="el" href="bspline_8cpp.html">examples/bspline.cpp</a> and <a class="el" href="spline__fit_8cpp_source.html">examples/spline_fit.cpp</a> for usage.</p>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<p>The B-spline basis functions have local support, A B-spline generally does not pass through its control points. See examples/spline_fit.cpp and examples/bspline.cpp for usage.</p>
+<h1><a class="anchor" id="autotoc_md13"></a>
 Compatibility</h1>
 <p>Utility headers for interfacing with adjacent software are included.</p>
 <ul>
@@ -262,8 +260,11 @@ Compatibility</h1>
 <li><a class="el" href="odeint_8hpp.html" title="boost::odeint compatability header.">compat/odeint.hpp</a>: Numerical integration using <a href="https://www.boost.org/doc/libs/1_76_0/libs/numeric/odeint/doc/html/index.html"><code>boost::odeint</code></a></li>
 <li><a class="el" href="ros_8hpp.html" title="ROS message compatablity header.">compat/ros.hpp</a>: Memory mapping of <a href="https://www.ros.org/">ROS/ROS2</a> message types</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Related Projects</h1>
+<ul>
+<li><a href="https://pettni.github.io/smooth_feedback">smooth_feedback</a> utilizes <code>smooth</code> for control and estimation on Lie groups.</li>
+</ul>
 <p>Two projects that have served as inspiration for <code>smooth</code> are <a href="https://github.com/artivis/manif/"><code>manif</code></a>&mdash;which also has an accompanying <a href="https://arxiv.org/abs/1812.01537">paper</a> that is a great practical introduction to Lie theory&mdash;and <a href="https://github.com/strasdat/Sophus/"><code>Sophus</code></a>. Certain design decisions are different in <code>smooth</code>: derivatives are with respect to tangent elements as in <code>manif</code>, but the tangent types are Eigen vectors like in <code>Sophus</code>. This library also includes the Bundle type which facilitates control and estimation tasks, as well as utilities such as differentiation, optimization, and splines. Finally <code>smooth</code> is written in C++20 and leverages modern features such as <a href="https://en.cppreference.com/w/cpp/language/constraints">concepts</a> and <a href="https://en.cppreference.com/w/cpp/ranges">ranges</a>. </p>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->

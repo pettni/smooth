@@ -1,9 +1,4 @@
 var searchData=
 [
-  ['lie_5fbracket_366',['lie_bracket',['../classsmooth_1_1LieGroupBase.html#a9e391ce171f0cfe526c0f28315af57d7',1,'smooth::LieGroupBase']]],
-  ['lift_5fse3_367',['lift_se3',['../classsmooth_1_1SE2Base.html#a02b1eb30dff39505d3b47114c2b8fb54',1,'smooth::SE2Base']]],
-  ['lift_5fso3_368',['lift_so3',['../classsmooth_1_1SO2Base.html#ae6c9cb4cf4b12681afc8692938d392ac',1,'smooth::SO2Base']]],
-  ['lminus_369',['lminus',['../lie__group_8hpp.html#a39a3b02367c981cabae49d1d972a909a',1,'smooth']]],
-  ['log_370',['log',['../classsmooth_1_1LieGroupBase.html#acbb567be67f2064077df69fbbb8f3297',1,'smooth::LieGroupBase::log()'],['../lie__group_8hpp.html#a65eb5cc9d308072ffddc94fd6b4ac5ae',1,'smooth::log(const G &amp;g)']]],
-  ['lplus_371',['lplus',['../lie__group_8hpp.html#a514c1555ec21c3586704dbf72927c1fe',1,'smooth']]]
+  ['jacobi_5fbasis_403',['jacobi_basis',['../basis_8hpp.html#a825ed011a0647d526dea228387571511',1,'smooth::detail']]]
 ];

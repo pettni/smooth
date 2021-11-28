@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['hat_360',['hat',['../classsmooth_1_1LieGroupBase.html#a2cae98409bb6513fb784f35c92ba47e0',1,'smooth::LieGroupBase']]],
-  ['helper_361',['helper',['../structsmooth_1_1BoostOdeintOps_1_1scale__sum.html#ad6be4b90430dbb5dcd23673bc2e17a45',1,'smooth::BoostOdeintOps::scale_sum']]]
+  ['helper_397',['helper',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#a042258478c729ba2e620b651d8d4ff5b',1,'smooth::detail::BoostOdeintOps::scale_sum']]],
+  ['hermite_5fbasis_398',['hermite_basis',['../basis_8hpp.html#a3786b280599e43895f094064dc881055',1,'smooth::detail']]]
 ];
