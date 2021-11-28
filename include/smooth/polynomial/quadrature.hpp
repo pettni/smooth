@@ -45,22 +45,33 @@ namespace smooth {
 // \cond
 namespace detail {
 
-/// @brief Constexpr pow
-template<std::size_t K, typename T>
-  requires(K >= 1)
-constexpr T pow_s(const T x) noexcept
+/// @brief Exponential with integer exponent
+template<std::size_t K>
+constexpr auto pow_s(const auto x) noexcept
 {
-  T ret = x;
-  for (auto i = 1u; i < K; ++i) { ret *= x; }
-  return ret;
+  auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
+  {
+    return ((static_cast<void>(Is), x) * ... * 1.);
+  };
+  return f(std::make_index_sequence<K>{});
+}
+
+/// @brief Factorial
+template<std::size_t K>
+constexpr auto factorial_s() noexcept
+{
+  auto f = []<auto... Is>(std::index_sequence<Is...>) { return ((Is + 1) * ... * 1.); };
+  return f(std::make_index_sequence<K>{});
 }
 
 /// @brief Constexpr cos that is moderately accurate on [0, pi]
-template<typename T>
-constexpr T cos_s(const T x) noexcept
+constexpr auto cos_s(const auto x) noexcept
 {
-  return T(1.) - pow_s<2>(x) / 2 + pow_s<4>(x) / 24 - pow_s<6>(x) / 720 + pow_s<8>(x) / 40320
-       - pow_s<10>(x) / 3628800;
+  auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
+  {
+    return ((pow_s<Is>(-1.) * pow_s<2 * Is>(x) / factorial_s<2 * Is>()) + ...);
+  };
+  return f(std::make_index_sequence<8>{});
 }
 
 }  // namespace detail

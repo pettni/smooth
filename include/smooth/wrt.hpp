@@ -52,35 +52,9 @@ struct wrt_dof_impl
 template<typename... Wrt>
 struct wrt_dof_impl<std::tuple<Wrt...>>
 {
-  /// @brief Trait value
   static constexpr int value =
     std::min<int>({Dof<std::decay_t<Wrt>>...}) == -1 ? -1 : (Dof<std::decay_t<Wrt>> + ...);
 };
-
-template<typename Scalar, typename Wrt, std::size_t... Idx>
-auto wrt_cast_impl(Wrt && wrt, std::index_sequence<Idx...>)
-{
-  return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
-}
-
-template<typename Wrt, typename Derived, std::size_t... Idx>
-auto wrt_rplus_impl(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index_sequence<Idx...>)
-{
-  static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{
-    Dof<std::decay_t<std::tuple_element_t<Idx, std::decay_t<Wrt>>>>...};
-  std::array<Eigen::Index, sizeof...(Idx)> nx{dof(std::get<Idx>(wrt))...};
-
-  const auto psum = utils::array_psum(nx);
-
-  // clang-format off
-  return std::make_tuple(
-      rplus(
-        std::get<Idx>(wrt),
-        a.template segment<std::get<Idx>(Nx)>(std::get<Idx>(psum), std::get<Idx>(nx))
-      )...
-  );
-  // clang-format on
-}
 
 /**
  * @brief Trait for removing constness from reference types.
@@ -88,7 +62,6 @@ auto wrt_rplus_impl(Wrt && wrt, const Eigen::MatrixBase<Derived> & a, std::index
 template<typename T>
 struct remove_const_ref
 {
-  /// @brief Trait value
   using type = T;
 };
 
@@ -98,7 +71,6 @@ struct remove_const_ref
 template<typename T>
 struct remove_const_ref<const T &>
 {
-  /// @brief Trait value
   using type = T;
 };
 
@@ -108,12 +80,25 @@ struct remove_const_ref<const T &>
 /**
  * @brief Compile-time size of a tuple of variables.
  *
- * If at least one variable is dynamically sized (dof -1), this returns -1.
+ * If at least one variable is dynamically sized (Dof -1), this returns -1, otherwise returns sum of
+ * all Dof's.
  */
-template<typename T>
+template<typename Wrt>
 constexpr int wrt_dof()
 {
-  return detail::wrt_dof_impl<T>::value;
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)->int
+  {
+    constexpr auto min_dof =
+      std::min<int>({Dof<std::decay_t<std::tuple_element_t<Idx, std::decay_t<Wrt>>>>...});
+
+    if constexpr (min_dof == -1) {
+      return -1;
+    } else {
+      return (Dof<std::decay_t<std::tuple_element_t<Idx, std::decay_t<Wrt>>>> + ...);
+    }
+  };
+
+  return f(std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 
 /**
@@ -122,8 +107,12 @@ constexpr int wrt_dof()
 template<typename Scalar, typename Wrt>
 auto wrt_cast(Wrt && wrt)
 {
-  return detail::wrt_cast_impl<Scalar>(
-    std::forward<Wrt>(wrt), std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)
+  {
+    return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
+  };
+
+  return f(std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 
 /**
@@ -132,8 +121,25 @@ auto wrt_cast(Wrt && wrt)
 template<typename Wrt, typename Derived>
 auto wrt_rplus(Wrt && wrt, const Eigen::MatrixBase<Derived> & a)
 {
-  return detail::wrt_rplus_impl(
-    std::forward<Wrt>(wrt), a, std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)
+  {
+    static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{
+      Dof<std::decay_t<std::tuple_element_t<Idx, std::decay_t<Wrt>>>>...};
+
+    const std::array<Eigen::Index, sizeof...(Idx)> ilen{dof(std::get<Idx>(wrt))...};
+    const auto ibeg = utils::array_psum(ilen);
+
+    // clang-format off
+    return std::make_tuple(
+        rplus(
+          std::get<Idx>(wrt),
+          a.template segment<std::get<Idx>(Nx)>(std::get<Idx>(ibeg), std::get<Idx>(ilen))
+        )...
+    );
+    // clang-format on
+  };
+
+  return f(std::make_index_sequence<std::tuple_size_v<std::decay_t<Wrt>>>{});
 }
 
 /**
