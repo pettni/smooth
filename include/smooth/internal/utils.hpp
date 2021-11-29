@@ -112,28 +112,17 @@ auto binary_interval_search(const _R & r, const _T & t) noexcept
 /////////////////////
 
 /**
- * @brief Compile-time for loop implementation
- */
-template<typename _F, std::size_t... _Idx>
-inline static constexpr auto static_for_impl(_F && f, std::index_sequence<_Idx...>)
-{
-  return (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
-}
-
-/**
- * @brief Compile-time for loop over 0, ..., _I-1
+ * @brief Compile-time for loop equivalent to the statement (f(0), f(1), ..., f(_I-1))
  */
 template<std::size_t _I, typename _F>
 inline static constexpr auto static_for(_F && f)
 {
-  const auto fiter = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>)
+  const auto f_caller = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>)
   {
     return (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
   };
 
-  return fiter(std::make_index_sequence<_I>{});
-
-  // return static_for_impl(std::forward<_F>(f), std::make_index_sequence<_I>{});
+  return f_caller(std::make_index_sequence<_I>{});
 }
 
 /////////////////
