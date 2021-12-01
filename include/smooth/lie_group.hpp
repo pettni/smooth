@@ -55,17 +55,17 @@ struct lie;
  */
 template<typename G>
 concept LieGroup =
-requires {
+requires (Eigen::Index dof) {
   // Underlying scalar type
   typename traits::lie<G>::Scalar;
   // Default representation
   typename traits::lie<G>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
   {traits::lie<G>::Dof}->std::convertible_to<Eigen::Index>;
-  // Return the identity element
-  {traits::lie<G>::Identity()}->std::convertible_to<typename traits::lie<G>::PlainObject>;
-  // Return a random element
-  {traits::lie<G>::Random()}->std::convertible_to<typename traits::lie<G>::PlainObject>;
+  // Return the identity element (dof = Dof for static size)
+  {traits::lie<G>::Identity(dof)}->std::convertible_to<typename traits::lie<G>::PlainObject>;
+  // Return a random element (dof = Dof for static size)
+  {traits::lie<G>::Random(dof)}->std::convertible_to<typename traits::lie<G>::PlainObject>;
 } &&
 // GROUP INTERFACE
 requires(const G & g1, const G & g2, typename traits::lie<G>::Scalar eps) {
@@ -126,10 +126,15 @@ concept NativeLieGroup = requires
   typename G::Tangent;
   typename G::PlainObject;
   {G::Dof}->std::convertible_to<Eigen::Index>;
+} &&
+(!(G::Dof > 0) || requires {
   {G::Identity()}->std::convertible_to<typename G::PlainObject>;
   {G::Random()}->std::convertible_to<typename G::PlainObject>;
-} &&
-(G::Dof >= 1) &&
+}) &&
+(!(G::Dof == -1) || requires (Eigen::Index dof) {
+  {G::Identity(dof)}->std::convertible_to<typename G::PlainObject>;
+  {G::Random(dof)}->std::convertible_to<typename G::PlainObject>;
+}) &&
 (G::Tangent::SizeAtCompileTime == G::Dof) &&
 requires(const G & g1, const G & g2, typename G::Scalar eps) {
   {g1.dof()}->std::convertible_to<Eigen::Index>;  // degrees of freedom at runtime
@@ -167,8 +172,20 @@ struct lie<G>
 
   // group interface
 
-  static inline PlainObject Identity() { return G::Identity(); }
-  static inline PlainObject Random() { return G::Random(); }
+  static inline PlainObject Identity([[maybe_unused]] Eigen::Index dof) {
+    if constexpr (G::Dof == -1) {
+      return G::Identity(dof);
+    } else {
+      return G::Identity();
+    }
+  }
+  static inline PlainObject Random([[maybe_unused]] Eigen::Index dof) {
+    if constexpr (G::Dof == -1) {
+      return G::Random(dof);
+    } else {
+      return G::Random();
+    }
+  }
   static inline typename G::TangentMap Ad(const G & g) { return g.Ad(); }
   template<NativeLieGroup Go>
   static inline PlainObject composition(const G & g1, const Go & g2)
@@ -234,11 +251,11 @@ struct lie<G>
 
   // group interface
 
-  static inline PlainObject Identity() { return G::Zero(); }
-  static inline PlainObject Random() { return G::Random(); }
-  static inline Eigen::Matrix<Scalar, Dof, Dof> Ad(const G &)
+  static inline PlainObject Identity(Eigen::Index dof) { return G::Zero(dof); }
+  static inline PlainObject Random(Eigen::Index dof) { return G::Random(dof); }
+  static inline Eigen::Matrix<Scalar, Dof, Dof> Ad(const G & g)
   {
-    return Eigen::Matrix<Scalar, Dof, Dof>::Identity();
+    return Eigen::Matrix<Scalar, Dof, Dof>::Identity(g.size(), g.size());
   }
   template<typename Derived>
   static inline PlainObject composition(const G & g1, const Eigen::MatrixBase<Derived> & g2)
@@ -262,9 +279,9 @@ struct lie<G>
   // tangent interface
 
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, Dof, Dof> ad(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, Dof, Dof> ad(const Eigen::MatrixBase<Derived> & a)
   {
-    return Eigen::Matrix<Scalar, Dof, Dof>::Zero();
+    return Eigen::Matrix<Scalar, Dof, Dof>::Zero(a.size(), a.size());
   }
   template<typename Derived>
   static inline PlainObject exp(const Eigen::MatrixBase<Derived> & a)
@@ -272,14 +289,14 @@ struct lie<G>
     return a;
   }
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, Dof, Dof> dr_exp(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, Dof, Dof> dr_exp(const Eigen::MatrixBase<Derived> & a)
   {
-    return Eigen::Matrix<Scalar, Dof, Dof>::Identity();
+    return Eigen::Matrix<Scalar, Dof, Dof>::Identity(a.size(), a.size());
   }
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, Dof, Dof> dr_expinv(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, Dof, Dof> dr_expinv(const Eigen::MatrixBase<Derived> & a)
   {
-    return Eigen::Matrix<Scalar, Dof, Dof>::Identity();
+    return Eigen::Matrix<Scalar, Dof, Dof>::Identity(a.size(), a.size());
   }
   // \endcond
 };
@@ -304,8 +321,8 @@ struct lie<G>
 
   // group interface
 
-  static inline PlainObject Identity() { return G(0); }
-  static inline PlainObject Random()
+  static inline PlainObject Identity(Eigen::Index) { return G(0); }
+  static inline PlainObject Random(Eigen::Index)
   {
     return G(Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
   }
@@ -365,7 +382,7 @@ struct man<G>
 
   static constexpr Eigen::Index Dof = traits::lie<G>::Dof;
 
-  static inline PlainObject Default() { return traits::lie<G>::Identity(); }
+  static inline PlainObject Default(Eigen::Index dof) { return traits::lie<G>::Identity(dof); }
 
   static inline Eigen::Index dof(const G & g) { return traits::lie<G>::dof(g); }
 
@@ -398,18 +415,34 @@ struct man<G>
 // Group interface
 
 /**
- * @brief Group identity element
+ * @brief Identity in Lie group
+ *
+ * @param dof degrees of freedom
  */
 template<LieGroup G>
-  requires(Dof<G> > 0)
-inline PlainObject<G> Identity() { return traits::lie<G>::Identity(); }
+inline PlainObject<G> Identity(Eigen::Index dof) { return traits::lie<G>::Identity(dof); }
 
 /**
- * @brief Random group element
+ * @brief Identity in Lie group with static Dof
  */
 template<LieGroup G>
   requires(Dof<G> > 0)
-inline PlainObject<G> Random() { return traits::lie<G>::Random(); }
+inline PlainObject<G> Identity() { return traits::lie<G>::Identity(Dof<G>); }
+
+/**
+ * @brief Random element in Lie group
+ *
+ * @param dof degrees of freedom
+ */
+template<LieGroup G>
+inline PlainObject<G> Random(Eigen::Index dof) { return traits::lie<G>::Random(dof); }
+
+/**
+ * @brief Random element in Lie group with static Dof
+ */
+template<LieGroup G>
+  requires(Dof<G> > 0)
+inline PlainObject<G> Random() { return traits::lie<G>::Random(Dof<G>); }
 
 /**
  * @brief Group adjoint \f$ Ad_g a \coloneq (G * \hat(a) * G^{-1})^{\wedge} \f$

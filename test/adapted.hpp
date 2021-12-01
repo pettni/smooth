@@ -50,9 +50,14 @@ private:
 public:
   // group interface
 
-  static PlainObject Identity() { return PlainObject{0}; }
-  static PlainObject Random()
+  static PlainObject Identity(Eigen::Index dof)
   {
+    assert(dof == 1);
+    return PlainObject{0};
+  }
+  static PlainObject Random(Eigen::Index dof)
+  {
+    assert(dof == 1);
     return PlainObject(
       Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
   }

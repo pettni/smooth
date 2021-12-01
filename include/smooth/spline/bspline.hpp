@@ -76,7 +76,7 @@ public:
   /**
    * @brief Construct a constant bspline defined on [0, 1) equal to identity.
    */
-  BSpline() : t0_(0), dt_(1), ctrl_pts_(K + 1, G::Identity()) {}
+  BSpline() requires(Dof<G> > 0) : t0_(0), dt_(1), ctrl_pts_(K + 1, G::Identity()) {}
 
   /**
    * @brief Create a BSpline
@@ -95,8 +95,9 @@ public:
    * @param dt distance between spline knots
    * @param ctrl_pts spline control points
    */
-  template<std::ranges::range R>
-  BSpline(double t0, double dt, const R & ctrl_pts)
+  template<std::ranges::range Rv>
+    requires(std::is_same_v<std::ranges::range_value_t<Rv>, G>)
+  BSpline(double t0, double dt, const Rv & ctrl_pts)
       : t0_(t0), dt_(dt), ctrl_pts_(std::ranges::begin(ctrl_pts), std::ranges::end(ctrl_pts))
   {}
 

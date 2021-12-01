@@ -53,15 +53,15 @@ struct man;
  */
 template<typename M>
 concept Manifold =
-requires {
+requires  (Eigen::Index dof) {
   // Underlying scalar type
   typename traits::man<M>::Scalar;
   // Default representation
   typename traits::man<M>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
   {traits::man<M>::Dof}->std::convertible_to<Eigen::Index>;
-  // A default-initialized Manifold object
-  {traits::man<M>::Default()}->std::convertible_to<typename traits::man<M>::PlainObject>;
+  // A default-initialized Manifold object (if Dof > 0 then dof = Dof can be assumed)
+  {traits::man<M>::Default(dof)}->std::convertible_to<typename traits::man<M>::PlainObject>;
 } &&
 requires(const M & m1, const M & m2, const Eigen::Vector<typename traits::man<M>::Scalar, traits::man<M>::Dof> & a) {
   // Run-time degrees of freedom (tangent space dimension)
@@ -111,7 +111,7 @@ struct man<M>
   template<typename NewScalar>
   using CastT = Eigen::Vector<NewScalar, M::SizeAtCompileTime>;
 
-  static inline PlainObject Default() { return M::Zero(); }
+  static inline PlainObject Default(Eigen::Index dof) { return M::Zero(dof); }
 
   static inline Eigen::Index dof(const M & m) { return m.size(); }
 
@@ -167,7 +167,7 @@ struct man<M>
   template<typename NewScalar>
   using CastT = NewScalar;
 
-  static inline PlainObject Default() { return M(0); }
+  static inline PlainObject Default(Eigen::Index) { return M(0); }
 
   static inline Eigen::Index dof(const M &) { return 1; }
 
@@ -244,9 +244,18 @@ using TangentMap = Eigen::Matrix<Scalar<M>, Dof<M>, Dof<M>>;
  * @brief Default-initialized Manifold
  */
 template<Manifold M>
-inline PlainObject<M> Default()
+inline PlainObject<M> Default(Eigen::Index dof)
 {
-  return traits::man<M>::Default();
+  return traits::man<M>::Default(dof);
+}
+
+/**
+ * @brief Default-initialized Manifold with static dof
+ */
+template<Manifold M>
+inline PlainObject<M> Default() requires(Dof<M> > 0)
+{
+  return traits::man<M>::Default(Dof<M>);
 }
 
 /**
