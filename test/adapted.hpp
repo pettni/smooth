@@ -50,12 +50,12 @@ private:
 public:
   // group interface
 
-  static PlainObject Identity(Eigen::Index dof)
+  static PlainObject Identity([[maybe_unused]] Eigen::Index dof)
   {
     assert(dof == 1);
     return PlainObject{0};
   }
-  static PlainObject Random(Eigen::Index dof)
+  static PlainObject Random([[maybe_unused]] Eigen::Index dof)
   {
     assert(dof == 1);
     return PlainObject(
