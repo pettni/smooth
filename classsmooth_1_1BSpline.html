@@ -75,6 +75,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classsmooth_1_1BSpline-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">smooth::BSpline&lt; K, G &gt; Class Template Reference</div>  </div>
@@ -88,17 +89,23 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a632441d31380304827cc18696f187acf"><td class="memItemLeft" align="right" valign="top"><a id="a632441d31380304827cc18696f187acf"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a632441d31380304827cc18696f187acf">BSpline</a> ()</td></tr>
-<tr class="memdesc:a632441d31380304827cc18696f187acf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a constant bspline defined on [0, 1) equal to identity. <br /></td></tr>
-<tr class="separator:a632441d31380304827cc18696f187acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d6acf53896a7500cd446d0bebe4a4cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a0d6acf53896a7500cd446d0bebe4a4cf">BSpline</a> (double t0, double <a class="el" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>, std::vector&lt; G &gt; &amp;&amp;<a class="el" href="classsmooth_1_1BSpline.html#ab564c7cd781cabefb9ea7432f79c2d6a">ctrl_pts</a>)</td></tr>
+<tr class="memitem:a20bc10391174314f8594944404fc7468"><td class="memItemLeft" align="right" valign="top"><a id="a20bc10391174314f8594944404fc7468"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a20bc10391174314f8594944404fc7468">BSpline</a> () <a class="el" href="classsmooth_1_1BSpline.html#a8dfb03f4ad20e22e0c64c93801ad5590">requires</a>(Dof&lt; G &gt; &gt; 0)</td></tr>
+<tr class="memdesc:a20bc10391174314f8594944404fc7468"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a constant bspline defined on [0, 1) equal to identity. <br /></td></tr>
+<tr class="separator:a20bc10391174314f8594944404fc7468"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d6acf53896a7500cd446d0bebe4a4cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a0d6acf53896a7500cd446d0bebe4a4cf">BSpline</a> (double t0, double dt, std::vector&lt; G &gt; &amp;&amp;ctrl_pts)</td></tr>
 <tr class="memdesc:a0d6acf53896a7500cd446d0bebe4a4cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classsmooth_1_1BSpline.html" title="Cardinal Bspline on a Lie group.">BSpline</a>.  <a href="classsmooth_1_1BSpline.html#a0d6acf53896a7500cd446d0bebe4a4cf">More...</a><br /></td></tr>
 <tr class="separator:a0d6acf53896a7500cd446d0bebe4a4cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a128c0016c78002a5fd5f7bc5a480eb59"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range R&gt; </td></tr>
-<tr class="memitem:a128c0016c78002a5fd5f7bc5a480eb59"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">BSpline</a> (double t0, double <a class="el" href="classsmooth_1_1BSpline.html#a0d59e846a8f0a3300c3d2a6b75488191">dt</a>, const R &amp;<a class="el" href="classsmooth_1_1BSpline.html#ab564c7cd781cabefb9ea7432f79c2d6a">ctrl_pts</a>)</td></tr>
-<tr class="memdesc:a128c0016c78002a5fd5f7bc5a480eb59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classsmooth_1_1BSpline.html" title="Cardinal Bspline on a Lie group.">BSpline</a>.  <a href="classsmooth_1_1BSpline.html#a128c0016c78002a5fd5f7bc5a480eb59">More...</a><br /></td></tr>
-<tr class="separator:a128c0016c78002a5fd5f7bc5a480eb59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8dfb03f4ad20e22e0c64c93801ad5590"><td class="memTemplParams" colspan="2">template&lt;std::ranges::range Rv&gt; </td></tr>
+<tr class="memitem:a8dfb03f4ad20e22e0c64c93801ad5590"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a8dfb03f4ad20e22e0c64c93801ad5590">requires</a> (std::is_same_v&lt; std::ranges::range_value_t&lt; Rv &gt;, G &gt;) <a class="el" href="classsmooth_1_1BSpline.html">BSpline</a>(double t0</td></tr>
+<tr class="memdesc:a8dfb03f4ad20e22e0c64c93801ad5590"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a <a class="el" href="classsmooth_1_1BSpline.html" title="Cardinal Bspline on a Lie group.">BSpline</a>.  <a href="classsmooth_1_1BSpline.html#a8dfb03f4ad20e22e0c64c93801ad5590">More...</a><br /></td></tr>
+<tr class="separator:a8dfb03f4ad20e22e0c64c93801ad5590"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7834468fc108dba33969913d62cc38a8"><td class="memItemLeft" align="right" valign="top"><a id="a7834468fc108dba33969913d62cc38a8"></a>
+double const Rv&#160;</td><td class="memItemRight" valign="bottom"><b>dt_</b> (dt)</td></tr>
+<tr class="separator:a7834468fc108dba33969913d62cc38a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a571161af646e55ff5eb2408f1c82d70e"><td class="memItemLeft" align="right" valign="top"><a id="a571161af646e55ff5eb2408f1c82d70e"></a>
+double const Rv&#160;</td><td class="memItemRight" valign="bottom"><b>ctrl_pts_</b> (std::ranges::begin(ctrl_pts), std::ranges::end(ctrl_pts))</td></tr>
+<tr class="separator:a571161af646e55ff5eb2408f1c82d70e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a750d51175fecdcdd4b6da8c58a3c8835"><td class="memItemLeft" align="right" valign="top"><a id="a750d51175fecdcdd4b6da8c58a3c8835"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835">BSpline</a> (const <a class="el" href="classsmooth_1_1BSpline.html">BSpline</a> &amp;)=default</td></tr>
 <tr class="memdesc:a750d51175fecdcdd4b6da8c58a3c8835"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor. <br /></td></tr>
@@ -138,6 +145,15 @@ const std::vector&lt; G &gt; &amp;&#160;</td><td class="memItemRight" valign="bo
 <tr class="memitem:af400b1b5e033dc445e4eafd4638d0c7c"><td class="memItemLeft" align="right" valign="top">G&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#af400b1b5e033dc445e4eafd4638d0c7c">operator()</a> (double t, <a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; G &gt; vel={}, <a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; G &gt; acc={}) const</td></tr>
 <tr class="memdesc:af400b1b5e033dc445e4eafd4638d0c7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate Bspline.  <a href="classsmooth_1_1BSpline.html#af400b1b5e033dc445e4eafd4638d0c7c">More...</a><br /></td></tr>
 <tr class="separator:af400b1b5e033dc445e4eafd4638d0c7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:a4a63d7f4dbd08b1c0778e31f9d0acc12"><td class="memItemLeft" align="right" valign="top"><a id="a4a63d7f4dbd08b1c0778e31f9d0acc12"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>dt</b></td></tr>
+<tr class="separator:a4a63d7f4dbd08b1c0778e31f9d0acc12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8a4aa7af96076046e8da09dbf2b90cf"><td class="memItemLeft" align="right" valign="top"><a id="ac8a4aa7af96076046e8da09dbf2b90cf"></a>
+double const Rv &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>ctrl_pts</b>: t0_(t0)</td></tr>
+<tr class="separator:ac8a4aa7af96076046e8da09dbf2b90cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;std::size_t K, LieGroup G&gt;<br />
@@ -159,7 +175,7 @@ CTRL   0     1      2  ...    K  K+1          N
 <p class="definition">Definition at line <a class="el" href="bspline_8hpp_source.html#l00073">73</a> of file <a class="el" href="bspline_8hpp_source.html">bspline.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0d6acf53896a7500cd446d0bebe4a4cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d6acf53896a7500cd446d0bebe4a4cf">&#9670;&nbsp;</a></span>BSpline() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d6acf53896a7500cd446d0bebe4a4cf">&#9670;&nbsp;</a></span>BSpline()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -211,70 +227,6 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="bspline_8hpp_source.html#l00087">87</a> of file <a class="el" href="bspline_8hpp_source.html">bspline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a128c0016c78002a5fd5f7bc5a480eb59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a128c0016c78002a5fd5f7bc5a480eb59">&#9670;&nbsp;</a></span>BSpline() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, LieGroup G&gt; </div>
-<div class="memtemplate">
-template&lt;std::ranges::range R&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classsmooth_1_1BSpline.html">smooth::BSpline</a>&lt; K, G &gt;::<a class="el" href="classsmooth_1_1BSpline.html">BSpline</a> </td>
-          <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>t0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>dt</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const R &amp;&#160;</td>
-          <td class="paramname"><em>ctrl_pts</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Create a <a class="el" href="classsmooth_1_1BSpline.html" title="Cardinal Bspline on a Lie group.">BSpline</a>. </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">R</td><td>range type </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">t0</td><td>start of spline </td></tr>
-    <tr><td class="paramname">dt</td><td>distance between spline knots </td></tr>
-    <tr><td class="paramname">ctrl_pts</td><td>spline control points </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="bspline_8hpp_source.html#l00099">99</a> of file <a class="el" href="bspline_8hpp_source.html">bspline.hpp</a>.</p>
 
 </div>
 </div>
@@ -333,7 +285,45 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>spline value at time t</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Input <code>t</code> is clamped to spline interval of definition </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bspline_8hpp_source.html#l00144">144</a> of file <a class="el" href="bspline_8hpp_source.html">bspline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bspline_8hpp_source.html#l00145">145</a> of file <a class="el" href="bspline_8hpp_source.html">bspline.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8dfb03f4ad20e22e0c64c93801ad5590"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dfb03f4ad20e22e0c64c93801ad5590">&#9670;&nbsp;</a></span>requires()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t K, LieGroup G&gt; </div>
+<div class="memtemplate">
+template&lt;std::ranges::range Rv&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsmooth_1_1BSpline.html">smooth::BSpline</a>&lt; K, G &gt;::requires </td>
+          <td>(</td>
+          <td class="paramtype">std::is_same_v&lt; std::ranges::range_value_t&lt; Rv &gt;, G &gt;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Create a <a class="el" href="classsmooth_1_1BSpline.html" title="Cardinal Bspline on a Lie group.">BSpline</a>. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">R</td><td>range type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t0</td><td>start of spline </td></tr>
+    <tr><td class="paramname">dt</td><td>distance between spline knots </td></tr>
+    <tr><td class="paramname">ctrl_pts</td><td>spline control points </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

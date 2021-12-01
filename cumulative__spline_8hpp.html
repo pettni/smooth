@@ -134,11 +134,11 @@ template&lt;LieGroup G&gt; </td></tr>
 <tr class="memitem:aaa8ead4fd40c51fc7036ea0aea536f10"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">smooth::detail::OptTangent</a> = std::optional&lt; Eigen::Ref&lt; Tangent&lt; G &gt; &gt;&gt;</td></tr>
 <tr class="memdesc:aaa8ead4fd40c51fc7036ea0aea536f10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional argument for spline time derivatives. <br /></td></tr>
 <tr class="separator:aaa8ead4fd40c51fc7036ea0aea536f10"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdb1bd7527fc2f84d6ae3b67d75215eb"><td class="memTemplParams" colspan="2"><a id="acdb1bd7527fc2f84d6ae3b67d75215eb"></a>
+<tr class="memitem:a11d7dc08c67dfba02faa6a32d7b916d0"><td class="memTemplParams" colspan="2"><a id="a11d7dc08c67dfba02faa6a32d7b916d0"></a>
 template&lt;LieGroup G, std::size_t K&gt; </td></tr>
-<tr class="memitem:acdb1bd7527fc2f84d6ae3b67d75215eb"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#acdb1bd7527fc2f84d6ae3b67d75215eb">smooth::detail::OptJacobian</a> = std::optional&lt; Eigen::Ref&lt; Eigen::Matrix&lt; Scalar&lt; G &gt;, Dof&lt; G &gt;, Dof&lt; G &gt; *(K+1)&gt; &gt;&gt;</td></tr>
-<tr class="memdesc:acdb1bd7527fc2f84d6ae3b67d75215eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional argument for spline control point derivatives. <br /></td></tr>
-<tr class="separator:acdb1bd7527fc2f84d6ae3b67d75215eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11d7dc08c67dfba02faa6a32d7b916d0"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a11d7dc08c67dfba02faa6a32d7b916d0">smooth::detail::OptJacobian</a> = std::optional&lt; Eigen::Ref&lt; Eigen::Matrix&lt; Scalar&lt; G &gt;, Dof&lt; G &gt;, Dof&lt; G &gt;==-1 ? -1 :Dof&lt; G &gt; *(K+1)&gt; &gt;&gt;</td></tr>
+<tr class="memdesc:a11d7dc08c67dfba02faa6a32d7b916d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional argument for spline control point derivatives. <br /></td></tr>
+<tr class="separator:a11d7dc08c67dfba02faa6a32d7b916d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -200,7 +200,7 @@ template&lt;std::size_t K, std::ranges::range R, typename Derived , LieGroup G =
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#acdb1bd7527fc2f84d6ae3b67d75215eb">detail::OptJacobian</a>&lt; G, K &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a11d7dc08c67dfba02faa6a32d7b916d0">detail::OptJacobian</a>&lt; G, K &gt;&#160;</td>
           <td class="paramname"><em>der</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -239,7 +239,7 @@ template&lt;std::size_t K, std::ranges::range R, typename Derived , LieGroup G =
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="cumulative__spline_8hpp_source.html#l00176">176</a> of file <a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cumulative__spline_8hpp_source.html#l00179">179</a> of file <a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -287,7 +287,7 @@ template&lt;std::size_t K, LieGroup G, typename Derived &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#acdb1bd7527fc2f84d6ae3b67d75215eb">detail::OptJacobian</a>&lt; G, K &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a11d7dc08c67dfba02faa6a32d7b916d0">detail::OptJacobian</a>&lt; G, K &gt;&#160;</td>
           <td class="paramname"><em>der</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -327,7 +327,7 @@ template&lt;std::size_t K, LieGroup G, typename Derived &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="cumulative__spline_8hpp_source.html#l00071">71</a> of file <a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cumulative__spline_8hpp_source.html#l00072">72</a> of file <a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>.</p>
 
 </div>
 </div>

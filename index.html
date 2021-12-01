@@ -174,13 +174,13 @@ Concepts and Types</h2>
 <li><code>Manifold</code>: type for which <code>rplus</code> (geodesic addition) and <code>rminus</code> (geodesic subtraction) are defined. Examples:<ul>
 <li>All <code>LieGroup</code> types</li>
 <li><code><a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">smooth::ManifoldVector</a>&lt;Manifold&gt;</code> from <code><a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a></code>&mdash;facilitates e.g. optimization and differentiation w.r.t. a dynamic number of <code>Manifold</code>s</li>
-<li><code>Eigen::VectorXd</code></li>
 </ul>
 </li>
 <li><code>LieGroup</code>: type for which Lie group operations (<code>exp</code>, <code>log</code>, <code>Ad</code>, etc...) are defined. Examples:<ul>
 <li>All <code>NativeLieGroup</code> types</li>
-<li><code>Eigen::Vector3d</code></li>
-<li><code>double</code></li>
+<li>Fixed-size Eigen vectors (e.g. <code>Eigen::Vector3d</code>)</li>
+<li>Dynamic-size Eigen vectors (e.g. <code>Eigen::VectorXd</code>)</li>
+<li>Built-in scalars (e.g. <code>double</code>)</li>
 </ul>
 </li>
 <li><code>NativeLieGroup</code>: type that implements the Lie group operations as class methods. Examples:<ul>
@@ -190,7 +190,7 @@ Concepts and Types</h2>
 </ul>
 </li>
 </ul>
-<p>Both <code>Manifold</code> and <code>LieGroup</code> are defined via external type traits (<code>traits::man</code> and <code>traits::lie</code>) that can be specialized in order to define a <code>Manifold</code> or <code>LieGroup</code> interface for a third-party type.</p>
+<p>Both <code>Manifold</code> and <code>LieGroup</code> are defined via external type traits (<code>traits::man</code> and <code>traits::lie</code>) that can be specialized in order to define <code>Manifold</code> or <code>LieGroup</code> interfaces for third-party types.</p>
 <h2><a class="anchor" id="autotoc_md8"></a>
 Algorithms</h2>
 <h3><a class="anchor" id="autotoc_md9"></a>

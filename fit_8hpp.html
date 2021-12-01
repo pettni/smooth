@@ -179,10 +179,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a5ca687909d8d31db58b41fe6152e8b60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find N degree K Bernstein polynomials p_i(t) for i = 0, ..., N s.t that satisfies constraints and s.t.  <a href="fit_8hpp.html#a5ca687909d8d31db58b41fe6152e8b60">More...</a><br /></td></tr>
 <tr class="separator:a5ca687909d8d31db58b41fe6152e8b60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa517f190ee0bd237c524c3e19a8531eb"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb">smooth::fit_spline</a> (const std::ranges::range auto &amp;ts, const std::ranges::range auto &amp;gs, const SplineSpec auto &amp;ss)</td></tr>
-<tr class="memdesc:aa517f190ee0bd237c524c3e19a8531eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> to given points.  <a href="fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb">More...</a><br /></td></tr>
+<tr class="memdesc:aa517f190ee0bd237c524c3e19a8531eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a Spline to given points.  <a href="fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb">More...</a><br /></td></tr>
 <tr class="separator:aa517f190ee0bd237c524c3e19a8531eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc1215276fae4c50ce9c5b62c34c737b"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b">smooth::fit_spline_cubic</a> (const std::ranges::range auto &amp;ts, const std::ranges::range auto &amp;gs)</td></tr>
-<tr class="memdesc:afc1215276fae4c50ce9c5b62c34c737b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a cubic <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> with natural boundary conditions.  <a href="fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b">More...</a><br /></td></tr>
+<tr class="memdesc:afc1215276fae4c50ce9c5b62c34c737b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fit a cubic Spline with natural boundary conditions.  <a href="fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b">More...</a><br /></td></tr>
 <tr class="separator:afc1215276fae4c50ce9c5b62c34c737b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a90a8e289bb91aff4856569598310bd78"><td class="memTemplParams" colspan="2">template&lt;std::size_t K&gt; </td></tr>
 <tr class="memitem:a90a8e289bb91aff4856569598310bd78"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="fit_8hpp.html#a90a8e289bb91aff4856569598310bd78">smooth::fit_bspline</a> (const std::ranges::range auto &amp;tt, const std::ranges::range auto &amp;gg, double dt)</td></tr>
@@ -193,7 +193,7 @@ Functions</h2></td></tr>
 Variables</h2></td></tr>
 <tr class="memitem:ab7c8c2f78478cfea5fbc5a2b8a3bacf2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ab7c8c2f78478cfea5fbc5a2b8a3bacf2"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="fit_8hpp.html#ab7c8c2f78478cfea5fbc5a2b8a3bacf2">smooth::SplineSpec</a></td></tr>
-<tr class="memdesc:ab7c8c2f78478cfea5fbc5a2b8a3bacf2"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> specification.  <a href="fit_8hpp.html#ab7c8c2f78478cfea5fbc5a2b8a3bacf2">More...</a><br /></td></tr>
+<tr class="memdesc:ab7c8c2f78478cfea5fbc5a2b8a3bacf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spline specification.  <a href="fit_8hpp.html#ab7c8c2f78478cfea5fbc5a2b8a3bacf2">More...</a><br /></td></tr>
 <tr class="separator:ab7c8c2f78478cfea5fbc5a2b8a3bacf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -429,7 +429,7 @@ template&lt;typename T &gt; </div>
 <div class="line">  { t.RghtDeg };</div>
 <div class="line">  </div>
 <div class="line">}</div>
-<div class="ttc" id="alie__group_8hpp_html_a955863cb68f245f274a5554ab2be602a"><div class="ttname"><a href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">smooth::traits::requires</a></div><div class="ttdeci">requires(!RnType&lt; G &gt; &amp;&amp;!ScalarType&lt; G &gt;) struct man&lt; G &gt;</div><div class="ttdoc">Manifold interface for LieGroup that are not already Manifold.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00357">lie_group.hpp:357</a></div></div>
+<div class="ttc" id="alie__group_8hpp_html_a955863cb68f245f274a5554ab2be602a"><div class="ttname"><a href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">smooth::traits::requires</a></div><div class="ttdeci">requires(!RnType&lt; G &gt; &amp;&amp;!ScalarType&lt; G &gt;) struct man&lt; G &gt;</div><div class="ttdoc">Manifold interface for LieGroup that are not already Manifold.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00374">lie_group.hpp:374</a></div></div>
 </div><!-- fragment -->
 <p>Spline specification. </p>
 

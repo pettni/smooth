@@ -74,8 +74,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">spline.hpp File Reference</div>  </div>
 </div><!--header-->
@@ -128,25 +128,214 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="spline_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
-Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html">smooth::Spline&lt; K, G &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Single-parameter Lie group-valued function.  <a href="classsmooth_1_1Spline.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a905e992d69de2b76a4249aad7e3d31f1"><td class="memTemplParams" colspan="2"><a id="a905e992d69de2b76a4249aad7e3d31f1"></a>
 template&lt;LieGroup G&gt; </td></tr>
 <tr class="memitem:a905e992d69de2b76a4249aad7e3d31f1"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="spline_8hpp.html#a905e992d69de2b76a4249aad7e3d31f1">smooth::CubicSpline</a> = Spline&lt; 3, G &gt;</td></tr>
-<tr class="memdesc:a905e992d69de2b76a4249aad7e3d31f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for degree 3 <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>. <br /></td></tr>
+<tr class="memdesc:a905e992d69de2b76a4249aad7e3d31f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Alias for degree 3 Spline. <br /></td></tr>
 <tr class="separator:a905e992d69de2b76a4249aad7e3d31f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a1a966aee10baccbfdcb10d4b6903d969"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, LieGroup G&gt; </td></tr>
+<tr class="memitem:a1a966aee10baccbfdcb10d4b6903d969"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="spline_8hpp.html#a1a966aee10baccbfdcb10d4b6903d969">smooth::requires</a> (Dof&lt; G &gt; &gt; 0) class Spline</td></tr>
+<tr class="memdesc:a1a966aee10baccbfdcb10d4b6903d969"><td class="mdescLeft">&#160;</td><td class="mdescRight">Single-parameter Lie group-valued function.  <a href="spline_8hpp.html#a1a966aee10baccbfdcb10d4b6903d969">More...</a><br /></td></tr>
+<tr class="separator:a1a966aee10baccbfdcb10d4b6903d969"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Piecewise polynomial splines on lie groups. </p>
 
 <p class="definition">Definition in file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a1a966aee10baccbfdcb10d4b6903d969"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a966aee10baccbfdcb10d4b6903d969">&#9670;&nbsp;</a></span>requires()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t K, LieGroup G&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">smooth::requires </td>
+          <td>(</td>
+          <td class="paramtype">Dof&lt; G &gt;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">0&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Single-parameter Lie group-valued function. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Spline</td><td>degree </td></tr>
+    <tr><td class="paramname">G</td><td>Lie group</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>A Spline is a continuous function \( x : [0, T] \rightarrow \mathbb{G} \). Internally it is a piecewise collection of cumulative polynomial segments. </p>
+<p>Default constructor creates an empty Spline starting at a given point. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ga</td><td>Spline starting point (defaults to identity)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Create Spline with one segment and given velocity control points</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">T</td><td>duration (strictly positive) </td></tr>
+    <tr><td class="paramname">V</td><td>velocities for segment </td></tr>
+    <tr><td class="paramname">ga</td><td>Spline starting point (defaults to identity)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Create Spline with one segment and given velocity control points</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">T</td><td>duration (strictly positive) </td></tr>
+    <tr><td class="paramname">V</td><td>velocities for segment </td></tr>
+    <tr><td class="paramname">ga</td><td>Spline starting point (defaults to identity)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Create Spline with one segment and given velocities</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">T</td><td>duration (strictly positive) </td></tr>
+    <tr><td class="paramname">vs</td><td>velocity constants (size K) </td></tr>
+    <tr><td class="paramname">ga</td><td>Spline starting point (defaults to identity)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Copy constructor</p>
+<p>Move constructor</p>
+<p>Copy assignment</p>
+<p>Move assignment</p>
+<p>Destructor</p>
+<p>Create constant-velocity Spline that reaches a given target state.</p>
+<p>The resulting Spline is </p><p class="formulaDsp">
+\[ x(t) = g_a \circ \exp\left( \frac{t}{T} (g_b \ominus g_a) \right), \quad t \in [0, T]. \]
+</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gb</td><td>Spline target point </td></tr>
+    <tr><td class="paramname">T</td><td>duration (must be positive) </td></tr>
+    <tr><td class="paramname">ga</td><td>Spline starting point (defaults to Identity)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Create constant-velocity Spline.</p>
+<p>The resulting Spline is </p><p class="formulaDsp">
+\[ x(t) = g_a \exp(t v), \quad t \in [0, T]. \]
+</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">v</td><td>body velocity </td></tr>
+    <tr><td class="paramname">T</td><td>duration </td></tr>
+    <tr><td class="paramname">ga</td><td>Spline starting point</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Create Spline with given start and end position and velocities.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gb</td><td>Spline target point </td></tr>
+    <tr><td class="paramname">va,vb</td><td>start and end velocities </td></tr>
+    <tr><td class="paramname">T</td><td>duration </td></tr>
+    <tr><td class="paramname">ga</td><td>Spline starting point (default Identity)</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Number of Spline segments.</p>
+<p>True if Spline has zero size()</p>
+<p>Start time of Spline (always equal to zero).</p>
+<p>End time of Spline.</p>
+<p>Spline start value (always equal to identity).</p>
+<p>Spline end value.</p>
+<p>Move start of Spline to <a class="el" href="lie__group_8hpp.html#a823a7beb922b5b2da3dd40719973ac9c" title="Identity in Lie group.">Identity()</a></p>
+<p>In-place concatenation with a global Spline.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Spline to append at the end of this Spline.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The resulting Spline \( y(t) \) is s.t. </p><p class="formulaDsp">
+\[ y(t) = \begin{cases} x_1(t) &amp; 0 \leq t &lt; t_1 \\ x_2(t) &amp; t_1 \leq t \leq t_1 + t_2 \end{cases} \]
+</p>
+<p>In-place local concatenation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Spline to append at the end of this Spline.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The resulting Spline \( y(t) \) is s.t. </p><p class="formulaDsp">
+\[ y(t) = \begin{cases} x_1(t) &amp; 0 \leq t &lt; t_1 \\ x_1(t_1) \circ x_2(t) &amp; t_1 \leq t \leq t_1 + t_2 \end{cases} \]
+</p>
+<p>That is, other is considered a Spline in the local frame of end(). For global concatenation see concat_global.</p>
+<p>Operator overload for local concatenation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Spline to append at the end of this Spline.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd>concat_local()</dd></dl>
+<p>Local Spline concatenation.</p>
+<dl class="section see"><dt>See also</dt><dd>concat_local()</dd></dl>
+<p>Evaluate Curve at given time.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">t</td><td>time point to evaluate at </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">vel</td><td>output body velocity at evaluation time </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">acc</td><td>output body acceleration at evaluation time </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>value at time t</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Outside the support [t_min(), t_max()] the result is clamped to the end points, and the acceleration and velocity is zero.</dd></dl>
+<p>Get approximate arclength traversed at time T.</p>
+<p>The arclength is defined as </p><p class="formulaDsp">
+\[ A(t) = \int_{0}^t \left| \mathrm{d}^r x_s \right| \mathrm{d} s, \]
+</p>
+<p> where the absolute value is component-wise.</p>
+<dl class="section note"><dt>Note</dt><dd>This function is approximate for Lie groups with curvature.</dd></dl>
+<p>Crop Spline</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ta,tb</td><td>interval for cropped Spline </td></tr>
+    <tr><td class="paramname">localize</td><td>cropped Spline start at identity</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The resulting Spline \( y(t) \) defined on \( [0, t_b - t_a] \) is s.t.</p><ul>
+<li>If localize = true: <p class="formulaDsp">
+\[ y(t) = x(t_a)^{-1} \circ x(t - t_a) \]
+</p>
+</li>
+<li>If localize = false: <p class="formulaDsp">
+\[ y(t) = x(t - t_a) \]
+</p>
+</li>
+</ul>
+
+<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00054">54</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
