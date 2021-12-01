@@ -114,6 +114,10 @@ if(BUILD_TESTING)
   target_link_libraries(test_lie_api PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_lie_api)
 
+  add_executable(test_lie_dynamic test/test_liegroup_dynamic.cpp)
+  target_link_libraries(test_lie_dynamic PRIVATE smooth GTest::Main)
+  gtest_discover_tests(test_lie_dynamic)
+
   add_executable(test_so2 test/test_so2.cpp)
   target_link_libraries(test_so2 PRIVATE smooth GTest::Main)
   gtest_discover_tests(test_so2)

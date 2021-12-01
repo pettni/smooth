@@ -51,6 +51,7 @@ namespace smooth {
  * Internally it is a piecewise collection of cumulative polynomial segments.
  */
 template<std::size_t K, LieGroup G>
+  requires(Dof<G> > 0)
 class Spline
 {
 public:

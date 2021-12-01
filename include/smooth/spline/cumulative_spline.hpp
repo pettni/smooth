@@ -47,7 +47,8 @@ using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
 
 /// @brief Optional argument for spline control point derivatives
 template<LieGroup G, std::size_t K>
-using OptJacobian = std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)>>>;
+using OptJacobian =
+  std::optional<Eigen::Ref<Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> == -1 ? -1 : Dof<G> *(K + 1)>>>;
 
 }  // namespace detail
 
@@ -89,7 +90,9 @@ inline G cspline_eval_diff(
   if (vel.has_value()) { vel.value().setZero(); }
   if (acc.has_value()) { acc.value().setZero(); }
 
-  G g = Identity<G>();
+  const Eigen::Index xdof = dof(*std::ranges::cbegin(diff_points));
+
+  G g = Identity<G>(xdof);
 
   for (auto j = 1u; const auto & v : diff_points) {
     const Scalar<G> Btilde = uvec.dot(Bcum.col(j));
@@ -121,7 +124,7 @@ inline G cspline_eval_diff(
   if (der.has_value()) {
     der.value().setZero();
 
-    G z2inv = Identity<G>();
+    G z2inv = Identity<G>(xdof);
 
     for (auto jrev = 0u; jrev <= K; ++jrev) {
       const auto j = K - jrev;  // j: K -> 0

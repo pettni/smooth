@@ -176,7 +176,14 @@ struct traits::man<ManifoldVector<M>>
 
   static inline Eigen::Index dof(const ManifoldVector<M> & m) { return m.dof(); }
 
-  static inline PlainObject Default() { return PlainObject(); }
+  static inline PlainObject Default(Eigen::Index dof)
+  {
+    /// @note If underlying M has dynamic size, mdof not uniquely defined
+    const Eigen::Index mdof = ::smooth::Dof<M> != -1 ? ::smooth::Dof<M> : 1;
+    const Eigen::Index size = dof / mdof;
+
+    return PlainObject(size, Default<M>(mdof));
+  }
 
   template<typename NewScalar>
   static inline auto cast(const ManifoldVector<M> & m)
