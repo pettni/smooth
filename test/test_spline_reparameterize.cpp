@@ -109,7 +109,7 @@ TEST(Spline, Reparameterize)
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 
   double tmp;
   ASSERT_EQ(sfun(0, tmp, tmp), 0);
@@ -140,7 +140,7 @@ TEST(Spline, ReparameterizeZero)
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 
   double tmp;
   ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
@@ -172,7 +172,7 @@ TEST(Spline, ReparameterizeZeroMiddle)
 
   Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
 
-  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1, false, 0.01);
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 
   double tmp;
   ASSERT_EQ(sfun(0, tmp, tmp), 0);
@@ -217,12 +217,12 @@ TEST(Spline, ReparameterizeTurnInPlace)
   Eigen::Vector3d amin(-0.05, -1, -1);
   Eigen::Vector3d amax(0.1, 1, 1);
 
-  auto sfun = smooth::reparameterize_spline(c, vmin, vmax, amin, amax, 0, 0, false, 0.01);
+  auto sfun = smooth::reparameterize_spline(c, vmin, vmax, amin, amax, 0, 0, 1000);
 
   double tmp;
   ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
 
-  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+  for (double t = 0.05; t + 0.05 < sfun.t_max(); t += 0.1) {
     double ds, d2s;
     double s = sfun(t, ds, d2s);
 

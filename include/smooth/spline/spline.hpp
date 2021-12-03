@@ -35,9 +35,9 @@
 #include <cassert>
 #include <ranges>
 
-#include "smooth/polynomial/basis.hpp"
-
 #include "cumulative_spline.hpp"
+#include "smooth/polynomial/basis.hpp"
+#include "traits.hpp"
 
 namespace smooth {
 
@@ -576,6 +576,13 @@ private:
  */
 template<LieGroup G>
 using CubicSpline = Spline<3, G>;
+
+/**
+ * @brief Specialize traits
+ */
+template<std::size_t K, LieGroup G>
+struct traits::is_spline<Spline<K, G>> : std::true_type
+{};
 
 }  // namespace smooth
 
