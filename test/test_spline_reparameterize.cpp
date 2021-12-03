@@ -107,7 +107,7 @@ TEST(Spline, Reparameterize)
   c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 1));
   c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(1, 0, 0));
 
-  Eigen::Vector3d vmax(0.5, 0.2, 0.2), amax(1, 0.05, 0.1);
+  Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
   auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 

@@ -141,7 +141,7 @@ Reparameterization reparameterize_spline(
   const auto & acc_max,
   double start_vel    = 1,
   double end_vel      = std::numeric_limits<double>::infinity(),
-  const std::size_t N = 500)
+  const std::size_t N = 100)
 {
   using G = std::invoke_result_t<decltype(spline), double>;
 
