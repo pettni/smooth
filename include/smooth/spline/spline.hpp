@@ -339,9 +339,11 @@ public:
   }
 
   /**
-   * @brief Evaluate Curve at given time.
+   * @brief Evaluate Spline at given time.
    *
-   * @param[in] t time point to evaluate at
+   * @tparam S time type
+   *
+   * @param[in] t time
    * @param[out] vel output body velocity at evaluation time
    * @param[out] acc output body acceleration at evaluation time
    * @return value at time t
@@ -349,27 +351,31 @@ public:
    * @note Outside the support [t_min(), t_max()] the result is clamped to the end points, and
    * the acceleration and velocity is zero.
    */
-  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  template<typename S = double>
+  CastT<S, G> operator()(
+    const S & t,
+    detail::OptTangent<CastT<S, G>> vel = {},
+    detail::OptTangent<CastT<S, G>> acc = {}) const
   {
     if (empty() || t < 0) {
       if (vel.has_value()) { vel.value().setZero(); }
       if (acc.has_value()) { acc.value().setZero(); }
-      return g0_;
+      return cast<S>(g0_);
     }
 
     if (t > t_max()) {
       if (vel.has_value()) { vel.value().setZero(); }
       if (acc.has_value()) { acc.value().setZero(); }
-      return end_g_.back();
+      return cast<S>(end_g_.back());
     }
 
-    const auto istar = find_idx(t);
+    const auto istar = find_idx(static_cast<double>(t));
 
     const double ta = istar == 0 ? 0 : end_t_[istar - 1];
     const double T  = end_t_[istar] - ta;
 
     const double Del = seg_Del_[istar];
-    const double u   = std::clamp<double>(seg_T0_[istar] + Del * (t - ta) / T, 0, 1);
+    const S u        = std::clamp<S>(S(seg_T0_[istar]) + S(Del) * (t - S(ta)) / S(T), S(0.), S(1.));
 
     G g0 = istar == 0 ? g0_ : end_g_[istar - 1];
 
@@ -384,10 +390,11 @@ public:
         g0 = composition(
           g0, inverse(cspline_eval_diff<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
       }
-      const G g = composition(g0, cspline_eval_diff<K, G>(Vs_[istar].colwise(), B_, u, vel, acc));
-      if (vel.has_value()) { vel.value() *= Del / T; }
-      if (acc.has_value()) { acc.value() *= Del * Del / (T * T); }
-      return g;
+      const CastT<S, G> add = cspline_eval_diff<K, CastT<S, G>>(
+        Vs_[istar].template cast<S>().colwise(), B_.template cast<S>(), u, vel, acc);
+      if (vel.has_value()) { vel.value() *= S(Del / T); }
+      if (acc.has_value()) { acc.value() *= S(Del * Del / (T * T)); }
+      return composition(cast<S>(g0), add);
     }
   }
 

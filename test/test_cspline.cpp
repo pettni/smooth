@@ -25,6 +25,10 @@
 
 #include <gtest/gtest.h>
 
+#ifdef ENABLE_AUTODIFF_TESTS
+#include "smooth/compat/autodiff.hpp"
+#endif
+
 #include "smooth/bundle.hpp"
 #include "smooth/diff.hpp"
 #include "smooth/se2.hpp"
@@ -159,12 +163,12 @@ TEST(CSpline, BSplineOutside)
 
   smooth::BSpline<5, smooth::SO3d> spl(0, 1, c1);
 
-  ASSERT_TRUE(spl(-2).isApprox(spl(0)));
-  ASSERT_TRUE(spl(-1).isApprox(spl(0)));
-  ASSERT_FALSE(spl(45).isApprox(spl(44)));
-  ASSERT_TRUE(spl(45).isApprox(spl(46)));
-  ASSERT_TRUE(spl(45).isApprox(spl(47)));
-  ASSERT_TRUE(spl(45).isApprox(spl(48)));
+  ASSERT_TRUE(spl(-2.).isApprox(spl(0.)));
+  ASSERT_TRUE(spl(-1.).isApprox(spl(0.)));
+  ASSERT_FALSE(spl(45.).isApprox(spl(44.)));
+  ASSERT_TRUE(spl(45.).isApprox(spl(46.)));
+  ASSERT_TRUE(spl(45.).isApprox(spl(47.)));
+  ASSERT_TRUE(spl(45.).isApprox(spl(48.)));
 }
 
 TEST(CSpline, BSplineDerivT1)
@@ -217,3 +221,38 @@ TEST(CSpline, BSplineDerivSO3)
     ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
   }
 }
+
+#ifdef ENABLE_AUTODIFF_TESTS
+
+TEST(CSpline, BSplineAutodiff)
+{
+  std::srand(5);
+
+  std::vector<smooth::SO3d> c1;
+  for (auto i = 0u; i != 50; ++i) { c1.push_back(smooth::SO3d::Random()); }
+
+  smooth::BSpline<5, smooth::SO3d> spl(0, 1, c1);
+
+  for (double d = 0.1; d < 1; d += 0.1) {
+    // velocity with autodiff
+    const auto [_a, v_ad] = smooth::diff::dr<smooth::diff::Type::AUTODIFF>(spl, smooth::wrt(d));
+
+    // acceleration with autodiff
+    const auto [_b, a_ad] = smooth::diff::dr<smooth::diff::Type::AUTODIFF>(
+      [&]<typename T>(T t) {
+        Eigen::Vector3<T> vv;
+        spl(t, vv);
+        return vv;
+      },
+      smooth::wrt(d));
+
+    // velocity and acceleration directly
+    Eigen::Vector3d v, a;
+    spl(d, v, a);
+
+    ASSERT_TRUE(v_ad.isApprox(v));
+    ASSERT_TRUE(a_ad.isApprox(a));
+  }
+}
+
+#endif
