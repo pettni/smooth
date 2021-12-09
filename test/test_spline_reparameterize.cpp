@@ -29,77 +29,6 @@
 #include "smooth/spline/reparameterize.hpp"
 #include "smooth/spline/spline.hpp"
 
-TEST(Spline, ReparameterizeEmpty)
-{
-  smooth::Reparameterization repar;
-
-  ASSERT_EQ(repar.t_min(), 0);
-  ASSERT_EQ(repar.t_max(), 0);
-
-  {
-    double ds, d2s;
-    const double s = repar(-1, ds, d2s);
-    ASSERT_EQ(s, 0);
-    ASSERT_EQ(ds, 0);
-    ASSERT_EQ(d2s, 0);
-  }
-
-  {
-    double ds, d2s;
-    const double s = repar(0, ds, d2s);
-    ASSERT_EQ(s, 0);
-    ASSERT_EQ(ds, 0);
-    ASSERT_EQ(d2s, 0);
-  }
-
-  {
-    double ds, d2s;
-    const double s = repar(1, ds, d2s);
-    ASSERT_EQ(s, 0);
-    ASSERT_EQ(ds, 0);
-    ASSERT_EQ(d2s, 0);
-  }
-}
-
-TEST(Spline, ReparameterizeSingle)
-{
-  smooth::Reparameterization repar(
-    1,
-    {smooth::Reparameterization::Data{
-      .t = 0,
-      .s = 1,
-      .v = 0,
-      .a = 0,
-    }});
-
-  ASSERT_EQ(repar.t_min(), 0);
-  ASSERT_EQ(repar.t_max(), 0);
-
-  {
-    double ds, d2s;
-    const double s = repar(-1, ds, d2s);
-    ASSERT_EQ(s, 1);
-    ASSERT_EQ(ds, 0);
-    ASSERT_EQ(d2s, 0);
-  }
-
-  {
-    double ds, d2s;
-    const double s = repar(0, ds, d2s);
-    ASSERT_EQ(s, 1);
-    ASSERT_EQ(ds, 0);
-    ASSERT_EQ(d2s, 0);
-  }
-
-  {
-    double ds, d2s;
-    const double s = repar(1, ds, d2s);
-    ASSERT_EQ(s, 1);
-    ASSERT_EQ(ds, 0);
-    ASSERT_EQ(d2s, 0);
-  }
-}
-
 TEST(Spline, Reparameterize)
 {
   smooth::CubicSpline<smooth::SE2d> c;
@@ -111,19 +40,18 @@ TEST(Spline, Reparameterize)
 
   auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 
-  double tmp;
-  ASSERT_EQ(sfun(0, tmp, tmp), 0);
-  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+  ASSERT_EQ(sfun(0), 0);
+  ASSERT_GE(sfun(sfun.t_max() + 1e-6), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
-    double ds, d2s;
+    Eigen::Matrix<double, 1, 1> ds, d2s;
     double s = sfun(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
     c(s, vel, acc);
 
-    Eigen::Vector3d repar_vel = vel * ds;
-    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+    Eigen::Vector3d repar_vel = vel * ds(0);
+    Eigen::Vector3d repar_acc = vel * d2s(0) + acc * ds(0) * ds(0);
 
     ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
     ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
@@ -142,18 +70,17 @@ TEST(Spline, ReparameterizeZero)
 
   auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 
-  double tmp;
-  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+  ASSERT_GE(sfun(sfun.t_max() + 1e-6), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
-    double ds, d2s;
+    Eigen::Matrix<double, 1, 1> ds, d2s;
     double s = sfun(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
     c(s, vel, acc);
 
-    Eigen::Vector3d repar_vel = vel * ds;
-    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+    Eigen::Vector3d repar_vel = vel * ds(0);
+    Eigen::Vector3d repar_acc = vel * d2s(0) + acc * ds(0) * ds(0);
 
     ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
     ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
@@ -174,19 +101,18 @@ TEST(Spline, ReparameterizeZeroMiddle)
 
   auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 
-  double tmp;
-  ASSERT_EQ(sfun(0, tmp, tmp), 0);
-  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+  ASSERT_EQ(sfun(0.), 0);
+  ASSERT_GE(sfun(sfun.t_max() + 1e-6), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
-    double ds, d2s;
+    Eigen::Matrix<double, 1, 1> ds, d2s;
     double s = sfun(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
     c(s, vel, acc);
 
-    Eigen::Vector3d repar_vel = vel * ds;
-    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+    Eigen::Vector3d repar_vel = vel * ds(0);
+    Eigen::Vector3d repar_acc = vel * d2s(0) + acc * ds(0) * ds(0);
 
     ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
     ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
@@ -219,18 +145,17 @@ TEST(Spline, ReparameterizeTurnInPlace)
 
   auto sfun = smooth::reparameterize_spline(c, vmin, vmax, amin, amax, 0, 0, 1000);
 
-  double tmp;
-  ASSERT_GE(sfun(sfun.t_max(), tmp, tmp), c.t_max());
+  ASSERT_GE(sfun(sfun.t_max() + 1e-6), c.t_max());
 
   for (double t = 0.05; t + 0.05 < sfun.t_max(); t += 0.1) {
-    double ds, d2s;
+    Eigen::Matrix<double, 1, 1> ds, d2s;
     double s = sfun(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
     c(s, vel, acc);
 
-    Eigen::Vector3d repar_vel = vel * ds;
-    Eigen::Vector3d repar_acc = vel * d2s + acc * ds * ds;
+    Eigen::Vector3d repar_vel = vel * ds(0);
+    Eigen::Vector3d repar_acc = vel * d2s(0) + acc * ds(0) * ds(0);
 
     ASSERT_GE((repar_vel - vmin).minCoeff(), -0.05);
     ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);

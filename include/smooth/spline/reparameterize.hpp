@@ -32,87 +32,10 @@
  */
 
 #include "fit.hpp"
+#include "spline.hpp"
 #include "traits.hpp"
 
 namespace smooth {
-
-/**
- * @brief Spline-like object that represents a Reparameterization as a function \f$ t \rightarrow
- * s(t) \f$.
- */
-class Reparameterization
-{
-public:
-  /// @brief Reparameterization data
-  struct Data
-  {
-    /// time t
-    double t;
-    /// position s
-    double s;
-    /// ds/dt
-    double v;
-    /// d2s/dt2
-    double a;
-  };
-
-  /**
-   * @brief Create empty reparameterization.
-   */
-  Reparameterization() : smax_(0) {}
-
-  /**
-   * @brief Create Reparameterization.
-   * @param smax maximal value of \f$ s \f$.
-   * @param d data vector
-   */
-  Reparameterization(double smax, std::vector<Data> && d) : smax_(smax), d_(std::move(d)) {}
-  /// @brief Default copy constructor
-  Reparameterization(const Reparameterization &) = default;
-  /// @brief Default move constructor
-  Reparameterization(Reparameterization &&) = default;
-  /// @brief Default copy assignment
-  Reparameterization & operator=(const Reparameterization &) = default;
-  /// @brief Default move assignment
-  Reparameterization & operator=(Reparameterization &&) = default;
-  /// @brief Default destructor
-  ~Reparameterization() = default;
-
-  /// @brief Minimal t value
-  double t_min() const { return 0; }
-
-  /// @brief Maximal t value
-  double t_max() const { return d_.empty() ? 0. : d_.back().t; }
-
-  /**
-   * @brief Evaluate reparameterization function
-   * @param[in] t time
-   * @param[out] ds return first derivative \f$ s'(t) \f$
-   * @param[out] d2s return second derivative \f$ s''(t) \f$
-   */
-  double operator()(double t, double & ds, double & d2s) const
-  {
-    const auto it =
-      utils::binary_interval_search(d_, t, [](const Data & d, double t) { return d.t <=> t; });
-
-    if (it == d_.end()) {
-      ds  = 0;
-      d2s = 0;
-      return d_.empty() ? 0. : std::clamp<double>(d_.front().s, 0., smax_);
-    }
-
-    const double tau = t - it->t;
-
-    ds  = it->v + it->a * tau;
-    d2s = it->a;
-
-    return std::clamp(it->s + it->v * tau + it->a * tau * tau / 2, 0., smax_);
-  }
-
-private:
-  double smax_;
-  std::vector<Data> d_;
-};
 
 /**
  * @brief Reparameterize a spline to satisfy velocity and acceleration constraints.
@@ -133,7 +56,7 @@ private:
  * @note It may not be feasible to satisfy the target boundary velocities. In those cases the
  * resulting velocities will be lower than the desired values.
  */
-Reparameterization reparameterize_spline(
+Spline<2, double> reparameterize_spline(
   const SplineType auto & spline,
   const auto & vel_min,
   const auto & vel_max,
@@ -220,7 +143,7 @@ Reparameterization reparameterize_spline(
 
   // FORWARD PASS WITH MAXIMAL ACCELERATION
 
-  std::vector<Reparameterization::Data> dd;
+  std::vector<std::array<double, 4>> dd;
   dd.reserve(N + 1);
 
   for (auto i = 0u; i < N + 1; ++i) {
@@ -274,16 +197,23 @@ Reparameterization reparameterize_spline(
         }
       }
 
-      dd.push_back(Reparameterization::Data{
-        .t = t,
-        .s = s0 + ds * i,
-        .v = v,
-        .a = i == N ? 0 : a,
-      });
+      dd.push_back({t, s0 + ds * i, v, i == N ? 0 : a});
     }
   }
 
-  return Reparameterization(sf - s0, std::move(dd));
+  // convert into a spline
+  Spline<2, double> ret;
+  for (auto i = 0u; i + 1 < dd.size(); ++i) {
+    const double dt = std::get<0>(dd[i + 1]) - std::get<0>(dd[i]);
+    const double s  = std::get<1>(dd[i]);
+    const double v  = dt * std::get<2>(dd[i]);
+    const double a  = dt * dt * std::get<3>(dd[i]);
+    ret.concat_global(Spline<2, double>(dt, Eigen::Matrix<double, 1, 2>{v / 2, a / 2 + v / 2}, s));
+  }
+
+  ret.concat_global(Spline<2, double>(spline.t_max()));
+
+  return ret;
 }
 
 }  // namespace smooth

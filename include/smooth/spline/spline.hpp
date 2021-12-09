@@ -44,7 +44,7 @@ namespace smooth {
 /**
  * @brief Single-parameter Lie group-valued function.
  *
- * @tparam Spline degree
+ * @tparam K Spline degree
  * @tparam G Lie group
  *
  * A Spline is a continuous function \f$ x : [0, T] \rightarrow \mathbb{G} \f$.

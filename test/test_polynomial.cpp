@@ -270,6 +270,19 @@ TEST(Polynomial, Bspline)
 
 TEST(Polynomial, Bezier)
 {
+  constexpr auto c2 = smooth::polynomial_basis<smooth::PolynomialBasis::Bernstein, 2>();
+  static_assert(std::abs(c2[0][0] - 1) < 1e-8);
+  static_assert(std::abs(c2[0][1] - 0) < 1e-8);
+  static_assert(std::abs(c2[0][2] - 0) < 1e-8);
+
+  static_assert(std::abs(c2[1][0] + 2) < 1e-8);
+  static_assert(std::abs(c2[1][1] - 2) < 1e-8);
+  static_assert(std::abs(c2[1][2] - 0) < 1e-8);
+
+  static_assert(std::abs(c2[2][0] - 1) < 1e-8);
+  static_assert(std::abs(c2[2][1] + 2) < 1e-8);
+  static_assert(std::abs(c2[2][2] - 1) < 1e-8);
+
   constexpr auto c3 = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bernstein, 3>();
   static_assert(std::abs(c3[0][0] - 1) < 1e-8);
   static_assert(std::abs(c3[0][1] - 0) < 1e-8);

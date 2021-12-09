@@ -64,19 +64,19 @@ int main(int, char const **)
   std::vector<double> rvx, rvy, rw, rax, ray, rdw;
 
   for (double t = 0; t < sfun.t_max(); t += 0.01) {
-    double ds, d2s;
+    Eigen::Matrix<double, 1, 1> ds, d2s;
     double s = sfun(t, ds, d2s);
 
     Eigen::Vector3d vel, acc;
     c(s, vel, acc);
 
-    Eigen::Vector3d vel_reparam = vel * ds;
-    Eigen::Vector3d acc_reparam = vel * d2s + acc * ds * ds;
+    Eigen::Vector3d vel_reparam = vel * ds(0);
+    Eigen::Vector3d acc_reparam = vel * d2s(0) + acc * ds(0) * ds(0);
 
     tvec.push_back(t);
     svec.push_back(s);
-    vvec.push_back(ds);
-    avec.push_back(d2s);
+    vvec.push_back(ds(0));
+    avec.push_back(d2s(0));
 
     vx.push_back(vel.x());
     vy.push_back(vel.y());
