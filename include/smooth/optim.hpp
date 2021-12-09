@@ -83,7 +83,7 @@ template<diff::Type D>
 void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptions{})
 {
   // evaluate residuals and jacobian at initial point
-  auto [r, J] = diff::dr<D>(f, x);
+  auto [r, J] = diff::dr<1, D>(f, x);
 
   // extract some properties from jacobian
   static constexpr bool is_sparse =
@@ -136,7 +136,7 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
     // evaluate function and jacobian at x + a
     const auto x_plus_a         = wrt_rplus(x, a);
-    const auto [r_cand, J_cand] = diff::dr<D>(f, x_plus_a);
+    const auto [r_cand, J_cand] = diff::dr<1, D>(f, x_plus_a);
 
     const double r_cand_norm = r_cand.stableNorm();
     const double Da_norm     = d.cwiseProduct(a).stableNorm();
@@ -234,7 +234,7 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
  */
 void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptions{})
 {
-  minimize<diff::Type::DEFAULT>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x), opts);
+  minimize<diff::Type::Default>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x), opts);
 }
 
 }  // namespace smooth

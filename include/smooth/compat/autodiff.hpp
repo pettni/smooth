@@ -31,6 +31,9 @@
  * @brief autodiff compatability header.
  */
 
+// TODO switch to autodiff::Real when it supports atan2
+// https://github.com/autodiff/autodiff/issues/185
+
 #include <autodiff/forward/dual.hpp>
 #include <autodiff/forward/dual/eigen.hpp>
 
@@ -43,8 +46,8 @@
 namespace smooth {
 
 /// @brief Specialize trait to make autodiff type a Manifold
-template<std::floating_point F>
-struct traits::scalar_trait<autodiff::Dual<F, F>>
+template<typename T>
+struct traits::scalar_trait<autodiff::Dual<T, T>>
 {
   // \cond
   static constexpr bool value = true;
@@ -60,6 +63,8 @@ namespace diff {
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
  */
+template<std::size_t K = 1>
+  requires(K >= 1 && K <= 2)
 auto dr_autodiff(auto && f, auto && x)
 {
   using Result = decltype(std::apply(f, x));
@@ -68,29 +73,53 @@ auto dr_autodiff(auto && f, auto && x)
 
   static_assert(Manifold<Result>, "f(x) is not a Manifold");
 
-  using AdScalar = autodiff::Dual<Scalar, Scalar>;
+  using AdScalar = autodiff::HigherOrderDual<K, Scalar>;
 
-  Result fval = std::apply(f, x);
+  Result F = std::apply(f, x);
 
   static constexpr Eigen::Index Nx = wrt_Dof<decltype(x)>();
   static constexpr Eigen::Index Ny = Dof<Result>;
   const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
+  const Eigen::Index ny = dof(F);
 
-  // cast fval and x to ad types
-  const auto x_ad                       = wrt_cast<AdScalar>(x);
-  const CastT<AdScalar, Result> fval_ad = cast<AdScalar>(fval);
+  // cast F and x to ad types
+  const auto x_ad              = wrt_cast<AdScalar>(x);
+  CastT<AdScalar, Result> F_ad = cast<AdScalar>(F);
 
   // zero-valued tangent element (can not be const...)
   Matrix<AdScalar, Nx, 1> a_ad = Matrix<AdScalar, Nx, 1>::Zero(nx);
 
-  // function to differentiate
-  const auto f_ad = [&](Matrix<AdScalar, Nx, 1> & var) -> Matrix<AdScalar, Ny, 1> {
-    return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), fval_ad);
-  };
+  // TODO: use output argument signatures when new version of autodiff available
 
-  Matrix<Scalar, Ny, Nx> jac = autodiff::jacobian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad));
+  if constexpr (K == 1) {
 
-  return std::make_pair(std::move(fval), std::move(jac));
+    // function to differentiate
+    const auto f_ad = [&](Matrix<AdScalar, Nx, 1> & var) -> Matrix<AdScalar, Ny, 1> {
+      return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), F_ad);
+    };
+
+    Matrix<Scalar, Ny, Nx> J(ny, nx);
+
+    J = autodiff::jacobian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad));
+    return std::make_pair(std::move(F), std::move(J));
+  }
+
+  if constexpr (K == 2) {
+    static_assert(Ny == 1, "2nd derivative only implemented for scalar functions");
+
+    // function to differentiate
+    const auto f_ad = [&f, &x_ad, &F_ad](Matrix<AdScalar, Nx, 1> & var) -> AdScalar {
+      return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), F_ad).x();
+    };
+
+    CastT<AdScalar, Result> tmp;
+    Matrix<Scalar, Ny, Nx> J_ad(ny, nx);
+    Matrix<Scalar, Nx, Nx> H(nx, nx);
+
+    H = autodiff::hessian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad), tmp, J_ad);
+
+    return std::make_tuple(std::move(F), std::move(J_ad.template cast<double>()), std::move(H));
+  }
 }
 
 }  // namespace diff

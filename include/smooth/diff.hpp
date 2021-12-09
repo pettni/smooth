@@ -28,7 +28,7 @@
 
 /**
  * @file
- * @brief Differentiation on Lie groups.
+ * @brief Differentiation on Manifolds.
  */
 
 #include <Eigen/Core>
@@ -45,7 +45,7 @@ namespace diff {
 namespace detail {
 
 /**
- * @brief Numerical differentiation in tangent space.
+ * @brief Numerical first-order differentiation in tangent space.
  *
  * @param f function to differentiate
  * @param x reference tuple of function arguments
@@ -54,6 +54,8 @@ namespace detail {
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
+template<std::size_t K = 1>
+  requires(K >= 1 && K <= 2)
 auto dr_numerical(auto && f, auto && x)
 {
   using Wrt    = decltype(x);
@@ -65,8 +67,8 @@ auto dr_numerical(auto && f, auto && x)
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
   // arguments are modified below, so we create a copy of those that come in as const
-  auto x_nc  = wrt_copy_if_const(std::forward<Wrt>(x));
-  Result val = std::apply(f, x_nc);
+  auto x_nc = wrt_copy_if_const(std::forward<Wrt>(x));
+  Result F  = std::apply(f, x_nc);
 
   // static sizes
   static constexpr Eigen::Index Nx = wrt_Dof<Wrt>();
@@ -74,34 +76,95 @@ auto dr_numerical(auto && f, auto && x)
 
   // dynamic sizes
   Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x_nc);
-  Eigen::Index ny = dof<Result>(val);
+  Eigen::Index ny = dof<Result>(F);
 
   // output variable
-  Eigen::Matrix<Scalar, Ny, Nx> jac(ny, nx);
+  Eigen::Matrix<Scalar, Ny, Nx> J(ny, nx);
 
-  Eigen::Index index_pos = 0;
-  utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i) {
-    auto & w = std::get<i>(x_nc);
-    using W  = std::decay_t<decltype(w)>;
+  if constexpr (K == 1) {
+    Eigen::Index I0 = 0;
+    utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i) {
+      auto & w = std::get<i>(x_nc);
+      using W  = std::decay_t<decltype(w)>;
 
-    static constexpr Eigen::Index Nx_j = Dof<W>;
-    const int nx_j                     = dof<W>(w);
+      static constexpr Eigen::Index Nx_j = Dof<W>;
+      const int nx_j                     = dof<W>(w);
 
-    for (auto j = 0; j != nx_j; ++j) {
-      Scalar eps_j = eps;
-      if constexpr (std::is_base_of_v<Eigen::MatrixBase<W>, W>) {
-        // scale step size if we are in Rn
-        eps_j *= abs(w[j]);
-        if (eps_j == 0.) { eps_j = eps; }
+      for (auto j = 0; j != nx_j; ++j) {
+        Scalar eps_j = eps;
+        if constexpr (std::is_base_of_v<Eigen::MatrixBase<W>, W>) {
+          // scale step size if we are in Rn
+          eps_j *= abs(w[j]);
+          if (eps_j == 0.) { eps_j = eps; }
+        }
+        w             = rplus<W>(w, (eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
+        J.col(I0 + j) = rminus<Result>(std::apply(f, x_nc), F) / eps_j;
+        w             = rplus<W>(w, (-eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
       }
-      w = rplus<W>(w, (eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
-      jac.col(index_pos + j) = rminus<Result>(std::apply(f, x_nc), val) / eps_j;
-      w = rplus<W>(w, (-eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
-    }
-    index_pos += nx_j;
-  });
+      I0 += nx_j;
+    });
 
-  return std::make_pair(std::move(val), std::move(jac));
+    return std::make_pair(std::move(F), std::move(J));
+  }
+
+  if constexpr (K == 2) {
+    static_assert(Ny == 1, "2nd derivative only implemented for scalar functions");
+
+    Eigen::Matrix<Scalar, Nx, Nx> H(nx, nx);
+
+    Eigen::Index I0 = 0;
+    utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i0) {
+      auto & w0                           = std::get<i0>(x_nc);
+      using W0                            = std::decay_t<decltype(w0)>;
+      static constexpr Eigen::Index Nx_i0 = Dof<W0>;
+      const int nx_i0                     = dof<W0>(w0);
+
+      Eigen::Index I1 = 0;
+      utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i1) {
+        if (Eigen::Index(i1) > I0) { return; }
+
+        auto & w1                           = std::get<i1>(x_nc);
+        using W1                            = std::decay_t<decltype(w1)>;
+        static constexpr Eigen::Index Nx_i1 = Dof<W1>;
+        const int nx_i1                     = dof<W1>(w1);
+
+        for (auto i0 = 0; i0 != nx_i0; ++i0) {
+          Scalar eps0 = std::sqrt(eps);
+          if constexpr (std::is_base_of_v<Eigen::MatrixBase<W0>, W0>) {
+            eps0 *= abs(w0[i0]);
+            if (eps0 == 0.) { eps0 = eps; }
+          }
+
+          w0               = rplus<W0>(w0, eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
+          const Result F10 = std::apply(f, x_nc);
+          w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
+
+          J(0, I0 + i0) = (F10 - F) / eps0;
+
+          for (auto i1 = 0; i1 <= i0; ++i1) {
+            Scalar eps1 = std::sqrt(eps);
+            if constexpr (std::is_base_of_v<Eigen::MatrixBase<W1>, W1>) {
+              eps1 *= abs(w1[i1]);
+              if (eps1 == 1.) { eps1 = eps; }
+            }
+
+            w1               = rplus<W1>(w1, eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, i1));
+            const Result F01 = std::apply(f, x_nc);
+            w0               = rplus<W0>(w0, eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
+            const Result F11 = std::apply(f, x_nc);
+            w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
+            w1               = rplus<W1>(w1, -eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, i1));
+
+            H(I0 + i0, I1 + i1) = H(I1 + i1, I0 + i0) = (F11 - F01 - F10 + F) / (eps0 * eps1);
+          }
+        }
+        I1 += nx_i1;
+      });
+      I0 += nx_i0;
+    });
+
+    return std::make_tuple(std::move(F), std::move(J), std::move(H));
+  }
 }
 
 }  // namespace detail
@@ -110,67 +173,73 @@ auto dr_numerical(auto && f, auto && x)
  * @brief Available differentiation methods
  */
 enum class Type {
-  NUMERICAL,  ///< Numerical (forward) derivatives
-  AUTODIFF,   ///< Uses the autodiff (https://autodiff.github.io) library; requires  \p
+  Numerical,  ///< Numerical (forward) derivatives
+  Autodiff,   ///< Uses the autodiff (https://autodiff.github.io) library; requires  \p
               ///< compat/autodiff.hpp
-  CERES,      ///< Uses the Ceres (http://ceres-solver.org) built-in autodiff; requires \p
+  Ceres,      ///< Uses the Ceres (http://ceres-solver.org) built-in autodiff; requires \p
               ///< compat/ceres.hpp
-  ANALYTIC,   ///< Hand-coded derivative, requires that function returns \p std::pair \f$(f(x),
+  Analytic,   ///< Hand-coded derivative, requires that function returns \p std::pair \f$(f(x),
               ///< \mathrm{d}^r f_x) \f$
-  DEFAULT     ///< Automatically select type based on availability
+  Default     ///< Automatically select type based on availability
 };
 
 static constexpr Type DefaultType =
 #ifdef SMOOTH_DIFF_AUTODIFF
-  Type::AUTODIFF;
+  Type::Autodiff;
 #elif defined SMOOTH_DIFF_CERES
-  Type::CERES;
+  Type::Ceres;
 #else
-  Type::NUMERICAL;
+  Type::Numerical;
 #endif
 
 /**
  * @brief Differentiation in tangent space
  *
+ * @tparam K differentiation order (1 or 2)
  * @tparam D differentiation method to use
  *
  * @param f function to differentiate
  * @param x reference tuple of function arguments
- * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
+ * @return {f(x), dr f(x)} for K = 1, {f(x), dr f(x), d2r f(x)} for K = 2
+ *
+ * @note Only scalar functions suppored for K = 2
  *
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
-template<Type D>
+template<std::size_t K, Type D>
 auto dr(auto && f, auto && x)
 {
   using F   = decltype(f);
   using Wrt = decltype(x);
 
-  if constexpr (D == Type::NUMERICAL) {
-    return detail::dr_numerical(std::forward<F>(f), std::forward<Wrt>(x));
-  } else if constexpr (D == Type::AUTODIFF) {
+  if constexpr (D == Type::Numerical) {
+    return detail::dr_numerical<K>(std::forward<F>(f), std::forward<Wrt>(x));
+  } else if constexpr (D == Type::Autodiff) {
 #ifdef SMOOTH_DIFF_AUTODIFF
-    return dr_autodiff(std::forward<F>(f), std::forward<Wrt>(x));
+    return dr_autodiff<K>(std::forward<F>(f), std::forward<Wrt>(x));
 #else
-    static_assert(D != Type::AUTODIFF, "compat/autodiff.hpp header not included");
+    static_assert(D != Type::Autodiff, "compat/autodiff.hpp header not included");
 #endif
-  } else if constexpr (D == Type::CERES) {
+  } else if constexpr (D == Type::Ceres) {
+    static_assert(K == 1, "Only K = 1 supported with Ceres");
 #ifdef SMOOTH_DIFF_CERES
     return dr_ceres(std::forward<F>(f), std::forward<Wrt>(x));
 #else
-    static_assert(D != Type::CERES, "compat/ceres.hpp header not included");
+    static_assert(D != Type::Ceres, "compat/ceres.hpp header not included");
 #endif
-  } else if constexpr (D == Type::ANALYTIC) {
+  } else if constexpr (D == Type::Analytic) {
     return std::apply(f, std::forward<Wrt>(x));
-  } else if constexpr (D == Type::DEFAULT) {
-    return dr<DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
+  } else if constexpr (D == Type::Default) {
+    return dr<K, DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
   }
 }
 
 /**
  * @brief Differentiation in tangent space using default method
  *
+ * @tparam K differentiation order
+ *
  * @param f function to differentiate
  * @param x reference tuple of function arguments
  * @return \p std::pair containing value and right derivative: \f$(f(x), \mathrm{d}^r f_x)\f$
@@ -178,9 +247,10 @@ auto dr(auto && f, auto && x)
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
+template<std::size_t K = 1>
 auto dr(auto && f, auto && x)
 {
-  return dr<Type::DEFAULT>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x));
+  return dr<K, Type::Default>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x));
 }
 
 }  // namespace diff

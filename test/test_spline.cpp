@@ -370,10 +370,10 @@ TEST(Spline, Autodiff)
 
   for (double d = 0.1; d < 1; d += 0.1) {
     // velocity with autodiff
-    const auto [_a, v_ad] = smooth::diff::dr<smooth::diff::Type::AUTODIFF>(spl, smooth::wrt(d));
+    const auto [_a, v_ad] = smooth::diff::dr<1, smooth::diff::Type::Autodiff>(spl, smooth::wrt(d));
 
     // acceleration with autodiff
-    const auto [_b, a_ad] = smooth::diff::dr<smooth::diff::Type::AUTODIFF>(
+    const auto [_b, a_ad] = smooth::diff::dr<1, smooth::diff::Type::Autodiff>(
       [&]<typename T>(T t) {
         Eigen::Vector3<T> vv;
         spl(t, vv);
