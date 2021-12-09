@@ -295,10 +295,16 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
 <dl class="section see"><dt>See also</dt><dd>concat_local()</dd></dl>
 <p>Local Spline concatenation.</p>
 <dl class="section see"><dt>See also</dt><dd>concat_local()</dd></dl>
-<p>Evaluate Curve at given time.</p>
+<p>Evaluate Spline at given time.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">S</td><td>time type</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">t</td><td>time point to evaluate at </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">t</td><td>time </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">vel</td><td>output body velocity at evaluation time </td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">acc</td><td>output body acceleration at evaluation time </td></tr>
   </table>
