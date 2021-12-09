@@ -31,7 +31,6 @@
  * @brief Reparamterize a Spline to satisfy derivative constraints.
  */
 
-#include "fit.hpp"
 #include "spline.hpp"
 #include "traits.hpp"
 

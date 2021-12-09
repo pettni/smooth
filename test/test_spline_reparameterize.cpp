@@ -40,7 +40,7 @@ TEST(Spline, Reparameterize)
 
   auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
 
-  ASSERT_EQ(sfun(0), 0);
+  ASSERT_EQ(sfun(0.), 0);
   ASSERT_GE(sfun(sfun.t_max() + 1e-6), c.t_max());
 
   for (double t = 0; t < sfun.t_max(); t += 0.1) {
