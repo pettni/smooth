@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['a_475',['a',['../structsmooth_1_1Reparameterization_1_1Data.html#a55527349d9d08fecfb74e48d0cd1a667',1,'smooth::Reparameterization::Data']]]
+  ['cols_469',['Cols',['../structsmooth_1_1StaticMatrix.html#a9b8e6e2181a1e4347538f9d13b04fa1f',1,'smooth::StaticMatrix']]]
 ];

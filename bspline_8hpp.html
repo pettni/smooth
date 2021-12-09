@@ -87,30 +87,33 @@ $(function() {
 <code>#include &lt;ranges&gt;</code><br />
 <code>#include &quot;<a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="basis_8hpp_source.html">smooth/polynomial/basis.hpp</a>&quot;</code><br />
+<code>#include &quot;traits.hpp&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for bspline.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="bspline_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2bspline_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2bspline_8hpp" id="ainclude_2smooth_2spline_2bspline_8hpp">
-<area shape="rect" title="B&#45;splines on Lie groups." alt="" coords="350,5,498,47"/>
-<area shape="rect" title=" " alt="" coords="261,95,336,121"/>
-<area shape="rect" title=" " alt="" coords="391,244,457,271"/>
-<area shape="rect" title=" " alt="" coords="492,393,553,420"/>
-<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="462,95,613,121"/>
-<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="197,169,387,196"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="603,319,749,345"/>
-<area shape="rect" title=" " alt="" coords="512,169,579,196"/>
-<area shape="rect" title=" " alt="" coords="548,468,633,495"/>
-<area shape="rect" title=" " alt="" coords="691,468,765,495"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="629,393,723,420"/>
-<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="239,244,359,271"/>
-<area shape="rect" title=" " alt="" coords="5,393,56,420"/>
-<area shape="rect" title=" " alt="" coords="408,319,467,345"/>
-<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="221,319,384,345"/>
-<area shape="rect" title=" " alt="" coords="81,393,146,420"/>
-<area shape="rect" title=" " alt="" coords="170,393,249,420"/>
-<area shape="rect" title=" " alt="" coords="273,393,341,420"/>
-<area shape="rect" title=" " alt="" coords="365,393,417,420"/>
+<area shape="rect" title="B&#45;splines on Lie groups." alt="" coords="301,5,449,47"/>
+<area shape="rect" title=" " alt="" coords="5,95,80,121"/>
+<area shape="rect" title=" " alt="" coords="277,244,342,271"/>
+<area shape="rect" title=" " alt="" coords="739,393,800,420"/>
+<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="234,95,385,121"/>
+<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="347,169,536,196"/>
+<area shape="rect" href="traits_8hpp_source.html" title=" " alt="" coords="707,95,781,121"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="58,319,203,345"/>
+<area shape="rect" title=" " alt="" coords="205,169,272,196"/>
+<area shape="rect" title=" " alt="" coords="85,468,171,495"/>
+<area shape="rect" title=" " alt="" coords="195,468,269,495"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="133,393,227,420"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="373,244,493,271"/>
+<area shape="rect" title=" " alt="" coords="252,393,303,420"/>
+<area shape="rect" title=" " alt="" coords="531,319,589,345"/>
+<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="344,319,507,345"/>
+<area shape="rect" title=" " alt="" coords="649,393,714,420"/>
+<area shape="rect" title=" " alt="" coords="378,393,457,420"/>
+<area shape="rect" title=" " alt="" coords="481,393,549,420"/>
+<area shape="rect" title=" " alt="" coords="573,393,625,420"/>
+<area shape="rect" title=" " alt="" coords="703,169,785,196"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -120,7 +123,6 @@ This graph shows which files directly or indirectly include this file:</div>
 <map name="ainclude_2smooth_2spline_2bspline_8hppdep" id="ainclude_2smooth_2spline_2bspline_8hppdep">
 <area shape="rect" title="B&#45;splines on Lie groups." alt="" coords="5,5,153,47"/>
 <area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="5,95,153,136"/>
-<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="5,184,153,225"/>
 </map>
 </div>
 </div>
@@ -130,6 +132,8 @@ This graph shows which files directly or indirectly include this file:</div>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html">smooth::BSpline&lt; K, G &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cardinal Bspline on a Lie group.  <a href="classsmooth_1_1BSpline.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1traits_1_1is__spline_3_01BSpline_3_01K_00_01G_01_4_01_4.html">smooth::traits::is_spline&lt; BSpline&lt; K, G &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>

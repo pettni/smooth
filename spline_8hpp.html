@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
@@ -86,32 +87,35 @@ $(function() {
 <div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;ranges&gt;</code><br />
-<code>#include &quot;<a class="el" href="basis_8hpp_source.html">smooth/polynomial/basis.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="basis_8hpp_source.html">smooth/polynomial/basis.hpp</a>&quot;</code><br />
+<code>#include &quot;traits.hpp&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for spline.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="spline_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2spline_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2spline_8hpp" id="ainclude_2smooth_2spline_2spline_8hpp">
-<area shape="rect" title="Piecewise polynomial splines on lie groups." alt="" coords="187,5,335,47"/>
+<area shape="rect" title="Piecewise polynomial splines on lie groups." alt="" coords="301,5,449,47"/>
 <area shape="rect" title=" " alt="" coords="5,95,80,121"/>
-<area shape="rect" title=" " alt="" coords="135,244,201,271"/>
-<area shape="rect" title=" " alt="" coords="883,393,944,420"/>
+<area shape="rect" title=" " alt="" coords="277,244,342,271"/>
+<area shape="rect" title=" " alt="" coords="739,393,800,420"/>
+<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="234,95,385,121"/>
 <area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="347,169,536,196"/>
-<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="186,95,337,121"/>
-<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="381,244,501,271"/>
-<area shape="rect" title=" " alt="" coords="396,393,447,420"/>
-<area shape="rect" title=" " alt="" coords="345,319,404,345"/>
-<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="499,319,661,345"/>
-<area shape="rect" title=" " alt="" coords="547,393,613,420"/>
-<area shape="rect" title=" " alt="" coords="637,393,715,420"/>
-<area shape="rect" title=" " alt="" coords="739,393,807,420"/>
-<area shape="rect" title=" " alt="" coords="471,393,523,420"/>
-<area shape="rect" title=" " alt="" coords="257,468,343,495"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="229,393,371,420"/>
-<area shape="rect" title=" " alt="" coords="131,468,205,495"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="157,319,302,345"/>
+<area shape="rect" href="traits_8hpp_source.html" title=" " alt="" coords="707,95,781,121"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="58,319,203,345"/>
 <area shape="rect" title=" " alt="" coords="205,169,272,196"/>
+<area shape="rect" title=" " alt="" coords="85,468,171,495"/>
+<area shape="rect" title=" " alt="" coords="195,468,269,495"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="133,393,227,420"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="373,244,493,271"/>
+<area shape="rect" title=" " alt="" coords="252,393,303,420"/>
+<area shape="rect" title=" " alt="" coords="531,319,589,345"/>
+<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="344,319,507,345"/>
+<area shape="rect" title=" " alt="" coords="649,393,714,420"/>
+<area shape="rect" title=" " alt="" coords="378,393,457,420"/>
+<area shape="rect" title=" " alt="" coords="481,393,549,420"/>
+<area shape="rect" title=" " alt="" coords="573,393,625,420"/>
+<area shape="rect" title=" " alt="" coords="703,169,785,196"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -122,12 +126,18 @@ This graph shows which files directly or indirectly include this file:</div>
 <area shape="rect" title="Piecewise polynomial splines on lie groups." alt="" coords="177,5,325,47"/>
 <area shape="rect" href="dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="5,95,153,136"/>
 <area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="177,95,325,136"/>
-<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="233,184,381,225"/>
+<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="349,95,497,136"/>
 </map>
 </div>
 </div>
 <p><a href="spline_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1traits_1_1is__spline_3_01Spline_3_01K_00_01G_01_4_01_4.html">smooth::traits::is_spline&lt; Spline&lt; K, G &gt; &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specialize traits.  <a href="structsmooth_1_1traits_1_1is__spline_3_01Spline_3_01K_00_01G_01_4_01_4.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a905e992d69de2b76a4249aad7e3d31f1"><td class="memTemplParams" colspan="2"><a id="a905e992d69de2b76a4249aad7e3d31f1"></a>
@@ -179,7 +189,7 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
 <p>Single-parameter Lie group-valued function. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">Spline</td><td>degree </td></tr>
+    <tr><td class="paramname">K</td><td>Spline degree </td></tr>
     <tr><td class="paramname">G</td><td>Lie group</td></tr>
   </table>
   </dd>
