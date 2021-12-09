@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['eulerangles_397',['eulerAngles',['../classsmooth_1_1SO3Base.html#ab12431a0da79f046df8903042999d001',1,'smooth::SO3Base']]],
-  ['evaluate_5fpolynomial_398',['evaluate_polynomial',['../basis_8hpp.html#aa8f71e65b5701858fa8ce85614e21814',1,'smooth']]],
-  ['exp_399',['exp',['../lie__group_8hpp.html#a788118e47b3c68cf671408c9ad18ec1f',1,'smooth']]]
+  ['eulerangles_392',['eulerAngles',['../classsmooth_1_1SO3Base.html#ab12431a0da79f046df8903042999d001',1,'smooth::SO3Base']]],
+  ['evaluate_5fpolynomial_393',['evaluate_polynomial',['../basis_8hpp.html#aa8f71e65b5701858fa8ce85614e21814',1,'smooth']]],
+  ['exp_394',['exp',['../lie__group_8hpp.html#a788118e47b3c68cf671408c9ad18ec1f',1,'smooth']]]
 ];

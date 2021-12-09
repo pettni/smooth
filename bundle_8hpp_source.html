@@ -121,7 +121,7 @@ $(function() {
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">struct </span>liebase_info&lt;Eigen::Matrix&lt;_Scalar, _N, 1&gt;&gt;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;{</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keyword">using</span> Impl = TnImpl&lt;_N, _Scalar&gt;;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> = _Scalar;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keyword">using</span> Scalar = _Scalar;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NewScalar&gt;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">PlainObject</a> = Eigen::Matrix&lt;NewScalar, _N, 1&gt;;</div>
@@ -178,7 +178,7 @@ $(function() {
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_mutable = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <span class="keyword">using</span> Impl   = BundleImpl&lt;typename liebase_info&lt;_Gs&gt;::Impl...&gt;;</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> = std::common_type_t&lt;typename liebase_info&lt;_Gs&gt;::Scalar...&gt;;</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="keyword">using</span> Scalar = std::common_type_t&lt;typename liebase_info&lt;_Gs&gt;::Scalar...&gt;;</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160; </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  static_assert(</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    (std::is_same_v&lt;Scalar, <span class="keyword">typename</span> liebase_info&lt;_Gs&gt;::Scalar&gt; &amp;&amp; ...),</div>
@@ -254,7 +254,6 @@ $(function() {
 <div class="ttc" id="aclasssmooth_1_1LieGroupBase_html_ab5cc38ff686866f55e5302efc79ecaa9"><div class="ttname"><a href="classsmooth_1_1LieGroupBase.html#ab5cc38ff686866f55e5302efc79ecaa9">smooth::LieGroupBase&lt; _Derived &gt;::is_mutable</a></div><div class="ttdeci">static constexpr bool is_mutable</div><div class="ttdoc">True if underlying storage supports modification.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00065">lie_group_base.hpp:65</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1Map_html"><div class="ttname"><a href="classsmooth_1_1Map.html">smooth::Map</a></div><div class="ttdoc">Memory mapping of internal Lie group types.</div><div class="ttdef"><b>Definition:</b> <a href="map_8hpp_source.html#l00037">map.hpp:37</a></div></div>
 <div class="ttc" id="alie__group_8hpp_html"><div class="ttname"><a href="lie__group_8hpp.html">lie_group.hpp</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_a85d829dc273faa1e9618040cdebdf74c"><div class="ttname"><a href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">smooth::Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00215">manifold.hpp:215</a></div></div>
 <div class="ttc" id="amanifold_8hpp_html_adb56aa6a7e496d840696a0c5d1ad3d3f"><div class="ttname"><a href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">smooth::PlainObject</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::PlainObject PlainObject</div><div class="ttdoc">Manifold default type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00221">manifold.hpp:221</a></div></div>
 <div class="ttc" id="astructsmooth_1_1liebase__info_html"><div class="ttname"><a href="structsmooth_1_1liebase__info.html">smooth::liebase_info</a></div><div class="ttdoc">Type trait that maps a type to Lie group operations.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group__base_8hpp_source.html#l00042">lie_group_base.hpp:43</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

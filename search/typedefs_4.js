@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['optjacobian_500',['OptJacobian',['../cumulative__spline_8hpp.html#a11d7dc08c67dfba02faa6a32d7b916d0',1,'smooth::detail']]],
-  ['opttangent_501',['OptTangent',['../cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10',1,'smooth::detail']]]
+  ['optjacobian_495',['OptJacobian',['../cumulative__spline_8hpp.html#a11d7dc08c67dfba02faa6a32d7b916d0',1,'smooth::detail']]],
+  ['opttangent_496',['OptTangent',['../cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10',1,'smooth::detail']]]
 ];

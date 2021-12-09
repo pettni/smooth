@@ -74,14 +74,16 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">diff.hpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Differentiation on Lie groups.  
+<p>Differentiation on Manifolds.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;Eigen/Core&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
@@ -93,7 +95,7 @@ Include dependency graph for diff.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="diff_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2diff_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2diff_8hpp" id="ainclude_2smooth_2diff_8hpp">
-<area shape="rect" title="Differentiation on Lie groups." alt="" coords="225,5,379,32"/>
+<area shape="rect" title="Differentiation on Manifolds." alt="" coords="225,5,379,32"/>
 <area shape="rect" title=" " alt="" coords="665,304,750,331"/>
 <area shape="rect" title=" " alt="" coords="182,155,265,181"/>
 <area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="340,155,456,181"/>
@@ -113,7 +115,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="diff_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2diff_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2diff_8hppdep" id="ainclude_2smooth_2diff_8hppdep">
-<area shape="rect" title="Differentiation on Lie groups." alt="" coords="13,5,168,32"/>
+<area shape="rect" title="Differentiation on Manifolds." alt="" coords="13,5,168,32"/>
 <area shape="rect" href="optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="5,80,176,107"/>
 <area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="17,155,165,196"/>
 </map>
@@ -121,29 +123,69 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="diff_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a7af1ea58274028c2e24a5f6ddc99d9fb"><td class="memItemLeft" align="right" valign="top"><a id="a7af1ea58274028c2e24a5f6ddc99d9fb"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::Result</b> = decltype(std::apply(f, x))</td></tr>
+<tr class="separator:a7af1ea58274028c2e24a5f6ddc99d9fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98ca0cc22b58b08524abbf57e53aa181"><td class="memItemLeft" align="right" valign="top"><a id="a98ca0cc22b58b08524abbf57e53aa181"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::Scalar</b> = ::<a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">smooth::Scalar</a>&lt; Result &gt;</td></tr>
+<tr class="separator:a98ca0cc22b58b08524abbf57e53aa181"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ad993f4e6edc070efeac1192d6663c7c2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2">smooth::diff::Type</a> { <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a3a5e2d78492ca47b9db502227af9d76a">NUMERICAL</a>
-, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2ae1a39061bd207cb861fbc81e0f90301b">AUTODIFF</a>
-, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a3cc7d3d35ab91905e272dcf657790118">CERES</a>
-, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a8e6d7210129786a1d1e43b61143a5a15">ANALYTIC</a>
-, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a5b39c8b553c821e7cddc6da64b5bd2ee">DEFAULT</a>
+<tr class="memitem:ad993f4e6edc070efeac1192d6663c7c2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2">smooth::diff::Type</a> { <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a5225763efc97aebd39e5a303fceb57ac">Numerical</a>
+, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2aa9febdb972defe22c386d56c08d3a14d">Autodiff</a>
+, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3">Ceres</a>
+, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791">Analytic</a>
+, <a class="el" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67">Default</a>
  }</td></tr>
 <tr class="memdesc:ad993f4e6edc070efeac1192d6663c7c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Available differentiation methods.  <a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2">More...</a><br /></td></tr>
 <tr class="separator:ad993f4e6edc070efeac1192d6663c7c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a68bc943ea5627b70889563cacb12a9cb"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#a68bc943ea5627b70889563cacb12a9cb">smooth::diff::detail::dr_numerical</a> (auto &amp;&amp;f, auto &amp;&amp;x)</td></tr>
-<tr class="memdesc:a68bc943ea5627b70889563cacb12a9cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Numerical differentiation in tangent space.  <a href="diff_8hpp.html#a68bc943ea5627b70889563cacb12a9cb">More...</a><br /></td></tr>
-<tr class="separator:a68bc943ea5627b70889563cacb12a9cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a336ed568f913d4bcf16ea1d612e1e431"><td class="memTemplParams" colspan="2">template&lt;Type D&gt; </td></tr>
+<tr class="memitem:a07aa0b0e327d01742983f6fb0c83b27d"><td class="memTemplParams" colspan="2">template&lt;std::size_t K = 1&gt; </td></tr>
+<tr class="memitem:a07aa0b0e327d01742983f6fb0c83b27d"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#a07aa0b0e327d01742983f6fb0c83b27d">smooth::diff::detail::requires</a> (K &gt;=1 &amp;&amp;K&lt;=2) auto dr_numerical(auto &amp;&amp;f</td></tr>
+<tr class="memdesc:a07aa0b0e327d01742983f6fb0c83b27d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Numerical first-order differentiation in tangent space.  <a href="diff_8hpp.html#a07aa0b0e327d01742983f6fb0c83b27d">More...</a><br /></td></tr>
+<tr class="separator:a07aa0b0e327d01742983f6fb0c83b27d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd08c3e84d7669347ba18a8fbf4668f0"><td class="memItemLeft" align="right" valign="top"><a id="abd08c3e84d7669347ba18a8fbf4668f0"></a>
+Eigen::Matrix&lt; Scalar, Ny, Nx &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::J</b> (ny, nx)</td></tr>
+<tr class="separator:abd08c3e84d7669347ba18a8fbf4668f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1023e57183895070a8651227fd21511"><td class="memItemLeft" align="right" valign="top"><a id="ab1023e57183895070a8651227fd21511"></a>
+constexpr&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::if</b> (K==1)</td></tr>
+<tr class="separator:ab1023e57183895070a8651227fd21511"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad20b9b1df460866e786b8c62aac8b292"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, Type D&gt; </td></tr>
+<tr class="memitem:ad20b9b1df460866e786b8c62aac8b292"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a> (auto &amp;&amp;f, auto &amp;&amp;x)</td></tr>
+<tr class="memdesc:ad20b9b1df460866e786b8c62aac8b292"><td class="mdescLeft">&#160;</td><td class="mdescRight">Differentiation in tangent space.  <a href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">More...</a><br /></td></tr>
+<tr class="separator:ad20b9b1df460866e786b8c62aac8b292"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a336ed568f913d4bcf16ea1d612e1e431"><td class="memTemplParams" colspan="2">template&lt;std::size_t K = 1&gt; </td></tr>
 <tr class="memitem:a336ed568f913d4bcf16ea1d612e1e431"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a> (auto &amp;&amp;f, auto &amp;&amp;x)</td></tr>
-<tr class="memdesc:a336ed568f913d4bcf16ea1d612e1e431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Differentiation in tangent space.  <a href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">More...</a><br /></td></tr>
+<tr class="memdesc:a336ed568f913d4bcf16ea1d612e1e431"><td class="mdescLeft">&#160;</td><td class="mdescRight">Differentiation in tangent space using default method.  <a href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">More...</a><br /></td></tr>
 <tr class="separator:a336ed568f913d4bcf16ea1d612e1e431"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:af5da8f4121bdc24348f85d2419701954"><td class="memItemLeft" align="right" valign="top">auto &amp;&amp;&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::x</b></td></tr>
+<tr class="separator:af5da8f4121bdc24348f85d2419701954"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a180cb8e6d844baca0e10a03bc2eb6794"><td class="memItemLeft" align="right" valign="top"><a id="a180cb8e6d844baca0e10a03bc2eb6794"></a>
+const Scalar&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::eps</b> = std::sqrt(Eigen::NumTraits&lt;Scalar&gt;::epsilon())</td></tr>
+<tr class="separator:a180cb8e6d844baca0e10a03bc2eb6794"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab04c5ac0f98a06206f2fe1b8f2cd34f8"><td class="memItemLeft" align="right" valign="top"><a id="ab04c5ac0f98a06206f2fe1b8f2cd34f8"></a>
+auto&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::x_nc</b> = wrt_copy_if_const(std::forward&lt;Wrt&gt;(x))</td></tr>
+<tr class="separator:ab04c5ac0f98a06206f2fe1b8f2cd34f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2810ee966fdd0ab5cd2ef874e22f5cfe"><td class="memItemLeft" align="right" valign="top"><a id="a2810ee966fdd0ab5cd2ef874e22f5cfe"></a>
+Result&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::F</b> = std::apply(f, x_nc)</td></tr>
+<tr class="separator:a2810ee966fdd0ab5cd2ef874e22f5cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28d0bb0f2123ac493663594f048df4a4"><td class="memItemLeft" align="right" valign="top"><a id="a28d0bb0f2123ac493663594f048df4a4"></a>
+Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::nx</b> = std::apply([](auto &amp;&amp;... args) { return (dof(args) + ...); }, x_nc)</td></tr>
+<tr class="separator:a28d0bb0f2123ac493663594f048df4a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaa60484ab277c2f484acdcb9cd61870"><td class="memItemLeft" align="right" valign="top"><a id="aeaa60484ab277c2f484acdcb9cd61870"></a>
+Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::ny</b> = dof&lt;Result&gt;(F)</td></tr>
+<tr class="separator:aeaa60484ab277c2f484acdcb9cd61870"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Differentiation on Lie groups. </p>
+<div class="textblock"><p>Differentiation on Manifolds. </p>
 
 <p class="definition">Definition in file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
@@ -169,30 +211,30 @@ Functions</h2></td></tr>
 
 <p>Available differentiation methods. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a3a5e2d78492ca47b9db502227af9d76a"></a>NUMERICAL&#160;</td><td class="fielddoc"><p>Numerical (forward) derivatives. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a5225763efc97aebd39e5a303fceb57ac"></a>Numerical&#160;</td><td class="fielddoc"><p>Numerical (forward) derivatives. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2ae1a39061bd207cb861fbc81e0f90301b"></a>AUTODIFF&#160;</td><td class="fielddoc"><p>Uses the autodiff (<a href="https://autodiff.github.io">https://autodiff.github.io</a>) library; requires <code><a class="el" href="autodiff_8hpp.html" title="autodiff compatability header.">compat/autodiff.hpp</a></code> </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2aa9febdb972defe22c386d56c08d3a14d"></a>Autodiff&#160;</td><td class="fielddoc"><p>Uses the autodiff (<a href="https://autodiff.github.io">https://autodiff.github.io</a>) library; requires <code><a class="el" href="autodiff_8hpp.html" title="autodiff compatability header.">compat/autodiff.hpp</a></code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a3cc7d3d35ab91905e272dcf657790118"></a>CERES&#160;</td><td class="fielddoc"><p>Uses the Ceres (<a href="http://ceres-solver.org">http://ceres-solver.org</a>) built-in autodiff; requires <code><a class="el" href="ceres_8hpp.html" title="ceres compatability header.">compat/ceres.hpp</a></code> </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3"></a>Ceres&#160;</td><td class="fielddoc"><p>Uses the Ceres (<a href="http://ceres-solver.org">http://ceres-solver.org</a>) built-in autodiff; requires <code><a class="el" href="ceres_8hpp.html" title="ceres compatability header.">compat/ceres.hpp</a></code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8e6d7210129786a1d1e43b61143a5a15"></a>ANALYTIC&#160;</td><td class="fielddoc"><p>Hand-coded derivative, requires that function returns <code>std::pair</code> \((f(x), &lt; \mathrm{d}^r f_x) \) </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"></a>Analytic&#160;</td><td class="fielddoc"><p>Hand-coded derivative, requires that function returns <code>std::pair</code> \((f(x), &lt; \mathrm{d}^r f_x) \) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a5b39c8b553c821e7cddc6da64b5bd2ee"></a>DEFAULT&#160;</td><td class="fielddoc"><p>Automatically select type based on availability. </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67"></a>Default&#160;</td><td class="fielddoc"><p>Automatically select type based on availability. </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00112">112</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00175">175</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a336ed568f913d4bcf16ea1d612e1e431"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a336ed568f913d4bcf16ea1d612e1e431">&#9670;&nbsp;</a></span>dr()</h2>
+<a id="ad20b9b1df460866e786b8c62aac8b292"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad20b9b1df460866e786b8c62aac8b292">&#9670;&nbsp;</a></span>dr() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;Type D&gt; </div>
+template&lt;std::size_t K, Type D&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">auto smooth::diff::dr </td>
@@ -215,9 +257,9 @@ template&lt;Type D&gt; </div>
 </div><div class="memdoc">
 
 <p>Differentiation in tangent space. </p>
-<p>Differentiation in tangent space using default method.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
+    <tr><td class="paramname">K</td><td>differentiation order (1 or 2) </td></tr>
     <tr><td class="paramname">D</td><td>differentiation method to use</td></tr>
   </table>
   </dd>
@@ -229,30 +271,25 @@ template&lt;Type D&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept.</dd></dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">f</td><td>function to differentiate </td></tr>
-    <tr><td class="paramname">x</td><td>reference tuple of function arguments </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>{f(x), dr f(x)} for K = 1, {f(x), dr f(x), d2r f(x)} for K = 2</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only scalar functions suppored for K = 2</dd>
+<dd>
+All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00145">145</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00211">211</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a68bc943ea5627b70889563cacb12a9cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68bc943ea5627b70889563cacb12a9cb">&#9670;&nbsp;</a></span>dr_numerical()</h2>
+<a id="a336ed568f913d4bcf16ea1d612e1e431"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a336ed568f913d4bcf16ea1d612e1e431">&#9670;&nbsp;</a></span>dr() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t K = 1&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto smooth::diff::detail::dr_numerical </td>
+          <td class="memname">auto smooth::diff::dr </td>
           <td>(</td>
           <td class="paramtype">auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>f</em>, </td>
@@ -271,7 +308,13 @@ template&lt;Type D&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Numerical differentiation in tangent space. </p>
+<p>Differentiation in tangent space using default method. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">K</td><td>differentiation order</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>function to differentiate </td></tr>
@@ -282,7 +325,57 @@ template&lt;Type D&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00057">57</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00251">251</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a07aa0b0e327d01742983f6fb0c83b27d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07aa0b0e327d01742983f6fb0c83b27d">&#9670;&nbsp;</a></span>requires()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;std::size_t K = 1&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">smooth::diff::detail::requires </td>
+          <td>(</td>
+          <td class="paramtype">K &gt;=1 &amp;&amp;K&lt;=&#160;</td>
+          <td class="paramname"><em>2</em></td><td>)</td>
+          <td> &amp;&amp;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Numerical first-order differentiation in tangent space. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">f</td><td>function to differentiate </td></tr>
+    <tr><td class="paramname">x</td><td>reference tuple of function arguments </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="af5da8f4121bdc24348f85d2419701954"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5da8f4121bdc24348f85d2419701954">&#9670;&nbsp;</a></span>x</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto&amp;&amp; smooth::diff::detail::x</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">{</div>
+<div class="line">  <span class="keyword">using</span> Wrt    = decltype(x)</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00059">59</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>

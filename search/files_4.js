@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['fit_2ehpp_353',['fit.hpp',['../fit_8hpp.html',1,'']]]
+  ['fit_2ehpp_350',['fit.hpp',['../fit_8hpp.html',1,'']]]
 ];

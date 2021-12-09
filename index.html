@@ -195,7 +195,7 @@ Concepts and Types</h2>
 Algorithms</h2>
 <h3><a class="anchor" id="autotoc_md9"></a>
 Tangent space differentiation</h3>
-<p>Available for <code>Manifold</code> types, see <a class="el" href="diff_8hpp.html" title="Differentiation on Lie groups.">diff.hpp</a>.</p>
+<p>Available for <code>Manifold</code> types, see <a class="el" href="diff_8hpp.html" title="Differentiation on Manifolds.">diff.hpp</a>.</p>
 <p>Supported techniques (see smooth::diff::Type):</p><ul>
 <li>Numerical derivatives (default)</li>
 <li>Automatic differentiation using <a href="https://autodiff.github.io"><code>autodiff</code></a> (must #include &lt;<a class="el" href="autodiff_8hpp.html" title="autodiff compatability header.">smooth/compat/autodiff.hpp</a>&gt;)</li>
@@ -211,17 +211,17 @@ Tangent space differentiation</h3>
 <div class="line"><a class="code" href="classsmooth_1_1SO3.html">smooth::SO3d</a> g2 = smooth::SO3d::Random();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// differentiate f at (g1, g2) w.r.t. first argument</span></div>
-<div class="line"><span class="keyword">auto</span> [fval1, J1] = <a class="code" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a>(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));</div>
+<div class="line"><span class="keyword">auto</span> [fval1, J1] = <a class="code" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a>(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// differentiate f at (g1, g2) w.r.t. second argument</span></div>
-<div class="line"><span class="keyword">auto</span> [fval2, J2] = <a class="code" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a>(std::bind(f, g1, std::placeholders::_1), smooth::wrt(g2));</div>
+<div class="line"><span class="keyword">auto</span> [fval2, J2] = <a class="code" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a>(std::bind(f, g1, std::placeholders::_1), smooth::wrt(g2));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// differentiate f at (g1, g2) w.r.t. both arguments</span></div>
-<div class="line"><span class="keyword">auto</span> [fval, J] = <a class="code" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a>(f, smooth::wrt(g1, g2));</div>
+<div class="line"><span class="keyword">auto</span> [fval, J] = <a class="code" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a>(f, smooth::wrt(g1, g2));</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Now J == [J1, J2]</span></div>
-<div class="ttc" id="adiff_8hpp_html"><div class="ttname"><a href="diff_8hpp.html">diff.hpp</a></div><div class="ttdoc">Differentiation on Lie groups.</div></div>
-<div class="ttc" id="adiff_8hpp_html_a336ed568f913d4bcf16ea1d612e1e431"><div class="ttname"><a href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">smooth::diff::dr</a></div><div class="ttdeci">auto dr(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00145">diff.hpp:145</a></div></div>
+<div class="ttc" id="adiff_8hpp_html"><div class="ttname"><a href="diff_8hpp.html">diff.hpp</a></div><div class="ttdoc">Differentiation on Manifolds.</div></div>
+<div class="ttc" id="adiff_8hpp_html_ad20b9b1df460866e786b8c62aac8b292"><div class="ttname"><a href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a></div><div class="ttdeci">auto dr(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00211">diff.hpp:211</a></div></div>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md10"></a>
 Non-linear least squares optimization</h3>
 <p>Available for <code>Manifold</code> types, see <a class="el" href="optim_8hpp.html" title="Non-linear least squares optimization on Manifolds.">optim.hpp</a>.</p>

@@ -8,7 +8,7 @@ var searchData=
   ['c1base_3c_20map_3c_20const_20c1_3c_20_5fscalar_20_3e_20_3e_20_3e_25',['C1Base&lt; Map&lt; const C1&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1C1Base.html',1,'smooth']]],
   ['cast_26',['cast',['../manifold_8hpp.html#a3b740cf0687cfa7b42bac9faab6635c6',1,'smooth::cast()'],['../classsmooth_1_1ManifoldVector.html#afdf0537d217e7b9ccc8e85332416df72',1,'smooth::ManifoldVector::cast()']]],
   ['castt_27',['CastT',['../manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac',1,'smooth::CastT()'],['../classsmooth_1_1LieGroupBase.html#a71725f9f1ed4a67b6bc3d847f4fab570',1,'smooth::LieGroupBase::CastT()']]],
-  ['ceres_28',['CERES',['../diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a3cc7d3d35ab91905e272dcf657790118',1,'smooth::diff']]],
+  ['ceres_28',['Ceres',['../diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3',1,'smooth::diff']]],
   ['ceres_2ehpp_29',['ceres.hpp',['../ceres_8hpp.html',1,'']]],
   ['cereslocalparameterization_30',['CeresLocalParameterization',['../classsmooth_1_1CeresLocalParameterization.html',1,'smooth']]],
   ['cgr_5fnodes_31',['cgr_nodes',['../quadrature_8hpp.html#af7e6b9a45b68890842874075e85f288f',1,'smooth']]],
