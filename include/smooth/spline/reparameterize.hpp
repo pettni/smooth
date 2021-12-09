@@ -171,6 +171,19 @@ Reparameterization reparameterize_spline(
     spline(s0 + ds * Nmi, vel, acc);
 
     if (Nmi + 1 < N + 1) {
+      // APPROACH 1: Solve linear program in y = v^2
+      //
+      //  max   y
+      //  s.t.                   y - 2 ds a         \leq y(Nmi + 1)    [1]
+      //        vel_min.^2  \leq vel.^2 y           \leq vel_max.^2    [2]
+      //        acc_min     \leq acc * y + vel * a  \leq acc_max       [3]
+      //
+      // and use acceleration a at Nmi
+      //
+      // TODO: implement, use lp2d, and evaluate
+
+      // APPROACH 2: calculate acceleration constraints from Nmi + 1 and apply them at Nmi
+
       // figure minimal allowed acceleration at Nmi + 1
       double a = -std::numeric_limits<double>::infinity();
       if (vel.cwiseAbs().maxCoeff() > eps) {
