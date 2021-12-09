@@ -135,6 +135,8 @@ public:
   /**
    * @brief Evaluate Bspline.
    *
+   * @tparam time type
+   *
    * @param[in] t time point to evaluate at
    * @param[out] vel output body velocity at evaluation time
    * @param[out] acc output body acceleration at evaluation time
@@ -142,29 +144,41 @@ public:
    *
    * @note Input \p t is clamped to spline interval of definition
    */
-  G operator()(double t, detail::OptTangent<G> vel = {}, detail::OptTangent<G> acc = {}) const
+  template<typename S = double>
+  CastT<S, G> operator()(
+    const S & t,
+    detail::OptTangent<CastT<S, G>> vel = {},
+    detail::OptTangent<CastT<S, G>> acc = {}) const
   {
     // index of relevant interval
-    int64_t istar = static_cast<int64_t>((t - t0_) / dt_);
+    int64_t istar = static_cast<int64_t>((static_cast<double>(t) - t0_) / dt_);
 
-    double u;
+    S u;
     // clamp to end of range if necessary
     if (istar < 0) {
       istar = 0;
-      u     = 0;
+      u     = S(0);
     } else if (istar + K + 1 > ctrl_pts_.size()) {
       istar = ctrl_pts_.size() - K - 1;
-      u     = 1;
+      u     = S(1);
     } else {
-      u = std::clamp<double>((t - t0_ - istar * dt_) / dt_, 0., 1.);
+      u = std::clamp<S>((t - S(t0_) - S(istar * dt_)) / S(dt_), S(0.), S(1.));
     }
 
-    // gcc 11.1 bug can't handle uint64_t
-    G g = cspline_eval<K>(
-      ctrl_pts_ | std::views::drop(istar) | std::views::take(int64_t(K + 1)), B_, u, vel, acc);
+    CastT<S, G> g = cspline_eval<K>(
+      // clang-format off
+      ctrl_pts_
+        | std::views::drop(istar)
+        | std::views::take(int64_t(K + 1))  // gcc 11.1 bug can't handle uint64_t
+        | std::views::transform([](const auto & g) -> CastT<S, G> { return cast<S>(g); }),
+      // clang-format on
+      B_.template cast<S>(),
+      u,
+      vel,
+      acc);
 
-    if (vel.has_value()) { vel.value() /= dt_; }
-    if (acc.has_value()) { acc.value() /= (dt_ * dt_); }
+    if (vel.has_value()) { vel.value() /= S(dt_); }
+    if (acc.has_value()) { acc.value() /= S(dt_ * dt_); }
 
     return g;
   }

@@ -220,7 +220,7 @@ Reparameterization reparameterize_spline(
   state << 0, start_vel;
 
   // clamp velocity to not exceed upper bound
-  state.y() = std::clamp<double>(state.y(), eps, v_func(0));
+  state.y() = std::clamp<double>(state.y(), eps, v_func(0.));
   if (slower_only) { state.y() = std::min<double>(state.y(), 1); }
 
   do {
