@@ -35,16 +35,16 @@
 #include <cassert>
 #include <ranges>
 
-#include "smooth/polynomial/basis.hpp"
-
 #include "cumulative_spline.hpp"
+#include "smooth/polynomial/basis.hpp"
+#include "traits.hpp"
 
 namespace smooth {
 
 /**
  * @brief Single-parameter Lie group-valued function.
  *
- * @tparam Spline degree
+ * @tparam K Spline degree
  * @tparam G Lie group
  *
  * A Spline is a continuous function \f$ x : [0, T] \rightarrow \mathbb{G} \f$.
@@ -576,6 +576,13 @@ private:
  */
 template<LieGroup G>
 using CubicSpline = Spline<3, G>;
+
+/**
+ * @brief Specialize traits
+ */
+template<std::size_t K, LieGroup G>
+struct traits::is_spline<Spline<K, G>> : std::true_type
+{};
 
 }  // namespace smooth
 

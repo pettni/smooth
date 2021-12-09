@@ -37,6 +37,7 @@
 
 #include "cumulative_spline.hpp"
 #include "smooth/polynomial/basis.hpp"
+#include "traits.hpp"
 
 namespace smooth {
 
@@ -192,6 +193,10 @@ private:
   double t0_, dt_;
   std::vector<G> ctrl_pts_;
 };
+
+template<std::size_t K, LieGroup G>
+struct traits::is_spline<BSpline<K, G>> : std::true_type
+{};
 
 }  // namespace smooth
 
