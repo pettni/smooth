@@ -578,7 +578,7 @@ auto fit_bspline(const std::ranges::range auto & tt, const std::ranges::range au
   opts.ftol     = 1e-3;
   opts.ptol     = 1e-3;
   opts.max_iter = 10;
-  minimize<diff::Type::ANALYTIC>(f, smooth::wrt(ctrl_pts), opts);
+  minimize<diff::Type::Analytic>(f, smooth::wrt(ctrl_pts), opts);
 
   return BSpline<K, G>(t0, dt, std::move(ctrl_pts));
 }

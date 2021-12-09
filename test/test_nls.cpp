@@ -391,10 +391,10 @@ TEST(NLS, AnalyticSparse)
   auto g3c = g3;
 
   // solve sparse
-  smooth::minimize<smooth::diff::Type::ANALYTIC>(f, smooth::wrt(g1, g2, g3));
+  smooth::minimize<smooth::diff::Type::Analytic>(f, smooth::wrt(g1, g2, g3));
 
   // solve with default
-  smooth::minimize<smooth::diff::Type::DEFAULT>(
+  smooth::minimize<smooth::diff::Type::Default>(
     [&](auto... var) { return std::get<0>(f(var...)); }, smooth::wrt(g1c, g2c, g3c));
 
   ASSERT_TRUE(g1.isApprox(g1c, 1e-5));
