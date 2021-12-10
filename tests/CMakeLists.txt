@@ -1,6 +1,10 @@
-include(CTest)
 include(GoogleTest)
 find_package(GTest REQUIRED)
+
+configure_file(
+  ${CMAKE_ROOT}/Modules/DartConfiguration.tcl.in
+  ${PROJECT_BINARY_DIR}/DartConfiguration.tcl
+)
 
 add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 

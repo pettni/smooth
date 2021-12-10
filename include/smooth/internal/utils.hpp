@@ -33,10 +33,6 @@
 #include <ranges>
 #include <utility>
 
-#include <Eigen/Core>
-
-#include "smooth/manifold.hpp"
-
 namespace smooth::utils {
 
 ////////////////////////////
