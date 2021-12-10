@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_EXAMPLES "Build the examples." OFF)
-option(BUILD_TESTING "Build the tests." OFF)
+option(BUILD_TESTS "Build the tests." OFF)
 
 find_package(Eigen3 3.4 REQUIRED)
 
@@ -81,18 +81,14 @@ install(
 )
 
 # ---------------------------------------------------------------------------------------
-# EXAMPLES
+# EXECUTABLES
 # ---------------------------------------------------------------------------------------
 
 if(BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()
 
-# ---------------------------------------------------------------------------------------
-# TESTING
-# ---------------------------------------------------------------------------------------
-
-if(BUILD_TESTING)
+if(BUILD_TESTS)
   enable_testing()
-  add_subdirectory(test)
+  add_subdirectory(tests)
 endif()

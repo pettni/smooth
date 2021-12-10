@@ -31,8 +31,11 @@
  * @brief Compile-time polynomial algebra.
  */
 
+#include <Eigen/Core>
+
 #include <cassert>
 
+#include "smooth/manifold.hpp"
 #include "static_matrix.hpp"
 
 namespace smooth {
