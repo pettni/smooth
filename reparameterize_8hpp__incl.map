@@ -1,24 +1,24 @@
 <map id="include/smooth/spline/reparameterize.hpp" name="include/smooth/spline/reparameterize.hpp">
-<area shape="rect" id="node1" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="529,5,677,47"/>
-<area shape="rect" id="node2" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="524,95,604,121"/>
-<area shape="rect" id="node21" href="$traits_8hpp_source.html" title=" " alt="" coords="739,169,813,196"/>
-<area shape="rect" id="node3" title=" " alt="" coords="452,169,527,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="479,319,545,345"/>
-<area shape="rect" id="node5" title=" " alt="" coords="492,468,553,495"/>
-<area shape="rect" id="node6" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="277,169,427,196"/>
-<area shape="rect" id="node11" href="$basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="144,244,333,271"/>
-<area shape="rect" id="node7" href="$lie__group_8hpp.html" title=" " alt="" coords="633,393,778,420"/>
-<area shape="rect" id="node20" title=" " alt="" coords="408,244,475,271"/>
-<area shape="rect" id="node8" title=" " alt="" coords="583,543,668,569"/>
-<area shape="rect" id="node9" title=" " alt="" coords="724,543,799,569"/>
-<area shape="rect" id="node10" href="$manifold_8hpp.html" title=" " alt="" coords="578,468,673,495"/>
-<area shape="rect" id="node12" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="196,319,316,345"/>
-<area shape="rect" id="node13" title=" " alt="" coords="5,468,56,495"/>
-<area shape="rect" id="node14" title=" " alt="" coords="369,393,428,420"/>
-<area shape="rect" id="node15" href="$utils_8hpp_source.html" title=" " alt="" coords="183,393,345,420"/>
-<area shape="rect" id="node16" title=" " alt="" coords="402,468,467,495"/>
-<area shape="rect" id="node17" title=" " alt="" coords="131,468,210,495"/>
-<area shape="rect" id="node18" title=" " alt="" coords="234,468,302,495"/>
-<area shape="rect" id="node19" title=" " alt="" coords="326,468,378,495"/>
-<area shape="rect" id="node22" title=" " alt="" coords="853,244,936,271"/>
+<area shape="rect" id="node1" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="302,5,450,47"/>
+<area shape="rect" id="node2" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="297,95,377,121"/>
+<area shape="rect" id="node21" href="$traits_8hpp_source.html" title=" " alt="" coords="679,169,753,196"/>
+<area shape="rect" id="node3" title=" " alt="" coords="100,169,175,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="230,319,295,345"/>
+<area shape="rect" id="node5" title=" " alt="" coords="5,468,67,495"/>
+<area shape="rect" id="node6" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="375,169,526,196"/>
+<area shape="rect" id="node11" href="$basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="300,244,489,271"/>
+<area shape="rect" id="node7" href="$lie__group_8hpp.html" title=" " alt="" coords="605,244,750,271"/>
+<area shape="rect" id="node20" title=" " alt="" coords="513,244,580,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="543,393,628,420"/>
+<area shape="rect" id="node9" title=" " alt="" coords="684,393,759,420"/>
+<area shape="rect" id="node10" href="$manifold_8hpp.html" title=" " alt="" coords="538,319,633,345"/>
+<area shape="rect" id="node12" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="336,319,456,345"/>
+<area shape="rect" id="node13" title=" " alt="" coords="452,468,503,495"/>
+<area shape="rect" id="node14" title=" " alt="" coords="377,393,436,420"/>
+<area shape="rect" id="node15" href="$utils_8hpp_source.html" title=" " alt="" coords="191,393,353,420"/>
+<area shape="rect" id="node16" title=" " alt="" coords="91,468,157,495"/>
+<area shape="rect" id="node17" title=" " alt="" coords="181,468,259,495"/>
+<area shape="rect" id="node18" title=" " alt="" coords="283,468,351,495"/>
+<area shape="rect" id="node19" title=" " alt="" coords="375,468,427,495"/>
+<area shape="rect" id="node22" title=" " alt="" coords="825,244,908,271"/>
 </map>

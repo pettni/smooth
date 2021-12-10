@@ -1,16 +1,16 @@
 <map id="include/smooth/polynomial/basis.hpp" name="include/smooth/polynomial/basis.hpp">
-<area shape="rect" id="node1" title="Compile&#45;time polynomial algebra." alt="" coords="9,5,184,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,71,121"/>
-<area shape="rect" id="node3" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="95,95,215,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="7,244,58,271"/>
-<area shape="rect" id="node5" title=" " alt="" coords="126,169,185,196"/>
-<area shape="rect" id="node6" href="$utils_8hpp_source.html" title=" " alt="" coords="227,169,390,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="83,244,148,271"/>
-<area shape="rect" id="node8" title=" " alt="" coords="172,244,251,271"/>
-<area shape="rect" id="node9" title=" " alt="" coords="275,244,343,271"/>
-<area shape="rect" id="node10" title=" " alt="" coords="367,244,429,271"/>
-<area shape="rect" id="node11" title=" " alt="" coords="453,244,505,271"/>
-<area shape="rect" id="node12" title=" " alt="" coords="503,319,589,345"/>
-<area shape="rect" id="node13" href="$manifold_8hpp.html" title=" " alt="" coords="581,244,724,271"/>
-<area shape="rect" id="node14" title=" " alt="" coords="615,319,690,345"/>
+<area shape="rect" id="node1" title="Compile&#45;time polynomial algebra." alt="" coords="47,5,222,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,169,91,196"/>
+<area shape="rect" id="node3" title=" " alt="" coords="38,95,103,121"/>
+<area shape="rect" id="node4" href="$manifold_8hpp.html" title=" " alt="" coords="127,95,270,121"/>
+<area shape="rect" id="node6" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="295,95,415,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="161,169,236,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="263,244,313,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="325,169,384,196"/>
+<area shape="rect" id="node9" href="$utils_8hpp_source.html" title=" " alt="" coords="408,169,571,196"/>
+<area shape="rect" id="node10" title=" " alt="" coords="338,244,403,271"/>
+<area shape="rect" id="node11" title=" " alt="" coords="427,244,506,271"/>
+<area shape="rect" id="node12" title=" " alt="" coords="530,244,598,271"/>
+<area shape="rect" id="node13" title=" " alt="" coords="623,244,684,271"/>
+<area shape="rect" id="node14" title=" " alt="" coords="709,244,761,271"/>
 </map>
