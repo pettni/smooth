@@ -121,41 +121,43 @@ auto dr_numerical(auto && f, auto && x)
 
       Eigen::Index I1 = 0;
       utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i1) {
-        if (Eigen::Index(i1) > I0) { return; }
+        if (Eigen::Index(i1) > i0) { return; }
 
         auto & w1                           = std::get<i1>(x_nc);
         using W1                            = std::decay_t<decltype(w1)>;
         static constexpr Eigen::Index Nx_i1 = Dof<W1>;
         const int nx_i1                     = dof<W1>(w1);
 
-        for (auto i0 = 0; i0 != nx_i0; ++i0) {
+        for (auto k0 = 0; k0 != nx_i0; ++k0) {
           Scalar eps0 = std::sqrt(eps);
           if constexpr (std::is_base_of_v<Eigen::MatrixBase<W0>, W0>) {
-            eps0 *= abs(w0[i0]);
+            eps0 *= abs(w0[k0]);
             if (eps0 == 0.) { eps0 = eps; }
           }
 
-          w0               = rplus<W0>(w0, eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
+          w0               = rplus<W0>(w0, eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
           const Result F10 = std::apply(f, x_nc);
-          w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
+          w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
 
-          J(0, I0 + i0) = (F10 - F) / eps0;
+          J(0, I0 + k0) = (F10 - F) / eps0;
 
-          for (auto i1 = 0; i1 <= i0; ++i1) {
+          for (auto k1 = 0; k1 < (i0 == i1 ? k0 + 1 : nx_i1); ++k1) {
             Scalar eps1 = std::sqrt(eps);
             if constexpr (std::is_base_of_v<Eigen::MatrixBase<W1>, W1>) {
-              eps1 *= abs(w1[i1]);
+              eps1 *= abs(w1[k1]);
               if (eps1 == 1.) { eps1 = eps; }
             }
 
-            w1               = rplus<W1>(w1, eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, i1));
+            // do this in order to ensure we return to same point on spaces with non-zero brackets
+            w1               = rplus<W1>(w1, eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, k1));
             const Result F01 = std::apply(f, x_nc);
-            w0               = rplus<W0>(w0, eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
+            w0               = rplus<W0>(w0, eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
             const Result F11 = std::apply(f, x_nc);
-            w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, i0));
-            w1               = rplus<W1>(w1, -eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, i1));
+            w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
+            w1               = rplus<W1>(w1, -eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, k1));
 
-            H(I0 + i0, I1 + i1) = H(I1 + i1, I0 + i0) = (F11 - F01 - F10 + F) / (eps0 * eps1);
+            // hessian is symmetric
+            H(I0 + k0, I1 + k1) = H(I1 + k1, I0 + k0) = (F11 - F01 - F10 + F) / (eps0 * eps1);
           }
         }
         I1 += nx_i1;

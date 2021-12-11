@@ -67,33 +67,40 @@ Spline<2, double> reparameterize_spline(
 {
   using G = std::invoke_result_t<decltype(spline), double>;
 
+  static_assert(Dof<G> > 0, "reparameterize_spline only supports static-sized types");
+
+  assert(vel_min.size() == Dof<G>);
+  assert(vel_max.size() == Dof<G>);
+  assert(acc_min.size() == Dof<G>);
+  assert(acc_max.size() == Dof<G>);
+
+  assert(vel_min.maxCoeff() < 0);
+  assert(vel_max.minCoeff() > 0);
+  assert(acc_min.maxCoeff() < 0);
+  assert(acc_max.minCoeff() > 0);
+
   constexpr auto sq  = [](auto x) { return x * x; };
   constexpr auto eps = 1e-8;
+  constexpr auto inf = std::numeric_limits<double>::infinity();
 
   const double s0 = spline.t_min();
   const double sf = spline.t_max();
 
   const double ds = (sf - s0) / N;
 
-  assert(vel_min.maxCoeff() < 0);
-  assert(vel_max.minCoeff() > 0);
-
-  assert(acc_min.maxCoeff() < 0);
-  assert(acc_max.minCoeff() > 0);
-
   // REVERSE PASS WITH MINIMAL ACCELERATION
 
-  Eigen::VectorXd max_vel2(N + 1);
-  max_vel2(N) = end_vel * end_vel;
+  Eigen::VectorXd v2max(N + 1);
+  v2max(N) = end_vel * end_vel;
 
   for (auto i = 0u; i < N + 1; ++i) {
-    const auto Nmi = N - i;
+    const auto Nmi = N - i;  // iterating backwards
 
     Tangent<G> vel, acc;
     spline(s0 + ds * Nmi, vel, acc);
 
     if (Nmi + 1 < N + 1) {
-      // APPROACH 1: Solve linear program in y = v^2
+      // APPROACH 1 (exact): Solve linear program in y = v^2
       //
       //  max   y
       //  s.t.                   y - 2 ds a         \leq y(Nmi + 1)    [1]
@@ -104,112 +111,94 @@ Spline<2, double> reparameterize_spline(
       //
       // TODO: implement, use lp2d, and evaluate
 
-      // APPROACH 2: calculate acceleration constraints from Nmi + 1 and apply them at Nmi
+      // APPROACH 2 (approximate): calculate constraints from Nmi + 1 and apply them at Nmi
 
       // figure minimal allowed acceleration at Nmi + 1
-      double a = -std::numeric_limits<double>::infinity();
+      double a = -inf;
       if (vel.cwiseAbs().maxCoeff() > eps) {
-        const Tangent<G> upper = (acc_max - acc * max_vel2(Nmi + 1)).cwiseMax(Tangent<G>::Zero());
-        const Tangent<G> lower = (acc_min - acc * max_vel2(Nmi + 1)).cwiseMin(Tangent<G>::Zero());
-        for (auto i = 0u; i != Dof<G>; ++i) {
-          if (vel(i) > eps) {
-            a = std::max<double>(a, lower(i) / vel(i));
-          } else if (vel(i) < -eps) {
-            a = std::max<double>(a, upper(i) / vel(i));
+        const Tangent<G> upper = (acc_max - acc * v2max(Nmi + 1)).cwiseMax(Tangent<G>::Zero());
+        const Tangent<G> lower = (acc_min - acc * v2max(Nmi + 1)).cwiseMin(Tangent<G>::Zero());
+        for (auto j = 0u; j != Dof<G>; ++j) {
+          if (vel(j) > eps) {
+            a = std::max<double>(a, lower(j) / vel(j));
+          } else if (vel(j) < -eps) {
+            a = std::max<double>(a, upper(j) / vel(j));
           }
         }
       }
 
       // maximal allowed velocity at Nmi
-      max_vel2(Nmi) = max_vel2(Nmi + 1) - 2 * ds * a;
+      v2max(Nmi) = v2max(Nmi + 1) - 2 * ds * a;
     }
 
     // clamp velocity to not exceed constraints
     for (auto j = 0u; j != Dof<G>; ++j) {
       if (vel(j) > eps) {
-        max_vel2(Nmi) = std::min<double>(max_vel2(Nmi), sq(vel_max(j) / vel(j)));
+        v2max(Nmi) = std::min<double>(v2max(Nmi), sq(vel_max(j) / vel(j)));
       } else if (vel(j) < -eps) {
-        max_vel2(Nmi) = std::min<double>(max_vel2(Nmi), sq(vel_min(j) / vel(j)));
+        v2max(Nmi) = std::min<double>(v2max(Nmi), sq(vel_min(j) / vel(j)));
       }
 
+      // this ensures that a = 0 is feasible
       if (acc(j) > eps) {
-        max_vel2(Nmi) = std::min<double>(max_vel2(Nmi), acc_max(j) / acc(j));
+        v2max(Nmi) = std::min<double>(v2max(Nmi), acc_max(j) / acc(j));
       } else if (acc(j) < -eps) {
-        max_vel2(Nmi) = std::min<double>(max_vel2(Nmi), acc_min(j) / acc(j));
+        v2max(Nmi) = std::min<double>(v2max(Nmi), acc_min(j) / acc(j));
       }
     }
   }
 
   // FORWARD PASS WITH MAXIMAL ACCELERATION
 
-  std::vector<std::array<double, 4>> dd;
-  dd.reserve(N + 1);
+  Spline<2, double> ret;
+  ret.reserve(N + 1);
 
-  for (auto i = 0u; i < N + 1; ++i) {
+  // "current" squared velocity
+  double v2m = std::min(start_vel * start_vel, v2max(0));
+
+  for (auto i = 0u; i < N; ++i) {
+    const double si = s0 + ds * i;
+
     Tangent<G> vel, acc;
-    spline(s0 + ds * i, vel, acc);
+    spline(si, vel, acc);
 
-    // velocity at this state
-    double v;
+    // velocity at si
+    const double vi2 = v2m;
+    const double vi  = std::sqrt(vi2);
 
-    if (dd.empty()) {
-      v = std::min(start_vel, std::sqrt(max_vel2(i)));
-    } else {
-      const auto [tm, sm, vm, am] = dd.back();
-      if (am == std::numeric_limits<double>::infinity()) {
-        v = vm;
-      } else {
-        v = std::sqrt(std::max<double>(eps, vm * vm + 2 * am * ds));
-      }
-    }
-
-    // figure maximal allowed acceleration
-    double a               = std::numeric_limits<double>::infinity();
-    const Tangent<G> upper = (acc_max - acc * v * v).cwiseMax(Tangent<G>::Zero());
-    const Tangent<G> lower = (acc_min - acc * v * v).cwiseMin(Tangent<G>::Zero());
+    // figure maximal allowed acceleration at (si, vi)
+    double ai              = inf;
+    const Tangent<G> upper = (acc_max - acc * vi2).cwiseMax(Tangent<G>::Zero());
+    const Tangent<G> lower = (acc_min - acc * vi2).cwiseMin(Tangent<G>::Zero());
     for (auto j = 0u; j != Dof<G>; ++j) {
       if (vel(j) > eps) {
-        a = std::min<double>(a, upper(j) / vel(j));
+        ai = std::min<double>(ai, upper(j) / vel(j));
       } else if (vel(j) < -eps) {
-        a = std::min<double>(a, lower(j) / vel(j));
+        ai = std::min<double>(ai, lower(j) / vel(j));
       }
     }
 
-    if (i + 1 < N + 1) {
-      // do not exceed velocity at next step
-      a = std::min<double>(a, (max_vel2(i + 1) - v * v) / (2 * ds));
-    }
+    // do not exceed velocity at next step
+    ai = std::min<double>(ai, (v2max(i + 1) - vi2) / (2 * ds));
 
-    if (a != std::numeric_limits<double>::infinity() || i == N) {
-      double t = 0;
-      if (dd.empty()) {
-        t = 0;
-      } else {
-        const auto [tm, sm, vm, am] = dd.back();
+    if (ai != inf) {
+      const double dt = std::abs(ai) < eps
+                        ? ds / vi
+                        : (-vi + std::sqrt(std::max<double>(eps, vi2 + 2 * ds * ai))) / ai;
 
-        if (std::abs(am) < eps) {
-          t = tm + ds / vm;
-        } else if (am == std::numeric_limits<double>::infinity()) {
-          t = tm;
-        } else {
-          t = tm + (-vm + std::sqrt(std::max<double>(eps, vm * vm + 2 * ds * am))) / am;
-        }
-      }
+      // add segment to spline
+      ret.concat_global(Spline<2, double>{
+        dt,
+        Eigen::Vector2d{dt * vi / 2, dt * (dt * ai + vi) / 2},
+        s0 + i * ds,
+      });
 
-      dd.push_back({t, s0 + ds * i, v, i == N ? 0 : a});
+      // update squared velocity with value at end of new segment
+      v2m = ai == inf ? vi2 : std::max<double>(eps, vi2 + 2 * ai * ds);
     }
   }
 
-  // convert into a spline
-  Spline<2, double> ret;
-  for (auto i = 0u; i + 1 < dd.size(); ++i) {
-    const double dt = std::get<0>(dd[i + 1]) - std::get<0>(dd[i]);
-    const double s  = std::get<1>(dd[i]);
-    const double v  = dt * std::get<2>(dd[i]);
-    const double a  = dt * dt * std::get<3>(dd[i]);
-    ret.concat_global(Spline<2, double>(dt, Eigen::Matrix<double, 1, 2>{v / 2, a / 2 + v / 2}, s));
-  }
-
+  // reparameterization attains t_max
   ret.concat_global(Spline<2, double>(spline.t_max()));
 
   return ret;

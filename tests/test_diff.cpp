@@ -147,6 +147,38 @@ void test_second()
   ASSERT_TRUE(d2f.isApprox(Eigen::Matrix3d{{2, 0, 0}, {0, 2, 0}, {0, 0, 2}}, 1e-4));
 }
 
+template<diff::Type DiffType>
+void test_second_multi()
+{
+  const auto f = []<typename T>(const Eigen::Vector3<T> & xx, const Eigen::Vector3<T> & yy) -> T {
+    return xx.squaredNorm() + yy.norm() + xx.dot(yy);
+  };
+
+  Eigen::Vector3d x{2, 4, 6};
+  Eigen::Vector3d y{2, 4, 6};
+
+  const auto ny = y.norm();
+
+  const auto [F, df, d2f] = diff::dr<2, DiffType>(f, wrt(x, y));
+
+  const Eigen::RowVector3d df_dx_expected = 2 * x + y;
+  const Eigen::RowVector3d df_dy_expected = y / ny + x;
+
+  const Eigen::Matrix3d d2f_dx2_expected = 2 * Eigen::Matrix3d::Identity();
+  const Eigen::Matrix3d d2f_dy2_expected =
+    Eigen::Matrix3d::Identity() / ny - y * y.transpose() / (ny * ny * ny);
+  const Eigen::Matrix3d d2f_dxy_expected = Eigen::Matrix3d::Identity();
+
+  ASSERT_TRUE(df.head(3).isApprox(df_dx_expected, 1e-4));
+  ASSERT_TRUE(df.tail(3).isApprox(df_dy_expected, 1e-4));
+
+  ASSERT_TRUE(d2f.block(0, 0, 3, 3).isApprox(d2f_dx2_expected, 1e-4));
+  ASSERT_TRUE(d2f.block(3, 3, 3, 3).isApprox(d2f_dy2_expected, 1e-4));
+
+  ASSERT_TRUE(d2f.block(0, 3, 3, 3).isApprox(d2f_dxy_expected));
+  ASSERT_TRUE(d2f.block(3, 0, 3, 3).isApprox(d2f_dxy_expected));
+}
+
 TEST(Differentiation, NumericalSuite)
 {
   test_linear<3, 3, diff::Type::Numerical>(1e-6);
@@ -158,6 +190,7 @@ TEST(Differentiation, NumericalSuite)
   run_exp_test<diff::Type::Numerical, SO3d>();
 
   test_second<diff::Type::Numerical>();
+  test_second_multi<diff::Type::Numerical>();
 }
 
 #ifdef ENABLE_AUTODIFF_TESTS
@@ -172,6 +205,7 @@ TEST(Differentiation, AutodiffSuite)
   run_exp_test<diff::Type::Autodiff, SO3d>();
 
   test_second<diff::Type::Autodiff>();
+  test_second_multi<diff::Type::Autodiff>();
 }
 #endif
 

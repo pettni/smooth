@@ -140,10 +140,10 @@ TEST(Spline, ReparameterizeTurnInPlace)
 
   Eigen::Vector3d vmin(-2, -1, -1);
   Eigen::Vector3d vmax(3, 1, 1);
-  Eigen::Vector3d amin(-0.05, -1, -1);
-  Eigen::Vector3d amax(0.1, 1, 1);
+  Eigen::Vector3d amin(-0.15, -1, -1);
+  Eigen::Vector3d amax(0.3, 1, 1);
 
-  auto sfun = smooth::reparameterize_spline(c, vmin, vmax, amin, amax, 0, 0, 1000);
+  auto sfun = smooth::reparameterize_spline(c, vmin, vmax, amin, amax, 0, 0, 200);
 
   ASSERT_GE(sfun(sfun.t_max() + 1e-6), c.t_max());
 

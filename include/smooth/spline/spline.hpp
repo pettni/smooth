@@ -204,6 +204,16 @@ public:
   /// @brief True if Spline has zero size()
   bool empty() const { return size() == 0; }
 
+  /// @brief Allocate space for capacity segments
+  void reserve(std::size_t capacity)
+  {
+    end_t_.reserve(capacity);
+    end_g_.reserve(capacity);
+    Vs_.reserve(capacity);
+    seg_T0_.reserve(capacity);
+    seg_Del_.reserve(capacity);
+  }
+
   /// @brief Start time of Spline (always equal to zero).
   double t_min() const { return 0; }
 

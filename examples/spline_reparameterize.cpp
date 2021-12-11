@@ -41,7 +41,7 @@
  */
 int main(int, char const **)
 {
-  std::srand(100);
+  std::srand(1);
 
   std::vector<double> tt{1, 2, 3, 4, 5, 6};
   std::vector<smooth::SE2d> gg{
@@ -53,7 +53,7 @@ int main(int, char const **)
     smooth::SE2d::Random(),
   };
 
-  auto c = smooth::fit_spline(tt, gg, smooth::spline_specs::FixedDerCubic<smooth::SE2d, 1>{});
+  auto c = smooth::fit_spline(tt, gg, smooth::spline_specs::FixedDerCubic<smooth::SE2d, 2>{});
 
   Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
 
