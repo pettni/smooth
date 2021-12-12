@@ -58,7 +58,7 @@ std::tuple<Eigen::Vector<double, N>, double, double> calc_phi(
 
   Eigen::SparseMatrix<double> lhs = J.transpose() * J;
 
-  lhs.reserve(Eigen::VectorXd::Ones(n));
+  lhs.reserve(Eigen::Vector<double, N>::Ones(n));
   if (alpha > 0) {
     for (auto i = 0u; i != n; ++i) { lhs.coeffRef(i, i) += alpha * d(i) * d(i); }
   }

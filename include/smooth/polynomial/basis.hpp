@@ -28,10 +28,8 @@
 
 /**
  * @file
- * @brief Compile-time polynomial algebra.
+ * @brief Compile-time polynomial manipulation.
  */
-
-#include <Eigen/Core>
 
 #include <cassert>
 
@@ -66,38 +64,6 @@ constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size
     P2 *= i;
     P2 /= i - p;
     ret[0][i] = P1 * P2;
-  }
-
-  return ret;
-}
-
-/**
- * @brief Monomial derivative (runtime version).
- *
- * @tparam Scalar scalar type
- * @param u monomial parameter
- * @param k maximal monomial degree
- * @param p differentiation order
- * @return row vector U of size k+1 s.t. \f$ U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \f$
- */
-template<typename Scalar>
-Eigen::RowVectorX<Scalar> monomial_derivative_runtime(Scalar u, std::size_t k, std::size_t p = 0)
-{
-  Eigen::RowVectorX<Scalar> ret(k + 1);
-  ret.setZero();
-
-  if (p > k) { return ret; }
-
-  for (auto i = 0u; i < p; ++i) { ret(i) = Scalar(0); }
-  Scalar P1      = 1;
-  std::size_t P2 = 1;
-  for (auto j = 2u; j <= p; ++j) { P2 *= j; }
-  ret(p) = P1 * P2;
-  for (auto i = p + 1; i <= k; ++i) {
-    P1 *= u;
-    P2 *= i;
-    P2 /= i - p;
-    ret(i) = P1 * P2;
   }
 
   return ret;
@@ -482,48 +448,6 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> monomial_integral()
       ret[j][i] = ret[i][j];
     }
   }
-  return ret;
-}
-
-/**
- * @brief Evaluate the p:th derivative of a degree K polynomial in a given basis.
- *
- * A polynomial has the form
- * \f[
- *   f(u) = \sum_{\nu=0}^K x_\nu b_{\nu, K}(u),
- * \f]
- * where \f$ \{ b_{\nu, K} \} \f$ is a polynomial basis of order \f$K\f$.
- *
- * @tparam Basis polynomial basis
- * @tparam K polynomial degree
- * @tparam Scalar scalar type
- * @param x polynomial coefficients (scalar or eigen type, must be of size K+1)
- * @param u point to evaluate polynomial at
- * @param p differentiation order
- * @return the p:th derivative of f at u
- */
-template<PolynomialBasis Basis, std::size_t K, typename Scalar, std::ranges::range R>
-auto evaluate_polynomial(const R & x, const Scalar & u, int p = 0)
-{
-  assert(std::ranges::size(x) == K + 1);
-
-  constexpr auto B_s = polynomial_basis<Basis, K, double>();
-  const auto U_s     = monomial_derivative<K>(u, p);
-
-  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B(B_s[0].data());
-  Eigen::Map<const Eigen::Matrix<Scalar, K + 1, 1>> U(U_s[0].data());
-
-  using RT   = std::ranges::range_value_t<R>;
-  using RetT = std::conditional_t<
-    std::is_base_of_v<Eigen::MatrixBase<RT>, RT>,
-    Eigen::Matrix<Scalar, Dof<RT>, 1>,
-    Scalar>;
-
-  RetT ret = Default<RetT>();
-
-  const Eigen::Matrix<Scalar, 1, K + 1> w = U.transpose() * B.template cast<Scalar>();
-  for (auto i = 0u; const auto & xi : x) { ret += w[i++] * xi; }
-
   return ret;
 }
 

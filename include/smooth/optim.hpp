@@ -94,7 +94,10 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
   // scaling parameters
   Eigen::Vector<double, Nx> d(nx);
   if constexpr (is_sparse) {
-    d = (Eigen::RowVectorXd::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose();
+    d =
+      (Eigen::RowVector<double, decltype(J)::RowsAtCompileTime>::Ones(J.rows()) * J.cwiseProduct(J))
+        .cwiseSqrt()
+        .transpose();
   } else {
     d = J.colwise().stableNorm().transpose();
   }
@@ -188,8 +191,10 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
       // update scaling
       if constexpr (is_sparse) {
-        d = d.cwiseMax(
-          (Eigen::RowVectorXd::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose());
+        d = (Eigen::RowVector<double, decltype(J)::RowsAtCompileTime>::Ones(J.rows())
+             * J.cwiseProduct(J))
+              .cwiseSqrt()
+              .transpose();
       } else {
         d = d.cwiseMax(J.colwise().stableNorm().transpose());
       }
