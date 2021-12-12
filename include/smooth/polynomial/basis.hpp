@@ -137,7 +137,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> bspline_basis()
     ret[0][0] = 1;
     return ret;
   } else {
-    constexpr auto coeff_mat_km1 = bspline_basis<K - 1, Scalar>();
+    const auto coeff_mat_km1 = bspline_basis<K - 1, Scalar>();
     StaticMatrix<Scalar, K + 1, K> low, high;
     StaticMatrix<Scalar, K, K + 1> left, right;
 
@@ -535,7 +535,8 @@ auto evaluate_polynomial(const R & x, const Scalar & u, int p = 0)
  *   \int_{t_0}^{t_1} \left| At^2 + Bt + C \right| \mathrm{d} t.
  * \f]
  */
-inline double integrate_absolute_polynomial(double t0, double t1, double A, double B, double C)
+inline constexpr double
+integrate_absolute_polynomial(double t0, double t1, double A, double B, double C)
 {
   // location of first zero (if any)
   double mid1 = std::numeric_limits<double>::infinity();

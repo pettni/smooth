@@ -112,15 +112,15 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
   auto t0 = std::chrono::high_resolution_clock::now();
 
   if (opts.verbose) {
-    using std::cout, std::left, std::endl, std::setw, std::right;
+    using std::cout, std::left, std::setw, std::right;
     // clang-format off
-    cout << "================= Levenberg-Marquardt Solver ================" << endl;
-    cout << "Solving NLSQ with n=" << J.cols() << ", m=" << J.rows() << endl;
+    cout << "================= Levenberg-Marquardt Solver ================\n";
+    cout << "Solving NLSQ with n=" << J.cols() << ", m=" << J.rows() << '\n';
     cout << setw(8)  << right << "ITER"
          << setw(14) << right << "|| r ||"
          << setw(14) << right << "RED"
          << setw(14) << right << "|| D * a ||"
-         << setw(10) << right << "TIME" << std::endl;
+         << setw(10) << right << "TIME" << '\n';
     // clang-format on
   }
 
@@ -166,7 +166,7 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
     }
 
     if (opts.verbose) {
-      using std::cout, std::setw, std::right, std::endl;
+      using std::cout, std::setw, std::right;
       // clang-format off
       cout << setw(7) << right << iter << ":"
            << std::scientific
@@ -174,7 +174,7 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
            << setw(14) << right << act_red
            << setw(14) << right << Da_norm
            << setw(10) << right << duration_cast<microseconds>(std::chrono::high_resolution_clock::now() - t0).count()
-           << endl;
+           << '\n';
       // clang-format on
     }
 
@@ -207,13 +207,13 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
   //// PRINT STATUS ////
   if (opts.verbose) {
-    using std::cout, std::left, std::right, std::setw, std::endl;
+    using std::cout, std::left, std::right, std::setw;
 
     // clang-format off
-    cout << "NLSQ solver summary:" << endl;
-    cout << setw(25) << left << "Iterations"                << setw(10) << right << iter                                                                                    << endl;
-    cout << setw(25) << left << "Total time (microseconds)" << setw(10) << right << duration_cast<microseconds>(std::chrono::high_resolution_clock::now() - t0).count()     << endl;
-    cout << "=============================================================" << endl;
+    cout << "NLSQ solver summary:\n";
+    cout << setw(25) << left << "Iterations"                << setw(10) << right << iter                                                                                    << '\n';
+    cout << setw(25) << left << "Total time (microseconds)" << setw(10) << right << duration_cast<microseconds>(std::chrono::high_resolution_clock::now() - t0).count()     << '\n';
+    cout << "=============================================================\n";
     // clang-format on
   }
 }

@@ -211,10 +211,10 @@ struct traits::man<ManifoldVector<M>>
 template<typename Stream, smooth::Manifold M>
 Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
 {
-  s << "ManifoldVector with " << g.size() << " elements:" << std::endl;
+  s << "ManifoldVector with " << g.size() << " elements:\n";
   for (auto i = 0u; i != g.size(); ++i) {
     s << i << ": " << g[i];
-    if (i != g.size() - 1) { s << std::endl; }
+    if (i != g.size() - 1) { s << '\n'; }
   }
   return s;
 }

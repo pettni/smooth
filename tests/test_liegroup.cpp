@@ -457,6 +457,6 @@ TYPED_TEST(LieGroupInterface, Stream)
 {
   std::stringstream ss;
   const auto g = TypeParam::Identity();
-  ss << g << std::endl;
+  ss << g << '\n';
   ASSERT_GE(ss.str().size(), 0);
 }

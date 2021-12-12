@@ -48,9 +48,9 @@ struct liebase_info
 template<typename Derived>
 class LieGroupBase
 {
-  Derived & derived() { return static_cast<Derived &>(*this); }
+  Derived & derived() noexcept { return static_cast<Derived &>(*this); }
 
-  const Derived & cderived() const { return static_cast<const Derived &>(*this); }
+  const Derived & cderived() const noexcept { return static_cast<const Derived &>(*this); }
 
 protected:
   LieGroupBase() = default;
@@ -91,7 +91,7 @@ public:
    */
   template<typename OtherDerived>
     requires(is_mutable && std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  Derived & operator=(const LieGroupBase<OtherDerived> & o)
+  Derived & operator=(const LieGroupBase<OtherDerived> & o) noexcept
   {
     derived().coeffs() = static_cast<const OtherDerived &>(o).coeffs();
     return derived();
@@ -102,24 +102,24 @@ public:
   /**
    * @brief Dynamic size (degrees of freedom).
    */
-  Eigen::Index dof() const { return Dof; }
+  Eigen::Index dof() const noexcept { return Dof; }
 
   /**
    * @brief Set to group identity element.
    */
-  void setIdentity() { Impl::setIdentity(derived().coeffs()); }
+  void setIdentity() noexcept { Impl::setIdentity(derived().coeffs()); }
 
   /**
    * @brief Set to a random element.
    *
    * Set the seed with \p std::srand(unsigned).
    */
-  void setRandom() { Impl::setRandom(derived().coeffs()); }
+  void setRandom() noexcept { Impl::setRandom(derived().coeffs()); }
 
   /**
    * @brief Construct the identity element.
    */
-  static PlainObject Identity()
+  static PlainObject Identity() noexcept
   {
     PlainObject ret;
     ret.setIdentity();
@@ -131,7 +131,7 @@ public:
    *
    * Set the seed with \p std::srand(unsigned).
    */
-  static PlainObject Random()
+  static PlainObject Random() noexcept
   {
     PlainObject ret;
     ret.setRandom();
@@ -142,7 +142,7 @@ public:
    * @brief Return as matrix Lie group element in \f$ \mathbb{R}^{\mathtt{dim} \times \mathtt{dim}}
    * \f$.
    */
-  Matrix matrix() const
+  Matrix matrix() const noexcept
   {
     Matrix ret;
     Impl::matrix(cderived().coeffs(), ret);
@@ -156,7 +156,7 @@ public:
     requires(std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
   bool isApprox(
     const LieGroupBase<OtherDerived> & o,
-    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const
+    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const noexcept
   {
     return cderived().coeffs().isApprox(static_cast<const OtherDerived &>(o).coeffs(), eps);
   }
@@ -165,7 +165,7 @@ public:
    * @brief Cast to different scalar type.
    */
   template<typename NewScalar>
-  CastT<NewScalar> cast() const
+  CastT<NewScalar> cast() const noexcept
   {
     CastT<NewScalar> ret;
     ret.coeffs() = cderived().coeffs().template cast<NewScalar>();
@@ -177,7 +177,7 @@ public:
    */
   template<typename OtherDerived>
     requires(std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  PlainObject operator*(const LieGroupBase<OtherDerived> & o) const
+  PlainObject operator*(const LieGroupBase<OtherDerived> & o) const noexcept
   {
     PlainObject ret;
     Impl::composition(
@@ -190,7 +190,7 @@ public:
    */
   template<typename OtherDerived>
     requires(is_mutable && std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  Derived & operator*=(const LieGroupBase<OtherDerived> & o)
+  Derived & operator*=(const LieGroupBase<OtherDerived> & o) noexcept
   {
     derived().coeffs() = (*this * o).coeffs();
     return derived();
@@ -199,7 +199,7 @@ public:
   /**
    * @brief Group inverse operation.
    */
-  PlainObject inverse() const
+  PlainObject inverse() const noexcept
   {
     PlainObject ret;
     Impl::inverse(cderived().coeffs(), ret.coeffs());
@@ -211,7 +211,7 @@ public:
    *
    * @return tangent logarithm element.
    */
-  Tangent log() const
+  Tangent log() const noexcept
   {
     Tangent ret;
     Impl::log(cderived().coeffs(), ret);
@@ -224,7 +224,7 @@ public:
    * @return Matrix \f$ \mathbf{Ad}_\mathbf{X} \f$ s.t.  \f$ \mathbf{Ad_X} \mathbf{a} = ( \mathbf{X}
    * \mathbf{a}^\wedge \mathbf{X}^{-1} )^\vee \f$
    */
-  TangentMap Ad() const
+  TangentMap Ad() const noexcept
   {
     TangentMap ret;
     Impl::Ad(cderived().coeffs(), ret);
@@ -237,7 +237,7 @@ public:
    * @return \f$ \mathbf{x} \oplus \mathbf{a} = \mathbf{x} \circ \exp(\mathbf{a}) \f$
    */
   template<typename TangentDerived>
-  PlainObject operator+(const Eigen::MatrixBase<TangentDerived> & a) const
+  PlainObject operator+(const Eigen::MatrixBase<TangentDerived> & a) const noexcept
   {
     return *this * exp(a);
   }
@@ -249,7 +249,7 @@ public:
    */
   template<typename TangentDerived>
     requires(is_mutable)
-  Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & a)
+  Derived & operator+=(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     *this *= exp(a);
     return derived();
@@ -267,7 +267,7 @@ public:
    */
   template<typename OtherDerived>
     requires(std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  Tangent operator-(const LieGroupBase<OtherDerived> & xo) const
+  Tangent operator-(const LieGroupBase<OtherDerived> & xo) const noexcept
   {
     return (xo.inverse() * *this).log();
   }
@@ -278,7 +278,7 @@ public:
    * @brief Lie group exponential map.
    */
   template<typename TangentDerived>
-  static PlainObject exp(const Eigen::MatrixBase<TangentDerived> & a)
+  static PlainObject exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     PlainObject ret;
     Impl::exp(a, ret.coeffs());
@@ -295,7 +295,7 @@ public:
    * @see vee for the inverse of hat
    */
   template<typename TangentDerived>
-  static Matrix hat(const Eigen::MatrixBase<TangentDerived> & a)
+  static Matrix hat(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     Matrix ret;
     Impl::hat(a, ret);
@@ -311,7 +311,7 @@ public:
    * @see hat for the inverse of vee
    */
   template<typename MatrixDerived>
-  static Tangent vee(const Eigen::MatrixBase<MatrixDerived> & A)
+  static Tangent vee(const Eigen::MatrixBase<MatrixDerived> & A) noexcept
   {
     Tangent ret;
     Impl::vee(A, ret);
@@ -325,7 +325,7 @@ public:
    * [\mathbf{a}, \mathbf{b}] \f$
    */
   template<typename TangentDerived>
-  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a)
+  static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     TangentMap ret;
     Impl::ad(a, ret);
@@ -341,7 +341,8 @@ public:
    */
   template<typename TangentDerived1, typename TangentDerived2>
   static Tangent lie_bracket(
-    const Eigen::MatrixBase<TangentDerived1> & a, const Eigen::MatrixBase<TangentDerived2> & b)
+    const Eigen::MatrixBase<TangentDerived1> & a,
+    const Eigen::MatrixBase<TangentDerived2> & b) noexcept
   {
     return ad(a) * b;
   }
@@ -351,7 +352,7 @@ public:
    * @return \f$ \mathrm{d}^r \exp_a \f$
    */
   template<typename TangentDerived>
-  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a)
+  static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     TangentMap ret;
     Impl::dr_exp(a, ret);
@@ -364,7 +365,7 @@ public:
    * @return \f$ \left( \mathrm{d}^r \exp_a \right)^{-1} \f$
    */
   template<typename TangentDerived>
-  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a)
+  static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     TangentMap ret;
     Impl::dr_expinv(a, ret);
@@ -377,7 +378,7 @@ public:
    * @return \f$ \mathrm{d}^l \exp_a \f$
    */
   template<typename TangentDerived>
-  static TangentMap dl_exp(const Eigen::MatrixBase<TangentDerived> & a)
+  static TangentMap dl_exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     return dr_exp(-a);
   }
@@ -388,7 +389,7 @@ public:
    * @return \f$ \left( \mathrm{d}^l \exp_a \right)^{-1} \f$
    */
   template<typename TangentDerived>
-  static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & a)
+  static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     return dr_expinv(-a);
   }

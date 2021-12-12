@@ -54,9 +54,12 @@ namespace smooth::utils {
  *
  * @return range iterator it according to the above rules
  */
-template<std::ranges::range _R, typename _T, typename _WO>
-auto binary_interval_search(const _R & r, const _T & t, _WO && wo) noexcept
+constexpr auto
+binary_interval_search(const std::ranges::range auto & r, const auto & t, auto && wo) noexcept
 {
+  using T  = std::decay_t<decltype(t)>;
+  using Rv = std::ranges::range_value_t<std::decay_t<decltype(r)>>;
+
   auto left = std::ranges::cbegin(r);
   auto rght = std::ranges::cend(r);
 
@@ -70,10 +73,7 @@ auto binary_interval_search(const _R & r, const _T & t, _WO && wo) noexcept
 
   while (left + 1 < rght) {
     double alpha;
-    if constexpr (
-      std::is_convertible_v<
-        std::ranges::range_value_t<_R>,
-        double> && std::is_convertible_v<_T, double>) {
+    if constexpr (std::is_convertible_v<Rv, double> && std::is_convertible_v<T, double>) {
       alpha = (static_cast<double>(t) - static_cast<double>(*left))
             / static_cast<double>(*(rght - 1) - *left);
     } else {
@@ -97,10 +97,9 @@ auto binary_interval_search(const _R & r, const _T & t, _WO && wo) noexcept
 /**
  * @brief Find interval in sorted range with binary search using default comparison.
  */
-template<std::ranges::range _R, typename _T, typename _S = std::ranges::range_value_t<_R>>
-auto binary_interval_search(const _R & r, const _T & t) noexcept
+constexpr auto binary_interval_search(const std::ranges::range auto & r, const auto & t) noexcept
 {
-  return binary_interval_search(r, t, [](const _S & _s, const _T & _t) { return _s <=> _t; });
+  return binary_interval_search(r, t, [](const auto & _s, const auto & _t) { return _s <=> _t; });
 }
 
 /////////////////////
@@ -110,8 +109,9 @@ auto binary_interval_search(const _R & r, const _T & t) noexcept
 /**
  * @brief Compile-time for loop equivalent to the statement (f(0), f(1), ..., f(_I-1))
  */
-template<std::size_t _I, typename _F>
-inline static constexpr auto static_for(_F && f)
+template<std::size_t _I>
+constexpr auto
+static_for(auto && f) noexcept(noexcept(std::invoke(f, std::integral_constant<std::size_t, 0>())))
 {
   const auto f_caller = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>)
   {
@@ -129,7 +129,7 @@ inline static constexpr auto static_for(_F && f)
  * @brief Prefix-sum an array starting at zero
  */
 template<typename _T, std::size_t _L>
-inline static constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x) noexcept
+constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x) noexcept
 {
   std::array<_T, _L + 1> ret;
   ret[0] = _T(0);
