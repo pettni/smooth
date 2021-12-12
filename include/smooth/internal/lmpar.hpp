@@ -180,7 +180,7 @@ solve_ls(const auto & J_qr, const Eigen::Vector<double, N> & d, const Eigen::Vec
   AType R(n, n);
   if constexpr (is_sparse) {
     // allocate upper triangular pattern
-    Eigen::VectorXi pattern(n);
+    Eigen::Vector<int, N> pattern(n);
     for (auto i = 0u; i != n; ++i) { pattern(i) = i + 1; }
     R.reserve(pattern);
   } else {

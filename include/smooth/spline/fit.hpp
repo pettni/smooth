@@ -233,6 +233,8 @@ auto splinespec_project(const SS & ss, std::size_t k)
  * @return vector \f$ \alpha \f$ of size (K + 1) * N s.t. \f$ \beta = \alpha_{i (K + 1): (i + 1) (K
  * + 1) } \f$ defines polynomial \f$ p_i \f$ as \f[ p_i(t) = \sum_{\nu = 0}^K \beta_\nu b_{\nu, k}
  * \left( \frac{t}{\delta t} \right), \f] where \f$ \delta t \f$ is the i:th member of \p dt_r.
+ *
+ * @note Allocates heap memory.
  */
 Eigen::VectorXd fit_spline_1d(
   const std::ranges::sized_range auto & dt_r,
@@ -277,7 +279,7 @@ Eigen::VectorXd fit_spline_1d(
   // CONSTRAINT MATRICES A, b
 
   Eigen::SparseMatrix<double, Eigen::ColMajor> A(N_eq, N_coef);
-  Eigen::VectorX<int> A_pattern(N_coef);
+  Eigen::VectorXi A_pattern(N_coef);
   A_pattern.head(K + 1).setConstant(1 + ss.LeftDeg.size() + (SS::InnCnt >= 0 ? 1 + SS::InnCnt : 0));
   if (N >= 2) {
     A_pattern.segment(K + 1, (N - 2) * (K + 1))
@@ -410,6 +412,8 @@ Eigen::VectorXd fit_spline_1d(
  * @param gs range of values
  * @param ss spline specification
  * @return Spline c s.t. \f$ c(t_i) = g_i \f$ for \f$(t_i, g_i) \in zip(ts, gs) \f$
+ *
+ * @note Allocates heap memory.
  */
 auto fit_spline(
   const std::ranges::random_access_range auto & ts,
@@ -481,6 +485,8 @@ auto fit_spline(
  * @param ts range of times
  * @param gs range of values
  * @return Spline c s.t. \f$ c(t_i) = g_i \f$ for \f$(t_i, g_i) \in zip(ts, gs) \f$
+ *
+ * @note Allocates heap memory.
  */
 auto fit_spline_cubic(const std::ranges::range auto & ts, const std::ranges::range auto & gs)
 {
@@ -500,6 +506,8 @@ auto fit_spline_cubic(const std::ranges::range auto & ts, const std::ranges::ran
  * @param ts time values t_i (doubles, strictly increasing)
  * @param gs data values t_i
  * @param dt distance between spline control points
+ *
+ * @note Allocates heap memory.
  */
 template<std::size_t K>
 auto fit_bspline(const std::ranges::range auto & ts, const std::ranges::range auto & gs, double dt)

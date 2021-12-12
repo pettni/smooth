@@ -50,6 +50,8 @@ namespace smooth {
  * @param end_vel target value for \f$ s'(t_{max}) \f$ (must be non-negative).
  * @param N partition size. A larger value implies smaller bound violations.
  *
+ * @note Allocates heap memory.
+ *
  * @note For best results the input spline should be twice continously differentiable.
  *
  * @note It may not be feasible to satisfy the target boundary velocities. In those cases the
@@ -190,7 +192,7 @@ Spline<2, double> reparameterize_spline(
       ret.concat_global(Spline<2, double>{
         dt,
         Eigen::Vector2d{dt * vi / 2, dt * (dt * ai + vi) / 2},
-        s0 + i * ds,
+        si,
       });
 
       // update squared velocity with value at end of new segment
