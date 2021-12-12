@@ -70,7 +70,7 @@ using OptJacobian =
  */
 template<std::size_t K, LieGroup G, typename Derived>
 inline G cspline_eval_diff(
-  const std::ranges::sized_range auto & diff_points,
+  std::ranges::sized_range auto && diff_points,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
@@ -177,7 +177,7 @@ template<
   typename Derived,
   LieGroup G = std::ranges::range_value_t<R>>
 inline G cspline_eval(
-  const R & gs,
+  R && gs,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
@@ -186,10 +186,8 @@ inline G cspline_eval(
 {
   assert(std::ranges::size(gs) == K + 1);
 
-  auto b1 = std::ranges::cbegin(gs);
-  auto b2 = std::ranges::cbegin(gs) + 1;
-  std::array<Tangent<G>, K> diff_pts;
-  for (auto i = 0u; i != K; ++i) { diff_pts[i] = rminus(*b2++, *b1++); }
+  constexpr auto sub  = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
+  const auto diff_pts = gs | utils::views::pairwise_transform(sub);
 
   return composition(
     *std::ranges::begin(gs), cspline_eval_diff<K, G>(diff_pts, Bcum, u, vel, acc, der));

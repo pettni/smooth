@@ -235,8 +235,8 @@ auto splinespec_project(const SS & ss, std::size_t k)
  * \left( \frac{t}{\delta t} \right), \f] where \f$ \delta t \f$ is the i:th member of \p dt_r.
  */
 Eigen::VectorXd fit_spline_1d(
-  const std::ranges::range auto & dt_r,
-  const std::ranges::range auto & dx_r,
+  const std::ranges::sized_range auto & dt_r,
+  const std::ranges::sized_range auto & dx_r,
   const SplineSpec auto & ss)
 {
   using SS = std::decay_t<decltype(ss)>;
@@ -310,11 +310,10 @@ Eigen::VectorXd fit_spline_1d(
 
   // inner derivative continuity constraints
   auto it_dt = std::ranges::begin(dt_r);
-  it_dx      = std::ranges::begin(dx_r);
-  for (auto k = 0u; k + 1 < N; ++k, ++it_dt, ++it_dx) {
+  for (auto k = 0u; k + 1 < N; ++k, ++it_dt) {
     for (auto d = 1; d <= SS::InnCnt; ++d) {
       const double fac1 = 1. / std::pow(*it_dt, d);
-      const double fac2 = 1. / std::pow(*(it_dt + 1), d);
+      const double fac2 = 1. / std::pow(*(std::next(it_dt, 1)), d);
       for (auto j = 0; j < K + 1; ++j) {
         A.insert(M, k * (K + 1) + j)       = U1tB(d, j) * fac1;
         A.insert(M, (k + 1) * (K + 1) + j) = -U0tB(d, j) * fac2;
@@ -413,13 +412,13 @@ Eigen::VectorXd fit_spline_1d(
  * @return Spline c s.t. \f$ c(t_i) = g_i \f$ for \f$(t_i, g_i) \in zip(ts, gs) \f$
  */
 auto fit_spline(
-  const std::ranges::range auto & ts,
-  const std::ranges::range auto & gs,
+  const std::ranges::random_access_range auto & ts,
+  const std::ranges::random_access_range auto & gs,
   const SplineSpec auto & ss)
 {
   using namespace std::views;
   using SS = std::decay_t<decltype(ss)>;
-  using G  = std::ranges::range_value_t<std::decay_t<decltype(gs)>>;
+  using G  = PlainObject<std::ranges::range_value_t<std::decay_t<decltype(gs)>>>;
 
   assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());
 
@@ -428,13 +427,11 @@ auto fit_spline(
 
   assert(N >= 2);
 
-  std::vector<double> dts(N - 1);
-  std::vector<Tangent<G>> dgs(N - 1);
+  static constexpr auto sub     = [](const auto & x1, const auto & x2) { return x2 - x1; };
+  static constexpr auto sub_lie = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
 
-  std::ranges::transform(
-    ts, ts | drop(1), dts.begin(), [](const auto & t1, const auto & t2) { return t2 - t1; });
-  std::ranges::transform(
-    gs, gs | drop(1), dgs.begin(), [](const auto & g1, const auto & g2) { return rminus(g2, g1); });
+  const auto dts = ts | utils::views::pairwise_transform(sub);
+  const auto dgs = gs | utils::views::pairwise_transform(sub_lie);
 
   Eigen::Matrix<double, Dof<G>, -1> V(Dof<G>, (N - 1) * (K + 1));
 
@@ -444,7 +441,10 @@ auto fit_spline(
   }
 
   Spline<K, G> ret;
-  for (auto i = 0u; i < N; ++i) {
+  ret.reserve(N);
+
+  auto it_dt = std::ranges::begin(dts);
+  for (auto i = 0u; i < N; ++i, ++it_dt) {
     if (i + 1 < N) {
       const Eigen::Matrix<double, Dof<G>, K + 1> coefs =
         V.template block<Dof<G>, K + 1>(0, i * (K + 1));
@@ -466,7 +466,7 @@ auto fit_spline(
         cum_coefs.col(mid) = ::smooth::log<G>(midval);
       }
 
-      ret.concat_global(Spline<K, G>(dts[i], cum_coefs, gs[i]));
+      ret.concat_global(Spline<K, G>(*it_dt, cum_coefs, gs[i]));
     } else {
       ret.concat_global(gs[i]);
     }
@@ -497,23 +497,23 @@ auto fit_spline_cubic(const std::ranges::range auto & ts, const std::ranges::ran
  * \f]
  *
  * @tparam K bspline degree
- * @param tt time values t_i (doubles, strictly increasing)
- * @param gg data values t_i
+ * @param ts time values t_i (doubles, strictly increasing)
+ * @param gs data values t_i
  * @param dt distance between spline control points
  */
 template<std::size_t K>
-auto fit_bspline(const std::ranges::range auto & tt, const std::ranges::range auto & gg, double dt)
+auto fit_bspline(const std::ranges::range auto & ts, const std::ranges::range auto & gs, double dt)
 {
-  using G = std::ranges::range_value_t<std::decay_t<decltype(gg)>>;
+  using G = PlainObject<std::ranges::range_value_t<std::decay_t<decltype(gs)>>>;
 
-  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());
+  assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());
 
-  auto [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));
+  auto [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(ts), std::ranges::end(ts));
 
   const double t0 = *tmin_ptr;
   const double t1 = *tmax_ptr;
 
-  const std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));
+  const std::size_t NumData = std::min(std::ranges::size(ts), std::ranges::size(gs));
   const std::size_t NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
 
   constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
@@ -526,8 +526,8 @@ auto fit_bspline(const std::ranges::range auto & tt, const std::ranges::range au
     Jac.resize(Dof<G> * NumData, Dof<G> * NumPts);
     Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(Dof<G> * NumData, Dof<G> * (K + 1)));
 
-    auto t_iter = std::ranges::begin(tt);
-    auto g_iter = std::ranges::begin(gg);
+    auto t_iter = std::ranges::begin(ts);
+    auto g_iter = std::ranges::begin(gs);
 
     for (auto i = 0u; i != NumData; ++t_iter, ++g_iter, ++i) {
       const int64_t istar = static_cast<int64_t>((*t_iter - t0) / dt);
@@ -561,11 +561,11 @@ auto fit_bspline(const std::ranges::range auto & tt, const std::ranges::range au
   ManifoldVector<G> ctrl_pts(NumPts);
 
   // create initial guess
-  auto t_iter = std::ranges::begin(tt);
-  auto g_iter = std::ranges::begin(gg);
+  auto t_iter = std::ranges::begin(ts);
+  auto g_iter = std::ranges::begin(gs);
   for (auto i = 0u; i != NumPts; ++i) {
     const double t_target = t0 + (i - static_cast<double>(K - 1) / 2) * dt;
-    while (t_iter + 1 < std::ranges::end(tt)
+    while (t_iter + 1 < std::ranges::end(ts)
            && std::abs(t_target - *(t_iter + 1)) < std::abs(t_target - *t_iter)) {
       ++t_iter;
       ++g_iter;

@@ -25,6 +25,8 @@
 
 #include <gtest/gtest.h>
 
+#include <algorithm>
+
 #include "smooth/internal/utils.hpp"
 
 TEST(Utils, BinarySearch)
@@ -107,4 +109,90 @@ TEST(Utils, BinarySearchString)
   ASSERT_EQ(smooth::utils::binary_interval_search(v, "y"), std::ranges::begin(v) + 5);
 
   ASSERT_EQ(smooth::utils::binary_interval_search(v, "a"), std::ranges::end(v));
+}
+
+TEST(Utils, RangePairwiseTransformConstexpr)
+{
+  static constexpr std::array<double, 5> vals{1.1, 2.2, 6.7, 4.6, 5.0};
+  constexpr auto fun1 = [](auto x) { return x * x; };
+  constexpr auto m1   = std::ranges::max(vals | std::views::transform(fun1));
+
+  static_assert(m1 == 6.7 * 6.7);
+
+  constexpr auto fun2 = [](auto x, auto y) { return y - x; };
+  constexpr auto m2   = std::ranges::max(vals | smooth::utils::views::pairwise_transform(fun2));
+
+  static_assert(m2 == 4.5);
+}
+
+TEST(Utils, RangePairwiseTransform)
+{
+  const std::vector<double> values{1, 2.5, 5.5, 2.1, 5, 6, 7, 8, 10};
+  const auto fun = [](double d1, double d2) -> double { return d2 - d1; };
+
+  const auto diff_values = values | smooth::utils::views::pairwise_transform(fun);
+
+  using R  = decltype(values);
+  using Rt = std::decay_t<decltype(diff_values)>;
+
+  static_assert(std::is_same_v<std::ranges::sentinel_t<R>, std::ranges::sentinel_t<Rt>>);
+  static_assert(std::ranges::forward_range<Rt>);
+  static_assert(std::forward_iterator<std::ranges::iterator_t<Rt>>);
+
+  static_assert(std::ranges::bidirectional_range<Rt>);
+  static_assert(std::bidirectional_iterator<std::ranges::iterator_t<Rt>>);
+
+  ASSERT_EQ(std::ranges::size(diff_values), std::ranges::size(values) - 1);
+
+  for (auto i = 0u; auto d : diff_values) {
+    ASSERT_EQ(d, fun(values[i], values[i + 1]));
+    ++i;
+  }
+
+  for (auto i = 0u; auto d : diff_values | std::views::reverse) {
+    const auto N = values.size();
+    ASSERT_EQ(d, fun(values[N - 2 - i], values[N - 1 - i]));
+    ++i;
+  }
+
+  {
+    auto it = std::ranges::begin(diff_values);
+    std::advance(it, 2);
+
+    auto it2 = it;
+
+    ASSERT_DOUBLE_EQ(*it, -3.4);
+    ASSERT_EQ(*it, *it2);
+    ASSERT_EQ(it, it2);
+  }
+
+  {
+    auto it = std::ranges::begin(diff_values);
+    std::advance(it, 2);
+    auto it2 = std::ranges::begin(diff_values);
+    std::advance(it2, 2);
+
+    auto it3 = std::move(it2);
+
+    ASSERT_DOUBLE_EQ(*it, -3.4);
+    ASSERT_EQ(*it, *it3);
+    ASSERT_EQ(it, it3);
+  }
+
+  // sized
+  for (auto i = 0; i < 10; ++i) {
+    auto irange = std::views::iota(2, 2 + i) | smooth::utils::views::pairwise_transform(fun);
+
+    ASSERT_EQ(std::ranges::size(irange), std::max(i - 1, 0));
+
+    for (auto d : irange) { ASSERT_EQ(d, 1); }
+  }
+
+  // unsized
+  for (auto i = 0; i < 10; ++i) {
+    auto irange = std::views::iota(2) | std::views::take_while([&i](auto x) { return x < i; })
+                | smooth::utils::views::pairwise_transform(fun);
+
+    for (auto d : irange) { ASSERT_EQ(d, 1); }
+  }
 }
