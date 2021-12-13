@@ -416,8 +416,8 @@ Eigen::VectorXd fit_spline_1d(
  * @note Allocates heap memory.
  */
 auto fit_spline(
-  const std::ranges::random_access_range auto & ts,
-  const std::ranges::random_access_range auto & gs,
+  const std::ranges::random_access_range auto ts,
+  const std::ranges::random_access_range auto gs,
   const SplineSpec auto & ss)
 {
   using namespace std::views;
@@ -447,34 +447,32 @@ auto fit_spline(
   Spline<K, G> ret;
   ret.reserve(N);
 
-  auto it_dt = std::ranges::begin(dts);
-  for (auto i = 0u; i < N; ++i, ++it_dt) {
-    if (i + 1 < N) {
-      const Eigen::Matrix<double, Dof<G>, K + 1> coefs =
-        V.template block<Dof<G>, K + 1>(0, i * (K + 1));
-      // spline is in cumulative form, need to get cumulative coefficients
-      Eigen::Matrix<double, Dof<G>, K> cum_coefs = coefs.rightCols(K) - coefs.leftCols(K);
+  for (auto i = 0u; const auto & [dt, g, g_next] : utils::zip(dts, gs, gs | std::views::drop(1))) {
+    // spline is in cumulative form, need to get cumulative coefficients
+    Eigen::Matrix<double, Dof<G>, K> cum_coefs =
+      V.template block<Dof<G>, K>(0, i * (K + 1) + 1) - V.template block<Dof<G>, K>(0, i * (K + 1));
 
-      if constexpr (K > 2) {
-        // modify segment to ensure it is interpolating
-        // want exp(v1) * ... * exp(vK) = inv(g) * gnext
-        auto mid = K / 2;
+    ++i;
 
-        G midval = composition<G>(::smooth::inverse<G>(gs[i]), gs[i + 1]);
-        for (auto k = 0; k < mid; ++k) {
-          midval = composition<G>(::smooth::exp<G>(-cum_coefs.col(k)), midval);
-        }
-        for (auto k = K - 1; k > mid; --k) {
-          midval = composition<G>(midval, ::smooth::exp<G>(-cum_coefs.col(k)));
-        }
-        cum_coefs.col(mid) = ::smooth::log<G>(midval);
+    if constexpr (K > 2) {
+      // modify segment to ensure it is interpolating
+      // want exp(v1) * ... * exp(vK) = inv(g) * gnext
+      auto mid = K / 2;
+
+      G midval = composition<G>(::smooth::inverse<G>(g), g_next);
+      for (auto k = 0; k < mid; ++k) {
+        midval = composition<G>(::smooth::exp<G>(-cum_coefs.col(k)), midval);
       }
-
-      ret.concat_global(Spline<K, G>(*it_dt, cum_coefs, gs[i]));
-    } else {
-      ret.concat_global(gs[i]);
+      for (auto k = K - 1; k > mid; --k) {
+        midval = composition<G>(midval, ::smooth::exp<G>(-cum_coefs.col(k)));
+      }
+      cum_coefs.col(mid) = ::smooth::log<G>(midval);
     }
+
+    ret.concat_global(Spline<K, G>(dt, std::move(cum_coefs), g));
   }
+
+  ret.concat_global(gs[N - 1]);
 
   return ret;
 }

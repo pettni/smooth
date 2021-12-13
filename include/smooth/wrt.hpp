@@ -103,10 +103,10 @@ auto wrt_rplus(auto && wrt, const Eigen::MatrixBase<Derived> & a)
 
     // clang-format off
     return std::make_tuple(
-        rplus(
-          std::get<Idx>(wrt),
-          a.template segment<std::get<Idx>(Nx)>(std::get<Idx>(ibeg), std::get<Idx>(ilen))
-        )...
+      rplus(
+        std::get<Idx>(wrt),
+        a.template segment<std::get<Idx>(Nx)>(std::get<Idx>(ibeg), std::get<Idx>(ilen))
+      )...
     );
     // clang-format on
   };

@@ -196,3 +196,70 @@ TEST(Utils, RangePairwiseTransform)
     for (auto d : irange) { ASSERT_EQ(d, 1); }
   }
 }
+
+TEST(Utils, Zip2)
+{
+  const std::vector<double> vals1{1, 2.5, 5.5, 2.1, 5, 6, 7, 8, 10};
+  const std::vector<int> vals2{1, 5, 6, 7, 8, 10};
+
+  ASSERT_EQ(
+    std::ranges::size(smooth::utils::zip(vals1, vals2)), std::min(vals1.size(), vals2.size()));
+
+  for (auto i = 0; const auto & [v1, v2] : smooth::utils::zip(vals1, vals2)) {
+    ASSERT_EQ(v1, vals1[i]);
+    ASSERT_EQ(v2, vals2[i]);
+    ++i;
+  }
+
+  for (auto i = 0; const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::drop(2))) {
+    ASSERT_EQ(v1, vals1[i]);
+    ASSERT_EQ(v2, vals1[i + 2]);
+    ++i;
+  }
+
+  const auto minus = [](auto x) { return x - 1; };
+
+  for (auto i = 0;
+       const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::transform(minus))) {
+    ASSERT_EQ(v1, vals1[i]);
+    ASSERT_EQ(v2, vals1[i] - 1);
+    ++i;
+  }
+}
+
+TEST(Utils, Zip2Modify)
+{
+  std::vector<double> vals1{1, 2.5, 5.5, 2.1, 5, 6, 7, 8, 10};
+  std::vector<int> vals2{1, 5, 6, 7, 8, 10};
+
+  const auto S = std::ranges::size(smooth::utils::zip(vals1, vals2));
+  ASSERT_EQ(S, std::min(vals1.size(), vals2.size()));
+
+  for (auto && [v1, v2] : smooth::utils::zip(vals1, vals2)) {
+    v1 = -1;
+    v2 = -2;
+  }
+
+  for (auto i = 0u; i < S; ++i) {
+    ASSERT_EQ(vals1[i], -1);
+    ASSERT_EQ(vals2[i], -2);
+  }
+}
+
+TEST(Utils, Zip3)
+{
+  const std::vector<double> vals1{1, 2.5, 5.5, 2.1, 5, 6, 7, 8, 10};
+  const std::vector<int> vals2{1, 5, 6, 7, 8, 10};
+  const std::vector<std::string> vals3{"Hej", "det", "har", "ar", "en", "stringvector"};
+
+  ASSERT_EQ(
+    std::ranges::size(smooth::utils::zip(vals1, vals2, vals3)),
+    std::min<std::size_t>({vals1.size(), vals2.size(), vals3.size()}));
+
+  for (auto i = 0; const auto & [v1, v2, v3] : smooth::utils::zip(vals1, vals2, vals3)) {
+    ASSERT_EQ(v1, vals1[i]);
+    ASSERT_EQ(v2, vals2[i]);
+    ASSERT_EQ(v3, vals3[i]);
+    ++i;
+  }
+}

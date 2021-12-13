@@ -145,6 +145,8 @@ constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x) noexce
 // RANGE UTILS //
 /////////////////
 
+// Pairwise transform views
+
 /// @brief Apply function to pairwise elements
 template<std::ranges::input_range R, std::copy_constructible F>
   requires std::ranges::view<R>
@@ -288,6 +290,145 @@ namespace views {
 inline constexpr detail::PairwiseTransform pairwise_transform;
 
 }  // namespace views
+
+// Zip view
+
+/// @brief Zip views
+template<std::ranges::input_range... View>
+  requires(std::ranges::view<View> &&...)
+class zip_view : public std::ranges::view_interface<zip_view<View...>>
+{
+public:
+  template<bool Const>
+  class _Iterator
+  {
+  private:
+    std::tuple<std::ranges::iterator_t<std::conditional_t<Const, const View, View>>...> its_;
+
+  public:
+    using value_type      = std::tuple<std::ranges::range_value_t<View>...>;
+    using difference_type = std::common_type_t<std::ranges::range_difference_t<View>...>;
+
+    _Iterator() = default;
+
+    constexpr _Iterator(auto &&... its) : its_(its...) {}
+
+    constexpr _Iterator(_Iterator<!Const> i) requires Const : its_(i.its_) {}
+
+    constexpr decltype(auto) operator*() const
+    {
+      return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
+      {
+        return std::tuple<std::ranges::range_reference_t<View>...>(
+          std::get<Idx>(its_).operator*()...);
+      }
+      (std::make_index_sequence<sizeof...(View)>{});
+    }
+
+    constexpr _Iterator & operator++()
+    {
+      [this]<std::size_t... Idx>(std::index_sequence<Idx...>) { (++std::get<Idx>(its_), ...); }
+      (std::make_index_sequence<sizeof...(View)>{});
+      return *this;
+    }
+
+    constexpr void operator++(int)
+    {
+      [this]<std::size_t... Idx>(std::index_sequence<Idx...>) { (++std::get<Idx>(its_), ...); }
+      (std::make_index_sequence<sizeof...(View)>{});
+    }
+
+    constexpr _Iterator operator++(int) requires(std::ranges::forward_range<View> &&...)
+    {
+      _Iterator tmp = *this;
+      ++this;
+      return tmp;
+    }
+
+    friend constexpr bool operator==(const _Iterator & x, const _Iterator & y)
+    {
+      return x.its_ == y.its_;
+    }
+
+    friend constexpr bool
+    operator==(const _Iterator & x, const std::tuple<std::ranges::sentinel_t<const View>...> & y)
+    {
+      return [&x, &y ]<std::size_t... Idx>(std::index_sequence<Idx...>)
+      {
+        return ((std::get<Idx>(x.its_) == std::get<Idx>(y)) || ...);
+      }
+      (std::make_index_sequence<sizeof...(View)>{});
+    }
+  };  // _Iterator
+
+private:
+  std::tuple<View...> bases_{};
+
+public:
+  constexpr zip_view() = default;
+
+  constexpr zip_view(View... base) : bases_(base...) {}
+
+  constexpr std::tuple<View...> base() const & { return bases_; }
+
+  constexpr std::tuple<View...> bases() && { return std::move(bases_); }
+
+  constexpr _Iterator<false> begin()
+  {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
+    {
+      return _Iterator<false>(std::ranges::begin(std::get<Idx>(bases_))...);
+    }
+    (std::make_index_sequence<sizeof...(View)>{});
+  }
+
+  constexpr _Iterator<true> begin() const requires(std::ranges::range<const View> &&...)
+  {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
+    {
+      return _Iterator<true>(std::ranges::begin(std::get<Idx>(bases_))...);
+    }
+    (std::make_index_sequence<sizeof...(View)>{});
+  }
+
+  constexpr std::tuple<std::ranges::sentinel_t<const View>...> end() const
+  {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
+    {
+      return std::make_tuple(std::ranges::end(std::get<Idx>(bases_))...);
+    }
+    (std::make_index_sequence<sizeof...(View)>{});
+  }
+
+  constexpr auto size() const requires(std::ranges::sized_range<View> &&...)
+  {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
+    {
+      return std::min({std::ranges::size(std::get<Idx>(bases_))...});
+    }
+    (std::make_index_sequence<sizeof...(View)>{});
+  }
+};
+
+/// @brief Deduction guide for zip_view
+template<std::ranges::viewable_range... R>
+zip_view(R &&...) -> zip_view<std::views::all_t<R>...>;
+
+namespace detail {
+
+struct Zip
+{
+  template<std::ranges::viewable_range... R>
+  constexpr auto operator()(R &&... r) const
+  {
+    return zip_view(std::forward<R>(r)...);
+  }
+};
+
+}  // namespace detail
+
+/// @brief Zip views
+inline constexpr detail::Zip zip;
 
 }  // namespace smooth::utils
 
