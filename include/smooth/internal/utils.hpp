@@ -145,28 +145,26 @@ constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x) noexce
 // RANGE UTILS //
 /////////////////
 
-namespace views {
-
-namespace sr = std::ranges;
-
 /// @brief Apply function to pairwise elements
-template<sr::input_range R, std::copy_constructible F>
-  requires sr::view<R>
-class pairwise_transform_view : public sr::view_interface<pairwise_transform_view<R, F>>
+template<std::ranges::input_range R, std::copy_constructible F>
+  requires std::ranges::view<R>
+class pairwise_transform_view : public std::ranges::view_interface<pairwise_transform_view<R, F>>
 {
 public:
   class _Iterator
   {
   private:
     const pairwise_transform_view * parent_;
-    sr::iterator_t<const R> it1_, it2_;
+    std::ranges::iterator_t<const R> it1_, it2_;
 
   public:
     using value_type = std::remove_cvref_t<
-      std::invoke_result_t<F &, sr::range_reference_t<R>, sr::range_reference_t<R>>>;
-    using difference_type = sr::range_difference_t<R>;
+      std::
+        invoke_result_t<F &, std::ranges::range_reference_t<R>, std::ranges::range_reference_t<R>>>;
+    using difference_type = std::ranges::range_difference_t<R>;
 
     _Iterator() = default;
+
     constexpr _Iterator(const pairwise_transform_view * parent, const R & r)
         : parent_(parent), it1_(std::ranges::begin(r)), it2_(std::ranges::begin(r))
     {
@@ -183,20 +181,20 @@ public:
 
     constexpr void operator++(int) { ++it1_, ++it2_; }
 
-    constexpr _Iterator operator++(int) requires sr::forward_range<R>
+    constexpr _Iterator operator++(int) requires std::ranges::forward_range<R>
     {
       _Iterator tmp = *this;
       ++this;
       return tmp;
     }
 
-    constexpr _Iterator & operator--() requires sr::bidirectional_range<R>
+    constexpr _Iterator & operator--() requires std::ranges::bidirectional_range<R>
     {
       --it1_, --it2_;
       return *this;
     }
 
-    constexpr _Iterator operator--(int) requires sr::bidirectional_range<R>
+    constexpr _Iterator operator--(int) requires std::ranges::bidirectional_range<R>
     {
       auto tmp = *this;
       --this;
@@ -208,7 +206,8 @@ public:
       return x.it1_ == y.it1_;
     }
 
-    friend constexpr bool operator==(const _Iterator & x, const sr::sentinel_t<const R> & y)
+    friend constexpr bool
+    operator==(const _Iterator & x, const std::ranges::sentinel_t<const R> & y)
     {
       return x.it2_ == y;
     }
@@ -219,6 +218,8 @@ private:
   F f_{};
 
 public:
+  constexpr pairwise_transform_view() = default;
+
   template<typename Fp>
   constexpr pairwise_transform_view(R base, Fp && f) : base_(base), f_(std::forward<Fp>(f))
   {}
@@ -229,33 +230,62 @@ public:
 
   constexpr _Iterator begin() const { return _Iterator(this, base_); }
 
-  constexpr sr::sentinel_t<const R> end() const { return sr::end(base_); }
+  constexpr std::ranges::sentinel_t<const R> end() const { return std::ranges::end(base_); }
 
-  constexpr auto size() const requires sr::sized_range<const R>
+  constexpr auto size() const requires std::ranges::sized_range<const R>
   {
-    const auto s = sr::size(base_);
+    const auto s = std::ranges::size(base_);
     return (s >= 2) ? s - 1 : 0;
   }
 };
 
+/// @brief Deduction guide for pairwise_transform_view
 template<typename R, typename F>
 pairwise_transform_view(R &&, F) -> pairwise_transform_view<std::views::all_t<R>, F>;
 
-/// @brief Apply function to pairwise elements
-struct _PairwiseTransform : sr::views::__adaptor::_RangeAdaptor<_PairwiseTransform>
+namespace detail {
+
+template<typename F>
+struct PairwiseTransformClosure
 {
-  template<sr::viewable_range R, typename F>
+  F f_;
+
+  constexpr PairwiseTransformClosure(F && f) : f_(std::forward<F>(f)) {}
+
+  template<std::ranges::viewable_range R>
+  constexpr auto operator()(R && r) const
+  {
+    return pairwise_transform_view(std::forward<R>(r), f_);
+  }
+};
+
+struct PairwiseTransform
+{
+  template<std::ranges::viewable_range R, typename F>
   constexpr auto operator()(R && r, F && f) const
   {
     return pairwise_transform_view(std::forward<R>(r), std::forward<F>(f));
   }
 
-  using _RangeAdaptor<_PairwiseTransform>::operator();
-  static constexpr int _S_arity = 2;
+  template<typename F>
+  constexpr auto operator()(F && f) const
+  {
+    return PairwiseTransformClosure<F>(std::forward<F>(f));
+  }
 };
 
+template<std::ranges::viewable_range R, typename F>
+constexpr auto operator|(R && r, const PairwiseTransformClosure<F> & closure)
+{
+  return closure(std::forward<R>(r));
+}
+
+}  // namespace detail
+
+namespace views {
+
 /// @brief Apply function to pairwise elements
-inline constexpr _PairwiseTransform pairwise_transform;
+inline constexpr detail::PairwiseTransform pairwise_transform;
 
 }  // namespace views
 
