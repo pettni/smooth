@@ -69,8 +69,8 @@ public:
    * @param V velocities for segment
    * @param ga Spline starting point (defaults to identity)
    */
-  Spline(double T, Eigen::Matrix<double, Dof<G>, K> && V, const G & ga = Identity<G>())
-      : g0_{ga}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
+  Spline(double T, Eigen::Matrix<double, Dof<G>, K> && V, G && ga = Identity<G>())
+      : g0_{std::move(ga)}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
 
@@ -91,7 +91,7 @@ public:
    */
   template<typename Derived>
   Spline(double T, const Eigen::MatrixBase<Derived> & V, const G & ga = Identity<G>())
-      : Spline(T, Eigen::Matrix<double, Dof<G>, K>(V), ga)
+      : Spline(T, Eigen::Matrix<double, Dof<G>, K>(V), G(ga))
   {}
 
   /**

@@ -139,6 +139,9 @@ TEST(Utils, RangePairwiseTransform)
   static_assert(std::ranges::forward_range<Rt>);
   static_assert(std::forward_iterator<std::ranges::iterator_t<Rt>>);
 
+  static_assert(std::ranges::forward_range<const Rt>);
+  static_assert(std::forward_iterator<std::ranges::iterator_t<const Rt>>);
+
   static_assert(std::ranges::bidirectional_range<Rt>);
   static_assert(std::bidirectional_iterator<std::ranges::iterator_t<Rt>>);
 
@@ -146,6 +149,11 @@ TEST(Utils, RangePairwiseTransform)
 
   for (auto i = 0u; auto d : diff_values) {
     ASSERT_EQ(d, fun(values[i], values[i + 1]));
+    ++i;
+  }
+
+  for (auto i = 0u; auto d : diff_values | std::views::drop(1)) {
+    ASSERT_EQ(d, fun(values[i + 1], values[i + 2]));
     ++i;
   }
 
@@ -261,5 +269,23 @@ TEST(Utils, Zip3)
     ASSERT_EQ(v2, vals2[i]);
     ASSERT_EQ(v3, vals3[i]);
     ++i;
+  }
+}
+
+TEST(Utils, Zip4Iota)
+{
+  const std::vector<double> vals1{1, 2.5, 5.5, 2.1, 5, 6, 7, 8, 10};
+  const std::vector<int> vals2{1, 5, 6, 7, 8, 10};
+  const std::vector<std::string> vals3{"Hej", "det", "har", "ar", "en", "stringvector"};
+
+  ASSERT_EQ(
+    std::ranges::size(smooth::utils::zip(vals1, vals2, vals3)),
+    std::min<std::size_t>({vals1.size(), vals2.size(), vals3.size()}));
+
+  for (const auto & [i, v1, v2, v3] :
+       smooth::utils::zip(std::views::iota(0), vals1, vals2, vals3)) {
+    ASSERT_EQ(v1, vals1[i]);
+    ASSERT_EQ(v2, vals2[i]);
+    ASSERT_EQ(v3, vals3[i]);
   }
 }

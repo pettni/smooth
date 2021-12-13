@@ -94,7 +94,7 @@ inline G cspline_eval_diff(
 
   G g = Identity<G>(xdof);
 
-  for (auto j = 1u; const auto & v : diff_points) {
+  for (const auto & [j, v] : utils::zip(std::views::iota(1u), diff_points)) {
     const Scalar<G> Btilde = uvec.dot(Bcum.col(j));
 
     const G exp_Bt_v = ::smooth::exp<G>(Btilde * v);
@@ -117,8 +117,6 @@ inline G cspline_eval_diff(
         acc.value().noalias() += d2Btilde * v;
       }
     }
-
-    ++j;
   }
 
   if (der.has_value()) {
@@ -126,8 +124,8 @@ inline G cspline_eval_diff(
 
     G z2inv = Identity<G>(xdof);
 
-    for (auto jrev = 0u; jrev <= K; ++jrev) {
-      const auto j = K - jrev;  // j: K -> 0
+    for (const auto j : std::views::iota(0u, K + 1) | std::views::reverse) {
+      // j : K -> 0 (inclusive)
 
       if (j != K) {
         const Scalar<G> Btilde_jp = uvec.dot(Bcum.col(j + 1));

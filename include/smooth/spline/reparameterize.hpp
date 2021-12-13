@@ -95,7 +95,7 @@ Spline<2, double> reparameterize_spline(
   Eigen::VectorXd v2max(N + 1);
   v2max(N) = end_vel * end_vel;
 
-  for (auto i = 0u; i < N + 1; ++i) {
+  for (const auto i : std::views::iota(0u, N + 1)) {
     const auto Nmi = N - i;  // iterating backwards
 
     Tangent<G> vel, acc;
@@ -134,7 +134,7 @@ Spline<2, double> reparameterize_spline(
     }
 
     // clamp velocity to not exceed constraints
-    for (auto j = 0u; j != Dof<G>; ++j) {
+    for (const auto j : std::views::iota(0, Dof<G>)) {
       if (vel(j) > eps) {
         v2max(Nmi) = std::min<double>(v2max(Nmi), sq(vel_max(j) / vel(j)));
       } else if (vel(j) < -eps) {
@@ -158,7 +158,7 @@ Spline<2, double> reparameterize_spline(
   // "current" squared velocity
   double v2m = std::min(start_vel * start_vel, v2max(0));
 
-  for (auto i = 0u; i < N; ++i) {
+  for (const auto i : std::views::iota(0u, N)) {
     const double si = s0 + ds * i;
 
     Tangent<G> vel, acc;
@@ -172,7 +172,7 @@ Spline<2, double> reparameterize_spline(
     double ai              = inf;
     const Tangent<G> upper = (acc_max - acc * vi2).cwiseMax(Tangent<G>::Zero());
     const Tangent<G> lower = (acc_min - acc * vi2).cwiseMin(Tangent<G>::Zero());
-    for (auto j = 0u; j != Dof<G>; ++j) {
+    for (const auto j : std::views::iota(0, Dof<G>)) {
       if (vel(j) > eps) {
         ai = std::min<double>(ai, upper(j) / vel(j));
       } else if (vel(j) < -eps) {
