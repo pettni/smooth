@@ -226,10 +226,6 @@ public:
   constexpr pairwise_transform_view(R base, Fp && f) : base_(base), f_(std::forward<Fp>(f))
   {}
 
-  constexpr R base() const & { return base_; }
-
-  constexpr R base() && { return std::move(base_); }
-
   constexpr _Iterator begin() const { return _Iterator(this, base_); }
 
   constexpr std::ranges::sentinel_t<const R> end() const { return std::ranges::end(base_); }
@@ -369,10 +365,6 @@ public:
   constexpr zip_view() = default;
 
   constexpr zip_view(View... base) : bases_(base...) {}
-
-  constexpr std::tuple<View...> base() const & { return bases_; }
-
-  constexpr std::tuple<View...> bases() && { return std::move(bases_); }
 
   constexpr _Iterator<false> begin()
   {
