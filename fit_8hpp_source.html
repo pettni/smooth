@@ -249,155 +249,153 @@ $(function() {
 <div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;}  <span class="comment">// namespace detail</span></div>
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;<span class="comment">// \endcond</span></div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00237"></a><span class="lineno"><a class="line" href="fit_8hpp.html#a5ca687909d8d31db58b41fe6152e8b60">  237</a></span>&#160;Eigen::VectorXd <a class="code" href="fit_8hpp.html#a5ca687909d8d31db58b41fe6152e8b60">fit_spline_1d</a>(</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;  <span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; dt_r,</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;  <span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; dx_r,</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  <span class="keyword">const</span> SplineSpec <span class="keyword">auto</span> &amp; ss)</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;{</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;  <span class="keyword">using</span> SS = std::decay_t&lt;decltype(ss)&gt;;</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;  <span class="keyword">const</span> std::size_t N = std::min(std::ranges::size(dt_r), std::ranges::size(dx_r));</div>
+<div class="line"><a name="l00239"></a><span class="lineno"><a class="line" href="fit_8hpp.html#aa2bc4ae01bb329d9e53da1f3ac339c28">  239</a></span>&#160;Eigen::VectorXd <a class="code" href="fit_8hpp.html#aa2bc4ae01bb329d9e53da1f3ac339c28">fit_spline_1d</a>(</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;  std::ranges::sized_range <span class="keyword">auto</span> &amp;&amp; dt_r,</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;  std::ranges::sized_range <span class="keyword">auto</span> &amp;&amp; dx_r,</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;  <span class="keyword">const</span> SplineSpec <span class="keyword">auto</span> &amp; ss)</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;{</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;  <span class="keyword">using namespace </span>std::views;</div>
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;  <span class="comment">// coefficient layout is</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;  <span class="comment">//   [ x0 x1   ...   Xn ]</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  <span class="comment">// where p_i(t) = \sum_k x_i[k] * b_{i,k}(t) defines p on [tvec(i), tvec(i+1)]</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;  <span class="keyword">using</span> SS = std::decay_t&lt;decltype(ss)&gt;;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160; </div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  <span class="keyword">const</span> std::size_t N = std::min(std::ranges::size(dt_r), std::ranges::size(dx_r));</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> K = SS::Degree;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> D = detail::splinespec_max_deriv&lt;SS&gt;();</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  static_assert(K &gt;= D, <span class="stringliteral">&quot;K &gt;= D&quot;</span>);</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  <span class="comment">// compile-time matrix algebra</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> B_s    = polynomial_basis&lt;PolynomialBasis::Bernstein, K&gt;();</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U0_s   = monomial_derivatives&lt;K, D&gt;(0.);</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U1_s   = monomial_derivatives&lt;K, D&gt;(1.);</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U0tB_s = U0_s * B_s;</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U1tB_s = U1_s * B_s;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, D + 1, K + 1, Eigen::RowMajor&gt;&gt; U0tB(U0tB_s[0].data());</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, D + 1, K + 1, Eigen::RowMajor&gt;&gt; U1tB(U1tB_s[0].data());</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  <span class="comment">// d:th derivative of basis polynomial at 0 (resp. 1) is now U0tB.row(d) * x (resp. U1tB.row(d) *</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  <span class="comment">// x), where x are the coefficients.</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  <span class="keyword">const</span> std::size_t N_coef = (K + 1) * N;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  <span class="keyword">const</span> std::size_t N_eq   = ss.LeftDeg.size()                            <span class="comment">// left endpoint</span></div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                         + N                                              <span class="comment">// value left-segment</span></div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                         + (SS::InnCnt &gt;= 0 ? N : 0)                      <span class="comment">// value rght-segment</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                         + (SS::InnCnt &gt; 0 ? (N - 1) * (SS::InnCnt) : 0)  <span class="comment">// derivative continuity</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                         + ss.RghtDeg.size();                             <span class="comment">// right endpiont</span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  assert(N_coef &gt;= N_eq);</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  <span class="comment">// CONSTRAINT MATRICES A, b</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  <span class="comment">// coefficient layout is</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;  <span class="comment">//   [ x0 x1   ...   Xn ]</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  <span class="comment">// where p_i(t) = \sum_k x_i[k] * b_{i,k}(t) defines p on [tvec(i), tvec(i+1)]</span></div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> K = SS::Degree;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> D = detail::splinespec_max_deriv&lt;SS&gt;();</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  static_assert(K &gt;= D, <span class="stringliteral">&quot;K &gt;= D&quot;</span>);</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;  <span class="comment">// compile-time matrix algebra</span></div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> B_s    = polynomial_basis&lt;PolynomialBasis::Bernstein, K&gt;();</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U0_s   = monomial_derivatives&lt;K, D&gt;(0.);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U1_s   = monomial_derivatives&lt;K, D&gt;(1.);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U0tB_s = U0_s * B_s;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> U1tB_s = U1_s * B_s;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, D + 1, K + 1, Eigen::RowMajor&gt;&gt; U0tB(U0tB_s[0].data());</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, D + 1, K + 1, Eigen::RowMajor&gt;&gt; U1tB(U1tB_s[0].data());</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  <span class="comment">// d:th derivative of basis polynomial at 0 (resp. 1) is now U0tB.row(d) * x (resp. U1tB.row(d) *</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;  <span class="comment">// x), where x are the coefficients.</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  <span class="keyword">const</span> std::size_t N_coef = (K + 1) * N;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;  <span class="keyword">const</span> std::size_t N_eq   = ss.LeftDeg.size()                            <span class="comment">// left endpoint</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                         + N                                              <span class="comment">// value left-segment</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                         + (SS::InnCnt &gt;= 0 ? N : 0)                      <span class="comment">// value rght-segment</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                         + (SS::InnCnt &gt; 0 ? (N - 1) * (SS::InnCnt) : 0)  <span class="comment">// derivative continuity</span></div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                         + ss.RghtDeg.size();                             <span class="comment">// right endpiont</span></div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;  Eigen::SparseMatrix&lt;double, Eigen::ColMajor&gt; A(N_eq, N_coef);</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;  Eigen::VectorX&lt;int&gt; A_pattern(N_coef);</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;  A_pattern.head(K + 1).setConstant(1 + ss.LeftDeg.size() + (SS::InnCnt &gt;= 0 ? 1 + SS::InnCnt : 0));</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;  <span class="keywordflow">if</span> (N &gt;= 2) {</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    A_pattern.segment(K + 1, (N - 2) * (K + 1))</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;      .setConstant(1 + (SS::InnCnt &gt;= 0 ? 1 + 2 * SS::InnCnt : 0));</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  }</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  A_pattern.tail(K + 1).setConstant(1 + ss.RghtDeg.size() + (SS::InnCnt &gt;= 0 ? 1 + SS::InnCnt : 0));</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;  A.reserve(A_pattern);</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160; </div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;  Eigen::VectorXd b = Eigen::VectorXd::Zero(N_eq);</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  <span class="comment">// current inequality counter</span></div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  std::size_t M = 0;</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <span class="comment">// curve beg derivative constraints</span></div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; ss.LeftDeg.size(); ++i) {</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; K + 1; ++j) { A.insert(M, j) = U0tB(ss.LeftDeg[i], j); }</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    b(M++) = ss.left_values[i].x();</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  }</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  <span class="comment">// interval beg + end value constraint</span></div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  <span class="keyword">auto</span> it_dx = std::ranges::begin(dx_r);</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; N; ++i, ++it_dx) {</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0; j &lt; K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U0tB(0, j); }</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    b(M++) = 0;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordflow">if</span> (SS::InnCnt &gt;= 0) {</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0; j &lt; K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U1tB(0, j); }</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;      b(M++) = *it_dx;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    }</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;  }</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160; </div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  <span class="comment">// inner derivative continuity constraints</span></div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;  <span class="keyword">auto</span> it_dt = std::ranges::begin(dt_r);</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;  it_dx      = std::ranges::begin(dx_r);</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k + 1 &lt; N; ++k, ++it_dt, ++it_dx) {</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> d = 1; d &lt;= SS::InnCnt; ++d) {</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> fac1 = 1. / std::pow(*it_dt, d);</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> fac2 = 1. / std::pow(*(it_dt + 1), d);</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0; j &lt; K + 1; ++j) {</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        A.insert(M, k * (K + 1) + j)       = U1tB(d, j) * fac1;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        A.insert(M, (k + 1) * (K + 1) + j) = -U0tB(d, j) * fac2;</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;      }</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;      b(M++) = 0;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    }</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  }</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;  <span class="comment">// curve end derivative constraints</span></div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; ss.RghtDeg.size(); ++i) {</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; K + 1; ++j) {</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;      A.insert(M, (K + 1) * (N - 1) + j) = U1tB(ss.RghtDeg[i], j);</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    }</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    b(M++) = ss.rght_values[i].x();</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;  }</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160; </div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;  A.prune(1e-9);  <span class="comment">// there are typically a lot of zeros (depends on basis)..</span></div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;  A.makeCompressed();</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;  <span class="keywordflow">if</span> constexpr (SS::OptDeg &lt; 0) {</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="comment">// No optimization, solve directly</span></div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    assert(N_eq == N_coef);</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    Eigen::SparseLU&lt;decltype(A)&gt; lu(A);</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    <span class="keywordflow">return</span> lu.solve(b);</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    static_assert(K &gt;= SS::OptDeg, <span class="stringliteral">&quot;K &gt;= OptDeg&quot;</span>);</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160; </div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    <span class="comment">// COST MATRIX P</span></div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160; </div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    <span class="comment">// cost function is ∫ | p^{(D)} (t) |^2 dt,  t : 0 -&gt; T,</span></div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <span class="comment">// or (1 / T)^{2D - 1} ∫ | p^{(D)} (u) |^2 du,  u : 0 -&gt; 1</span></div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    <span class="comment">//</span></div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="comment">// p(u) = u^{(D)}^T B x, so p^{(D)} (u)^2 = x&#39; B&#39; u^{(D)}&#39; u^{(D)} B x</span></div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="comment">//</span></div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="comment">// Let M = \int_{0}^1 u^{(D)} u^{(D)}&#39; du   u : 0 -&gt; 1, then the cost matrix P</span></div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="comment">// is (1 / T)^{2D - 1} * B&#39; * M * B</span></div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Mmat = monomial_integral&lt;K, SS::OptDeg, double&gt;();</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="keyword">static</span> constexpr <a class="code" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;double, K + 1, K + 1&gt;</a> P_s = B_s.<a class="code" href="structsmooth_1_1StaticMatrix.html#a53e91947f092768cad0120677ae160fb">transpose</a>() * Mmat * B_s;</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; P(P_s[0].data());</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="comment">// SOLVE QP</span></div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160; </div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="comment">// We solve</span></div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="comment">//   min_{x : Ax = b}  (1/2) x&#39; Q x</span></div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="comment">// by solving the KKT equations</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="comment">//   [Q A&#39;; A 0] [x; l] =   [0; b]</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="comment">// via LDLt factorization</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    Eigen::SparseMatrix&lt;double&gt; H(N_coef + N_eq, N_coef + N_eq);</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    Eigen::Matrix&lt;int, -1, 1&gt; H_pattern(N_coef + N_eq);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != N_coef; ++i) {</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      H_pattern(i) = (K + 1) + A.outerIndexPtr()[i + 1] - A.outerIndexPtr()[i];</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    H_pattern.tail(N_eq).setZero();</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;    H.reserve(H_pattern);</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; <span class="keyword">const</span> <span class="keyword">auto</span> &amp; dt : dt_r | std::views::take(int64_t(N))) {</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> fac = std::pow(dt, 1 - 2 * <span class="keywordtype">int</span>(D));</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> ki = 0u; ki != K + 1; ++ki) {</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> kj = 0u; kj != K + 1; ++kj) {</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;          H.insert(i * (K + 1) + ki, i * (K + 1) + kj) = (ki == kj ? 1e-6 : 0.) + fac * P(ki, kj);</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;        }</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;      }</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;      ++i;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;  assert(N_coef &gt;= N_eq);</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;  <span class="comment">// CONSTRAINT MATRICES A, b</span></div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;  Eigen::SparseMatrix&lt;double, Eigen::ColMajor&gt; A(N_eq, N_coef);</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  Eigen::VectorXi A_pattern(N_coef);</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  A_pattern.head(K + 1).setConstant(1 + ss.LeftDeg.size() + (SS::InnCnt &gt;= 0 ? 1 + SS::InnCnt : 0));</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  <span class="keywordflow">if</span> (N &gt;= 2) {</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    A_pattern.segment(K + 1, (N - 2) * (K + 1))</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;      .setConstant(1 + (SS::InnCnt &gt;= 0 ? 1 + 2 * SS::InnCnt : 0));</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;  }</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;  A_pattern.tail(K + 1).setConstant(1 + ss.RghtDeg.size() + (SS::InnCnt &gt;= 0 ? 1 + SS::InnCnt : 0));</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  A.reserve(A_pattern);</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  Eigen::VectorXd b = Eigen::VectorXd::Zero(N_eq);</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="comment">// current inequality counter</span></div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;  std::size_t M = 0;</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160; </div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <span class="comment">// curve beg derivative constraints</span></div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; ss.LeftDeg.size(); ++i) {</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; K + 1; ++j) { A.insert(M, j) = U0tB(ss.LeftDeg[i], j); }</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    b(M++) = ss.left_values[i].x();</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  }</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;  <span class="comment">// interval beg + end value constraint</span></div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; [i, dx] : utils::zip(iota(0u), dx_r)) {</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0; j &lt; K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U0tB(0, j); }</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    b(M++) = 0;</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="keywordflow">if</span> (SS::InnCnt &gt;= 0) {</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0; j &lt; K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U1tB(0, j); }</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;      b(M++) = dx;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    }</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;  }</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;  <span class="comment">// inner derivative continuity constraint</span></div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; [k, dt, dt_next] : utils::zip(iota(0u, N - 1), dt_r, dt_r | drop(1))) {</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> d = 1; d &lt;= SS::InnCnt; ++d) {</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> fac1 = 1. / std::pow(dt, d);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> fac2 = 1. / std::pow(dt_next, d);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0; j &lt; K + 1; ++j) {</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        A.insert(M, k * (K + 1) + j)       = U1tB(d, j) * fac1;</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        A.insert(M, (k + 1) * (K + 1) + j) = -U0tB(d, j) * fac2;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;      }</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;      b(M++) = 0;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    }</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;  }</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;  <span class="comment">// curve end derivative constraints</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; ss.RghtDeg.size(); ++i) {</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; K + 1; ++j) {</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;      A.insert(M, (K + 1) * (N - 1) + j) = U1tB(ss.RghtDeg[i], j);</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    }</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    b(M++) = ss.rght_values[i].x();</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;  }</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160; </div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;  A.prune(1e-9);  <span class="comment">// there are typically a lot of zeros (depends on basis)..</span></div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;  A.makeCompressed();</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;  <span class="keywordflow">if</span> constexpr (SS::OptDeg &lt; 0) {</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    <span class="comment">// No optimization, solve directly</span></div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    assert(N_eq == N_coef);</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    Eigen::SparseLU&lt;decltype(A)&gt; lu(A);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <span class="keywordflow">return</span> lu.solve(b);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    static_assert(K &gt;= SS::OptDeg, <span class="stringliteral">&quot;K &gt;= OptDeg&quot;</span>);</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="comment">// COST MATRIX P</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160; </div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;    <span class="comment">// cost function is ∫ | p^{(D)} (t) |^2 dt,  t : 0 -&gt; T,</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    <span class="comment">// or (1 / T)^{2D - 1} ∫ | p^{(D)} (u) |^2 du,  u : 0 -&gt; 1</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="comment">//</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="comment">// p(u) = u^{(D)}^T B x, so p^{(D)} (u)^2 = x&#39; B&#39; u^{(D)}&#39; u^{(D)} B x</span></div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <span class="comment">//</span></div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="comment">// Let M = \int_{0}^1 u^{(D)} u^{(D)}&#39; du   u : 0 -&gt; 1, then the cost matrix P</span></div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    <span class="comment">// is (1 / T)^{2D - 1} * B&#39; * M * B</span></div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    <span class="keyword">static</span> constexpr <span class="keyword">auto</span> Mmat = monomial_integral&lt;K, SS::OptDeg, double&gt;();</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    <span class="keyword">static</span> constexpr <a class="code" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;double, K + 1, K + 1&gt;</a> P_s = B_s.<a class="code" href="structsmooth_1_1StaticMatrix.html#a53e91947f092768cad0120677ae160fb">transpose</a>() * Mmat * B_s;</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; P(P_s[0].data());</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="comment">// SOLVE QP</span></div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="comment">// We solve</span></div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="comment">//   min_{x : Ax = b}  (1/2) x&#39; Q x</span></div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="comment">// by solving the KKT equations</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="comment">//   [Q A&#39;; A 0] [x; l] =   [0; b]</span></div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    <span class="comment">// via LDLt factorization</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    Eigen::SparseMatrix&lt;double&gt; H(N_coef + N_eq, N_coef + N_eq);</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160; </div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    Eigen::Matrix&lt;int, -1, 1&gt; H_pattern(N_coef + N_eq);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != N_coef; ++i) {</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;      H_pattern(i) = (K + 1) + A.outerIndexPtr()[i + 1] - A.outerIndexPtr()[i];</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    }</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    H_pattern.tail(N_eq).setZero();</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    H.reserve(H_pattern);</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; [i, dt] : utils::zip(iota(0u), dt_r | take(int64_t(N)))) {</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> fac = std::pow(dt, 1 - 2 * <span class="keywordtype">int</span>(D));</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> ki = 0u; ki != K + 1; ++ki) {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> kj = 0u; kj != K + 1; ++kj) {</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;          H.insert(i * (K + 1) + ki, i * (K + 1) + kj) = (ki == kj ? 1e-6 : 0.) + fac * P(ki, kj);</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;        }</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;      }</div>
 <div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    }</div>
 <div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
 <div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> col = 0u; col != N_coef; ++col) {</div>
@@ -417,176 +415,173 @@ $(function() {
 <div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;  }</div>
 <div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;}</div>
 <div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160; </div>
-<div class="line"><a name="l00415"></a><span class="lineno"><a class="line" href="fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb">  415</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb">fit_spline</a>(</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;  <span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; ts,</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;  <span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; gs,</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;  <span class="keyword">const</span> SplineSpec <span class="keyword">auto</span> &amp; ss)</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;{</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;  <span class="keyword">using namespace </span>std::views;</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;  <span class="keyword">using</span> SS = std::decay_t&lt;decltype(ss)&gt;;</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;  <span class="keyword">using</span> G  = std::ranges::range_value_t&lt;std::decay_t&lt;decltype(gs)&gt;&gt;;</div>
+<div class="line"><a name="l00417"></a><span class="lineno"><a class="line" href="fit_8hpp.html#a0b2ddf72f5eaa39f72ae77af28d925e5">  417</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="fit_8hpp.html#a0b2ddf72f5eaa39f72ae77af28d925e5">fit_spline</a>(</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;  std::ranges::random_access_range <span class="keyword">auto</span> &amp;&amp; ts,</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;  std::ranges::random_access_range <span class="keyword">auto</span> &amp;&amp; gs,</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;  <span class="keyword">const</span> SplineSpec <span class="keyword">auto</span> &amp; ss)</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;{</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;  <span class="keyword">using namespace </span>std::views;</div>
 <div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160; </div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;  assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160; </div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> K = SS::Degree;</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> N            = std::min(std::ranges::size(ts), std::ranges::size(gs));</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;  <span class="keyword">using</span> SS = std::decay_t&lt;decltype(ss)&gt;;</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;  <span class="keyword">using</span> G  = <a class="code" href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">PlainObject</a>&lt;std::ranges::range_value_t&lt;std::decay_t&lt;decltype(gs)&gt;&gt;&gt;;</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; </div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;  assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());</div>
 <div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160; </div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;  assert(N &gt;= 2);</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160; </div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;  std::vector&lt;double&gt; dts(N - 1);</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;  std::vector&lt;Tangent&lt;G&gt;&gt; dgs(N - 1);</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> K = SS::Degree;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> N            = std::min(std::ranges::size(ts), std::ranges::size(gs));</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160; </div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;  assert(N &gt;= 2);</div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160; </div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;  std::ranges::transform(</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    ts, ts | drop(1), dts.begin(), [](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; t1, <span class="keyword">const</span> <span class="keyword">auto</span> &amp; t2) { return t2 - t1; });</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;  std::ranges::transform(</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    gs, gs | drop(1), dgs.begin(), [](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; g1, <span class="keyword">const</span> <span class="keyword">auto</span> &amp; g2) { return rminus(g2, g1); });</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160; </div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;  Eigen::Matrix&lt;double, Dof&lt;G&gt;, -1&gt; V(Dof&lt;G&gt;, (N - 1) * (K + 1));</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160; </div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; Dof&lt;G&gt;; ++k) {</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> ss_proj = detail::splinespec_project(ss, k);</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    V.row(k) = <a class="code" href="fit_8hpp.html#a5ca687909d8d31db58b41fe6152e8b60">fit_spline_1d</a>(dts, dgs | transform([k](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; v) { <span class="keywordflow">return</span> v(k); }), ss_proj);</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;  }</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160; </div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;  Spline&lt;K, G&gt; ret;</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; N; ++i) {</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;    <span class="keywordflow">if</span> (i + 1 &lt; N) {</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, Dof&lt;G&gt;, K + 1&gt; coefs =</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;        V.template block&lt;Dof&lt;G&gt;, K + 1&gt;(0, i * (K + 1));</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;      <span class="comment">// spline is in cumulative form, need to get cumulative coefficients</span></div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;      Eigen::Matrix&lt;double, Dof&lt;G&gt;, K&gt; cum_coefs = coefs.rightCols(K) - coefs.leftCols(K);</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160; </div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;      <span class="keywordflow">if</span> constexpr (K &gt; 2) {</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;        <span class="comment">// modify segment to ensure it is interpolating</span></div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;        <span class="comment">// want exp(v1) * ... * exp(vK) = inv(g) * gnext</span></div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;        <span class="keyword">auto</span> mid = K / 2;</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160; </div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;        G midval = composition&lt;G&gt;(::smooth::inverse&lt;G&gt;(gs[i]), gs[i + 1]);</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0; k &lt; mid; ++k) {</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;          midval = composition&lt;G&gt;(::smooth::exp&lt;G&gt;(-cum_coefs.col(k)), midval);</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        }</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = K - 1; k &gt; mid; --k) {</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;          midval = composition&lt;G&gt;(midval, ::smooth::exp&lt;G&gt;(-cum_coefs.col(k)));</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        }</div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        cum_coefs.col(mid) = ::smooth::log&lt;G&gt;(midval);</div>
-<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;      }</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160; </div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;      ret.concat_global(Spline&lt;K, G&gt;(dts[i], cum_coefs, gs[i]));</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;      ret.concat_global(gs[i]);</div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;    }</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;  }</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> sub     = [](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; x1, <span class="keyword">const</span> <span class="keyword">auto</span> &amp; x2) { <span class="keywordflow">return</span> x2 - x1; };</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> sub_lie = [](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; x1, <span class="keyword">const</span> <span class="keyword">auto</span> &amp; x2) { <span class="keywordflow">return</span> <a class="code" href="manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231">rminus</a>(x2, x1); };</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160; </div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;  <span class="keyword">auto</span> dts = ts | utils::views::pairwise_transform(sub);</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;  <span class="keyword">auto</span> dgs = gs | utils::views::pairwise_transform(sub_lie);</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;  Eigen::Matrix&lt;double, Dof&lt;G&gt;, -1&gt; V(Dof&lt;G&gt;, (N - 1) * (K + 1));</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160; </div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; Dof&lt;G&gt;; ++k) {</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> ss_proj = detail::splinespec_project(ss, k);</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;    V.row(k) = <a class="code" href="fit_8hpp.html#aa2bc4ae01bb329d9e53da1f3ac339c28">fit_spline_1d</a>(dts, dgs | transform([k](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; v) { <span class="keywordflow">return</span> v(k); }), ss_proj);</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;  }</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160; </div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;  Spline&lt;K, G&gt; ret;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;  ret.reserve(N);</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160; </div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; [i, dt, g, g_next] : utils::zip(iota(0u), dts, gs, gs | drop(1))) {</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;    <span class="comment">// spline is in cumulative form, need to get cumulative coefficients</span></div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;    Eigen::Matrix&lt;double, Dof&lt;G&gt;, K&gt; cum_coefs =</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;      V.template block&lt;Dof&lt;G&gt;, K&gt;(0, i * (K + 1) + 1) - V.template block&lt;Dof&lt;G&gt;, K&gt;(0, i * (K + 1));</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160; </div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;    <span class="keywordflow">if</span> constexpr (K &gt; 2) {</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;      <span class="comment">// modify segment to ensure it is interpolating</span></div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;      <span class="comment">// want exp(v1) * ... * exp(vK) = inv(g) * gnext</span></div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;      <span class="keyword">auto</span> mid = K / 2;</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160; </div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;      G midval = composition&lt;G&gt;(::smooth::inverse&lt;G&gt;(g), g_next);</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0; k &lt; mid; ++k) {</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        midval = composition&lt;G&gt;(::smooth::exp&lt;G&gt;(-cum_coefs.col(k)), midval);</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;      }</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = K - 1; k &gt; mid; --k) {</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        midval = composition&lt;G&gt;(midval, ::smooth::exp&lt;G&gt;(-cum_coefs.col(k)));</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;      }</div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;      cum_coefs.col(mid) = ::smooth::log&lt;G&gt;(midval);</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;    }</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160; </div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    ret.concat_global(Spline&lt;K, G&gt;(dt, std::move(cum_coefs), g));</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;  }</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160; </div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;  ret.concat_global(gs[N - 1]);</div>
 <div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160; </div>
 <div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;  <span class="keywordflow">return</span> ret;</div>
 <div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;}</div>
 <div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160; </div>
-<div class="line"><a name="l00485"></a><span class="lineno"><a class="line" href="fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b">  485</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b">fit_spline_cubic</a>(<span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; ts, <span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; gs)</div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;{</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;  <span class="keyword">using</span> G = std::ranges::range_value_t&lt;std::decay_t&lt;decltype(gs)&gt;&gt;;</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb">fit_spline</a>(ts, gs, <a class="code" href="structsmooth_1_1spline__specs_1_1FixedDerCubic.html">spline_specs::FixedDerCubic&lt;G, 2, 2&gt;</a>{});</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;}</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160; </div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K&gt;</div>
-<div class="line"><a name="l00505"></a><span class="lineno"><a class="line" href="fit_8hpp.html#a90a8e289bb91aff4856569598310bd78">  505</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="fit_8hpp.html#a90a8e289bb91aff4856569598310bd78">fit_bspline</a>(<span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; tt, <span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; gg, <span class="keywordtype">double</span> dt)</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;{</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;  <span class="keyword">using</span> G = std::ranges::range_value_t&lt;std::decay_t&lt;decltype(gg)&gt;&gt;;</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160; </div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;  assert(std::ranges::adjacent_find(tt, std::ranges::greater_equal()) == tt.end());</div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160; </div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;  <span class="keyword">auto</span> [tmin_ptr, tmax_ptr] = std::minmax_element(std::ranges::begin(tt), std::ranges::end(tt));</div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160; </div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> t0 = *tmin_ptr;</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> t1 = *tmax_ptr;</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160; </div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;  <span class="keyword">const</span> std::size_t NumData = std::min(std::ranges::size(tt), std::ranges::size(gg));</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;  <span class="keyword">const</span> std::size_t NumPts  = K + <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>((t1 - t0 + dt) / dt);</div>
+<div class="line"><a name="l00487"></a><span class="lineno"><a class="line" href="fit_8hpp.html#aa4855541214c77b0a5626176c55308fc">  487</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="fit_8hpp.html#aa4855541214c77b0a5626176c55308fc">fit_spline_cubic</a>(std::ranges::range <span class="keyword">auto</span> &amp;&amp; ts, std::ranges::range <span class="keyword">auto</span> &amp;&amp; gs)</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;{</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;  <span class="keyword">using</span> G = std::ranges::range_value_t&lt;std::decay_t&lt;decltype(gs)&gt;&gt;;</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="fit_8hpp.html#a0b2ddf72f5eaa39f72ae77af28d925e5">fit_spline</a>(</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160;    std::forward&lt;decltype(ts)&gt;(ts),</div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;    std::forward&lt;decltype(gs)&gt;(gs),</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;    <a class="code" href="structsmooth_1_1spline__specs_1_1FixedDerCubic.html">spline_specs::FixedDerCubic&lt;G, 2, 2&gt;</a>{});</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160;}</div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160; </div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K&gt;</div>
+<div class="line"><a name="l00512"></a><span class="lineno"><a class="line" href="fit_8hpp.html#ac6ca39811c774d7d3614f4bcccf542a9">  512</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="fit_8hpp.html#ac6ca39811c774d7d3614f4bcccf542a9">fit_bspline</a>(std::ranges::range <span class="keyword">auto</span> &amp;&amp; ts, std::ranges::range <span class="keyword">auto</span> &amp;&amp; gs, <span class="keyword">const</span> <span class="keywordtype">double</span> dt)</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;{</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;  <span class="keyword">using namespace </span>std::views;</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;  <span class="keyword">using</span> G = <a class="code" href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">PlainObject</a>&lt;std::ranges::range_value_t&lt;std::decay_t&lt;decltype(gs)&gt;&gt;&gt;;</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160; </div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;  assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());</div>
 <div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160; </div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;  constexpr <span class="keyword">auto</span> M_s = polynomial_cumulative_basis&lt;PolynomialBasis::Bspline, K&gt;();</div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; M(M_s[0].data());</div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160; </div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;  <span class="keyword">auto</span> f = [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; var) {</div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;    Eigen::VectorXd ret(Dof&lt;G&gt; * NumData);</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160; </div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;    Eigen::SparseMatrix&lt;double, Eigen::RowMajor&gt; Jac;</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;    Jac.resize(Dof&lt;G&gt; * NumData, Dof&lt;G&gt; * NumPts);</div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;    Jac.reserve(Eigen::Matrix&lt;int, -1, 1&gt;::Constant(Dof&lt;G&gt; * NumData, Dof&lt;G&gt; * (K + 1)));</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160; </div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;    <span class="keyword">auto</span> t_iter = std::ranges::begin(tt);</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;    <span class="keyword">auto</span> g_iter = std::ranges::begin(gg);</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160; </div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != NumData; ++t_iter, ++g_iter, ++i) {</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;      <span class="keyword">const</span> int64_t istar = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>((*t_iter - t0) / dt);</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> u      = (*t_iter - t0 - istar * dt) / dt;</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160; </div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;      Eigen::Matrix&lt;double, Dof&lt;G&gt;, (K + 1) * Dof&lt;G&gt;&gt; d_vali_pts;</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;      <span class="comment">// gcc 11.1 bug can&#39;t handle uint64_t</span></div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;      <span class="keyword">auto</span> g_spline = cspline_eval&lt;K&gt;(</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;        var | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160; </div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;      <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent&lt;G&gt;</a> resi = <a class="code" href="manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231">rminus</a>(g_spline, *g_iter);</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> [t0, t1] = std::ranges::minmax(ts);</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160; </div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;  <span class="keyword">const</span> std::size_t NumData = std::min(std::ranges::size(ts), std::ranges::size(gs));</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;  <span class="keyword">const</span> std::size_t NumPts  = K + <span class="keyword">static_cast&lt;</span>std::size_t<span class="keyword">&gt;</span>((t1 - t0 + dt) / dt);</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160; </div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;  <span class="keyword">static</span> constexpr <span class="keyword">auto</span> M_s = polynomial_cumulative_basis&lt;PolynomialBasis::Bspline, K&gt;();</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;  Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt; M(M_s[0].data());</div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160; </div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> f = [&amp;, t0 = t0, dt = dt](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; var) {</div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;    Eigen::VectorXd ret(Dof&lt;G&gt; * NumData);</div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160; </div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;    Eigen::SparseMatrix&lt;double, Eigen::RowMajor&gt; Jac;</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;    Jac.resize(Dof&lt;G&gt; * NumData, Dof&lt;G&gt; * NumPts);</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;    Jac.reserve(Eigen::Matrix&lt;int, -1, 1&gt;::Constant(Dof&lt;G&gt; * NumData, Dof&lt;G&gt; * (K + 1)));</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160; </div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; [i, t, g] : utils::zip(iota(0u), ts, gs)) {</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;      <span class="keyword">const</span> int64_t istar = <span class="keyword">static_cast&lt;</span>int64_t<span class="keyword">&gt;</span>((t - t0) / dt);</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">double</span> u      = (t - t0 - istar * dt) / dt;</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160; </div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;      Eigen::Matrix&lt;double, Dof&lt;G&gt;, (K + 1) * Dof&lt;G&gt;&gt; d_vali_pts;</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;      <span class="comment">// gcc 11.1 bug can&#39;t handle uint64_t</span></div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;      <span class="keyword">auto</span> g_spline =</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;        cspline_eval&lt;K&gt;(var | drop(istar) | take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);</div>
 <div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160; </div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;      ret.segment&lt;Dof&lt;G&gt;&gt;(i * Dof&lt;G&gt;) = resi;</div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;      <span class="keyword">const</span> <a class="code" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent&lt;G&gt;</a> resi = <a class="code" href="manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231">rminus</a>(g_spline, g);</div>
 <div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160; </div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, Dof&lt;G&gt;, Dof&lt;G&gt;&gt; d_resi_vali          = dr_expinv&lt;G&gt;(resi);</div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, Dof&lt;G&gt;, (K + 1) * Dof&lt;G&gt;&gt; d_resi_pts = d_resi_vali * d_vali_pts;</div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160; </div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r != Dof&lt;G&gt;; ++r) {</div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> c = 0u; c != Dof&lt;G&gt; * (K + 1); ++c) {</div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;          Jac.insert(i * Dof&lt;G&gt; + r, istar * Dof&lt;G&gt; + c) = d_resi_pts(r, c);</div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;        }</div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;      }</div>
-<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;    }</div>
-<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160; </div>
-<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;    Jac.makeCompressed();</div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;      ret.segment&lt;Dof&lt;G&gt;&gt;(i * Dof&lt;G&gt;) = resi;</div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160; </div>
+<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, Dof&lt;G&gt;, Dof&lt;G&gt;&gt; d_resi_vali          = dr_expinv&lt;G&gt;(resi);</div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;      <span class="keyword">const</span> Eigen::Matrix&lt;double, Dof&lt;G&gt;, (K + 1) * Dof&lt;G&gt;&gt; d_resi_pts = d_resi_vali * d_vali_pts;</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160; </div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r != Dof&lt;G&gt;; ++r) {</div>
+<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> c = 0u; c != Dof&lt;G&gt; * (K + 1); ++c) {</div>
+<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;          Jac.insert(i * Dof&lt;G&gt; + r, istar * Dof&lt;G&gt; + c) = d_resi_pts(r, c);</div>
+<div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;        }</div>
+<div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;      }</div>
+<div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;    }</div>
 <div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160; </div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;    <span class="keywordflow">return</span> std::make_pair(std::move(ret), Eigen::MatrixXd(Jac));</div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;  };</div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160; </div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;  <span class="comment">// create optimization variable</span></div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;  <a class="code" href="classsmooth_1_1ManifoldVector.html">ManifoldVector&lt;G&gt;</a> ctrl_pts(NumPts);</div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160; </div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;  <span class="comment">// create initial guess</span></div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;  <span class="keyword">auto</span> t_iter = std::ranges::begin(tt);</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;  <span class="keyword">auto</span> g_iter = std::ranges::begin(gg);</div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != NumPts; ++i) {</div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> t_target = t0 + (i - <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(K - 1) / 2) * dt;</div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;    <span class="keywordflow">while</span> (t_iter + 1 &lt; std::ranges::end(tt)</div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;           &amp;&amp; std::abs(t_target - *(t_iter + 1)) &lt; std::abs(t_target - *t_iter)) {</div>
-<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;      ++t_iter;</div>
-<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;      ++g_iter;</div>
-<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;    }</div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;    ctrl_pts[i] = *g_iter;</div>
-<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;  }</div>
-<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160; </div>
-<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;  <span class="comment">// fit to data with loose convergence criteria</span></div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;  <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a> opts;</div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b">ftol</a>     = 1e-3;</div>
-<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530">ptol</a>     = 1e-3;</div>
-<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;  opts.<a class="code" href="structsmooth_1_1MinimizeOptions.html#a06c8794ce3e364e0f14b3055d5cef01b">max_iter</a> = 10;</div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;  minimize&lt;diff::Type::Analytic&gt;(f, smooth::wrt(ctrl_pts), opts);</div>
-<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160; </div>
-<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline&lt;K, G&gt;</a>(t0, dt, std::move(ctrl_pts));</div>
-<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;}</div>
-<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160; </div>
-<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;}  <span class="comment">// namespace smooth</span></div>
-<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160; </div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__SPLINE__FIT_HPP_</span></div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;    Jac.makeCompressed();</div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160; </div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;    <span class="keywordflow">return</span> std::make_pair(std::move(ret), std::move(Jac));</div>
+<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;  };</div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160; </div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;  <span class="comment">// create optimization variable</span></div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;  <a class="code" href="classsmooth_1_1ManifoldVector.html">ManifoldVector&lt;G&gt;</a> ctrl_pts(NumPts);</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160; </div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;  <span class="comment">// create initial guess</span></div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;  <span class="keyword">auto</span> t_iter = std::ranges::begin(ts);</div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;  <span class="keyword">auto</span> g_iter = std::ranges::begin(gs);</div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != NumPts; ++i) {</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">double</span> t_target = t0 + (i - <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(K - 1) / 2) * dt;</div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;    <span class="keywordflow">while</span> (t_iter + 1 &lt; std::ranges::end(ts)</div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;           &amp;&amp; std::abs(t_target - *(t_iter + 1)) &lt; std::abs(t_target - *t_iter)) {</div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;      ++t_iter;</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;      ++g_iter;</div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;    }</div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;    ctrl_pts[i] = *g_iter;</div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;  }</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160; </div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;  <span class="comment">// fit to data with loose convergence criteria</span></div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;  <span class="keyword">const</span> <a class="code" href="structsmooth_1_1MinimizeOptions.html">MinimizeOptions</a> opts{</div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;    .<a class="code" href="structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530">ptol</a>     = 1e-3,</div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;    .ftol     = 1e-3,</div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;    .max_iter = 10,</div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;    .verbose  = <span class="keyword">false</span>,</div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;  };</div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;  minimize&lt;diff::Type::Analytic&gt;(f, smooth::wrt(ctrl_pts), opts);</div>
+<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160; </div>
+<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classsmooth_1_1BSpline.html">BSpline&lt;K, G&gt;</a>(t0, dt, std::move(ctrl_pts));</div>
+<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;}</div>
+<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160; </div>
+<div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160; </div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__SPLINE__FIT_HPP_</span></div>
 <div class="ttc" id="abspline_8hpp_html"><div class="ttname"><a href="bspline_8hpp.html">bspline.hpp</a></div><div class="ttdoc">B-splines on Lie groups.</div></div>
 <div class="ttc" id="aclasssmooth_1_1BSpline_html"><div class="ttname"><a href="classsmooth_1_1BSpline.html">smooth::BSpline</a></div><div class="ttdoc">Cardinal Bspline on a Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="bspline_8hpp_source.html#l00074">bspline.hpp:75</a></div></div>
 <div class="ttc" id="aclasssmooth_1_1ManifoldVector_html"><div class="ttname"><a href="classsmooth_1_1ManifoldVector.html">smooth::ManifoldVector</a></div><div class="ttdoc">std::vector based Manifold container.</div><div class="ttdef"><b>Definition:</b> <a href="manifold__vector_8hpp_source.html#l00046">manifold_vector.hpp:47</a></div></div>
-<div class="ttc" id="afit_8hpp_html_a5ca687909d8d31db58b41fe6152e8b60"><div class="ttname"><a href="fit_8hpp.html#a5ca687909d8d31db58b41fe6152e8b60">smooth::fit_spline_1d</a></div><div class="ttdeci">Eigen::VectorXd fit_spline_1d(const std::ranges::range auto &amp;dt_r, const std::ranges::range auto &amp;dx_r, const SplineSpec auto &amp;ss)</div><div class="ttdoc">Find N degree K Bernstein polynomials p_i(t) for i = 0, ..., N s.t that satisfies constraints and s....</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00237">fit.hpp:237</a></div></div>
-<div class="ttc" id="afit_8hpp_html_a90a8e289bb91aff4856569598310bd78"><div class="ttname"><a href="fit_8hpp.html#a90a8e289bb91aff4856569598310bd78">smooth::fit_bspline</a></div><div class="ttdeci">auto fit_bspline(const std::ranges::range auto &amp;tt, const std::ranges::range auto &amp;gg, double dt)</div><div class="ttdoc">Fit a bpsline to data points  by solving the optimization problem.</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00505">fit.hpp:505</a></div></div>
-<div class="ttc" id="afit_8hpp_html_aa517f190ee0bd237c524c3e19a8531eb"><div class="ttname"><a href="fit_8hpp.html#aa517f190ee0bd237c524c3e19a8531eb">smooth::fit_spline</a></div><div class="ttdeci">auto fit_spline(const std::ranges::range auto &amp;ts, const std::ranges::range auto &amp;gs, const SplineSpec auto &amp;ss)</div><div class="ttdoc">Fit a Spline to given points.</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00415">fit.hpp:415</a></div></div>
+<div class="ttc" id="afit_8hpp_html_a0b2ddf72f5eaa39f72ae77af28d925e5"><div class="ttname"><a href="fit_8hpp.html#a0b2ddf72f5eaa39f72ae77af28d925e5">smooth::fit_spline</a></div><div class="ttdeci">auto fit_spline(std::ranges::random_access_range auto &amp;&amp;ts, std::ranges::random_access_range auto &amp;&amp;gs, const SplineSpec auto &amp;ss)</div><div class="ttdoc">Fit a Spline to given points.</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00417">fit.hpp:417</a></div></div>
+<div class="ttc" id="afit_8hpp_html_aa2bc4ae01bb329d9e53da1f3ac339c28"><div class="ttname"><a href="fit_8hpp.html#aa2bc4ae01bb329d9e53da1f3ac339c28">smooth::fit_spline_1d</a></div><div class="ttdeci">Eigen::VectorXd fit_spline_1d(std::ranges::sized_range auto &amp;&amp;dt_r, std::ranges::sized_range auto &amp;&amp;dx_r, const SplineSpec auto &amp;ss)</div><div class="ttdoc">Find N degree K Bernstein polynomials p_i(t) for i = 0, ..., N s.t that satisfies constraints and s....</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00239">fit.hpp:239</a></div></div>
+<div class="ttc" id="afit_8hpp_html_aa4855541214c77b0a5626176c55308fc"><div class="ttname"><a href="fit_8hpp.html#aa4855541214c77b0a5626176c55308fc">smooth::fit_spline_cubic</a></div><div class="ttdeci">auto fit_spline_cubic(std::ranges::range auto &amp;&amp;ts, std::ranges::range auto &amp;&amp;gs)</div><div class="ttdoc">Fit a cubic Spline with natural boundary conditions.</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00487">fit.hpp:487</a></div></div>
 <div class="ttc" id="afit_8hpp_html_ab7c8c2f78478cfea5fbc5a2b8a3bacf2"><div class="ttname"><a href="fit_8hpp.html#ab7c8c2f78478cfea5fbc5a2b8a3bacf2">smooth::SplineSpec</a></div><div class="ttdeci">concept SplineSpec</div><div class="ttdoc">Spline specification.</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00053">fit.hpp:53</a></div></div>
-<div class="ttc" id="afit_8hpp_html_afc1215276fae4c50ce9c5b62c34c737b"><div class="ttname"><a href="fit_8hpp.html#afc1215276fae4c50ce9c5b62c34c737b">smooth::fit_spline_cubic</a></div><div class="ttdeci">auto fit_spline_cubic(const std::ranges::range auto &amp;ts, const std::ranges::range auto &amp;gs)</div><div class="ttdoc">Fit a cubic Spline with natural boundary conditions.</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00485">fit.hpp:485</a></div></div>
+<div class="ttc" id="afit_8hpp_html_ac6ca39811c774d7d3614f4bcccf542a9"><div class="ttname"><a href="fit_8hpp.html#ac6ca39811c774d7d3614f4bcccf542a9">smooth::fit_bspline</a></div><div class="ttdeci">auto fit_bspline(std::ranges::range auto &amp;&amp;ts, std::ranges::range auto &amp;&amp;gs, const double dt)</div><div class="ttdoc">Fit a bpsline to data points  by solving the optimization problem.</div><div class="ttdef"><b>Definition:</b> <a href="fit_8hpp_source.html#l00512">fit.hpp:512</a></div></div>
 <div class="ttc" id="alie__group_8hpp_html_aa5ac6cbd43fb18cb0a5b50327627e716"><div class="ttname"><a href="lie__group_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">smooth::LieGroup</a></div><div class="ttdeci">concept LieGroup</div><div class="ttdoc">Class-external Lie group interface defined through the traits::lie trait class.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00057">lie_group.hpp:57</a></div></div>
 <div class="ttc" id="amanifold_8hpp_html_a1050d2ff261807ed963b67efe0b40eba"><div class="ttname"><a href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">smooth::Tangent</a></div><div class="ttdeci">Eigen::Vector&lt; Scalar&lt; M &gt;, Dof&lt; M &gt; &gt; Tangent</div><div class="ttdoc">Tangent as a Dof-length vector.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00233">manifold.hpp:233</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_adb56aa6a7e496d840696a0c5d1ad3d3f"><div class="ttname"><a href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">smooth::PlainObject</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::PlainObject PlainObject</div><div class="ttdoc">Manifold default type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00221">manifold.hpp:221</a></div></div>
 <div class="ttc" id="amanifold_8hpp_html_aeb2a9c1a46d6ed26f6d98f66919b8231"><div class="ttname"><a href="manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231">smooth::rminus</a></div><div class="ttdeci">Tangent&lt; M &gt; rminus(const M &amp;g1, const Mo &amp;g2)</div><div class="ttdoc">Manifold right-minus.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00292">manifold.hpp:292</a></div></div>
 <div class="ttc" id="aoptim_8hpp_html"><div class="ttname"><a href="optim_8hpp.html">optim.hpp</a></div><div class="ttdoc">Non-linear least squares optimization on Manifolds.</div></div>
 <div class="ttc" id="aspline_8hpp_html"><div class="ttname"><a href="spline_8hpp.html">spline.hpp</a></div><div class="ttdoc">Piecewise polynomial splines on lie groups.</div></div>
 <div class="ttc" id="astructsmooth_1_1MinimizeOptions_html"><div class="ttname"><a href="structsmooth_1_1MinimizeOptions.html">smooth::MinimizeOptions</a></div><div class="ttdoc">Optimization options.</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00055">optim.hpp:56</a></div></div>
-<div class="ttc" id="astructsmooth_1_1MinimizeOptions_html_a06c8794ce3e364e0f14b3055d5cef01b"><div class="ttname"><a href="structsmooth_1_1MinimizeOptions.html#a06c8794ce3e364e0f14b3055d5cef01b">smooth::MinimizeOptions::max_iter</a></div><div class="ttdeci">std::size_t max_iter</div><div class="ttdoc">maximum number of iterations</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00062">optim.hpp:62</a></div></div>
-<div class="ttc" id="astructsmooth_1_1MinimizeOptions_html_a477169427f1ef9f4dcc83638c250fc4b"><div class="ttname"><a href="structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b">smooth::MinimizeOptions::ftol</a></div><div class="ttdeci">double ftol</div><div class="ttdoc">relative function tolerance for convergence</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00060">optim.hpp:60</a></div></div>
 <div class="ttc" id="astructsmooth_1_1MinimizeOptions_html_a8e289c23101bd1eb1671e59b5a350530"><div class="ttname"><a href="structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530">smooth::MinimizeOptions::ptol</a></div><div class="ttdeci">double ptol</div><div class="ttdoc">relative parameter tolerance for convergence</div><div class="ttdef"><b>Definition:</b> <a href="optim_8hpp_source.html#l00058">optim.hpp:58</a></div></div>
 <div class="ttc" id="astructsmooth_1_1StaticMatrix_html"><div class="ttname"><a href="structsmooth_1_1StaticMatrix.html">smooth::StaticMatrix</a></div><div class="ttdoc">Elementary structure for compile-time matrix algebra.</div><div class="ttdef"><b>Definition:</b> <a href="static__matrix_8hpp_source.html#l00047">static_matrix.hpp:48</a></div></div>
 <div class="ttc" id="astructsmooth_1_1StaticMatrix_html_a53e91947f092768cad0120677ae160fb"><div class="ttname"><a href="structsmooth_1_1StaticMatrix.html#a53e91947f092768cad0120677ae160fb">smooth::StaticMatrix::transpose</a></div><div class="ttdeci">constexpr StaticMatrix&lt; _Scalar, _Rows, _Cols &gt; transpose() const</div><div class="ttdoc">Matrix transpose.</div><div class="ttdef"><b>Definition:</b> <a href="static__matrix_8hpp_source.html#l00093">static_matrix.hpp:93</a></div></div>

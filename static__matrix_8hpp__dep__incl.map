@@ -1,6 +1,6 @@
 <map id="include/smooth/polynomial/static_matrix.hpp" name="include/smooth/polynomial/static_matrix.hpp">
 <area shape="rect" id="node1" title="Utilities for compile&#45;time matrix algebra." alt="" coords="68,5,243,47"/>
-<area shape="rect" id="node2" href="$basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="131,95,305,136"/>
+<area shape="rect" id="node2" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="131,95,305,136"/>
 <area shape="rect" id="node3" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,184,180,225"/>
 <area shape="rect" id="node4" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="172,273,320,315"/>
 <area shape="rect" id="node6" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="255,184,410,225"/>

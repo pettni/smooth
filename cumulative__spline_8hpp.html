@@ -92,23 +92,23 @@ Include dependency graph for cumulative_spline.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="cumulative__spline_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2cumulative__spline_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2cumulative__spline_8hpp" id="ainclude_2smooth_2spline_2cumulative__spline_8hpp">
-<area shape="rect" title="Evaluation of cumulative Lie group splines." alt="" coords="303,5,457,47"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="35,95,181,121"/>
-<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial algebra." alt="" coords="220,95,409,121"/>
-<area shape="rect" title=" " alt="" coords="430,169,495,196"/>
-<area shape="rect" title=" " alt="" coords="484,95,551,121"/>
-<area shape="rect" title=" " alt="" coords="112,244,197,271"/>
-<area shape="rect" title=" " alt="" coords="5,244,80,271"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="115,169,210,196"/>
-<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="285,169,405,196"/>
-<area shape="rect" title=" " alt="" coords="155,319,205,345"/>
-<area shape="rect" title=" " alt="" coords="459,244,517,271"/>
-<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="272,244,435,271"/>
-<area shape="rect" title=" " alt="" coords="485,319,550,345"/>
-<area shape="rect" title=" " alt="" coords="574,319,653,345"/>
-<area shape="rect" title=" " alt="" coords="230,319,298,345"/>
-<area shape="rect" title=" " alt="" coords="323,319,384,345"/>
-<area shape="rect" title=" " alt="" coords="409,319,461,345"/>
+<area shape="rect" title="Evaluation of cumulative Lie group splines." alt="" coords="289,5,444,47"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="31,95,177,121"/>
+<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="207,95,396,121"/>
+<area shape="rect" title=" " alt="" coords="401,169,466,196"/>
+<area shape="rect" title=" " alt="" coords="471,95,537,121"/>
+<area shape="rect" title=" " alt="" coords="5,244,91,271"/>
+<area shape="rect" title=" " alt="" coords="115,244,189,271"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="137,169,231,196"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="256,169,376,196"/>
+<area shape="rect" title=" " alt="" coords="147,319,197,345"/>
+<area shape="rect" title=" " alt="" coords="451,244,509,271"/>
+<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="264,244,427,271"/>
+<area shape="rect" title=" " alt="" coords="477,319,542,345"/>
+<area shape="rect" title=" " alt="" coords="566,319,645,345"/>
+<area shape="rect" title=" " alt="" coords="222,319,290,345"/>
+<area shape="rect" title=" " alt="" coords="315,319,376,345"/>
+<area shape="rect" title=" " alt="" coords="401,319,453,345"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -142,22 +142,22 @@ template&lt;LieGroup G, std::size_t K&gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8e3ab6ec9830bbf91d843461a32ff875"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, LieGroup G, typename Derived &gt; </td></tr>
-<tr class="memitem:a8e3ab6ec9830bbf91d843461a32ff875"><td class="memTemplItemLeft" align="right" valign="top">G&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a8e3ab6ec9830bbf91d843461a32ff875">smooth::cspline_eval_diff</a> (const std::ranges::sized_range auto &amp;diff_points, const Eigen::MatrixBase&lt; Derived &gt; &amp;Bcum, Scalar&lt; G &gt; u, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}, detail::OptJacobian&lt; G, K &gt; der={}) noexcept</td></tr>
-<tr class="memdesc:a8e3ab6ec9830bbf91d843461a32ff875"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate a cumulative spline of order \( K \) defined as.  <a href="cumulative__spline_8hpp.html#a8e3ab6ec9830bbf91d843461a32ff875">More...</a><br /></td></tr>
-<tr class="separator:a8e3ab6ec9830bbf91d843461a32ff875"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b102e5ef70dd10ab86d0422f6f4b418"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::ranges::range R, typename Derived , LieGroup G = std::ranges::range_value_t&lt;R&gt;&gt; </td></tr>
-<tr class="memitem:a7b102e5ef70dd10ab86d0422f6f4b418"><td class="memTemplItemLeft" align="right" valign="top">G&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a7b102e5ef70dd10ab86d0422f6f4b418">smooth::cspline_eval</a> (const R &amp;gs, const Eigen::MatrixBase&lt; Derived &gt; &amp;Bcum, Scalar&lt; G &gt; u, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}, detail::OptJacobian&lt; G, K &gt; der={}) noexcept</td></tr>
-<tr class="memdesc:a7b102e5ef70dd10ab86d0422f6f4b418"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate a cumulative basis spline of order K and calculate derivatives.  <a href="cumulative__spline_8hpp.html#a7b102e5ef70dd10ab86d0422f6f4b418">More...</a><br /></td></tr>
-<tr class="separator:a7b102e5ef70dd10ab86d0422f6f4b418"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98182e0528c1276134d67e214a0a86ff"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, LieGroup G, typename Derived &gt; </td></tr>
+<tr class="memitem:a98182e0528c1276134d67e214a0a86ff"><td class="memTemplItemLeft" align="right" valign="top">G&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a98182e0528c1276134d67e214a0a86ff">smooth::cspline_eval_diff</a> (std::ranges::sized_range auto &amp;&amp;diff_points, const Eigen::MatrixBase&lt; Derived &gt; &amp;Bcum, Scalar&lt; G &gt; u, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}, detail::OptJacobian&lt; G, K &gt; der={}) noexcept</td></tr>
+<tr class="memdesc:a98182e0528c1276134d67e214a0a86ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate a cumulative spline of order \( K \) defined as.  <a href="cumulative__spline_8hpp.html#a98182e0528c1276134d67e214a0a86ff">More...</a><br /></td></tr>
+<tr class="separator:a98182e0528c1276134d67e214a0a86ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ff5c2f960e1c25955a69d8df10d706f"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::ranges::range R, typename Derived , LieGroup G = std::ranges::range_value_t&lt;R&gt;&gt; </td></tr>
+<tr class="memitem:a7ff5c2f960e1c25955a69d8df10d706f"><td class="memTemplItemLeft" align="right" valign="top">G&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a7ff5c2f960e1c25955a69d8df10d706f">smooth::cspline_eval</a> (R &amp;&amp;gs, const Eigen::MatrixBase&lt; Derived &gt; &amp;Bcum, Scalar&lt; G &gt; u, detail::OptTangent&lt; G &gt; vel={}, detail::OptTangent&lt; G &gt; acc={}, detail::OptJacobian&lt; G, K &gt; der={}) noexcept</td></tr>
+<tr class="memdesc:a7ff5c2f960e1c25955a69d8df10d706f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate a cumulative basis spline of order K and calculate derivatives.  <a href="cumulative__spline_8hpp.html#a7ff5c2f960e1c25955a69d8df10d706f">More...</a><br /></td></tr>
+<tr class="separator:a7ff5c2f960e1c25955a69d8df10d706f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Evaluation of cumulative Lie group splines. </p>
 
 <p class="definition">Definition in file <a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a7b102e5ef70dd10ab86d0422f6f4b418"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7b102e5ef70dd10ab86d0422f6f4b418">&#9670;&nbsp;</a></span>cspline_eval()</h2>
+<a id="a7ff5c2f960e1c25955a69d8df10d706f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ff5c2f960e1c25955a69d8df10d706f">&#9670;&nbsp;</a></span>cspline_eval()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -170,7 +170,7 @@ template&lt;std::size_t K, std::ranges::range R, typename Derived , LieGroup G =
         <tr>
           <td class="memname">G smooth::cspline_eval </td>
           <td>(</td>
-          <td class="paramtype">const R &amp;&#160;</td>
+          <td class="paramtype">R &amp;&amp;&#160;</td>
           <td class="paramname"><em>gs</em>, </td>
         </tr>
         <tr>
@@ -239,12 +239,12 @@ template&lt;std::size_t K, std::ranges::range R, typename Derived , LieGroup G =
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="cumulative__spline_8hpp_source.html#l00179">179</a> of file <a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="cumulative__spline_8hpp_source.html#l00177">177</a> of file <a class="el" href="cumulative__spline_8hpp_source.html">cumulative_spline.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a8e3ab6ec9830bbf91d843461a32ff875"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e3ab6ec9830bbf91d843461a32ff875">&#9670;&nbsp;</a></span>cspline_eval_diff()</h2>
+<a id="a98182e0528c1276134d67e214a0a86ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98182e0528c1276134d67e214a0a86ff">&#9670;&nbsp;</a></span>cspline_eval_diff()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,7 +257,7 @@ template&lt;std::size_t K, LieGroup G, typename Derived &gt; </div>
         <tr>
           <td class="memname">G smooth::cspline_eval_diff </td>
           <td>(</td>
-          <td class="paramtype">const std::ranges::sized_range auto &amp;&#160;</td>
+          <td class="paramtype">std::ranges::sized_range auto &amp;&amp;&#160;</td>
           <td class="paramname"><em>diff_points</em>, </td>
         </tr>
         <tr>

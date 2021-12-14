@@ -81,10 +81,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Compile-time polynomial algebra.  
+<p>Compile-time polynomial manipulation.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;Eigen/Core&gt;</code><br />
-<code>#include &lt;cassert&gt;</code><br />
+<div class="textblock"><code>#include &lt;cassert&gt;</code><br />
 <code>#include &quot;<a class="el" href="manifold_8hpp_source.html">smooth/manifold.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="static__matrix_8hpp_source.html">static_matrix.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -92,20 +91,20 @@ Include dependency graph for basis.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="basis_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2polynomial_2basis_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2polynomial_2basis_8hpp" id="ainclude_2smooth_2polynomial_2basis_8hpp">
-<area shape="rect" title="Compile&#45;time polynomial algebra." alt="" coords="47,5,222,47"/>
-<area shape="rect" title=" " alt="" coords="5,169,91,196"/>
-<area shape="rect" title=" " alt="" coords="38,95,103,121"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="127,95,270,121"/>
-<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="295,95,415,121"/>
-<area shape="rect" title=" " alt="" coords="161,169,236,196"/>
-<area shape="rect" title=" " alt="" coords="263,244,313,271"/>
-<area shape="rect" title=" " alt="" coords="325,169,384,196"/>
-<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="408,169,571,196"/>
-<area shape="rect" title=" " alt="" coords="338,244,403,271"/>
-<area shape="rect" title=" " alt="" coords="427,244,506,271"/>
-<area shape="rect" title=" " alt="" coords="530,244,598,271"/>
-<area shape="rect" title=" " alt="" coords="623,244,684,271"/>
-<area shape="rect" title=" " alt="" coords="709,244,761,271"/>
+<area shape="rect" title="Compile&#45;time polynomial manipulation." alt="" coords="79,5,253,47"/>
+<area shape="rect" title=" " alt="" coords="5,95,71,121"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="95,95,237,121"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="262,95,382,121"/>
+<area shape="rect" title=" " alt="" coords="27,169,113,196"/>
+<area shape="rect" title=" " alt="" coords="137,169,211,196"/>
+<area shape="rect" title=" " alt="" coords="230,244,281,271"/>
+<area shape="rect" title=" " alt="" coords="293,169,351,196"/>
+<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="375,169,538,196"/>
+<area shape="rect" title=" " alt="" coords="305,244,371,271"/>
+<area shape="rect" title=" " alt="" coords="395,244,473,271"/>
+<area shape="rect" title=" " alt="" coords="497,244,565,271"/>
+<area shape="rect" title=" " alt="" coords="590,244,651,271"/>
+<area shape="rect" title=" " alt="" coords="676,244,728,271"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -113,7 +112,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="basis_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2polynomial_2basis_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2polynomial_2basis_8hppdep" id="ainclude_2smooth_2polynomial_2basis_8hppdep">
-<area shape="rect" title="Compile&#45;time polynomial algebra." alt="" coords="188,5,363,47"/>
+<area shape="rect" title="Compile&#45;time polynomial manipulation." alt="" coords="188,5,363,47"/>
 <area shape="rect" href="quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,95,180,136"/>
 <area shape="rect" href="bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="172,184,320,225"/>
 <area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="255,95,410,136"/>
@@ -149,10 +148,6 @@ Functions</h2></td></tr>
 <tr class="memitem:aa3e33330a219dca897f61abb5f4a0513"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, 1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#aa3e33330a219dca897f61abb5f4a0513">smooth::monomial_derivative</a> (Scalar u, std::size_t p=0)</td></tr>
 <tr class="memdesc:aa3e33330a219dca897f61abb5f4a0513"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monomial derivative (compile-time version).  <a href="basis_8hpp.html#aa3e33330a219dca897f61abb5f4a0513">More...</a><br /></td></tr>
 <tr class="separator:aa3e33330a219dca897f61abb5f4a0513"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36cf7cdc7afbbbc9447e8f07e40fe3c5"><td class="memTemplParams" colspan="2">template&lt;typename Scalar &gt; </td></tr>
-<tr class="memitem:a36cf7cdc7afbbbc9447e8f07e40fe3c5"><td class="memTemplItemLeft" align="right" valign="top">Eigen::RowVectorX&lt; Scalar &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a36cf7cdc7afbbbc9447e8f07e40fe3c5">smooth::monomial_derivative_runtime</a> (Scalar u, std::size_t k, std::size_t p=0)</td></tr>
-<tr class="memdesc:a36cf7cdc7afbbbc9447e8f07e40fe3c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monomial derivative (runtime version).  <a href="basis_8hpp.html#a36cf7cdc7afbbbc9447e8f07e40fe3c5">More...</a><br /></td></tr>
-<tr class="separator:a36cf7cdc7afbbbc9447e8f07e40fe3c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af997ececfe865f59573128da8958bb18"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t P, typename Scalar &gt; </td></tr>
 <tr class="memitem:af997ececfe865f59573128da8958bb18"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, P+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#af997ececfe865f59573128da8958bb18">smooth::monomial_derivatives</a> (Scalar u)</td></tr>
 <tr class="memdesc:af997ececfe865f59573128da8958bb18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monomial derivatives up to order.  <a href="basis_8hpp.html#af997ececfe865f59573128da8958bb18">More...</a><br /></td></tr>
@@ -197,16 +192,12 @@ Functions</h2></td></tr>
 <tr class="memitem:abe822a69db4a4aea8975cc754409c4e5"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#abe822a69db4a4aea8975cc754409c4e5">smooth::monomial_integral</a> ()</td></tr>
 <tr class="memdesc:abe822a69db4a4aea8975cc754409c4e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate integral over matrix of squared monomial P-derivatives.  <a href="basis_8hpp.html#abe822a69db4a4aea8975cc754409c4e5">More...</a><br /></td></tr>
 <tr class="separator:abe822a69db4a4aea8975cc754409c4e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8f71e65b5701858fa8ce85614e21814"><td class="memTemplParams" colspan="2">template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar , std::ranges::range R&gt; </td></tr>
-<tr class="memitem:aa8f71e65b5701858fa8ce85614e21814"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#aa8f71e65b5701858fa8ce85614e21814">smooth::evaluate_polynomial</a> (const R &amp;x, const Scalar &amp;u, int p=0)</td></tr>
-<tr class="memdesc:aa8f71e65b5701858fa8ce85614e21814"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate the p:th derivative of a degree K polynomial in a given basis.  <a href="basis_8hpp.html#aa8f71e65b5701858fa8ce85614e21814">More...</a><br /></td></tr>
-<tr class="separator:aa8f71e65b5701858fa8ce85614e21814"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d68b47de10384a793f2cf6fa70d020c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a0d68b47de10384a793f2cf6fa70d020c">smooth::integrate_absolute_polynomial</a> (double t0, double t1, double A, double B, double C)</td></tr>
-<tr class="memdesc:a0d68b47de10384a793f2cf6fa70d020c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate the absolute value of a quadratic 1D polynomial.  <a href="basis_8hpp.html#a0d68b47de10384a793f2cf6fa70d020c">More...</a><br /></td></tr>
-<tr class="separator:a0d68b47de10384a793f2cf6fa70d020c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a443abbfadd4bc4bc551e86736338c1cf"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a443abbfadd4bc4bc551e86736338c1cf">smooth::integrate_absolute_polynomial</a> (double t0, double t1, double A, double B, double C)</td></tr>
+<tr class="memdesc:a443abbfadd4bc4bc551e86736338c1cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate the absolute value of a quadratic 1D polynomial.  <a href="basis_8hpp.html#a443abbfadd4bc4bc551e86736338c1cf">More...</a><br /></td></tr>
+<tr class="separator:a443abbfadd4bc4bc551e86736338c1cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Compile-time polynomial algebra. </p>
+<div class="textblock"><p>Compile-time polynomial manipulation. </p>
 
 <p class="definition">Definition in file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
@@ -250,7 +241,7 @@ Functions</h2></td></tr>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00290">290</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00256">256</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -288,7 +279,7 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00168">168</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00134">134</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -325,68 +316,7 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00133">133</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
-
-</div>
-</div>
-<a id="aa8f71e65b5701858fa8ce85614e21814"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8f71e65b5701858fa8ce85614e21814">&#9670;&nbsp;</a></span>evaluate_polynomial()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar , std::ranges::range R&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">auto smooth::evaluate_polynomial </td>
-          <td>(</td>
-          <td class="paramtype">const R &amp;&#160;</td>
-          <td class="paramname"><em>x</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &amp;&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>p</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Evaluate the p:th derivative of a degree K polynomial in a given basis. </p>
-<p>A polynomial has the form </p><p class="formulaDsp">
-\[ f(u) = \sum_{\nu=0}^K x_\nu b_{\nu, K}(u), \]
-</p>
-<p> where \( \{ b_{\nu, K} \} \) is a polynomial basis of order \(K\).</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Basis</td><td>polynomial basis </td></tr>
-    <tr><td class="paramname">K</td><td>polynomial degree </td></tr>
-    <tr><td class="paramname">Scalar</td><td>scalar type </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">x</td><td>polynomial coefficients (scalar or eigen type, must be of size K+1) </td></tr>
-    <tr><td class="paramname">u</td><td>point to evaluate polynomial at </td></tr>
-    <tr><td class="paramname">p</td><td>differentiation order </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>the p:th derivative of f at u </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00506">506</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00099">99</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -423,12 +353,12 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00202">202</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00168">168</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a0d68b47de10384a793f2cf6fa70d020c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d68b47de10384a793f2cf6fa70d020c">&#9670;&nbsp;</a></span>integrate_absolute_polynomial()</h2>
+<a id="a443abbfadd4bc4bc551e86736338c1cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a443abbfadd4bc4bc551e86736338c1cf">&#9670;&nbsp;</a></span>integrate_absolute_polynomial()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -437,7 +367,7 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double smooth::integrate_absolute_polynomial </td>
+          <td class="memname">constexpr double smooth::integrate_absolute_polynomial </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>t0</em>, </td>
@@ -474,7 +404,7 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -484,7 +414,7 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
 \[ \int_{t_0}^{t_1} \left| At^2 + Bt + C \right| \mathrm{d} t. \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00538">538</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00463">463</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -544,7 +474,7 @@ The Chebyshev polynomials of the first kind correspond to \( \alpha = \beta = -1
 <dd>
 The Chebyshev polynomials of the second kind correspond to \( \alpha = \beta = 1/2 \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00259">259</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00225">225</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -595,7 +525,7 @@ template&lt;std::size_t K, std::ranges::random_access_range R, typename Scalar  
 \[ p_i(t) = \prod_{j \in [0,K], j \neq i} \frac{t - t_j}{t_i - t_j}. \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00381">381</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00347">347</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -632,7 +562,7 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00223">223</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00189">189</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -689,62 +619,7 @@ template&lt;std::size_t K, typename Scalar &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>row vector U of size K+1 s.t. \( U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00053">53</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a36cf7cdc7afbbbc9447e8f07e40fe3c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36cf7cdc7afbbbc9447e8f07e40fe3c5">&#9670;&nbsp;</a></span>monomial_derivative_runtime()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Scalar &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Eigen::RowVectorX&lt;Scalar&gt; smooth::monomial_derivative_runtime </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>&#160;</td>
-          <td class="paramname"><em>u</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::size_t&#160;</td>
-          <td class="paramname"><em>k</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::size_t&#160;</td>
-          <td class="paramname"><em>p</em> = <code>0</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Monomial derivative (runtime version). </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Scalar</td><td>scalar type </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">u</td><td>monomial parameter </td></tr>
-    <tr><td class="paramname">k</td><td>maximal monomial degree </td></tr>
-    <tr><td class="paramname">p</td><td>differentiation order </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>row vector U of size k+1 s.t. \( U_k = \frac{\mathrm{d}^p}{\mathrm{d}u^p} u^k \) </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00084">84</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00051">51</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -792,7 +667,7 @@ template&lt;std::size_t K, std::size_t P, typename Scalar &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>matrix </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00119">119</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00085">85</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -832,7 +707,7 @@ template&lt;std::size_t K, std::size_t P, typename Scalar  = double&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>K+1 x K+1 matrix M s.t. M(i, j) = ∫ (d^P/du^P) u^i * (d^P/dx^P) u^j) du, u: 0 -&gt; 1 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00469">469</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00435">435</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -869,7 +744,7 @@ template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar  = double&gt; 
 \[ p(x) = \begin{bmatrix} 1 &amp; x &amp; \cdots &amp; x^K \end{bmatrix} B \begin{bmatrix} \beta_0 \\ \vdots \\ \beta_K \end{bmatrix}. \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00325">325</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00291">291</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -926,7 +801,7 @@ template&lt;std::size_t K, std::size_t N, typename Scalar , std::ranges::sized_r
 </dl>
 <p>Computes a matrix D s.t. \( D_{i,j} = \frac{\mathrm{d}}{\mathrm{d}t} p_i(t_j) \) where \( p_i \) are basis polynomials defined by B. </p>
 
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00416">416</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00382">382</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
@@ -970,7 +845,7 @@ template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar  = double&gt; 
 \[ p(x) = \begin{bmatrix} 1 &amp; x &amp; \ldots &amp; x^K \end{bmatrix} B \begin{bmatrix} \tilde \beta_0 \\ \vdots \\ \tilde \beta_K \end{bmatrix} \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00451">451</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basis_8hpp_source.html#l00417">417</a> of file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 
 </div>
 </div>
