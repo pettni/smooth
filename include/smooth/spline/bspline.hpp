@@ -116,17 +116,17 @@ public:
   /**
    * @brief Distance between knots
    */
-  double dt() const { return dt_; }
+  [[nodiscard]] double dt() const { return dt_; }
 
   /**
    * @brief Minimal time for which spline is defined.
    */
-  double t_min() const { return t0_; }
+  [[nodiscard]] double t_min() const { return t0_; }
 
   /**
    * @brief Maximal time for which spline is defined.
    */
-  double t_max() const { return t0_ + (ctrl_pts_.size() - K) * dt_; }
+  [[nodiscard]] double t_max() const { return t0_ + (ctrl_pts_.size() - K) * dt_; }
 
   /**
    * @brief Access spline control points.
@@ -171,7 +171,7 @@ public:
       ctrl_pts_
         | std::views::drop(istar)
         | std::views::take(int64_t(K + 1))  // gcc 11.1 bug can't handle uint64_t
-        | std::views::transform([](const auto & g) -> CastT<S, G> { return cast<S>(g); }),
+        | std::views::transform([](const auto & g) { return cast<S>(g); }),
       // clang-format on
       B_.template cast<S>(),
       u,

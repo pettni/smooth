@@ -26,9 +26,9 @@ void diff()
 
   // Now J == [J1, J2]
 
-  std::cout << J << std::endl;
-  std::cout << J1 << std::endl;
-  std::cout << J2 << std::endl;
+  std::cout << J << '\n';
+  std::cout << J1 << '\n';
+  std::cout << J2 << '\n';
 }
 
 void optim()
@@ -45,16 +45,16 @@ void optim()
   smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
 
   // Now g1 == g2.inverse()
-  std::cout << g1 << std::endl;
-  std::cout << g2 << std::endl;
+  std::cout << g1 << '\n';
+  std::cout << g2 << '\n';
 }
 
 int main()
 {
-  std::cout << "RUNNING DIFF" << std::endl;
+  std::cout << "RUNNING DIFF" << '\n';
   diff();
 
-  std::cout << "RUNNING OPTIM" << std::endl;
+  std::cout << "RUNNING OPTIM" << '\n';
   optim();
 
   return EXIT_SUCCESS;

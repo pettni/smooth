@@ -174,20 +174,25 @@ public:
 
     const Scalar th2 = a.template tail<3>().squaredNorm();
 
-    Scalar A, B, C;
-    if (th2 < Scalar(eps2)) {
-      // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x%29+%2F+x%5E3+at+x%3D0
-      A = Scalar(1) / Scalar(6) - th2 / Scalar(120);
-      // https://www.wolframalpha.com/input/?i=series+%28cos+x+-+1+%2B+x%5E2%2F2%29+%2F+x%5E4+at+x%3D0
-      B = Scalar(1) / Scalar(24) - th2 / Scalar(720);
-      // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x+-+x%5E3%2F6%29+%2F+x%5E5+at+x%3D0
-      C = -Scalar(1) / Scalar(120) + th2 / Scalar(5040);
-    } else {
-      const Scalar th = sqrt(th2), th_4 = th2 * th2, cTh = cos(th), sTh = sin(th);
-      A = (th - sTh) / (th * th2);
-      B = (cTh - Scalar(1) + th2 / Scalar(2)) / th_4;
-      C = (th - sTh - th * th2 / Scalar(6)) / (th_4 * th);
-    }
+    const auto [A, B, C] = [&]() -> std::array<Scalar, 3> {
+      if (th2 < Scalar(eps2)) {
+        return {
+          // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x%29+%2F+x%5E3+at+x%3D0
+          Scalar(1) / Scalar(6) - th2 / Scalar(120),
+          // https://www.wolframalpha.com/input/?i=series+%28cos+x+-+1+%2B+x%5E2%2F2%29+%2F+x%5E4+at+x%3D0
+          Scalar(1) / Scalar(24) - th2 / Scalar(720),
+          // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x+-+x%5E3%2F6%29+%2F+x%5E5+at+x%3D0
+          -Scalar(1) / Scalar(120) + th2 / Scalar(5040),
+        };
+      } else {
+        const Scalar th = sqrt(th2), th_4 = th2 * th2, cTh = cos(th), sTh = sin(th);
+        return {
+          (th - sTh) / (th * th2),
+          (cTh - Scalar(1) + th2 / Scalar(2)) / th_4,
+          (th - sTh - th * th2 / Scalar(6)) / (th_4 * th),
+        };
+      }
+    }();
 
     Eigen::Matrix<Scalar, 3, 3> V, W;
     SO3Impl<Scalar>::hat(a.template head<3>(), V);

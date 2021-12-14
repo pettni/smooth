@@ -70,7 +70,7 @@ using OptJacobian =
  */
 template<std::size_t K, LieGroup G, typename Derived>
 inline G cspline_eval_diff(
-  const std::ranges::sized_range auto & diff_points,
+  std::ranges::sized_range auto && diff_points,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
@@ -94,7 +94,7 @@ inline G cspline_eval_diff(
 
   G g = Identity<G>(xdof);
 
-  for (auto j = 1u; const auto & v : diff_points) {
+  for (const auto & [j, v] : utils::zip(std::views::iota(1u), diff_points)) {
     const Scalar<G> Btilde = uvec.dot(Bcum.col(j));
 
     const G exp_Bt_v = ::smooth::exp<G>(Btilde * v);
@@ -117,8 +117,6 @@ inline G cspline_eval_diff(
         acc.value().noalias() += d2Btilde * v;
       }
     }
-
-    ++j;
   }
 
   if (der.has_value()) {
@@ -126,8 +124,8 @@ inline G cspline_eval_diff(
 
     G z2inv = Identity<G>(xdof);
 
-    for (auto jrev = 0u; jrev <= K; ++jrev) {
-      const auto j = K - jrev;  // j: K -> 0
+    for (const auto j : std::views::iota(0u, K + 1) | std::views::reverse) {
+      // j : K -> 0 (inclusive)
 
       if (j != K) {
         const Scalar<G> Btilde_jp = uvec.dot(Bcum.col(j + 1));
@@ -177,7 +175,7 @@ template<
   typename Derived,
   LieGroup G = std::ranges::range_value_t<R>>
 inline G cspline_eval(
-  const R & gs,
+  R && gs,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
@@ -186,10 +184,8 @@ inline G cspline_eval(
 {
   assert(std::ranges::size(gs) == K + 1);
 
-  auto b1 = std::ranges::cbegin(gs);
-  auto b2 = std::ranges::cbegin(gs) + 1;
-  std::array<Tangent<G>, K> diff_pts;
-  for (auto i = 0u; i != K; ++i) { diff_pts[i] = rminus(*b2++, *b1++); }
+  constexpr auto sub  = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
+  const auto diff_pts = gs | utils::views::pairwise_transform(sub);
 
   return composition(
     *std::ranges::begin(gs), cspline_eval_diff<K, G>(diff_pts, Bcum, u, vel, acc, der));

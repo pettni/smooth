@@ -50,6 +50,8 @@ namespace smooth {
  * @param end_vel target value for \f$ s'(t_{max}) \f$ (must be non-negative).
  * @param N partition size. A larger value implies smaller bound violations.
  *
+ * @note Allocates heap memory.
+ *
  * @note For best results the input spline should be twice continously differentiable.
  *
  * @note It may not be feasible to satisfy the target boundary velocities. In those cases the
@@ -61,9 +63,9 @@ Spline<2, double> reparameterize_spline(
   const auto & vel_max,
   const auto & acc_min,
   const auto & acc_max,
-  double start_vel    = 1,
-  double end_vel      = std::numeric_limits<double>::infinity(),
-  const std::size_t N = 100)
+  const double start_vel = 1,
+  const double end_vel   = std::numeric_limits<double>::infinity(),
+  const std::size_t N    = 100)
 {
   using G = std::invoke_result_t<decltype(spline), double>;
 
@@ -93,57 +95,58 @@ Spline<2, double> reparameterize_spline(
   Eigen::VectorXd v2max(N + 1);
   v2max(N) = end_vel * end_vel;
 
-  for (auto i = 0u; i < N + 1; ++i) {
-    const auto Nmi = N - i;  // iterating backwards
-
+  for (const auto i : std::views::iota(0u, N + 1) | std::views::reverse) {
+    // i : N -> 0
     Tangent<G> vel, acc;
-    spline(s0 + ds * Nmi, vel, acc);
+    spline(s0 + ds * i, vel, acc);
 
-    if (Nmi + 1 < N + 1) {
+    if (i + 1 < N + 1) {
       // APPROACH 1 (exact): Solve linear program in y = v^2
       //
       //  max   y
-      //  s.t.                   y - 2 ds a         \leq y(Nmi + 1)    [1]
+      //  s.t.                   y - 2 ds a         \leq y(i + 1)    [1]
       //        vel_min.^2  \leq vel.^2 y           \leq vel_max.^2    [2]
       //        acc_min     \leq acc * y + vel * a  \leq acc_max       [3]
       //
-      // and use acceleration a at Nmi
+      // and use acceleration a at i
       //
       // TODO: implement, use lp2d, and evaluate
 
-      // APPROACH 2 (approximate): calculate constraints from Nmi + 1 and apply them at Nmi
+      // APPROACH 2 (approximate): calculate constraints from i + 1 and apply them at i
 
-      // figure minimal allowed acceleration at Nmi + 1
-      double a = -inf;
-      if (vel.cwiseAbs().maxCoeff() > eps) {
-        const Tangent<G> upper = (acc_max - acc * v2max(Nmi + 1)).cwiseMax(Tangent<G>::Zero());
-        const Tangent<G> lower = (acc_min - acc * v2max(Nmi + 1)).cwiseMin(Tangent<G>::Zero());
+      // figure minimal allowed acceleration at i + 1
+
+      const double a = [&]() {
+        const Tangent<G> upper = (acc_max - acc * v2max(i + 1)).cwiseMax(Tangent<G>::Zero());
+        const Tangent<G> lower = (acc_min - acc * v2max(i + 1)).cwiseMin(Tangent<G>::Zero());
+        double ret             = -inf;
         for (auto j = 0u; j != Dof<G>; ++j) {
           if (vel(j) > eps) {
-            a = std::max<double>(a, lower(j) / vel(j));
+            ret = std::max<double>(ret, lower(j) / vel(j));
           } else if (vel(j) < -eps) {
-            a = std::max<double>(a, upper(j) / vel(j));
+            ret = std::max<double>(ret, upper(j) / vel(j));
           }
         }
-      }
+        return ret;
+      }();
 
-      // maximal allowed velocity at Nmi
-      v2max(Nmi) = v2max(Nmi + 1) - 2 * ds * a;
+      // maximal allowed velocity at i
+      v2max(i) = v2max(i + 1) - 2 * ds * a;
     }
 
     // clamp velocity to not exceed constraints
-    for (auto j = 0u; j != Dof<G>; ++j) {
+    for (const auto j : std::views::iota(0, Dof<G>)) {
       if (vel(j) > eps) {
-        v2max(Nmi) = std::min<double>(v2max(Nmi), sq(vel_max(j) / vel(j)));
+        v2max(i) = std::min<double>(v2max(i), sq(vel_max(j) / vel(j)));
       } else if (vel(j) < -eps) {
-        v2max(Nmi) = std::min<double>(v2max(Nmi), sq(vel_min(j) / vel(j)));
+        v2max(i) = std::min<double>(v2max(i), sq(vel_min(j) / vel(j)));
       }
 
       // this ensures that a = 0 is feasible
       if (acc(j) > eps) {
-        v2max(Nmi) = std::min<double>(v2max(Nmi), acc_max(j) / acc(j));
+        v2max(i) = std::min<double>(v2max(i), acc_max(j) / acc(j));
       } else if (acc(j) < -eps) {
-        v2max(Nmi) = std::min<double>(v2max(Nmi), acc_min(j) / acc(j));
+        v2max(i) = std::min<double>(v2max(i), acc_min(j) / acc(j));
       }
     }
   }
@@ -156,7 +159,7 @@ Spline<2, double> reparameterize_spline(
   // "current" squared velocity
   double v2m = std::min(start_vel * start_vel, v2max(0));
 
-  for (auto i = 0u; i < N; ++i) {
+  for (const auto i : std::views::iota(0u, N)) {
     const double si = s0 + ds * i;
 
     Tangent<G> vel, acc;
@@ -167,19 +170,21 @@ Spline<2, double> reparameterize_spline(
     const double vi  = std::sqrt(vi2);
 
     // figure maximal allowed acceleration at (si, vi)
-    double ai              = inf;
-    const Tangent<G> upper = (acc_max - acc * vi2).cwiseMax(Tangent<G>::Zero());
-    const Tangent<G> lower = (acc_min - acc * vi2).cwiseMin(Tangent<G>::Zero());
-    for (auto j = 0u; j != Dof<G>; ++j) {
-      if (vel(j) > eps) {
-        ai = std::min<double>(ai, upper(j) / vel(j));
-      } else if (vel(j) < -eps) {
-        ai = std::min<double>(ai, lower(j) / vel(j));
+    const double ai = [&]() {
+      double ret             = inf;
+      const Tangent<G> upper = (acc_max - acc * vi2).cwiseMax(Tangent<G>::Zero());
+      const Tangent<G> lower = (acc_min - acc * vi2).cwiseMin(Tangent<G>::Zero());
+      for (const auto j : std::views::iota(0, Dof<G>)) {
+        if (vel(j) > eps) {
+          ret = std::min<double>(ret, upper(j) / vel(j));
+        } else if (vel(j) < -eps) {
+          ret = std::min<double>(ret, lower(j) / vel(j));
+        }
       }
-    }
-
-    // do not exceed velocity at next step
-    ai = std::min<double>(ai, (v2max(i + 1) - vi2) / (2 * ds));
+      // do not exceed velocity at next step
+      ret = std::min<double>(ret, (v2max(i + 1) - vi2) / (2 * ds));
+      return ret;
+    }();
 
     if (ai != inf) {
       const double dt = std::abs(ai) < eps
@@ -190,7 +195,7 @@ Spline<2, double> reparameterize_spline(
       ret.concat_global(Spline<2, double>{
         dt,
         Eigen::Vector2d{dt * vi / 2, dt * (dt * ai + vi) / 2},
-        s0 + i * ds,
+        si,
       });
 
       // update squared velocity with value at end of new segment

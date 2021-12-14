@@ -122,65 +122,6 @@ TEST(Polynomial, MonomialDerivativeVec)
   }
 }
 
-TEST(Polynomial, MonomialDerivativeRuntime)
-{
-  double u = 0.5;
-
-  {
-    auto c = smooth::monomial_derivative_runtime(u, 4, 0);
-    ASSERT_DOUBLE_EQ(c[0], 1);
-    ASSERT_DOUBLE_EQ(c[1], u);
-    ASSERT_DOUBLE_EQ(c[2], u * u);
-    ASSERT_DOUBLE_EQ(c[3], u * u * u);
-    ASSERT_DOUBLE_EQ(c[4], u * u * u * u);
-  }
-
-  {
-    auto c = smooth::monomial_derivative_runtime(u, 4, 1);
-    ASSERT_DOUBLE_EQ(c[0], 0);
-    ASSERT_DOUBLE_EQ(c[1], 1);
-    ASSERT_DOUBLE_EQ(c[2], 2 * u);
-    ASSERT_DOUBLE_EQ(c[3], 3 * u * u);
-    ASSERT_DOUBLE_EQ(c[4], 4 * u * u * u);
-  }
-
-  {
-    auto c = smooth::monomial_derivative_runtime(u, 4, 2);
-    ASSERT_DOUBLE_EQ(c[0], 0);
-    ASSERT_DOUBLE_EQ(c[1], 0);
-    ASSERT_DOUBLE_EQ(c[2], 2);
-    ASSERT_DOUBLE_EQ(c[3], 3 * 2 * u);
-    ASSERT_DOUBLE_EQ(c[4], 4 * 3 * u * u);
-  }
-
-  {
-    auto c = smooth::monomial_derivative_runtime(u, 4, 3);
-    ASSERT_DOUBLE_EQ(c[0], 0);
-    ASSERT_DOUBLE_EQ(c[1], 0);
-    ASSERT_DOUBLE_EQ(c[2], 0);
-    ASSERT_DOUBLE_EQ(c[3], 3 * 2);
-    ASSERT_DOUBLE_EQ(c[4], 4 * 3 * 2 * u);
-  }
-
-  {
-    auto c = smooth::monomial_derivative_runtime(u, 4, 4);
-    ASSERT_DOUBLE_EQ(c[0], 0);
-    ASSERT_DOUBLE_EQ(c[1], 0);
-    ASSERT_DOUBLE_EQ(c[2], 0);
-    ASSERT_DOUBLE_EQ(c[3], 0);
-    ASSERT_DOUBLE_EQ(c[4], 4 * 3 * 2);
-  }
-
-  {
-    auto c = smooth::monomial_derivative_runtime(u, 4, 5);
-    ASSERT_DOUBLE_EQ(c[0], 0);
-    ASSERT_DOUBLE_EQ(c[1], 0);
-    ASSERT_DOUBLE_EQ(c[2], 0);
-    ASSERT_DOUBLE_EQ(c[3], 0);
-    ASSERT_DOUBLE_EQ(c[4], 0);
-  }
-}
-
 TEST(Polynomial, Coefmat)
 {
   constexpr auto c0 = smooth::monomial_integral<4, 0>();

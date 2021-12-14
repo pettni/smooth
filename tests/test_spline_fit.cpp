@@ -28,41 +28,6 @@
 #include "smooth/so3.hpp"
 #include "smooth/spline/fit.hpp"
 
-TEST(SplineFit, OneDim)
-{
-  static constexpr auto K = 6;
-  static constexpr auto B = smooth::PolynomialBasis::Bernstein;
-
-  const std::vector<double> dtvec{1, 3};
-  const std::vector<double> dxvec{1, 2};
-
-  smooth::spline_specs::MinDerivative<double, K, 3> ss{};
-
-  const auto coefs = smooth::fit_spline_1d(dtvec, dxvec, ss);
-
-  double f1_0  = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 0.);
-  double df1_0 = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 0., 1) / dtvec[0];
-
-  double f1_1  = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 1.);
-  double df1_1 = smooth::evaluate_polynomial<B, K>(coefs.segment(0, K + 1), 1., 1) / dtvec[0];
-
-  double f2_0  = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 0.);
-  double df2_0 = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 0., 1) / dtvec[1];
-
-  double f2_1  = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 1.);
-  double df2_1 = smooth::evaluate_polynomial<B, K>(coefs.segment(K + 1, K + 1), 1., 1) / dtvec[1];
-
-  ASSERT_NEAR(f1_0, 0, 1e-4);
-  ASSERT_NEAR(f1_1, dxvec[0], 1e-4);
-
-  ASSERT_NEAR(f2_0, 0, 1e-4);
-  ASSERT_NEAR(f2_1, dxvec[1], 1e-4);
-
-  ASSERT_NEAR(df1_0, 0, 1e-4);
-  ASSERT_NEAR(df1_1, df2_0, 1e-4);
-  ASSERT_NEAR(df2_1, 0, 1e-4);
-}
-
 TEST(SplineFit, MinJerk5)
 {
   static constexpr auto K = 5;

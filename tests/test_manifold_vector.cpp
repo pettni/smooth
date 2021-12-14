@@ -106,6 +106,6 @@ TEST(ManifoldVector, print)
   m.push_back(smooth::SO3d::Random());
 
   std::stringstream ss;
-  ss << m << std::endl;
+  ss << m << '\n';
   ASSERT_GE(ss.str().size(), 0);
 }

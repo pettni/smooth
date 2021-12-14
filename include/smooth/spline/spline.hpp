@@ -69,8 +69,8 @@ public:
    * @param V velocities for segment
    * @param ga Spline starting point (defaults to identity)
    */
-  Spline(double T, Eigen::Matrix<double, Dof<G>, K> && V, const G & ga = Identity<G>())
-      : g0_{ga}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
+  Spline(double T, Eigen::Matrix<double, Dof<G>, K> && V, G && ga = Identity<G>())
+      : g0_{std::move(ga)}, end_t_{T}, Vs_{{std::move(V)}}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
 
@@ -91,7 +91,7 @@ public:
    */
   template<typename Derived>
   Spline(double T, const Eigen::MatrixBase<Derived> & V, const G & ga = Identity<G>())
-      : Spline(T, Eigen::Matrix<double, Dof<G>, K>(V), ga)
+      : Spline(T, Eigen::Matrix<double, Dof<G>, K>(V), G(ga))
   {}
 
   /**
@@ -199,10 +199,10 @@ public:
   }
 
   /// @brief Number of Spline segments.
-  std::size_t size() const { return end_t_.size(); }
+  [[nodiscard]] std::size_t size() const { return end_t_.size(); }
 
   /// @brief True if Spline has zero size()
-  bool empty() const { return size() == 0; }
+  [[nodiscard]] bool empty() const { return size() == 0; }
 
   /// @brief Allocate space for capacity segments
   void reserve(std::size_t capacity)
@@ -215,20 +215,20 @@ public:
   }
 
   /// @brief Start time of Spline (always equal to zero).
-  double t_min() const { return 0; }
+  [[nodiscard]] double t_min() const { return 0; }
 
   /// @brief End time of Spline.
-  double t_max() const
+  [[nodiscard]] double t_max() const
   {
     if (empty()) { return 0; }
     return end_t_.back();
   }
 
   /// @brief Spline start value (always equal to identity).
-  G start() const { return g0_; }
+  [[nodiscard]] G start() const { return g0_; }
 
   /// @brief Spline end value.
-  G end() const
+  [[nodiscard]] G end() const
   {
     if (empty()) { return g0_; }
     return end_g_.back();
@@ -419,7 +419,7 @@ public:
    *
    * @note This function is approximate for Lie groups with curvature.
    */
-  Tangent<G> arclength(double t) const requires(K == 3)
+  [[nodiscard]] Tangent<G> arclength(double t) const requires(K == 3)
   {
     Tangent<G> ret = Tangent<G>::Zero();
 
@@ -462,7 +462,7 @@ public:
    *  y(t) = x(t - t_a)
    * \f]
    */
-  Spline
+  [[nodiscard]] Spline
   crop(double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
   {
     ta = std::max<double>(ta, 0);
