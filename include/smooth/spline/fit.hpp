@@ -237,10 +237,12 @@ auto splinespec_project(const SS & ss, std::size_t k)
  * @note Allocates heap memory.
  */
 Eigen::VectorXd fit_spline_1d(
-  const std::ranges::sized_range auto & dt_r,
-  const std::ranges::sized_range auto & dx_r,
+  std::ranges::sized_range auto && dt_r,
+  std::ranges::sized_range auto && dx_r,
   const SplineSpec auto & ss)
 {
+  using namespace std::views;
+
   using SS = std::decay_t<decltype(ss)>;
 
   const std::size_t N = std::min(std::ranges::size(dt_r), std::ranges::size(dx_r));
@@ -300,7 +302,7 @@ Eigen::VectorXd fit_spline_1d(
   }
 
   // interval beg + end value constraint
-  for (const auto & [i, dx] : utils::zip(std::views::iota(0u), dx_r)) {
+  for (const auto & [i, dx] : utils::zip(iota(0u), dx_r)) {
     for (auto j = 0; j < K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U0tB(0, j); }
     b(M++) = 0;
     if (SS::InnCnt >= 0) {
@@ -309,12 +311,11 @@ Eigen::VectorXd fit_spline_1d(
     }
   }
 
-  // inner derivative continuity constraints  // TODO: use adjacent / zip
-  auto it_dt = std::ranges::begin(dt_r);
-  for (auto k = 0u; k + 1 < N; ++k, ++it_dt) {
+  // inner derivative continuity constraint
+  for (const auto & [k, dt, dt_next] : utils::zip(iota(0u, N-1), dt_r, dt_r | drop(1))) {
     for (auto d = 1; d <= SS::InnCnt; ++d) {
-      const double fac1 = 1. / std::pow(*it_dt, d);
-      const double fac2 = 1. / std::pow(*(std::next(it_dt, 1)), d);
+      const double fac1 = 1. / std::pow(dt, d);
+      const double fac2 = 1. / std::pow(dt_next, d);
       for (auto j = 0; j < K + 1; ++j) {
         A.insert(M, k * (K + 1) + j)       = U1tB(d, j) * fac1;
         A.insert(M, (k + 1) * (K + 1) + j) = -U0tB(d, j) * fac2;
@@ -375,8 +376,7 @@ Eigen::VectorXd fit_spline_1d(
 
     H.reserve(H_pattern);
 
-    for (const auto & [i, dt] :
-         utils::zip(std::views::iota(0u), dt_r | std::views::take(int64_t(N)))) {
+    for (const auto & [i, dt] : utils::zip(iota(0u), dt_r | take(int64_t(N)))) {
       const double fac = std::pow(dt, 1 - 2 * int(D));
       for (auto ki = 0u; ki != K + 1; ++ki) {
         for (auto kj = 0u; kj != K + 1; ++kj) {
@@ -415,11 +415,12 @@ Eigen::VectorXd fit_spline_1d(
  * @note Allocates heap memory.
  */
 auto fit_spline(
-  const std::ranges::random_access_range auto & ts,
-  const std::ranges::random_access_range auto & gs,
+  std::ranges::random_access_range auto && ts,
+  std::ranges::random_access_range auto && gs,
   const SplineSpec auto & ss)
 {
   using namespace std::views;
+
   using SS = std::decay_t<decltype(ss)>;
   using G  = PlainObject<std::ranges::range_value_t<std::decay_t<decltype(gs)>>>;
 
@@ -433,8 +434,8 @@ auto fit_spline(
   static constexpr auto sub     = [](const auto & x1, const auto & x2) { return x2 - x1; };
   static constexpr auto sub_lie = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
 
-  const auto dts = ts | utils::views::pairwise_transform(sub);
-  const auto dgs = gs | utils::views::pairwise_transform(sub_lie);
+  auto dts = ts | utils::views::pairwise_transform(sub);
+  auto dgs = gs | utils::views::pairwise_transform(sub_lie);
 
   Eigen::Matrix<double, Dof<G>, -1> V(Dof<G>, (N - 1) * (K + 1));
 
@@ -446,8 +447,7 @@ auto fit_spline(
   Spline<K, G> ret;
   ret.reserve(N);
 
-  for (const auto & [i, dt, g, g_next] :
-       utils::zip(std::views::iota(0u), dts, gs, gs | std::views::drop(1))) {
+  for (const auto & [i, dt, g, g_next] : utils::zip(iota(0u), dts, gs, gs | drop(1))) {
     // spline is in cumulative form, need to get cumulative coefficients
     Eigen::Matrix<double, Dof<G>, K> cum_coefs =
       V.template block<Dof<G>, K>(0, i * (K + 1) + 1) - V.template block<Dof<G>, K>(0, i * (K + 1));
@@ -484,10 +484,13 @@ auto fit_spline(
  *
  * @note Allocates heap memory.
  */
-auto fit_spline_cubic(const std::ranges::range auto & ts, const std::ranges::range auto & gs)
+auto fit_spline_cubic(std::ranges::range auto && ts, std::ranges::range auto && gs)
 {
   using G = std::ranges::range_value_t<std::decay_t<decltype(gs)>>;
-  return fit_spline(ts, gs, spline_specs::FixedDerCubic<G, 2, 2>{});
+  return fit_spline(
+    std::forward<decltype(ts)>(ts),
+    std::forward<decltype(gs)>(gs),
+    spline_specs::FixedDerCubic<G, 2, 2>{});
 }
 
 /**
@@ -506,8 +509,9 @@ auto fit_spline_cubic(const std::ranges::range auto & ts, const std::ranges::ran
  * @note Allocates heap memory.
  */
 template<std::size_t K>
-auto fit_bspline(const std::ranges::range auto & ts, const std::ranges::range auto & gs, double dt)
+auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, double dt)
 {
+  using namespace std::views;
   using G = PlainObject<std::ranges::range_value_t<std::decay_t<decltype(gs)>>>;
 
   assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());
@@ -530,14 +534,14 @@ auto fit_bspline(const std::ranges::range auto & ts, const std::ranges::range au
     Jac.resize(Dof<G> * NumData, Dof<G> * NumPts);
     Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(Dof<G> * NumData, Dof<G> * (K + 1)));
 
-    for (const auto & [i, t, g] : utils::zip(std::views::iota(0u), ts, gs)) {
+    for (const auto & [i, t, g] : utils::zip(iota(0u), ts, gs)) {
       const int64_t istar = static_cast<int64_t>((t - t0) / dt);
       const double u      = (t - t0 - istar * dt) / dt;
 
       Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_vali_pts;
       // gcc 11.1 bug can't handle uint64_t
-      auto g_spline = cspline_eval<K>(
-        var | std::views::drop(istar) | std::views::take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);
+      auto g_spline =
+        cspline_eval<K>(var | drop(istar) | take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);
 
       const Tangent<G> resi = rminus(g_spline, g);
 

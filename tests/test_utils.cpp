@@ -289,3 +289,29 @@ TEST(Utils, Zip4Iota)
     ASSERT_EQ(v3, vals3[i]);
   }
 }
+
+TEST(Utils, AdjacentDrop)
+{
+  const std::vector<double> vals1{1, 2.5, 5.5, 2.1, 5, 6, 7, 8, 10};
+
+  const auto fun1 = [](auto x) { return 2 * x; };
+  const auto fun2 = [](auto x, auto y) { return 2 * x + y; };
+
+  auto trans_view         = vals1 | std::views::transform(fun1) | std::views::drop(1);
+  const auto c_trans_view = vals1 | std::views::transform(fun1) | std::views::drop(1);
+
+  static_assert(std::ranges::range<decltype(trans_view)>);
+  static_assert(std::ranges::range<decltype(c_trans_view)>);
+
+  auto pw_view = vals1 | smooth::utils::views::pairwise_transform(fun2);
+  static_assert(std::ranges::range<decltype(pw_view)>);
+
+  const auto c_pw_view = vals1 | smooth::utils::views::pairwise_transform(fun2);
+  static_assert(std::ranges::range<decltype(c_pw_view)>);
+
+  auto pw_view_drop = pw_view | std::views::drop(1);
+  static_assert(std::ranges::range<decltype(pw_view_drop)>);
+
+  auto c_pw_view_drop = c_pw_view | std::views::drop(1);
+  static_assert(std::ranges::range<decltype(c_pw_view_drop)>);
+}

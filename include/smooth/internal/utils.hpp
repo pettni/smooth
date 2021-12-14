@@ -350,8 +350,9 @@ public:
       return x.its_ == y.its_;
     }
 
-    friend constexpr bool
-    operator==(const _Iterator & x, const std::tuple<std::ranges::sentinel_t<const View>...> & y)
+    friend constexpr bool operator==(
+      const _Iterator & x,
+      const std::tuple<std::ranges::sentinel_t<std::conditional_t<Const, const View, View>>...> & y)
     {
       return [&x, &y ]<std::size_t... Idx>(std::index_sequence<Idx...>)
       {
@@ -382,6 +383,8 @@ public:
     (std::make_index_sequence<sizeof...(View)>{});
   }
 
+  // some views only support mutable iteration (e.g. drop view over non-random access view). zip can
+  // only allow const iteration if all underlying views support it
   constexpr _Iterator<true> begin() const requires(std::ranges::range<const View> &&...)
   {
     return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
@@ -391,11 +394,23 @@ public:
     (std::make_index_sequence<sizeof...(View)>{});
   }
 
-  constexpr std::tuple<std::ranges::sentinel_t<const View>...> end() const
+  constexpr decltype(auto) end()
   {
     return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
     {
-      return std::make_tuple(std::ranges::end(std::get<Idx>(bases_))...);
+      return std::make_tuple<std::ranges::sentinel_t<View>...>(
+        std::ranges::end(std::get<Idx>(bases_))...);
+    }
+    (std::make_index_sequence<sizeof...(View)>{});
+  }
+
+  // see comment for const begin
+  constexpr decltype(auto) end() const requires(std::ranges::range<const View> &&...)
+  {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
+    {
+      return std::make_tuple<std::ranges::sentinel_t<const View>...>(
+        std::ranges::end(std::get<Idx>(bases_))...);
     }
     (std::make_index_sequence<sizeof...(View)>{});
   }
