@@ -116,17 +116,17 @@ public:
   /**
    * @brief Distance between knots
    */
-  double dt() const { return dt_; }
+  [[nodiscard]] double dt() const { return dt_; }
 
   /**
    * @brief Minimal time for which spline is defined.
    */
-  double t_min() const { return t0_; }
+  [[nodiscard]] double t_min() const { return t0_; }
 
   /**
    * @brief Maximal time for which spline is defined.
    */
-  double t_max() const { return t0_ + (ctrl_pts_.size() - K) * dt_; }
+  [[nodiscard]] double t_max() const { return t0_ + (ctrl_pts_.size() - K) * dt_; }
 
   /**
    * @brief Access spline control points.

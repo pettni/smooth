@@ -312,7 +312,7 @@ Eigen::VectorXd fit_spline_1d(
   }
 
   // inner derivative continuity constraint
-  for (const auto & [k, dt, dt_next] : utils::zip(iota(0u, N-1), dt_r, dt_r | drop(1))) {
+  for (const auto & [k, dt, dt_next] : utils::zip(iota(0u, N - 1), dt_r, dt_r | drop(1))) {
     for (auto d = 1; d <= SS::InnCnt; ++d) {
       const double fac1 = 1. / std::pow(dt, d);
       const double fac2 = 1. / std::pow(dt_next, d);
@@ -524,10 +524,10 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, d
   const std::size_t NumData = std::min(std::ranges::size(ts), std::ranges::size(gs));
   const std::size_t NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
 
-  constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
+  static constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
-  auto f = [&](const auto & var) {
+  const auto f = [&](const auto & var) {
     Eigen::VectorXd ret(Dof<G> * NumData);
 
     Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;

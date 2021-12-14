@@ -119,7 +119,7 @@ public:
   /**
    * @brief Construct the identity element.
    */
-  static PlainObject Identity() noexcept
+  [[nodiscard]] static PlainObject Identity() noexcept
   {
     PlainObject ret;
     ret.setIdentity();
@@ -131,7 +131,7 @@ public:
    *
    * Set the seed with \p std::srand(unsigned).
    */
-  static PlainObject Random() noexcept
+  [[nodiscard]] static PlainObject Random() noexcept
   {
     PlainObject ret;
     ret.setRandom();
@@ -165,7 +165,7 @@ public:
    * @brief Cast to different scalar type.
    */
   template<typename NewScalar>
-  CastT<NewScalar> cast() const noexcept
+  [[nodiscard]] CastT<NewScalar> cast() const noexcept
   {
     CastT<NewScalar> ret;
     ret.coeffs() = cderived().coeffs().template cast<NewScalar>();
@@ -199,7 +199,7 @@ public:
   /**
    * @brief Group inverse operation.
    */
-  PlainObject inverse() const noexcept
+  [[nodiscard]] PlainObject inverse() const noexcept
   {
     PlainObject ret;
     Impl::inverse(cderived().coeffs(), ret.coeffs());
@@ -211,7 +211,7 @@ public:
    *
    * @return tangent logarithm element.
    */
-  Tangent log() const noexcept
+  [[nodiscard]] Tangent log() const noexcept
   {
     Tangent ret;
     Impl::log(cderived().coeffs(), ret);

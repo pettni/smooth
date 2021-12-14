@@ -33,8 +33,6 @@
 #include "common.hpp"
 #include "smooth/internal/utils.hpp"
 
-using std::get;
-
 /**
  * @brief Bundle Lie group
  *
@@ -43,6 +41,8 @@ using std::get;
  * for Lie groups G1 ... Gk.
  */
 namespace smooth {
+
+using std::get;
 
 template<typename... GsImpl>
 struct BundleImpl
