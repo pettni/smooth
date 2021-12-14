@@ -116,13 +116,14 @@ public:
     const Scalar th2 = th * th;
 
     const Scalar B = th / Scalar(2);
-    Scalar A;
-    if (th2 < Scalar(eps2)) {
-      // https://www.wolframalpha.com/input/?i=series+x+%2F+tan+x+at+x%3D0
-      A = Scalar(1) - th2 / Scalar(12);
-    } else {
-      A = B / tan(B);
-    }
+    const auto A = [&]() -> Scalar {
+      if (th2 < Scalar(eps2)) {
+        // https://www.wolframalpha.com/input/?i=series+x+%2F+tan+x+at+x%3D0
+        return Scalar(1) - th2 / Scalar(12);
+      } else {
+        return B / tan(B);
+      }
+    }();
 
     Eigen::Matrix<Scalar, 2, 2> Sinv;
     Sinv(0, 0) = A;
@@ -151,16 +152,21 @@ public:
     const Scalar th  = a_in.z();
     const Scalar th2 = th * th;
 
-    Scalar A, B;
-    if (th2 < Scalar(eps2)) {
-      // https://www.wolframalpha.com/input/?i=series+sin+x+%2F+x+at+x%3D0
-      A = Scalar(1) - th2 / Scalar(6);
-      // https://www.wolframalpha.com/input/?i=series+%28cos+x+-+1%29+%2F+x+at+x%3D0
-      B = -th / Scalar(2) + th * th2 / Scalar(24);
-    } else {
-      A = sin(th) / th;
-      B = (cos(th) - Scalar(1)) / th;
-    }
+    const auto [A, B] = [&]() -> std::array<Scalar, 2> {
+      if (th2 < Scalar(eps2)) {
+        return {
+          // https://www.wolframalpha.com/input/?i=series+sin+x+%2F+x+at+x%3D0
+          Scalar(1) - th2 / Scalar(6),
+          // https://www.wolframalpha.com/input/?i=series+%28cos+x+-+1%29+%2F+x+at+x%3D0
+          -th / Scalar(2) + th * th2 / Scalar(24),
+        };
+      } else {
+        return {
+          sin(th) / th,
+          (cos(th) - Scalar(1)) / th,
+        };
+      }
+    }();
 
     Eigen::Matrix<Scalar, 2, 2> S;
     S(0, 0) = A;
@@ -200,17 +206,22 @@ public:
 
     const Scalar th2 = a_in.z() * a_in.z();
 
-    Scalar A, B;
-    if (th2 < Scalar(eps2)) {
-      // https://www.wolframalpha.com/input/?i=series+%281-cos+x%29+%2F+x%5E2+at+x%3D0
-      A = Scalar(1) / Scalar(2) - th2 / Scalar(24);
-      // https://www.wolframalpha.com/input/?i=series+%28x+-+sin%28x%29%29+%2F+x%5E3+at+x%3D0
-      B = Scalar(1) / Scalar(6) - th2 / Scalar(120);
-    } else {
-      const Scalar th = a_in.z();
-      A               = (Scalar(1) - cos(th)) / th2;
-      B               = (th - sin(th)) / (th2 * th);
-    }
+    const auto [A, B] = [&]() -> std::array<Scalar, 2> {
+      if (th2 < Scalar(eps2)) {
+        return {
+          // https://www.wolframalpha.com/input/?i=series+%281-cos+x%29+%2F+x%5E2+at+x%3D0
+          Scalar(1) / Scalar(2) - th2 / Scalar(24),
+          // https://www.wolframalpha.com/input/?i=series+%28x+-+sin%28x%29%29+%2F+x%5E3+at+x%3D0
+          Scalar(1) / Scalar(6) - th2 / Scalar(120),
+        };
+      } else {
+        const Scalar th = a_in.z();
+        return {
+          (Scalar(1) - cos(th)) / th2,
+          (th - sin(th)) / (th2 * th),
+        };
+      }
+    }();
 
     TangentMap ad_a;
     ad(a_in, ad_a);
@@ -225,13 +236,14 @@ public:
     const Scalar th  = a_in.z();
     const Scalar th2 = th * th;
 
-    Scalar A;
-    if (th2 < Scalar(eps2)) {
-      // https://www.wolframalpha.com/input/?i=series+1%2Fx%5E2+-+%281+%2B+cos+x%29+%2F+%282+*+x+*+sin+x%29+at+x%3D0
-      A = Scalar(1) / Scalar(12) + th2 / Scalar(720);
-    } else {
-      A = (Scalar(1) / th2) - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th));
-    }
+    const auto A = [&]() -> Scalar {
+      if (th2 < Scalar(eps2)) {
+        // https://www.wolframalpha.com/input/?i=series+1%2Fx%5E2+-+%281+%2B+cos+x%29+%2F+%282+*+x+*+sin+x%29+at+x%3D0
+        return Scalar(1) / Scalar(12) + th2 / Scalar(720);
+      } else {
+        return (Scalar(1) / th2) - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th));
+      }
+    }();
 
     TangentMap ad_a;
     ad(a_in, ad_a);
