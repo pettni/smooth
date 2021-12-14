@@ -509,17 +509,14 @@ auto fit_spline_cubic(std::ranges::range auto && ts, std::ranges::range auto && 
  * @note Allocates heap memory.
  */
 template<std::size_t K>
-auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, double dt)
+auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, const double dt)
 {
   using namespace std::views;
   using G = PlainObject<std::ranges::range_value_t<std::decay_t<decltype(gs)>>>;
 
   assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());
 
-  auto [tmin_ptr, tmax_ptr] = std::ranges::minmax_element(ts);
-
-  const double t0 = *tmin_ptr;
-  const double t1 = *tmax_ptr;
+  const auto [t0, t1] = std::ranges::minmax(ts);
 
   const std::size_t NumData = std::min(std::ranges::size(ts), std::ranges::size(gs));
   const std::size_t NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
@@ -527,7 +524,7 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, d
   static constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
   Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
 
-  const auto f = [&](const auto & var) {
+  const auto f = [&, t0 = t0, dt = dt](const auto & var) {
     Eigen::VectorXd ret(Dof<G> * NumData);
 
     Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;
@@ -559,7 +556,7 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, d
 
     Jac.makeCompressed();
 
-    return std::make_pair(std::move(ret), Eigen::MatrixXd(Jac));
+    return std::make_pair(std::move(ret), std::move(Jac));
   };
 
   // create optimization variable
@@ -579,10 +576,12 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, d
   }
 
   // fit to data with loose convergence criteria
-  MinimizeOptions opts;
-  opts.ftol     = 1e-3;
-  opts.ptol     = 1e-3;
-  opts.max_iter = 10;
+  const MinimizeOptions opts{
+    .ptol     = 1e-3,
+    .ftol     = 1e-3,
+    .max_iter = 10,
+    .verbose  = false,
+  };
   minimize<diff::Type::Analytic>(f, smooth::wrt(ctrl_pts), opts);
 
   return BSpline<K, G>(t0, dt, std::move(ctrl_pts));
