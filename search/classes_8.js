@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['pairwise_5ftransform_5fview_317',['pairwise_transform_view',['../classsmooth_1_1utils_1_1pairwise__transform__view.html',1,'smooth::utils']]],
-  ['pairwisetransform_318',['PairwiseTransform',['../structsmooth_1_1utils_1_1detail_1_1PairwiseTransform.html',1,'smooth::utils::detail']]],
-  ['pairwisetransformclosure_319',['PairwiseTransformClosure',['../structsmooth_1_1utils_1_1detail_1_1PairwiseTransformClosure.html',1,'smooth::utils::detail']]]
+  ['noconstraints_319',['NoConstraints',['../structsmooth_1_1spline__specs_1_1NoConstraints.html',1,'smooth::spline_specs']]]
 ];
