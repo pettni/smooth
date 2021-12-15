@@ -31,6 +31,7 @@
  * @brief Reparamterize a Spline to satisfy derivative constraints.
  */
 
+#include "lp2d.hpp"
 #include "spline.hpp"
 #include "traits.hpp"
 
@@ -81,7 +82,6 @@ Spline<2, double> reparameterize_spline(
   assert(acc_min.maxCoeff() < 0);
   assert(acc_max.minCoeff() > 0);
 
-  constexpr auto sq  = [](auto x) { return x * x; };
   constexpr auto eps = 1e-8;
   constexpr auto inf = std::numeric_limits<double>::infinity();
 
@@ -90,68 +90,80 @@ Spline<2, double> reparameterize_spline(
 
   const double ds = (sf - s0) / N;
 
-  // REVERSE PASS WITH MINIMAL ACCELERATION
+  // DETERMINE MAXIMAL FINAL REPARAMETERIZATION VELOCITY
 
   Eigen::VectorXd v2max(N + 1);
-  v2max(N) = end_vel * end_vel;
+  v2max(N) = [&]() {
+    double ret = end_vel * end_vel;
 
-  for (const auto i : std::views::iota(0u, N + 1) | std::views::reverse) {
-    // i : N -> 0
+    // ensure end velocity is feasible with zero acceleration
     Tangent<G> vel, acc;
-    spline(s0 + ds * i, vel, acc);
+    spline(sf, vel, acc);
 
-    if (i + 1 < N + 1) {
-      // APPROACH 1 (exact): Solve linear program in y = v^2
-      //
-      //  max   y
-      //  s.t.                   y - 2 ds a         \leq y(i + 1)    [1]
-      //        vel_min.^2  \leq vel.^2 y           \leq vel_max.^2    [2]
-      //        acc_min     \leq acc * y + vel * a  \leq acc_max       [3]
-      //
-      // and use acceleration a at i
-      //
-      // TODO: implement, use lp2d, and evaluate
+    for (auto j = 0u; j < Dof<G>; ++j) {
+      if (vel(j) > eps) {
+        ret = std::min<double>(ret, std::sqrt(vel_max(j) / vel(j)));
+        ret = std::min<double>(ret, acc_max(j) / vel(j));
+      } else if (vel(j) < -eps) {
+        ret = std::min<double>(ret, std::sqrt(vel_min(j) / vel(j)));
+        ret = std::min<double>(ret, acc_min(j) / vel(j));
+      }
+    }
+    return ret;
+  }();
 
-      // APPROACH 2 (approximate): calculate constraints from i + 1 and apply them at i
+  // REVERSE PASS WITH MINIMAL REPARAMETERIZATION ACCELERATION
 
-      // figure minimal allowed acceleration at i + 1
+  for (const auto i : std::views::iota(0u, N) | std::views::reverse) {
+    // i : N-1 -> 0 (inclusive)
+    const double si = s0 + ds * i;
 
-      const double a = [&]() {
-        const Tangent<G> upper = (acc_max - acc * v2max(i + 1)).cwiseMax(Tangent<G>::Zero());
-        const Tangent<G> lower = (acc_min - acc * v2max(i + 1)).cwiseMin(Tangent<G>::Zero());
-        double ret             = -inf;
-        for (auto j = 0u; j != Dof<G>; ++j) {
-          if (vel(j) > eps) {
-            ret = std::max<double>(ret, lower(j) / vel(j));
-          } else if (vel(j) < -eps) {
-            ret = std::max<double>(ret, upper(j) / vel(j));
-          }
-        }
-        return ret;
-      }();
+    Tangent<G> vel, acc;
+    spline(si, vel, acc);
 
-      // maximal allowed velocity at i
-      v2max(i) = v2max(i + 1) - 2 * ds * a;
+    // Solve 2d linear program in (y = v^2, a) to figure max velocity at si
+    //
+    //  max   y
+    //  s.t.                   y + 2 ds a         \leq y(i + 1)  [1]  (max velocity at s_{i+1})
+    //        vel_min     \leq vel y              \leq vel_max   [2]  (spline velocity bound)
+    //        acc_min     \leq acc * y + vel * a  \leq acc_max   [3]  (spline acceleration bound)
+    //
+    // and use acceleration a at i
+
+    std::array<std::array<double, 3>, 1 + 3 * Dof<G>> ineq;
+
+    // constraint [1]
+    ineq[0] = {1, 2 * ds, v2max(i + 1)};
+
+    // constraints [2]
+    for (auto j = 0u; j < Dof<G>; ++j) {
+      if (vel(j) > eps) {
+        ineq[1 + j] = {vel(j) * vel(j), 0, vel_max(j) * vel_max(j)};
+      } else if (vel(j) < -eps) {
+        ineq[1 + j] = {vel(j) * vel(j), 0, vel_min(j) * vel_min(j)};
+      } else {
+        ineq[1 + j].fill(0);
+      }
     }
 
-    // clamp velocity to not exceed constraints
-    for (const auto j : std::views::iota(0, Dof<G>)) {
-      if (vel(j) > eps) {
-        v2max(i) = std::min<double>(v2max(i), sq(vel_max(j) / vel(j)));
-      } else if (vel(j) < -eps) {
-        v2max(i) = std::min<double>(v2max(i), sq(vel_min(j) / vel(j)));
-      }
+    // constraints [3]
+    for (auto j = 0u; j < Dof<G>; ++j) {
+      ineq[1 + Dof<G> + j]     = {acc(j), vel(j), acc_max(j)};
+      ineq[1 + 2 * Dof<G> + j] = {-acc(j), -vel(j), -acc_min(j)};
+    }
 
-      // this ensures that a = 0 is feasible
-      if (acc(j) > eps) {
-        v2max(i) = std::min<double>(v2max(i), acc_max(j) / acc(j));
-      } else if (acc(j) < -eps) {
-        v2max(i) = std::min<double>(v2max(i), acc_min(j) / acc(j));
-      }
+    const auto [v2opt, aopt, status] = lp2d::solve(-1, 0, ineq);
+
+    if (status == lp2d::Status::Optimal) {
+      v2max(i) = v2opt;
+    } else if (status == lp2d::Status::DualInfeasible) {
+      v2max(i) = inf;
+    } else {
+      assert(false);
     }
   }
 
-  // FORWARD PASS WITH MAXIMAL ACCELERATION
+  // FORWARD PASS WITH MAXIMAL REPARAMETERIZATION ACCELERATION
 
   Spline<2, double> ret;
   ret.reserve(N + 1);
@@ -171,9 +183,9 @@ Spline<2, double> reparameterize_spline(
 
     // figure maximal allowed acceleration at (si, vi)
     const double ai = [&]() {
-      double ret             = inf;
-      const Tangent<G> upper = (acc_max - acc * vi2).cwiseMax(Tangent<G>::Zero());
-      const Tangent<G> lower = (acc_min - acc * vi2).cwiseMin(Tangent<G>::Zero());
+      double ret             = (v2max(i + 1) - vi2) / (2 * ds);
+      const Tangent<G> upper = (acc_max - acc * vi2);
+      const Tangent<G> lower = (acc_min - acc * vi2);
       for (const auto j : std::views::iota(0, Dof<G>)) {
         if (vel(j) > eps) {
           ret = std::min<double>(ret, upper(j) / vel(j));
@@ -181,8 +193,6 @@ Spline<2, double> reparameterize_spline(
           ret = std::min<double>(ret, lower(j) / vel(j));
         }
       }
-      // do not exceed velocity at next step
-      ret = std::min<double>(ret, (v2max(i + 1) - vi2) / (2 * ds));
       return ret;
     }();
 

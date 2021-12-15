@@ -69,20 +69,18 @@ binary_interval_search(std::ranges::random_access_range auto && r, auto && t, au
     return rght - 1;
   }
 
-  decltype(left) pivot;
+  auto pivot = left;
 
   while (left + 1 < rght) {
-    double alpha;
+    double alpha = 0.5;
     if constexpr (std::is_convertible_v<Rv, double> && std::is_convertible_v<T, double>) {
       alpha = (static_cast<double>(t) - static_cast<double>(*left))
             / static_cast<double>(*(rght - 1) - *left);
-    } else {
-      alpha = 0.5;
     }
 
-    pivot = left + static_cast<intptr_t>(static_cast<double>(rght - 1 - left) * alpha);
+    pivot = std::ranges::next(left, alpha * std::distance(left, rght - 1), rght - 2);
 
-    if (wo(*(pivot + 1), t) <= 0) {
+    if (wo(*next(pivot), t) <= 0) {
       left = pivot + 1;
     } else if (wo(*pivot, t) > 0) {
       rght = pivot + 1;
