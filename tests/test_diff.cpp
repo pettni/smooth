@@ -148,6 +148,29 @@ void test_second()
 }
 
 template<diff::Type DiffType>
+void test_second_at_zero()
+{
+  const auto g = []<typename T>(T, Eigen::Vector2<T> x, Eigen::Vector<T, 1> u) -> T {
+    return x.squaredNorm() + u.squaredNorm();
+  };
+
+  const double t                   = 0;
+  const Eigen::Vector2d x          = Eigen::Vector2d::Zero();
+  const Eigen::Vector<double, 1> u = Eigen::Vector<double, 1>::Zero();
+
+  const auto [F, df, d2f] = diff::dr<2, DiffType>(g, wrt(t, x, u));
+
+  ASSERT_LE((df - Eigen::RowVector4d::Zero()).cwiseAbs().maxCoeff(), 1e-3);
+
+  ASSERT_TRUE(d2f.isApprox(Eigen::Matrix4d{
+    {0, 0, 0, 0},
+    {0, 2, 0, 0},
+    {0, 0, 2, 0},
+    {0, 0, 0, 2},
+  }));
+}
+
+template<diff::Type DiffType>
 void test_second_multi()
 {
   const auto f = []<typename T>(const Eigen::Vector3<T> & xx, const Eigen::Vector3<T> & yy) -> T {
@@ -191,6 +214,7 @@ TEST(Differentiation, NumericalSuite)
 
   test_second<diff::Type::Numerical>();
   test_second_multi<diff::Type::Numerical>();
+  test_second_at_zero<diff::Type::Numerical>();
 }
 
 #ifdef ENABLE_AUTODIFF_TESTS
@@ -206,6 +230,7 @@ TEST(Differentiation, AutodiffSuite)
 
   test_second<diff::Type::Autodiff>();
   test_second_multi<diff::Type::Autodiff>();
+  test_second_at_zero<diff::Type::Autodiff>();
 }
 #endif
 

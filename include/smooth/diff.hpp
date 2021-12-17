@@ -62,6 +62,8 @@ auto dr_numerical(auto && f, auto && x)
   using Result = decltype(std::apply(f, x));
   using Scalar = ::smooth::Scalar<Result>;
 
+  static constexpr auto NumArgs = std::tuple_size_v<std::decay_t<Wrt>>;
+
   static_assert(Manifold<Result>, "f(x) is not a Manifold");
 
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
@@ -83,7 +85,7 @@ auto dr_numerical(auto && f, auto && x)
 
   if constexpr (K == 1) {
     Eigen::Index I0 = 0;
-    utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i) {
+    utils::static_for<NumArgs>([&](auto i) {
       auto & w = std::get<i>(x_nc);
       using W  = std::decay_t<decltype(w)>;
 
@@ -110,18 +112,20 @@ auto dr_numerical(auto && f, auto && x)
   if constexpr (K == 2) {
     static_assert(Ny == 1, "2nd derivative only implemented for scalar functions");
 
+    const auto sqrteps = std::sqrt(eps);
+
     Eigen::Matrix<Scalar, Nx, Nx> H(nx, nx);
 
     Eigen::Index I0 = 0;
-    utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i0) {
+    utils::static_for<NumArgs>([&](auto i0) {
       auto & w0                           = std::get<i0>(x_nc);
       using W0                            = std::decay_t<decltype(w0)>;
       static constexpr Eigen::Index Nx_i0 = Dof<W0>;
       const int nx_i0                     = dof<W0>(w0);
 
       Eigen::Index I1 = 0;
-      utils::static_for<std::tuple_size_v<std::decay_t<Wrt>>>([&](auto i1) {
-        if (Eigen::Index(i1) > i0) { return; }
+      utils::static_for<NumArgs>([&](auto i1) {
+        if (i1 > i0) { return; }
 
         auto & w1                           = std::get<i1>(x_nc);
         using W1                            = std::decay_t<decltype(w1)>;
@@ -129,10 +133,10 @@ auto dr_numerical(auto && f, auto && x)
         const int nx_i1                     = dof<W1>(w1);
 
         for (auto k0 = 0; k0 != nx_i0; ++k0) {
-          Scalar eps0 = std::sqrt(eps);
+          Scalar eps0 = sqrteps;
           if constexpr (std::is_base_of_v<Eigen::MatrixBase<W0>, W0>) {
             eps0 *= abs(w0[k0]);
-            if (eps0 == 0.) { eps0 = eps; }
+            if (eps0 == 0.) { eps0 = sqrteps; }
           }
 
           w0               = rplus<W0>(w0, eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
@@ -142,10 +146,10 @@ auto dr_numerical(auto && f, auto && x)
           J(0, I0 + k0) = (F10 - F) / eps0;
 
           for (auto k1 = 0; k1 < (i0 == i1 ? k0 + 1 : nx_i1); ++k1) {
-            Scalar eps1 = std::sqrt(eps);
+            Scalar eps1 = sqrteps;
             if constexpr (std::is_base_of_v<Eigen::MatrixBase<W1>, W1>) {
               eps1 *= abs(w1[k1]);
-              if (eps1 == 1.) { eps1 = eps; }
+              if (eps1 == 0.) { eps1 = sqrteps; }
             }
 
             // do this in order to ensure we return to same point on spaces with non-zero brackets
@@ -157,7 +161,7 @@ auto dr_numerical(auto && f, auto && x)
             w1               = rplus<W1>(w1, -eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, k1));
 
             // hessian is symmetric
-            H(I0 + k0, I1 + k1) = H(I1 + k1, I0 + k0) = (F11 - F01 - F10 + F) / (eps0 * eps1);
+            H(I0 + k0, I1 + k1) = H(I1 + k1, I0 + k0) = (F11 - F01 - F10 + F) / eps0 / eps1;
           }
         }
         I1 += nx_i1;
