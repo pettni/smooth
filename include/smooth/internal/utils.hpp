@@ -143,6 +143,8 @@ constexpr std::array<_T, _L + 1> array_psum(const std::array<_T, _L> & x) noexce
 // RANGE UTILS //
 /////////////////
 
+// \cond
+
 // Pairwise transform views
 
 /// @brief Apply function to pairwise elements
@@ -278,12 +280,16 @@ constexpr auto operator|(R && r, const PairwiseTransformClosure<F> & closure)
 
 }  // namespace detail
 
+// \endcond
+
 namespace views {
 
 /// @brief Apply function to pairwise elements
 inline constexpr detail::PairwiseTransform pairwise_transform;
 
 }  // namespace views
+
+// \cond
 
 // Zip view
 
@@ -431,6 +437,8 @@ struct Zip
 };
 
 }  // namespace detail
+
+// \endcond
 
 /// @brief Zip views
 inline constexpr detail::Zip zip;

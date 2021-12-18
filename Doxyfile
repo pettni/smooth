@@ -918,6 +918,7 @@ RECURSIVE              = YES
 # run.
 
 EXCLUDE                = examples/README.md \
+                         include/smooth/external/lp2d.hpp \
                          include/smooth/internal/bundle.hpp \
                          include/smooth/internal/c1.hpp \
                          include/smooth/internal/common.hpp \

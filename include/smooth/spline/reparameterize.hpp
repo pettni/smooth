@@ -31,7 +31,8 @@
  * @brief Reparamterize a Spline to satisfy derivative constraints.
  */
 
-#include "lp2d.hpp"
+#include "smooth/external/lp2d.hpp"
+
 #include "spline.hpp"
 #include "traits.hpp"
 
