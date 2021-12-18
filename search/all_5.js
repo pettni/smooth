@@ -1,5 +1,10 @@
 var searchData=
 [
-  ['eulerangles_66',['eulerAngles',['../classsmooth_1_1SO3Base.html#ab12431a0da79f046df8903042999d001',1,'smooth::SO3Base']]],
-  ['exp_67',['exp',['../lie__group_8hpp.html#a788118e47b3c68cf671408c9ad18ec1f',1,'smooth']]]
+  ['fit_2ehpp_66',['fit.hpp',['../fit_8hpp.html',1,'']]],
+  ['fit_5fbspline_67',['fit_bspline',['../fit_8hpp.html#ac6ca39811c774d7d3614f4bcccf542a9',1,'smooth']]],
+  ['fit_5fspline_68',['fit_spline',['../fit_8hpp.html#a0b2ddf72f5eaa39f72ae77af28d925e5',1,'smooth']]],
+  ['fit_5fspline_5f1d_69',['fit_spline_1d',['../fit_8hpp.html#aa2bc4ae01bb329d9e53da1f3ac339c28',1,'smooth']]],
+  ['fit_5fspline_5fcubic_70',['fit_spline_cubic',['../fit_8hpp.html#aa4855541214c77b0a5626176c55308fc',1,'smooth']]],
+  ['fixeddercubic_71',['FixedDerCubic',['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html',1,'smooth::spline_specs']]],
+  ['ftol_72',['ftol',['../structsmooth_1_1MinimizeOptions.html#a477169427f1ef9f4dcc83638c250fc4b',1,'smooth::MinimizeOptions']]]
 ];

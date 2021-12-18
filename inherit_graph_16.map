@@ -1,4 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,13,80,39"/>
-<area shape="rect" id="node2" href="$structsmooth_1_1StaticMatrix.html" title="Elementary structure for compile&#45;time matrix algebra." alt="" coords="128,5,303,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,56,104,83"/>
+<area shape="rect" id="node2" href="$structsmooth_1_1traits_1_1is__spline_3_01BSpline_3_01K_00_01G_01_4_01_4.html" title=" " alt="" coords="165,5,308,61"/>
+<area shape="rect" id="node3" href="$structsmooth_1_1traits_1_1is__spline_3_01Spline_3_01K_00_01G_01_4_01_4.html" title="Specialize traits." alt="" coords="152,85,321,126"/>
 </map>
