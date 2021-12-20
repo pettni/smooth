@@ -107,7 +107,7 @@ struct man<M>
   static constexpr int Dof = M::SizeAtCompileTime;
 
   using Scalar      = typename M::Scalar;
-  using PlainObject = typename M::PlainObject;
+  using PlainObject = Eigen::Vector<Scalar, Dof>;
   template<typename NewScalar>
   using CastT = Eigen::Vector<NewScalar, M::SizeAtCompileTime>;
 
