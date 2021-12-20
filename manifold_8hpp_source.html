@@ -170,7 +170,7 @@ $(function() {
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <span class="keyword">static</span> constexpr <span class="keywordtype">int</span> Dof = M::SizeAtCompileTime;</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>      = <span class="keyword">typename</span> M::Scalar;</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">PlainObject</a> = <span class="keyword">typename</span> M::PlainObject;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">PlainObject</a> = Eigen::Vector&lt;Scalar, Dof&gt;;</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NewScalar&gt;</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="keyword">using</span> <a class="code" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a> = Eigen::Vector&lt;NewScalar, M::SizeAtCompileTime&gt;;</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
