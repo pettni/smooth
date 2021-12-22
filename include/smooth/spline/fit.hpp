@@ -494,6 +494,92 @@ auto fit_spline_cubic(std::ranges::range auto && ts, std::ranges::range auto && 
 }
 
 /**
+ * @brief Objective struct for Bspline fitting with analytic jacobian.
+ */
+template<std::size_t K, std::ranges::range Rs, std::ranges::range Rg>
+struct fit_bspline_objective
+{
+  using G = std::ranges::range_value_t<Rg>;
+
+  Rs ts;
+  Rg gs;
+
+  double t0, t1, dt;
+
+  std::size_t NumData, NumPts;
+
+  static constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
+  inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M =
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(M_s[0].data());
+
+  fit_bspline_objective(
+    std::ranges::range auto && tsin, std::ranges::range auto && gsin, double dtin)
+      : ts(std::forward<decltype(tsin)>(tsin)), gs(std::forward<decltype(gsin)>(gsin)), dt(dtin)
+  {
+    const auto [rt0, rt1] = std::ranges::minmax(ts);
+
+    t0 = rt0;
+    t1 = rt1;
+
+    NumData = std::min(std::ranges::size(ts), std::ranges::size(gs));
+    NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
+  }
+
+  Eigen::VectorXd operator()(const ManifoldVector<G> & var) const
+  {
+    using namespace std::views;
+
+    Eigen::VectorXd ret(Dof<G> * NumData);
+
+    for (const auto & [i, t, g] : utils::zip(iota(0u), ts, gs)) {
+      const int64_t istar = static_cast<int64_t>((t - t0) / dt);
+      const double u      = (t - t0 - istar * dt) / dt;
+
+      // gcc 11.1 bug can't handle uint64_t
+      const auto g_spline = cspline_eval<K>(var | drop(istar) | take(int64_t(K + 1)), M, u);
+
+      ret.segment<Dof<G>>(i * Dof<G>) = rminus(g_spline, g);
+    }
+
+    return ret;
+  }
+
+  Eigen::SparseMatrix<double> jacobian(const ManifoldVector<G> & var) const
+  {
+    using namespace std::views;
+
+    Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;
+    Jac.resize(Dof<G> * NumData, Dof<G> * NumPts);
+    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(Dof<G> * NumData, Dof<G> * (K + 1)));
+
+    for (const auto & [i, t, g] : utils::zip(iota(0u), ts, gs)) {
+      const int64_t istar = static_cast<int64_t>((t - t0) / dt);
+      const double u      = (t - t0 - istar * dt) / dt;
+
+      Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_vali_pts;
+      // gcc 11.1 bug can't handle uint64_t
+      auto g_spline =
+        cspline_eval<K>(var | drop(istar) | take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);
+
+      const Tangent<G> resi = rminus(g_spline, g);
+
+      const Eigen::Matrix<double, Dof<G>, Dof<G>> d_resi_vali          = dr_expinv<G>(resi);
+      const Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_resi_pts = d_resi_vali * d_vali_pts;
+
+      for (auto r = 0u; r != Dof<G>; ++r) {
+        for (auto c = 0u; c != Dof<G> * (K + 1); ++c) {
+          Jac.insert(i * Dof<G> + r, istar * Dof<G> + c) = d_resi_pts(r, c);
+        }
+      }
+    }
+
+    Jac.makeCompressed();
+
+    return Jac;
+  }
+};
+
+/**
  * @brief Fit a bpsline to data points \f$(t_i, g_i)\f$
  *        by solving the optimization problem
  *
@@ -516,57 +602,18 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, c
 
   assert(std::ranges::adjacent_find(ts, std::ranges::greater_equal()) == ts.end());
 
-  const auto [t0, t1] = std::ranges::minmax(ts);
+  using obj_t = fit_bspline_objective<K, decltype(ts), decltype(gs)>;
 
-  const std::size_t NumData = std::min(std::ranges::size(ts), std::ranges::size(gs));
-  const std::size_t NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
-
-  static constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
-  Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
-
-  const auto f = [&, t0 = t0, dt = dt](const auto & var) {
-    Eigen::VectorXd ret(Dof<G> * NumData);
-
-    Eigen::SparseMatrix<double, Eigen::RowMajor> Jac;
-    Jac.resize(Dof<G> * NumData, Dof<G> * NumPts);
-    Jac.reserve(Eigen::Matrix<int, -1, 1>::Constant(Dof<G> * NumData, Dof<G> * (K + 1)));
-
-    for (const auto & [i, t, g] : utils::zip(iota(0u), ts, gs)) {
-      const int64_t istar = static_cast<int64_t>((t - t0) / dt);
-      const double u      = (t - t0 - istar * dt) / dt;
-
-      Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_vali_pts;
-      // gcc 11.1 bug can't handle uint64_t
-      auto g_spline =
-        cspline_eval<K>(var | drop(istar) | take(int64_t(K + 1)), M, u, {}, {}, d_vali_pts);
-
-      const Tangent<G> resi = rminus(g_spline, g);
-
-      ret.segment<Dof<G>>(i * Dof<G>) = resi;
-
-      const Eigen::Matrix<double, Dof<G>, Dof<G>> d_resi_vali          = dr_expinv<G>(resi);
-      const Eigen::Matrix<double, Dof<G>, (K + 1) * Dof<G>> d_resi_pts = d_resi_vali * d_vali_pts;
-
-      for (auto r = 0u; r != Dof<G>; ++r) {
-        for (auto c = 0u; c != Dof<G> * (K + 1); ++c) {
-          Jac.insert(i * Dof<G> + r, istar * Dof<G> + c) = d_resi_pts(r, c);
-        }
-      }
-    }
-
-    Jac.makeCompressed();
-
-    return std::make_pair(std::move(ret), std::move(Jac));
-  };
+  obj_t obj(std::forward<decltype(ts)>(ts), std::forward<decltype(gs)>(gs), dt);
 
   // create optimization variable
-  ManifoldVector<G> ctrl_pts(NumPts);
+  ManifoldVector<G> ctrl_pts(obj.NumPts);
 
   // create initial guess
   auto t_iter = std::ranges::begin(ts);
   auto g_iter = std::ranges::begin(gs);
-  for (auto i = 0u; i != NumPts; ++i) {
-    const double t_target = t0 + (i - static_cast<double>(K - 1) / 2) * dt;
+  for (auto i = 0u; i != obj.NumPts; ++i) {
+    const double t_target = obj.t0 + (i - static_cast<double>(K - 1) / 2) * dt;
     while (t_iter + 1 < std::ranges::end(ts)
            && std::abs(t_target - *(t_iter + 1)) < std::abs(t_target - *t_iter)) {
       ++t_iter;
@@ -582,9 +629,9 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, c
     .max_iter = 10,
     .verbose  = false,
   };
-  minimize<diff::Type::Analytic>(f, smooth::wrt(ctrl_pts), opts);
+  minimize<diff::Type::Analytic>(obj, smooth::wrt(ctrl_pts), opts);
 
-  return BSpline<K, G>(t0, dt, std::move(ctrl_pts));
+  return BSpline<K, G>(obj.t0, dt, std::move(ctrl_pts));
 }
 
 }  // namespace smooth

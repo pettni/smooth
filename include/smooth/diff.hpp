@@ -235,7 +235,15 @@ auto dr(auto && f, auto && x)
     static_assert(D != Type::Ceres, "compat/ceres.hpp header not included");
 #endif
   } else if constexpr (D == Type::Analytic) {
-    return std::apply(f, std::forward<Wrt>(x));
+    auto F  = std::apply(f, x);
+    auto dF = std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::jacobian), f), x);
+    if constexpr (K == 1) {
+      return std::make_tuple(std::move(F), std::move(dF));
+    } else if constexpr (K == 2) {
+      auto d2F =
+        std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::hessian), f), x);
+      return std::make_tuple(F, dF, d2F);
+    }
   } else if constexpr (D == Type::Default) {
     return dr<K, DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
   }

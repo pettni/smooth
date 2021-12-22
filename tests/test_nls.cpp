@@ -341,22 +341,28 @@ TEST(NLS, MixedArgs)
 struct AnalyticSparseFunctor
 {
   template<typename T>
-  auto operator()(const smooth::SO3<T> & g1, const smooth::SO3<T> & g2, const smooth::SO3<T> & g3)
+  Eigen::VectorX<T>
+  operator()(const smooth::SO3<T> & g1, const smooth::SO3<T> & g2, const smooth::SO3<T> & g3)
   {
-    auto dr_f1_g1 = smooth::SO3d::dr_expinv(g1.log());
-
-    auto dr_f2_g3 = smooth::SO3d::dr_expinv(g3 - g2);
-    auto dr_f2_g2 = (-smooth::SO3d::dl_expinv(g3 - g2)).eval();
-
-    auto dr_f3_g1 = smooth::SO3d::dr_expinv(g1 - g3);
-    auto dr_f3_g3 = (-smooth::SO3d::dl_expinv(g1 - g3)).eval();
-
-    Eigen::Matrix<T, -1, 1> f(9);
+    Eigen::VectorX<T> f(9);
     f.template segment<3>(0) = g1.log();
     f.template segment<3>(3) = (g3 - g2) - d23;
     f.template segment<3>(6) = (g1 - g3) - d31;
+    return f;
+  }
 
-    Eigen::SparseMatrix<T> dr_f;
+  Eigen::SparseMatrix<double>
+  jacobian(const smooth::SO3d & g1, const smooth::SO3d & g2, const smooth::SO3d & g3) const
+  {
+    const Eigen::Matrix3d dr_f1_g1 = smooth::SO3d::dr_expinv(g1.log());
+
+    const Eigen::Matrix3d dr_f2_g3 = smooth::SO3d::dr_expinv(g3 - g2);
+    const Eigen::Matrix3d dr_f2_g2 = -smooth::SO3d::dl_expinv(g3 - g2);
+
+    const Eigen::Matrix3d dr_f3_g1 = smooth::SO3d::dr_expinv(g1 - g3);
+    const Eigen::Matrix3d dr_f3_g3 = -smooth::SO3d::dl_expinv(g1 - g3);
+
+    Eigen::SparseMatrix<double> dr_f;
     dr_f.resize(9, 9);
     for (int i = 0; i != 3; ++i) {
       for (int j = 0; j != 3; ++j) {
@@ -371,7 +377,7 @@ struct AnalyticSparseFunctor
     }
     dr_f.makeCompressed();
 
-    return std::make_pair(f, dr_f);
+    return dr_f;
   }
 
   Eigen::Vector3d d23, d31;
@@ -390,12 +396,11 @@ TEST(NLS, AnalyticSparse)
   auto g2c = g2;
   auto g3c = g3;
 
-  // solve sparse
+  // solve with analytic diff
   smooth::minimize<smooth::diff::Type::Analytic>(f, smooth::wrt(g1, g2, g3));
 
-  // solve with default
-  smooth::minimize<smooth::diff::Type::Default>(
-    [&](auto... var) { return std::get<0>(f(var...)); }, smooth::wrt(g1c, g2c, g3c));
+  // solve with default autodiff
+  smooth::minimize<smooth::diff::Type::Default>(f, smooth::wrt(g1c, g2c, g3c));
 
   ASSERT_TRUE(g1.isApprox(g1c, 1e-5));
   ASSERT_TRUE(g2.isApprox(g2c, 1e-5));
