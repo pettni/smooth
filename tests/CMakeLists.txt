@@ -96,6 +96,10 @@ find_package(autodiff 0.6 QUIET)
 find_package(geometry_msgs QUIET)
 
 if(autodiff_FOUND)
+  add_executable(test_hessian test_hessian.cpp)
+  target_link_libraries(test_hessian PRIVATE smooth GTest::Main autodiff::autodiff)
+  gtest_discover_tests(test_hessian)
+
   target_compile_definitions(test_diff PRIVATE ENABLE_AUTODIFF_TESTS)
   target_compile_definitions(test_spline PRIVATE ENABLE_AUTODIFF_TESTS)
   target_compile_definitions(test_cspline PRIVATE ENABLE_AUTODIFF_TESTS)

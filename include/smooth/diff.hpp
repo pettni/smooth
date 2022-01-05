@@ -125,8 +125,6 @@ auto dr_numerical(auto && f, auto && x)
 
       Eigen::Index I1 = 0;
       utils::static_for<NumArgs>([&](auto i1) {
-        if (i1 > i0) { return; }
-
         auto & w1                           = std::get<i1>(x_nc);
         using W1                            = std::decay_t<decltype(w1)>;
         static constexpr Eigen::Index Nx_i1 = Dof<W1>;
@@ -145,7 +143,7 @@ auto dr_numerical(auto && f, auto && x)
 
           J(0, I0 + k0) = (F10 - F) / eps0;
 
-          for (auto k1 = 0; k1 < (i0 == i1 ? k0 + 1 : nx_i1); ++k1) {
+          for (auto k1 = 0; k1 < nx_i1; ++k1) {
             Scalar eps1 = sqrteps;
             if constexpr (std::is_base_of_v<Eigen::MatrixBase<W1>, W1>) {
               eps1 *= abs(w1[k1]);
@@ -160,8 +158,7 @@ auto dr_numerical(auto && f, auto && x)
             w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
             w1               = rplus<W1>(w1, -eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, k1));
 
-            // hessian is symmetric
-            H(I0 + k0, I1 + k1) = H(I1 + k1, I0 + k0) = (F11 - F01 - F10 + F) / eps0 / eps1;
+            H(I0 + k0, I1 + k1) = (F11 - F01 - F10 + F) / eps0 / eps1;
           }
         }
         I1 += nx_i1;

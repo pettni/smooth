@@ -86,12 +86,9 @@ auto dr_autodiff(auto && f, auto && x)
   const auto x_ad              = wrt_cast<AdScalar>(x);
   CastT<AdScalar, Result> F_ad = cast<AdScalar>(F);
 
-  // zero-valued tangent element (can not be const...)
-  Matrix<AdScalar, Nx, 1> a_ad = Matrix<AdScalar, Nx, 1>::Zero(nx);
-
-  // TODO: use output argument signatures when new version of autodiff available
-
   if constexpr (K == 1) {
+    // zero-valued tangent element
+    Matrix<AdScalar, Nx, 1> a_ad = Matrix<AdScalar, Nx, 1>::Zero(nx);
 
     // function to differentiate
     const auto f_ad = [&](Matrix<AdScalar, Nx, 1> & var) -> Matrix<AdScalar, Ny, 1> {
@@ -108,17 +105,34 @@ auto dr_autodiff(auto && f, auto && x)
     static_assert(Ny == 1, "2nd derivative only implemented for scalar functions");
 
     // function to differentiate
-    const auto f_ad = [&f, &x_ad, &F_ad](Matrix<AdScalar, Nx, 1> & var) -> AdScalar {
-      return rminus<CastT<AdScalar, Result>>(std::apply(f, wrt_rplus(x_ad, var)), F_ad).x();
+    const auto f_ad = [&f, &x_ad, &F_ad](
+                        Matrix<AdScalar, Nx, 1> & var1,
+                        Matrix<AdScalar, Nx, 1> & var2) -> AdScalar {
+      return rminus(std::apply(f, wrt_rplus(wrt_rplus(x_ad, var1), var2)), F_ad).x();
     };
 
-    CastT<AdScalar, Result> tmp;
-    Matrix<Scalar, Ny, Nx> J_ad(ny, nx);
+    Matrix<Scalar, Ny, Nx> J(ny, nx);
     Matrix<Scalar, Nx, Nx> H(nx, nx);
 
-    H = autodiff::hessian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad), tmp, J_ad);
+    // zero-valued tangent elements
+    Matrix<AdScalar, Nx, 1> a_ad1 = Matrix<AdScalar, Nx, 1>::Zero(nx);
+    Matrix<AdScalar, Nx, 1> a_ad2 = Matrix<AdScalar, Nx, 1>::Zero(nx);
 
-    return std::make_tuple(std::move(F), std::move(J_ad.template cast<double>()), std::move(H));
+    const auto a_wrt1 = autodiff::wrt(a_ad1);
+    const auto a_wrt2 = autodiff::wrt(a_ad2);
+
+    autodiff::detail::ForEachWrtVar(
+      a_wrt1, [&](auto && i, auto && xi) constexpr {
+        autodiff::detail::ForEachWrtVar(
+          a_wrt2, [&](auto && j, auto && xj) constexpr {
+            const auto u =
+              autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));
+            J(i)    = static_cast<double>(autodiff::detail::derivative<1>(u));
+            H(j, i) = autodiff::detail::derivative<2>(u);
+          });
+      });
+
+    return std::make_tuple(std::move(F), std::move(J), std::move(H));
   }
 }
 
