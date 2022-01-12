@@ -160,7 +160,7 @@ inline constexpr auto hp_to_yslope = [](const HalfPlane & hp, Scalar x) -> std::
 /**
  * @brief Compute intersection between two halfplanes
  */
-inline const std::optional<Scalar> intersection(const HalfPlane & hp1, const HalfPlane & hp2)
+inline std::optional<Scalar> intersection(const HalfPlane & hp1, const HalfPlane & hp2)
 {
   const Scalar lhs = hp1.a * hp2.b - hp2.a * hp1.b;
   if (std::abs(lhs) > eps) { return (hp2.b * hp1.c - hp1.b * hp2.c) / lhs; }
