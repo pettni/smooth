@@ -367,13 +367,11 @@ public:
     detail::OptTangent<CastT<S, G>> vel = {},
     detail::OptTangent<CastT<S, G>> acc = {}) const
   {
-    if (empty() || t < 0) {
+    if (empty() || t < S(0)) {
       if (vel.has_value()) { vel.value().setZero(); }
       if (acc.has_value()) { acc.value().setZero(); }
       return cast<S>(g0_);
-    }
-
-    if (t > t_max()) {
+    } else if (t > S(t_max())) {
       if (vel.has_value()) { vel.value().setZero(); }
       if (acc.has_value()) { acc.value().setZero(); }
       return cast<S>(end_g_.back());
