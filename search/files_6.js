@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['manifold_2ehpp_353',['manifold.hpp',['../manifold_8hpp.html',1,'']]]
+  ['lie_5fgroup_2ehpp_354',['lie_group.hpp',['../lie__group_8hpp.html',1,'']]]
 ];

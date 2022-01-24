@@ -100,20 +100,21 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="lie__group_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2lie__group_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2lie__group_8hppdep" id="ainclude_2smooth_2lie__group_8hppdep">
-<area shape="rect" title=" " alt="" coords="390,5,517,47"/>
-<area shape="rect" href="bundle_8hpp_source.html" title=" " alt="" coords="5,102,181,129"/>
-<area shape="rect" href="c1_8hpp_source.html" title=" " alt="" coords="107,191,259,218"/>
-<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="283,191,442,218"/>
-<area shape="rect" href="se3_8hpp_source.html" title=" " alt="" coords="810,191,969,218"/>
-<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="257,102,415,129"/>
-<area shape="rect" href="so3_8hpp_source.html" title=" " alt="" coords="794,102,953,129"/>
-<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="491,95,645,136"/>
-<area shape="rect" href="dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="291,273,439,315"/>
-<area shape="rect" href="ros_8hpp.html" title="ROS message compatablity header." alt="" coords="811,273,968,315"/>
-<area shape="rect" href="bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="638,184,786,225"/>
-<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="466,184,614,225"/>
-<area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="638,273,786,315"/>
-<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="466,273,614,315"/>
+<area shape="rect" title=" " alt="" coords="494,5,621,47"/>
+<area shape="rect" href="hessian_8hpp.html" title="Algorithms for computations of Hessians." alt="" coords="5,95,144,136"/>
+<area shape="rect" href="bundle_8hpp_source.html" title=" " alt="" coords="168,102,344,129"/>
+<area shape="rect" href="c1_8hpp_source.html" title=" " alt="" coords="269,191,421,218"/>
+<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="446,191,605,218"/>
+<area shape="rect" href="se3_8hpp_source.html" title=" " alt="" coords="973,191,1131,218"/>
+<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="419,102,578,129"/>
+<area shape="rect" href="so3_8hpp_source.html" title=" " alt="" coords="957,102,1115,129"/>
+<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="653,95,808,136"/>
+<area shape="rect" href="dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="454,273,602,315"/>
+<area shape="rect" href="ros_8hpp.html" title="ROS message compatablity header." alt="" coords="973,273,1131,315"/>
+<area shape="rect" href="bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="801,184,949,225"/>
+<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="629,184,777,225"/>
+<area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="801,273,949,315"/>
+<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="629,273,777,315"/>
 </map>
 </div>
 </div>
@@ -421,7 +422,7 @@ template&lt;typename G &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a></div>
+<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a></div>
 <div class="line">{</div>
 <div class="line">  <span class="keyword">typename</span> G::Scalar;</div>
 <div class="line">  <span class="keyword">typename</span> G::Tangent;</div>
@@ -432,12 +433,12 @@ template&lt;typename G &gt; </div>
 <div class="line">  {G::Identity()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {G::Random()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">}) &amp;&amp;</div>
-<div class="line">(!(G::Dof == -1) || <a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a> (Eigen::Index dof) {</div>
+<div class="line">(!(G::Dof == -1) || <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> (Eigen::Index dof) {</div>
 <div class="line">  {G::Identity(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {G::Random(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">}) &amp;&amp;</div>
 <div class="line">(G::Tangent::SizeAtCompileTime == G::Dof) &amp;&amp;</div>
-<div class="line"><a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a>(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
+<div class="line"><a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
 <div class="line">  {g1.dof()}-&gt;std::convertible_to&lt;Eigen::Index&gt;;  </div>
 <div class="line">  {g1.Ad()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {g1 * g2}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
@@ -445,13 +446,13 @@ template&lt;typename G &gt; </div>
 <div class="line">  {g1.isApprox(g2, eps)}-&gt;std::convertible_to&lt;<span class="keywordtype">bool</span>&gt;;</div>
 <div class="line">  {g1.log()}-&gt;std::convertible_to&lt;Eigen::Vector&lt;typename G::Scalar, G::Dof&gt;&gt;;</div>
 <div class="line">} &amp;&amp;</div>
-<div class="line"><a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;typename G::Scalar, G::Dof&gt; &amp; a) {</div>
+<div class="line"><a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;typename G::Scalar, G::Dof&gt; &amp; a) {</div>
 <div class="line">  {G::ad(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {G::exp(a)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {G::dr_exp(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {G::dr_expinv(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">}</div>
-<div class="ttc" id="aautodiff_8hpp_html_a92581e05523c2008509ddbcb1fea2057"><div class="ttname"><a href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">smooth::diff::requires</a></div><div class="ttdeci">requires(K &gt;=1 &amp;&amp;K&lt;=2) auto dr_autodiff(auto &amp;&amp;f</div><div class="ttdoc">Automatic differentiation in tangent space using the autodiff library.</div></div>
+<div class="ttc" id="ahessian_8hpp_html_a9213aea932a7d7a4eddb23318cb03828"><div class="ttname"><a href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) TangentMap&lt; G &gt; hessian_rminus(const G &amp;x</div><div class="ttdoc">Compute approximate Hessian (second derivative) of the squared norm of rminus.</div></div>
 </div><!-- fragment -->
 <p>Concept defining class with an internal Lie group interface. </p>
 <p>Concept satisfied if G has members that correspond to the LieGroup concept. </p>

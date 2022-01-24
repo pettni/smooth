@@ -122,7 +122,7 @@ $(function() {
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> M&gt;</div>
 <div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="manifold_8hpp.html#ac1639727187099f481a8e646df093e93">   55</a></span>&#160;concept <a class="code" href="manifold_8hpp.html#ac1639727187099f481a8e646df093e93">Manifold</a> =</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;requires  (Eigen::Index dof) {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>  (Eigen::Index dof) {</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="comment">// Underlying scalar type</span></div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  <span class="keyword">typename</span> <a class="code" href="structsmooth_1_1traits_1_1man.html">traits::man&lt;M&gt;::Scalar</a>;</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="comment">// Default representation</span></div>
@@ -141,7 +141,7 @@ $(function() {
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  {traits::man&lt;M&gt;::rminus(m1, m2)}-&gt;std::convertible_to&lt;Eigen::Vector&lt;typename traits::man&lt;M&gt;::Scalar, traits::man&lt;M&gt;::Dof&gt;&gt;;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;} &amp;&amp; (</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  !std::is_convertible_v&lt;typename traits::man&lt;M&gt;::Scalar, <span class="keywordtype">double</span>&gt; ||</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a> (<span class="keyword">const</span> M &amp; m) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> (<span class="keyword">const</span> M &amp; m) {</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    {traits::man&lt;M&gt;::template cast&lt;double&gt;(m)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> traits::man&lt;M&gt;::template CastT&lt;double&gt;&gt;;</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  }</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;) &amp;&amp; (</div>
@@ -308,7 +308,7 @@ $(function() {
 <div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;}  <span class="comment">// namespace smooth</span></div>
 <div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160; </div>
 <div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aautodiff_8hpp_html_a92581e05523c2008509ddbcb1fea2057"><div class="ttname"><a href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">smooth::diff::requires</a></div><div class="ttdeci">requires(K &gt;=1 &amp;&amp;K&lt;=2) auto dr_autodiff(auto &amp;&amp;f</div><div class="ttdoc">Automatic differentiation in tangent space using the autodiff library.</div></div>
+<div class="ttc" id="ahessian_8hpp_html_a9213aea932a7d7a4eddb23318cb03828"><div class="ttname"><a href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) TangentMap&lt; G &gt; hessian_rminus(const G &amp;x</div><div class="ttdoc">Compute approximate Hessian (second derivative) of the squared norm of rminus.</div></div>
 <div class="ttc" id="amanifold_8hpp_html_a1050d2ff261807ed963b67efe0b40eba"><div class="ttname"><a href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">smooth::Tangent</a></div><div class="ttdeci">Eigen::Vector&lt; Scalar&lt; M &gt;, Dof&lt; M &gt; &gt; Tangent</div><div class="ttdoc">Tangent as a Dof-length vector.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00233">manifold.hpp:233</a></div></div>
 <div class="ttc" id="amanifold_8hpp_html_a20e5e642e698509b990e3ef5cc973b0c"><div class="ttname"><a href="manifold_8hpp.html#a20e5e642e698509b990e3ef5cc973b0c">smooth::Default</a></div><div class="ttdeci">PlainObject&lt; M &gt; Default(Eigen::Index dof)</div><div class="ttdoc">Default-initialized Manifold.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00247">manifold.hpp:247</a></div></div>
 <div class="ttc" id="amanifold_8hpp_html_a3b740cf0687cfa7b42bac9faab6635c6"><div class="ttname"><a href="manifold_8hpp.html#a3b740cf0687cfa7b42bac9faab6635c6">smooth::cast</a></div><div class="ttdeci">CastT&lt; NewScalar, M &gt; cast(const M &amp;m)</div><div class="ttdoc">Cast to different scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00274">manifold.hpp:274</a></div></div>

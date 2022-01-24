@@ -1,16 +1,17 @@
 <map id="include/smooth/lie_group.hpp" name="include/smooth/lie_group.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="390,5,517,47"/>
-<area shape="rect" id="node2" href="$bundle_8hpp_source.html" title=" " alt="" coords="5,102,181,129"/>
-<area shape="rect" id="node3" href="$c1_8hpp_source.html" title=" " alt="" coords="107,191,259,218"/>
-<area shape="rect" id="node4" href="$se2_8hpp_source.html" title=" " alt="" coords="283,191,442,218"/>
-<area shape="rect" id="node6" href="$se3_8hpp_source.html" title=" " alt="" coords="810,191,969,218"/>
-<area shape="rect" id="node8" href="$so2_8hpp_source.html" title=" " alt="" coords="257,102,415,129"/>
-<area shape="rect" id="node9" href="$so3_8hpp_source.html" title=" " alt="" coords="794,102,953,129"/>
-<area shape="rect" id="node10" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="491,95,645,136"/>
-<area shape="rect" id="node5" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="291,273,439,315"/>
-<area shape="rect" id="node7" href="$ros_8hpp.html" title="ROS message compatablity header." alt="" coords="811,273,968,315"/>
-<area shape="rect" id="node11" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="638,184,786,225"/>
-<area shape="rect" id="node13" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="466,184,614,225"/>
-<area shape="rect" id="node12" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="638,273,786,315"/>
-<area shape="rect" id="node14" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="466,273,614,315"/>
+<area shape="rect" id="node1" title=" " alt="" coords="494,5,621,47"/>
+<area shape="rect" id="node2" href="$hessian_8hpp.html" title="Algorithms for computations of Hessians." alt="" coords="5,95,144,136"/>
+<area shape="rect" id="node3" href="$bundle_8hpp_source.html" title=" " alt="" coords="168,102,344,129"/>
+<area shape="rect" id="node4" href="$c1_8hpp_source.html" title=" " alt="" coords="269,191,421,218"/>
+<area shape="rect" id="node5" href="$se2_8hpp_source.html" title=" " alt="" coords="446,191,605,218"/>
+<area shape="rect" id="node7" href="$se3_8hpp_source.html" title=" " alt="" coords="973,191,1131,218"/>
+<area shape="rect" id="node9" href="$so2_8hpp_source.html" title=" " alt="" coords="419,102,578,129"/>
+<area shape="rect" id="node10" href="$so3_8hpp_source.html" title=" " alt="" coords="957,102,1115,129"/>
+<area shape="rect" id="node11" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="653,95,808,136"/>
+<area shape="rect" id="node6" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="454,273,602,315"/>
+<area shape="rect" id="node8" href="$ros_8hpp.html" title="ROS message compatablity header." alt="" coords="973,273,1131,315"/>
+<area shape="rect" id="node12" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="801,184,949,225"/>
+<area shape="rect" id="node14" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="629,184,777,225"/>
+<area shape="rect" id="node13" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="801,273,949,315"/>
+<area shape="rect" id="node15" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="629,273,777,315"/>
 </map>

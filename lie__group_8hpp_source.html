@@ -124,7 +124,7 @@ $(function() {
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> G&gt;</div>
 <div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">   57</a></span>&#160;concept <a class="code" href="lie__group_8hpp.html#aa5ac6cbd43fb18cb0a5b50327627e716">LieGroup</a> =</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;requires (Eigen::Index dof) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> (Eigen::Index dof) {</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="comment">// Underlying scalar type</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keyword">typename</span> <a class="code" href="structsmooth_1_1traits_1_1lie.html">traits::lie&lt;G&gt;::Scalar</a>;</div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="comment">// Default representation</span></div>
@@ -152,7 +152,7 @@ $(function() {
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  {traits::lie&lt;G&gt;::log(g1)}-&gt;std::convertible_to&lt;Eigen::Vector&lt;typename traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof&gt;&gt;;</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;} &amp;&amp;</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">// TANGENT INTERFACE</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;<span class="keyword">typename</span> traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof&gt; &amp; a) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;<span class="keyword">typename</span> traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof&gt; &amp; a) {</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// Algebra adjoint</span></div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  {traits::lie&lt;G&gt;::ad(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof, traits::lie&lt;G&gt;::Dof&gt;&gt;;</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="comment">// Algebra exponential (maps from algebra to group)</span></div>
@@ -164,7 +164,7 @@ $(function() {
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;} &amp;&amp; (</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="comment">// Cast to different scalar type</span></div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  !std::is_convertible_v&lt;typename traits::lie&lt;G&gt;::Scalar, <span class="keywordtype">double</span>&gt; ||</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a> (<span class="keyword">const</span> G &amp; g) {</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> (<span class="keyword">const</span> G &amp; g) {</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    {traits::lie&lt;G&gt;::template cast&lt;double&gt;(g)};</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;) &amp;&amp; (</div>
@@ -181,7 +181,7 @@ $(function() {
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> G&gt;</div>
-<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5">  123</a></span>&#160;concept <a class="code" href="lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5">NativeLieGroup</a> = requires</div>
+<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5">  123</a></span>&#160;concept <a class="code" href="lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5">NativeLieGroup</a> = <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a></div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;{</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="keyword">typename</span> G::Scalar;</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keyword">typename</span> G::Tangent;</div>
@@ -192,12 +192,12 @@ $(function() {
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  {G::Identity()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  {G::Random()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}) &amp;&amp;</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;(!(G::Dof == -1) || <a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a> (Eigen::Index dof) {</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;(!(G::Dof == -1) || <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> (Eigen::Index dof) {</div>
 <div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  {G::Identity(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  {G::Random(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;}) &amp;&amp;</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;(G::Tangent::SizeAtCompileTime == G::Dof) &amp;&amp;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a>(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
 <div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  {g1.dof()}-&gt;std::convertible_to&lt;Eigen::Index&gt;;  <span class="comment">// degrees of freedom at runtime</span></div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;  {g1.Ad()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;  {g1 * g2}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
@@ -205,7 +205,7 @@ $(function() {
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  {g1.isApprox(g2, eps)}-&gt;std::convertible_to&lt;<span class="keywordtype">bool</span>&gt;;</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  {g1.log()}-&gt;std::convertible_to&lt;Eigen::Vector&lt;typename G::Scalar, G::Dof&gt;&gt;;</div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;} &amp;&amp;</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<a class="code" href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;typename G::Scalar, G::Dof&gt; &amp; a) {</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;typename G::Scalar, G::Dof&gt; &amp; a) {</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  {G::ad(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  {G::exp(a)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  {G::dr_exp(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
@@ -414,7 +414,7 @@ $(function() {
 <div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;};</div>
 <div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
 <div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;<span class="keyword">template</span>&lt;LieGroup G&gt;</div>
-<div class="line"><a name="l00374"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">  374</a></span>&#160;  requires(!RnType&lt;G&gt; &amp;&amp; !ScalarType&lt;G&gt;)</div>
+<div class="line"><a name="l00374"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a">  374</a></span>&#160;  <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(!RnType&lt;G&gt; &amp;&amp; !ScalarType&lt;G&gt;)</div>
 <div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="keyword">struct </span><a class="code" href="structsmooth_1_1traits_1_1man.html">man</a>&lt;G&gt;</div>
 <div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;{</div>
 <div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;  <span class="comment">// \cond</span></div>
@@ -458,7 +458,7 @@ $(function() {
 <div class="line"><a name="l00423"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#a823a7beb922b5b2da3dd40719973ac9c">  423</a></span>&#160;<span class="keyword">inline</span> <a class="code" href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">PlainObject&lt;G&gt;</a> <a class="code" href="lie__group_8hpp.html#a823a7beb922b5b2da3dd40719973ac9c">Identity</a>(Eigen::Index dof) { <span class="keywordflow">return</span> <a class="code" href="structsmooth_1_1traits_1_1lie.html">traits::lie&lt;G&gt;::Identity</a>(<a class="code" href="manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2">dof</a>); }</div>
 <div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160; </div>
 <div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;<span class="keyword">template</span>&lt;LieGroup G&gt;</div>
-<div class="line"><a name="l00429"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#a49d10309779e791721f8659c41125ecf">  429</a></span>&#160;  requires(Dof&lt;G&gt; &gt; 0)</div>
+<div class="line"><a name="l00429"></a><span class="lineno"><a class="line" href="lie__group_8hpp.html#a49d10309779e791721f8659c41125ecf">  429</a></span>&#160;  <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(Dof&lt;G&gt; &gt; 0)</div>
 <div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;inline <a class="code" href="manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f">PlainObject</a>&lt;G&gt; Identity() { <span class="keywordflow">return</span> <a class="code" href="structsmooth_1_1traits_1_1lie.html">traits::lie&lt;G&gt;::Identity</a>(Dof&lt;G&gt;); }</div>
 <div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160; </div>
 <div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;<span class="keyword">template</span>&lt;LieGroup G&gt;</div>
@@ -563,7 +563,7 @@ $(function() {
 <div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;}  <span class="comment">// namespace smooth</span></div>
 <div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160; </div>
 <div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__LIE_GROUP_HPP_</span></div>
-<div class="ttc" id="aautodiff_8hpp_html_a92581e05523c2008509ddbcb1fea2057"><div class="ttname"><a href="autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057">smooth::diff::requires</a></div><div class="ttdeci">requires(K &gt;=1 &amp;&amp;K&lt;=2) auto dr_autodiff(auto &amp;&amp;f</div><div class="ttdoc">Automatic differentiation in tangent space using the autodiff library.</div></div>
+<div class="ttc" id="ahessian_8hpp_html_a9213aea932a7d7a4eddb23318cb03828"><div class="ttname"><a href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) TangentMap&lt; G &gt; hessian_rminus(const G &amp;x</div><div class="ttdoc">Compute approximate Hessian (second derivative) of the squared norm of rminus.</div></div>
 <div class="ttc" id="alie__group_8hpp_html_a053344c2ccfb9be92974d4c94f4be30d"><div class="ttname"><a href="lie__group_8hpp.html#a053344c2ccfb9be92974d4c94f4be30d">smooth::Random</a></div><div class="ttdeci">PlainObject&lt; G &gt; Random(Eigen::Index dof)</div><div class="ttdoc">Random element in Lie group.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00438">lie_group.hpp:438</a></div></div>
 <div class="ttc" id="alie__group_8hpp_html_a08f7b83e6e2f98323382899350bacbd5"><div class="ttname"><a href="lie__group_8hpp.html#a08f7b83e6e2f98323382899350bacbd5">smooth::NativeLieGroup</a></div><div class="ttdeci">concept NativeLieGroup</div><div class="ttdoc">Concept defining class with an internal Lie group interface.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00123">lie_group.hpp:123</a></div></div>
 <div class="ttc" id="alie__group_8hpp_html_a15303495c151c8b8db41cc5bd47a2aae"><div class="ttname"><a href="lie__group_8hpp.html#a15303495c151c8b8db41cc5bd47a2aae">smooth::inverse</a></div><div class="ttdeci">PlainObject&lt; G &gt; inverse(const G &amp;g)</div><div class="ttdoc">Group inverse.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00478">lie_group.hpp:478</a></div></div>
