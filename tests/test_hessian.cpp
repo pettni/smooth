@@ -101,3 +101,60 @@ TEST(Hessian, Rminus)
     ASSERT_TRUE(d2rf_n.isApprox(dj_a, 1e-3));
   }
 }
+
+TEST(Hessian, experiment)
+{
+  using G    = smooth::SE3d;
+  using Tngt = smooth::Tangent<G>;
+
+  const auto f1 = [](const Tngt & x) -> Tngt {
+    const smooth::TangentMap<G> ad = smooth::ad<G>(x);
+    return x.transpose() * ad;
+  };
+
+  const auto f2 = [](const Tngt & x) -> Tngt {
+    const smooth::TangentMap<G> ad = smooth::ad<G>(x);
+    return x.transpose() * ad * ad;
+  };
+
+  const auto f3 = [](const Tngt & x) -> Tngt {
+    const smooth::TangentMap<G> ad = smooth::ad<G>(x);
+    return x.transpose() * ad * ad * ad;
+  };
+
+  const Tngt e = Tngt::Random();
+
+  const auto [F1_eval, dF1_eval] =
+    smooth::diff::dr<1, smooth::diff::Type::Numerical>(f1, smooth::wrt(e));
+  const auto [F2_eval, dF2_eval] =
+    smooth::diff::dr<1, smooth::diff::Type::Numerical>(f2, smooth::wrt(e));
+  const auto [F3_eval, dF3_eval] =
+    smooth::diff::dr<1, smooth::diff::Type::Numerical>(f3, smooth::wrt(e));
+
+  smooth::Tangent<G> F1     = smooth::ad<G>(e).transpose() * e;
+  smooth::TangentMap<G> dF1 = smooth::ad<G>(e).transpose();
+  for (auto i = 0; i < smooth::Dof<G>; ++i) {
+    dF1.row(i) -= e.transpose() * smooth::ad<G>(Tngt::Unit(i));
+  }
+
+  smooth::Tangent<G> F2     = smooth::ad<G>(e).transpose() * F1;
+  smooth::TangentMap<G> dF2 = smooth::ad<G>(e).transpose() * dF1;
+  for (auto i = 0; i < smooth::Dof<G>; ++i) {
+    dF2.row(i) -= F1.transpose() * smooth::ad<G>(Tngt::Unit(i));
+  }
+
+  // smooth::Tangent<G> F3     = F2 * smooth::ad<G>(e);
+  smooth::TangentMap<G> dF3 = smooth::ad<G>(e).transpose() * dF2;
+  for (auto i = 0; i < smooth::Dof<G>; ++i) {
+    dF3.row(i) -= F2.transpose() * smooth::ad<G>(Tngt::Unit(i));
+  }
+
+  std::cout << "dF1_eval\n" << dF1_eval << std::endl;
+  std::cout << "dF1_anal\n" << dF1 << std::endl;
+
+  std::cout << "dF2_eval\n" << dF2_eval << std::endl;
+  std::cout << "dF2_anal\n" << dF2 << std::endl;
+
+  std::cout << "dF3_eval\n" << dF3_eval << std::endl;
+  std::cout << "dF3_anal\n" << dF3 << std::endl;
+}
