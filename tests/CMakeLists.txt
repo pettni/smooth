@@ -88,6 +88,10 @@ add_executable(test_nlreg test_nlreg.cpp)
 target_link_libraries(test_nlreg PRIVATE smooth GTest::Main)
 gtest_discover_tests(test_nlreg)
 
+add_executable(test_hessian test_hessian.cpp)
+target_link_libraries(test_hessian PRIVATE smooth GTest::Main autodiff::autodiff)
+gtest_discover_tests(test_hessian)
+
 # COMPATABILITY TESTS
 
 find_package(Boost QUIET)
@@ -99,6 +103,7 @@ if(autodiff_FOUND)
   target_compile_definitions(test_diff PRIVATE ENABLE_AUTODIFF_TESTS)
   target_compile_definitions(test_spline PRIVATE ENABLE_AUTODIFF_TESTS)
   target_compile_definitions(test_cspline PRIVATE ENABLE_AUTODIFF_TESTS)
+  target_compile_definitions(test_hessian PRIVATE ENABLE_AUTODIFF_TESTS)
 
   target_link_libraries(test_diff PRIVATE autodiff::autodiff)
   target_link_libraries(test_spline PRIVATE autodiff::autodiff)
