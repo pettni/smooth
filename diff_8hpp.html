@@ -174,14 +174,14 @@ const Scalar&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff:
 <tr class="memitem:ab04c5ac0f98a06206f2fe1b8f2cd34f8"><td class="memItemLeft" align="right" valign="top"><a id="ab04c5ac0f98a06206f2fe1b8f2cd34f8"></a>
 auto&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::x_nc</b> = wrt_copy_if_const(std::forward&lt;Wrt&gt;(x))</td></tr>
 <tr class="separator:ab04c5ac0f98a06206f2fe1b8f2cd34f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2810ee966fdd0ab5cd2ef874e22f5cfe"><td class="memItemLeft" align="right" valign="top"><a id="a2810ee966fdd0ab5cd2ef874e22f5cfe"></a>
-Result&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::F</b> = std::apply(f, x_nc)</td></tr>
-<tr class="separator:a2810ee966fdd0ab5cd2ef874e22f5cfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a075c25b7107941576dee67e6feabe5"><td class="memItemLeft" align="right" valign="top"><a id="a7a075c25b7107941576dee67e6feabe5"></a>
+Result&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::fval</b> = std::apply(f, x_nc)</td></tr>
+<tr class="separator:a7a075c25b7107941576dee67e6feabe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28d0bb0f2123ac493663594f048df4a4"><td class="memItemLeft" align="right" valign="top"><a id="a28d0bb0f2123ac493663594f048df4a4"></a>
 Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::nx</b> = std::apply([](auto &amp;&amp;... args) { return (dof(args) + ...); }, x_nc)</td></tr>
 <tr class="separator:a28d0bb0f2123ac493663594f048df4a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeaa60484ab277c2f484acdcb9cd61870"><td class="memItemLeft" align="right" valign="top"><a id="aeaa60484ab277c2f484acdcb9cd61870"></a>
-Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::ny</b> = dof&lt;Result&gt;(F)</td></tr>
+Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::ny</b> = dof&lt;Result&gt;(fval)</td></tr>
 <tr class="separator:aeaa60484ab277c2f484acdcb9cd61870"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -223,7 +223,7 @@ Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff:
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00178">178</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00179">179</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -259,11 +259,13 @@ template&lt;std::size_t K, Type D&gt; </div>
 <p>Differentiation in tangent space. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">K</td><td>differentiation order (1 or 2) </td></tr>
+    <tr><td class="paramname">K</td><td>differentiation order (0, 1 or 2) </td></tr>
     <tr><td class="paramname">D</td><td>differentiation method to use</td></tr>
   </table>
   </dd>
 </dl>
+<p>First derivatives are returned as a matrix df s.t. df(i, j) = dfi / dxj, where fi is the i:th degree of freedom of f, and xj the j:th degree of freedom of x.</p>
+<p>Second derivatives are stored as d2f = [ d2f0 d2f1 ... d2fN ], where d2fi(j, k) = d2fi / dxjxk is the Hessian of the i:th degree of freedom of f.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>function to differentiate </td></tr>
@@ -271,12 +273,12 @@ template&lt;std::size_t K, Type D&gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>{f(x), dr f(x)} for K = 1, {f(x), dr f(x), d2r f(x)} for K = 2</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>{f(x)} for K = 0, {f(x), dr f(x)} for K = 1, {f(x), dr f(x), d2r f(x)} for K = 2</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Only scalar functions suppored for K = 2</dd>
 <dd>
 All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00214">214</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00228">228</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -325,7 +327,7 @@ template&lt;std::size_t K = 1&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00262">262</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00296">296</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
