@@ -265,7 +265,7 @@ template&lt;std::size_t K, Type D&gt; </div>
   </dd>
 </dl>
 <p>First derivatives are returned as a matrix df s.t. df(i, j) = dfi / dxj, where fi is the i:th degree of freedom of f, and xj the j:th degree of freedom of x.</p>
-<p>Second derivatives are stored as d2f = [ d2f0 d2f1 ... d2fN ], where d2fi(j, k) = d2fi / dxjxk is the Hessian of the i:th degree of freedom of f.</p>
+<p>Second derivatives are stored as a horizontally stacked block matrix d2f = [ d2f0 d2f1 ... d2fN ], where d2fi(j, k) = d2fi / dxjxk is the Hessian of the i:th degree of freedom of f.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">f</td><td>function to differentiate </td></tr>
@@ -278,7 +278,7 @@ template&lt;std::size_t K, Type D&gt; </div>
 <dd>
 All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00228">228</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00223">223</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -327,7 +327,7 @@ template&lt;std::size_t K = 1&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00296">296</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00291">291</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>

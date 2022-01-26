@@ -174,7 +174,7 @@ $(function() {
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    };</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    Matrix&lt;Scalar, Ny, Nx&gt; J(ny, nx);</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    Matrix&lt;Scalar, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny, Nx&gt; H(nx * ny, nx);</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    Matrix&lt;Scalar, Nx, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny&gt; H(nx, nx * ny);</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="comment">// zero-valued tangent elements</span></div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    Matrix&lt;AdScalar, Nx, 1&gt; a_ad1 = Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
@@ -191,7 +191,7 @@ $(function() {
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;              autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; ny; ++k) {</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;              J(k, i)          = <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(autodiff::detail::derivative&lt;1&gt;(u[k]));</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;              H(k * nx + j, i) = autodiff::detail::derivative&lt;2&gt;(u[k]);</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;              H(j, k * nx + i) = autodiff::detail::derivative&lt;2&gt;(u[k]);</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            }</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;          });</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;      });</div>

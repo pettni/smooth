@@ -176,7 +176,7 @@ $(function() {
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="keywordflow">if</span> constexpr (K == 2) {</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> sqrteps = std::sqrt(eps);</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    Eigen::Matrix&lt;Scalar, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny, Nx&gt; H(nx * ny, nx);</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    Eigen::Matrix&lt;Scalar, Nx, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny&gt; H(nx, nx * ny);</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    Eigen::Index I0 = 0;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    utils::static_for&lt;NumArgs&gt;([&amp;](<span class="keyword">auto</span> i0) {</div>
@@ -223,7 +223,7 @@ $(function() {
 <div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            w1               = rplus&lt;W1&gt;(w1, -eps1 * Eigen::Vector&lt;Scalar, Nx_i1&gt;::Unit(nx_i1, k1));</div>
 <div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            <span class="keyword">const</span> Eigen::Matrix&lt;Scalar, Ny, 1&gt; d2 = (<a class="code" href="manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231">rminus</a>(F11, F01) - d1) / eps0 / eps1;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; ny; ++j) { H(j * nx + I0 + k0, I1 + k1) = d2(j); }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; ny; ++j) { H(I0 + k0, j * nx + I1 + k1) = d2(j); }</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;          }</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        }</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        I1 += nx_i1;</div>
@@ -254,74 +254,74 @@ $(function() {
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  Type::Numerical;</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, Type D&gt;</div>
-<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">  228</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x)</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;{</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;  <span class="keyword">using</span> F   = decltype(f);</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  <span class="keyword">using</span> Wrt = decltype(x);</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, Type D&gt;</div>
+<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">  223</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x)</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;{</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  <span class="keyword">using</span> F   = decltype(f);</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;  <span class="keyword">using</span> Wrt = decltype(x);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  <span class="keywordflow">if</span> constexpr (K == 0u) {</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="comment">// Only function value needed</span></div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="keywordflow">return</span> std::make_tuple(std::apply(f, x));</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;  <span class="keywordflow">if</span> constexpr (K == 0u) {</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="comment">// Only function value needed</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Numerical) {</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="comment">// Numerical</span></div>
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="keywordflow">return</span> std::make_tuple(std::apply(f, x));</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="keywordflow">return</span> detail::dr_numerical&lt;K&gt;(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Numerical) {</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="comment">// Numerical</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Autodiff) {</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="comment">// Autodiff</span></div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;    <span class="keywordflow">return</span> detail::dr_numerical&lt;K&gt;(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Autodiff) {</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="comment">// Autodiff</span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="preprocessor">#ifdef SMOOTH_DIFF_AUTODIFF</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keywordflow">return</span> dr_autodiff&lt;K&gt;(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    static_assert(D != Type::Autodiff, <span class="stringliteral">&quot;compat/autodiff.hpp must be included before diff.hpp&quot;</span>);</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Ceres) {</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;    <span class="comment">// Ceres</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">#ifdef SMOOTH_DIFF_CERES</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;    static_assert(K == 1, <span class="stringliteral">&quot;Only K = 1 supported with Ceres&quot;</span>);</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="ceres_8hpp.html#ad42f5ad6a0991cd8fcacb644fc5fa0c8">dr_ceres</a>(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    static_assert(D != Type::Ceres, <span class="stringliteral">&quot;compat/ceres.hpp header must be included before diff.hpp&quot;</span>);</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Analytic) {</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="comment">// Analytic</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <span class="keyword">auto</span> fval = std::apply(f, x);</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="keyword">auto</span> dfval =</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;      std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::jacobian), f), x);</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    <span class="keywordflow">if</span> constexpr (K == 1) {</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      <span class="keywordflow">return</span> std::make_tuple(std::move(fval), std::move(dfval));</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (K == 2) {</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;      <span class="keyword">auto</span> d2fval =</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::hessian), f), x);</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;      <span class="keywordflow">return</span> std::make_tuple(fval, dfval, d2fval);</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    }</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Default) {</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="comment">// Default</span></div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="keywordflow">return</span> dr&lt;K, DefaultType&gt;(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;  }</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;}</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K = 1&gt;</div>
-<div class="line"><a name="l00296"></a><span class="lineno"><a class="line" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">  296</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x)</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;{</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <span class="keywordflow">return</span> dr&lt;K, Type::Default&gt;(std::forward&lt;decltype(f)&gt;(f), std::forward&lt;decltype(x)&gt;(x));</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;}</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;}  <span class="comment">// namespace diff</span></div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;}  <span class="comment">// namespace smooth</span></div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__DIFF_HPP_</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">#ifdef SMOOTH_DIFF_AUTODIFF</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="keywordflow">return</span> dr_autodiff&lt;K&gt;(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    static_assert(D != Type::Autodiff, <span class="stringliteral">&quot;compat/autodiff.hpp must be included before diff.hpp&quot;</span>);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Ceres) {</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;    <span class="comment">// Ceres</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="preprocessor">#ifdef SMOOTH_DIFF_CERES</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    static_assert(K == 1, <span class="stringliteral">&quot;Only K = 1 supported with Ceres&quot;</span>);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="ceres_8hpp.html#ad42f5ad6a0991cd8fcacb644fc5fa0c8">dr_ceres</a>(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    static_assert(D != Type::Ceres, <span class="stringliteral">&quot;compat/ceres.hpp header must be included before diff.hpp&quot;</span>);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Analytic) {</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="comment">// Analytic</span></div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="keyword">auto</span> fval = std::apply(f, x);</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keyword">auto</span> dfval =</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;      std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::jacobian), f), x);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    <span class="keywordflow">if</span> constexpr (K == 1) {</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;      <span class="keywordflow">return</span> std::make_tuple(std::move(fval), std::move(dfval));</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (K == 2) {</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;      <span class="keyword">auto</span> d2fval =</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::hessian), f), x);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;      <span class="keywordflow">return</span> std::make_tuple(fval, dfval, d2fval);</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> constexpr (D == Type::Default) {</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="comment">// Default</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="keywordflow">return</span> dr&lt;K, DefaultType&gt;(std::forward&lt;F&gt;(f), std::forward&lt;Wrt&gt;(x));</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  }</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;}</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;<span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K = 1&gt;</div>
+<div class="line"><a name="l00291"></a><span class="lineno"><a class="line" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">  291</a></span>&#160;<span class="keyword">auto</span> <a class="code" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x)</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;{</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="keywordflow">return</span> dr&lt;K, Type::Default&gt;(std::forward&lt;decltype(f)&gt;(f), std::forward&lt;decltype(x)&gt;(x));</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;}</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;}  <span class="comment">// namespace diff</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160; </div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__DIFF_HPP_</span></div>
 <div class="ttc" id="aceres_8hpp_html_ad42f5ad6a0991cd8fcacb644fc5fa0c8"><div class="ttname"><a href="ceres_8hpp.html#ad42f5ad6a0991cd8fcacb644fc5fa0c8">smooth::dr_ceres</a></div><div class="ttdeci">auto dr_ceres(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Automatic differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="ceres_8hpp_source.html#l00080">ceres.hpp:80</a></div></div>
-<div class="ttc" id="adiff_8hpp_html_ad20b9b1df460866e786b8c62aac8b292"><div class="ttname"><a href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a></div><div class="ttdeci">auto dr(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00228">diff.hpp:228</a></div></div>
+<div class="ttc" id="adiff_8hpp_html_ad20b9b1df460866e786b8c62aac8b292"><div class="ttname"><a href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a></div><div class="ttdeci">auto dr(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Differentiation in tangent space.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00223">diff.hpp:223</a></div></div>
 <div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2">smooth::diff::Type</a></div><div class="ttdeci">Type</div><div class="ttdoc">Available differentiation methods.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00179">diff.hpp:179</a></div></div>
 <div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2a5225763efc97aebd39e5a303fceb57ac"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a5225763efc97aebd39e5a303fceb57ac">smooth::diff::Type::Numerical</a></div><div class="ttdeci">@ Numerical</div><div class="ttdoc">Numerical (forward) derivatives.</div></div>
 <div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791">smooth::diff::Type::Analytic</a></div><div class="ttdeci">@ Analytic</div></div>
