@@ -99,20 +99,16 @@ auto dr_autodiff(auto && f, auto && x)
 
     J = autodiff::jacobian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad));
     return std::make_pair(std::move(F), std::move(J));
-  }
-
-  if constexpr (K == 2) {
-    static_assert(Ny == 1, "2nd derivative only implemented for scalar functions");
-
+  } else if constexpr (K == 2) {
     // function to differentiate
     const auto f_ad = [&f, &x_ad, &F_ad](
                         Matrix<AdScalar, Nx, 1> & var1,
-                        Matrix<AdScalar, Nx, 1> & var2) -> AdScalar {
-      return rminus(std::apply(f, wrt_rplus(wrt_rplus(x_ad, var1), var2)), F_ad).x();
+                        Matrix<AdScalar, Nx, 1> & var2) -> Matrix<AdScalar, Ny, 1> {
+      return rminus(std::apply(f, wrt_rplus(wrt_rplus(x_ad, var1), var2)), F_ad);
     };
 
     Matrix<Scalar, Ny, Nx> J(ny, nx);
-    Matrix<Scalar, Nx, Nx> H(nx, nx);
+    Matrix<Scalar, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny, Nx> H(nx * ny, nx);
 
     // zero-valued tangent elements
     Matrix<AdScalar, Nx, 1> a_ad1 = Matrix<AdScalar, Nx, 1>::Zero(nx);
@@ -127,8 +123,10 @@ auto dr_autodiff(auto && f, auto && x)
           a_wrt2, [&](auto && j, auto && xj) constexpr {
             const auto u =
               autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));
-            J(i)    = static_cast<double>(autodiff::detail::derivative<1>(u));
-            H(j, i) = autodiff::detail::derivative<2>(u);
+            for (auto k = 0u; k < ny; ++k) {
+              J(k, i)          = static_cast<double>(autodiff::detail::derivative<1>(u[k]));
+              H(k * nx + j, i) = autodiff::detail::derivative<2>(u[k]);
+            }
           });
       });
 

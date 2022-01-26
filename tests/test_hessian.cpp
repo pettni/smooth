@@ -127,3 +127,73 @@ TEST(Hessian, RminusSE3)
 #endif
   }
 }
+
+TEST(Hessian, ScalarFunc)
+{
+  const auto fun = []<typename T>(Eigen::VectorX<T> x) -> Eigen::VectorX<T> {
+    return (x * x.transpose()).colwise().sum();
+  };
+
+  const auto fun1 = [&fun](Eigen::VectorXd x) -> double { return fun(x)(0); };
+  const auto fun2 = [&fun](Eigen::VectorXd x) -> double { return fun(x)(1); };
+  const auto fun3 = [&fun](Eigen::VectorXd x) -> double { return fun(x)(2); };
+  const auto fun4 = [&fun](Eigen::VectorXd x) -> double { return fun(x)(3); };
+  const auto fun5 = [&fun](Eigen::VectorXd x) -> double { return fun(x)(4); };
+
+  Eigen::VectorXd x = Eigen::VectorXd::Random(5);
+
+  const auto [f, df, d2f] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun, smooth::wrt(x));
+
+  const auto [f1, df1, d2f1] =
+    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun1, smooth::wrt(x));
+  const auto [f2, df2, d2f2] =
+    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun2, smooth::wrt(x));
+  const auto [f3, df3, d2f3] =
+    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun3, smooth::wrt(x));
+  const auto [f4, df4, d2f4] =
+    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun4, smooth::wrt(x));
+  const auto [f5, df5, d2f5] =
+    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun5, smooth::wrt(x));
+
+  ASSERT_EQ(d2f.rows(), 25);
+  ASSERT_EQ(d2f.cols(), 5);
+
+  ASSERT_TRUE(d2f1.isApprox(d2f.middleRows(0, 5)));
+  ASSERT_TRUE(d2f2.isApprox(d2f.middleRows(5, 5)));
+  ASSERT_TRUE(d2f3.isApprox(d2f.middleRows(10, 5)));
+  ASSERT_TRUE(d2f4.isApprox(d2f.middleRows(15, 5)));
+  ASSERT_TRUE(d2f5.isApprox(d2f.middleRows(20, 5)));
+
+#ifdef ENABLE_AUTODIFF_TESTS
+  const auto [f_ad, df_ad, d2f_ad] =
+    smooth::diff::dr<2, smooth::diff::Type::Autodiff>(fun, smooth::wrt(x));
+  ASSERT_TRUE(d2f_ad.isApprox(d2f, 1e-3));
+#endif
+}
+
+TEST(Hessian, Rminus_full)
+{
+  using G = smooth::SE3d;
+
+  const auto x = G::Random(), y = G::Random();
+
+  const auto f = [&y]<typename T>(smooth::SE3<T> x) -> Eigen::Vector3<T> {
+    return (x - y.template cast<T>()).template head<3>();
+  };
+
+  const auto [f_num, df_num, d2f_num] =
+    smooth::diff::dr<2, smooth::diff::Type::Numerical>(f, smooth::wrt(x));
+
+  ASSERT_EQ(df_num.rows(), 3);
+  ASSERT_EQ(df_num.cols(), 6);
+  ASSERT_EQ(d2f_num.rows(), 3 * 6);
+  ASSERT_EQ(d2f_num.cols(), 6);
+
+#ifdef ENABLE_AUTODIFF_TESTS
+  const auto [f_ad, df_ad, d2f_ad] =
+    smooth::diff::dr<2, smooth::diff::Type::Autodiff>(f, smooth::wrt(x));
+  ASSERT_TRUE(f_ad.isApprox(f_num, 1e-3));
+  ASSERT_TRUE(df_ad.isApprox(df_num, 1e-3));
+  ASSERT_TRUE(d2f_ad.isApprox(d2f_num, 1e-3));
+#endif
+}

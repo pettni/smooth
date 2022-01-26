@@ -69,8 +69,8 @@ auto dr_numerical(auto && f, auto && x)
   const Scalar eps = std::sqrt(Eigen::NumTraits<Scalar>::epsilon());
 
   // arguments are modified below, so we create a copy of those that come in as const
-  auto x_nc = wrt_copy_if_const(std::forward<Wrt>(x));
-  Result F  = std::apply(f, x_nc);
+  auto x_nc   = wrt_copy_if_const(std::forward<Wrt>(x));
+  Result fval = std::apply(f, x_nc);
 
   // static sizes
   static constexpr Eigen::Index Nx = wrt_Dof<Wrt>();
@@ -78,7 +78,7 @@ auto dr_numerical(auto && f, auto && x)
 
   // dynamic sizes
   Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x_nc);
-  Eigen::Index ny = dof<Result>(F);
+  Eigen::Index ny = dof<Result>(fval);
 
   // output variable
   Eigen::Matrix<Scalar, Ny, Nx> J(ny, nx);
@@ -100,21 +100,19 @@ auto dr_numerical(auto && f, auto && x)
           if (eps_j == 0.) { eps_j = eps; }
         }
         w             = rplus<W>(w, (eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
-        J.col(I0 + j) = rminus<Result>(std::apply(f, x_nc), F) / eps_j;
+        J.col(I0 + j) = rminus<Result>(std::apply(f, x_nc), fval) / eps_j;
         w             = rplus<W>(w, (-eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
       }
       I0 += nx_j;
     });
 
-    return std::make_pair(std::move(F), std::move(J));
+    return std::make_pair(std::move(fval), std::move(J));
   }
 
   if constexpr (K == 2) {
-    static_assert(Ny == 1, "2nd derivative only implemented for scalar functions");
-
     const auto sqrteps = std::sqrt(eps);
 
-    Eigen::Matrix<Scalar, Nx, Nx> H(nx, nx);
+    Eigen::Matrix<Scalar, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny, Nx> H(nx * ny, nx);
 
     Eigen::Index I0 = 0;
     utils::static_for<NumArgs>([&](auto i0) {
@@ -141,7 +139,9 @@ auto dr_numerical(auto && f, auto && x)
           const Result F10 = std::apply(f, x_nc);
           w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
 
-          J(0, I0 + k0) = (F10 - F) / eps0;
+          const Eigen::Matrix<Scalar, Ny, 1> d1 = rminus(F10, fval);
+
+          J.col(I0 + k0) = d1 / eps0;
 
           for (auto k1 = 0; k1 < nx_i1; ++k1) {
             Scalar eps1 = sqrteps;
@@ -158,7 +158,8 @@ auto dr_numerical(auto && f, auto && x)
             w0               = rplus<W0>(w0, -eps0 * Eigen::Vector<Scalar, Nx_i0>::Unit(nx_i0, k0));
             w1               = rplus<W1>(w1, -eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, k1));
 
-            H(I0 + k0, I1 + k1) = (F11 - F01 - F10 + F) / eps0 / eps1;
+            const Eigen::Matrix<Scalar, Ny, 1> d2 = (rminus(F11, F01) - d1) / eps0 / eps1;
+            for (auto j = 0u; j < ny; ++j) { H(j * nx + I0 + k0, I1 + k1) = d2(j); }
           }
         }
         I1 += nx_i1;
@@ -166,7 +167,7 @@ auto dr_numerical(auto && f, auto && x)
       I0 += nx_i0;
     });
 
-    return std::make_tuple(std::move(F), std::move(J), std::move(H));
+    return std::make_tuple(std::move(fval), std::move(J), std::move(H));
   }
 }
 
@@ -198,12 +199,25 @@ static constexpr Type DefaultType =
 /**
  * @brief Differentiation in tangent space
  *
- * @tparam K differentiation order (1 or 2)
+ * @tparam K differentiation order (0, 1 or 2)
  * @tparam D differentiation method to use
+ *
+ * First derivatives are returned as a matrix df s.t.
+ * df(i, j) = dfi / dxj, where fi is the i:th degree of freedom of f, and xj the j:th degree of
+ * freedom of x.
+ *
+ * Second derivatives are stored as
+ * d2f = [
+ *   d2f0
+ *   d2f1
+ *   ...
+ *   d2fN
+ * ],
+ * where d2fi(j, k) = d2fi / dxjxk is the Hessian of the i:th degree of freedom of f.
  *
  * @param f function to differentiate
  * @param x reference tuple of function arguments
- * @return {f(x), dr f(x)} for K = 1, {f(x), dr f(x), d2r f(x)} for K = 2
+ * @return {f(x)} for K = 0, {f(x), dr f(x)} for K = 1, {f(x), dr f(x), d2r f(x)} for K = 2
  *
  * @note Only scalar functions suppored for K = 2
  *
@@ -216,32 +230,52 @@ auto dr(auto && f, auto && x)
   using F   = decltype(f);
   using Wrt = decltype(x);
 
-  if constexpr (D == Type::Numerical) {
+  if constexpr (K == 0u) {
+    // Only function value needed
+
+    return std::make_tuple(std::apply(f, x));
+
+  } else if constexpr (D == Type::Numerical) {
+    // Numerical
+
     return detail::dr_numerical<K>(std::forward<F>(f), std::forward<Wrt>(x));
+
   } else if constexpr (D == Type::Autodiff) {
+    // Autodiff
+
 #ifdef SMOOTH_DIFF_AUTODIFF
     return dr_autodiff<K>(std::forward<F>(f), std::forward<Wrt>(x));
 #else
-    static_assert(D != Type::Autodiff, "compat/autodiff.hpp header not included");
+    static_assert(D != Type::Autodiff, "compat/autodiff.hpp must be included before diff.hpp");
 #endif
+
   } else if constexpr (D == Type::Ceres) {
-    static_assert(K == 1, "Only K = 1 supported with Ceres");
+    // Ceres
+
 #ifdef SMOOTH_DIFF_CERES
+    static_assert(K == 1, "Only K = 1 supported with Ceres");
     return dr_ceres(std::forward<F>(f), std::forward<Wrt>(x));
 #else
-    static_assert(D != Type::Ceres, "compat/ceres.hpp header not included");
+    static_assert(D != Type::Ceres, "compat/ceres.hpp header must be included before diff.hpp");
 #endif
+
   } else if constexpr (D == Type::Analytic) {
-    auto F  = std::apply(f, x);
-    auto dF = std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::jacobian), f), x);
+    // Analytic
+
+    auto fval = std::apply(f, x);
+    auto dfval =
+      std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::jacobian), f), x);
     if constexpr (K == 1) {
-      return std::make_tuple(std::move(F), std::move(dF));
+      return std::make_tuple(std::move(fval), std::move(dfval));
     } else if constexpr (K == 2) {
-      auto d2F =
+      auto d2fval =
         std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::hessian), f), x);
-      return std::make_tuple(F, dF, d2F);
+      return std::make_tuple(fval, dfval, d2fval);
     }
+
   } else if constexpr (D == Type::Default) {
+    // Default
+
     return dr<K, DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
   }
 }
