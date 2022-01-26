@@ -112,7 +112,7 @@ auto dr_numerical(auto && f, auto && x)
   if constexpr (K == 2) {
     const auto sqrteps = std::sqrt(eps);
 
-    Eigen::Matrix<Scalar, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny, Nx> H(nx * ny, nx);
+    Eigen::Matrix<Scalar, Nx, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny> H(nx, nx * ny);
 
     Eigen::Index I0 = 0;
     utils::static_for<NumArgs>([&](auto i0) {
@@ -159,7 +159,7 @@ auto dr_numerical(auto && f, auto && x)
             w1               = rplus<W1>(w1, -eps1 * Eigen::Vector<Scalar, Nx_i1>::Unit(nx_i1, k1));
 
             const Eigen::Matrix<Scalar, Ny, 1> d2 = (rminus(F11, F01) - d1) / eps0 / eps1;
-            for (auto j = 0u; j < ny; ++j) { H(j * nx + I0 + k0, I1 + k1) = d2(j); }
+            for (auto j = 0u; j < ny; ++j) { H(I0 + k0, j * nx + I1 + k1) = d2(j); }
           }
         }
         I1 += nx_i1;
@@ -206,13 +206,8 @@ static constexpr Type DefaultType =
  * df(i, j) = dfi / dxj, where fi is the i:th degree of freedom of f, and xj the j:th degree of
  * freedom of x.
  *
- * Second derivatives are stored as
- * d2f = [
- *   d2f0
- *   d2f1
- *   ...
- *   d2fN
- * ],
+ * Second derivatives are stored as a horizontally stacked block matrix
+ * d2f = [ d2f0 d2f1 ... d2fN ],
  * where d2fi(j, k) = d2fi / dxjxk is the Hessian of the i:th degree of freedom of f.
  *
  * @param f function to differentiate

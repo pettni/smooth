@@ -155,14 +155,14 @@ TEST(Hessian, ScalarFunc)
   const auto [f5, df5, d2f5] =
     smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun5, smooth::wrt(x));
 
-  ASSERT_EQ(d2f.rows(), 25);
-  ASSERT_EQ(d2f.cols(), 5);
+  ASSERT_EQ(d2f.rows(), 5);
+  ASSERT_EQ(d2f.cols(), 25);
 
-  ASSERT_TRUE(d2f1.isApprox(d2f.middleRows(0, 5)));
-  ASSERT_TRUE(d2f2.isApprox(d2f.middleRows(5, 5)));
-  ASSERT_TRUE(d2f3.isApprox(d2f.middleRows(10, 5)));
-  ASSERT_TRUE(d2f4.isApprox(d2f.middleRows(15, 5)));
-  ASSERT_TRUE(d2f5.isApprox(d2f.middleRows(20, 5)));
+  ASSERT_TRUE(d2f1.isApprox(d2f.middleCols(0, 5)));
+  ASSERT_TRUE(d2f2.isApprox(d2f.middleCols(5, 5)));
+  ASSERT_TRUE(d2f3.isApprox(d2f.middleCols(10, 5)));
+  ASSERT_TRUE(d2f4.isApprox(d2f.middleCols(15, 5)));
+  ASSERT_TRUE(d2f5.isApprox(d2f.middleCols(20, 5)));
 
 #ifdef ENABLE_AUTODIFF_TESTS
   const auto [f_ad, df_ad, d2f_ad] =
@@ -186,8 +186,8 @@ TEST(Hessian, Rminus_full)
 
   ASSERT_EQ(df_num.rows(), 3);
   ASSERT_EQ(df_num.cols(), 6);
-  ASSERT_EQ(d2f_num.rows(), 3 * 6);
-  ASSERT_EQ(d2f_num.cols(), 6);
+  ASSERT_EQ(d2f_num.rows(), 6);
+  ASSERT_EQ(d2f_num.cols(), 3 * 6);
 
 #ifdef ENABLE_AUTODIFF_TESTS
   const auto [f_ad, df_ad, d2f_ad] =

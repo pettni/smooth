@@ -108,7 +108,7 @@ auto dr_autodiff(auto && f, auto && x)
     };
 
     Matrix<Scalar, Ny, Nx> J(ny, nx);
-    Matrix<Scalar, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny, Nx> H(nx * ny, nx);
+    Matrix<Scalar, Nx, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny> H(nx, nx * ny);
 
     // zero-valued tangent elements
     Matrix<AdScalar, Nx, 1> a_ad1 = Matrix<AdScalar, Nx, 1>::Zero(nx);
@@ -125,7 +125,7 @@ auto dr_autodiff(auto && f, auto && x)
               autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));
             for (auto k = 0u; k < ny; ++k) {
               J(k, i)          = static_cast<double>(autodiff::detail::derivative<1>(u[k]));
-              H(k * nx + j, i) = autodiff::detail::derivative<2>(u[k]);
+              H(j, k * nx + i) = autodiff::detail::derivative<2>(u[k]);
             }
           });
       });
