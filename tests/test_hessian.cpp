@@ -60,7 +60,7 @@ struct Functor
 
   Eigen::Matrix<double, smooth::Dof<G>, smooth::Dof<G>> hessian(const G & x) const
   {
-    return hessian_rminus(x, xd);
+    return hessian_rminus_norm(x, xd);
   }
 };
 
@@ -196,4 +196,21 @@ TEST(Hessian, Rminus_full)
   ASSERT_TRUE(df_ad.isApprox(df_num, 1e-3));
   ASSERT_TRUE(d2f_ad.isApprox(d2f_num, 1e-3));
 #endif
+}
+
+TEST(Hessian, rminus)
+{
+  using G = smooth::SE2d;
+
+  for (auto i = 0u; i < 5; ++i) {
+    const G x = G::Random(), y = G::Random();
+
+    const auto [unused1, unused2, H_num] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(
+      [&y](const auto & var) -> smooth::Tangent<G> { return rminus(var, y); },
+      smooth::wrt(x));
+
+    const auto H_ana = smooth::hessian_rminus<G>(x, y);
+
+    ASSERT_TRUE(H_num.isApprox(H_ana, 1e-4));
+  }
 }

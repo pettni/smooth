@@ -377,6 +377,8 @@ struct AnalyticSparseFunctor
     }
     dr_f.makeCompressed();
 
+    std::cout << "In jacobian" << std::endl;
+
     return dr_f;
   }
 
@@ -387,22 +389,32 @@ TEST(NLS, AnalyticSparse)
 {
   auto f = AnalyticSparseFunctor{Eigen::Vector3d::Random(), Eigen::Vector3d::Random()};
 
-  smooth::SO3d g1, g2, g3;
-  g1.setRandom();
-  g2.setRandom();
-  g3.setRandom();
+  smooth::SO3d g1a, g2a, g3a;
+  g1a.setRandom();
+  g2a.setRandom();
+  g3a.setRandom();
 
-  auto g1c = g1;
-  auto g2c = g2;
-  auto g3c = g3;
+  smooth::SO3d g1b = g1a, g2b = g2a, g3b = g3a;
+  smooth::SO3d g1c = g1a, g2c = g2a, g3c = g3a;
+
+  // check that we are differentiable
+  static_assert(smooth::diff::detail::diffable_order1<decltype(f), decltype(smooth::wrt(g1a, g2a, g3a))> == true);
+  static_assert(smooth::diff::detail::diffable_order2<decltype(f), decltype(smooth::wrt(g1a, g2a, g3a))> == false);
 
   // solve with analytic diff
-  smooth::minimize<smooth::diff::Type::Analytic>(f, smooth::wrt(g1, g2, g3));
+  smooth::minimize<smooth::diff::Type::Analytic>(f, smooth::wrt(g1a, g2a, g3a));
 
+  // solve with default autodiff
+  smooth::minimize<smooth::diff::Type::Numerical>(f, smooth::wrt(g1b, g2b, g3b));
+  //
   // solve with default autodiff
   smooth::minimize<smooth::diff::Type::Default>(f, smooth::wrt(g1c, g2c, g3c));
 
-  ASSERT_TRUE(g1.isApprox(g1c, 1e-5));
-  ASSERT_TRUE(g2.isApprox(g2c, 1e-5));
-  ASSERT_TRUE(g3.isApprox(g3c, 1e-5));
+  ASSERT_TRUE(g1a.isApprox(g1b, 1e-5));
+  ASSERT_TRUE(g2a.isApprox(g2b, 1e-5));
+  ASSERT_TRUE(g3a.isApprox(g3b, 1e-5));
+
+  ASSERT_TRUE(g1a.isApprox(g1c, 1e-5));
+  ASSERT_TRUE(g2a.isApprox(g2c, 1e-5));
+  ASSERT_TRUE(g3a.isApprox(g3c, 1e-5));
 }

@@ -171,6 +171,21 @@ auto dr_numerical(auto && f, auto && x)
   }
 }
 
+/// @brief Callable types that provide first-order derivative
+template<class F, class Wrt>
+concept diffable_order1 = requires(F && f, Wrt && wrt)
+{
+  {std::apply(f, wrt)};
+  {std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::jacobian), f), wrt)};
+};
+
+/// @brief Callable types that provide second-order derivative
+template<class F, class Wrt>
+concept diffable_order2 = diffable_order1<F, Wrt> && requires(F && f, Wrt && wrt)
+{
+  {std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::hessian), f), wrt)};
+};
+
 }  // namespace detail
 
 /**
@@ -184,7 +199,7 @@ enum class Type {
               ///< compat/ceres.hpp
   Analytic,   ///< Hand-coded derivative, requires that function returns \p std::pair \f$(f(x),
               ///< \mathrm{d}^r f_x) \f$
-  Default     ///< Automatically select type based on availability
+  Default     ///< Automatically select type based on availability (Analytic > Autodiff > Ceres > Numerical)
 };
 
 static constexpr Type DefaultType =
@@ -271,7 +286,15 @@ auto dr(auto && f, auto && x)
   } else if constexpr (D == Type::Default) {
     // Default
 
-    return dr<K, DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
+    // If analytical derivatives exist
+    if constexpr (K == 1 && detail::diffable_order1<decltype(f), decltype(x)>) {
+      return dr<K, Type::Analytic>(std::forward<F>(f), std::forward<Wrt>(x));
+    } else if constexpr (K == 2 && detail::diffable_order2<decltype(f), decltype(x)>) {
+      return dr<K, Type::Analytic>(std::forward<F>(f), std::forward<Wrt>(x));
+    } else {
+      // Use best available method
+      return dr<K, DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
+    }
   }
 }
 

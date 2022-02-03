@@ -64,7 +64,62 @@ static constexpr std::array<double, 23> kBn{
   854513. / 138,   // 22
 };
 
+template<LieGroup G>
+inline auto algebra_generators = []() -> std::array<TangentMap<G>, Dof<G>> {
+  std::array<TangentMap<G>, Dof<G>> ret;
+  for (auto i = 0u; i < Dof<G>; ++i) { ret[i] = smooth::ad<G>(Tangent<G>::Unit(i)); }
+  return ret;
+}();
+
 }  // namespace detail
+
+/**
+ * @brief Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.
+ *
+ * The computed Hessian is
+ * \f[
+ *   \mathrm{d}^{2r} \left( x \ominus_r y \right)_{xx}.
+ * \f]
+ */
+template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
+  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
+Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> hessian_rminus(const G & x, const G & y)
+{
+  using Tngt    = Tangent<G>;
+  using TngtMap = TangentMap<G>;
+
+  const Tngt a         = rminus(x, y);
+  const TngtMap ad_a_t = ad<G>(a).transpose();
+
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> res;
+  res.setZero();
+
+  for (auto j = 0u; j < Dof<G>; ++j) {
+    double coeff = 1;                // hold (-1)^i / i!
+    Tngt gi      = Tngt::Unit(j);    // (ad_a^T)^i * e_j
+    TngtMap dgi  = TngtMap::Zero();  // right derivative of gi w.r.t. a
+
+    for (auto iter = 0u; iter < Terms; ++iter) {
+      if (detail::kBn[iter] != 0) {
+        res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += (detail::kBn[iter] * coeff) * dgi;
+      }
+
+      dgi.applyOnTheLeft(ad_a_t);
+
+      for (auto i = 0u; i < Dof<G>; ++i) {
+        dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
+      }
+
+      gi.applyOnTheLeft(ad_a_t);
+
+      coeff *= (-1.) / (iter + 1);
+    }
+
+    res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>).applyOnTheRight(dr_expinv<G>(a));
+  }
+
+  return res;
+}
 
 /**
  * @brief Compute approximate Hessian (second derivative) of the squared norm of rminus.
@@ -93,23 +148,18 @@ static constexpr std::array<double, 23> kBn{
  *   \left( \sum_n B_n \frac{(-1)^n}{n!} \mathrm{d}^r \left( (ad_a^T)^n a \right)_a \right)
  * \mathrm{d}^r \exp_a^{-1}.
  * \f]
- * This function computes a finite number Terms of terms by recursively computing the inner derivatives.
+ * This function computes a finite number Terms of terms by recursively computing the inner
+ * derivatives.
  */
 template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
   requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
-TangentMap<G> hessian_rminus(const G & x, const G & y)
+TangentMap<G> hessian_rminus_norm(const G & x, const G & y)
 {
   using Tngt    = Tangent<G>;
   using TngtMap = TangentMap<G>;
 
   const Tngt a         = rminus(x, y);
   const TngtMap ad_a_t = ad<G>(a).transpose();
-
-  const auto algebra_generators = []() -> std::array<TngtMap, Dof<G>> {
-    std::array<TngtMap, Dof<G>> ret;
-    for (auto i = 0u; i < Dof<G>; ++i) { ret[i] = smooth::ad<G>(Tngt::Unit(i)); }
-    return ret;
-  }();
 
   TngtMap res  = TngtMap::Zero();
   double coeff = 1;                    // hold (-1)^i / i!
@@ -121,8 +171,8 @@ TangentMap<G> hessian_rminus(const G & x, const G & y)
 
     dgi.applyOnTheLeft(ad_a_t);
 
-    for (auto i = 0u; i < smooth::Dof<G>; ++i) {
-      dgi.row(i).noalias() -= gi.transpose() * algebra_generators[i];
+    for (auto i = 0u; i < Dof<G>; ++i) {
+      dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
     }
 
     gi.applyOnTheLeft(ad_a_t);
