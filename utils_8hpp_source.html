@@ -195,7 +195,7 @@ $(function() {
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;<span class="comment">// Pairwise transform views</span></div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;<span class="keyword">template</span>&lt;std::ranges::input_range R, std::copy_constructible F&gt;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> std::ranges::view&lt;R&gt;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a> std::ranges::view&lt;R&gt;</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;<span class="keyword">class </span>pairwise_transform_view : <span class="keyword">public</span> std::ranges::view_interface&lt;pairwise_transform_view&lt;R, F&gt;&gt;</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;{</div>
 <div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;<span class="keyword">public</span>:</div>
@@ -229,7 +229,7 @@ $(function() {
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
 <div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    constexpr <span class="keywordtype">void</span> operator++(<span class="keywordtype">int</span>) { ++it1_, ++it2_; }</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    constexpr _Iterator operator++(<span class="keywordtype">int</span>) <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> std::ranges::forward_range&lt;R&gt;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    constexpr _Iterator operator++(<span class="keywordtype">int</span>) <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a> std::ranges::forward_range&lt;R&gt;</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    {</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      _Iterator tmp = *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      ++<span class="keyword">this</span>;</div>
@@ -242,7 +242,7 @@ $(function() {
 <div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;      <span class="keywordflow">return</span> *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    }</div>
 <div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    constexpr _Iterator operator--(<span class="keywordtype">int</span>) <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> std::ranges::bidirectional_range&lt;R&gt;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    constexpr _Iterator operator--(<span class="keywordtype">int</span>) <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a> std::ranges::bidirectional_range&lt;R&gt;</div>
 <div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    {</div>
 <div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;      <span class="keyword">auto</span> tmp = *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;      --<span class="keyword">this</span>;</div>
@@ -338,7 +338,7 @@ $(function() {
 <div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;<span class="comment">// Zip view</span></div>
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
 <div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="keyword">template</span>&lt;std::ranges::input_range... View&gt;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(std::ranges::view&lt;View&gt; &amp;&amp;...)</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(std::ranges::view&lt;View&gt; &amp;&amp;...)</div>
 <div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;class zip_view : public std::ranges::view_interface&lt;zip_view&lt;View...&gt;&gt;</div>
 <div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;{</div>
 <div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;<span class="keyword">public</span>:</div>
@@ -356,7 +356,7 @@ $(function() {
 <div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
 <div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    constexpr _Iterator(<span class="keyword">auto</span> &amp;&amp;... its) : its_(its...) {}</div>
 <div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160; </div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    constexpr _Iterator(_Iterator&lt;!Const&gt; i) <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a> Const : its_(i.its_) {}</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    constexpr _Iterator(_Iterator&lt;!Const&gt; i) <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a> Const : its_(i.its_) {}</div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160; </div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    constexpr decltype(<span class="keyword">auto</span>) operator*()<span class="keyword"> const</span></div>
 <div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;<span class="keyword">    </span>{</div>
@@ -381,7 +381,7 @@ $(function() {
 <div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;      (std::make_index_sequence&lt;<span class="keyword">sizeof</span>...(View)&gt;{});</div>
 <div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;    }</div>
 <div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    constexpr _Iterator operator++(<span class="keywordtype">int</span>) <a class="code" href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">requires</a>(std::ranges::forward_range&lt;View&gt; &amp;&amp;...)</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    constexpr _Iterator operator++(<span class="keywordtype">int</span>) <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(std::ranges::forward_range&lt;View&gt; &amp;&amp;...)</div>
 <div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    {</div>
 <div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;      _Iterator tmp = *<span class="keyword">this</span>;</div>
 <div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;      ++<span class="keyword">this</span>;</div>
@@ -487,7 +487,7 @@ $(function() {
 <div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;}  <span class="comment">// namespace smooth::utils</span></div>
 <div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160; </div>
 <div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;<span class="preprocessor">#endif  </span><span class="comment">// SMOOTH__INTERNAL__UTILS_HPP_</span></div>
-<div class="ttc" id="ahessian_8hpp_html_a9213aea932a7d7a4eddb23318cb03828"><div class="ttname"><a href="hessian_8hpp.html#a9213aea932a7d7a4eddb23318cb03828">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) TangentMap&lt; G &gt; hessian_rminus(const G &amp;x</div><div class="ttdoc">Compute approximate Hessian (second derivative) of the squared norm of rminus.</div></div>
+<div class="ttc" id="ahessian_8hpp_html_ae1b40c88eaccec5d682269f8f561a00a"><div class="ttname"><a href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) Eigen</div><div class="ttdoc">Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.</div><div class="ttdef"><b>Definition:</b> <a href="hessian_8hpp_source.html#l00085">hessian.hpp:85</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

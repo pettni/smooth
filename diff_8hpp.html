@@ -183,6 +183,14 @@ Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff:
 <tr class="memitem:aeaa60484ab277c2f484acdcb9cd61870"><td class="memItemLeft" align="right" valign="top"><a id="aeaa60484ab277c2f484acdcb9cd61870"></a>
 Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff::detail::ny</b> = dof&lt;Result&gt;(fval)</td></tr>
 <tr class="separator:aeaa60484ab277c2f484acdcb9cd61870"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada46b690ae79c0d5e5c7c70c17908f7e"><td class="memTemplParams" colspan="2">template&lt;class F , class Wrt &gt; </td></tr>
+<tr class="memitem:ada46b690ae79c0d5e5c7c70c17908f7e"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#ada46b690ae79c0d5e5c7c70c17908f7e">smooth::diff::detail::diffable_order1</a></td></tr>
+<tr class="memdesc:ada46b690ae79c0d5e5c7c70c17908f7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callable types that provide first-order derivative.  <a href="diff_8hpp.html#ada46b690ae79c0d5e5c7c70c17908f7e">More...</a><br /></td></tr>
+<tr class="separator:ada46b690ae79c0d5e5c7c70c17908f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16123ec1f64f5cd95b259dddab9bc032"><td class="memTemplParams" colspan="2">template&lt;class F , class Wrt &gt; </td></tr>
+<tr class="memitem:a16123ec1f64f5cd95b259dddab9bc032"><td class="memTemplItemLeft" align="right" valign="top">concept&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="diff_8hpp.html#a16123ec1f64f5cd95b259dddab9bc032">smooth::diff::detail::diffable_order2</a></td></tr>
+<tr class="memdesc:a16123ec1f64f5cd95b259dddab9bc032"><td class="mdescLeft">&#160;</td><td class="mdescRight">Callable types that provide second-order derivative.  <a href="diff_8hpp.html#a16123ec1f64f5cd95b259dddab9bc032">More...</a><br /></td></tr>
+<tr class="separator:a16123ec1f64f5cd95b259dddab9bc032"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Differentiation on Manifolds. </p>
@@ -219,11 +227,11 @@ Eigen::Index&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::diff:
 </td></tr>
 <tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"></a>Analytic&#160;</td><td class="fielddoc"><p>Hand-coded derivative, requires that function returns <code>std::pair</code> \((f(x), &lt; \mathrm{d}^r f_x) \) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67"></a>Default&#160;</td><td class="fielddoc"><p>Automatically select type based on availability. </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67"></a>Default&#160;</td><td class="fielddoc"><p>Automatically select type based on availability (Analytic &gt; Autodiff &gt; Ceres &gt; Numerical) </p>
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00179">179</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00194">194</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -278,7 +286,7 @@ template&lt;std::size_t K, Type D&gt; </div>
 <dd>
 All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00223">223</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00238">238</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -327,7 +335,7 @@ template&lt;std::size_t K = 1&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00291">291</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00314">314</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -363,6 +371,56 @@ template&lt;std::size_t K = 1&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="ada46b690ae79c0d5e5c7c70c17908f7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada46b690ae79c0d5e5c7c70c17908f7e">&#9670;&nbsp;</a></span>diffable_order1</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class F , class Wrt &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">concept smooth::diff::detail::diffable_order1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(F &amp;&amp; f, Wrt &amp;&amp; wrt)</div>
+<div class="line">{</div>
+<div class="line">  {std::apply(f, wrt)};</div>
+<div class="line">  {std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::jacobian), f), wrt)};</div>
+<div class="line">}</div>
+<div class="ttc" id="ahessian_8hpp_html_ae1b40c88eaccec5d682269f8f561a00a"><div class="ttname"><a href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) Eigen</div><div class="ttdoc">Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.</div><div class="ttdef"><b>Definition:</b> <a href="hessian_8hpp_source.html#l00085">hessian.hpp:85</a></div></div>
+</div><!-- fragment -->
+<p>Callable types that provide first-order derivative. </p>
+
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00176">176</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a16123ec1f64f5cd95b259dddab9bc032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16123ec1f64f5cd95b259dddab9bc032">&#9670;&nbsp;</a></span>diffable_order2</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class F , class Wrt &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">concept smooth::diff::detail::diffable_order2</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= diffable_order1&lt;F, Wrt&gt; &amp;&amp; <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(F &amp;&amp; f, Wrt &amp;&amp; wrt)</div>
+<div class="line">{</div>
+<div class="line">  {std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::hessian), f), wrt)};</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+<p>Callable types that provide second-order derivative. </p>
+
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00184">184</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+
+</div>
+</div>
 <a id="af5da8f4121bdc24348f85d2419701954"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af5da8f4121bdc24348f85d2419701954">&#9670;&nbsp;</a></span>x</h2>
 
