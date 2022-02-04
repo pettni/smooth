@@ -1,4 +1,3 @@
-
 // smooth: Lie Theory for Robotics
 // https://github.com/pettni/smooth
 //

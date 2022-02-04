@@ -1,5 +1,5 @@
-// smooth_feedback: Control theory on Lie groups
-// https://github.com/pettni/smooth_feedback
+// smooth: Lie Theory for Robotics
+// https://github.com/pettni/smooth
 //
 // Licensed under the MIT License <http://opensource.org/licenses/MIT>.
 //
