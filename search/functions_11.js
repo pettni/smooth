@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['u1_457',['u1',['../classsmooth_1_1SO2Base.html#a1faad78be9415b26a4a27643d51be9a3',1,'smooth::SO2Base']]]
+  ['u1_0',['u1',['../classsmooth_1_1SO2Base.html#a036b29516a2212e409fae92ed83687dc',1,'smooth::SO2Base']]]
 ];

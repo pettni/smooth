@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['quadrature_2ehpp_182',['quadrature.hpp',['../quadrature_8hpp.html',1,'']]],
-  ['quat_183',['quat',['../classsmooth_1_1SO3Base.html#a4b2ff015cff30d42ffe9a730c92d91ac',1,'smooth::SO3Base::quat() requires is_mutable'],['../classsmooth_1_1SO3Base.html#a23e105a0f039009a44b89c404ff238ac',1,'smooth::SO3Base::quat() const']]]
+  ['quadrature_2ehpp_0',['quadrature.hpp',['../quadrature_8hpp.html',1,'']]],
+  ['quat_1',['quat',['../classsmooth_1_1SO3Base.html#a5468ee4bc92e289a339e1955fbbc02b1',1,'smooth::SO3Base::quat()'],['../classsmooth_1_1SO3Base.html#a48a91819a997abb26abf3f90bb068f6e',1,'smooth::SO3Base::quat() const']]]
 ];

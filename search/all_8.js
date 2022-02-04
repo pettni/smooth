@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['jacobi_5fbasis_93',['jacobi_basis',['../basis_8hpp.html#a825ed011a0647d526dea228387571511',1,'smooth::detail']]]
+  ['jacobi_5fbasis_0',['jacobi_basis',['../basis_8hpp.html#a0edfcc92899222e5da06924859af4d32',1,'smooth::detail']]]
 ];

@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structsmooth_1_1traits_1_1lie.html" title="Trait class for making a class a LieGroup instance via specialization." alt="" coords="5,5,155,32"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,187,47"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="235,5,396,47"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1Map_3_01SE2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE2 Lie group." alt="" coords="444,5,587,47"/>
 </map>

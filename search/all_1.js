@@ -1,17 +1,17 @@
 var searchData=
 [
-  ['basis_2ehpp_6',['basis.hpp',['../basis_8hpp.html',1,'']]],
-  ['bernstein_7',['Bernstein',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a6b8e5e9520304bfdbf74fa045375911f',1,'smooth']]],
-  ['bernstein_5fbasis_8',['bernstein_basis',['../basis_8hpp.html#af1476c82c780e2b219d3a76c9a7ac7be',1,'smooth::detail']]],
-  ['block_9',['block',['../structsmooth_1_1StaticMatrix.html#a19649ae41923e31c1e7a45a8fc1c0278',1,'smooth::StaticMatrix']]],
-  ['boostodeintops_10',['BoostOdeintOps',['../structsmooth_1_1detail_1_1BoostOdeintOps.html',1,'smooth::detail']]],
-  ['bspline_11',['Bspline',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb',1,'smooth']]],
-  ['bspline_12',['BSpline',['../classsmooth_1_1BSpline.html#a5bdd526e41de2f581ef352af8a3bad7c',1,'smooth::BSpline::BSpline(BSpline &amp;&amp;)=default'],['../classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835',1,'smooth::BSpline::BSpline(const BSpline &amp;)=default'],['../classsmooth_1_1BSpline.html#a0d6acf53896a7500cd446d0bebe4a4cf',1,'smooth::BSpline::BSpline(double t0, double dt, std::vector&lt; G &gt; &amp;&amp;ctrl_pts)'],['../classsmooth_1_1BSpline.html#a20bc10391174314f8594944404fc7468',1,'smooth::BSpline::BSpline() requires(Dof&lt; G &gt; &gt; 0)'],['../classsmooth_1_1BSpline.html',1,'smooth::BSpline&lt; K, G &gt;']]],
-  ['bspline_2ehpp_13',['bspline.hpp',['../bspline_8hpp.html',1,'']]],
-  ['bspline_5fbasis_14',['bspline_basis',['../basis_8hpp.html#a6259286a43ebc4bcdbba96d543a99803',1,'smooth::detail']]],
-  ['bundle_15',['Bundle',['../classsmooth_1_1Bundle.html#a18316a761897c037dae94e8b74419ed8',1,'smooth::Bundle::Bundle()=default'],['../classsmooth_1_1Bundle.html#af703f2bee2b4e6c26519e6f3f4f0ba8d',1,'smooth::Bundle::Bundle(const Bundle &amp;)=default'],['../classsmooth_1_1Bundle.html#a5d96897e746779092c8aa77b3de66cd4',1,'smooth::Bundle::Bundle(Bundle &amp;&amp;)=default'],['../classsmooth_1_1Bundle.html#af8d8170d17aaeb7fbcf226823191aa07',1,'smooth::Bundle::Bundle(const BundleBase&lt; OtherDerived &gt; &amp;o) noexcept'],['../classsmooth_1_1Bundle.html',1,'smooth::Bundle&lt; _Gs &gt;']]],
-  ['bundlebase_16',['BundleBase',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
-  ['bundlebase_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_17',['BundleBase&lt; Bundle&lt; _Gs... &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
-  ['bundlebase_3c_20map_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_18',['BundleBase&lt; Map&lt; Bundle&lt; _Gs... &gt; &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
-  ['bundlebase_3c_20map_3c_20const_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_19',['BundleBase&lt; Map&lt; const Bundle&lt; _Gs... &gt; &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]]
+  ['basis_2ehpp_0',['basis.hpp',['../basis_8hpp.html',1,'']]],
+  ['bernstein_1',['Bernstein',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a6b8e5e9520304bfdbf74fa045375911f',1,'smooth']]],
+  ['bernstein_5fbasis_2',['bernstein_basis',['../basis_8hpp.html#a7b28fe0e65bdfde00c10c4039670f332',1,'smooth::detail']]],
+  ['block_3',['block',['../structsmooth_1_1StaticMatrix.html#a5838c94ccd317906030902c26eff0429',1,'smooth::StaticMatrix']]],
+  ['boostodeintops_4',['BoostOdeintOps',['../structsmooth_1_1detail_1_1BoostOdeintOps.html',1,'smooth::detail']]],
+  ['bspline_5',['Bspline',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb',1,'smooth']]],
+  ['bspline_6',['BSpline',['../classsmooth_1_1BSpline.html#a5bdd526e41de2f581ef352af8a3bad7c',1,'smooth::BSpline::BSpline(BSpline &amp;&amp;)=default'],['../classsmooth_1_1BSpline.html#a750d51175fecdcdd4b6da8c58a3c8835',1,'smooth::BSpline::BSpline(const BSpline &amp;)=default'],['../classsmooth_1_1BSpline.html#a46819513ef5653cb07456bd5d2ef05bd',1,'smooth::BSpline::BSpline(double t0, double dt, const Rv &amp;ctrl_pts)'],['../classsmooth_1_1BSpline.html#a219031f8d35c6369003294a035758855',1,'smooth::BSpline::BSpline()'],['../classsmooth_1_1BSpline.html#a0d6acf53896a7500cd446d0bebe4a4cf',1,'smooth::BSpline::BSpline(double t0, double dt, std::vector&lt; G &gt; &amp;&amp;ctrl_pts)'],['../classsmooth_1_1BSpline.html',1,'smooth::BSpline&lt; K, G &gt;']]],
+  ['bspline_2ehpp_7',['bspline.hpp',['../bspline_8hpp.html',1,'']]],
+  ['bspline_5fbasis_8',['bspline_basis',['../basis_8hpp.html#a1843fd15f91787b986824c50312e2e7b',1,'smooth::detail']]],
+  ['bundle_9',['Bundle',['../classsmooth_1_1Bundle.html#a18316a761897c037dae94e8b74419ed8',1,'smooth::Bundle::Bundle()=default'],['../classsmooth_1_1Bundle.html#af703f2bee2b4e6c26519e6f3f4f0ba8d',1,'smooth::Bundle::Bundle(const Bundle &amp;)=default'],['../classsmooth_1_1Bundle.html#a5d96897e746779092c8aa77b3de66cd4',1,'smooth::Bundle::Bundle(Bundle &amp;&amp;)=default'],['../classsmooth_1_1Bundle.html#af8d8170d17aaeb7fbcf226823191aa07',1,'smooth::Bundle::Bundle(const BundleBase&lt; OtherDerived &gt; &amp;o) noexcept'],['../classsmooth_1_1Bundle.html#a44d2691be06c9d31494b1f866f9c7c30',1,'smooth::Bundle::Bundle(S &amp;&amp;... gs)'],['../classsmooth_1_1Bundle.html',1,'smooth::Bundle&lt; _Gs &gt;']]],
+  ['bundlebase_10',['BundleBase',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
+  ['bundlebase_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_11',['BundleBase&lt; Bundle&lt; _Gs... &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
+  ['bundlebase_3c_20map_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_12',['BundleBase&lt; Map&lt; Bundle&lt; _Gs... &gt; &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
+  ['bundlebase_3c_20map_3c_20const_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_13',['BundleBase&lt; Map&lt; const Bundle&lt; _Gs... &gt; &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]]
 ];

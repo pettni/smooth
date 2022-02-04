@@ -1,5 +1,5 @@
 <map id="smooth::Map&lt; SO2&lt; _Scalar &gt; &gt;" name="smooth::Map&lt; SO2&lt; _Scalar &gt; &gt;">
-<area shape="rect" id="node1" title="Memory mapping of SO2 Lie group." alt="" coords="15,184,159,225"/>
-<area shape="rect" id="node2" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="5,95,168,136"/>
-<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="9,5,164,47"/>
+<area shape="rect" id="node1" title="Memory mapping of SO2 Lie group." alt="" coords="25,184,169,225"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="15,95,178,136"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,188,47"/>
 </map>

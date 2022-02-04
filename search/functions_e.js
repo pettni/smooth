@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['r2_436',['r2',['../classsmooth_1_1SE2Base.html#a5a9928fa38e12c020c0625fee72f4432',1,'smooth::SE2Base::r2() const'],['../classsmooth_1_1SE2Base.html#a83505d3619950aa15dbf178d2b1b1fb9',1,'smooth::SE2Base::r2() requires is_mutable']]],
-  ['r3_437',['r3',['../classsmooth_1_1SE3Base.html#a2ab6978a3af0597e4b43cf44df725d9c',1,'smooth::SE3Base::r3() requires is_mutable'],['../classsmooth_1_1SE3Base.html#ab65f7208efc135482e03ff37c1785b83',1,'smooth::SE3Base::r3() const']]],
-  ['random_438',['Random',['../lie__group_8hpp.html#a053344c2ccfb9be92974d4c94f4be30d',1,'smooth']]],
-  ['reparameterize_5fspline_439',['reparameterize_spline',['../reparameterize_8hpp.html#ac6124f49e7576f7d301dd7d498c4f7e3',1,'smooth']]],
-  ['requires_440',['requires',['../hessian_8hpp.html#aced2561d789a2535bcd3b168f07fc8e5',1,'smooth::requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) TangentMap&lt; G &gt; hessian_rminus_norm(const G &amp;x'],['../spline_8hpp.html#a1a966aee10baccbfdcb10d4b6903d969',1,'smooth::requires(Dof&lt; G &gt; &gt; 0) class Spline'],['../dubins_8hpp.html#a996171a6cc1198317b69bb164c16a506',1,'smooth::requires(K &gt;=1) Spline&lt; K'],['../quadrature_8hpp.html#a9961bdf15dcbd314849c45474457075e',1,'smooth::requires(K&lt;=40) const expr std'],['../lie__group_8hpp.html#a49d10309779e791721f8659c41125ecf',1,'smooth::requires(Dof&lt; G &gt; &gt; 0) inline PlainObject&lt; G &gt; Identity()'],['../lie__group_8hpp.html#a955863cb68f245f274a5554ab2be602a',1,'smooth::traits::requires()'],['../diff_8hpp.html#a07aa0b0e327d01742983f6fb0c83b27d',1,'smooth::diff::detail::requires()'],['../autodiff_8hpp.html#a92581e05523c2008509ddbcb1fea2057',1,'smooth::diff::requires()'],['../hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079',1,'smooth::requires()'],['../classsmooth_1_1BSpline.html#a8dfb03f4ad20e22e0c64c93801ad5590',1,'smooth::BSpline::requires()'],['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#a11173ce3816329ec9c105bf9f46f62ab',1,'smooth::detail::BoostOdeintOps::scale_sum::requires()'],['../classsmooth_1_1Bundle.html#a29dbe8a173103d68223cee065154b72c',1,'smooth::Bundle::requires()']]],
-  ['rminus_441',['rminus',['../manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231',1,'smooth']]],
-  ['rplus_442',['rplus',['../manifold_8hpp.html#ab99a88c76be652300cb01132e66614ba',1,'smooth']]]
+  ['r2_0',['r2',['../classsmooth_1_1SE2Base.html#a30d6dc92f392dbbd1d86e20dc4a7efb3',1,'smooth::SE2Base::r2()'],['../classsmooth_1_1SE2Base.html#af43d8941398c93915edde41050452560',1,'smooth::SE2Base::r2() const']]],
+  ['r3_1',['r3',['../classsmooth_1_1SE3Base.html#ac8c2a5cb5ad479e266a82a68f42485ec',1,'smooth::SE3Base::r3()'],['../classsmooth_1_1SE3Base.html#a8fb0535f86185e1c8b58ea9a0242cb14',1,'smooth::SE3Base::r3() const']]],
+  ['random_2',['Random',['../classsmooth_1_1LieGroupBase.html#a066433cdcfde7cd3c2e95be1c089836b',1,'smooth::LieGroupBase::Random()'],['../lie__group_8hpp.html#ae086959013234b8254782103fd6a9024',1,'smooth::Random(Eigen::Index dof)'],['../lie__group_8hpp.html#ae9e114a2fc577eb3f0c51db7d176bb7a',1,'smooth::Random()']]],
+  ['reparameterize_5fspline_3',['reparameterize_spline',['../reparameterize_8hpp.html#a58e495f493433daf865438abad0006ec',1,'smooth']]],
+  ['reserve_4',['reserve',['../classsmooth_1_1Spline.html#a947eacfca0127c710e964cba21a25865',1,'smooth::Spline']]],
+  ['rminus_5',['rminus',['../manifold_8hpp.html#ab1b40a3c99fb18a4a468a3b8d4b6631a',1,'smooth']]],
+  ['rplus_6',['rplus',['../manifold_8hpp.html#aea879e1473fe395a49a6bff6d3b0be10',1,'smooth']]]
 ];

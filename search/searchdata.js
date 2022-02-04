@@ -3,13 +3,14 @@ var indexSectionsWithContent =
   0: "abcdefhijlmnopqrstuv~",
   1: "bcfilmns",
   2: "abcdfhlmoqrs",
-  3: "abcdefhijlmopqrstu~",
-  4: "cdfilmnoprsv",
+  3: "abcdefhijlmopqrstuv~",
+  4: "cdfilmoprsv",
   5: "cdimoprst",
   6: "dpt",
   7: "abcdhlmn",
   8: "c",
-  9: "l"
+  9: "l",
+  10: "s"
 };
 
 var indexSectionNames =
@@ -23,7 +24,8 @@ var indexSectionNames =
   6: "enums",
   7: "enumvalues",
   8: "defines",
-  9: "pages"
+  9: "pages",
+  10: "concepts"
 };
 
 var indexSectionLabels =
@@ -37,6 +39,7 @@ var indexSectionLabels =
   6: "Enumerations",
   7: "Enumerator",
   8: "Macros",
-  9: "Pages"
+  9: "Pages",
+  10: "Concepts"
 };
 

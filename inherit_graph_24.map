@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structsmooth_1_1traits_1_1scalar__trait_3_01autodiff_1_1Dual_3_01T_00_01T_01_4_01_4.html" title="Specialize trait to make autodiff type a Manifold." alt="" coords="5,5,147,61"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="208,5,368,47"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group." alt="" coords="416,13,577,39"/>
 </map>
