@@ -422,7 +422,7 @@ template&lt;typename G &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a></div>
+<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">requires</a></div>
 <div class="line">{</div>
 <div class="line">  <span class="keyword">typename</span> G::Scalar;</div>
 <div class="line">  <span class="keyword">typename</span> G::Tangent;</div>
@@ -433,12 +433,12 @@ template&lt;typename G &gt; </div>
 <div class="line">  {G::Identity()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {G::Random()}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">}) &amp;&amp;</div>
-<div class="line">(!(G::Dof == -1) || <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a> (Eigen::Index dof) {</div>
+<div class="line">(!(G::Dof == -1) || <a class="code" href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">requires</a> (Eigen::Index dof) {</div>
 <div class="line">  {G::Identity(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {G::Random(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">}) &amp;&amp;</div>
 <div class="line">(G::Tangent::SizeAtCompileTime == G::Dof) &amp;&amp;</div>
-<div class="line"><a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
+<div class="line"><a class="code" href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">requires</a>(<span class="keyword">const</span> G &amp; g1, <span class="keyword">const</span> G &amp; g2, <span class="keyword">typename</span> G::Scalar eps) {</div>
 <div class="line">  {g1.dof()}-&gt;std::convertible_to&lt;Eigen::Index&gt;;  </div>
 <div class="line">  {g1.Ad()}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {g1 * g2}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
@@ -446,13 +446,13 @@ template&lt;typename G &gt; </div>
 <div class="line">  {g1.isApprox(g2, eps)}-&gt;std::convertible_to&lt;<span class="keywordtype">bool</span>&gt;;</div>
 <div class="line">  {g1.log()}-&gt;std::convertible_to&lt;Eigen::Vector&lt;typename G::Scalar, G::Dof&gt;&gt;;</div>
 <div class="line">} &amp;&amp;</div>
-<div class="line"><a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;typename G::Scalar, G::Dof&gt; &amp; a) {</div>
+<div class="line"><a class="code" href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">requires</a>(<span class="keyword">const</span> Eigen::Vector&lt;typename G::Scalar, G::Dof&gt; &amp; a) {</div>
 <div class="line">  {G::ad(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {G::exp(a)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> G::PlainObject&gt;;</div>
 <div class="line">  {G::dr_exp(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">  {G::dr_expinv(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename G::Scalar, G::Dof, G::Dof&gt;&gt;;</div>
 <div class="line">}</div>
-<div class="ttc" id="ahessian_8hpp_html_ae1b40c88eaccec5d682269f8f561a00a"><div class="ttname"><a href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) Eigen</div><div class="ttdoc">Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.</div><div class="ttdef"><b>Definition:</b> <a href="hessian_8hpp_source.html#l00085">hessian.hpp:85</a></div></div>
+<div class="ttc" id="ahessian_8hpp_html_a4aabbfeeaf97478d8ca8a2509c330079"><div class="ttname"><a href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) detail</div><div class="ttdoc">Compute approximate Hessian (second derivative) of the exponential map.</div><div class="ttdef"><b>Definition:</b> <a href="hessian_8hpp_source.html#l00089">hessian.hpp:89</a></div></div>
 </div><!-- fragment -->
 <p>Concept defining class with an internal Lie group interface. </p>
 <p>Concept satisfied if G has members that correspond to the LieGroup concept. </p>

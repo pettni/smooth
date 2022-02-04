@@ -384,12 +384,12 @@ template&lt;class F , class Wrt &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(F &amp;&amp; f, Wrt &amp;&amp; wrt)</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= <a class="code" href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">requires</a>(F &amp;&amp; f, Wrt &amp;&amp; wrt)</div>
 <div class="line">{</div>
 <div class="line">  {std::apply(f, wrt)};</div>
 <div class="line">  {std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::jacobian), f), wrt)};</div>
 <div class="line">}</div>
-<div class="ttc" id="ahessian_8hpp_html_ae1b40c88eaccec5d682269f8f561a00a"><div class="ttname"><a href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) Eigen</div><div class="ttdoc">Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.</div><div class="ttdef"><b>Definition:</b> <a href="hessian_8hpp_source.html#l00085">hessian.hpp:85</a></div></div>
+<div class="ttc" id="ahessian_8hpp_html_a4aabbfeeaf97478d8ca8a2509c330079"><div class="ttname"><a href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">smooth::requires</a></div><div class="ttdeci">requires(Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) detail</div><div class="ttdoc">Compute approximate Hessian (second derivative) of the exponential map.</div><div class="ttdef"><b>Definition:</b> <a href="hessian_8hpp_source.html#l00089">hessian.hpp:89</a></div></div>
 </div><!-- fragment -->
 <p>Callable types that provide first-order derivative. </p>
 
@@ -410,7 +410,7 @@ template&lt;class F , class Wrt &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= diffable_order1&lt;F, Wrt&gt; &amp;&amp; <a class="code" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">requires</a>(F &amp;&amp; f, Wrt &amp;&amp; wrt)</div>
+<b>Initial value:</b><div class="fragment"><div class="line">= diffable_order1&lt;F, Wrt&gt; &amp;&amp; <a class="code" href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">requires</a>(F &amp;&amp; f, Wrt &amp;&amp; wrt)</div>
 <div class="line">{</div>
 <div class="line">  {std::apply(std::bind_front(std::mem_fn(&amp;std::decay_t&lt;decltype(f)&gt;::hessian), f), wrt)};</div>
 <div class="line">}</div>

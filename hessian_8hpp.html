@@ -102,16 +102,17 @@ Include dependency graph for hessian.hpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a8fd67019b50ccb919bdae7d82109fc15"><td class="memItemLeft" align="right" valign="top"><a id="a8fd67019b50ccb919bdae7d82109fc15"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::TngtMap</b> = TangentMap&lt; G &gt;</td></tr>
-<tr class="separator:a8fd67019b50ccb919bdae7d82109fc15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebcbe91b17de0afbee208c68848c55bd"><td class="memTemplParams" colspan="2"><a id="aebcbe91b17de0afbee208c68848c55bd"></a>
+template&lt;LieGroup G&gt; </td></tr>
+<tr class="memitem:aebcbe91b17de0afbee208c68848c55bd"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>smooth::detail::hess_t</b> = Eigen::Matrix&lt; Scalar&lt; G &gt;, Dof&lt; G &gt;, Dof&lt; G &gt; *Dof&lt; G &gt; &gt;</td></tr>
+<tr class="separator:aebcbe91b17de0afbee208c68848c55bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae1b40c88eaccec5d682269f8f561a00a"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, std::size_t Terms = std::tuple_size_v&lt;decltype(detail::kBn)&gt;&gt; </td></tr>
-<tr class="memitem:ae1b40c88eaccec5d682269f8f561a00a"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">smooth::requires</a> (Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) Eigen</td></tr>
-<tr class="memdesc:ae1b40c88eaccec5d682269f8f561a00a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.  <a href="hessian_8hpp.html#ae1b40c88eaccec5d682269f8f561a00a">More...</a><br /></td></tr>
-<tr class="separator:ae1b40c88eaccec5d682269f8f561a00a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4aabbfeeaf97478d8ca8a2509c330079"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, std::size_t Terms = std::tuple_size_v&lt;decltype(detail::kBn)&gt;&gt; </td></tr>
+<tr class="memitem:a4aabbfeeaf97478d8ca8a2509c330079"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">smooth::requires</a> (Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) detail</td></tr>
+<tr class="memdesc:a4aabbfeeaf97478d8ca8a2509c330079"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute approximate Hessian (second derivative) of the exponential map.  <a href="hessian_8hpp.html#a4aabbfeeaf97478d8ca8a2509c330079">More...</a><br /></td></tr>
+<tr class="separator:a4aabbfeeaf97478d8ca8a2509c330079"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aced2561d789a2535bcd3b168f07fc8e5"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, std::size_t Terms = std::tuple_size_v&lt;decltype(detail::kBn)&gt;&gt; </td></tr>
 <tr class="memitem:aced2561d789a2535bcd3b168f07fc8e5"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="hessian_8hpp.html#aced2561d789a2535bcd3b168f07fc8e5">smooth::requires</a> (Terms&lt;=std::tuple_size_v&lt; decltype(detail::kBn)&gt;) TangentMap&lt; G &gt; hessian_rminus_norm(const G &amp;x</td></tr>
 <tr class="memdesc:aced2561d789a2535bcd3b168f07fc8e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compute approximate Hessian (second derivative) of the squared norm of rminus.  <a href="hessian_8hpp.html#aced2561d789a2535bcd3b168f07fc8e5">More...</a><br /></td></tr>
@@ -130,32 +131,29 @@ Variables</h2></td></tr>
 <tr class="separator:aaef14ad442a953fb2f3a3ecaa37c47ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a951978ce713cae1dea140c1ad168be39"><td class="memItemLeft" align="right" valign="top">const G &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::y</b></td></tr>
 <tr class="separator:a951978ce713cae1dea140c1ad168be39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f3d834b76f7a57661d0c1990a147d2c"><td class="memItemLeft" align="right" valign="top"><a id="a0f3d834b76f7a57661d0c1990a147d2c"></a>
-const Tngt&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::a</b> = rminus(x, y)</td></tr>
-<tr class="separator:a0f3d834b76f7a57661d0c1990a147d2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a930d50fd7ab9719b8949f1784556b231"><td class="memItemLeft" align="right" valign="top"><a id="a930d50fd7ab9719b8949f1784556b231"></a>
-const TngtMap&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::ad_a_t</b> = ad&lt;G&gt;(a).transpose()</td></tr>
-<tr class="separator:a930d50fd7ab9719b8949f1784556b231"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadd493c459973e8b24accff459e572b2"><td class="memItemLeft" align="right" valign="top"><a id="aadd493c459973e8b24accff459e572b2"></a>
-TngtMap&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::res</b> = TngtMap::Zero()</td></tr>
-<tr class="separator:aadd493c459973e8b24accff459e572b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a0824c67acd35623ca6e5fe50221da3"><td class="memItemLeft" align="right" valign="top"><a id="a9a0824c67acd35623ca6e5fe50221da3"></a>
+const TangentMap&lt; G &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::ad_a_t</b> = ad&lt;G&gt;(a).transpose()</td></tr>
+<tr class="separator:a9a0824c67acd35623ca6e5fe50221da3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1dc168cd2130c56d783b7ac77fa4b108"><td class="memItemLeft" align="right" valign="top"><a id="a1dc168cd2130c56d783b7ac77fa4b108"></a>
+TangentMap&lt; G &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::res</b> = TangentMap&lt;G&gt;::Zero()</td></tr>
+<tr class="separator:a1dc168cd2130c56d783b7ac77fa4b108"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d0acde8d2113d07a46dcfc3359d4b6e"><td class="memItemLeft" align="right" valign="top"><a id="a7d0acde8d2113d07a46dcfc3359d4b6e"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::coeff</b> = 1</td></tr>
 <tr class="separator:a7d0acde8d2113d07a46dcfc3359d4b6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0fd7c475c1a447b759d713ef25997282"><td class="memItemLeft" align="right" valign="top"><a id="a0fd7c475c1a447b759d713ef25997282"></a>
-Tngt&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::gi</b> = a</td></tr>
-<tr class="separator:a0fd7c475c1a447b759d713ef25997282"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa52cee9b071e32c5e39f7353615d4516"><td class="memItemLeft" align="right" valign="top"><a id="aa52cee9b071e32c5e39f7353615d4516"></a>
-TngtMap&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::dgi</b> = TngtMap::Identity()</td></tr>
-<tr class="separator:aa52cee9b071e32c5e39f7353615d4516"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49e4f9236fd97c98d2fa68cc5cdc12e3"><td class="memItemLeft" align="right" valign="top"><a id="a49e4f9236fd97c98d2fa68cc5cdc12e3"></a>
+Tangent&lt; G &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::gi</b> = a</td></tr>
+<tr class="separator:a49e4f9236fd97c98d2fa68cc5cdc12e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4dd07a8f91cda4fd9014a4584bf43d5"><td class="memItemLeft" align="right" valign="top"><a id="ad4dd07a8f91cda4fd9014a4584bf43d5"></a>
+TangentMap&lt; G &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>smooth::dgi</b> = TangentMap&lt;G&gt;::Identity()</td></tr>
+<tr class="separator:ad4dd07a8f91cda4fd9014a4584bf43d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Algorithms for computations of Hessians. </p>
 
 <p class="definition">Definition in file <a class="el" href="hessian_8hpp_source.html">hessian.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ae1b40c88eaccec5d682269f8f561a00a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1b40c88eaccec5d682269f8f561a00a">&#9670;&nbsp;</a></span>requires() <span class="overload">[1/2]</span></h2>
+<a id="a4aabbfeeaf97478d8ca8a2509c330079"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4aabbfeeaf97478d8ca8a2509c330079">&#9670;&nbsp;</a></span>requires() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -172,16 +170,20 @@ template&lt;LieGroup G, std::size_t Terms = std::tuple_size_v&lt;decltype(detail
       </table>
 </div><div class="memdoc">
 
-<p>Compute approximate Hessian (second derivative) of rminus w.r.t. first argument. </p>
-<p>Compute approximate Hessian (second derivative) of rplus w.r.t. second argument.</p>
+<p>Compute approximate Hessian (second derivative) of the exponential map. </p>
+<p>Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.</p>
+<p>Compute derivative of the inverse of the derivative of the exponential map.</p>
+<p>The computed Hessian is </p><p class="formulaDsp">
+\[ \mathrm{d}^{2r} \left( \exp a \right)_{aa} = \mathrm{d}^{2r} \left( x \oplus a \right)_{aa} \]
+</p>
+<p>The computed entity is </p><p class="formulaDsp">
+\[ \mathrm{d}^r \left( \mathrm{d}^r \exp_a^{-1} \right)_{a} \]
+</p>
 <p>The computed Hessian is </p><p class="formulaDsp">
 \[ \mathrm{d}^{2r} \left( x \ominus_r y \right)_{xx}. \]
 </p>
-<p>The computed Hessian is </p><p class="formulaDsp">
-\[ \mathrm{d}^{2r} \left( x \oplus a \right)_{aa}. \]
-</p>
  
-<p class="definition">Definition at line <a class="el" href="hessian_8hpp_source.html#l00085">85</a> of file <a class="el" href="hessian_8hpp_source.html">hessian.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hessian_8hpp_source.html#l00089">89</a> of file <a class="el" href="hessian_8hpp_source.html">hessian.hpp</a>.</p>
 
 </div>
 </div>
@@ -280,9 +282,10 @@ template&lt;LieGroup G&gt; </div>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">{</div>
-<div class="line">  <span class="keyword">using</span> Tngt    = Tangent&lt;G&gt;</div>
+<div class="line">  <span class="keyword">const</span> Tangent&lt;G&gt; a         = <a class="code" href="manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231">rminus</a>(x, y)</div>
+<div class="ttc" id="amanifold_8hpp_html_aeb2a9c1a46d6ed26f6d98f66919b8231"><div class="ttname"><a href="manifold_8hpp.html#aeb2a9c1a46d6ed26f6d98f66919b8231">smooth::rminus</a></div><div class="ttdeci">Tangent&lt; M &gt; rminus(const M &amp;g1, const Mo &amp;g2)</div><div class="ttdoc">Manifold right-minus.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00292">manifold.hpp:292</a></div></div>
 </div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="hessian_8hpp_source.html#l00201">201</a> of file <a class="el" href="hessian_8hpp_source.html">hessian.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="hessian_8hpp_source.html#l00208">208</a> of file <a class="el" href="hessian_8hpp_source.html">hessian.hpp</a>.</p>
 
 </div>
 </div>
