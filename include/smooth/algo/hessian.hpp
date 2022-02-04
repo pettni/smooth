@@ -71,7 +71,85 @@ inline auto algebra_generators = []() -> std::array<TangentMap<G>, Dof<G>> {
   return ret;
 }();
 
+template<LieGroup G>
+using hess_t = Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>>;
+
 }  // namespace detail
+
+/**
+ * @brief Compute approximate Hessian (second derivative) of the exponential map.
+ *
+ * The computed Hessian is
+ * \f[
+ *   \mathrm{d}^{2r} \left( \exp a \right)_{aa}
+ *   = \mathrm{d}^{2r} \left( x \oplus a \right)_{aa}
+ * \f]
+ */
+template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
+  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
+detail::hess_t<G> d2r_exp(const Tangent<G> & a)
+{
+  const TangentMap<G> ad_a_t = ad<G>(a).transpose();
+
+  detail::hess_t<G> res;
+  res.setZero();
+
+  for (auto j = 0u; j < Dof<G>; ++j) {
+    double coeff      = 1;                      // hold (-1)^i / i!
+    Tangent<G> gi     = Tangent<G>::Unit(j);    // (ad_a^T)^i * e_j
+    TangentMap<G> dgi = TangentMap<G>::Zero();  // right derivative of gi w.r.t. a
+
+    for (auto iter = 0u; iter < Terms; ++iter) {
+      res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += coeff * dgi;
+      dgi.applyOnTheLeft(ad_a_t);
+      for (auto i = 0u; i < Dof<G>; ++i) {
+        dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
+      }
+      gi.applyOnTheLeft(ad_a_t);
+      coeff *= (-1.) / (iter + 2);
+    }
+  }
+
+  return res;
+}
+
+/**
+ * @brief Compute derivative of the inverse of the derivative of the exponential map.
+ *
+ * The computed entity is
+ * \f[
+ *   \mathrm{d}^r \left( \mathrm{d}^r \exp_a^{-1} \right)_{a}
+ * \f]
+ */
+template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
+  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
+detail::hess_t<G> d2r_expinv(const Tangent<G> & a)
+{
+  const TangentMap<G> ad_a_t = ad<G>(a).transpose();
+
+  detail::hess_t<G> res;
+  res.setZero();
+
+  for (auto j = 0u; j < Dof<G>; ++j) {
+    double coeff      = 1;                      // hold (-1)^i / i!
+    Tangent<G> gi     = Tangent<G>::Unit(j);    // (ad_a^T)^i * e_j
+    TangentMap<G> dgi = TangentMap<G>::Zero();  // right derivative of gi w.r.t. a
+
+    for (auto iter = 0u; iter < Terms; ++iter) {
+      if (detail::kBn[iter] != 0) {
+        res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += (detail::kBn[iter] * coeff) * dgi;
+      }
+      dgi.applyOnTheLeft(ad_a_t);
+      for (auto i = 0u; i < Dof<G>; ++i) {
+        dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
+      }
+      gi.applyOnTheLeft(ad_a_t);
+      coeff *= (-1.) / (iter + 1);
+    }
+  }
+
+  return res;
+}
 
 /**
  * @brief Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.
@@ -83,86 +161,15 @@ inline auto algebra_generators = []() -> std::array<TangentMap<G>, Dof<G>> {
  */
 template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
   requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
-Eigen::Matrix < Scalar<G>, Dof<G>, Dof<G>
-*Dof < G >> hessian_rminus(const G & x, const G & y)
+detail::hess_t<G> hessian_rminus(const G & x, const G & y)
 {
-  using Tngt    = Tangent<G>;
-  using TngtMap = TangentMap<G>;
+  const Tangent<G> a           = rminus(x, y);
+  const TangentMap<G> drexpinv = dr_expinv<G>(a);
 
-  const Tngt a         = rminus(x, y);
-  const TngtMap ad_a_t = ad<G>(a).transpose();
-
-  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> res;
-  res.setZero();
-
+  detail::hess_t<G> res = d2r_expinv<G>(a);
   for (auto j = 0u; j < Dof<G>; ++j) {
-    double coeff = 1;                // hold (-1)^i / i!
-    Tngt gi      = Tngt::Unit(j);    // (ad_a^T)^i * e_j
-    TngtMap dgi  = TngtMap::Zero();  // right derivative of gi w.r.t. a
-
-    for (auto iter = 0u; iter < Terms; ++iter) {
-      if (detail::kBn[iter] != 0) {
-        res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += (detail::kBn[iter] * coeff) * dgi;
-      }
-
-      dgi.applyOnTheLeft(ad_a_t);
-
-      for (auto i = 0u; i < Dof<G>; ++i) {
-        dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
-      }
-
-      gi.applyOnTheLeft(ad_a_t);
-
-      coeff *= (-1.) / (iter + 1);
-    }
-
-    res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>).applyOnTheRight(dr_expinv<G>(a));
+    res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>).applyOnTheRight(drexpinv);
   }
-
-  return res;
-}
-
-/**
- * @brief Compute approximate Hessian (second derivative) of rplus w.r.t. second argument.
- *
- * The computed Hessian is
- * \f[
- *   \mathrm{d}^{2r} \left( x \oplus a \right)_{aa}.
- * \f]
- */
-template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
-  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
-Eigen::Matrix < Scalar<G>, Dof<G>, Dof<G>
-*Dof < G >> hessian_rplus(const Tangent<G> & a)
-{
-  using Tngt    = Tangent<G>;
-  using TngtMap = TangentMap<G>;
-
-  const TngtMap ad_a_t = ad<G>(a).transpose();
-
-  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> res;
-  res.setZero();
-
-  for (auto j = 0u; j < Dof<G>; ++j) {
-    double coeff = 1;                // hold (-1)^i / i!
-    Tngt gi      = Tngt::Unit(j);    // (ad_a^T)^i * e_j
-    TngtMap dgi  = TngtMap::Zero();  // right derivative of gi w.r.t. a
-
-    for (auto iter = 0u; iter < Terms; ++iter) {
-      res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += coeff * dgi;
-
-      dgi.applyOnTheLeft(ad_a_t);
-
-      for (auto i = 0u; i < Dof<G>; ++i) {
-        dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
-      }
-
-      gi.applyOnTheLeft(ad_a_t);
-
-      coeff *= (-1.) / (iter + 2);
-    }
-  }
-
   return res;
 }
 
@@ -200,28 +207,21 @@ template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)
   requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
 TangentMap<G> hessian_rminus_norm(const G & x, const G & y)
 {
-  using Tngt    = Tangent<G>;
-  using TngtMap = TangentMap<G>;
+  const Tangent<G> a         = rminus(x, y);
+  const TangentMap<G> ad_a_t = ad<G>(a).transpose();
 
-  const Tngt a         = rminus(x, y);
-  const TngtMap ad_a_t = ad<G>(a).transpose();
-
-  TngtMap res  = TngtMap::Zero();
-  double coeff = 1;                    // hold (-1)^i / i!
-  Tngt gi      = a;                    // (ad_a^T)^i * a
-  TngtMap dgi  = TngtMap::Identity();  // right derivative of gi w.r.t. a
+  TangentMap<G> res = TangentMap<G>::Zero();
+  double coeff      = 1;                          // hold (-1)^i / i!
+  Tangent<G> gi     = a;                          // (ad_a^T)^i * a
+  TangentMap<G> dgi = TangentMap<G>::Identity();  // right derivative of gi w.r.t. a
 
   for (auto iter = 0u; iter < Terms; ++iter) {
     if (detail::kBn[iter] != 0) { res += (detail::kBn[iter] * coeff) * dgi; }
-
     dgi.applyOnTheLeft(ad_a_t);
-
     for (auto i = 0u; i < Dof<G>; ++i) {
       dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
     }
-
     gi.applyOnTheLeft(ad_a_t);
-
     coeff *= (-1.) / (iter + 1);
   }
 

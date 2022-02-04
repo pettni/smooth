@@ -214,7 +214,7 @@ TEST(Hessian, rminus)
   }
 }
 
-TEST(Hessian, rplus)
+TEST(Hessian, d2rexp)
 {
   using G = smooth::SE2d;
 
@@ -225,7 +225,7 @@ TEST(Hessian, rplus)
     const auto [unused1, unused2, H_num] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(
       [&x](const auto & var) -> G { return rplus(x, var); }, smooth::wrt(a));
 
-    const auto H_ana = smooth::hessian_rplus<G>(a);
+    const auto H_ana = smooth::d2r_exp<G>(a);
 
     ASSERT_TRUE(H_num.isApprox(H_ana, 1e-4));
   }
