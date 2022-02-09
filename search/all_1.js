@@ -13,5 +13,6 @@ var searchData=
   ['bundlebase_10',['BundleBase',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
   ['bundlebase_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_11',['BundleBase&lt; Bundle&lt; _Gs... &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
   ['bundlebase_3c_20map_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_12',['BundleBase&lt; Map&lt; Bundle&lt; _Gs... &gt; &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
-  ['bundlebase_3c_20map_3c_20const_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_13',['BundleBase&lt; Map&lt; const Bundle&lt; _Gs... &gt; &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]]
+  ['bundlebase_3c_20map_3c_20const_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_13',['BundleBase&lt; Map&lt; const Bundle&lt; _Gs... &gt; &gt; &gt;',['../classsmooth_1_1BundleBase.html',1,'smooth']]],
+  ['bundlesize_14',['BundleSize',['../classsmooth_1_1BundleBase.html#a760f0e7da240f30e0de877424060e318',1,'smooth::BundleBase']]]
 ];

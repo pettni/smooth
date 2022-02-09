@@ -191,9 +191,10 @@ requires (K &gt;= 1 &amp;&amp; K &lt;= 2)</td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3" name="ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3"></a>Ceres&#160;</td><td class="fielddoc"><p >Uses the Ceres (<a href="http://ceres-solver.org">http://ceres-solver.org</a>) built-in autodiff; requires <code><a class="el" href="ceres_8hpp.html" title="ceres compatability header.">compat/ceres.hpp</a></code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791" name="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"></a>Analytic&#160;</td><td class="fielddoc"><p >Hand-coded derivative, requires that function returns <code>std::pair</code> \((f(x), &lt; \mathrm{d}^r f_x) \) </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791" name="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"></a>Analytic&#160;</td><td class="fielddoc"><p >Hand-coded derivative,. </p>
+<dl class="section see"><dt>See also</dt><dd>diffable_order1, diffable_order2 </dd></dl>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67" name="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67"></a>Default&#160;</td><td class="fielddoc"><p >Automatically select type based on availability (Analytic &gt; Autodiff &gt; Ceres &gt; Numerical) </p>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67" name="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67"></a>Default&#160;</td><td class="fielddoc"><p >Select based on availability (Analytic &gt; Autodiff &gt; Ceres &gt; Numerical) </p>
 </td></tr>
 </table>
 
@@ -252,7 +253,7 @@ template&lt;std::size_t K, Type D&gt; </div>
 <dd>
 All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00238">238</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00237">237</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>
@@ -301,7 +302,7 @@ template&lt;std::size_t K = 1&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd><code>std::pair</code> containing value and right derivative: \((f(x), \mathrm{d}^r f_x)\)</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00314">314</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="diff_8hpp_source.html#l00316">316</a> of file <a class="el" href="diff_8hpp_source.html">diff.hpp</a>.</p>
 
 </div>
 </div>

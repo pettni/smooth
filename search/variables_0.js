@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cols_0',['Cols',['../structsmooth_1_1StaticMatrix.html#a9b8e6e2181a1e4347538f9d13b04fa1f',1,'smooth::StaticMatrix']]]
+  ['bundlesize_0',['BundleSize',['../classsmooth_1_1BundleBase.html#a760f0e7da240f30e0de877424060e318',1,'smooth::BundleBase']]]
 ];
