@@ -39,6 +39,14 @@ struct Functor
 {
   G xd;
 
+  Functor(const G & g) : xd(g) {}
+
+  // make sure we can differentiate without making copies..
+  Functor(const Functor &) = delete;
+  Functor & operator=(const Functor &) = delete;
+  Functor(Functor &&) = delete;
+  Functor & operator=(Functor &&) = delete;
+
   template<typename Scalar>
   Scalar operator()(const smooth::CastT<Scalar, G> & x) const
   {
@@ -69,7 +77,7 @@ TEST(Hessian, RminusSE2)
   using G = smooth::SE2d;
 
   for (auto i = 0u; i < 10; ++i) {
-    const auto f = Functor<G>{.xd = G::Random()};
+    const auto f = Functor<G>{G::Random()};
     const auto x = G::Random();
 
     const auto [f_num, drf_num, d2f_num] =
@@ -101,7 +109,7 @@ TEST(Hessian, RminusSE3)
   using G = smooth::SE3d;
 
   for (auto i = 0u; i < 10; ++i) {
-    const auto f = Functor<G>{.xd = G::Random()};
+    const auto f = Functor<G>{G::Random()};
     const auto x = G::Random();
 
     const auto [f_num, drf_num, d2f_num] =

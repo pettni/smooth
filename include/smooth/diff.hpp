@@ -197,9 +197,8 @@ enum class Type {
               ///< compat/autodiff.hpp
   Ceres,      ///< Uses the Ceres (http://ceres-solver.org) built-in autodiff; requires \p
               ///< compat/ceres.hpp
-  Analytic,   ///< Hand-coded derivative, requires that function returns \p std::pair \f$(f(x),
-              ///< \mathrm{d}^r f_x) \f$
-  Default     ///< Automatically select type based on availability (Analytic > Autodiff > Ceres > Numerical)
+  Analytic,   ///< Hand-coded derivative, @see diffable_order1, diffable_order2
+  Default     ///< Select based on availability (Analytic > Autodiff > Ceres > Numerical)
 };
 
 static constexpr Type DefaultType =
@@ -272,24 +271,27 @@ auto dr(auto && f, auto && x)
   } else if constexpr (D == Type::Analytic) {
     // Analytic
 
-    auto fval = std::apply(f, x);
-    auto dfval =
-      std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::jacobian), f), x);
     if constexpr (K == 1) {
-      return std::make_tuple(std::move(fval), std::move(dfval));
+      return std::make_tuple(
+        std::apply(f, x),
+        std::apply(
+          [&f](auto &&... args) { return f.jacobian(std::forward<decltype(args)>(args)...); }, x));
     } else if constexpr (K == 2) {
-      auto d2fval =
-        std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::hessian), f), x);
-      return std::make_tuple(fval, dfval, d2fval);
+      return std::make_tuple(
+        std::apply(f, x),
+        std::apply(
+          [&f](auto &&... args) { return f.jacobian(std::forward<decltype(args)>(args)...); }, x),
+        std::apply(
+          [&f](auto &&... args) { return f.hessian(std::forward<decltype(args)>(args)...); }, x));
     }
 
   } else if constexpr (D == Type::Default) {
     // Default
 
     // If analytical derivatives exist
-    if constexpr (K == 1 && detail::diffable_order1<decltype(f), decltype(x)>) {
+    if constexpr (K == 1 && detail::diffable_order1<F, Wrt>) {
       return dr<K, Type::Analytic>(std::forward<F>(f), std::forward<Wrt>(x));
-    } else if constexpr (K == 2 && detail::diffable_order2<decltype(f), decltype(x)>) {
+    } else if constexpr (K == 2 && detail::diffable_order2<F, Wrt>) {
       return dr<K, Type::Analytic>(std::forward<F>(f), std::forward<Wrt>(x));
     } else {
       // Use best available method

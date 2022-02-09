@@ -81,6 +81,11 @@ public:
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
+   * @brief Number of elements in Bundle.
+   */
+  static constexpr Eigen::Index BundleSize = Impl::BundleSize;
+
+  /**
    * @brief Type of element in Bundle.
    */
   template<std::size_t Idx>
