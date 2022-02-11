@@ -97,7 +97,7 @@ public:
       g_in1.template tail<4>(), g_in2.template tail<4>(), g_out.template tail<4>());
     Eigen::Matrix<Scalar, 3, 3> R1;
     SO3Impl<Scalar>::matrix(g_in1.template tail<4>(), R1);
-    g_out.template head<3>() = R1 * g_in2.template head<3>() + g_in1.template head<3>();
+    g_out.template head<3>().noalias() = R1 * g_in2.template head<3>() + g_in1.template head<3>();
   }
 
   static void inverse(GRefIn g_in, GRefOut g_out)
@@ -108,8 +108,8 @@ public:
     Eigen::Matrix<Scalar, 3, 3> Rinv;
     SO3Impl<Scalar>::matrix(so3inv, Rinv);
 
-    g_out.template head<3>() = -Rinv * g_in.template head<3>();
-    g_out.template tail<4>() = so3inv;
+    g_out.template head<3>().noalias() = -Rinv * g_in.template head<3>();
+    g_out.template tail<4>()           = so3inv;
   }
 
   static void log(GRefIn g_in, TRefOut a_out)
@@ -121,12 +121,11 @@ public:
     SO3TangentMap M_dr_expinv, M_ad;
     SO3Impl<Scalar>::dr_expinv(a_out.template tail<3>(), M_dr_expinv);
     SO3Impl<Scalar>::ad(a_out.template tail<3>(), M_ad);
-    a_out.template head<3>() = (-M_ad + M_dr_expinv) * g_in.template head<3>();
+    a_out.template head<3>().noalias() = (-M_ad + M_dr_expinv) * g_in.template head<3>();
   }
 
   static void Ad(GRefIn g_in, TMapRefOut A_out)
   {
-
     SO3Impl<Scalar>::matrix(g_in.template tail<4>(), A_out.template topLeftCorner<3, 3>());
     SO3Impl<Scalar>::hat(g_in.template head<3>(), A_out.template topRightCorner<3, 3>());
     A_out.template topRightCorner<3, 3>() *= A_out.template topLeftCorner<3, 3>();
@@ -144,7 +143,7 @@ public:
     SO3Impl<Scalar>::dr_exp(a_in.template tail<3>(), M_dr_exp);
     SO3Impl<Scalar>::Ad(g_out.template tail<4>(), M_Ad);
 
-    g_out.template head<3>() = M_Ad * M_dr_exp * a_in.template head<3>();
+    g_out.template head<3>().noalias() = M_Ad * M_dr_exp * a_in.template head<3>();
   }
 
   static void hat(TRefIn a_in, MRefOut A_out)
@@ -217,9 +216,9 @@ public:
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
   {
     SO3Impl<Scalar>::dr_expinv(a_in.template tail<3>(), A_out.template topLeftCorner<3, 3>());
-    A_out.template topRightCorner<3, 3>() = -A_out.template topLeftCorner<3, 3>()
-                                          * calculate_q(-a_in)
-                                          * A_out.template topLeftCorner<3, 3>();
+    A_out.template topRightCorner<3, 3>().noalias() = -A_out.template topLeftCorner<3, 3>()
+                                                    * calculate_q(-a_in)
+                                                    * A_out.template topLeftCorner<3, 3>();
     A_out.template bottomRightCorner<3, 3>() = A_out.template topLeftCorner<3, 3>();
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }

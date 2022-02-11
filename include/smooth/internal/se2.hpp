@@ -91,7 +91,7 @@ public:
       g_in1.template tail<2>(), g_in2.template tail<2>(), g_out.template tail<2>());
     Eigen::Matrix<Scalar, 2, 2> R1;
     SO2Impl<Scalar>::matrix(g_in1.template tail<2>(), R1);
-    g_out.template head<2>() = R1 * g_in2.template head<2>() + g_in1.template head<2>();
+    g_out.template head<2>().noalias() = R1 * g_in2.template head<2>() + g_in1.template head<2>();
   }
 
   static void inverse(GRefIn g_in, GRefOut g_out)
@@ -102,8 +102,8 @@ public:
     Eigen::Matrix<Scalar, 2, 2> Rinv;
     SO2Impl<Scalar>::matrix(so2inv, Rinv);
 
-    g_out.template head<2>() = -Rinv * g_in.template head<2>();
-    g_out.template tail<2>() = so2inv;
+    g_out.template head<2>().noalias() = -Rinv * g_in.template head<2>();
+    g_out.template tail<2>()           = so2inv;
   }
 
   static void log(GRefIn g_in, TRefOut a_out)
@@ -116,7 +116,7 @@ public:
     const Scalar th2 = th * th;
 
     const Scalar B = th / Scalar(2);
-    const auto A = [&]() -> Scalar {
+    const auto A   = [&]() -> Scalar {
       if (th2 < Scalar(eps2)) {
         // https://www.wolframalpha.com/input/?i=series+x+%2F+tan+x+at+x%3D0
         return Scalar(1) - th2 / Scalar(12);
@@ -125,14 +125,10 @@ public:
       }
     }();
 
-    Eigen::Matrix<Scalar, 2, 2> Sinv;
-    Sinv(0, 0) = A;
-    Sinv(1, 1) = A;
-    Sinv(0, 1) = B;
-    Sinv(1, 0) = -B;
+    const Eigen::Matrix<Scalar, 2, 2> Sinv{{A, B}, {-B, A}};
 
-    a_out.template head<2>() = Sinv * g_in.template head<2>();
-    a_out(2)                 = th;
+    a_out.template head<2>().noalias() = Sinv * g_in.template head<2>();
+    a_out(2)                           = th;
   }
 
   static void Ad(GRefIn g_in, TMapRefOut A_out)
@@ -168,13 +164,9 @@ public:
       }
     }();
 
-    Eigen::Matrix<Scalar, 2, 2> S;
-    S(0, 0) = A;
-    S(1, 1) = A;
-    S(0, 1) = B;
-    S(1, 0) = -B;
+    const Eigen::Matrix<Scalar, 2, 2> S{{A, B}, {-B, A}};
 
-    g_out.template head<2>() = S * a_in.template head<2>();
+    g_out.template head<2>().noalias() = S * a_in.template head<2>();
     SO2Impl<Scalar>::exp(a_in.template tail<1>(), g_out.template tail<2>());
   }
 

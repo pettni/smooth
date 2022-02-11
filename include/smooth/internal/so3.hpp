@@ -186,7 +186,7 @@ public:
     using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
     TangentMap ad_a;
     ad(a_in, ad_a);
-    A_out = TangentMap::Identity() - A * ad_a + B * ad_a * ad_a;
+    A_out.noalias() = TangentMap::Identity() - A * ad_a + B * ad_a * ad_a;
   }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
@@ -207,7 +207,7 @@ public:
     using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
     TangentMap ad_a;
     ad(a_in, ad_a);
-    A_out = TangentMap::Identity() + ad_a / Scalar(2) + A * ad_a * ad_a;
+    A_out.noalias() = TangentMap::Identity() + ad_a / Scalar(2) + A * ad_a * ad_a;
   }
 };
 
