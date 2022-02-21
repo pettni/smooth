@@ -83,8 +83,8 @@ Spline<2, double> reparameterize_spline(
   assert(acc_min.maxCoeff() < 0);
   assert(acc_max.minCoeff() > 0);
 
-  constexpr auto eps = 1e-8;
-  constexpr auto inf = std::numeric_limits<double>::infinity();
+  static constexpr auto eps = 1e-8;
+  static constexpr auto inf = std::numeric_limits<double>::infinity();
 
   const double s0 = spline.t_min();
   const double sf = spline.t_max();
@@ -184,17 +184,17 @@ Spline<2, double> reparameterize_spline(
 
     // figure maximal allowed acceleration at (si, vi)
     const double ai = [&]() {
-      double ret             = (v2max(i + 1) - vi2) / (2 * ds);
+      double local_ret       = (v2max(i + 1) - vi2) / (2 * ds);
       const Tangent<G> upper = (acc_max - acc * vi2);
       const Tangent<G> lower = (acc_min - acc * vi2);
       for (const auto j : std::views::iota(0, Dof<G>)) {
         if (vel(j) > eps) {
-          ret = std::min<double>(ret, upper(j) / vel(j));
+          local_ret = std::min<double>(local_ret, upper(j) / vel(j));
         } else if (vel(j) < -eps) {
-          ret = std::min<double>(ret, lower(j) / vel(j));
+          local_ret = std::min<double>(local_ret, lower(j) / vel(j));
         }
       }
-      return ret;
+      return local_ret;
     }();
 
     if (ai != inf) {

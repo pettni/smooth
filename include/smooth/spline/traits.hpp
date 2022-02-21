@@ -38,7 +38,7 @@ struct is_spline : std::false_type
 {};
 
 template<typename T>
-inline constexpr bool is_spline_v = is_spline<T>::value;
+static constexpr bool is_spline_v = is_spline<T>::value;
 
 }  // namespace traits
 

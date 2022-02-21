@@ -78,9 +78,9 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
     // expect vee(hat(g) + b) \approx g + jac * b
     // where  hat(g) maps from parameters to the group
     // and    vee does the opposite
-    ParamsT param      = Eigen::Map<const ParamsT>(g.data());
-    ParamsT param_plus = Eigen::Map<const ParamsT>(gp.data());
+    ParamsT param2      = Eigen::Map<const ParamsT>(g.data());
+    ParamsT param2_plus = Eigen::Map<const ParamsT>(gp.data());
 
-    ASSERT_TRUE(param_plus.isApprox(param + jac * b, 1e-6));
+    ASSERT_TRUE(param2_plus.isApprox(param2 + jac * b, 1e-6));
   }
 }

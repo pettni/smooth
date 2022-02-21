@@ -474,6 +474,8 @@ public:
     // prevent last segment from being empty
     if (Nseg >= 2 && end_t_[i0 + Nseg - 2] == tb) { --Nseg; }
 
+    if (Nseg == 0) { return Spline(); }  // appease santizer
+
     // state at new from beginning of Spline
     G ga = operator()(ta);
 
@@ -483,7 +485,7 @@ public:
     std::vector<double> seg_T0(Nseg), seg_Del(Nseg);
 
     // copy over all relevant segments
-    for (auto i = 0u; i != Nseg; ++i) {
+    for (auto i = 0u; i < Nseg; ++i) {
       if (i == Nseg - 1) {
         end_t[i] = tb - ta;
         end_g[i] = composition(inverse(ga), operator()(tb));

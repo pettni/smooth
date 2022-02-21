@@ -171,7 +171,7 @@ public:
       ctrl_pts_
         | std::views::drop(istar)
         | std::views::take(int64_t(K + 1))  // gcc 11.1 bug can't handle uint64_t
-        | std::views::transform([](const auto & g) { return cast<S>(g); }),
+        | std::views::transform([](const auto & glocal) { return cast<S>(glocal); }),
       // clang-format on
       B_.template cast<S>(),
       u,

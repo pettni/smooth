@@ -69,21 +69,23 @@ TYPED_TEST(LieGroupInterface, Constructors)
   std::srand(5);
 
   // group construction
-  TypeParam g;
-  g.setRandom();
+  TypeParam g = TypeParam::Random();
+  std::array<typename TypeParam::Scalar, TypeParam::RepSize> a;
 
   // map construction
-  std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1;
-  smooth::Map<TypeParam> m1(a1.data());
-  smooth::Map<const TypeParam> m2(a1.data());
-  m1.setRandom();
-  ASSERT_TRUE(m1.isApprox(m2));
+  {
+    std::array<typename TypeParam::Scalar, TypeParam::RepSize> a1;
+    smooth::Map<TypeParam> m1(a1.data());
+    smooth::Map<const TypeParam> m2(a1.data());
+    m1.setRandom();
+    ASSERT_TRUE(m1.isApprox(m2));
+  }
 
   // group -> group copy constructor
-  TypeParam g_copy(g);
-  ASSERT_TRUE(g_copy.isApprox(g));
-
-  std::array<typename TypeParam::Scalar, TypeParam::RepSize> a;
+  {
+    TypeParam g_copy(g);
+    ASSERT_TRUE(g_copy.isApprox(g));
+  }
 
   // map -> group copy constructor
   {
@@ -354,6 +356,8 @@ TYPED_TEST(LieGroupInterface, HatAndVee)
 
 TYPED_TEST(LieGroupInterface, Jacobians)
 {
+  using Scalar = typename TypeParam::Scalar;
+
   std::srand(5);
 
   // test zero vector
@@ -363,7 +367,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
   ASSERT_TRUE(dr_exp_0.isApprox(TypeParam::TangentMap::Identity()));
   ASSERT_TRUE(dr_exp_inv_0.isApprox(TypeParam::TangentMap::Identity()));
 
-  auto eps = 1e2 * Eigen::NumTraits<typename TypeParam::Scalar>::dummy_precision();
+  Scalar eps = Scalar(1e2) * Eigen::NumTraits<Scalar>::dummy_precision();
 
   // check that they are each others inverses
   for (auto i = 0u; i != 10; ++i) {
@@ -400,7 +404,7 @@ TYPED_TEST(LieGroupInterface, Jacobians)
     ASSERT_TRUE(Ad_expma.isApprox(dr_exp_a * dl_expinv_a, eps));
   }
 
-  if constexpr (std::is_same_v<typename TypeParam::Scalar, float>) {
+  if constexpr (std::is_same_v<Scalar, float>) {
     eps = 1e-3;  // precision loss is pretty bad for float
   } else {
     eps = 1e-6;
