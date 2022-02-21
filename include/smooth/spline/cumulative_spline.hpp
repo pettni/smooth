@@ -184,7 +184,7 @@ inline G cspline_eval(
 {
   assert(std::ranges::size(gs) == K + 1);
 
-  constexpr auto sub  = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
+  static constexpr auto sub  = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
   const auto diff_pts = gs | utils::views::pairwise_transform(sub);
 
   return composition(

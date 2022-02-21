@@ -416,7 +416,7 @@ inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> & hp
     std::ranges::begin(hps_x_lower),
     std::ranges::end(hps_x_lower),
     -inf,
-    [](const Scalar a, const Scalar b) { return std::max(a, b); },
+    [](const Scalar avar, const Scalar bvar) { return std::max(avar, bvar); },
     [](const HalfPlane & hp) { return hp.c / hp.a; });
 
   // halfplanes that define an upper bound on x (independent of y)
@@ -429,7 +429,7 @@ inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> & hp
     std::ranges::begin(hps_x_upper),
     std::ranges::end(hps_x_upper),
     inf,
-    [](const Scalar a, const Scalar b) { return std::min(a, b); },
+    [](const Scalar avar, const Scalar bvar) { return std::min(avar, bvar); },
     [](const HalfPlane & hp) { return hp.c / hp.a; });
 
   // we remove at least one halfplane per iterations, so need at most N iterations

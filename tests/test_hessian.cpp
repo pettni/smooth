@@ -44,7 +44,7 @@ struct Functor
   // make sure we can differentiate without making copies..
   Functor(const Functor &) = delete;
   Functor & operator=(const Functor &) = delete;
-  Functor(Functor &&) = delete;
+  Functor(Functor &&)                  = delete;
   Functor & operator=(Functor &&) = delete;
 
   template<typename Scalar>
@@ -185,8 +185,8 @@ TEST(Hessian, Rminus_full)
 
   const auto x = G::Random(), y = G::Random();
 
-  const auto f = [&y]<typename T>(smooth::SE3<T> x) -> Eigen::Vector3<T> {
-    return (x - y.template cast<T>()).template head<3>();
+  const auto f = [&y]<typename T>(smooth::SE3<T> xvar) -> Eigen::Vector3<T> {
+    return (xvar - y.template cast<T>()).template head<3>();
   };
 
   const auto [f_num, df_num, d2f_num] =
