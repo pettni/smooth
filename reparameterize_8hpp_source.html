@@ -136,8 +136,8 @@ $(function() {
 <div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>  assert(acc_min.maxCoeff() &lt; 0);</div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>  assert(acc_max.minCoeff() &gt; 0);</div>
 <div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>  <span class="keyword">constexpr</span> <span class="keyword">auto</span> eps = 1e-8;</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>  <span class="keyword">constexpr</span> <span class="keyword">auto</span> inf = std::numeric_limits&lt;double&gt;::infinity();</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> eps = 1e-8;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> inf = std::numeric_limits&lt;double&gt;::infinity();</div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
 <div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>  <span class="keyword">const</span> <span class="keywordtype">double</span> s0 = spline.t_min();</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>  <span class="keyword">const</span> <span class="keywordtype">double</span> sf = spline.t_max();</div>
@@ -237,17 +237,17 @@ $(function() {
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>    <span class="comment">// figure maximal allowed acceleration at (si, vi)</span></div>
 <div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <span class="keyword">const</span> <span class="keywordtype">double</span> ai = [&amp;]() {</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>      <span class="keywordtype">double</span> ret             = (v2max(i + 1) - vi2) / (2 * ds);</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>      <span class="keywordtype">double</span> local_ret       = (v2max(i + 1) - vi2) / (2 * ds);</div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>      <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent&lt;G&gt;</a> upper = (acc_max - acc * vi2);</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>      <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent&lt;G&gt;</a> lower = (acc_min - acc * vi2);</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>      <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> j : std::views::iota(0, Dof&lt;G&gt;)) {</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>        <span class="keywordflow">if</span> (vel(j) &gt; eps) {</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>          ret = std::min&lt;double&gt;(ret, upper(j) / vel(j));</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>          local_ret = std::min&lt;double&gt;(local_ret, upper(j) / vel(j));</div>
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (vel(j) &lt; -eps) {</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>          ret = std::min&lt;double&gt;(ret, lower(j) / vel(j));</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>          local_ret = std::min&lt;double&gt;(local_ret, lower(j) / vel(j));</div>
 <div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>        }</div>
 <div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>      }</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>      <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>      <span class="keywordflow">return</span> local_ret;</div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>    }();</div>
 <div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span> </div>
 <div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keywordflow">if</span> (ai != inf) {</div>
