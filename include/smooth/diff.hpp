@@ -275,14 +275,23 @@ auto dr(auto && f, auto && x)
       return std::make_tuple(
         std::apply(f, x),
         std::apply(
-          [&f](auto &&... args) { return f.jacobian(std::forward<decltype(args)>(args)...); }, x));
+          [&f](auto &&... args) -> decltype(auto) {
+            return f.jacobian(std::forward<decltype(args)>(args)...);
+          },
+          x));
     } else if constexpr (K == 2) {
       return std::make_tuple(
         std::apply(f, x),
         std::apply(
-          [&f](auto &&... args) { return f.jacobian(std::forward<decltype(args)>(args)...); }, x),
+          [&f](auto &&... args) -> decltype(auto) {
+            return f.jacobian(std::forward<decltype(args)>(args)...);
+          },
+          x),
         std::apply(
-          [&f](auto &&... args) { return f.hessian(std::forward<decltype(args)>(args)...); }, x));
+          [&f](auto &&... args) -> decltype(auto) {
+            return f.hessian(std::forward<decltype(args)>(args)...);
+          },
+          x));
     }
 
   } else if constexpr (D == Type::Default) {
