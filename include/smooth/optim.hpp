@@ -85,19 +85,19 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
   // evaluate residuals and jacobian at initial point
   auto [r, J] = diff::dr<1, D>(f, x);
 
+  using JType = std::decay_t<decltype(J)>;
+
   // extract some properties from jacobian
-  static constexpr bool is_sparse =
-    std::is_base_of_v<Eigen::SparseMatrixBase<decltype(J)>, decltype(J)>;
-  static constexpr int Nx = decltype(J)::ColsAtCompileTime;
-  const int nx            = J.cols();
+  static constexpr bool is_sparse = std::is_base_of_v<Eigen::SparseMatrixBase<JType>, JType>;
+  static constexpr int Nx         = JType::ColsAtCompileTime;
+  const int nx                    = J.cols();
 
   // scaling parameters
   Eigen::Vector<double, Nx> d(nx);
   if constexpr (is_sparse) {
-    d =
-      (Eigen::RowVector<double, decltype(J)::RowsAtCompileTime>::Ones(J.rows()) * J.cwiseProduct(J))
-        .cwiseSqrt()
-        .transpose();
+    d = (Eigen::RowVector<double, JType::RowsAtCompileTime>::Ones(J.rows()) * J.cwiseProduct(J))
+          .cwiseSqrt()
+          .transpose();
   } else {
     d = J.colwise().stableNorm().transpose();
   }
@@ -145,7 +145,7 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
     const double Da_norm     = d.cwiseProduct(a).stableNorm();
 
     // calculate actual to predicted reduction
-    const Eigen::Vector<double, decltype(J)::RowsAtCompileTime> Ja = J * a;
+    const Eigen::Vector<double, JType::RowsAtCompileTime> Ja = J * a;
     const double act_red  = 1. - Eigen::numext::abs2(r_cand_norm / r_norm);
     const double fra2     = Eigen::numext::abs2(Ja.stableNorm() / r_norm);
     const double fra3     = Eigen::numext::abs2(std::sqrt(lambda) * Da_norm / r_norm);
@@ -191,8 +191,7 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
       // update scaling
       if constexpr (is_sparse) {
-        d = (Eigen::RowVector<double, decltype(J)::RowsAtCompileTime>::Ones(J.rows())
-             * J.cwiseProduct(J))
+        d = (Eigen::RowVector<double, JType::RowsAtCompileTime>::Ones(J.rows()) * J.cwiseProduct(J))
               .cwiseSqrt()
               .transpose();
       } else {

@@ -104,6 +104,10 @@ add_executable(test_diff test_diff.cpp)
 target_link_libraries(test_diff PRIVATE TestConfig)
 gtest_discover_tests(test_diff)
 
+add_executable(test_diff_analytic test_diff_analytic.cpp)
+target_link_libraries(test_diff_analytic PRIVATE TestConfig)
+gtest_discover_tests(test_diff_analytic)
+
 add_executable(test_nls test_nls.cpp)
 target_link_libraries(test_nls PRIVATE TestConfig)
 gtest_discover_tests(test_nls)
