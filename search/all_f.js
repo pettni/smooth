@@ -8,10 +8,13 @@ var searchData=
   ['repsize_5',['RepSize',['../classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'smooth::LieGroupBase']]],
   ['reserve_6',['reserve',['../classsmooth_1_1Spline.html#a947eacfca0127c710e964cba21a25865',1,'smooth::Spline']]],
   ['result_5ftype_7',['result_type',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#aa1e16c90930ca56d61c044cfc0bac6e1',1,'smooth::detail::BoostOdeintOps::scale_sum']]],
-  ['rght_5fvalues_8',['rght_values',['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a366b92e6b542ce0cfce5bb61d1884cc9',1,'smooth::spline_specs::FixedDerCubic::rght_values()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#ade1275439832720aef34476473088d0c',1,'smooth::spline_specs::MinDerivative::rght_values()'],['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a67839821b7b6952fc34261726d6b3f60',1,'smooth::spline_specs::NoConstraints::rght_values()']]],
+  ['rght_5fvalues_8',['rght_values',['../structsmooth_1_1spline__specs_1_1MinDerivative.html#ade1275439832720aef34476473088d0c',1,'smooth::spline_specs::MinDerivative::rght_values()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a366b92e6b542ce0cfce5bb61d1884cc9',1,'smooth::spline_specs::FixedDerCubic::rght_values()'],['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a67839821b7b6952fc34261726d6b3f60',1,'smooth::spline_specs::NoConstraints::rght_values()']]],
   ['rghtdeg_9',['RghtDeg',['../structsmooth_1_1spline__specs_1_1NoConstraints.html#aa2bfff3f16c55da7a5b4749526fbba82',1,'smooth::spline_specs::NoConstraints::RghtDeg()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a21af54c10f4210fba1d5fa379ba8959d',1,'smooth::spline_specs::FixedDerCubic::RghtDeg()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#a49643c69e18e912d098d41443b28ef68',1,'smooth::spline_specs::MinDerivative::RghtDeg()']]],
   ['rminus_10',['rminus',['../manifold_8hpp.html#ab1b40a3c99fb18a4a468a3b8d4b6631a',1,'smooth']]],
   ['ros_2ehpp_11',['ros.hpp',['../ros_8hpp.html',1,'']]],
-  ['rows_12',['Rows',['../structsmooth_1_1StaticMatrix.html#ac09662c42d6613f917bcff049ef46d23',1,'smooth::StaticMatrix']]],
-  ['rplus_13',['rplus',['../manifold_8hpp.html#aea879e1473fe395a49a6bff6d3b0be10',1,'smooth']]]
+  ['rot_5fx_12',['rot_x',['../classsmooth_1_1SO3.html#ae6cea69367b1bdc215013339bb983d45',1,'smooth::SO3']]],
+  ['rot_5fy_13',['rot_y',['../classsmooth_1_1SO3.html#a471bd72197d0f5ead6a612dc743efb2b',1,'smooth::SO3']]],
+  ['rot_5fz_14',['rot_z',['../classsmooth_1_1SO3.html#a16f84898a18c19941efd26939aef54ad',1,'smooth::SO3']]],
+  ['rows_15',['Rows',['../structsmooth_1_1StaticMatrix.html#ac09662c42d6613f917bcff049ef46d23',1,'smooth::StaticMatrix']]],
+  ['rplus_16',['rplus',['../manifold_8hpp.html#aea879e1473fe395a49a6bff6d3b0be10',1,'smooth']]]
 ];

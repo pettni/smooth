@@ -6,5 +6,8 @@ var searchData=
   ['reparameterize_5fspline_3',['reparameterize_spline',['../reparameterize_8hpp.html#a58e495f493433daf865438abad0006ec',1,'smooth']]],
   ['reserve_4',['reserve',['../classsmooth_1_1Spline.html#a947eacfca0127c710e964cba21a25865',1,'smooth::Spline']]],
   ['rminus_5',['rminus',['../manifold_8hpp.html#ab1b40a3c99fb18a4a468a3b8d4b6631a',1,'smooth']]],
-  ['rplus_6',['rplus',['../manifold_8hpp.html#aea879e1473fe395a49a6bff6d3b0be10',1,'smooth']]]
+  ['rot_5fx_6',['rot_x',['../classsmooth_1_1SO3.html#ae6cea69367b1bdc215013339bb983d45',1,'smooth::SO3']]],
+  ['rot_5fy_7',['rot_y',['../classsmooth_1_1SO3.html#a471bd72197d0f5ead6a612dc743efb2b',1,'smooth::SO3']]],
+  ['rot_5fz_8',['rot_z',['../classsmooth_1_1SO3.html#a16f84898a18c19941efd26939aef54ad',1,'smooth::SO3']]],
+  ['rplus_9',['rplus',['../manifold_8hpp.html#aea879e1473fe395a49a6bff6d3b0be10',1,'smooth']]]
 ];
