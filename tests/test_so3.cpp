@@ -54,13 +54,57 @@ TEST(SO3, Eulerangles)
 {
   double ang = 0.345;
   smooth::SO3d g1(Eigen::Quaterniond(std::cos(ang / 2), std::sin(ang / 2), 0, 0));
-  ASSERT_EQ(g1.eulerAngles().z(), ang);
+  ASSERT_EQ(g1.eulerAngles()(2), ang);
 
   smooth::SO3d g2(Eigen::Quaterniond(std::cos(ang / 2), 0, std::sin(ang / 2), 0));
-  ASSERT_EQ(g2.eulerAngles().y(), ang);
+  ASSERT_EQ(g2.eulerAngles()(1), ang);
 
   smooth::SO3d g3(Eigen::Quaterniond(std::cos(ang / 2), 0, 0, std::sin(ang / 2)));
-  ASSERT_EQ(g3.eulerAngles().x(), ang);
+  ASSERT_EQ(g3.eulerAngles()(0), ang);
+}
+
+TEST(SO3, rotXYZ)
+{
+  const Eigen::Vector3d ex = Eigen::Vector3d::UnitX(), ey = Eigen::Vector3d::UnitY(),
+                        ez = Eigen::Vector3d::UnitZ();
+
+  for (double ang = 0.345; ang < 12; ang += 0.123) {
+    smooth::SO3d rx = smooth::SO3d::rot_x(ang);
+    ASSERT_TRUE(rx.matrix().isApprox(
+      Eigen::Matrix3d{
+        {1, 0, 0},
+        {0, cos(ang), -sin(ang)},
+        {0, sin(ang), cos(ang)},
+      },
+      1e-8));
+    ASSERT_TRUE((smooth::SO3d::rot_x(M_PI_2) * ex).isApprox(ex));
+    ASSERT_TRUE((smooth::SO3d::rot_x(M_PI_2) * ey).isApprox(ez));
+    ASSERT_TRUE((smooth::SO3d::rot_x(M_PI_2) * ez).isApprox(-ey));
+
+    smooth::SO3d ry = smooth::SO3d::rot_y(ang);
+    ASSERT_TRUE(ry.matrix().isApprox(
+      Eigen::Matrix3d{
+        {cos(ang), 0, sin(ang)},
+        {0, 1, 0},
+        {-sin(ang), 0, cos(ang)},
+      },
+      1e-8));
+    ASSERT_TRUE((smooth::SO3d::rot_y(M_PI_2) * ex).isApprox(-ez));
+    ASSERT_TRUE((smooth::SO3d::rot_y(M_PI_2) * ey).isApprox(ey));
+    ASSERT_TRUE((smooth::SO3d::rot_y(M_PI_2) * ez).isApprox(ex));
+
+    smooth::SO3d rz = smooth::SO3d::rot_z(ang);
+    ASSERT_TRUE(rz.matrix().isApprox(
+      Eigen::Matrix3d{
+        {cos(ang), -sin(ang), 0},
+        {sin(ang), cos(ang), 0},
+        {0, 0, 1},
+      },
+      1e-8));
+    ASSERT_TRUE((smooth::SO3d::rot_z(M_PI_2) * ex).isApprox(ey));
+    ASSERT_TRUE((smooth::SO3d::rot_z(M_PI_2) * ey).isApprox(-ex));
+    ASSERT_TRUE((smooth::SO3d::rot_z(M_PI_2) * ez).isApprox(ez));
+  }
 }
 
 TEST(SO3, Action)

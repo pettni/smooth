@@ -193,6 +193,48 @@ public:
   {
     if (coeffs_(3) < 0) { coeffs_ *= Scalar(-1); }
   }
+
+  /**
+   * @brief SO3 representing rotation around the x axis
+   * @param angle angle of rotation [rad]
+   */
+  static SO3 rot_x(const Scalar & angle)
+  {
+    using std::cos, std::sin;
+
+    SO3 ret;
+    ret.coeffs() << sin(angle / 2), Scalar(0), Scalar(0), cos(angle / 2);
+    if (ret.coeffs()(3) < 0) { ret.coeffs() *= Scalar(-1); }
+    return ret;
+  }
+
+  /**
+   * @brief SO3 representing rotation around the y axis
+   * @param angle angle of rotation [rad]
+   */
+  static SO3 rot_y(const Scalar & angle)
+  {
+    using std::cos, std::sin;
+
+    SO3 ret;
+    ret.coeffs() << Scalar(0), sin(angle / 2), Scalar(0), cos(angle / 2);
+    if (ret.coeffs()(3) < 0) { ret.coeffs() *= Scalar(-1); }
+    return ret;
+  }
+
+  /**
+   * @brief SO3 representing rotation around the z axis
+   * @param angle angle of rotation [rad]
+   */
+  static SO3 rot_z(const Scalar & angle)
+  {
+    using std::cos, std::sin;
+
+    SO3 ret;
+    ret.coeffs() << Scalar(0), Scalar(0), sin(angle / 2), cos(angle / 2);
+    if (ret.coeffs()(3) < 0) { ret.coeffs() *= Scalar(-1); }
+    return ret;
+  }
 };
 
 // \cond
