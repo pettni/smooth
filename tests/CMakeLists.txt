@@ -7,8 +7,9 @@ configure_file(
 )
 
 add_library(TestConfig INTERFACE)
-target_compile_options(TestConfig
-INTERFACE
+target_compile_options(
+  TestConfig
+  INTERFACE
   -Wall
   -Wextra
   -Wshadow
@@ -25,8 +26,9 @@ INTERFACE
   -Wimplicit-fallthrough
   -Werror
 )
-target_link_libraries(TestConfig
-INTERFACE
+target_link_libraries(
+  TestConfig
+  INTERFACE
   smooth
   GTest::Main
   -fsanitize=undefined,address
@@ -119,6 +121,10 @@ gtest_discover_tests(test_nlreg)
 add_executable(test_hessian test_hessian.cpp)
 target_link_libraries(test_hessian PRIVATE TestConfig autodiff::autodiff)
 gtest_discover_tests(test_hessian)
+
+add_executable(test_d2rexp test_d2rexp.cpp)
+target_link_libraries(test_d2rexp PRIVATE TestConfig autodiff::autodiff)
+gtest_discover_tests(test_d2rexp)
 
 # COMPATABILITY TESTS
 

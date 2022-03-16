@@ -77,156 +77,210 @@ using hess_t = Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>>;
 }  // namespace detail
 
 /**
- * @brief Compute approximate Hessian (second derivative) of the exponential map.
+ * @brief (Right) Hessian of composed function \f$ (f \circ g)(x) \f$.
  *
- * The computed Hessian is
- * \f[
- *   \mathrm{d}^{2r} \left( \exp a \right)_{aa}
- *   = \mathrm{d}^{2r} \left( x \oplus a \right)_{aa}
- * \f]
+ * @param Jf (Right) Jacobian of f at y = g(x)  [No x Ny   ]
+ * @param Hf (Right) Hessian of f at y = g(x)   [Ny x No*Ny]
+ * @param Jg (Right) Jacobian of g at x         [Ny x Nx   ]
+ * @param Hg (Right) Hessian of g at x          [Nx x Ny*Nx]
+ *
+ * @return Hessian of size [No x No*Nx]
  */
-template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
-  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
-detail::hess_t<G> d2r_exp(const Tangent<G> & a)
+template<typename JfT, typename HfT, typename JgT, typename HgT>
+auto d2r_fog(const JfT & Jf, const HfT & Hf, const JgT & Jg, const HgT & Hg)
 {
-  const TangentMap<G> ad_a_t = ad<G>(a).transpose();
+  using Scalar = std::common_type_t<
+    typename JfT::Scalar,
+    typename HfT::Scalar,
+    typename JgT::Scalar,
+    typename HgT::Scalar>;
 
-  detail::hess_t<G> res;
-  res.setZero();
+  static constexpr int No = JfT::RowsAtCompileTime;
+  static constexpr int Ny = JfT::ColsAtCompileTime;
+  static constexpr int Nx = JgT::ColsAtCompileTime;
 
-  for (auto j = 0u; j < Dof<G>; ++j) {
-    double coeff      = 1;                      // hold (-1)^i / i!
-    Tangent<G> gi     = Tangent<G>::Unit(j);    // (ad_a^T)^i * e_j
-    TangentMap<G> dgi = TangentMap<G>::Zero();  // right derivative of gi w.r.t. a
+  const auto no = Jf.rows();
+  const auto ny = Jf.cols();
 
-    for (auto iter = 0u; iter < Terms; ++iter) {
-      res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += coeff * dgi;
-      dgi.applyOnTheLeft(ad_a_t);
-      for (auto i = 0u; i < Dof<G>; ++i) {
-        dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
-      }
-      gi.applyOnTheLeft(ad_a_t);
-      coeff *= (-1.) / (iter + 2);
+  [[maybe_unused]] const auto ni = Jg.rows();
+  const auto nx                  = Jg.cols();
+
+  // check some dimensions
+  assert(ny == ni);
+  assert(Hf.rows() == ny);
+  assert(Hf.cols() == no * ny);
+  assert(Hg.rows() == nx);
+  assert(Hg.cols() == ni * nx);
+
+  Eigen::Matrix<Scalar, No, (No == -1 || Nx == -1) ? -1 : No * Nx> ret(no, no * nx);
+  ret.setZero();
+
+  for (auto i = 0u; i < no; ++i) {
+    ret.template block<Nx, Nx>(0, i * nx, nx, nx) +=
+      Jg.transpose() * Hf.template middleCols<Ny>(i * ny, ny) * Jg;
+  }
+
+  for (auto i = 0u; i < Jf.outerSize(); ++i) {
+    for (Eigen::InnerIterator it(Jf, i); it; ++it) {
+      ret.template block<Nx, Nx>(0, it.row() * nx) +=
+        it.value() * Hg.template middleCols<Nx>(it.col() * nx, nx);
     }
   }
 
-  return res;
+  return ret;
 }
 
-/**
- * @brief Compute derivative of the inverse of the derivative of the exponential map.
- *
- * The computed entity is
- * \f[
- *   \mathrm{d}^r \left( \mathrm{d}^r \exp_a^{-1} \right)_{a}
- * \f]
- */
-template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
-  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
-detail::hess_t<G> d2r_expinv(const Tangent<G> & a)
-{
-  const TangentMap<G> ad_a_t = ad<G>(a).transpose();
-
-  detail::hess_t<G> res;
-  res.setZero();
-
-  for (auto j = 0u; j < Dof<G>; ++j) {
-    double coeff      = 1;                      // hold (-1)^i / i!
-    Tangent<G> gi     = Tangent<G>::Unit(j);    // (ad_a^T)^i * e_j
-    TangentMap<G> dgi = TangentMap<G>::Zero();  // right derivative of gi w.r.t. a
-
-    for (auto iter = 0u; iter < Terms; ++iter) {
-      if (detail::kBn[iter] != 0) {
-        res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += (detail::kBn[iter] * coeff) * dgi;
-      }
-      dgi.applyOnTheLeft(ad_a_t);
-      for (auto i = 0u; i < Dof<G>; ++i) {
-        dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
-      }
-      gi.applyOnTheLeft(ad_a_t);
-      coeff *= (-1.) / (iter + 1);
-    }
-  }
-
-  return res;
-}
-
-/**
- * @brief Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.
- *
- * The computed Hessian is
- * \f[
- *   \mathrm{d}^{2r} \left( x \ominus_r y \right)_{xx}.
- * \f]
- */
-template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
-  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
-detail::hess_t<G> hessian_rminus(const G & x, const G & y)
-{
-  const Tangent<G> a           = rminus(x, y);
-  const TangentMap<G> drexpinv = dr_expinv<G>(a);
-
-  detail::hess_t<G> res = d2r_expinv<G>(a);
-  for (auto j = 0u; j < Dof<G>; ++j) {
-    res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>).applyOnTheRight(drexpinv);
-  }
-  return res;
-}
-
-/**
- * @brief Compute approximate Hessian (second derivative) of the squared norm of rminus.
- *
- * The computed Hessian is
- * \f[
- *   \mathrm{d}^{2r} \left( \frac{1}{2} \| x \ominus_r y \|^2 \right)_{xx}.
- * \f]
- *
- * @note The first derivative is
- * \f[
- *   \mathrm{d}^r \left( \frac{1}{2} \| x \ominus_r y \|^2 \right)_x = a^T \mathrm{d}^r \exp_a^{-1},
- * \f]
- * where \f$a = x \ominus_r y\f$, so the Hessian can be equivalently expressed as the the
- * first-order derivative \f[ \mathrm{d}^r \left( a^T \mathrm{d}^r \exp_a^{-1} \right)_x, \f]
- *
- * @tparam G Lie group
- * @tparam Terms number of terms in infinite sum to include (more terms -> better approximation)
- *
- * @param x first argument (derivative is w.r.t. x)
- * @param y second argument
- * @return The second derivative
- *
- * The Hessian can be expressed as the infinite sum
- * \f[
- *   \left( \sum_n B_n \frac{(-1)^n}{n!} \mathrm{d}^r \left( (ad_a^T)^n a \right)_a \right)
- * \mathrm{d}^r \exp_a^{-1}.
- * \f]
- * This function computes a finite number Terms of terms by recursively computing the inner
- * derivatives.
- */
-template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
-  requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
-TangentMap<G> hessian_rminus_norm(const G & x, const G & y)
-{
-  const Tangent<G> a         = rminus(x, y);
-  const TangentMap<G> ad_a_t = ad<G>(a).transpose();
-
-  TangentMap<G> res = TangentMap<G>::Zero();
-  double coeff      = 1;                          // hold (-1)^i / i!
-  Tangent<G> gi     = a;                          // (ad_a^T)^i * a
-  TangentMap<G> dgi = TangentMap<G>::Identity();  // right derivative of gi w.r.t. a
-
-  for (auto iter = 0u; iter < Terms; ++iter) {
-    if (detail::kBn[iter] != 0) { res += (detail::kBn[iter] * coeff) * dgi; }
-    dgi.applyOnTheLeft(ad_a_t);
-    for (auto i = 0u; i < Dof<G>; ++i) {
-      dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
-    }
-    gi.applyOnTheLeft(ad_a_t);
-    coeff *= (-1.) / (iter + 1);
-  }
-
-  return res * dr_expinv<G>(a);
-}
+// /**
+//  * @brief Compute approximate Hessian (second derivative) of the exponential map.
+//  *
+//  * The computed Hessian is
+//  * \f[
+//  *   \mathrm{d}^{2r} \left( \exp a \right)_{aa}
+//  *   = \mathrm{d}^{2r} \left( x \oplus a \right)_{aa}
+//  * \f]
+//  */
+// template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
+//   requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
+// detail::hess_t<G> d2r_exp(const Tangent<G> & a)
+// {
+//   const TangentMap<G> ad_a_t = ad<G>(a).transpose();
+//
+//   detail::hess_t<G> res;
+//   res.setZero();
+//
+//   for (auto j = 0u; j < Dof<G>; ++j) {
+//     double coeff      = 1;                      // hold (-1)^i / i!
+//     Tangent<G> gi     = Tangent<G>::Unit(j);    // (ad_a^T)^i * e_j
+//     TangentMap<G> dgi = TangentMap<G>::Zero();  // right derivative of gi w.r.t. a
+//
+//     for (auto iter = 0u; iter < Terms; ++iter) {
+//       res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += coeff * dgi;
+//       dgi.applyOnTheLeft(ad_a_t);
+//       for (auto i = 0u; i < Dof<G>; ++i) {
+//         dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
+//       }
+//       gi.applyOnTheLeft(ad_a_t);
+//       coeff *= (-1.) / (iter + 2);
+//     }
+//   }
+//
+//   return res;
+// }
+//
+// /**
+//  * @brief Compute derivative of the inverse of the derivative of the exponential map.
+//  *
+//  * The computed entity is
+//  * \f[
+//  *   \mathrm{d}^r \left( \mathrm{d}^r \exp_a^{-1} \right)_{a}
+//  * \f]
+//  */
+// template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
+//   requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
+// detail::hess_t<G> d2r_expinv(const Tangent<G> & a)
+// {
+//   const TangentMap<G> ad_a_t = ad<G>(a).transpose();
+//
+//   detail::hess_t<G> res;
+//   res.setZero();
+//
+//   for (auto j = 0u; j < Dof<G>; ++j) {
+//     double coeff      = 1;                      // hold (-1)^i / i!
+//     Tangent<G> gi     = Tangent<G>::Unit(j);    // (ad_a^T)^i * e_j
+//     TangentMap<G> dgi = TangentMap<G>::Zero();  // right derivative of gi w.r.t. a
+//
+//     for (auto iter = 0u; iter < Terms; ++iter) {
+//       if (detail::kBn[iter] != 0) {
+//         res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>) += (detail::kBn[iter] * coeff) * dgi;
+//       }
+//       dgi.applyOnTheLeft(ad_a_t);
+//       for (auto i = 0u; i < Dof<G>; ++i) {
+//         dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
+//       }
+//       gi.applyOnTheLeft(ad_a_t);
+//       coeff *= (-1.) / (iter + 1);
+//     }
+//   }
+//
+//   return res;
+// }
+//
+// /**
+//  * @brief Compute approximate Hessian (second derivative) of rminus w.r.t. first argument.
+//  *
+//  * The computed Hessian is
+//  * \f[
+//  *   \mathrm{d}^{2r} \left( x \ominus_r y \right)_{xx}.
+//  * \f]
+//  */
+// template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
+//   requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
+// detail::hess_t<G> hessian_rminus(const G & x, const G & y)
+// {
+//   const Tangent<G> a           = rminus(x, y);
+//   const TangentMap<G> drexpinv = dr_expinv<G>(a);
+//
+//   detail::hess_t<G> res = d2r_expinv<G>(a);
+//   for (auto j = 0u; j < Dof<G>; ++j) {
+//     res.template block<Dof<G>, Dof<G>>(0, j * Dof<G>).applyOnTheRight(drexpinv);
+//   }
+//   return res;
+// }
+//
+// /**
+//  * @brief Compute approximate Hessian (second derivative) of the squared norm of rminus.
+//  *
+//  * The computed Hessian is
+//  * \f[
+//  *   \mathrm{d}^{2r} \left( \frac{1}{2} \| x \ominus_r y \|^2 \right)_{xx}.
+//  * \f]
+//  *
+//  * @note The first derivative is
+//  * \f[
+//  *   \mathrm{d}^r \left( \frac{1}{2} \| x \ominus_r y \|^2 \right)_x = a^T \mathrm{d}^r \exp_a^{-1},
+//  * \f]
+//  * where \f$a = x \ominus_r y\f$, so the Hessian can be equivalently expressed as the the
+//  * first-order derivative \f[ \mathrm{d}^r \left( a^T \mathrm{d}^r \exp_a^{-1} \right)_x, \f]
+//  *
+//  * @tparam G Lie group
+//  * @tparam Terms number of terms in infinite sum to include (more terms -> better approximation)
+//  *
+//  * @param x first argument (derivative is w.r.t. x)
+//  * @param y second argument
+//  * @return The second derivative
+//  *
+//  * The Hessian can be expressed as the infinite sum
+//  * \f[
+//  *   \left( \sum_n B_n \frac{(-1)^n}{n!} \mathrm{d}^r \left( (ad_a^T)^n a \right)_a \right)
+//  * \mathrm{d}^r \exp_a^{-1}.
+//  * \f]
+//  * This function computes a finite number Terms of terms by recursively computing the inner
+//  * derivatives.
+//  */
+// template<LieGroup G, std::size_t Terms = std::tuple_size_v<decltype(detail::kBn)>>
+//   requires(Terms <= std::tuple_size_v<decltype(detail::kBn)>)
+// TangentMap<G> hessian_rminus_norm(const G & x, const G & y)
+// {
+//   const Tangent<G> a         = rminus(x, y);
+//   const TangentMap<G> ad_a_t = ad<G>(a).transpose();
+//
+//   TangentMap<G> res = TangentMap<G>::Zero();
+//   double coeff      = 1;                          // hold (-1)^i / i!
+//   Tangent<G> gi     = a;                          // (ad_a^T)^i * a
+//   TangentMap<G> dgi = TangentMap<G>::Identity();  // right derivative of gi w.r.t. a
+//
+//   for (auto iter = 0u; iter < Terms; ++iter) {
+//     if (detail::kBn[iter] != 0) { res += (detail::kBn[iter] * coeff) * dgi; }
+//     dgi.applyOnTheLeft(ad_a_t);
+//     for (auto i = 0u; i < Dof<G>; ++i) {
+//       dgi.row(i).noalias() -= gi.transpose() * detail::algebra_generators<G>[i];
+//     }
+//     gi.applyOnTheLeft(ad_a_t);
+//     coeff *= (-1.) / (iter + 1);
+//   }
+//
+//   return res * dr_expinv<G>(a);
+// }
 
 }  // namespace smooth
 
