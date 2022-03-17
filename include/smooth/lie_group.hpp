@@ -92,6 +92,10 @@ requires(const Eigen::Vector<typename traits::lie<G>::Scalar, traits::lie<G>::Do
   {traits::lie<G>::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
   // Right derivative of the exponential map inverse
   {traits::lie<G>::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
+  // Second right derivative of the exponential map
+  {traits::lie<G>::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>;
+  // Second right derivative of the exponential map inverse
+  {traits::lie<G>::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>;
 } && (
   // Cast to different scalar type
   !std::is_convertible_v<typename traits::lie<G>::Scalar, double> ||
@@ -391,14 +395,12 @@ struct lie<G>
     return Eigen::Matrix<Scalar, 1, 1>::Identity();
   }
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, 1, 1>
-  d2r_exp(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, 1, 1> d2r_exp(const Eigen::MatrixBase<Derived> &)
   {
     return Eigen::Matrix<Scalar, 1, 1>::Zero();
   }
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, 1, 1>
-  d2r_expinv(const Eigen::MatrixBase<Derived> &)
+  static inline Eigen::Matrix<Scalar, 1, 1> d2r_expinv(const Eigen::MatrixBase<Derived> &)
   {
     return Eigen::Matrix<Scalar, 1, 1>::Zero();
   }

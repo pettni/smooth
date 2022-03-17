@@ -337,7 +337,7 @@ auto dr(auto && f, auto && x)
  * @return derivative of A * B on horizontal Hessian form
  */
 template<typename At, typename dAt, typename Bt, typename dBt>
-auto matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB)
+inline auto matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB)
 {
   using Scalar = std::common_type_t<
     typename At::Scalar,
@@ -357,11 +357,12 @@ auto matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB)
     }
   }();
 
-  const auto n    = A.cols();
-  const auto m    = B.rows();
-  const auto nvar = dA.cols() / (n);
+  const auto n                  = A.cols();
+  [[maybe_unused]] const auto k = A.rows();
+  const auto m                  = B.rows();
+  const auto nvar               = dA.cols() / (n);
 
-  assert(k == b.cols());
+  assert(k == B.cols());
   assert(nvar == dB.size() / (m * k));
 
   static constexpr int dAB_cols = (M > 0 && Nvar > 0) ? M * Nvar : -1;
@@ -387,7 +388,7 @@ auto matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB)
  * @return Hessian of size [No x No*Nx]
  */
 template<typename JfT, typename HfT, typename JgT, typename HgT>
-auto d2r_fog(const JfT & Jf, const HfT & Hf, const JgT & Jg, const HgT & Hg)
+inline auto d2r_fog(const JfT & Jf, const HfT & Hf, const JgT & Jg, const HgT & Hg)
 {
   using Scalar = std::common_type_t<
     typename JfT::Scalar,
@@ -412,7 +413,7 @@ auto d2r_fog(const JfT & Jf, const HfT & Hf, const JgT & Jg, const HgT & Hg)
   assert(Hg.rows() == nx);
   assert(Hg.cols() == ni * nx);
 
-  Eigen::Matrix<Scalar, No, (No == -1 || Nx == -1) ? -1 : No * Nx> ret(no, no * nx);
+  Eigen::Matrix<Scalar, Nx, (No == -1 || Nx == -1) ? -1 : No * Nx> ret(nx, no * nx);
   ret.setZero();
 
   for (auto i = 0u; i < no; ++i) {

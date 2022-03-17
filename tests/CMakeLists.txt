@@ -119,12 +119,8 @@ target_link_libraries(test_nlreg PRIVATE TestConfig)
 gtest_discover_tests(test_nlreg)
 
 add_executable(test_hessian test_hessian.cpp)
-target_link_libraries(test_hessian PRIVATE TestConfig autodiff::autodiff)
+target_link_libraries(test_hessian PRIVATE TestConfig)
 gtest_discover_tests(test_hessian)
-
-add_executable(test_d2rexp test_d2rexp.cpp)
-target_link_libraries(test_d2rexp PRIVATE TestConfig autodiff::autodiff)
-gtest_discover_tests(test_d2rexp)
 
 # COMPATABILITY TESTS
 
@@ -142,6 +138,12 @@ if(autodiff_FOUND)
   target_link_libraries(test_diff PRIVATE autodiff::autodiff)
   target_link_libraries(test_spline PRIVATE autodiff::autodiff)
   target_link_libraries(test_cspline PRIVATE autodiff::autodiff)
+  target_link_libraries(test_hessian PRIVATE autodiff::autodiff)
+
+  add_executable(test_d2rexp test_d2rexp.cpp)
+  target_link_libraries(test_d2rexp PRIVATE TestConfig autodiff::autodiff)
+  gtest_discover_tests(test_d2rexp)
+
 else()
   message(WARNING "autodiff not found, disabling autodiff tests")
 endif()

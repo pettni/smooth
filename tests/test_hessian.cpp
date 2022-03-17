@@ -29,7 +29,7 @@
 #include <smooth/compat/autodiff.hpp>
 #endif
 
-#include <smooth/algo/hessian.hpp>
+#include <smooth/derivatives.hpp>
 #include <smooth/diff.hpp>
 #include <smooth/se2.hpp>
 #include <smooth/se3.hpp>
@@ -55,20 +55,21 @@ struct Functor
 
   Eigen::RowVector<double, smooth::Dof<G>> jacobian(const smooth::CastT<double, G> & x) const
   {
-    const auto e = x - xd.template cast<double>();
-    return e.transpose() * smooth::dr_expinv<smooth::CastT<double, G>>(e);
+    const auto e = rminus(x, xd);
+    return smooth::dr_rminus_squarednorm<G>(e);
   }
 
   template<typename Scalar>
   Eigen::Vector<Scalar, smooth::Dof<G>> jacobian_ad(const smooth::CastT<Scalar, G> & x) const
   {
-    const auto e = x - xd.template cast<Scalar>();
-    return e.transpose() * smooth::dr_expinv<smooth::CastT<Scalar, G>>(e);
+    const auto e = rminus(x, xd);
+    return smooth::dr_rminus_squarednorm<G>(e.template cast<Scalar>());
   }
 
   Eigen::Matrix<double, smooth::Dof<G>, smooth::Dof<G>> hessian(const G & x) const
   {
-    return hessian_rminus_norm(x, xd);
+    const auto e = rminus(x, xd);
+    return smooth::d2r_rminus_squarednorm<G>(e);
   }
 };
 
@@ -216,24 +217,7 @@ TEST(Hessian, rminus)
     const auto [unused1, unused2, H_num] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(
       [&y](const auto & var) -> smooth::Tangent<G> { return rminus(var, y); }, smooth::wrt(x));
 
-    const auto H_ana = smooth::hessian_rminus<G>(x, y);
-
-    ASSERT_TRUE(H_num.isApprox(H_ana, 1e-4));
-  }
-}
-
-TEST(Hessian, d2rexp)
-{
-  using G = smooth::SE2d;
-
-  for (auto i = 0u; i < 5; ++i) {
-    const G x                  = G::Random();
-    const smooth::Tangent<G> a = smooth::Tangent<G>::Random();
-
-    const auto [unused1, unused2, H_num] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(
-      [&x](const auto & var) -> G { return rplus(x, var); }, smooth::wrt(a));
-
-    const auto H_ana = smooth::d2r_exp<G>(a);
+    const auto H_ana = smooth::d2r_rminus<G>(rminus(x, y));
 
     ASSERT_TRUE(H_num.isApprox(H_ana, 1e-4));
   }
