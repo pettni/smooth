@@ -206,6 +206,32 @@ struct BundleImpl
     });
   }
 
+  static void d2r_exp(TRefIn a_in, THessRefOut H_out) {
+    H_out.setZero();
+    smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
+      static constexpr auto Bi = get<i>(DofsPsum);  // block start
+      static constexpr auto Di = get<i>(Dofs);  // block size
+      Eigen::Matrix<Scalar, Di, Di * Di> Hi;
+      PartImpl<i>::d2r_exp(a_in.template segment<Di>(Bi), Hi);
+      for (auto j = 0u; j < Di; ++j) {
+        H_out.template block<Di, Di>(Bi, Dof * (Bi + j) + Bi) = Hi.template middleCols<Di>(Di * j);
+      }
+    });
+  }
+
+  static void d2r_expinv(TRefIn a_in, THessRefOut H_out) {
+    H_out.setZero();
+    smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
+      static constexpr auto Bi = get<i>(DofsPsum);  // block start
+      static constexpr auto Di = get<i>(Dofs);  // block size
+      Eigen::Matrix<Scalar, Di, Di * Di> Hi;
+      PartImpl<i>::d2r_expinv(a_in.template segment<Di>(Bi), Hi);
+      for (auto j = 0u; j < Di; ++j) {
+        H_out.template block<Di, Di>(Bi, Dof * (Bi + j) + Bi) = Hi.template middleCols<Di>(Di * j);
+      }
+    });
+  }
+
   // clang-format on
 };
 

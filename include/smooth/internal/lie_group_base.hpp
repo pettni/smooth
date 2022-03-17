@@ -81,6 +81,8 @@ public:
   //! Matrix representing map between tangent elements
   using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
   //! Plain return type with different scalar
+  using Hessian = Eigen::Matrix<Scalar, Dof, Dof * Dof>;
+  //! Plain return type with different scalar
   template<typename NewScalar>
   using CastT = typename traits::template PlainObject<NewScalar>;
   //! Plain return type
@@ -346,6 +348,7 @@ public:
   {
     return ad(a) * b;
   }
+
   /**
    * @brief Right jacobian of the exponential map.
    *
@@ -392,6 +395,56 @@ public:
   static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     return dr_expinv(-a);
+  }
+
+  /**
+   * @brief Right Hessian of the exponential map.
+   *
+   * @return \f$ \mathrm{d}^{2r} \exp_{aa} \f$ on Horizontally stacked Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2r_exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    Hessian ret;
+    Impl::d2r_exp(a, ret);
+    return ret;
+  }
+
+  /**
+   * @brief Right Hessian of the log map.
+   *
+   * @return \f$ \left( \mathrm{d}^r \left( \mathrm{d}^r \exp_a \right)^{-1} \right)_a \f$ on
+   * horizontally stakced Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2r_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    Hessian ret;
+    Impl::d2r_expinv(a, ret);
+    return ret;
+  }
+
+  /**
+   * @brief Left Hessian of the exponential map.
+   *
+   * @return \f$ \mathrm{d}^{2l} \exp_{aa} \f$ on horizontally stacked Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2l_exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    return -d2r_exp(-a);
+  }
+
+  /**
+   * @brief Left Hessian of the log map.
+   *
+   * @return \f$ \left( \mathrm{d}^l \left( \mathrm{d}^l \exp_a \right)^{-1} \right)_a \f$ on
+   * horizontally stacked Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2l_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    return -d2r_expinv(-a);
   }
 };
 

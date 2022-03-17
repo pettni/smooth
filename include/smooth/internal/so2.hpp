@@ -108,6 +108,10 @@ public:
   static void dr_exp(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
 
   static void dr_expinv(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
+
+  static void d2r_exp(TRefIn, THessRefOut H_out) { H_out.setZero(); }
+
+  static void d2r_expinv(TRefIn, THessRefOut H_out) { H_out.setZero(); }
 };
 
 }  // namespace smooth
