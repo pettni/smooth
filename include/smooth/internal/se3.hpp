@@ -254,11 +254,67 @@ public:
 
     // part with derivatives from matrices
     // clang-format off
-  Eigen:: Matrix<Scalar, 3, 18> dQ{
-    { w.x()*(B + 3*C)*(w.y()*w.y() + w.z()*w.z()), w.y()*(-2*A + B*(w.y()*w.y() + w.z()*w.z()) + 3*C*(w.y()*w.y() + w.z()*w.z())), w.z()*(-2*A + B*(w.y()*w.y() + w.z()*w.z()) + 3*C*(w.y()*w.y() + w.z()*w.z())), v.x()*(B + 3*C)*(w.y()*w.y() + w.z()*w.z()), -2*A*v.y() + B*v.y()*(w.y()*w.y() + w.z()*w.z()) + 2*B*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.y()*w.y()*w.y() + v.y()*w.z()*w.z() + 2*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())), -2*A*v.z() + B*v.z()*(w.y()*w.y() + w.z()*w.z()) + 2*B*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.z()*w.y()*w.y() + v.z()*w.z()*w.z() + 2*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())), -A*(w.x()*w.z() - w.y()) - B*w.x()*(w.x()*w.y() - 2*w.z()) - 3*C*w.x()*w.x()*w.y(), A*(w.x() - w.y()*w.z()) - B*w.y()*(w.x()*w.y() - 2*w.z()) - 3*C*w.x()*w.y()*w.y(), -A*w.z()*w.z() - B*w.x()*w.x() - B*w.x()*w.y()*w.z() - B*w.y()*w.y() + B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() + 0.5, -A*(v.x()*w.z() - v.y()) - B*(v.x()*w.z() + v.x()*(w.x()*w.y() - 3*w.z()) + 2*v.z()*w.x() + w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.y() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), A*(v.x() - v.y()*w.z()) - B*(v.y()*w.z() + v.y()*(w.x()*w.y() - 3*w.z()) + 2*v.z()*w.y() + w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.x()*w.y() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), -A*(v.x()*w.x() + v.y()*w.y() + 2*v.z()*w.z()) + B*(2*v.x()*w.x() + 2*v.y()*w.y() - v.z()*w.z() - v.z()*(w.x()*w.y() - 3*w.z())) - 3*C*v.z()*w.x()*w.y(), A*(w.x()*w.y() + w.z()) - B*w.x()*(w.x()*w.z() + 2*w.y()) - 3*C*w.x()*w.x()*w.z(), A*w.y()*w.y() + B*w.x()*w.x() - B*w.x()*w.y()*w.z() - B*w.y()*w.y() + B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() - 0.5, A*(w.x() + w.y()*w.z()) - B*w.z()*(w.x()*w.z() + 2*w.y()) - 3*C*w.x()*w.z()*w.z(), A*(v.x()*w.y() + v.z()) + B*(v.x()*w.y() - v.x()*(w.x()*w.z() + 3*w.y()) + 2*v.y()*w.x() - w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), A*(v.x()*w.x() + 2*v.y()*w.y() + v.z()*w.z()) - B*(2*v.x()*w.x() - v.y()*w.y() + v.y()*(w.x()*w.z() + 3*w.y()) + 2*v.z()*w.z()) - 3*C*v.y()*w.x()*w.z(), A*(v.x() + v.z()*w.y()) + B*(2*v.y()*w.z() + v.z()*w.y() - v.z()*(w.x()*w.z() + 3*w.y()) - w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.x()*w.z() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) },
-  { A*(w.x()*w.z() + w.y()) - B*w.x()*(w.x()*w.y() + 2*w.z()) - 3*C*w.x()*w.x()*w.y(), A*(w.x() + w.y()*w.z()) - B*w.y()*(w.x()*w.y() + 2*w.z()) - 3*C*w.x()*w.y()*w.y(), A*w.z()*w.z() + B*w.x()*w.x() - B*w.x()*w.y()*w.z() + B*w.y()*w.y() - B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() - 0.5, A*(v.x()*w.z() + v.y()) + B*(v.x()*w.z() - v.x()*(w.x()*w.y() + 3*w.z()) + 2*v.z()*w.x() - w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.y() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), A*(v.x() + v.y()*w.z()) + B*(v.y()*w.z() - v.y()*(w.x()*w.y() + 3*w.z()) + 2*v.z()*w.y() - w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.x()*w.y() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), A*(v.x()*w.x() + v.y()*w.y() + 2*v.z()*w.z()) - B*(2*v.x()*w.x() + 2*v.y()*w.y() - v.z()*w.z() + v.z()*(w.x()*w.y() + 3*w.z())) - 3*C*v.z()*w.x()*w.y(), w.x()*(-2*A + B*(w.x()*w.x() + w.z()*w.z()) + 3*C*(w.x()*w.x() + w.z()*w.z())), w.y()*(B + 3*C)*(w.x()*w.x() + w.z()*w.z()), w.z()*(-2*A + B*(w.x()*w.x() + w.z()*w.z()) + 3*C*(w.x()*w.x() + w.z()*w.z())), -2*A*v.x() + B*v.x()*(w.x()*w.x() + w.z()*w.z()) + 2*B*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.x()*w.x()*w.x() + v.x()*w.z()*w.z() + 2*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())), v.y()*(B + 3*C)*(w.x()*w.x() + w.z()*w.z()), -2*A*v.z() + B*v.z()*(w.x()*w.x() + w.z()*w.z()) + 2*B*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.z()*w.x()*w.x() + v.z()*w.z()*w.z() + 2*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())), -A*w.x()*w.x() + B*w.x()*w.x() - B*w.x()*w.y()*w.z() - B*w.y()*w.y() - B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() + 0.5, -A*(w.x()*w.y() - w.z()) + B*w.y()*(2*w.x() - w.y()*w.z()) - 3*C*w.y()*w.y()*w.z(), -A*(w.x()*w.z() - w.y()) + B*w.z()*(2*w.x() - w.y()*w.z()) - 3*C*w.y()*w.z()*w.z(), -A*(2*v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + B*(-v.x()*w.x() + v.x()*(3*w.x() - w.y()*w.z()) + 2*v.y()*w.y() + 2*v.z()*w.z()) - 3*C*v.x()*w.y()*w.z(), -A*(v.y()*w.x() - v.z()) - B*(2*v.x()*w.y() + v.y()*w.x() - v.y()*(3*w.x() - w.y()*w.z()) + w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.y()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), A*(v.y() - v.z()*w.x()) - B*(2*v.x()*w.z() + v.z()*w.x() - v.z()*(3*w.x() - w.y()*w.z()) + w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.y()*w.z() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) },
-  { -A*(w.x()*w.y() - w.z()) - B*w.x()*(w.x()*w.z() - 2*w.y()) - 3*C*w.x()*w.x()*w.z(), -A*w.y()*w.y() - B*w.x()*w.x() - B*w.x()*w.y()*w.z() + B*w.y()*w.y() - B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() + 0.5, A*(w.x() - w.y()*w.z()) - B*w.z()*(w.x()*w.z() - 2*w.y()) - 3*C*w.x()*w.z()*w.z(), -A*(v.x()*w.y() - v.z()) - B*(v.x()*w.y() + v.x()*(w.x()*w.z() - 3*w.y()) + 2*v.y()*w.x() + w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), -A*(v.x()*w.x() + 2*v.y()*w.y() + v.z()*w.z()) + B*(2*v.x()*w.x() - v.y()*w.y() - v.y()*(w.x()*w.z() - 3*w.y()) + 2*v.z()*w.z()) - 3*C*v.y()*w.x()*w.z(), A*(v.x() - v.z()*w.y()) - B*(2*v.y()*w.z() + v.z()*w.y() + v.z()*(w.x()*w.z() - 3*w.y()) + w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.x()*w.z() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), A*w.x()*w.x() - B*w.x()*w.x() - B*w.x()*w.y()*w.z() + B*w.y()*w.y() + B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() - 0.5, A*(w.x()*w.y() + w.z()) - B*w.y()*(2*w.x() + w.y()*w.z()) - 3*C*w.y()*w.y()*w.z(), A*(w.x()*w.z() + w.y()) - B*w.z()*(2*w.x() + w.y()*w.z()) - 3*C*w.y()*w.z()*w.z(), A*(2*v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) - B*(-v.x()*w.x() + v.x()*(3*w.x() + w.y()*w.z()) + 2*v.y()*w.y() + 2*v.z()*w.z()) - 3*C*v.x()*w.y()*w.z(), A*(v.y()*w.x() + v.z()) + B*(2*v.x()*w.y() + v.y()*w.x() - v.y()*(3*w.x() + w.y()*w.z()) - w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.y()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), A*(v.y() + v.z()*w.x()) + B*(2*v.x()*w.z() + v.z()*w.x() - v.z()*(3*w.x() + w.y()*w.z()) - w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.y()*w.z() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()), w.x()*(-2*A + B*(w.x()*w.x() + w.y()*w.y()) + 3*C*(w.x()*w.x() + w.y()*w.y())), w.y()*(-2*A + B*(w.x()*w.x() + w.y()*w.y()) + 3*C*(w.x()*w.x() + w.y()*w.y())), w.z()*(B + 3*C)*(w.x()*w.x() + w.y()*w.y()), -2*A*v.x() + B*v.x()*(w.x()*w.x() + w.y()*w.y()) + 2*B*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.x()*w.x()*w.x() + v.x()*w.y()*w.y() + 2*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())), -2*A*v.y() + B*v.y()*(w.x()*w.x() + w.y()*w.y()) + 2*B*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.y()*w.x()*w.x() + v.y()*w.y()*w.y() + 2*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())), v.z()*(B + 3*C)*(w.x()*w.x() + w.y()*w.y()) },
-  };
+    Eigen:: Matrix<Scalar, 3, 18> dQ
+    {
+      {
+      w.x()*(B + 3*C)*(w.y()*w.y() + w.z()*w.z()),
+      w.y()*(-2*A + B*(w.y()*w.y() + w.z()*w.z()) + 3*C*(w.y()*w.y() + w.z()*w.z())),
+      w.z()*(-2*A + B*(w.y()*w.y() + w.z()*w.z()) + 3*C*(w.y()*w.y() + w.z()*w.z())),
+      v.x()*(B + 3*C)*(w.y()*w.y() + w.z()*w.z()),
+      -2*A*v.y() + B*v.y()*(w.y()*w.y() + w.z()*w.z()) + 2*B*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.y()*w.y()*w.y() + v.y()*w.z()*w.z() + 2*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
+      -2*A*v.z() + B*v.z()*(w.y()*w.y() + w.z()*w.z()) + 2*B*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.z()*w.y()*w.y() + v.z()*w.z()*w.z() + 2*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
+      -A*(w.x()*w.z() - w.y()) - B*w.x()*(w.x()*w.y() - 2*w.z()) - 3*C*w.x()*w.x()*w.y(),
+      A*(w.x() - w.y()*w.z()) - B*w.y()*(w.x()*w.y() - 2*w.z()) - 3*C*w.x()*w.y()*w.y(),
+      -A*w.z()*w.z() - B*w.x()*w.x() - B*w.x()*w.y()*w.z() - B*w.y()*w.y() + B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() + 0.5,
+      -A*(v.x()*w.z() - v.y()) - B*(v.x()*w.z() + v.x()*(w.x()*w.y() - 3*w.z()) + 2*v.z()*w.x() + w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.y() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      A*(v.x() - v.y()*w.z()) - B*(v.y()*w.z() + v.y()*(w.x()*w.y() - 3*w.z()) + 2*v.z()*w.y() + w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.x()*w.y() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      -A*(v.x()*w.x() + v.y()*w.y() + 2*v.z()*w.z()) + B*(2*v.x()*w.x() + 2*v.y()*w.y() - v.z()*w.z() - v.z()*(w.x()*w.y() - 3*w.z())) - 3*C*v.z()*w.x()*w.y(),
+      A*(w.x()*w.y() + w.z()) - B*w.x()*(w.x()*w.z() + 2*w.y()) - 3*C*w.x()*w.x()*w.z(),
+      A*w.y()*w.y() + B*w.x()*w.x() - B*w.x()*w.y()*w.z() - B*w.y()*w.y() + B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() - 0.5,
+      A*(w.x() + w.y()*w.z()) - B*w.z()*(w.x()*w.z() + 2*w.y()) - 3*C*w.x()*w.z()*w.z(),
+      A*(v.x()*w.y() + v.z()) + B*(v.x()*w.y() - v.x()*(w.x()*w.z() + 3*w.y()) + 2*v.y()*w.x() - w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      A*(v.x()*w.x() + 2*v.y()*w.y() + v.z()*w.z()) - B*(2*v.x()*w.x() - v.y()*w.y() + v.y()*(w.x()*w.z() + 3*w.y()) + 2*v.z()*w.z()) - 3*C*v.y()*w.x()*w.z(),
+      A*(v.x() + v.z()*w.y()) + B*(2*v.y()*w.z() + v.z()*w.y() - v.z()*(w.x()*w.z() + 3*w.y()) - w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.x()*w.z() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())
+      }, {
+      A*(w.x()*w.z() + w.y()) - B*w.x()*(w.x()*w.y() + 2*w.z()) - 3*C*w.x()*w.x()*w.y(),
+      A*(w.x() + w.y()*w.z()) - B*w.y()*(w.x()*w.y() + 2*w.z()) - 3*C*w.x()*w.y()*w.y(),
+      A*w.z()*w.z() + B*w.x()*w.x() - B*w.x()*w.y()*w.z() + B*w.y()*w.y() - B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() - 0.5,
+      A*(v.x()*w.z() + v.y()) + B*(v.x()*w.z() - v.x()*(w.x()*w.y() + 3*w.z()) + 2*v.z()*w.x() - w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.y() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      A*(v.x() + v.y()*w.z()) + B*(v.y()*w.z() - v.y()*(w.x()*w.y() + 3*w.z()) + 2*v.z()*w.y() - w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.x()*w.y() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      A*(v.x()*w.x() + v.y()*w.y() + 2*v.z()*w.z()) - B*(2*v.x()*w.x() + 2*v.y()*w.y() - v.z()*w.z() + v.z()*(w.x()*w.y() + 3*w.z())) - 3*C*v.z()*w.x()*w.y(),
+      w.x()*(-2*A + B*(w.x()*w.x() + w.z()*w.z()) + 3*C*(w.x()*w.x() + w.z()*w.z())),
+      w.y()*(B + 3*C)*(w.x()*w.x() + w.z()*w.z()),
+      w.z()*(-2*A + B*(w.x()*w.x() + w.z()*w.z()) + 3*C*(w.x()*w.x() + w.z()*w.z())),
+      -2*A*v.x() + B*v.x()*(w.x()*w.x() + w.z()*w.z()) + 2*B*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.x()*w.x()*w.x() + v.x()*w.z()*w.z() + 2*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
+      v.y()*(B + 3*C)*(w.x()*w.x() + w.z()*w.z()),
+      -2*A*v.z() + B*v.z()*(w.x()*w.x() + w.z()*w.z()) + 2*B*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.z()*w.x()*w.x() + v.z()*w.z()*w.z() + 2*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
+      -A*w.x()*w.x() + B*w.x()*w.x() - B*w.x()*w.y()*w.z() - B*w.y()*w.y() - B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() + 0.5,
+      -A*(w.x()*w.y() - w.z()) + B*w.y()*(2*w.x() - w.y()*w.z()) - 3*C*w.y()*w.y()*w.z(),
+      -A*(w.x()*w.z() - w.y()) + B*w.z()*(2*w.x() - w.y()*w.z()) - 3*C*w.y()*w.z()*w.z(),
+      -A*(2*v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + B*(-v.x()*w.x() + v.x()*(3*w.x() - w.y()*w.z()) + 2*v.y()*w.y() + 2*v.z()*w.z()) - 3*C*v.x()*w.y()*w.z(),
+      -A*(v.y()*w.x() - v.z()) - B*(2*v.x()*w.y() + v.y()*w.x() - v.y()*(3*w.x() - w.y()*w.z()) + w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.y()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      A*(v.y() - v.z()*w.x()) - B*(2*v.x()*w.z() + v.z()*w.x() - v.z()*(3*w.x() - w.y()*w.z()) + w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.y()*w.z() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())
+      }, {
+      -A*(w.x()*w.y() - w.z()) - B*w.x()*(w.x()*w.z() - 2*w.y()) - 3*C*w.x()*w.x()*w.z(),
+      -A*w.y()*w.y() - B*w.x()*w.x() - B*w.x()*w.y()*w.z() + B*w.y()*w.y() - B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() + 0.5,
+      A*(w.x() - w.y()*w.z()) - B*w.z()*(w.x()*w.z() - 2*w.y()) - 3*C*w.x()*w.z()*w.z(),
+      -A*(v.x()*w.y() - v.z()) - B*(v.x()*w.y() + v.x()*(w.x()*w.z() - 3*w.y()) + 2*v.y()*w.x() + w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.x()*w.x()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      -A*(v.x()*w.x() + 2*v.y()*w.y() + v.z()*w.z()) + B*(2*v.x()*w.x() - v.y()*w.y() - v.y()*(w.x()*w.z() - 3*w.y()) + 2*v.z()*w.z()) - 3*C*v.y()*w.x()*w.z(),
+      A*(v.x() - v.z()*w.y()) - B*(2*v.y()*w.z() + v.z()*w.y() + v.z()*(w.x()*w.z() - 3*w.y()) + w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.x()*w.z() - 3*C*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      A*w.x()*w.x() - B*w.x()*w.x() - B*w.x()*w.y()*w.z() + B*w.y()*w.y() + B*w.z()*w.z() - 3*C*w.x()*w.y()*w.z() - 0.5,
+      A*(w.x()*w.y() + w.z()) - B*w.y()*(2*w.x() + w.y()*w.z()) - 3*C*w.y()*w.y()*w.z(),
+      A*(w.x()*w.z() + w.y()) - B*w.z()*(2*w.x() + w.y()*w.z()) - 3*C*w.y()*w.z()*w.z(),
+      A*(2*v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) - B*(-v.x()*w.x() + v.x()*(3*w.x() + w.y()*w.z()) + 2*v.y()*w.y() + 2*v.z()*w.z()) - 3*C*v.x()*w.y()*w.z(),
+      A*(v.y()*w.x() + v.z()) + B*(2*v.x()*w.y() + v.y()*w.x() - v.y()*(3*w.x() + w.y()*w.z()) - w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.y()*w.y()*w.z() - 3*C*w.z()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      A*(v.y() + v.z()*w.x()) + B*(2*v.x()*w.z() + v.z()*w.x() - v.z()*(3*w.x() + w.y()*w.z()) - w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())) - 3*C*v.z()*w.y()*w.z() - 3*C*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()),
+      w.x()*(-2*A + B*(w.x()*w.x() + w.y()*w.y()) + 3*C*(w.x()*w.x() + w.y()*w.y())),
+      w.y()*(-2*A + B*(w.x()*w.x() + w.y()*w.y()) + 3*C*(w.x()*w.x() + w.y()*w.y())),
+      w.z()*(B + 3*C)*(w.x()*w.x() + w.y()*w.y()),
+      -2*A*v.x() + B*v.x()*(w.x()*w.x() + w.y()*w.y()) + 2*B*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.x()*w.x()*w.x() + v.x()*w.y()*w.y() + 2*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
+      -2*A*v.y() + B*v.y()*(w.x()*w.x() + w.y()*w.y()) + 2*B*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.y()*w.x()*w.x() + v.y()*w.y()*w.y() + 2*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
+      v.z()*(B + 3*C)*(w.x()*w.x() + w.y()*w.y())
+      },
+    };
     // clang-format on
 
     // parts with dA, dB, dC
@@ -272,7 +328,7 @@ public:
       }
     }
 
-    return std::make_pair(std::move(Q), std::move(dQ));
+    return {Q, dQ};
   }
 
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)

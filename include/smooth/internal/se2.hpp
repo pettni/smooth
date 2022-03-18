@@ -216,7 +216,7 @@ public:
 
     Eigen::Matrix3<Scalar> ad_a;
     ad(a_in, ad_a);
-    A_out = Eigen::Matrix3<Scalar>::Identity() - A * ad_a + B * ad_a * ad_a;
+    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() - A * ad_a + B * ad_a * ad_a;
   }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
@@ -237,7 +237,7 @@ public:
 
     Eigen::Matrix3<Scalar> ad_a;
     ad(a_in, ad_a);
-    A_out = Eigen::Matrix3<Scalar>::Identity() + ad_a / 2 + A * ad_a * ad_a;
+    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() + ad_a / 2 + A * ad_a * ad_a;
   }
 
   static void d2r_exp(TRefIn a_in, THessRefOut H_out)
@@ -281,8 +281,8 @@ public:
     const Eigen::Matrix3<Scalar> ad_a2 = ad_a * ad_a;
 
     for (auto j = 0u; j < 3; ++j) {
-      H_out.col(2 + 3 * j) -= dA_dwz * ad_a.row(j).transpose();
-      H_out.col(2 + 3 * j) += dB_dwz * ad_a2.row(j).transpose();
+      H_out.col(2 + 3 * j).noalias() -= dA_dwz * ad_a.row(j).transpose();
+      H_out.col(2 + 3 * j).noalias() += dB_dwz * ad_a2.row(j).transpose();
     }
   }
 
@@ -322,7 +322,9 @@ public:
     ad(a_in, ad_a);
     const Eigen::Matrix3<Scalar> ad_a2 = ad_a * ad_a;
 
-    for (auto j = 0u; j < 3; ++j) { H_out.col(2 + 3 * j) += dA_dwz * ad_a2.row(j).transpose(); }
+    for (auto j = 0u; j < 3; ++j) {
+      H_out.col(2 + 3 * j).noalias() += dA_dwz * ad_a2.row(j).transpose();
+    }
   }
 };
 
