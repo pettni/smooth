@@ -254,10 +254,7 @@ public:
 
     // part with derivatives from matrices
     // clang-format off
-    Eigen:: Matrix<Scalar, 3, 18> dQ
-    {
-      {
-      w.x()*(B + 3*C)*(w.y()*w.y() + w.z()*w.z()),
+    Eigen:: Matrix<Scalar, 3, 18> dQ {{ w.x()*(B + 3*C)*(w.y()*w.y() + w.z()*w.z()),
       w.y()*(-2*A + B*(w.y()*w.y() + w.z()*w.z()) + 3*C*(w.y()*w.y() + w.z()*w.z())),
       w.z()*(-2*A + B*(w.y()*w.y() + w.z()*w.z()) + 3*C*(w.y()*w.y() + w.z()*w.z())),
       v.x()*(B + 3*C)*(w.y()*w.y() + w.z()*w.z()),
@@ -312,9 +309,7 @@ public:
       w.z()*(B + 3*C)*(w.x()*w.x() + w.y()*w.y()),
       -2*A*v.x() + B*v.x()*(w.x()*w.x() + w.y()*w.y()) + 2*B*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.x()*w.x()*w.x() + v.x()*w.y()*w.y() + 2*w.x()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
       -2*A*v.y() + B*v.y()*(w.x()*w.x() + w.y()*w.y()) + 2*B*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z()) + 3*C*(v.y()*w.x()*w.x() + v.y()*w.y()*w.y() + 2*w.y()*(v.x()*w.x() + v.y()*w.y() + v.z()*w.z())),
-      v.z()*(B + 3*C)*(w.x()*w.x() + w.y()*w.y())
-      },
-    };
+      v.z()*(B + 3*C)*(w.x()*w.x() + w.y()*w.y()) }};
     // clang-format on
 
     // parts with dA, dB, dC

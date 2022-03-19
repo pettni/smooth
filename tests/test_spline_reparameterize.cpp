@@ -61,6 +61,38 @@ TEST(Spline, Reparameterize)
   }
 }
 
+TEST(Spline, ReparameterizeRev)
+{
+  smooth::CubicSpline<smooth::SE2d> c;
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(-1, 0, 0));
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(-1, 0, -1));
+  c += smooth::CubicSpline<smooth::SE2d>::ConstantVelocity(Eigen::Vector3d(-1, 0, 0));
+
+  Eigen::Vector3d vmax(1, 1, 1), amax(1, 1, 1);
+
+  auto sfun = smooth::reparameterize_spline(c, -vmax, vmax, -amax, amax, 1, 1);
+
+  ASSERT_EQ(sfun(0.), 0);
+  ASSERT_GE(sfun(sfun.t_max() + 1e-6), c.t_max());
+
+  for (double t = 0; t < sfun.t_max(); t += 0.1) {
+    Eigen::Matrix<double, 1, 1> ds, d2s;
+    double s = sfun(t, ds, d2s);
+
+    Eigen::Vector3d vel, acc;
+    c(s, vel, acc);
+
+    Eigen::Vector3d repar_vel = vel * ds(0);
+    Eigen::Vector3d repar_acc = vel * d2s(0) + acc * ds(0) * ds(0);
+
+    ASSERT_GE((vmax - repar_vel).minCoeff(), -0.05);
+    ASSERT_GE((repar_vel + vmax).minCoeff(), -0.05);
+
+    ASSERT_GE((amax - repar_acc).minCoeff(), -0.05);
+    ASSERT_GE((repar_acc + amax).minCoeff(), -0.05);
+  }
+}
+
 TEST(Spline, ReparameterizeZero)
 {
   smooth::CubicSpline<smooth::SE2d> c;
