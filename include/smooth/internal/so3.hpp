@@ -64,6 +64,7 @@ public:
   static constexpr Eigen::Index RepSize = 4;
   static constexpr Eigen::Index Dim     = 3;
   static constexpr Eigen::Index Dof     = 3;
+  static constexpr bool IsCommutative   = false;
 
   SMOOTH_DEFINE_REFS;
 

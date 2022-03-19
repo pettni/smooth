@@ -44,15 +44,6 @@ using BundleT3 = smooth::Bundle<
   BundleT2,
   smooth::SE3d>;
 
-TEST(Sparse, Commutativity)
-{
-  static_assert(smooth::Commutativity<Eigen::Vector3d> == smooth::GroupType::Commutative);
-  static_assert(smooth::Commutativity<smooth::SO3d> == smooth::GroupType::NonCommutative);
-  static_assert(smooth::Commutativity<BundleT1> == smooth::GroupType::Commutative);
-  static_assert(smooth::Commutativity<BundleT2> == smooth::GroupType::NonCommutative);
-  static_assert(smooth::Commutativity<BundleT3> == smooth::GroupType::NonCommutative);
-}
-
 TEST(Sparse, ad_nonzeros)
 {
   ASSERT_EQ(smooth::ad_sparse_pattern<Eigen::Vector3d>.nonZeros(), 0);

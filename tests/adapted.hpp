@@ -39,8 +39,9 @@ struct smooth::traits::lie<MyGroup<_Scalar>>
   template<typename NewScalar>
   using CastT = MyGroup<NewScalar>;
 
-  static constexpr int Dof = 1;
-  static constexpr int Dim = 2;
+  static constexpr int Dof            = 1;
+  static constexpr int Dim            = 2;
+  static constexpr bool IsCommutative = false;
 
 private:
   using Matrix     = Eigen::Matrix<Scalar, Dim, Dim>;

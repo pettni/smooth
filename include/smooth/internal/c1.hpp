@@ -66,6 +66,7 @@ public:
   static constexpr Eigen::Index RepSize = 2;
   static constexpr Eigen::Index Dim     = 2;
   static constexpr Eigen::Index Dof     = 2;
+  static constexpr bool IsCommutative   = true;
 
   SMOOTH_DEFINE_REFS;
 
@@ -101,8 +102,6 @@ public:
     a_out << log(t), atan2(g_in[0], g_in[1]);
   }
 
-  static void Ad(GRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
-
   static void exp(TRefIn a_in, GRefOut g_out)
   {
     using std::cos, std::exp, std::sin;
@@ -117,16 +116,6 @@ public:
   {
     a_out << (A_in(0, 0) + A_in(1, 1)) / Scalar(2), (A_in(1, 0) - A_in(0, 1)) / Scalar(2);
   }
-
-  static void ad(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
-
-  static void dr_exp(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
-
-  static void dr_expinv(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
-
-  static void d2r_exp(TRefIn, THessRefOut H_out) { H_out.setZero(); }
-
-  static void d2r_expinv(TRefIn, THessRefOut H_out) { H_out.setZero(); }
 };
 
 }  // namespace smooth

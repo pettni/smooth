@@ -33,11 +33,6 @@
 
 namespace smooth {
 
-/**
- * @brief Commutative Lie groups have zero bracket, which simplifies many expressions.
- */
-enum class GroupType { Commutative, NonCommutative };
-
 /// @brief Forward-declare
 // clang-format off
 template<typename D> class C1Base;
@@ -54,19 +49,13 @@ namespace traits {
  */
 template<typename G>
 struct lie_sparse
-{
-  /// @brief By default we assume non-commutativity.
-  static constexpr GroupType Commutativity = GroupType::NonCommutative;
-};
+{};
 
 }  // namespace traits
 
 ////////////////////////////////////////////////////////
 //// FREE FUNCTIONS FOR SPARSE LIE GROUP PROPERTIES ////
 ////////////////////////////////////////////////////////
-
-template<LieGroup G>
-static constexpr GroupType Commutativity = traits::lie_sparse<G>::Commutativity;
 
 /**
  * @brief Generators of lie algebra (inline variable).
@@ -88,7 +77,7 @@ inline std::array<Eigen::SparseMatrix<Scalar<G>>, Dof<G>> generators_sparse =
 template<LieGroup G>
 inline Eigen::SparseMatrix<Scalar<G>> ad_sparse_pattern = [] {
   Eigen::SparseMatrix<Scalar<G>> ret(Dof<G>, Dof<G>);
-  if constexpr (Commutativity<G> == GroupType::NonCommutative) {
+  if constexpr (!IsCommutative<G>) {
     for (const auto & gen : generators_sparse<G>) { ret += gen; }
   }
   ret.makeCompressed();
@@ -119,7 +108,7 @@ inline void ad_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a)
 template<LieGroup G>
 inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
   Eigen::SparseMatrix<Scalar<G>> ret(Dof<G>, Dof<G>);
-  if constexpr (Commutativity<G> == GroupType::Commutative) {
+  if constexpr (IsCommutative<G>) {
     // identity matrix
     for (auto i = 0u; i < Dof<G>; ++i) { ret.insert(i, i) = Scalar<G>(1); }
   } else if constexpr (requires { traits::lie_sparse<G>::d_exp_sparse_pattern; }) {
@@ -145,29 +134,27 @@ inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
  *
  * @param[in, out] sp pre-allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
- * @param[in] r0 row where result is inserted
- * @param[in] c0 col where result is inserted
+ * @param[in] i0 block index (row and column) in sp where result is inserted
  *
  * @see d_exp_sparse_pattern for a pre-allocated pattern.
  */
 template<LieGroup G, bool Inv = false>
-inline void dr_exp_sparse(
-  Eigen::SparseMatrix<Scalar<G>> & sp,
-  const Tangent<G> & a,
-  Eigen::Index r0 = 0,
-  Eigen::Index c0 = 0)
+inline void
+dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
 {
   using T = traits::lie_sparse<G>;
   assert(sp.isCompressed());
-  if constexpr (Commutativity<G> == GroupType::Commutative) {
+  assert(sp.rows() >= i0 + Dof<G>);
+  assert(sp.cols() >= i0 + Dof<G>);
+  if constexpr (IsCommutative<G>) {
     // identity matrix
-    for (auto i = 0u; i < a.size(); ++i) { sp.coeffRef(r0 + i, c0 + i) = 1; }
-  } else if constexpr (!Inv && requires { T::dr_exp_sparse(sp, a, r0, c0); }) {
+    for (auto i = 0u; i < a.size(); ++i) { sp.coeffRef(i0 + i, i0 + i) = 1; }
+  } else if constexpr (!Inv && requires { T::dr_exp_sparse(sp, a, i0); }) {
     // use specialized method if one exists
-    T::dr_exp_sparse(sp, a, r0, c0);
-  } else if constexpr (Inv && requires { T::dr_expinv_sparse(sp, a, r0, c0); }) {
+    T::dr_exp_sparse(sp, a, i0);
+  } else if constexpr (Inv && requires { T::dr_expinv_sparse(sp, a, i0); }) {
     // use specialized method if one exists
-    T::dr_expinv_sparse(sp, a, r0, c0);
+    T::dr_expinv_sparse(sp, a, i0);
   } else {
     // fall back on dense method+pattern
     const TangentMap<G> D = [&] {
@@ -178,7 +165,7 @@ inline void dr_exp_sparse(
     }();
     for (auto i = 0u; i < Dof<G>; ++i) {
       for (Eigen::InnerIterator it(d_exp_sparse_pattern<G>, i); it; ++it) {
-        sp.coeffRef(r0 + it.row(), c0 + it.col()) = D(it.row(), it.col());
+        sp.coeffRef(i0 + it.row(), i0 + it.col()) = D(it.row(), it.col());
       }
     }
   }
@@ -192,19 +179,15 @@ inline void dr_exp_sparse(
  *
  * @param[in, out] sp pre-allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
- * @param[in] r0 row where result is inserted
- * @param[in] c0 col where result is inserted
+ * @param[in] i0 block index (row and column) in sp where result is inserted
  *
  * @see d_exp_sparse_pattern for a pre-allocated pattern.
  */
 template<LieGroup G>
-inline void dr_expinv_sparse(
-  Eigen::SparseMatrix<Scalar<G>> & sp,
-  const Tangent<G> & a,
-  Eigen::Index r0 = 0,
-  Eigen::Index c0 = 0)
+inline void
+dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
 {
-  dr_exp_sparse<G, true>(sp, a, r0, c0);
+  dr_exp_sparse<G, true>(sp, a, i0);
 }
 
 /**
@@ -213,7 +196,7 @@ inline void dr_expinv_sparse(
 template<LieGroup G>
 inline Eigen::SparseMatrix<Scalar<G>> d2_exp_sparse_pattern = [] {
   Eigen::SparseMatrix<Scalar<G>> ret(Dof<G>, Dof<G> * Dof<G>);
-  if constexpr (Commutativity<G> == GroupType::Commutative) {
+  if constexpr (IsCommutative<G>) {
     // zero matrix--do nothing
   } else if constexpr (requires { traits::lie_sparse<G>::d2_exp_sparse_pattern; }) {
     // use spacialized method
@@ -234,28 +217,26 @@ inline Eigen::SparseMatrix<Scalar<G>> d2_exp_sparse_pattern = [] {
  *
  * @param[in, out] sp pre-allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
- * @param[in] r0 row where result is inserted
- * @param[in] c0 col where result is inserted
+ * @param[in] i0 block index (row and column) in sp where result is inserted
  *
  * @see d2_exp_sparse_pattern for a pre-allocated pattern.
  */
 template<LieGroup G, bool Inv = false>
-inline void d2r_exp_sparse(
-  Eigen::SparseMatrix<Scalar<G>> & sp,
-  const Tangent<G> & a,
-  Eigen::Index r0 = 0,
-  Eigen::Index c0 = 0)
+inline void
+d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
 {
   using T = traits::lie_sparse<G>;
   assert(sp.isCompressed());
-  if constexpr (Commutativity<G> == GroupType::Commutative) {
+  assert(sp.rows() >= i0 + Dof<G>);
+  assert(sp.cols() >= sp.rows() * (i0 + Dof<G>));
+  if constexpr (IsCommutative<G>) {
     // zero matrix--do nothing
-  } else if constexpr (!Inv && requires { T::d2r_exp_sparse(sp, a, r0, c0); }) {
+  } else if constexpr (!Inv && requires { T::d2r_exp_sparse(sp, a, i0); }) {
     // use specialized method if one exists
-    T::d2r_exp_sparse(sp, a, r0, c0);
-  } else if constexpr (Inv && requires { T::d2r_expinv_sparse(sp, a, r0, c0); }) {
+    T::d2r_exp_sparse(sp, a, i0);
+  } else if constexpr (Inv && requires { T::d2r_expinv_sparse(sp, a, i0); }) {
     // use specialized method if one exists
-    T::d2r_expinv_sparse(sp, a, r0, c0);
+    T::d2r_expinv_sparse(sp, a, i0);
   } else {
     // fall back on dense method + pattern
     const Hessian<G> D = [&] {
@@ -266,11 +247,11 @@ inline void d2r_exp_sparse(
     }();
     for (auto i = 0u; i < Dof<G> * Dof<G>; ++i) {
       for (Eigen::InnerIterator it(d2_exp_sparse_pattern<G>, i); it; ++it) {
-        const auto block = c0 + (it.col() / Dof<G>);
-        const auto row   = it.row();
-        const auto col   = c0 + (it.col() % Dof<G>);
+        const auto block = i0 + (it.col() / Dof<G>);
+        const auto row   = i0 + it.row();
+        const auto col   = i0 + (it.col() % Dof<G>);
 
-        sp.coeffRef(r0 + row, sp.rows() * block + col) = D(it.row(), it.col());
+        sp.coeffRef(row, sp.rows() * block + col) = D(it.row(), it.col());
       }
     }
   }
@@ -284,19 +265,15 @@ inline void d2r_exp_sparse(
  *
  * @param[in, out] sp pre-allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
- * @param[in] r0 row where result is inserted
- * @param[in] c0 col where result is inserted
+ * @param[in] i0 block index (row and column) in sp where result is inserted
  *
  * @see d2_exp_sparse_pattern for a pre-allocated pattern.
  */
 template<LieGroup G>
-inline void d2r_expinv_sparse(
-  Eigen::SparseMatrix<Scalar<G>> & sp,
-  const Tangent<G> & a,
-  Eigen::Index r0 = 0,
-  Eigen::Index c0 = 0)
+inline void
+d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
 {
-  return d2r_exp_sparse<G, true>(sp, a, r0, c0);
+  return d2r_exp_sparse<G, true>(sp, a, i0);
 }
 
 //////////////////////////////////////////////////////
@@ -305,43 +282,11 @@ inline void d2r_expinv_sparse(
 
 namespace traits {
 
-/// @brief Specialization for Euclidean spaces.
-template<RnType G>
-struct lie_sparse<G>
-{
-  static constexpr GroupType Commutativity = GroupType::Commutative;
-};
-
-/// @brief Specialization for Scalars.
-template<ScalarType G>
-struct lie_sparse<G>
-{
-  static constexpr GroupType Commutativity = GroupType::Commutative;
-};
-
-/// @brief Sparsity info for C1 types.
-template<typename G>
-  requires(std::is_base_of_v<C1Base<G>, G>)
-struct lie_sparse<G>
-{
-  static constexpr GroupType Commutativity = GroupType::Commutative;
-};
-
-/// @brief Sparsity info for SO2 types.
-template<typename G>
-  requires(std::is_base_of_v<SO2Base<G>, G>)
-struct lie_sparse<G>
-{
-  static constexpr GroupType Commutativity = GroupType::Commutative;
-};
-
 /// @brief Sparsity info for SE2 types.
 template<typename G>
   requires(std::is_base_of_v<SE2Base<G>, G>)
 struct lie_sparse<G>
 {
-  static constexpr GroupType Commutativity = GroupType::NonCommutative;
-
   static inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
     Eigen::SparseMatrix<Scalar<G>> ret(3, 3);
     for (auto i = 0u; i < 2; ++i) {
@@ -370,8 +315,6 @@ template<typename G>
   requires(std::is_base_of_v<SE3Base<G>, G>)
 struct lie_sparse<G>
 {
-  static constexpr GroupType Commutativity = GroupType::NonCommutative;
-
   static inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
     Eigen::SparseMatrix<Scalar<G>> ret(6, 6);
     for (auto i = 0u; i < 6; ++i) {
@@ -406,18 +349,6 @@ template<typename G>
   requires(std::is_base_of_v<BundleBase<G>, G>)
 struct lie_sparse<G>
 {
-  static constexpr GroupType Commutativity = []<std::size_t... I>(std::index_sequence<I...>)
-  {
-    if constexpr (((smooth::Commutativity<
-                      typename G::template PartType<I>> == GroupType::Commutative)
-                   && ...)) {
-      return GroupType::Commutative;
-    } else {
-      return GroupType::NonCommutative;
-    }
-  }
-  (std::make_index_sequence<G::BundleSize>{});
-
   static inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
     Eigen::SparseMatrix<Scalar<G>> ret(Dof<G>, Dof<G>);
     utils::static_for<G::BundleSize>([&](auto I) {
@@ -433,29 +364,23 @@ struct lie_sparse<G>
     return ret;
   }();
 
-  static void dr_exp_sparse(
-    Eigen::SparseMatrix<Scalar<G>> & sp,
-    const Tangent<G> & a,
-    Eigen::Index r0 = 0,
-    Eigen::Index c0 = 0)
+  static void
+  dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;
       ::smooth::dr_exp_sparse<typename G::template PartType<I>>(
-        sp, a.template segment<G::template PartDof<I>>(Dof0), r0 + Dof0, c0 + Dof0);
+        sp, a.template segment<G::template PartDof<I>>(Dof0), i0 + Dof0);
     });
   }
 
-  static void dr_expinv_sparse(
-    Eigen::SparseMatrix<Scalar<G>> & sp,
-    const Tangent<G> & a,
-    Eigen::Index r0 = 0,
-    Eigen::Index c0 = 0)
+  static void
+  dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;
       ::smooth::dr_expinv_sparse<typename G::template PartType<I>>(
-        sp, a.template segment<G::template PartDof<I>>(Dof0), r0 + Dof0, c0 + Dof0);
+        sp, a.template segment<G::template PartDof<I>>(Dof0), i0 + Dof0);
     });
   }
 
@@ -478,29 +403,23 @@ struct lie_sparse<G>
     return ret;
   }();
 
-  static void d2r_exp_sparse(
-    Eigen::SparseMatrix<Scalar<G>> & sp,
-    const Tangent<G> & a,
-    Eigen::Index r0 = 0,
-    Eigen::Index c0 = 0)
+  static void
+  d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;
       ::smooth::d2r_exp_sparse<typename G::template PartType<I>>(
-        sp, a.template segment<G::template PartDof<I>>(Dof0), r0 + Dof0, c0 + Dof0);
+        sp, a.template segment<G::template PartDof<I>>(Dof0), i0 + Dof0);
     });
   }
 
-  static void d2r_expinv_sparse(
-    Eigen::SparseMatrix<Scalar<G>> & sp,
-    const Tangent<G> & a,
-    Eigen::Index r0 = 0,
-    Eigen::Index c0 = 0)
+  static void
+  d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;
       ::smooth::d2r_expinv_sparse<typename G::template PartType<I>>(
-        sp, a.template segment<G::template PartDof<I>>(Dof0), r0 + Dof0, c0 + Dof0);
+        sp, a.template segment<G::template PartDof<I>>(Dof0), i0 + Dof0);
     });
   }
 };
