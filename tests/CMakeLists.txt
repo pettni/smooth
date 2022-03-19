@@ -122,6 +122,10 @@ add_executable(test_hessian test_hessian.cpp)
 target_link_libraries(test_hessian PRIVATE TestConfig)
 gtest_discover_tests(test_hessian)
 
+add_executable(test_sparse test_sparse.cpp)
+target_link_libraries(test_sparse PRIVATE TestConfig)
+gtest_discover_tests(test_sparse)
+
 # COMPATABILITY TESTS
 
 find_package(Boost QUIET)

@@ -153,6 +153,8 @@ requires(const Eigen::Vector<typename G::Scalar, G::Dof> & a) {
   {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
   {G::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
   {G::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {G::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
+  {G::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
 };
 
 // clang-format on

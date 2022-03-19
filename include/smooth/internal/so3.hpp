@@ -243,9 +243,9 @@ public:
     // -A * d(ad) + B * d(ad^2)
     // clang-format off
     H_out <<
-      0., -2. * B * a_in.y(), -2. * B * a_in.z(), B * a_in.y(), B * a_in.x(), -A, B * a_in.z(), A, B * a_in.x(),
-      B * a_in.y(), B * a_in.x(), A, -2. * B * a_in.x(), 0., -2. * B * a_in.z(), -A, B * a_in.z(), B * a_in.y(),
-      B * a_in.z(), -A, B * a_in.x(), A, B * a_in.z(), B * a_in.y(), -2. * B * a_in.x(), -2 * B * a_in.y(), 0.;
+      0., -2 * B * a_in.y(), -2 * B * a_in.z(), B * a_in.y(), B * a_in.x(), -A, B * a_in.z(), A, B * a_in.x(),
+      B * a_in.y(), B * a_in.x(), A, -2 * B * a_in.x(), 0., -2 * B * a_in.z(), -A, B * a_in.z(), B * a_in.y(),
+      B * a_in.z(), -A, B * a_in.x(), A, B * a_in.z(), B * a_in.y(), -2 * B * a_in.x(), -2 * B * a_in.y(), 0.;
     // clang-format on
 
     // add -dA * ad + dB * ad^2
