@@ -100,21 +100,22 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="lie__group_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2lie__group_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2lie__group_8hppdep" id="ainclude_2smooth_2lie__group_8hppdep">
-<area shape="rect" title=" " alt="" coords="494,5,621,47"/>
-<area shape="rect" href="hessian_8hpp.html" title="Algorithms for computations of Hessians." alt="" coords="5,95,144,136"/>
-<area shape="rect" href="bundle_8hpp_source.html" title=" " alt="" coords="168,102,344,129"/>
-<area shape="rect" href="c1_8hpp_source.html" title=" " alt="" coords="269,191,421,218"/>
-<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="446,191,605,218"/>
-<area shape="rect" href="se3_8hpp_source.html" title=" " alt="" coords="973,191,1131,218"/>
-<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="419,102,578,129"/>
-<area shape="rect" href="so3_8hpp_source.html" title=" " alt="" coords="957,102,1115,129"/>
-<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="653,95,808,136"/>
-<area shape="rect" href="dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="454,273,602,315"/>
-<area shape="rect" href="ros_8hpp.html" title="ROS message compatablity header." alt="" coords="973,273,1131,315"/>
-<area shape="rect" href="bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="801,184,949,225"/>
-<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="629,184,777,225"/>
-<area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="801,273,949,315"/>
-<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="629,273,777,315"/>
+<area shape="rect" title=" " alt="" coords="505,5,631,47"/>
+<area shape="rect" href="bundle_8hpp_source.html" title=" " alt="" coords="5,102,181,129"/>
+<area shape="rect" href="c1_8hpp_source.html" title=" " alt="" coords="139,191,291,218"/>
+<area shape="rect" href="derivatives_8hpp.html" title="Various useful derivatives." alt="" coords="670,102,871,129"/>
+<area shape="rect" href="lie__group__sparse_8hpp.html" title="Sparse versions of certain Lie group methods." alt="" coords="896,95,1027,136"/>
+<area shape="rect" href="se2_8hpp_source.html" title=" " alt="" coords="315,191,474,218"/>
+<area shape="rect" href="se3_8hpp_source.html" title=" " alt="" coords="1043,191,1202,218"/>
+<area shape="rect" href="so2_8hpp_source.html" title=" " alt="" coords="257,102,415,129"/>
+<area shape="rect" href="so3_8hpp_source.html" title=" " alt="" coords="1102,102,1261,129"/>
+<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="491,95,645,136"/>
+<area shape="rect" href="dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="323,273,471,315"/>
+<area shape="rect" href="ros_8hpp.html" title="ROS message compatablity header." alt="" coords="1044,273,1201,315"/>
+<area shape="rect" href="bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="670,184,818,225"/>
+<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="498,184,646,225"/>
+<area shape="rect" href="fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="670,273,818,315"/>
+<area shape="rect" href="reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="498,273,646,315"/>
 </map>
 </div>
 </div>
@@ -192,12 +193,20 @@ requires (Dof&lt;G&gt; &gt; 0)</td></tr>
 <tr class="separator:aba65e272c13ceec1ad6b87ce140a9dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9980f12dc0f1699cd79beb4870c90533"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Arg &gt; </td></tr>
 <tr class="memitem:a9980f12dc0f1699cd79beb4870c90533"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a9980f12dc0f1699cd79beb4870c90533">smooth::dr_exp</a> (Arg &amp;&amp;a)</td></tr>
-<tr class="memdesc:a9980f12dc0f1699cd79beb4870c90533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right derivative of exponential map.  <a href="lie__group_8hpp.html#a9980f12dc0f1699cd79beb4870c90533">More...</a><br /></td></tr>
+<tr class="memdesc:a9980f12dc0f1699cd79beb4870c90533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right Jacobian of exponential map.  <a href="lie__group_8hpp.html#a9980f12dc0f1699cd79beb4870c90533">More...</a><br /></td></tr>
 <tr class="separator:a9980f12dc0f1699cd79beb4870c90533"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fcc87264d95a572731c03500b90866d"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Arg &gt; </td></tr>
 <tr class="memitem:a9fcc87264d95a572731c03500b90866d"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a9fcc87264d95a572731c03500b90866d">smooth::dr_expinv</a> (Arg &amp;&amp;a)</td></tr>
-<tr class="memdesc:a9fcc87264d95a572731c03500b90866d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right derivative of exponential map inverse.  <a href="lie__group_8hpp.html#a9fcc87264d95a572731c03500b90866d">More...</a><br /></td></tr>
+<tr class="memdesc:a9fcc87264d95a572731c03500b90866d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right Jacobian of exponential map inverse.  <a href="lie__group_8hpp.html#a9fcc87264d95a572731c03500b90866d">More...</a><br /></td></tr>
 <tr class="separator:a9fcc87264d95a572731c03500b90866d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3fd70b86512b5a7e653fcd556313560"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Arg &gt; </td></tr>
+<tr class="memitem:ae3fd70b86512b5a7e653fcd556313560"><td class="memTemplItemLeft" align="right" valign="top">Hessian&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ae3fd70b86512b5a7e653fcd556313560">smooth::d2r_exp</a> (Arg &amp;&amp;a)</td></tr>
+<tr class="memdesc:ae3fd70b86512b5a7e653fcd556313560"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right Hessian of exponential map.  <a href="lie__group_8hpp.html#ae3fd70b86512b5a7e653fcd556313560">More...</a><br /></td></tr>
+<tr class="separator:ae3fd70b86512b5a7e653fcd556313560"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fbaf9c9370bcfad77bdc1709649a935"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Arg &gt; </td></tr>
+<tr class="memitem:a6fbaf9c9370bcfad77bdc1709649a935"><td class="memTemplItemLeft" align="right" valign="top">Hessian&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a6fbaf9c9370bcfad77bdc1709649a935">smooth::d2r_expinv</a> (Arg &amp;&amp;a)</td></tr>
+<tr class="memdesc:a6fbaf9c9370bcfad77bdc1709649a935"><td class="mdescLeft">&#160;</td><td class="mdescRight">Right Hessian of exponential map inverse.  <a href="lie__group_8hpp.html#a6fbaf9c9370bcfad77bdc1709649a935">More...</a><br /></td></tr>
+<tr class="separator:a6fbaf9c9370bcfad77bdc1709649a935"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29f5224adb0b585a1663bd230b63f4ee"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Derived &gt; </td></tr>
 <tr class="memitem:a29f5224adb0b585a1663bd230b63f4ee"><td class="memTemplItemLeft" align="right" valign="top">PlainObject&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a29f5224adb0b585a1663bd230b63f4ee">smooth::lplus</a> (const G &amp;g, const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
 <tr class="memdesc:a29f5224adb0b585a1663bd230b63f4ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left-plus.  <a href="lie__group_8hpp.html#a29f5224adb0b585a1663bd230b63f4ee">More...</a><br /></td></tr>
@@ -208,12 +217,20 @@ requires (Dof&lt;G&gt; &gt; 0)</td></tr>
 <tr class="separator:a8f5eb87f84a67a30849168de08ecb69e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4636dfa6cc060b2ace37693d0a7a69ba"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Derived &gt; </td></tr>
 <tr class="memitem:a4636dfa6cc060b2ace37693d0a7a69ba"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a4636dfa6cc060b2ace37693d0a7a69ba">smooth::dl_exp</a> (const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
-<tr class="memdesc:a4636dfa6cc060b2ace37693d0a7a69ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left derivative of exponential map.  <a href="lie__group_8hpp.html#a4636dfa6cc060b2ace37693d0a7a69ba">More...</a><br /></td></tr>
+<tr class="memdesc:a4636dfa6cc060b2ace37693d0a7a69ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left Jacobian of exponential map.  <a href="lie__group_8hpp.html#a4636dfa6cc060b2ace37693d0a7a69ba">More...</a><br /></td></tr>
 <tr class="separator:a4636dfa6cc060b2ace37693d0a7a69ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68817545d9ca217df930e0ed6c1522c0"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Derived &gt; </td></tr>
 <tr class="memitem:a68817545d9ca217df930e0ed6c1522c0"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a68817545d9ca217df930e0ed6c1522c0">smooth::dl_expinv</a> (const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
-<tr class="memdesc:a68817545d9ca217df930e0ed6c1522c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left derivative of exponential map inverse.  <a href="lie__group_8hpp.html#a68817545d9ca217df930e0ed6c1522c0">More...</a><br /></td></tr>
+<tr class="memdesc:a68817545d9ca217df930e0ed6c1522c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left Jacobian of exponential map inverse.  <a href="lie__group_8hpp.html#a68817545d9ca217df930e0ed6c1522c0">More...</a><br /></td></tr>
 <tr class="separator:a68817545d9ca217df930e0ed6c1522c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3922dfcafe992b927c88f28e8563a6a"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Derived &gt; </td></tr>
+<tr class="memitem:ab3922dfcafe992b927c88f28e8563a6a"><td class="memTemplItemLeft" align="right" valign="top">Hessian&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#ab3922dfcafe992b927c88f28e8563a6a">smooth::d2l_exp</a> (const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
+<tr class="memdesc:ab3922dfcafe992b927c88f28e8563a6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left Hessian of exponential map.  <a href="lie__group_8hpp.html#ab3922dfcafe992b927c88f28e8563a6a">More...</a><br /></td></tr>
+<tr class="separator:ab3922dfcafe992b927c88f28e8563a6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e6a4dfe197d61b6747daed985af7d69"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, typename Derived &gt; </td></tr>
+<tr class="memitem:a6e6a4dfe197d61b6747daed985af7d69"><td class="memTemplItemLeft" align="right" valign="top">Hessian&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__group_8hpp.html#a6e6a4dfe197d61b6747daed985af7d69">smooth::d2l_expinv</a> (const Eigen::MatrixBase&lt; Derived &gt; &amp;a)</td></tr>
+<tr class="memdesc:a6e6a4dfe197d61b6747daed985af7d69"><td class="mdescLeft">&#160;</td><td class="mdescRight">Left Hessian of exponential map inverse.  <a href="lie__group_8hpp.html#a6e6a4dfe197d61b6747daed985af7d69">More...</a><br /></td></tr>
+<tr class="separator:a6e6a4dfe197d61b6747daed985af7d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Internal and external LieGroup interfaces and free LieGroup functions. </p>
@@ -248,7 +265,7 @@ template&lt;LieGroup G, typename Arg &gt; </div>
 
 <p>Lie algebra adjoint \( ad_a b = [a, b] \). </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00513">513</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00570">570</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -280,7 +297,7 @@ template&lt;LieGroup G&gt; </div>
 
 <p>Group adjoint \( Ad_g a \coloneq (G * \hat(a) * G^{-1})^{\wedge} \). </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00451">451</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00508">508</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -322,7 +339,7 @@ template&lt;LieGroup G, typename Arg &gt; </div>
 
 <p>Group binary composition. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00460">460</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00517">517</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -370,7 +387,135 @@ template&lt;LieGroup G, typename Arg , typename... Args&gt; </div>
 
 <p>Group multinary composition. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00469">469</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00526">526</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab3922dfcafe992b927c88f28e8563a6a" name="ab3922dfcafe992b927c88f28e8563a6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3922dfcafe992b927c88f28e8563a6a">&#9670;&nbsp;</a></span>d2l_exp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;LieGroup G, typename Derived &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Hessian&lt; G &gt; smooth::d2l_exp </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::MatrixBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Left Hessian of exponential map. </p>
+
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00664">664</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6e6a4dfe197d61b6747daed985af7d69" name="a6e6a4dfe197d61b6747daed985af7d69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e6a4dfe197d61b6747daed985af7d69">&#9670;&nbsp;</a></span>d2l_expinv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;LieGroup G, typename Derived &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Hessian&lt; G &gt; smooth::d2l_expinv </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::MatrixBase&lt; Derived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Left Hessian of exponential map inverse. </p>
+
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00673">673</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae3fd70b86512b5a7e653fcd556313560" name="ae3fd70b86512b5a7e653fcd556313560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3fd70b86512b5a7e653fcd556313560">&#9670;&nbsp;</a></span>d2r_exp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;LieGroup G, typename Arg &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Hessian&lt; G &gt; smooth::d2r_exp </td>
+          <td>(</td>
+          <td class="paramtype">Arg &amp;&amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Right Hessian of exponential map. </p>
+
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00608">608</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6fbaf9c9370bcfad77bdc1709649a935" name="a6fbaf9c9370bcfad77bdc1709649a935"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fbaf9c9370bcfad77bdc1709649a935">&#9670;&nbsp;</a></span>d2r_expinv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;LieGroup G, typename Arg &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Hessian&lt; G &gt; smooth::d2r_expinv </td>
+          <td>(</td>
+          <td class="paramtype">Arg &amp;&amp;&#160;</td>
+          <td class="paramname"><em>a</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Right Hessian of exponential map inverse. </p>
+
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00617">617</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -400,9 +545,9 @@ template&lt;LieGroup G, typename Derived &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Left derivative of exponential map. </p>
+<p>Left Jacobian of exponential map. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00571">571</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00646">646</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -432,9 +577,9 @@ template&lt;LieGroup G, typename Derived &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Left derivative of exponential map inverse. </p>
+<p>Left Jacobian of exponential map inverse. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00580">580</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00655">655</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -464,9 +609,9 @@ template&lt;LieGroup G, typename Arg &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Right derivative of exponential map. </p>
+<p>Right Jacobian of exponential map. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00533">533</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00590">590</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -496,9 +641,9 @@ template&lt;LieGroup G, typename Arg &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Right derivative of exponential map inverse. </p>
+<p>Right Jacobian of exponential map inverse. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00542">542</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00599">599</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -531,7 +676,7 @@ template&lt;LieGroup G, typename Arg &gt; </div>
 <p>Lie algebra exponential. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__group_8hpp.html#ac71325c1fbf15c4cb723f2e7a817bbea" title="Group logarithm.">log()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00524">524</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00581">581</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -563,7 +708,7 @@ requires (Dof&lt;G&gt; &gt; 0)</div>
 
 <p>Identity in Lie group with static Dof. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00430">430</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00484">484</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -601,7 +746,7 @@ template&lt;LieGroup G&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00423">423</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00474">474</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -633,7 +778,7 @@ template&lt;LieGroup G&gt; </div>
 
 <p>Group inverse. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00478">478</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00535">535</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -681,7 +826,7 @@ template&lt;LieGroup G, typename Arg &gt; </div>
 
 <p>Check if two group elements are approximately equal. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00487">487</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00544">544</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -723,7 +868,7 @@ template&lt;LieGroup G, LieGroup Go&gt; </div>
 
 <p>Left-minus. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00562">562</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00637">637</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -756,7 +901,7 @@ template&lt;LieGroup G&gt; </div>
 <p>Group logarithm. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__group_8hpp.html#aba65e272c13ceec1ad6b87ce140a9dd5" title="Lie algebra exponential.">exp()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00502">502</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00559">559</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -798,7 +943,7 @@ template&lt;LieGroup G, typename Derived &gt; </div>
 
 <p>Left-plus. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00553">553</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00628">628</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -830,7 +975,7 @@ requires (Dof&lt;G&gt; &gt; 0)</div>
 
 <p>Random element in Lie group with static Dof. </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00445">445</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00502">502</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>
@@ -868,7 +1013,7 @@ template&lt;LieGroup G&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00438">438</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__group_8hpp_source.html#l00492">492</a> of file <a class="el" href="lie__group_8hpp_source.html">lie_group.hpp</a>.</p>
 
 </div>
 </div>

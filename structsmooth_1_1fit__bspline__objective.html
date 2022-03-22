@@ -77,8 +77,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="structsmooth_1_1fit__bspline__objective-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">smooth::fit_bspline_objective&lt; K, Rs, Rg &gt; Struct Template Reference</div></div>
 </div><!--header-->
@@ -92,40 +90,20 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a961b876a74dec64c2f6d5278dc07672b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b">G</a> = std::ranges::range_value_t&lt; Rg &gt;</td></tr>
+<tr class="memdesc:a961b876a74dec64c2f6d5278dc07672b"><td class="mdescLeft">&#160;</td><td class="mdescRight">LIe group.  <a href="structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b">More...</a><br /></td></tr>
 <tr class="separator:a961b876a74dec64c2f6d5278dc07672b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a14ec3968e43b0f8f088952fa1beb6b83"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a14ec3968e43b0f8f088952fa1beb6b83">fit_bspline_objective</a> (std::ranges::range auto &amp;&amp;tsin, std::ranges::range auto &amp;&amp;gsin, double dtin)</td></tr>
+<tr class="memdesc:a14ec3968e43b0f8f088952fa1beb6b83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="structsmooth_1_1fit__bspline__objective.html#a14ec3968e43b0f8f088952fa1beb6b83">More...</a><br /></td></tr>
 <tr class="separator:a14ec3968e43b0f8f088952fa1beb6b83"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a646dbe518abe3905941efe6ba923b152"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a646dbe518abe3905941efe6ba923b152">operator()</a> (const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; G &gt; &amp;var) const</td></tr>
+<tr class="memitem:a646dbe518abe3905941efe6ba923b152"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a646dbe518abe3905941efe6ba923b152">operator()</a> (const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; <a class="el" href="structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b">G</a> &gt; &amp;var) const</td></tr>
+<tr class="memdesc:a646dbe518abe3905941efe6ba923b152"><td class="mdescLeft">&#160;</td><td class="mdescRight">Objective function.  <a href="structsmooth_1_1fit__bspline__objective.html#a646dbe518abe3905941efe6ba923b152">More...</a><br /></td></tr>
 <tr class="separator:a646dbe518abe3905941efe6ba923b152"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a20a3fba23e84b72cdc82beaa76a32096"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a20a3fba23e84b72cdc82beaa76a32096">jacobian</a> (const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; G &gt; &amp;var) const</td></tr>
+<tr class="memitem:a20a3fba23e84b72cdc82beaa76a32096"><td class="memItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a20a3fba23e84b72cdc82beaa76a32096">jacobian</a> (const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; <a class="el" href="structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b">G</a> &gt; &amp;var) const</td></tr>
+<tr class="memdesc:a20a3fba23e84b72cdc82beaa76a32096"><td class="mdescLeft">&#160;</td><td class="mdescRight">Analytic Jacobian.  <a href="structsmooth_1_1fit__bspline__objective.html#a20a3fba23e84b72cdc82beaa76a32096">More...</a><br /></td></tr>
 <tr class="separator:a20a3fba23e84b72cdc82beaa76a32096"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a44415cfa038583cad419ef786c0c8f77"><td class="memItemLeft" align="right" valign="top">Rs&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a44415cfa038583cad419ef786c0c8f77">ts</a></td></tr>
-<tr class="separator:a44415cfa038583cad419ef786c0c8f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5dc452342bbb99ef62a726085d7828b0"><td class="memItemLeft" align="right" valign="top">Rg&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a5dc452342bbb99ef62a726085d7828b0">gs</a></td></tr>
-<tr class="separator:a5dc452342bbb99ef62a726085d7828b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdc90dad1b49c48160030f169d8d4f14"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#afdc90dad1b49c48160030f169d8d4f14">t0</a></td></tr>
-<tr class="separator:afdc90dad1b49c48160030f169d8d4f14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad02cda3f1919e1129962c6662b4cdf3d"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#ad02cda3f1919e1129962c6662b4cdf3d">t1</a></td></tr>
-<tr class="separator:ad02cda3f1919e1129962c6662b4cdf3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b4f1a944daaee6efd83ee470f39b50e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a1b4f1a944daaee6efd83ee470f39b50e">dt</a></td></tr>
-<tr class="separator:a1b4f1a944daaee6efd83ee470f39b50e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19636460e6e006b134f5176c27e5bb29"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a19636460e6e006b134f5176c27e5bb29">NumData</a></td></tr>
-<tr class="separator:a19636460e6e006b134f5176c27e5bb29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe2115bebbfe5b1b9959a028aa52190a"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#abe2115bebbfe5b1b9959a028aa52190a">NumPts</a></td></tr>
-<tr class="separator:abe2115bebbfe5b1b9959a028aa52190a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
-Static Public Attributes</h2></td></tr>
-<tr class="memitem:a8f7445b757f3e0e3039e218ee90a7266"><td class="memItemLeft" align="right" valign="top">static constexpr auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a8f7445b757f3e0e3039e218ee90a7266">M_s</a> = polynomial_cumulative_basis&lt;<a class="el" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb">PolynomialBasis::Bspline</a>, K&gt;()</td></tr>
-<tr class="separator:a8f7445b757f3e0e3039e218ee90a7266"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a604f87ad8bc20304b7a99a927132f847"><td class="memItemLeft" align="right" valign="top">static const Eigen::Map&lt; const Eigen::Matrix&lt; double, K+1, K+1, Eigen::RowMajor &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1fit__bspline__objective.html#a604f87ad8bc20304b7a99a927132f847">M</a></td></tr>
-<tr class="separator:a604f87ad8bc20304b7a99a927132f847"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt;<br />
@@ -147,7 +125,9 @@ template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </di
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00502">502</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
+<p>LIe group. </p>
+
+<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00503">503</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
 
 </div>
 </div>
@@ -194,7 +174,9 @@ template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </di
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00515">515</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
+<p>Constructor. </p>
+
+<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00519">519</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
 
 </div>
 </div>
@@ -213,7 +195,7 @@ template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </di
         <tr>
           <td class="memname">Eigen::SparseMatrix&lt; double &gt; <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::jacobian </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; <a class="el" href="structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b">G</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>var</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -225,7 +207,9 @@ template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </di
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00547">547</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
+<p>Analytic Jacobian. </p>
+
+<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00553">553</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
 
 </div>
 </div>
@@ -243,7 +227,7 @@ template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </di
         <tr>
           <td class="memname">Eigen::VectorXd <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::operator() </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="classsmooth_1_1ManifoldVector.html">ManifoldVector</a>&lt; <a class="el" href="structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b">G</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>var</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -255,188 +239,9 @@ template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </di
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00528">528</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
+<p>Objective function. </p>
 
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a1b4f1a944daaee6efd83ee470f39b50e" name="a1b4f1a944daaee6efd83ee470f39b50e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b4f1a944daaee6efd83ee470f39b50e">&#9670;&nbsp;</a></span>dt</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">double <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::dt</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00507">507</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a5dc452342bbb99ef62a726085d7828b0" name="a5dc452342bbb99ef62a726085d7828b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5dc452342bbb99ef62a726085d7828b0">&#9670;&nbsp;</a></span>gs</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Rg <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::gs</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00505">505</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a604f87ad8bc20304b7a99a927132f847" name="a604f87ad8bc20304b7a99a927132f847"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a604f87ad8bc20304b7a99a927132f847">&#9670;&nbsp;</a></span>M</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt; &gt; <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::M</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">    Eigen::Map&lt;const Eigen::Matrix&lt;double, K + 1, K + 1, Eigen::RowMajor&gt;&gt;(M_s[0].data())</div>
-</div><!-- fragment -->
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00512">512</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a8f7445b757f3e0e3039e218ee90a7266" name="a8f7445b757f3e0e3039e218ee90a7266"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f7445b757f3e0e3039e218ee90a7266">&#9670;&nbsp;</a></span>M_s</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">constexpr auto <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::M_s = polynomial_cumulative_basis&lt;<a class="el" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb">PolynomialBasis::Bspline</a>, K&gt;()</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00511">511</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a19636460e6e006b134f5176c27e5bb29" name="a19636460e6e006b134f5176c27e5bb29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19636460e6e006b134f5176c27e5bb29">&#9670;&nbsp;</a></span>NumData</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::NumData</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00509">509</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="abe2115bebbfe5b1b9959a028aa52190a" name="abe2115bebbfe5b1b9959a028aa52190a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe2115bebbfe5b1b9959a028aa52190a">&#9670;&nbsp;</a></span>NumPts</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::NumPts</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00509">509</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="afdc90dad1b49c48160030f169d8d4f14" name="afdc90dad1b49c48160030f169d8d4f14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afdc90dad1b49c48160030f169d8d4f14">&#9670;&nbsp;</a></span>t0</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">double <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::t0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00507">507</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="ad02cda3f1919e1129962c6662b4cdf3d" name="ad02cda3f1919e1129962c6662b4cdf3d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad02cda3f1919e1129962c6662b4cdf3d">&#9670;&nbsp;</a></span>t1</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">double <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::t1</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00507">507</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a44415cfa038583cad419ef786c0c8f77" name="a44415cfa038583cad419ef786c0c8f77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a44415cfa038583cad419ef786c0c8f77">&#9670;&nbsp;</a></span>ts</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;std::size_t K, std::ranges::range Rs, std::ranges::range Rg&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Rs <a class="el" href="structsmooth_1_1fit__bspline__objective.html">smooth::fit_bspline_objective</a>&lt; K, Rs, Rg &gt;::ts</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00504">504</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fit_8hpp_source.html#l00533">533</a> of file <a class="el" href="fit_8hpp_source.html">fit.hpp</a>.</p>
 
 </div>
 </div>

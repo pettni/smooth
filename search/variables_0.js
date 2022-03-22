@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['bundlesize_0',['BundleSize',['../classsmooth_1_1BundleBase.html#a760f0e7da240f30e0de877424060e318',1,'smooth::BundleBase']]]
+  ['ad_5fsparse_5fpattern_0',['ad_sparse_pattern',['../lie__group__sparse_8hpp.html#a9d79dbf107de8a378de7c57b7899269b',1,'smooth']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['impl_0',['Impl',['../classsmooth_1_1LieGroupBase.html#a55f732e687efa0c2b44c3174f1e620fb',1,'smooth::LieGroupBase']]]
+  ['g_0',['G',['../structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b',1,'smooth::fit_bspline_objective']]]
 ];

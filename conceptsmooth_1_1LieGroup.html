@@ -93,6 +93,8 @@ $(function() {
 <div class="line">  </div>
 <div class="line">  {<a class="code hl_struct" href="structsmooth_1_1traits_1_1lie.html">traits::lie&lt;G&gt;::Dof</a>}-&gt;std::convertible_to&lt;Eigen::Index&gt;;</div>
 <div class="line">  </div>
+<div class="line">  {traits::lie&lt;G&gt;::IsCommutative}-&gt;std::convertible_to&lt;<span class="keywordtype">bool</span>&gt;;</div>
+<div class="line">  </div>
 <div class="line">  {traits::lie&lt;G&gt;::Identity(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> traits::lie&lt;G&gt;::PlainObject&gt;;</div>
 <div class="line">  </div>
 <div class="line">  {traits::lie&lt;G&gt;::Random(dof)}-&gt;std::convertible_to&lt;<span class="keyword">typename</span> traits::lie&lt;G&gt;::PlainObject&gt;;</div>
@@ -122,6 +124,10 @@ $(function() {
 <div class="line">  {traits::lie&lt;G&gt;::dr_exp(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof, traits::lie&lt;G&gt;::Dof&gt;&gt;;</div>
 <div class="line">  </div>
 <div class="line">  {traits::lie&lt;G&gt;::dr_expinv(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof, traits::lie&lt;G&gt;::Dof&gt;&gt;;</div>
+<div class="line">  </div>
+<div class="line">  {traits::lie&lt;G&gt;::d2r_exp(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof, (traits::lie&lt;G&gt;::Dof &gt; 0 ? traits::lie&lt;G&gt;::Dof * traits::lie&lt;G&gt;::Dof : -1)&gt;&gt;;</div>
+<div class="line">  </div>
+<div class="line">  {traits::lie&lt;G&gt;::d2r_expinv(a)}-&gt;std::convertible_to&lt;Eigen::Matrix&lt;typename traits::lie&lt;G&gt;::Scalar, traits::lie&lt;G&gt;::Dof, (traits::lie&lt;G&gt;::Dof &gt; 0 ? traits::lie&lt;G&gt;::Dof * traits::lie&lt;G&gt;::Dof : -1)&gt;&gt;;</div>
 <div class="line">} &amp;&amp; (</div>
 <div class="line">  </div>
 <div class="line">  !std::is_convertible_v&lt;typename traits::lie&lt;G&gt;::Scalar, <span class="keywordtype">double</span>&gt; ||</div>
@@ -140,7 +146,7 @@ $(function() {
 <div class="line"> </div>
 <div class="line">std::is_assignable_v&lt;<span class="keyword">typename</span> traits::lie&lt;G&gt;::PlainObject &amp;, G&gt;</div>
 <div class="ttc" id="aconceptsmooth_1_1LieGroup_html"><div class="ttname"><a href="conceptsmooth_1_1LieGroup.html">smooth::LieGroup</a></div><div class="ttdoc">Class-external Lie group interface defined through the traits::lie trait class.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00057">lie_group.hpp:57</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_a9dfb3e1e148ba2880a7e96726c9e7bc2"><div class="ttname"><a href="manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2">smooth::dof</a></div><div class="ttdeci">Eigen::Index dof(const M &amp;m)</div><div class="ttdoc">Manifold degrees of freedom (tangent space dimension)</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00265">manifold.hpp:265</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_a9dfb3e1e148ba2880a7e96726c9e7bc2"><div class="ttname"><a href="manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2">smooth::dof</a></div><div class="ttdeci">Eigen::Index dof(const M &amp;m)</div><div class="ttdoc">Manifold degrees of freedom (tangent space dimension)</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00271">manifold.hpp:271</a></div></div>
 <div class="ttc" id="astructsmooth_1_1traits_1_1lie_html"><div class="ttname"><a href="structsmooth_1_1traits_1_1lie.html">smooth::traits::lie</a></div><div class="ttdoc">Trait class for making a class a LieGroup instance via specialization.</div><div class="ttdef"><b>Definition:</b> <a href="lie__group_8hpp_source.html#l00047">lie_group.hpp:47</a></div></div>
 </div><!-- fragment --><a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Class-external Lie group interface defined through the traits::lie trait class. </p>
