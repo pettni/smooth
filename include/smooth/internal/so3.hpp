@@ -64,6 +64,7 @@ public:
   static constexpr Eigen::Index RepSize = 4;
   static constexpr Eigen::Index Dim     = 3;
   static constexpr Eigen::Index Dof     = 3;
+  static constexpr bool IsCommutative   = false;
 
   SMOOTH_DEFINE_REFS;
 
@@ -208,6 +209,102 @@ public:
     TangentMap ad_a;
     ad(a_in, ad_a);
     A_out.noalias() = TangentMap::Identity() + ad_a / Scalar(2) + A * ad_a * ad_a;
+  }
+
+  static void d2r_exp(TRefIn a_in, THessRefOut H_out)
+  {
+    const auto [A, B, dA_over_th, dB_over_th] = [&]() -> std::array<Scalar, 4> {
+      using std::sqrt;
+
+      const Scalar th2 = a_in.squaredNorm();
+      const Scalar th  = sqrt(th2);
+
+      if (th2 < Scalar(eps2)) {
+        return {
+          Scalar(0.5) - th2 / 24,
+          Scalar(1. / 6) - th2 / 120,
+          -Scalar(1) / 48,
+          -Scalar(1) / 60,
+        };
+      } else {
+        const Scalar sTh = sin(th);
+        const Scalar cTh = cos(th);
+        const Scalar th3 = th2 * th;
+        const Scalar th4 = th2 * th2;
+        const Scalar th5 = th3 * th2;
+        return {
+          (Scalar(1) - cTh) / th2,
+          (th - sTh) / th3,
+          sTh / th3 + 2 * cTh / th4 - 2 / th4,
+          -cTh / th4 - 2 / th4 + 3 * sTh / th5,
+        };
+      }
+    }();
+
+    // -A * d(ad) + B * d(ad^2)
+    // clang-format off
+    H_out <<
+      0., -2 * B * a_in.y(), -2 * B * a_in.z(), B * a_in.y(), B * a_in.x(), -A, B * a_in.z(), A, B * a_in.x(),
+      B * a_in.y(), B * a_in.x(), A, -2 * B * a_in.x(), 0., -2 * B * a_in.z(), -A, B * a_in.z(), B * a_in.y(),
+      B * a_in.z(), -A, B * a_in.x(), A, B * a_in.z(), B * a_in.y(), -2 * B * a_in.x(), -2 * B * a_in.y(), 0.;
+    // clang-format on
+
+    // add -dA * ad + dB * ad^2
+    Eigen::Matrix3<Scalar> ad_a;
+    ad(a_in, ad_a);
+    const Eigen::Matrix3<Scalar> ad_a2 = ad_a * ad_a;
+
+    for (auto i = 0u; i < 3; ++i) {
+      const Scalar dA_dxi = dA_over_th * a_in(i);
+      const Scalar dB_dxi = dB_over_th * a_in(i);
+      for (auto j = 0u; j < 3; ++j) {
+        H_out.col(i + 3 * j) -= dA_dxi * ad_a.row(j).transpose();
+        H_out.col(i + 3 * j) += dB_dxi * ad_a2.row(j).transpose();
+      }
+    }
+  }
+
+  static void d2r_expinv(TRefIn a_in, THessRefOut H_out)
+  {
+    const auto [A, dA_over_th] = [&]() -> std::array<Scalar, 2> {
+      using std::sqrt;
+
+      const Scalar th2 = a_in.squaredNorm();
+      const Scalar th  = sqrt(th2);
+      if (th2 < Scalar(eps2)) {
+        return {
+          Scalar(1) / Scalar(12) + th2 / Scalar(720),
+          Scalar(1) / Scalar(360),
+        };
+      } else {
+        const Scalar th3 = th2 * th;
+        const Scalar th4 = th2 * th2;
+        const Scalar sTh = sin(th);
+        const Scalar cTh = cos(th);
+        return {
+          Scalar(1) / th2 - (Scalar(1) + cTh) / (Scalar(2) * th * sTh),
+          1 / (2 * th2) + cTh * cTh / (2 * th2 * sTh * sTh) + cTh / (2 * th2 * sTh * sTh)
+            + cTh / (2 * th3 * sTh) + 1 / (2 * th3 * sTh) - 2 / th4,
+        };
+      }
+    }();
+
+    // A * d(ad^2)
+    // clang-format off
+    H_out <<
+      0, -2 * A * a_in.y(), -2 * A * a_in.z(), A * a_in.y(), A * a_in.x(), 0.5, A * a_in.z(), -0.5, A * a_in.x(),
+      A * a_in.y(), A * a_in.x(), -0.5, -2 * A * a_in.x(), 0, -2 * A * a_in.z(), 0.5, A * a_in.z(), A * a_in.y(),
+      A * a_in.z(), 0.5, A * a_in.x(), -0.5, A * a_in.z(), A * a_in.y(), -2 * A * a_in.x(), -2 * A * a_in.y(), 0;
+    // clang-format on
+
+    // add dA * ad^2
+    Eigen::Matrix3<Scalar> ad_a;
+    ad(a_in, ad_a);
+    const Eigen::Matrix3<Scalar> ad_a2 = ad_a * ad_a;
+    for (auto i = 0u; i < 3; ++i) {
+      const Scalar dA_dxi = dA_over_th * a_in(i);
+      for (auto j = 0u; j < 3; ++j) { H_out.col(i + 3 * j) += dA_dxi * ad_a2.row(j).transpose(); }
+    }
   }
 };
 

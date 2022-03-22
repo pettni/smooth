@@ -62,6 +62,7 @@ struct TnImpl
   static constexpr Eigen::Index Dim     = N + 1;
   static constexpr Eigen::Index Dof     = N;
   static constexpr Eigen::Index RepSize = N;
+  static constexpr bool IsCommutative   = true;
 
   SMOOTH_DEFINE_REFS;
 
@@ -80,8 +81,6 @@ struct TnImpl
 
   static void log(GRefIn g_in, TRefOut a_out) { a_out = g_in; }
 
-  static void Ad(GRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
-
   static void exp(TRefIn a_in, GRefOut g_out) { g_out = a_in; }
 
   static void hat(TRefIn a_in, MRefOut A_out)
@@ -93,10 +92,6 @@ struct TnImpl
   static void vee(MRefIn A_in, TRefOut a_out) { a_out = A_in.template topRightCorner<N, 1>(); }
 
   static void ad(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
-
-  static void dr_exp(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
-
-  static void dr_expinv(TRefIn, TMapRefOut A_out) { A_out.setIdentity(); }
 };
 
 }  // namespace smooth

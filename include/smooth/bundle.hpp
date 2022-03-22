@@ -86,10 +86,22 @@ public:
   static constexpr Eigen::Index BundleSize = Impl::BundleSize;
 
   /**
-   * @brief Type of element in Bundle.
+   * @brief Part type.
    */
   template<std::size_t Idx>
   using PartType = typename liebase_info<_Derived>::template PartPlainObject<Idx>;
+
+  /**
+   * @brief Part starting index (degrees of freedom).
+   */
+  template<std::size_t Idx>
+  static constexpr std::size_t PartStart = Impl::DofsPsum[Idx];
+
+  /**
+   * @brief Part degrees of freedom.
+   */
+  template<std::size_t Idx>
+  static constexpr std::size_t PartDof = Impl::Dofs[Idx];
 
   /**
    * @brief Access part no Idx of Bundle.

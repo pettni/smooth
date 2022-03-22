@@ -67,6 +67,7 @@ public:
   static constexpr Eigen::Index RepSize = 4;
   static constexpr Eigen::Index Dim     = 3;
   static constexpr Eigen::Index Dof     = 3;
+  static constexpr bool IsCommutative   = false;
 
   SMOOTH_DEFINE_REFS;
 
@@ -193,7 +194,6 @@ public:
 
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)
   {
-    using TangentMap = Eigen::Matrix<Scalar, 3, 3>;
     using std::sin, std::cos;
 
     const Scalar th2 = a_in.z() * a_in.z();
@@ -215,14 +215,13 @@ public:
       }
     }();
 
-    TangentMap ad_a;
+    Eigen::Matrix3<Scalar> ad_a;
     ad(a_in, ad_a);
-    A_out = TangentMap::Identity() - A * ad_a + B * ad_a * ad_a;
+    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() - A * ad_a + B * ad_a * ad_a;
   }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
   {
-    using TangentMap = Eigen::Matrix<Scalar, 3, 3>;
     using std::sin, std::cos;
 
     const Scalar th  = a_in.z();
@@ -237,9 +236,96 @@ public:
       }
     }();
 
-    TangentMap ad_a;
+    Eigen::Matrix3<Scalar> ad_a;
     ad(a_in, ad_a);
-    A_out = TangentMap::Identity() + ad_a / 2 + A * ad_a * ad_a;
+    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() + ad_a / 2 + A * ad_a * ad_a;
+  }
+
+  static void d2r_exp(TRefIn a_in, THessRefOut H_out)
+  {
+    const auto [A, B, dA_dwz, dB_dwz] = [&]() -> std::array<Scalar, 4> {
+      const Scalar wz  = a_in.z();
+      const Scalar wz2 = wz * wz;
+
+      if (wz2 < Scalar(eps2)) {
+        return {
+          Scalar(0.5) - wz2 / 24,
+          Scalar(1. / 6) - wz2 / 120,
+          -wz / 48,
+          -wz / 60,
+        };
+      } else {
+        const Scalar sTh = sin(wz);
+        const Scalar cTh = cos(wz);
+        const Scalar wz3 = wz2 * wz;
+        const Scalar wz4 = wz2 * wz2;
+        return {
+          (Scalar(1) - cTh) / wz2,
+          (wz - sTh) / wz3,
+          sTh / wz2 + 2 * cTh / wz3 - 2 / wz3,
+          -cTh / wz3 - 2 / wz3 + 3 * sTh / wz4,
+        };
+      }
+    }();
+
+    // -A * d(ad) + B * d(ad^2)
+    // clang-format off
+    H_out <<
+      0, 0, -2*B*a_in.z(), 0, 0, -A, 0, 0, 0,
+      0, 0, A, 0, 0, -2*B*a_in.z(), 0, 0, 0 ,
+      B*a_in.z(), -A, B*a_in.x(), A, B*a_in.z(), B*a_in.y(), 0, 0, 0;
+    // clang-format on
+
+    // add -dA * ad + dB * ad^2
+    Eigen::Matrix3<Scalar> ad_a;
+    ad(a_in, ad_a);
+    const Eigen::Matrix3<Scalar> ad_a2 = ad_a * ad_a;
+
+    for (auto j = 0u; j < 3; ++j) {
+      H_out.col(2 + 3 * j).noalias() -= dA_dwz * ad_a.row(j).transpose();
+      H_out.col(2 + 3 * j).noalias() += dB_dwz * ad_a2.row(j).transpose();
+    }
+  }
+
+  static void d2r_expinv(TRefIn a_in, THessRefOut H_out)
+  {
+    const auto [A, dA_dwz] = [&]() -> std::array<Scalar, 2> {
+      const Scalar wz  = a_in.z();
+      const Scalar wz2 = wz * wz;
+
+      if (wz2 < Scalar(eps2)) {
+        return {
+          Scalar(1) / Scalar(12) + wz2 / Scalar(720),
+          Scalar(1) / Scalar(360),
+        };
+      } else {
+        const Scalar sTh = sin(wz);
+        const Scalar cTh = cos(wz);
+        const Scalar wz3 = wz2 * wz;
+        return {
+          Scalar(1) / wz2 - (Scalar(1) + cTh) / (Scalar(2) * wz * sTh),
+          1 / (2 * wz) + cTh * cTh / (2 * wz * sTh * sTh) + cTh / (2 * wz * sTh * sTh)
+            + cTh / (2 * wz2 * sTh) + 1 / (2 * wz2 * sTh) - 2 / wz3,
+        };
+      }
+    }();
+
+    // -A * d(ad) + B * d(ad^2)
+    // clang-format off
+    H_out <<
+      0, 0, -2*A*a_in.z(), 0, 0, 0.5, 0, 0, 0,
+      0, 0, -0.5, 0, 0, -2*A*a_in.z(), 0, 0, 0,
+      A*a_in.z(), 0.5, A*a_in.x(), -0.5, A*a_in.z(), A*a_in.y(), 0, 0, 0;
+    // clang-format on
+
+    // add -dA * ad + dB * ad^2
+    Eigen::Matrix3<Scalar> ad_a;
+    ad(a_in, ad_a);
+    const Eigen::Matrix3<Scalar> ad_a2 = ad_a * ad_a;
+
+    for (auto j = 0u; j < 3; ++j) {
+      H_out.col(2 + 3 * j).noalias() += dA_dwz * ad_a2.row(j).transpose();
+    }
   }
 };
 

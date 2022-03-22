@@ -39,13 +39,15 @@ struct smooth::traits::lie<MyGroup<_Scalar>>
   template<typename NewScalar>
   using CastT = MyGroup<NewScalar>;
 
-  static constexpr int Dof = 1;
-  static constexpr int Dim = 2;
+  static constexpr int Dof            = 1;
+  static constexpr int Dim            = 2;
+  static constexpr bool IsCommutative = false;
 
 private:
   using Matrix     = Eigen::Matrix<Scalar, Dim, Dim>;
   using Tangent    = Eigen::Matrix<Scalar, Dof, 1>;
   using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
+  using Hessian    = Eigen::Matrix<Scalar, Dof, Dof * Dof>;
 
 public:
   // group interface
@@ -116,5 +118,15 @@ public:
   static TangentMap dr_expinv(const Eigen::MatrixBase<Derived> &)
   {
     return TangentMap::Identity();
+  }
+  template<typename Derived>
+  static TangentMap d2r_exp(const Eigen::MatrixBase<Derived> &)
+  {
+    return Hessian::Zero();
+  }
+  template<typename Derived>
+  static TangentMap d2r_expinv(const Eigen::MatrixBase<Derived> &)
+  {
+    return Hessian::Zero();
   }
 };

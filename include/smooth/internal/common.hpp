@@ -40,6 +40,8 @@ static constexpr double eps2 = 1e-8;
   using TMapRefIn  = const Eigen::Ref<const Eigen::Matrix<Scalar, Dof, Dof>> &; \
   using TMapRefOut = Eigen::Ref<Eigen::Matrix<Scalar, Dof, Dof>>;               \
                                                                                 \
+  using THessRefOut = Eigen::Ref<Eigen::Matrix<Scalar, Dof, Dof * Dof>>;        \
+                                                                                \
   using MRefIn  = const Eigen::Ref<const Eigen::Matrix<Scalar, Dim, Dim>> &;    \
   using MRefOut = Eigen::Ref<Eigen::Matrix<Scalar, Dim, Dim>>;                  \
                                                                                 \

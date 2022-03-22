@@ -159,8 +159,6 @@ Spline<2, double> reparameterize_spline(
       v2max(i) = v2opt;
     } else if (status == lp2d::Status::DualInfeasible) {
       v2max(i) = inf;
-    } else {
-      assert(false);
     }
   }
 

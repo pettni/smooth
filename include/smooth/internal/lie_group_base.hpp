@@ -71,6 +71,8 @@ public:
   static constexpr Eigen::Index Dof = Impl::Dof;
   //! Side of Lie group matrix representation.
   static constexpr Eigen::Index Dim = Impl::Dim;
+  //! Commutativity of group. A commutative group has a zero Lie bracket.
+  static constexpr bool IsCommutative = Impl::IsCommutative;
 
   //! Scalar type
   using Scalar = typename traits::Scalar;
@@ -80,6 +82,8 @@ public:
   using Tangent = Eigen::Matrix<Scalar, Dof, 1>;
   //! Matrix representing map between tangent elements
   using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
+  //! Plain return type with different scalar
+  using Hessian = Eigen::Matrix<Scalar, Dof, Dof * Dof>;
   //! Plain return type with different scalar
   template<typename NewScalar>
   using CastT = typename traits::template PlainObject<NewScalar>;
@@ -226,9 +230,13 @@ public:
    */
   TangentMap Ad() const noexcept
   {
-    TangentMap ret;
-    Impl::Ad(cderived().coeffs(), ret);
-    return ret;
+    if constexpr (IsCommutative) {
+      return TangentMap::Identity();
+    } else {
+      TangentMap ret;
+      Impl::Ad(cderived().coeffs(), ret);
+      return ret;
+    }
   }
 
   /**
@@ -327,9 +335,13 @@ public:
   template<typename TangentDerived>
   static TangentMap ad(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
-    TangentMap ret;
-    Impl::ad(a, ret);
-    return ret;
+    if constexpr (IsCommutative) {
+      return TangentMap::Zero();
+    } else {
+      TangentMap ret;
+      Impl::ad(a, ret);
+      return ret;
+    }
   }
 
   /**
@@ -344,8 +356,13 @@ public:
     const Eigen::MatrixBase<TangentDerived1> & a,
     const Eigen::MatrixBase<TangentDerived2> & b) noexcept
   {
-    return ad(a) * b;
+    if constexpr (IsCommutative) {
+      return Tangent::Zero();
+    } else {
+      return ad(a) * b;
+    }
   }
+
   /**
    * @brief Right jacobian of the exponential map.
    *
@@ -354,9 +371,13 @@ public:
   template<typename TangentDerived>
   static TangentMap dr_exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
-    TangentMap ret;
-    Impl::dr_exp(a, ret);
-    return ret;
+    if constexpr (IsCommutative) {
+      return TangentMap::Identity();
+    } else {
+      TangentMap ret;
+      Impl::dr_exp(a, ret);
+      return ret;
+    }
   }
 
   /**
@@ -367,9 +388,13 @@ public:
   template<typename TangentDerived>
   static TangentMap dr_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
-    TangentMap ret;
-    Impl::dr_expinv(a, ret);
-    return ret;
+    if constexpr (IsCommutative) {
+      return TangentMap::Identity();
+    } else {
+      TangentMap ret;
+      Impl::dr_expinv(a, ret);
+      return ret;
+    }
   }
 
   /**
@@ -392,6 +417,64 @@ public:
   static TangentMap dl_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
   {
     return dr_expinv(-a);
+  }
+
+  /**
+   * @brief Right Hessian of the exponential map.
+   *
+   * @return \f$ \mathrm{d}^{2r} \exp_{aa} \f$ on Horizontally stacked Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2r_exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    if constexpr (IsCommutative) {
+      return Hessian::Zero();
+    } else {
+      Hessian ret;
+      Impl::d2r_exp(a, ret);
+      return ret;
+    }
+  }
+
+  /**
+   * @brief Right Hessian of the log map.
+   *
+   * @return \f$ \left( \mathrm{d}^r \left( \mathrm{d}^r \exp_a \right)^{-1} \right)_a \f$ on
+   * horizontally stakced Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2r_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    if constexpr (IsCommutative) {
+      return Hessian::Zero();
+    } else {
+      Hessian ret;
+      Impl::d2r_expinv(a, ret);
+      return ret;
+    }
+  }
+
+  /**
+   * @brief Left Hessian of the exponential map.
+   *
+   * @return \f$ \mathrm{d}^{2l} \exp_{aa} \f$ on horizontally stacked Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2l_exp(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    return -d2r_exp(-a);
+  }
+
+  /**
+   * @brief Left Hessian of the log map.
+   *
+   * @return \f$ \left( \mathrm{d}^l \left( \mathrm{d}^l \exp_a \right)^{-1} \right)_a \f$ on
+   * horizontally stacked Hessian form.
+   */
+  template<typename TangentDerived>
+  static Hessian d2l_expinv(const Eigen::MatrixBase<TangentDerived> & a) noexcept
+  {
+    return -d2r_expinv(-a);
   }
 };
 

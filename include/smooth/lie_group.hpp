@@ -62,6 +62,8 @@ requires (Eigen::Index dof) {
   typename traits::lie<G>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
   {traits::lie<G>::Dof}->std::convertible_to<Eigen::Index>;
+  // Commutativity
+  {traits::lie<G>::IsCommutative}->std::convertible_to<bool>;
   // Return the identity element (dof = Dof for static size)
   {traits::lie<G>::Identity(dof)}->std::convertible_to<typename traits::lie<G>::PlainObject>;
   // Return a random element (dof = Dof for static size)
@@ -92,6 +94,10 @@ requires(const Eigen::Vector<typename traits::lie<G>::Scalar, traits::lie<G>::Do
   {traits::lie<G>::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
   // Right derivative of the exponential map inverse
   {traits::lie<G>::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
+  // Second right derivative of the exponential map
+  {traits::lie<G>::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>;
+  // Second right derivative of the exponential map inverse
+  {traits::lie<G>::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>;
 } && (
   // Cast to different scalar type
   !std::is_convertible_v<typename traits::lie<G>::Scalar, double> ||
@@ -126,6 +132,7 @@ concept NativeLieGroup = requires
   typename G::Tangent;
   typename G::PlainObject;
   {G::Dof}->std::convertible_to<Eigen::Index>;
+  {G::IsCommutative}->std::convertible_to<bool>;
 } &&
 (!(G::Dof > 0) || requires {
   {G::Identity()}->std::convertible_to<typename G::PlainObject>;
@@ -149,6 +156,8 @@ requires(const Eigen::Vector<typename G::Scalar, G::Dof> & a) {
   {G::exp(a)}->std::convertible_to<typename G::PlainObject>;
   {G::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
   {G::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
+  {G::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
+  {G::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
 };
 
 // clang-format on
@@ -168,18 +177,21 @@ struct lie<G>
   using CastT       = typename G::template CastT<NewScalar>;
   using PlainObject = typename G::PlainObject;
 
-  static constexpr Eigen::Index Dof = G::Dof;
+  static constexpr Eigen::Index Dof   = G::Dof;
+  static constexpr bool IsCommutative = G::IsCommutative;
 
   // group interface
 
-  static inline PlainObject Identity([[maybe_unused]] Eigen::Index dof) {
+  static inline PlainObject Identity([[maybe_unused]] Eigen::Index dof)
+  {
     if constexpr (G::Dof == -1) {
       return G::Identity(dof);
     } else {
       return G::Identity();
     }
   }
-  static inline PlainObject Random([[maybe_unused]] Eigen::Index dof) {
+  static inline PlainObject Random([[maybe_unused]] Eigen::Index dof)
+  {
     if constexpr (G::Dof == -1) {
       return G::Random(dof);
     } else {
@@ -228,6 +240,16 @@ struct lie<G>
   {
     return G::dr_expinv(a);
   }
+  template<typename Derived>
+  static inline typename G::Hessian d2r_exp(const Eigen::MatrixBase<Derived> & a)
+  {
+    return G::d2r_exp(a);
+  }
+  template<typename Derived>
+  static inline typename G::Hessian d2r_expinv(const Eigen::MatrixBase<Derived> & a)
+  {
+    return G::d2r_expinv(a);
+  }
   // \endcond
 };
 
@@ -242,7 +264,8 @@ template<RnType G>
 struct lie<G>
 {
   // \cond
-  static constexpr int Dof = G::SizeAtCompileTime;
+  static constexpr int Dof            = G::SizeAtCompileTime;
+  static constexpr bool IsCommutative = true;
 
   using Scalar      = typename G::Scalar;
   using PlainObject = Eigen::Vector<Scalar, Dof>;
@@ -298,6 +321,20 @@ struct lie<G>
   {
     return Eigen::Matrix<Scalar, Dof, Dof>::Identity(a.size(), a.size());
   }
+  template<typename Derived>
+  static inline Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>
+  d2r_exp(const Eigen::MatrixBase<Derived> & a)
+  {
+    return Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>::Zero(
+      a.size(), a.size() * a.size());
+  }
+  template<typename Derived>
+  static inline Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>
+  d2r_expinv(const Eigen::MatrixBase<Derived> & a)
+  {
+    return Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>::Zero(
+      a.size(), a.size() * a.size());
+  }
   // \endcond
 };
 
@@ -317,7 +354,8 @@ struct lie<G>
   template<typename NewScalar>
   using CastT = NewScalar;
 
-  static constexpr int Dof = 1;
+  static constexpr int Dof            = 1;
+  static constexpr bool IsCommutative = true;
 
   // group interface
 
@@ -363,6 +401,16 @@ struct lie<G>
   static inline Eigen::Matrix<Scalar, 1, 1> dr_expinv(const Eigen::MatrixBase<Derived> &)
   {
     return Eigen::Matrix<Scalar, 1, 1>::Identity();
+  }
+  template<typename Derived>
+  static inline Eigen::Matrix<Scalar, 1, 1> d2r_exp(const Eigen::MatrixBase<Derived> &)
+  {
+    return Eigen::Matrix<Scalar, 1, 1>::Zero();
+  }
+  template<typename Derived>
+  static inline Eigen::Matrix<Scalar, 1, 1> d2r_expinv(const Eigen::MatrixBase<Derived> &)
+  {
+    return Eigen::Matrix<Scalar, 1, 1>::Zero();
   }
   // \endcond
 };
@@ -414,13 +462,19 @@ struct man<G>
 
 // Group interface
 
+template<LieGroup G>
+static constexpr bool IsCommutative = traits::lie<G>::IsCommutative;
+
 /**
  * @brief Identity in Lie group
  *
  * @param dof degrees of freedom
  */
 template<LieGroup G>
-inline PlainObject<G> Identity(Eigen::Index dof) { return traits::lie<G>::Identity(dof); }
+inline PlainObject<G> Identity(Eigen::Index dof)
+{
+  return traits::lie<G>::Identity(dof);
+}
 
 /**
  * @brief Identity in Lie group with static Dof
@@ -435,7 +489,10 @@ inline PlainObject<G> Identity() { return traits::lie<G>::Identity(Dof<G>); }
  * @param dof degrees of freedom
  */
 template<LieGroup G>
-inline PlainObject<G> Random(Eigen::Index dof) { return traits::lie<G>::Random(dof); }
+inline PlainObject<G> Random(Eigen::Index dof)
+{
+  return traits::lie<G>::Random(dof);
+}
 
 /**
  * @brief Random element in Lie group with static Dof
@@ -527,7 +584,7 @@ inline PlainObject<G> exp(Arg && a)
 }
 
 /**
- * @brief Right derivative of exponential map
+ * @brief Right Jacobian of exponential map
  */
 template<LieGroup G, typename Arg>
 inline TangentMap<G> dr_exp(Arg && a)
@@ -536,12 +593,30 @@ inline TangentMap<G> dr_exp(Arg && a)
 }
 
 /**
- * @brief Right derivative of exponential map inverse
+ * @brief Right Jacobian of exponential map inverse
  */
 template<LieGroup G, typename Arg>
 inline TangentMap<G> dr_expinv(Arg && a)
 {
   return traits::lie<G>::dr_expinv(std::forward<Arg>(a));
+}
+
+/**
+ * @brief Right Hessian of exponential map
+ */
+template<LieGroup G, typename Arg>
+inline Hessian<G> d2r_exp(Arg && a)
+{
+  return traits::lie<G>::d2r_exp(std::forward<Arg>(a));
+}
+
+/**
+ * @brief Right Hessian of exponential map inverse
+ */
+template<LieGroup G, typename Arg>
+inline Hessian<G> d2r_expinv(Arg && a)
+{
+  return traits::lie<G>::d2r_expinv(std::forward<Arg>(a));
 }
 
 // Convenience methods
@@ -565,7 +640,7 @@ inline Tangent<G> lminus(const G & g1, const Go & g2)
 }
 
 /**
- * @brief Left derivative of exponential map
+ * @brief Left Jacobian of exponential map
  */
 template<LieGroup G, typename Derived>
 inline TangentMap<G> dl_exp(const Eigen::MatrixBase<Derived> & a)
@@ -574,12 +649,30 @@ inline TangentMap<G> dl_exp(const Eigen::MatrixBase<Derived> & a)
 }
 
 /**
- * @brief Left derivative of exponential map inverse
+ * @brief Left Jacobian of exponential map inverse
  */
 template<LieGroup G, typename Derived>
 inline TangentMap<G> dl_expinv(const Eigen::MatrixBase<Derived> & a)
 {
   return dr_expinv<G>(-a);
+}
+
+/**
+ * @brief Left Hessian of exponential map
+ */
+template<LieGroup G, typename Derived>
+inline Hessian<G> d2l_exp(const Eigen::MatrixBase<Derived> & a)
+{
+  return -d2r_exp<G>(-a);
+}
+
+/**
+ * @brief Left Hessian of exponential map inverse
+ */
+template<LieGroup G, typename Derived>
+inline Hessian<G> d2l_expinv(const Eigen::MatrixBase<Derived> & a)
+{
+  return -d2r_expinv<G>(-a);
 }
 
 }  // namespace smooth

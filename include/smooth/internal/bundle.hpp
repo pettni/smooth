@@ -69,6 +69,7 @@ struct BundleImpl
   static constexpr Eigen::Index RepSize = RepSizesPsum.back();
   static constexpr Eigen::Index Dof     = DofsPsum.back();
   static constexpr Eigen::Index Dim     = DimsPsum.back();
+  static constexpr bool IsCommutative   = (GsImpl::IsCommutative && ...);
 
   SMOOTH_DEFINE_REFS;
 
@@ -138,10 +139,14 @@ struct BundleImpl
   {
     A_out.setZero();
     smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
-      PartImpl<i>::Ad(
-        g_in.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
-        A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-      );
+      if constexpr (!PartImpl<i>::IsCommutative) {
+        PartImpl<i>::Ad(
+          g_in.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
+          A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
+        );
+      } else {
+        A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum)).setIdentity();
+      }
     });
   }
 
@@ -179,30 +184,70 @@ struct BundleImpl
   static void ad(TRefIn a_in, TMapRefOut A_out) {
     A_out.setZero();
     smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
-      PartImpl<i>::ad(
-        a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
-        A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-      );
+      if constexpr (!PartImpl<i>::IsCommutative) {
+        PartImpl<i>::ad(
+          a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
+          A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
+        );
+      }
     });
   }
 
   static void dr_exp(TRefIn a_in, TMapRefOut A_out) {
     A_out.setZero();
     smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
-      PartImpl<i>::dr_exp(
-        a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
-        A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-      );
+      if constexpr (!PartImpl<i>::IsCommutative) {
+        PartImpl<i>::dr_exp(
+          a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
+          A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
+        );
+      } else {
+          A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum)).setIdentity();
+      }
     });
   }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out) {
     A_out.setZero();
     smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
-      PartImpl<i>::dr_expinv(
-        a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
-        A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-      );
+      if constexpr (!PartImpl<i>::IsCommutative) {
+        PartImpl<i>::dr_expinv(
+          a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
+          A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
+        );
+      } else {
+        A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum)).setIdentity();
+      }
+    });
+  }
+
+  static void d2r_exp(TRefIn a_in, THessRefOut H_out) {
+    H_out.setZero();
+    smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
+      if constexpr (!PartImpl<i>::IsCommutative) {
+        static constexpr auto Bi = get<i>(DofsPsum);  // block start
+        static constexpr auto Di = get<i>(Dofs);  // block size
+        Eigen::Matrix<Scalar, Di, Di * Di> Hi;
+        PartImpl<i>::d2r_exp(a_in.template segment<Di>(Bi), Hi);
+        for (auto j = 0u; j < Di; ++j) {
+          H_out.template block<Di, Di>(Bi, Dof * (Bi + j) + Bi) = Hi.template middleCols<Di>(Di * j);
+        }
+      }
+    });
+  }
+
+  static void d2r_expinv(TRefIn a_in, THessRefOut H_out) {
+    H_out.setZero();
+    smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
+      if constexpr (!PartImpl<i>::IsCommutative) {
+        static constexpr auto Bi = get<i>(DofsPsum);  // block start
+        static constexpr auto Di = get<i>(Dofs);  // block size
+        Eigen::Matrix<Scalar, Di, Di * Di> Hi;
+        PartImpl<i>::d2r_expinv(a_in.template segment<Di>(Bi), Hi);
+        for (auto j = 0u; j < Di; ++j) {
+          H_out.template block<Di, Di>(Bi, Dof * (Bi + j) + Bi) = Hi.template middleCols<Di>(Di * j);
+        }
+      }
     });
   }
 

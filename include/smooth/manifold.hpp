@@ -238,6 +238,12 @@ using Tangent = Eigen::Vector<Scalar<M>, Dof<M>>;
 template<Manifold M>
 using TangentMap = Eigen::Matrix<Scalar<M>, Dof<M>, Dof<M>>;
 
+/**
+ * @brief Matrix of size Dof x Dof*Dof
+ */
+template<Manifold M>
+using Hessian = Eigen::Matrix<Scalar<M>, Dof<M>, (Dof<M> > 0 ? Dof<M> * Dof<M> : -1)>;
+
 // Functions
 
 /**
