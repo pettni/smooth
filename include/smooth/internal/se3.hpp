@@ -29,7 +29,7 @@
 #include <Eigen/Core>
 
 #include "common.hpp"
-#include "smooth/diff.hpp"
+#include "smooth/derivatives.hpp"
 #include "so3.hpp"
 
 namespace smooth {
@@ -389,8 +389,8 @@ public:
     }
 
     const Eigen::Matrix3<Scalar> Jtmp       = Jso3 * Q;
-    const Eigen::Matrix<Scalar, 3, 18> Htmp = diff::matrix_product(Jso3, Hso3_exp, Q, dQ);
-    H_out.template block<3, 18>(3, 0)       = -diff::matrix_product(Jtmp, Htmp, Jso3, Hso3_exp);
+    const Eigen::Matrix<Scalar, 3, 18> Htmp = d_matrix_product(Jso3, Hso3_exp, Q, dQ);
+    H_out.template block<3, 18>(3, 0)       = -d_matrix_product(Jtmp, Htmp, Jso3, Hso3_exp);
   }
 };
 

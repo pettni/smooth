@@ -499,8 +499,10 @@ auto fit_spline_cubic(std::ranges::range auto && ts, std::ranges::range auto && 
 template<std::size_t K, std::ranges::range Rs, std::ranges::range Rg>
 struct fit_bspline_objective
 {
+  /// @brief LIe group
   using G = std::ranges::range_value_t<Rg>;
 
+  // \cond
   Rs ts;
   Rg gs;
 
@@ -511,7 +513,9 @@ struct fit_bspline_objective
   static constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
   inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M =
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(M_s[0].data());
+  // \endcond
 
+  /// @brief Constructor
   fit_bspline_objective(
     std::ranges::range auto && tsin, std::ranges::range auto && gsin, double dtin)
       : ts(std::forward<decltype(tsin)>(tsin)), gs(std::forward<decltype(gsin)>(gsin)), dt(dtin)
@@ -525,6 +529,7 @@ struct fit_bspline_objective
     NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
   }
 
+  /// @brief Objective function
   Eigen::VectorXd operator()(const ManifoldVector<G> & var) const
   {
     using namespace std::views;
@@ -544,6 +549,7 @@ struct fit_bspline_objective
     return ret;
   }
 
+  /// @brief Analytic Jacobian
   Eigen::SparseMatrix<double> jacobian(const ManifoldVector<G> & var) const
   {
     using namespace std::views;

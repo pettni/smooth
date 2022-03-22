@@ -31,6 +31,23 @@
 #include "internal/utils.hpp"
 #include "lie_group.hpp"
 
+/**
+ * @file
+ * @brief Sparse versions of certain Lie group methods.
+ *
+ * Implemented methods contain two parts: a pattern and the function itself. The pattern is in the
+ * form of an inline sparse matrix variable that is pre-allocated with the appropriate nonzeros.
+ *
+ * The intended usage pattern is to copy a pattern and use the resulting variable in calls to these
+ * methods. That way no additional  allocation is needed.
+ *
+ * Example:
+ * @code
+ * auto my_var = ad_sparse_pattern;  // copy pattern
+ * ad_sparse(my_var, a);             // update my_var in-place without allocation
+ * @endcode
+ */
+
 namespace smooth {
 
 /// @brief Forward-declare
@@ -72,7 +89,7 @@ inline std::array<Eigen::SparseMatrix<Scalar<G>>, Dof<G>> generators_sparse =
 }();
 
 /**
- * @brief Sparsity pattern of ad (inline variable).
+ * @brief Sparsity pattern of ad_sparse (inline variable).
  */
 template<LieGroup G>
 inline Eigen::SparseMatrix<Scalar<G>> ad_sparse_pattern = [] {
@@ -88,10 +105,12 @@ inline Eigen::SparseMatrix<Scalar<G>> ad_sparse_pattern = [] {
 /**
  * @brief Sparse ad.
  *
- * @param[in, out] sp pre-allocated and compressed sparse matrix
+ * @param[in, out] sp allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
  *
- * @see ad_sparse_pattern for a pre-allocated pattern.
+ * @warning sp must be pre-allocated with the appropriate nonzeros and compressed
+ *
+ * @see ad_sparse_pattern() for a pre-allocated pattern.
  */
 template<LieGroup G>
 inline void ad_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a)
@@ -103,7 +122,7 @@ inline void ad_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a)
 }
 
 /**
- * @brief Sparsity pattern of dr_exp, dr_expinv (inline variable).
+ * @brief Sparsity pattern of dr_exp_sparse, dr_expinv_sparse (inline variable).
  */
 template<LieGroup G>
 inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
@@ -132,11 +151,13 @@ inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
  * @tparam G Lie group
  * @tparam Inv compute dr_expinv
  *
- * @param[in, out] sp pre-allocated and compressed sparse matrix
+ * @param[in, out] sp allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
  * @param[in] i0 block index (row and column) in sp where result is inserted
  *
- * @see d_exp_sparse_pattern for a pre-allocated pattern.
+ * @warning sp must be pre-allocated with the appropriate nonzeros and compressed
+ *
+ * @see d_exp_sparse_pattern() for a pre-allocated pattern.
  */
 template<LieGroup G, bool Inv = false>
 inline void
@@ -177,11 +198,13 @@ dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::
  *
  * @tparam G Lie group
  *
- * @param[in, out] sp pre-allocated and compressed sparse matrix
+ * @param[in, out] sp allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
  * @param[in] i0 block index (row and column) in sp where result is inserted
  *
- * @see d_exp_sparse_pattern for a pre-allocated pattern.
+ * @warning sp must be pre-allocated with the appropriate nonzeros and compressed
+ *
+ * @see d_exp_sparse_pattern() for a pre-allocated pattern.
  */
 template<LieGroup G>
 inline void
@@ -191,7 +214,7 @@ dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eige
 }
 
 /**
- * @brief Sparsity pattern of d2r_exp, d2r_expinv, and (inline variable).
+ * @brief Sparsity pattern of d2r_exp_sparse(), d2r_expinv_sparse() (inline variable).
  */
 template<LieGroup G>
 inline Eigen::SparseMatrix<Scalar<G>> d2_exp_sparse_pattern = [] {
@@ -215,11 +238,13 @@ inline Eigen::SparseMatrix<Scalar<G>> d2_exp_sparse_pattern = [] {
  * @tparam G Lie group
  * @tparam Inv compute d2r_expinv
  *
- * @param[in, out] sp pre-allocated and compressed sparse matrix
+ * @param[in, out] sp allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
  * @param[in] i0 block index (row and column) in sp where result is inserted
  *
- * @see d2_exp_sparse_pattern for a pre-allocated pattern.
+ * @warning sp must be pre-allocated with the appropriate nonzeros and compressed
+ *
+ * @see d2_exp_sparse_pattern() for a pre-allocated pattern.
  */
 template<LieGroup G, bool Inv = false>
 inline void
@@ -263,11 +288,13 @@ d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen:
  *
  * @tparam G Lie group
  *
- * @param[in, out] sp pre-allocated and compressed sparse matrix
+ * @param[in, out] sp allocated and compressed sparse matrix
  * @param[in] a Lie algebra element
  * @param[in] i0 block index (row and column) in sp where result is inserted
  *
- * @see d2_exp_sparse_pattern for a pre-allocated pattern.
+ * @warning sp must be pre-allocated with the appropriate nonzeros and compressed
+ *
+ * @see d2_exp_sparse_pattern() for a pre-allocated pattern.
  */
 template<LieGroup G>
 inline void
@@ -349,6 +376,7 @@ template<typename G>
   requires(std::is_base_of_v<BundleBase<G>, G>)
 struct lie_sparse<G>
 {
+  /// @brief Sparsity pattern for dr_exp / dr_expinv
   static inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
     Eigen::SparseMatrix<Scalar<G>> ret(Dof<G>, Dof<G>);
     utils::static_for<G::BundleSize>([&](auto I) {
@@ -364,6 +392,7 @@ struct lie_sparse<G>
     return ret;
   }();
 
+  /// @brief Sparse calculation of dr_exp
   static void
   dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
@@ -374,6 +403,7 @@ struct lie_sparse<G>
     });
   }
 
+  /// @brief Sparse calculation of dr_expinv
   static void
   dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
@@ -384,6 +414,7 @@ struct lie_sparse<G>
     });
   }
 
+  /// @brief Sparsity pattern for d2r_exp / d2r_expinv
   static inline Eigen::SparseMatrix<Scalar<G>> d2_exp_sparse_pattern = [] {
     Eigen::SparseMatrix<Scalar<G>> ret(Dof<G>, Dof<G> * Dof<G>);
     utils::static_for<G::BundleSize>([&ret](auto I) {
@@ -403,6 +434,7 @@ struct lie_sparse<G>
     return ret;
   }();
 
+  /// @brief Sparse calculation of d2r_exp
   static void
   d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
@@ -413,6 +445,7 @@ struct lie_sparse<G>
     });
   }
 
+  /// @brief Sparse calculation of d2r_expinv
   static void
   d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
