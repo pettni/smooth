@@ -124,7 +124,7 @@ using TestGroups = ::testing::Types<
   smooth::SE3d,
   smooth::Bundle<Eigen::Vector2d, smooth::SE2d>>;
 
-TYPED_TEST_SUITE(SecondDerivatives, TestGroups);
+TYPED_TEST_SUITE(SecondDerivatives, TestGroups, );
 
 TYPED_TEST(SecondDerivatives, d2rexp)
 {

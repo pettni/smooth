@@ -47,7 +47,7 @@ using GroupsToTest = ::testing::Types<
   smooth::C1f,
   smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d, smooth::SE3d>>;
 
-TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
+TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest, );
 
 template<smooth::NativeLieGroup T>
 void test()

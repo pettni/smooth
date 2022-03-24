@@ -99,7 +99,7 @@ using TestGroups = ::testing::Types<
   BundleT2,
   BundleT3>;
 
-TYPED_TEST_SUITE(Sparse, TestGroups);
+TYPED_TEST_SUITE(Sparse, TestGroups, );
 
 TYPED_TEST(Sparse, ad)
 {

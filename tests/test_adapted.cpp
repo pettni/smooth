@@ -75,7 +75,7 @@ using GroupsToTest = ::testing::Types<
   smooth::SE2f,
   smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d>>;
 
-TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest);
+TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest, );
 
 TYPED_TEST(LieGroupInterface, Ad)
 {

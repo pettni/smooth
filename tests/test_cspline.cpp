@@ -45,7 +45,7 @@ class CSpline : public ::testing::Test
 
 using GroupsToTest = ::testing::Types<Eigen::Vector2d, smooth::SO3d>;
 
-TYPED_TEST_SUITE(CSpline, GroupsToTest);
+TYPED_TEST_SUITE(CSpline, GroupsToTest, );
 
 TYPED_TEST(CSpline, BSplineConstantCtrlpts)
 {

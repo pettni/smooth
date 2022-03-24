@@ -44,7 +44,7 @@ using GroupsToTest = ::testing::Types<
   smooth::SE3d,
   smooth::Bundle<smooth::SO3d, Eigen::Vector4d, smooth::SE2d>>;
 
-TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest);
+TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest, );
 
 TYPED_TEST(CeresLocalParam, ComputeRandom)
 {
