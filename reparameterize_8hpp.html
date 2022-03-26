@@ -75,6 +75,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#concepts">Concepts</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">reparameterize.hpp File Reference</div></div>
 </div><!--header-->
@@ -84,53 +85,56 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;smooth/external/lp2d.hpp&quot;</code><br />
 <code>#include &quot;<a class="el" href="spline_8hpp_source.html">spline.hpp</a>&quot;</code><br />
-<code>#include &quot;traits.hpp&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for reparameterize.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="reparameterize_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2reparameterize_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2reparameterize_8hpp" id="ainclude_2smooth_2spline_2reparameterize_8hpp">
-<area shape="rect" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="446,5,594,47"/>
-<area shape="rect" title=" " alt="" coords="290,95,457,121"/>
-<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="480,95,560,121"/>
-<area shape="rect" href="traits_8hpp_source.html" title=" " alt="" coords="655,169,729,196"/>
-<area shape="rect" title=" " alt="" coords="483,169,557,196"/>
-<area shape="rect" title=" " alt="" coords="9,319,74,345"/>
-<area shape="rect" title=" " alt="" coords="513,468,575,495"/>
-<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="189,169,339,196"/>
-<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="169,244,359,271"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="383,244,529,271"/>
-<area shape="rect" title=" " alt="" coords="79,244,145,271"/>
-<area shape="rect" title=" " alt="" coords="388,393,473,420"/>
-<area shape="rect" title=" " alt="" coords="497,393,572,420"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="383,319,478,345"/>
-<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="164,319,284,345"/>
-<area shape="rect" title=" " alt="" coords="5,468,56,495"/>
-<area shape="rect" title=" " alt="" coords="305,393,364,420"/>
-<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="119,393,281,420"/>
-<area shape="rect" title=" " alt="" coords="351,468,417,495"/>
-<area shape="rect" title=" " alt="" coords="81,468,159,495"/>
-<area shape="rect" title=" " alt="" coords="183,468,251,495"/>
-<area shape="rect" title=" " alt="" coords="275,468,327,495"/>
-<area shape="rect" title=" " alt="" coords="655,244,737,271"/>
+<area shape="rect" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="97,5,245,47"/>
+<area shape="rect" title=" " alt="" coords="14,95,181,121"/>
+<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="204,95,284,121"/>
+<area shape="rect" title=" " alt="" coords="5,169,80,196"/>
+<area shape="rect" title=" " alt="" coords="135,319,201,345"/>
+<area shape="rect" title=" " alt="" coords="583,468,644,495"/>
+<area shape="rect" href="cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="282,169,433,196"/>
+<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="205,244,395,271"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="419,244,565,271"/>
+<area shape="rect" title=" " alt="" coords="589,244,656,271"/>
+<area shape="rect" title=" " alt="" coords="455,393,540,420"/>
+<area shape="rect" title=" " alt="" coords="564,393,639,420"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="378,319,473,345"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="231,319,351,345"/>
+<area shape="rect" title=" " alt="" coords="72,468,123,495"/>
+<area shape="rect" title=" " alt="" coords="372,393,431,420"/>
+<area shape="rect" href="utils_8hpp_source.html" title=" " alt="" coords="185,393,348,420"/>
+<area shape="rect" title=" " alt="" coords="418,468,483,495"/>
+<area shape="rect" title=" " alt="" coords="147,468,226,495"/>
+<area shape="rect" title=" " alt="" coords="250,468,318,495"/>
+<area shape="rect" title=" " alt="" coords="342,468,394,495"/>
 </map>
 </div>
 </div>
 <p><a href="reparameterize_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
+Concepts</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptsmooth_1_1SplineLike.html">smooth::SplineLike</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">SplineLike concept. <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a58e495f493433daf865438abad0006ec"><td class="memItemLeft" align="right" valign="top">Spline&lt; 2, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reparameterize_8hpp.html#a58e495f493433daf865438abad0006ec">smooth::reparameterize_spline</a> (const SplineType auto &amp;spline, const auto &amp;vel_min, const auto &amp;vel_max, const auto &amp;acc_min, const auto &amp;acc_max, const double start_vel=1, const double end_vel=std::numeric_limits&lt; double &gt;::infinity(), const std::size_t N=100)</td></tr>
-<tr class="memdesc:a58e495f493433daf865438abad0006ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reparameterize a spline to satisfy velocity and acceleration constraints.  <a href="reparameterize_8hpp.html#a58e495f493433daf865438abad0006ec">More...</a><br /></td></tr>
-<tr class="separator:a58e495f493433daf865438abad0006ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae462166cfdf49c57b9800ee6c7bbd50a"><td class="memItemLeft" align="right" valign="top">Spline&lt; 2, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reparameterize_8hpp.html#ae462166cfdf49c57b9800ee6c7bbd50a">smooth::reparameterize_spline</a> (const SplineLike auto &amp;spline, const auto &amp;vel_min, const auto &amp;vel_max, const auto &amp;acc_min, const auto &amp;acc_max, const double start_vel=1, const double end_vel=std::numeric_limits&lt; double &gt;::infinity(), const std::size_t N=100)</td></tr>
+<tr class="memdesc:ae462166cfdf49c57b9800ee6c7bbd50a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reparameterize a spline to satisfy velocity and acceleration constraints.  <a href="reparameterize_8hpp.html#ae462166cfdf49c57b9800ee6c7bbd50a">More...</a><br /></td></tr>
+<tr class="separator:ae462166cfdf49c57b9800ee6c7bbd50a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Reparamterize a Spline to satisfy derivative constraints. </p>
 
 <p class="definition">Definition in file <a class="el" href="reparameterize_8hpp_source.html">reparameterize.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a58e495f493433daf865438abad0006ec" name="a58e495f493433daf865438abad0006ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58e495f493433daf865438abad0006ec">&#9670;&nbsp;</a></span>reparameterize_spline()</h2>
+<a id="ae462166cfdf49c57b9800ee6c7bbd50a" name="ae462166cfdf49c57b9800ee6c7bbd50a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae462166cfdf49c57b9800ee6c7bbd50a">&#9670;&nbsp;</a></span>reparameterize_spline()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -138,7 +142,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">Spline&lt; 2, double &gt; smooth::reparameterize_spline </td>
           <td>(</td>
-          <td class="paramtype">const SplineType auto &amp;&#160;</td>
+          <td class="paramtype">const SplineLike auto &amp;&#160;</td>
           <td class="paramname"><em>spline</em>, </td>
         </tr>
         <tr>
@@ -210,7 +214,7 @@ For best results the input spline should be twice continously differentiable.</d
 <dd>
 It may not be feasible to satisfy the target boundary velocities. In those cases the resulting velocities will be lower than the desired values. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="reparameterize_8hpp_source.html#l00062">62</a> of file <a class="el" href="reparameterize_8hpp_source.html">reparameterize.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="reparameterize_8hpp_source.html#l00076">76</a> of file <a class="el" href="reparameterize_8hpp_source.html">reparameterize.hpp</a>.</p>
 
 </div>
 </div>

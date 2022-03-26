@@ -4,7 +4,7 @@ var searchData=
   ['r3_1',['r3',['../classsmooth_1_1SE3Base.html#ac8c2a5cb5ad479e266a82a68f42485ec',1,'smooth::SE3Base::r3()'],['../classsmooth_1_1SE3Base.html#a8fb0535f86185e1c8b58ea9a0242cb14',1,'smooth::SE3Base::r3() const']]],
   ['random_2',['Random',['../classsmooth_1_1LieGroupBase.html#a066433cdcfde7cd3c2e95be1c089836b',1,'smooth::LieGroupBase::Random()'],['../lie__group_8hpp.html#ae9e114a2fc577eb3f0c51db7d176bb7a',1,'smooth::Random()'],['../lie__group_8hpp.html#ae086959013234b8254782103fd6a9024',1,'smooth::Random(Eigen::Index dof)']]],
   ['reparameterize_2ehpp_3',['reparameterize.hpp',['../reparameterize_8hpp.html',1,'']]],
-  ['reparameterize_5fspline_4',['reparameterize_spline',['../reparameterize_8hpp.html#a58e495f493433daf865438abad0006ec',1,'smooth']]],
+  ['reparameterize_5fspline_4',['reparameterize_spline',['../reparameterize_8hpp.html#ae462166cfdf49c57b9800ee6c7bbd50a',1,'smooth']]],
   ['repsize_5',['RepSize',['../classsmooth_1_1LieGroupBase.html#ab0930f4d2e6bcca83d85aa15c5736977',1,'smooth::LieGroupBase']]],
   ['reserve_6',['reserve',['../classsmooth_1_1Spline.html#a947eacfca0127c710e964cba21a25865',1,'smooth::Spline']]],
   ['result_5ftype_7',['result_type',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#aa1e16c90930ca56d61c044cfc0bac6e1',1,'smooth::detail::BoostOdeintOps::scale_sum']]],
