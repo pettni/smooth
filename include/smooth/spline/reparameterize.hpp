@@ -34,9 +34,23 @@
 #include "smooth/external/lp2d.hpp"
 
 #include "spline.hpp"
-#include "traits.hpp"
 
 namespace smooth {
+
+/**
+ * @brief SplineLike concept.
+ */
+// clang-format off
+template<typename S>
+concept SplineLike =
+LieGroup<std::invoke_result_t<S, double> >
+&& requires(S s, double t, Tangent<std::invoke_result_t<S, double>> & vel, Tangent<std::invoke_result_t<S, double>> & acc)
+{
+  {s.t_min()} -> std::convertible_to<double>;
+  {s.t_max()} -> std::convertible_to<double>;
+  {s(t, vel, acc)};
+};
+// clang-format on
 
 /**
  * @brief Reparameterize a spline to satisfy velocity and acceleration constraints.
@@ -60,7 +74,7 @@ namespace smooth {
  * resulting velocities will be lower than the desired values.
  */
 Spline<2, double> reparameterize_spline(
-  const SplineType auto & spline,
+  const SplineLike auto & spline,
   const auto & vel_min,
   const auto & vel_max,
   const auto & acc_min,
