@@ -61,7 +61,7 @@ using OptJacobian =
  *
  * @tparam K spline order (number of basis functions)
  * @tparam G lie group type
- * @param[in] diff_points range of differences v_i (must be of size K)
+ * @param[in] vs range of differences v_i (must be of size K)
  * @param[in] Bcum matrix of cumulative base coefficients (size K+1 x K+1)
  * @param[in] u time point to evaluate spline at (clamped to [0, 1])
  * @param[out] vel calculate first order derivative w.r.t. u
@@ -70,14 +70,14 @@ using OptJacobian =
  */
 template<std::size_t K, LieGroup G, typename Derived>
 inline G cspline_eval_diff(
-  std::ranges::sized_range auto && diff_points,
+  std::ranges::sized_range auto && vs,
   const Eigen::MatrixBase<Derived> & Bcum,
   Scalar<G> u,
   detail::OptTangent<G> vel     = {},
   detail::OptTangent<G> acc     = {},
   detail::OptJacobian<G, K> der = {}) noexcept
 {
-  assert(std::ranges::size(diff_points) == K);
+  assert(std::ranges::size(vs) == K);
   assert(Bcum.cols() == K + 1);
   assert(Bcum.rows() == K + 1);
 
@@ -90,31 +90,31 @@ inline G cspline_eval_diff(
   if (vel.has_value()) { vel.value().setZero(); }
   if (acc.has_value()) { acc.value().setZero(); }
 
-  const Eigen::Index xdof = dof(*std::ranges::cbegin(diff_points));
+  const Eigen::Index xdof = dof(*std::ranges::cbegin(vs));
 
   G g = Identity<G>(xdof);
 
-  for (const auto & [j, v] : utils::zip(std::views::iota(1u), diff_points)) {
-    const Scalar<G> Btilde = uvec.dot(Bcum.col(j));
+  for (const auto & [j, vj] : utils::zip(std::views::iota(1u), vs)) {
+    const Scalar<G> Bj = uvec.dot(Bcum.col(j));
 
-    const G exp_Bt_v = ::smooth::exp<G>(Btilde * v);
+    const G exp_Bt_v = ::smooth::exp<G>(Bj * vj);
 
     g = composition(g, exp_Bt_v);
 
     if (vel.has_value() || acc.has_value()) {
-      const Scalar<G> dBtilde = duvec.dot(Bcum.col(j));
-      const auto Adj          = Ad(inverse(exp_Bt_v));
+      const Scalar<G> dBj = duvec.dot(Bcum.col(j));
+      const auto Adj      = Ad(inverse(exp_Bt_v));
 
       if (vel.has_value()) {
         vel.value().applyOnTheLeft(Adj);
-        vel.value().noalias() += dBtilde * v;
+        vel.value().noalias() += dBj * vj;
       }
 
       if (acc.has_value()) {
-        const Scalar<G> d2Btilde = d2uvec.dot(Bcum.col(j));
+        const Scalar<G> d2Bj = d2uvec.dot(Bcum.col(j));
         acc.value().applyOnTheLeft(Adj);
-        acc.value().noalias() += dBtilde * ad<G>(vel.value()) * v;
-        acc.value().noalias() += d2Btilde * v;
+        acc.value().noalias() += dBj * ad<G>(vel.value()) * vj;
+        acc.value().noalias() += d2Bj * vj;
       }
     }
   }
@@ -129,7 +129,7 @@ inline G cspline_eval_diff(
 
       if (j != K) {
         const Scalar<G> Btilde_jp = uvec.dot(Bcum.col(j + 1));
-        const Tangent<G> & vjp    = *std::ranges::next(std::ranges::cbegin(diff_points), j);
+        const Tangent<G> & vjp    = *std::ranges::next(std::ranges::cbegin(vs), j);
         const Tangent<G> sjp      = Btilde_jp * vjp;
 
         der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>).noalias() -=
@@ -141,7 +141,7 @@ inline G cspline_eval_diff(
       const Scalar<G> Btilde_j = uvec.dot(Bcum.col(j));
 
       if (j != 0u) {
-        const Tangent<G> & vj = *std::ranges::next(std::ranges::cbegin(diff_points), j - 1);
+        const Tangent<G> & vj = *std::ranges::next(std::ranges::cbegin(vs), j - 1);
         der.value().template block<Dof<G>, Dof<G>>(0, j * Dof<G>).noalias() +=
           Btilde_j * Ad(z2inv) * dr_exp<G>(Btilde_j * vj) * dr_expinv<G>(vj);
       } else {
@@ -151,6 +151,158 @@ inline G cspline_eval_diff(
   }
 
   return g;
+}
+
+template<std::size_t K, LieGroup G, typename Derived>
+Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)> dval_dcoef(
+  std::ranges::sized_range auto && vs, const Eigen::MatrixBase<Derived> & Bcum, const Scalar<G> & u)
+{
+  assert(std::ranges::size(vs) == K);
+  assert(Bcum.cols() == K + 1);
+  assert(Bcum.rows() == K + 1);
+
+  const auto U = monomial_derivatives<K, 0, Scalar<G>>(u);
+
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> uvec(U[0].data());
+
+  // derivatives w.r.t. vs
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * K> dvs;
+  dvs.setZero();
+
+  G exp_series = Identity<G>();
+  for (const auto & [j, vj] : utils::zip(std::views::iota(1u), vs)) {
+    const Scalar<G> Bj = uvec.dot(Bcum.col(j));
+    dvs.leftCols((j - 1) * Dof<G>).applyOnTheLeft(Ad(::smooth::exp<G>(-Bj * vj)));
+    dvs.template middleCols<Dof<G>>((j - 1) * Dof<G>) += Bj * dr_exp<G>(Bj * vj);
+
+    exp_series = composition(exp_series, smooth::exp<G>(Bj * vj));
+  }
+
+  // derivatives w.r.t. xs
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)> dpos_dxs;
+  dpos_dxs.setZero();
+
+  for (const auto & [j, vj] : utils::zip(std::views::iota(0u), vs)) {
+    dpos_dxs.template middleCols<Dof<G>>(j * Dof<G>) -=
+      dvs.template middleCols<Dof<G>>(j * Dof<G>) * dl_expinv<G>(vj);
+    dpos_dxs.template middleCols<Dof<G>>((j + 1) * Dof<G>) +=
+      dvs.template middleCols<Dof<G>>(j * Dof<G>) * dr_expinv<G>(vj);
+  }
+
+  // add derivative w.r.t. x0 that is missing in the above
+  dpos_dxs.template leftCols<Dof<G>>() += Ad(inverse(exp_series));
+
+  return dpos_dxs;
+}
+
+template<std::size_t K, LieGroup G, typename Derived>
+Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)> dvel_dcoef(
+  std::ranges::sized_range auto && vs, const Eigen::MatrixBase<Derived> & Bcum, const Scalar<G> & u)
+{
+  assert(std::ranges::size(vs) == K);
+  assert(Bcum.cols() == K + 1);
+  assert(Bcum.rows() == K + 1);
+
+  const auto U = monomial_derivatives<K, 1, Scalar<G>>(u);
+
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> uvec(U[0].data());
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> duvec(U[1].data());
+
+  // derivatives w.r.t. vs
+  Eigen::Vector<Scalar<G>, Dof<G>> w;
+  w.setZero();
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * K> dw;
+  dw.setZero();
+
+  for (const auto & [j, vj] : utils::zip(std::views::iota(1u), vs)) {
+    const Scalar<G> Bj  = uvec.dot(Bcum.col(j));
+    const Scalar<G> dBj = duvec.dot(Bcum.col(j));
+
+    const TangentMap<G> Adj = Ad(::smooth::exp<G>(-Bj * vj));
+
+    dw.leftCols((j - 1) * Dof<G>).applyOnTheLeft(Adj);
+    dw.template middleCols<Dof<G>>((j - 1) * Dof<G>) += Bj * Adj * ad<G>(w) * dr_exp<G>(-Bj * vj);
+    dw.template middleCols<Dof<G>>((j - 1) * Dof<G>) += dBj * TangentMap<G>::Identity();
+
+    w.applyOnTheLeft(Adj);
+    w += dBj * vj;
+  }
+
+  // derivatives w.r.t. xs
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)> dvel_dxs;
+  dvel_dxs.setZero();
+
+  for (const auto & [j, vj] : utils::zip(std::views::iota(0u), vs)) {
+    dvel_dxs.template middleCols<Dof<G>>(j * Dof<G>) -=
+      dw.template middleCols<Dof<G>>(j * Dof<G>) * dl_expinv<G>(vj);
+    dvel_dxs.template middleCols<Dof<G>>((j + 1) * Dof<G>) +=
+      dw.template middleCols<Dof<G>>(j * Dof<G>) * dr_expinv<G>(vj);
+  }
+
+  return dvel_dxs;
+}
+
+template<std::size_t K, LieGroup G, typename Derived>
+Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)> dacc_dcoef(
+  std::ranges::sized_range auto && vs, const Eigen::MatrixBase<Derived> & Bcum, const Scalar<G> & u)
+{
+  assert(std::ranges::size(vs) == K);
+  assert(Bcum.cols() == K + 1);
+  assert(Bcum.rows() == K + 1);
+
+  const auto U = monomial_derivatives<K, 2, Scalar<G>>(u);
+
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> uvec(U[0].data());
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> duvec(U[1].data());
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> d2uvec(U[2].data());
+
+  // derivatives w.r.t. vs
+  Eigen::Vector<Scalar<G>, Dof<G>> w;
+  w.setZero();
+  Eigen::Vector<Scalar<G>, Dof<G>> q;
+  q.setZero();
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * K> dw;
+  dw.setZero();
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * K> dq;
+  dq.setZero();
+
+  for (const auto & [j, vj] : utils::zip(std::views::iota(1u), vs)) {
+    const Scalar<G> Bj   = uvec.dot(Bcum.col(j));
+    const Scalar<G> dBj  = duvec.dot(Bcum.col(j));
+    const Scalar<G> d2Bj = d2uvec.dot(Bcum.col(j));
+
+    const TangentMap<G> Adj   = Ad(::smooth::exp<G>(-Bj * vj));
+    const TangentMap<G> DrExp = dr_exp<G>(-Bj * vj);
+
+    dw.leftCols((j - 1) * Dof<G>).applyOnTheLeft(Adj);
+    dw.template middleCols<Dof<G>>((j - 1) * Dof<G>) += Bj * Adj * ad<G>(w) * DrExp;
+    dw.template middleCols<Dof<G>>((j - 1) * Dof<G>) += dBj * TangentMap<G>::Identity();
+
+    w.applyOnTheLeft(Adj);
+    w += dBj * vj;
+
+    dq.leftCols((j - 1) * Dof<G>).applyOnTheLeft(Adj);
+    dq.leftCols(j * Dof<G>) -= dBj * ad<G>(vj) * dw.leftCols(j * Dof<G>);
+    dq.template middleCols<Dof<G>>((j - 1) * Dof<G>) += Bj * Adj * ad<G>(q) * DrExp;
+    dq.template middleCols<Dof<G>>((j - 1) * Dof<G>) += dBj * ad<G>(w);
+    dq.template middleCols<Dof<G>>((j - 1) * Dof<G>) += d2Bj * TangentMap<G>::Identity();
+
+    q.applyOnTheLeft(Adj);
+    q += dBj * ad<G>(w) * vj + d2Bj * vj;
+  }
+
+  // derivatives w.r.t. xs
+  Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> *(K + 1)> dacc_dxs;
+  dacc_dxs.setZero();
+
+  for (const auto & [j, vj] : utils::zip(std::views::iota(0u), vs)) {
+    dacc_dxs.template middleCols<Dof<G>>(j * Dof<G>) -=
+      dq.template middleCols<Dof<G>>(j * Dof<G>) * dl_expinv<G>(vj);
+    dacc_dxs.template middleCols<Dof<G>>((j + 1) * Dof<G>) +=
+      dq.template middleCols<Dof<G>>(j * Dof<G>) * dr_expinv<G>(vj);
+  }
+
+  return dacc_dxs;
 }
 
 /**
@@ -184,8 +336,8 @@ inline G cspline_eval(
 {
   assert(std::ranges::size(gs) == K + 1);
 
-  static constexpr auto sub  = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
-  const auto diff_pts = gs | utils::views::pairwise_transform(sub);
+  static constexpr auto sub = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
+  const auto diff_pts       = gs | utils::views::pairwise_transform(sub);
 
   return composition(
     *std::ranges::begin(gs), cspline_eval_diff<K, G>(diff_pts, Bcum, u, vel, acc, der));
