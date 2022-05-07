@@ -48,7 +48,7 @@ TYPED_TEST_SUITE(CeresLocalParam, GroupsToTest, );
 
 TYPED_TEST(CeresLocalParam, ComputeRandom)
 {
-  smooth::CeresLocalParameterization<TypeParam> param;
+  smooth::CeresLocalParameterization<TypeParam> mf;
 
   static constexpr uint32_t p = TypeParam::RepSize;
   static constexpr uint32_t n = TypeParam::Dof;
@@ -56,8 +56,8 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
   using ParamsT = Eigen::Matrix<double, p, 1>;
 
   // check that local parameterization gives expected sizes
-  ASSERT_EQ(param.LocalSize(), n);
-  ASSERT_EQ(param.GlobalSize(), p);
+  ASSERT_EQ(mf.AmbientSize(), n);
+  ASSERT_EQ(mf.TangentSize(), p);
 
   for (std::size_t i = 0; i != 10; ++i) {
     // random group element and tangent vector
@@ -68,12 +68,12 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
     TypeParam gp_ceres;
 
     // compute plus
-    param.Plus(g.data(), b.data(), gp_ceres.data());
+    mf.Plus(g.data(), b.data(), gp_ceres.data());
     ASSERT_TRUE(gp.isApprox(gp_ceres));
 
     // compute jacobian from local parameterization
     Eigen::Matrix<double, p, n, (n > 1) ? Eigen::RowMajor : Eigen::ColMajor> jac;
-    param.ComputeJacobian(g.data(), jac.data());
+    mf.PlusJacobian(g.data(), jac.data());
 
     // expect vee(hat(g) + b) \approx g + jac * b
     // where  hat(g) maps from parameters to the group

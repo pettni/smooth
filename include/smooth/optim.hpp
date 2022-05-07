@@ -40,8 +40,8 @@
 #include <numeric>
 
 #include "diff.hpp"
-#include "internal/lmpar.hpp"
-#include "internal/lmpar_sparse.hpp"
+#include "detail/lmpar.hpp"
+#include "detail/lmpar_sparse.hpp"
 #include "manifold.hpp"
 #include "wrt.hpp"
 

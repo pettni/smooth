@@ -89,16 +89,22 @@ std::is_assignable_v<typename traits::man<M>::PlainObject &, M>;
 
 // clang-format on
 
+/**
+ * @brief Concept to identify Eigen matrices.
+ */
+template<typename G>
+concept MatrixType = std::is_base_of_v<Eigen::MatrixBase<G>, G>;
+
+/**
+ * @brief Concept to identify Eigen column vectors.
+ */
+template<typename G>
+concept RnType = MatrixType<G> && G::ColsAtCompileTime == 1;
+
 namespace traits {
 
 /**
- * @brief Concept to identify Eigen column vectors
- */
-template<typename G>
-concept RnType = std::is_base_of_v<Eigen::MatrixBase<G>, G> && G::ColsAtCompileTime == 1;
-
-/**
- * @brief Manifold interface for RnType
+ * @brief Manifold interface for RnType.
  */
 template<RnType M>
 struct man<M>

@@ -30,9 +30,9 @@
 
 #include <complex>
 
-#include "internal/c1.hpp"
-#include "internal/lie_group_base.hpp"
-#include "internal/macro.hpp"
+#include "detail/c1.hpp"
+#include "detail/lie_group_base.hpp"
+#include "detail/macro.hpp"
 #include "lie_group.hpp"
 #include "map.hpp"
 #include "so2.hpp"

@@ -77,7 +77,7 @@ public:
     if constexpr (K == 0) {
       end_g_[0] = g0_;
     } else {
-      end_g_[0] = composition(g0_, cspline_eval_diff<K, G>(Vs_[0].colwise(), B_, 1.));
+      end_g_[0] = composition(g0_, cspline_eval_vs<K, G>(Vs_[0].colwise(), B_, 1.));
     }
   }
 
@@ -115,7 +115,7 @@ public:
     if constexpr (K == 0) {
       end_g_[0] = g0_;
     } else {
-      end_g_[0] = composition(g0_, cspline_eval_diff<K, G>(Vs_[0].colwise(), B_, 1.));
+      end_g_[0] = composition(g0_, cspline_eval_vs<K, G>(Vs_[0].colwise(), B_, 1.));
     }
   }
 
@@ -361,10 +361,8 @@ public:
    * the acceleration and velocity is zero.
    */
   template<typename S = double>
-  CastT<S, G> operator()(
-    const S & t,
-    detail::OptTangent<CastT<S, G>> vel = {},
-    detail::OptTangent<CastT<S, G>> acc = {}) const
+  CastT<S, G>
+  operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const
   {
     if (empty() || t < S(0)) {
       if (vel.has_value()) { vel.value().setZero(); }
@@ -395,9 +393,9 @@ public:
       // compensate for cropped intervals
       if (seg_T0_[istar] > 0) {
         g0 = composition(
-          g0, inverse(cspline_eval_diff<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
+          g0, inverse(cspline_eval_vs<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
       }
-      const CastT<S, G> add = cspline_eval_diff<K, CastT<S, G>>(
+      const CastT<S, G> add = cspline_eval_vs<K, CastT<S, G>>(
         Vs_[istar].template cast<S>().colwise(), B_.template cast<S>(), u, vel, acc);
       if (vel.has_value()) { vel.value() *= S(Del / T); }
       if (acc.has_value()) { acc.value() *= S(Del * Del / (T * T)); }

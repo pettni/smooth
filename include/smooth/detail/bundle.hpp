@@ -31,7 +31,7 @@
 #include <Eigen/Core>
 
 #include "common.hpp"
-#include "smooth/internal/utils.hpp"
+#include "utils.hpp"
 
 /**
  * @brief Bundle Lie group

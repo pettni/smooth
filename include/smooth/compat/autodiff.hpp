@@ -39,7 +39,7 @@
 
 #define SMOOTH_DIFF_AUTODIFF
 
-#include "smooth/internal/utils.hpp"
+#include "smooth/detail/utils.hpp"
 #include "smooth/manifold.hpp"
 #include "smooth/wrt.hpp"
 

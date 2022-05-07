@@ -29,9 +29,9 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "internal/lie_group_base.hpp"
-#include "internal/macro.hpp"
-#include "internal/so3.hpp"
+#include "detail/lie_group_base.hpp"
+#include "detail/macro.hpp"
+#include "detail/so3.hpp"
 #include "lie_group.hpp"
 #include "map.hpp"
 

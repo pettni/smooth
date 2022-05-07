@@ -28,7 +28,7 @@
 
 #include <Eigen/Sparse>
 
-#include "internal/utils.hpp"
+#include "detail/utils.hpp"
 #include "lie_group.hpp"
 
 /**

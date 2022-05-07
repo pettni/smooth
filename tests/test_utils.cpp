@@ -27,7 +27,7 @@
 
 #include <algorithm>
 
-#include "smooth/internal/utils.hpp"
+#include "smooth/detail/utils.hpp"
 
 TEST(Utils, BinarySearch)
 {
