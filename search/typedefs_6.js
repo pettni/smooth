@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['optjacobian_0',['OptJacobian',['../cumulative__spline_8hpp.html#a11d7dc08c67dfba02faa6a32d7b916d0',1,'smooth::detail']]],
-  ['opttangent_1',['OptTangent',['../cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10',1,'smooth::detail']]]
+  ['scalar_0',['Scalar',['../manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c',1,'smooth']]],
+  ['splinejacobian_1',['SplineJacobian',['../cumulative__spline_8hpp.html#ab84f1b203eb8236e52ea861e0d25fa5a',1,'smooth']]],
+  ['storage_2',['Storage',['../classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html#a19251561f5f042d3263e7aa6a7f05a5e',1,'smooth::Map&lt; geometry_msgs::msg::Quaternion &gt;::Storage()'],['../classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html#a5a2d241c3967aa0c469b4f310ecc606c',1,'smooth::Map&lt; const geometry_msgs::msg::Quaternion &gt;::Storage()'],['../classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html#a204f2f9c5a2ea345a0c2bfa9e1b05af6',1,'smooth::Map&lt; geometry_msgs::msg::Pose &gt;::Storage()'],['../classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html#a835d1d5b1c3846f8da21b816b3125fef',1,'smooth::Map&lt; const geometry_msgs::msg::Pose &gt;::Storage()'],['../classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html#afb78ef5025926916b9184352af8cd2f1',1,'smooth::Map&lt; geometry_msgs::msg::Transform &gt;::Storage()'],['../classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html#a78aafd92ea549a12090479b7943f5bdd',1,'smooth::Map&lt; const geometry_msgs::msg::Transform &gt;::Storage()']]]
 ];

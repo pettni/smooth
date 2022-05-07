@@ -160,10 +160,10 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" 
 <tr class="memitem:a66e2e8c045a0cac819cf293412b62b43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsmooth_1_1Spline.html">Spline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a66e2e8c045a0cac819cf293412b62b43">operator+</a> (const <a class="el" href="classsmooth_1_1Spline.html">Spline</a> &amp;other)</td></tr>
 <tr class="memdesc:a66e2e8c045a0cac819cf293412b62b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> concatenation.  <a href="classsmooth_1_1Spline.html#a66e2e8c045a0cac819cf293412b62b43">More...</a><br /></td></tr>
 <tr class="separator:a66e2e8c045a0cac819cf293412b62b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1827704cf298e65840130c5a1c9585bc"><td class="memTemplParams" colspan="2">template&lt;typename S  = double&gt; </td></tr>
-<tr class="memitem:a1827704cf298e65840130c5a1c9585bc"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a1827704cf298e65840130c5a1c9585bc">operator()</a> (const S &amp;t, <a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; vel={}, <a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; acc={}) const</td></tr>
-<tr class="memdesc:a1827704cf298e65840130c5a1c9585bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> at given time.  <a href="classsmooth_1_1Spline.html#a1827704cf298e65840130c5a1c9585bc">More...</a><br /></td></tr>
-<tr class="separator:a1827704cf298e65840130c5a1c9585bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8ec3bde593bef780f4346491c3eee95"><td class="memTemplParams" colspan="2">template&lt;typename S  = double&gt; </td></tr>
+<tr class="memitem:ae8ec3bde593bef780f4346491c3eee95"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#ae8ec3bde593bef780f4346491c3eee95">operator()</a> (const S &amp;t, <a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; vel={}, <a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; acc={}) const</td></tr>
+<tr class="memdesc:ae8ec3bde593bef780f4346491c3eee95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> at given time.  <a href="classsmooth_1_1Spline.html#ae8ec3bde593bef780f4346491c3eee95">More...</a><br /></td></tr>
+<tr class="separator:ae8ec3bde593bef780f4346491c3eee95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1197737baa0a16baa6bef49efe73088d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent</a>&lt; G &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a1197737baa0a16baa6bef49efe73088d">arclength</a> (double t) const</td></tr>
 <tr class="memdesc:a1197737baa0a16baa6bef49efe73088d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get approximate arclength traversed at time T.  <a href="classsmooth_1_1Spline.html#a1197737baa0a16baa6bef49efe73088d">More...</a><br /></td></tr>
 <tr class="separator:a1197737baa0a16baa6bef49efe73088d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -443,7 +443,7 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
 <p> where the absolute value is component-wise.</p>
 <dl class="section note"><dt>Note</dt><dd>This function is approximate for Lie groups with curvature. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00419">419</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00417">417</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -709,7 +709,7 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
  </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00463">463</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00461">461</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -875,8 +875,8 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
 
 </div>
 </div>
-<a id="a1827704cf298e65840130c5a1c9585bc" name="a1827704cf298e65840130c5a1c9585bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1827704cf298e65840130c5a1c9585bc">&#9670;&nbsp;</a></span>operator()()</h2>
+<a id="ae8ec3bde593bef780f4346491c3eee95" name="ae8ec3bde593bef780f4346491c3eee95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8ec3bde593bef780f4346491c3eee95">&#9670;&nbsp;</a></span>operator()()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -897,13 +897,13 @@ template&lt;typename S  = double&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
           <td class="paramname"><em>vel</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
           <td class="paramname"><em>acc</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -937,7 +937,7 @@ template&lt;typename S  = double&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>value at time t</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Outside the support [<a class="el" href="classsmooth_1_1Spline.html#a5be3be93c60298961f76ffe3a6420d91" title="Start time of Spline (always equal to zero).">t_min()</a>, <a class="el" href="classsmooth_1_1Spline.html#a8ea41ce9b9d488e980d82eb1284408f8" title="End time of Spline.">t_max()</a>] the result is clamped to the end points, and the acceleration and velocity is zero. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00364">364</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00365">365</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>

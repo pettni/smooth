@@ -1,5 +1,5 @@
 <map id="smooth::Map&lt; const geometry_msgs::msg::Transform &gt;" name="smooth::Map&lt; const geometry_msgs::msg::Transform &gt;">
-<area shape="rect" id="node1" title="Const memory mapping of ROS message as Lie group type." alt="" coords="49,213,197,269"/>
-<area shape="rect" id="node2" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="33,109,212,165"/>
-<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,240,61"/>
+<area shape="rect" id="node1" title="Const memory mapping of ROS message as Lie group type." alt="" coords="21,213,169,269"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="5,109,184,165"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,5,184,61"/>
 </map>

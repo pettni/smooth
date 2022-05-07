@@ -1,11 +1,6 @@
 <map id="include/smooth/polynomial/static_matrix.hpp" name="include/smooth/polynomial/static_matrix.hpp">
-<area shape="rect" id="node1" title="Utilities for compile&#45;time matrix algebra." alt="" coords="10,5,185,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,169,56,196"/>
-<area shape="rect" id="node3" title=" " alt="" coords="68,95,127,121"/>
-<area shape="rect" id="node4" href="$utils_8hpp_source.html" title=" " alt="" coords="151,95,313,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="81,169,146,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="170,169,249,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="273,169,341,196"/>
-<area shape="rect" id="node8" title=" " alt="" coords="365,169,427,196"/>
-<area shape="rect" id="node9" title=" " alt="" coords="451,169,503,196"/>
+<area shape="rect" id="node1" title="Utilities for compile&#45;time matrix algebra." alt="" coords="22,5,197,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,56,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="80,95,139,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="163,95,315,121"/>
 </map>

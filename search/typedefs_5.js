@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['matrix_0',['Matrix',['../classsmooth_1_1LieGroupBase.html#abff41124555fe53be6ec9a231c33d9cf',1,'smooth::LieGroupBase']]]
+  ['result_5ftype_0',['result_type',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#aa1e16c90930ca56d61c044cfc0bac6e1',1,'smooth::detail::BoostOdeintOps::scale_sum']]]
 ];

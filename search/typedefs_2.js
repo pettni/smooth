@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['g_0',['G',['../structsmooth_1_1fit__bspline__objective.html#a961b876a74dec64c2f6d5278dc07672b',1,'smooth::fit_bspline_objective']]]
+  ['hessian_0',['Hessian',['../manifold_8hpp.html#a5cf907b049fd3461fefddcc524598625',1,'smooth']]]
 ];

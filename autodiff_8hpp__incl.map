@@ -1,17 +1,12 @@
 <map id="include/smooth/compat/autodiff.hpp" name="include/smooth/compat/autodiff.hpp">
-<area shape="rect" id="node1" title="autodiff compatability header." alt="" coords="289,5,447,47"/>
+<area shape="rect" id="node1" title="autodiff compatability header." alt="" coords="352,5,509,47"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,102,168,129"/>
 <area shape="rect" id="node3" title=" " alt="" coords="192,95,331,136"/>
-<area shape="rect" id="node4" href="$utils_8hpp_source.html" title=" " alt="" coords="233,184,396,211"/>
-<area shape="rect" id="node11" href="$manifold_8hpp.html" title=" " alt="" coords="526,184,669,211"/>
-<area shape="rect" id="node14" href="$wrt_8hpp_source.html" title=" " alt="" coords="406,102,517,129"/>
-<area shape="rect" id="node5" title=" " alt="" coords="372,259,423,285"/>
-<area shape="rect" id="node6" title=" " alt="" coords="447,259,513,285"/>
-<area shape="rect" id="node7" title=" " alt="" coords="14,259,93,285"/>
-<area shape="rect" id="node8" title=" " alt="" coords="117,259,185,285"/>
-<area shape="rect" id="node9" title=" " alt="" coords="209,259,271,285"/>
-<area shape="rect" id="node10" title=" " alt="" coords="295,259,347,285"/>
-<area shape="rect" id="node12" title=" " alt="" coords="549,259,635,285"/>
-<area shape="rect" id="node13" title=" " alt="" coords="659,259,733,285"/>
-<area shape="rect" id="node15" title=" " alt="" coords="420,184,503,211"/>
+<area shape="rect" id="node4" title=" " alt="" coords="355,102,507,129"/>
+<area shape="rect" id="node5" href="$manifold_8hpp.html" title=" " alt="" coords="462,184,605,211"/>
+<area shape="rect" id="node8" href="$wrt_8hpp_source.html" title=" " alt="" coords="603,102,714,129"/>
+<area shape="rect" id="node6" title=" " alt="" coords="439,259,524,285"/>
+<area shape="rect" id="node7" title=" " alt="" coords="548,259,623,285"/>
+<area shape="rect" id="node9" title=" " alt="" coords="628,184,711,211"/>
+<area shape="rect" id="node10" title=" " alt="" coords="734,184,839,211"/>
 </map>

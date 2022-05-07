@@ -131,10 +131,10 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, G&gt;)</td></t
 <tr class="memitem:a59063f8a376018ef06ecfaffe144e856"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; G &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a59063f8a376018ef06ecfaffe144e856">ctrl_pts</a> () const</td></tr>
 <tr class="memdesc:a59063f8a376018ef06ecfaffe144e856"><td class="mdescLeft">&#160;</td><td class="mdescRight">Access spline control points.  <a href="classsmooth_1_1BSpline.html#a59063f8a376018ef06ecfaffe144e856">More...</a><br /></td></tr>
 <tr class="separator:a59063f8a376018ef06ecfaffe144e856"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae18e9244d3eb07f011f965411b00489a"><td class="memTemplParams" colspan="2">template&lt;typename S  = double&gt; </td></tr>
-<tr class="memitem:ae18e9244d3eb07f011f965411b00489a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#ae18e9244d3eb07f011f965411b00489a">operator()</a> (const S &amp;t, <a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; vel={}, <a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; acc={}) const</td></tr>
-<tr class="memdesc:ae18e9244d3eb07f011f965411b00489a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate Bspline.  <a href="classsmooth_1_1BSpline.html#ae18e9244d3eb07f011f965411b00489a">More...</a><br /></td></tr>
-<tr class="separator:ae18e9244d3eb07f011f965411b00489a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fdf6ca7fb6d07781e04c396f29147a7"><td class="memTemplParams" colspan="2">template&lt;typename S  = double&gt; </td></tr>
+<tr class="memitem:a0fdf6ca7fb6d07781e04c396f29147a7"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1BSpline.html#a0fdf6ca7fb6d07781e04c396f29147a7">operator()</a> (const S &amp;t, <a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; vel={}, <a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; acc={}) const</td></tr>
+<tr class="memdesc:a0fdf6ca7fb6d07781e04c396f29147a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate Bspline.  <a href="classsmooth_1_1BSpline.html#a0fdf6ca7fb6d07781e04c396f29147a7">More...</a><br /></td></tr>
+<tr class="separator:a0fdf6ca7fb6d07781e04c396f29147a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;std::size_t K, LieGroup G&gt;<br />
@@ -368,8 +368,8 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
 
 </div>
 </div>
-<a id="ae18e9244d3eb07f011f965411b00489a" name="ae18e9244d3eb07f011f965411b00489a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae18e9244d3eb07f011f965411b00489a">&#9670;&nbsp;</a></span>operator()()</h2>
+<a id="a0fdf6ca7fb6d07781e04c396f29147a7" name="a0fdf6ca7fb6d07781e04c396f29147a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0fdf6ca7fb6d07781e04c396f29147a7">&#9670;&nbsp;</a></span>operator()()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -390,13 +390,13 @@ template&lt;typename S  = double&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
           <td class="paramname"><em>vel</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#aaa8ead4fd40c51fc7036ea0aea536f10">detail::OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
           <td class="paramname"><em>acc</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -430,7 +430,7 @@ template&lt;typename S  = double&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>spline value at time t</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Input <code>t</code> is clamped to spline interval of definition </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="bspline_8hpp_source.html#l00148">148</a> of file <a class="el" href="bspline_8hpp_source.html">bspline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="bspline_8hpp_source.html#l00149">149</a> of file <a class="el" href="bspline_8hpp_source.html">bspline.hpp</a>.</p>
 
 </div>
 </div>
