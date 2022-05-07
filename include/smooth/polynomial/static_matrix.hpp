@@ -34,7 +34,7 @@
 #include <array>
 #include <cmath>
 
-#include "smooth/internal/utils.hpp"
+#include "smooth/detail/utils.hpp"
 
 namespace smooth {
 

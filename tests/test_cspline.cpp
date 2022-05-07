@@ -31,6 +31,7 @@
 
 #include "smooth/bundle.hpp"
 #include "smooth/diff.hpp"
+#include "smooth/manifold_vector.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
@@ -65,7 +66,7 @@ TYPED_TEST(CSpline, BSplineConstantCtrlpts)
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
-      auto g = smooth::cspline_eval<K>(ctrl_pts, M, u, vel, acc);
+      auto g = smooth::cspline_eval_gs<K>(ctrl_pts, M, u, vel, acc);
 
       ASSERT_TRUE(g.isApprox(ctrl_pts.front()));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -96,7 +97,7 @@ TYPED_TEST(CSpline, BSplineConstantDiffvec)
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
       auto g =
-        smooth::composition(g0, smooth::cspline_eval_diff<K, TypeParam>(diff_vec, M, u, vel, acc));
+        smooth::composition(g0, smooth::cspline_eval_vs<K, TypeParam>(diff_vec, M, u, vel, acc));
 
       ASSERT_TRUE(g.isApprox(g0));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -112,10 +113,10 @@ TYPED_TEST(CSpline, DerivBspline)
   TypeParam g0  = TypeParam::Random();
   using Tangent = smooth::Tangent<TypeParam>;
 
-  std::vector<Tangent> diff_pts;
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
-  diff_pts.push_back(Tangent::Random());
+  std::vector<Tangent> vs;
+  vs.push_back(Tangent::Random());
+  vs.push_back(Tangent::Random());
+  vs.push_back(Tangent::Random());
 
   constexpr auto M_s = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, 3>();
   Eigen::Map<const Eigen::Matrix<double, 3 + 1, 3 + 1, Eigen::RowMajor>> M(M_s[0].data());
@@ -123,12 +124,10 @@ TYPED_TEST(CSpline, DerivBspline)
   Tangent vel;
 
   for (double u = 0.1; u < 0.99; u += 0.1) {
-    smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u, vel);
+    smooth::cspline_eval_vs<3, TypeParam>(vs, M, u, vel);
 
-    auto g1 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u - 1e-4));
-    auto g2 =
-      smooth::composition(g0, smooth::cspline_eval_diff<3, TypeParam>(diff_pts, M, u + 1e-4));
+    auto g1 = smooth::composition(g0, smooth::cspline_eval_vs<3, TypeParam>(vs, M, u - 1e-4));
+    auto g2 = smooth::composition(g0, smooth::cspline_eval_vs<3, TypeParam>(vs, M, u + 1e-4));
 
     auto df = ((g2 - g1) / 2e-4).eval();
 
@@ -171,54 +170,127 @@ TEST(CSpline, BSplineOutside)
   ASSERT_TRUE(spl(45.).isApprox(spl(48.)));
 }
 
-TEST(CSpline, BSplineDerivT1)
+class SplineDerivative : public ::testing::Test
 {
-  std::srand(5);
-  std::vector<smooth::Bundle<Eigen::Matrix<double, 1, 1>>> c1;
-  for (auto i = 0u; i != 4; ++i) {
-    c1.push_back(smooth::Bundle<Eigen::Matrix<double, 1, 1>>::Random());
+protected:
+  using G                = smooth::SO3d;
+  static constexpr int K = 5;
+
+  void SetUp() override
+  {
+    std::srand(5);
+    u = 0.5;
+    randomize();
   }
 
-  double u = 0.5;
+  void randomize()
+  {
+    xs.clear();
+    vs.clear();
+    for (auto j = 0u; j != K + 1; ++j) { xs.push_back(G::Random()); }
+    for (auto j = 0u; j != K; ++j) { vs.push_back(xs[j + 1] - xs[j]); }
+  }
 
-  constexpr auto M_s = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, 3>();
-  Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(M_s[0].data());
+  double u;
+  smooth::ManifoldVector<G> xs;
+  smooth::ManifoldVector<smooth::Tangent<G>> vs;
 
-  Eigen::Matrix<double, 1, 4> jac;
-  auto g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
+  static constexpr auto M_s =
+    smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>();
+  inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M =
+    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(M_s[0].data());
+};
 
-  Eigen::Matrix<double, 4, 1> eps = 1e-6 * Eigen::Matrix<double, 4, 1>::Random();
-  for (auto i = 0u; i != 4; ++i) { c1[i].part<0>()(0) += eps(i); }
+TEST_F(SplineDerivative, vel)
+{
+  for (auto i = 0u; i < 5; ++i) {
+    randomize();
 
-  // expect gp \approx g0 + jac * eps
-  auto gp       = g0 + (jac * eps);
-  auto gp_exact = smooth::cspline_eval<3>(c1, M, u);
+    const auto f_diff = [&](auto var) -> G { return smooth::cspline_eval_gs<K>(xs, M, var); };
+    const auto [unused, dx_dt_num] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
 
-  ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
+    smooth::Tangent<G> dx_dt_ana;
+    smooth::cspline_eval_gs<K>(xs, M, u, dx_dt_ana);
+
+    ASSERT_TRUE(dx_dt_ana.isApprox(dx_dt_num, 1e-5));
+  }
 }
 
-TEST(CSpline, BSplineDerivSO3)
+TEST_F(SplineDerivative, acc)
 {
-  for (double u = 0.1; u < 1; u += 0.2) {
-    std::srand(5);
+  for (auto i = 0u; i < 5; ++i) {
+    randomize();
 
-    std::vector<smooth::SO3d> c1;
-    for (auto i = 0u; i != 4; ++i) { c1.push_back(smooth::SO3d::Random()); }
+    const auto f_diff = [&](auto var) -> smooth::Tangent<G> {
+      smooth::Tangent<G> vel;
+      smooth::cspline_eval_gs<K>(xs, M, var, vel);
+      return vel;
+    };
+    const auto [unused, d2x_dt_num] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
 
-    constexpr auto M_s = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, 3>();
-    Eigen::Map<const Eigen::Matrix<double, 4, 4, Eigen::RowMajor>> M(M_s[0].data());
+    smooth::Tangent<G> dx_dt_ana, d2x_dt_ana;
+    smooth::cspline_eval_gs<K>(xs, M, u, dx_dt_ana, d2x_dt_ana);
 
-    Eigen::Matrix<double, 3, 12> jac;
-    smooth::SO3d g0 = smooth::cspline_eval<3>(c1, M, u, {}, {}, jac);
+    ASSERT_TRUE(d2x_dt_ana.isApprox(d2x_dt_num, 1e-5));
+  }
+}
 
-    Eigen::Matrix<double, 12, 1> eps = 1e-6 * Eigen::Matrix<double, 12, 1>::Random();
-    for (auto i = 0u; i != 4; ++i) { c1[i] += eps.segment<3>(i * 3); }
+TEST_F(SplineDerivative, dx_dcoef)
+{
+  for (auto i = 0u; i < 5; ++i) {
+    randomize();
 
-    // expect gp \approx g0 + jac * eps
-    smooth::SO3d gp       = g0 + (jac * eps).eval();
-    smooth::SO3d gp_exact = smooth::cspline_eval<3>(c1, M, u);
+    const auto f_diff = [&](const smooth::ManifoldVector<G> & var) -> G {
+      return smooth::cspline_eval_gs<K>(var, M, u);
+    };
+    const auto [unused, diff_aut] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
 
-    ASSERT_TRUE(gp.isApprox(gp_exact, 1e-4));
+    const auto diff_ana = smooth::cspline_eval_dg_dgs<K>(xs, M, u);
+
+    ASSERT_TRUE(diff_aut.isApprox(diff_ana, 1e-5));
+  }
+}
+
+TEST_F(SplineDerivative, dvel_dcoef)
+{
+  for (auto i = 0u; i < 5; ++i) {
+    randomize();
+
+    const auto f_diff = [&](const smooth::ManifoldVector<G> & var) -> smooth::Tangent<G> {
+      smooth::Tangent<G> vel;
+      smooth::cspline_eval_gs<K>(var, M, u, vel);
+      return vel;
+    };
+    const auto [unused, diff_aut] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
+
+    smooth::SplineJacobian<G, K> dvel_dgs;
+    smooth::cspline_eval_dg_dgs<K>(xs, M, u, dvel_dgs);
+
+    ASSERT_TRUE(diff_aut.isApprox(dvel_dgs, 1e-5));
+  }
+}
+
+TEST_F(SplineDerivative, dacc_dcoef)
+{
+  for (auto i = 0u; i < 5; ++i) {
+    randomize();
+
+    const auto f_diff = [&](const smooth::ManifoldVector<G> & var) -> smooth::Tangent<G> {
+      smooth::Tangent<G> vel, acc;
+      smooth::cspline_eval_gs<K>(var, M, u, vel, acc);
+      return acc;
+    };
+    const auto [unused, diff_aut] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
+
+    smooth::SplineJacobian<G, K> dvel_dgs, dacc_dgs;
+    smooth::cspline_eval_dg_dgs<K>(xs, M, u, dvel_dgs, dacc_dgs);
+
+    ASSERT_TRUE(diff_aut.isApprox(dacc_dgs, 1e-5));
   }
 }
 

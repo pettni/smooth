@@ -28,7 +28,7 @@
 
 #include <type_traits>
 
-#include "internal/utils.hpp"
+#include "detail/utils.hpp"
 #include "manifold.hpp"
 
 namespace smooth {

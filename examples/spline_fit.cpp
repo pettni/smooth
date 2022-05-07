@@ -27,7 +27,7 @@
  * @file min_deriv.cpp Minimum derivative example.
  */
 
-#include "smooth/internal/utils.hpp"
+#include "smooth/detail/utils.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/spline/fit.hpp"
 

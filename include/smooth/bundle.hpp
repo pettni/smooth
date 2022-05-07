@@ -26,10 +26,10 @@
 #ifndef SMOOTH__BUNDLE_HPP_
 #define SMOOTH__BUNDLE_HPP_
 
-#include "internal/bundle.hpp"
-#include "internal/lie_group_base.hpp"
-#include "internal/macro.hpp"
-#include "internal/tn.hpp"
+#include "detail/bundle.hpp"
+#include "detail/lie_group_base.hpp"
+#include "detail/macro.hpp"
+#include "detail/tn.hpp"
 #include "lie_group.hpp"
 #include "map.hpp"
 

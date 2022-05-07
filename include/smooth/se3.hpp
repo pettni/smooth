@@ -31,9 +31,9 @@
 
 #include <complex>
 
-#include "internal/lie_group_base.hpp"
-#include "internal/macro.hpp"
-#include "internal/se3.hpp"
+#include "detail/lie_group_base.hpp"
+#include "detail/macro.hpp"
+#include "detail/se3.hpp"
 #include "lie_group.hpp"
 #include "map.hpp"
 #include "so3.hpp"

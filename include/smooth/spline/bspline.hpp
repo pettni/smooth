@@ -145,10 +145,8 @@ public:
    * @note Input \p t is clamped to spline interval of definition
    */
   template<typename S = double>
-  CastT<S, G> operator()(
-    const S & t,
-    detail::OptTangent<CastT<S, G>> vel = {},
-    detail::OptTangent<CastT<S, G>> acc = {}) const
+  CastT<S, G>
+  operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const
   {
     // index of relevant interval
     int64_t istar = static_cast<int64_t>((static_cast<double>(t) - t0_) / dt_);
@@ -165,7 +163,7 @@ public:
       u = std::clamp<S>((t - S(t0_) - S(istar * dt_)) / S(dt_), S(0.), S(1.));
     }
 
-    CastT<S, G> g = cspline_eval<K>(
+    CastT<S, G> g = cspline_eval_gs<K>(
       // clang-format off
       ctrl_pts_
         | std::views::drop(istar)
