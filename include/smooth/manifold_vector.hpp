@@ -182,7 +182,7 @@ struct traits::man<ManifoldVector<M>>
     const Eigen::Index mdof = ::smooth::Dof<M> != -1 ? ::smooth::Dof<M> : 1;
     const Eigen::Index size = dof / mdof;
 
-    return PlainObject(size, Default<M>(mdof));
+    return traits::man<M>::PlainObject(size, traits::man<M>::Default(mdof));
   }
 
   template<typename NewScalar>
