@@ -87,18 +87,18 @@ using OptSplineJacobian = std::optional<Eigen::Ref<SplineJacobian<G, K>>>;
  * @param[in] vs range of differences v_i (must be of size K)
  * @param[in] Bcum matrix of cumulative base coefficients (size K+1 x K+1)
  * @param[in] u time point to evaluate spline at (clamped to [0, 1])
- * @param[out] dvel_dgs derivatives of velocity w.r.t. coefficients
- * @param[out] dacc_dgs derivatives of acceleration w.r.t. coefficients
+ * @param[out] dvel_dvs derivatives of velocity w.r.t. vs
+ * @param[out] dacc_dvs derivatives of acceleration w.r.t. vs
  *
- * @return dg_dvs derivatives of value w.r.t. coefficients
+ * @return dg_dvs derivatives of value w.r.t. vs
  */
 template<std::size_t K, LieGroup G>
 SplineJacobian<G, K - 1> cspline_eval_dg_dvs(
   std::ranges::sized_range auto && vs,
   const MatrixType auto & Bcum,
   const Scalar<G> & u,
-  OptSplineJacobian<G, K - 1> dvel_dgs = {},
-  OptSplineJacobian<G, K - 1> dacc_dgs = {}) noexcept;
+  OptSplineJacobian<G, K - 1> dvel_dvs = {},
+  OptSplineJacobian<G, K - 1> dacc_dvs = {}) noexcept;
 
 /**
  * @brief Evaluate a cumulative basis spline of order K from coefficients.
@@ -137,10 +137,10 @@ inline G cspline_eval_gs(
  * 1)
  * @param[in] Bcum matrix of cumulative base coefficients (size K+1 x K+1)
  * @param[in] u time point to evaluate spline at (clamped to [0, 1])
- * @param[out] dvel_dgs derivatives of velocity w.r.t. coefficients
- * @param[out] dacc_dgs derivatives of acceleration w.r.t. coefficients
+ * @param[out] dvel_dgs derivatives of velocity w.r.t. gs
+ * @param[out] dacc_dgs derivatives of acceleration w.r.t. gs
  *
- * @return dg_dgs derivatives of value w.r.t. coefficients
+ * @return dg_dgs derivatives of value w.r.t. gs
  */
 template<std::size_t K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
 SplineJacobian<G, K> cspline_eval_dg_dgs(
