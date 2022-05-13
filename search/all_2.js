@@ -25,7 +25,7 @@ var searchData=
   ['create_5fmaps_22',['CREATE_MAPS',['../ros_8hpp.html#a97b106b852f66eb57d0a3fa1b7662063',1,'ros.hpp']]],
   ['crop_23',['crop',['../classsmooth_1_1Spline.html#a45ba9083cb76839a8a59400513157a4b',1,'smooth::Spline']]],
   ['cspline_5feval_5fdg_5fdgs_24',['cspline_eval_dg_dgs',['../cumulative__spline_8hpp.html#a84b33b259337d932e0cdcbc2ed95a6b4',1,'smooth']]],
-  ['cspline_5feval_5fdg_5fdvs_25',['cspline_eval_dg_dvs',['../cumulative__spline_8hpp.html#a95d2675d286c75e7f2c97c507b9b4229',1,'smooth']]],
+  ['cspline_5feval_5fdg_5fdvs_25',['cspline_eval_dg_dvs',['../cumulative__spline_8hpp.html#abf1a1b873b1785dfb2de30274792f84e',1,'smooth']]],
   ['cspline_5feval_5fgs_26',['cspline_eval_gs',['../cumulative__spline_8hpp.html#a39c4a0571441ae8b62282eca2fa849eb',1,'smooth']]],
   ['cspline_5feval_5fvs_27',['cspline_eval_vs',['../cumulative__spline_8hpp.html#a7536154cd3fd331cbbf284fab0e7af6a',1,'smooth']]],
   ['ctrl_5fpts_28',['ctrl_pts',['../classsmooth_1_1BSpline.html#a59063f8a376018ef06ecfaffe144e856',1,'smooth::BSpline']]],

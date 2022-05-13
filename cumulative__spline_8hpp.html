@@ -145,10 +145,10 @@ Functions</h2></td></tr>
 <tr class="memitem:a7536154cd3fd331cbbf284fab0e7af6a"><td class="memTemplItemLeft" align="right" valign="top">G&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a7536154cd3fd331cbbf284fab0e7af6a">smooth::cspline_eval_vs</a> (std::ranges::sized_range auto &amp;&amp;vs, const MatrixType auto &amp;Bcum, Scalar&lt; G &gt; u, OptTangent&lt; G &gt; vel={}, OptTangent&lt; G &gt; acc={}) noexcept</td></tr>
 <tr class="memdesc:a7536154cd3fd331cbbf284fab0e7af6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate a cumulative spline of order \(K\) from differences.  <a href="cumulative__spline_8hpp.html#a7536154cd3fd331cbbf284fab0e7af6a">More...</a><br /></td></tr>
 <tr class="separator:a7536154cd3fd331cbbf284fab0e7af6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95d2675d286c75e7f2c97c507b9b4229"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, LieGroup G&gt; </td></tr>
-<tr class="memitem:a95d2675d286c75e7f2c97c507b9b4229"><td class="memTemplItemLeft" align="right" valign="top">SplineJacobian&lt; G, K - 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a95d2675d286c75e7f2c97c507b9b4229">smooth::cspline_eval_dg_dvs</a> (std::ranges::sized_range auto &amp;&amp;vs, const MatrixType auto &amp;Bcum, const Scalar&lt; G &gt; &amp;u, OptSplineJacobian&lt; G, K - 1 &gt; dvel_dgs={}, OptSplineJacobian&lt; G, K - 1 &gt; dacc_dgs={}) noexcept</td></tr>
-<tr class="memdesc:a95d2675d286c75e7f2c97c507b9b4229"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derivatives of a cumulative spline w.r.t. the differences.  <a href="cumulative__spline_8hpp.html#a95d2675d286c75e7f2c97c507b9b4229">More...</a><br /></td></tr>
-<tr class="separator:a95d2675d286c75e7f2c97c507b9b4229"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf1a1b873b1785dfb2de30274792f84e"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, LieGroup G&gt; </td></tr>
+<tr class="memitem:abf1a1b873b1785dfb2de30274792f84e"><td class="memTemplItemLeft" align="right" valign="top">SplineJacobian&lt; G, K - 1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#abf1a1b873b1785dfb2de30274792f84e">smooth::cspline_eval_dg_dvs</a> (std::ranges::sized_range auto &amp;&amp;vs, const MatrixType auto &amp;Bcum, const Scalar&lt; G &gt; &amp;u, OptSplineJacobian&lt; G, K - 1 &gt; dvel_dvs={}, OptSplineJacobian&lt; G, K - 1 &gt; dacc_dvs={}) noexcept</td></tr>
+<tr class="memdesc:abf1a1b873b1785dfb2de30274792f84e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derivatives of a cumulative spline w.r.t. the differences.  <a href="cumulative__spline_8hpp.html#abf1a1b873b1785dfb2de30274792f84e">More...</a><br /></td></tr>
+<tr class="separator:abf1a1b873b1785dfb2de30274792f84e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39c4a0571441ae8b62282eca2fa849eb"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t&lt;R&gt;&gt; </td></tr>
 <tr class="memitem:a39c4a0571441ae8b62282eca2fa849eb"><td class="memTemplItemLeft" align="right" valign="top">G&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="cumulative__spline_8hpp.html#a39c4a0571441ae8b62282eca2fa849eb">smooth::cspline_eval_gs</a> (R &amp;&amp;gs, const MatrixType auto &amp;Bcum, Scalar&lt; G &gt; u, OptTangent&lt; G &gt; vel={}, OptTangent&lt; G &gt; acc={}) noexcept</td></tr>
 <tr class="memdesc:a39c4a0571441ae8b62282eca2fa849eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate a cumulative basis spline of order K from coefficients.  <a href="cumulative__spline_8hpp.html#a39c4a0571441ae8b62282eca2fa849eb">More...</a><br /></td></tr>
@@ -294,17 +294,17 @@ template&lt;std::size_t K, std::ranges::sized_range R, LieGroup G = std::ranges:
     <tr><td class="paramdir">[in]</td><td class="paramname">gs</td><td>LieGroup control points \( g_0, g_1, \ldots, g_K \) (must be of size K + 1) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">Bcum</td><td>matrix of cumulative base coefficients (size K+1 x K+1) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">u</td><td>time point to evaluate spline at (clamped to [0, 1]) </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">dvel_dgs</td><td>derivatives of velocity w.r.t. coefficients </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">dacc_dgs</td><td>derivatives of acceleration w.r.t. coefficients</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dvel_dgs</td><td>derivatives of velocity w.r.t. gs </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dacc_dgs</td><td>derivatives of acceleration w.r.t. gs</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>dg_dgs derivatives of value w.r.t. coefficients </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>dg_dgs derivatives of value w.r.t. gs </dd></dl>
 
 </div>
 </div>
-<a id="a95d2675d286c75e7f2c97c507b9b4229" name="a95d2675d286c75e7f2c97c507b9b4229"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95d2675d286c75e7f2c97c507b9b4229">&#9670;&nbsp;</a></span>cspline_eval_dg_dvs()</h2>
+<a id="abf1a1b873b1785dfb2de30274792f84e" name="abf1a1b873b1785dfb2de30274792f84e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf1a1b873b1785dfb2de30274792f84e">&#9670;&nbsp;</a></span>cspline_eval_dg_dvs()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -336,13 +336,13 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#aea1dbd5869e4e268ac16f8a9e9130e4c">OptSplineJacobian</a>&lt; G, K - 1 &gt;&#160;</td>
-          <td class="paramname"><em>dvel_dgs</em> = <code>{}</code>, </td>
+          <td class="paramname"><em>dvel_dvs</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#aea1dbd5869e4e268ac16f8a9e9130e4c">OptSplineJacobian</a>&lt; G, K - 1 &gt;&#160;</td>
-          <td class="paramname"><em>dacc_dgs</em> = <code>{}</code>&#160;</td>
+          <td class="paramname"><em>dacc_dvs</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -374,12 +374,12 @@ template&lt;std::size_t K, LieGroup G&gt; </div>
     <tr><td class="paramdir">[in]</td><td class="paramname">vs</td><td>range of differences v_i (must be of size K) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">Bcum</td><td>matrix of cumulative base coefficients (size K+1 x K+1) </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">u</td><td>time point to evaluate spline at (clamped to [0, 1]) </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">dvel_dgs</td><td>derivatives of velocity w.r.t. coefficients </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">dacc_dgs</td><td>derivatives of acceleration w.r.t. coefficients</td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dvel_dvs</td><td>derivatives of velocity w.r.t. vs </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">dacc_dvs</td><td>derivatives of acceleration w.r.t. vs</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>dg_dvs derivatives of value w.r.t. coefficients </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>dg_dvs derivatives of value w.r.t. vs </dd></dl>
 
 </div>
 </div>
