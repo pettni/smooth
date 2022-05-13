@@ -171,7 +171,7 @@ SplineJacobian<G, K> cspline_eval_dg_dgs(
 
   SplineJacobian<G, K - 1> dvel_dvs;
   SplineJacobian<G, K - 1> dacc_dvs;
-  auto dg_dvs = cspline_eval_dg_dvs<K, G>(vs, Bcum, u, dvel_dvs, dacc_dvs);
+  SplineJacobian<G, K - 1> dg_dvs = cspline_eval_dg_dvs<K, G>(vs, Bcum, u, dvel_dvs, dacc_dvs);
 
   // derivatives w.r.t. xs
   SplineJacobian<G, K> dg_dgs;
@@ -185,7 +185,7 @@ SplineJacobian<G, K> cspline_eval_dg_dgs(
   G exp_series = Identity<G>();
   for (const auto & [j, vj] : utils::zip(std::views::iota(0u), vs)) {
     const TangentMap<G> DrExpinv = dr_expinv<G>(vj);
-    const TangentMap<G> DlExpinv = dl_expinv<G>(vj);
+    const TangentMap<G> DlExpinv = -ad<G>(vj) + DrExpinv;  // cheaper formula
     dg_dgs.template middleCols<Dof<G>>(j * Dof<G>) -=
       dg_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DlExpinv;
     dg_dgs.template middleCols<Dof<G>>((j + 1) * Dof<G>) +=
