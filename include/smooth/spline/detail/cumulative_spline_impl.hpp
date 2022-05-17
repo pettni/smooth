@@ -13,7 +13,8 @@ G cspline_eval_vs(
   const MatrixType auto & Bcum,
   Scalar<G> u,
   OptTangent<G> vel,
-  OptTangent<G> acc)
+  OptTangent<G> acc,
+  OptTangent<G> jer)
 noexcept
 {
   assert(std::ranges::size(vs) == K);
@@ -21,15 +22,18 @@ noexcept
   assert(Bcum.rows() == K + 1);
 
   assert(!acc.has_value() || vel.has_value());  // need vel for computation
+  assert(!jer.has_value() || acc.has_value());  // need acc for computation
 
-  const auto U = monomial_derivatives<K, 2, Scalar<G>>(u);
+  const auto U = monomial_derivatives<K, 3, Scalar<G>>(u);
 
   Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> uvec(U[0].data());
   Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> duvec(U[1].data());
   Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> d2uvec(U[2].data());
+  Eigen::Map<const Eigen::Vector<Scalar<G>, K + 1>> d3uvec(U[3].data());
 
   if (vel.has_value()) { vel.value().setZero(); }
   if (acc.has_value()) { acc.value().setZero(); }
+  if (jer.has_value()) { jer.value().setZero(); }
 
   G g = Identity<G>(dof(*std::ranges::cbegin(vs)));
 
@@ -43,10 +47,19 @@ noexcept
       vel.value().applyOnTheLeft(Adj);
       vel.value().noalias() += dBj * vj;
       if (acc.has_value()) {
-        const Scalar<G> d2Bj = d2uvec.dot(Bcum.col(j));
+        const Scalar<G> d2Bj            = d2uvec.dot(Bcum.col(j));
+        const Tangent<G> vel_bracket_vj = ad<G>(vel.value()) * vj;
         acc.value().applyOnTheLeft(Adj);
-        acc.value().noalias() += dBj * ad<G>(vel.value()) * vj;
+        acc.value().noalias() += dBj * vel_bracket_vj;
         acc.value().noalias() += d2Bj * vj;
+        if (jer.has_value()) {
+          const Scalar<G> d3Bj = d3uvec.dot(Bcum.col(j));
+          jer.value().applyOnTheLeft(Adj);
+          jer.value().noalias() += 2 * dBj * ad<G>(acc.value()) * vj;
+          jer.value().noalias() -= dBj * dBj * ad<G>(vel_bracket_vj) * vj;
+          jer.value().noalias() += d2Bj * vel_bracket_vj;
+          jer.value().noalias() += d3Bj * vj;
+        }
       }
     }
   }
@@ -127,7 +140,12 @@ noexcept
 template<int K, std::ranges::sized_range R, LieGroup G>
   requires(K > 0)
 G cspline_eval_gs(
-  R && gs, const MatrixType auto & Bcum, Scalar<G> u, OptTangent<G> vel, OptTangent<G> acc)
+  R && gs,
+  const MatrixType auto & Bcum,
+  Scalar<G> u,
+  OptTangent<G> vel,
+  OptTangent<G> acc,
+  OptTangent<G> jer)
 noexcept
 {
   assert(std::ranges::size(gs) == K + 1);
@@ -135,7 +153,7 @@ noexcept
   static constexpr auto sub = [](const auto & x1, const auto & x2) { return rminus(x2, x1); };
   const auto vs             = gs | utils::views::pairwise_transform(sub);
 
-  return composition(*std::ranges::begin(gs), cspline_eval_vs<K, G>(vs, Bcum, u, vel, acc));
+  return composition(*std::ranges::begin(gs), cspline_eval_vs<K, G>(vs, Bcum, u, vel, acc, jer));
 }
 
 template<int K, std::ranges::sized_range R, LieGroup G>

@@ -32,6 +32,7 @@ using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
  * @param[in] u time point to evaluate spline at (clamped to [0, 1])
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
+ * @param[out] jer calculate third order derivative w.r.t. u
  *
  * @return g
  */
@@ -42,7 +43,8 @@ inline G cspline_eval_vs(
   const MatrixType auto & Bcum,
   Scalar<G> u,
   OptTangent<G> vel = {},
-  OptTangent<G> acc = {}) noexcept;
+  OptTangent<G> acc = {},
+  OptTangent<G> jer = {}) noexcept;
 
 /// @brief Jacobian of order K spline value w.r.t. coefficients.
 template<LieGroup G, int K>
@@ -94,6 +96,7 @@ noexcept;
  * @param[in] u time point to evaluate spline at (clamped to [0, 1])
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
+ * @param[out] jer calculate third order derivative w.r.t. u
  */
 template<int K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
   requires(K > 0)
@@ -102,7 +105,8 @@ inline G cspline_eval_gs(
   const MatrixType auto & Bcum,
   Scalar<G> u,
   OptTangent<G> vel = {},
-  OptTangent<G> acc = {}) noexcept;
+  OptTangent<G> acc = {},
+  OptTangent<G> jer = {}) noexcept;
 
 /**
  * @brief Derivatives of a cumulative spline w.r.t. the coefficients.

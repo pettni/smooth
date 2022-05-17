@@ -216,6 +216,26 @@ TEST_F(SplineDerivative, acc)
   }
 }
 
+TEST_F(SplineDerivative, jer)
+{
+  for (auto i = 0u; i < 5; ++i) {
+    randomize();
+
+    const auto f_diff = [&](auto var) -> smooth::Tangent<G> {
+      smooth::Tangent<G> vel, acc;
+      smooth::cspline_eval_gs<K>(xs, M, var, vel, acc);
+      return acc;
+    };
+    const auto [unused, d3x_dt_num] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
+
+    smooth::Tangent<G> dx_dt_ana, d2x_dt_ana, d3x_dt_ana;
+    smooth::cspline_eval_gs<K>(xs, M, u, dx_dt_ana, d2x_dt_ana, d3x_dt_ana);
+
+    ASSERT_TRUE(d3x_dt_ana.isApprox(d3x_dt_num, 1e-5));
+  }
+}
+
 TEST_F(SplineDerivative, dx_dcoef)
 {
   for (auto i = 0u; i < 5; ++i) {
