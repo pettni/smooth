@@ -116,6 +116,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a47501090046cf27641c6badc98c73ab4 inherit pub_methods_classsmooth_1_1SO3Base"><td class="memItemLeft" align="right" valign="top">Eigen::Vector3&lt; <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SO3Base.html#a47501090046cf27641c6badc98c73ab4">operator*</a> (const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v) const</td></tr>
 <tr class="memdesc:a47501090046cf27641c6badc98c73ab4 inherit pub_methods_classsmooth_1_1SO3Base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rotation action on 3D vector.  <a href="classsmooth_1_1SO3Base.html#a47501090046cf27641c6badc98c73ab4">More...</a><br /></td></tr>
 <tr class="separator:a47501090046cf27641c6badc98c73ab4 inherit pub_methods_classsmooth_1_1SO3Base"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9b453fee4ff9a8992d7e71090741a66 inherit pub_methods_classsmooth_1_1SO3Base"><td class="memItemLeft" align="right" valign="top">Eigen::Matrix3&lt; <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SO3Base.html#ad9b453fee4ff9a8992d7e71090741a66">dr_action</a> (const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v) const</td></tr>
+<tr class="memdesc:ad9b453fee4ff9a8992d7e71090741a66 inherit pub_methods_classsmooth_1_1SO3Base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobian of rotation action w.r.t. group.  <a href="classsmooth_1_1SO3Base.html#ad9b453fee4ff9a8992d7e71090741a66">More...</a><br /></td></tr>
+<tr class="separator:ad9b453fee4ff9a8992d7e71090741a66 inherit pub_methods_classsmooth_1_1SO3Base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23fbee46af3d5a7737ef1c90d9aaa01d inherit pub_methods_classsmooth_1_1SO3Base"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsmooth_1_1SO2.html">SO2</a>&lt; <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SO3Base.html#a23fbee46af3d5a7737ef1c90d9aaa01d">project_so2</a> () const</td></tr>
 <tr class="memdesc:a23fbee46af3d5a7737ef1c90d9aaa01d inherit pub_methods_classsmooth_1_1SO3Base"><td class="mdescLeft">&#160;</td><td class="mdescRight">Project to SO2.  <a href="classsmooth_1_1SO3Base.html#a23fbee46af3d5a7737ef1c90d9aaa01d">More...</a><br /></td></tr>
 <tr class="separator:a23fbee46af3d5a7737ef1c90d9aaa01d inherit pub_methods_classsmooth_1_1SO3Base"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,7 +146,7 @@ Additional Inherited Members</h2></td></tr>
 class smooth::SO3&lt; _Scalar &gt;</div><p >Storage implementation of <a class="el" href="classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group.">SO3</a> Lie group. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1SO3Base.html" title="Base class for SO3 Lie group types.">SO3Base</a> for group API. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00153">153</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00166">166</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af75cc7067b9f9758f0b3eb198d97a554" name="af75cc7067b9f9758f0b3eb198d97a554"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af75cc7067b9f9758f0b3eb198d97a554">&#9670;&nbsp;</a></span>SO3()</h2>
@@ -182,7 +185,7 @@ template&lt;typename Derived &gt; </div>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Input is normalized inside constructor. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00168">168</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00181">181</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>
@@ -221,7 +224,7 @@ template&lt;typename _Scalar &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00177">177</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00190">190</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>
@@ -259,7 +262,7 @@ template&lt;typename _Scalar &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00191">191</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00204">204</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>
@@ -297,7 +300,7 @@ template&lt;typename _Scalar &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00205">205</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00218">218</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>

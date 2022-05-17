@@ -111,6 +111,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a47501090046cf27641c6badc98c73ab4"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Vector3&lt; <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SO3Base.html#a47501090046cf27641c6badc98c73ab4">operator*</a> (const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v) const</td></tr>
 <tr class="memdesc:a47501090046cf27641c6badc98c73ab4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rotation action on 3D vector.  <a href="classsmooth_1_1SO3Base.html#a47501090046cf27641c6badc98c73ab4">More...</a><br /></td></tr>
 <tr class="separator:a47501090046cf27641c6badc98c73ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9b453fee4ff9a8992d7e71090741a66"><td class="memTemplParams" colspan="2">template&lt;typename EigenDerived &gt; </td></tr>
+<tr class="memitem:ad9b453fee4ff9a8992d7e71090741a66"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix3&lt; <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SO3Base.html#ad9b453fee4ff9a8992d7e71090741a66">dr_action</a> (const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;v) const</td></tr>
+<tr class="memdesc:ad9b453fee4ff9a8992d7e71090741a66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobian of rotation action w.r.t. group.  <a href="classsmooth_1_1SO3Base.html#ad9b453fee4ff9a8992d7e71090741a66">More...</a><br /></td></tr>
+<tr class="separator:ad9b453fee4ff9a8992d7e71090741a66"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23fbee46af3d5a7737ef1c90d9aaa01d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsmooth_1_1SO2.html">SO2</a>&lt; <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1SO3Base.html#a23fbee46af3d5a7737ef1c90d9aaa01d">project_so2</a> () const</td></tr>
 <tr class="memdesc:a23fbee46af3d5a7737ef1c90d9aaa01d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Project to <a class="el" href="classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group.">SO2</a>.  <a href="classsmooth_1_1SO3Base.html#a23fbee46af3d5a7737ef1c90d9aaa01d">More...</a><br /></td></tr>
 <tr class="separator:a23fbee46af3d5a7737ef1c90d9aaa01d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,6 +151,43 @@ Lie algebra matrix form</h2>
  
 <p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00056">56</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad9b453fee4ff9a8992d7e71090741a66" name="ad9b453fee4ff9a8992d7e71090741a66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9b453fee4ff9a8992d7e71090741a66">&#9670;&nbsp;</a></span>dr_action()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename _Derived &gt; </div>
+<div class="memtemplate">
+template&lt;typename EigenDerived &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::Matrix3&lt; <a class="el" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> &gt; <a class="el" href="classsmooth_1_1SO3Base.html">smooth::SO3Base</a>&lt; _Derived &gt;::dr_action </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::MatrixBase&lt; EigenDerived &gt; &amp;&#160;</td>
+          <td class="paramname"><em>v</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Jacobian of rotation action w.r.t. group. </p>
+<p class="formulaDsp">
+\[ \mathrm{d}^r (X v)_X \]
+</p>
+ 
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00115">115</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a6e26afdf918ff1be3f734ff5a3fc0c68" name="a6e26afdf918ff1be3f734ff5a3fc0c68"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6e26afdf918ff1be3f734ff5a3fc0c68">&#9670;&nbsp;</a></span>eulerAngles()</h2>
 
@@ -265,7 +306,7 @@ template&lt;typename _Derived &gt; </div>
 <p >This keeps the yaw/z axis component of the rotation.</p>
 <dl class="section note"><dt>Note</dt><dd><a class="el" href="classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group.">SO2</a> header must be included. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00114">114</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="so3_8hpp_source.html#l00127">127</a> of file <a class="el" href="so3_8hpp_source.html">so3.hpp</a>.</p>
 
 </div>
 </div>
