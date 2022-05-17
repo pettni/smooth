@@ -68,6 +68,10 @@ add_executable(test_se3 test_se3.cpp)
 target_link_libraries(test_se3 PRIVATE TestConfig)
 gtest_discover_tests(test_se3)
 
+add_executable(test_galilei test_galilei.cpp)
+target_link_libraries(test_galilei PRIVATE TestConfig)
+gtest_discover_tests(test_galilei)
+
 add_executable(test_c1 test_c1.cpp)
 target_link_libraries(test_c1 PRIVATE TestConfig)
 gtest_discover_tests(test_c1)

@@ -5,8 +5,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include <complex>
-
 #include "detail/lie_group_base.hpp"
 #include "detail/macro.hpp"
 #include "detail/se3.hpp"
