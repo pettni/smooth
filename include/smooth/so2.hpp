@@ -95,6 +95,19 @@ public:
   }
 
   /**
+   * @brief Jacobian of rotation action w.r.t. group.
+   *
+   * \f[
+   *   \mathrm{d}^r (X v)_X
+   * \f]
+   */
+  template<typename EigenDerived>
+  Eigen::Matrix<Scalar, 2, 1> dr_action(const Eigen::MatrixBase<EigenDerived> & v) const
+  {
+    return Base::matrix() * Base::hat(Eigen::Vector<Scalar, 1>::Ones()) * v;
+  }
+
+  /**
    * @brief Lift to SO3.
    *
    * Rotation of SO2 is embedded in SO3 as a rotation around the z axis.
@@ -232,4 +245,3 @@ using SO2f = SO2<float>;   ///< SO2 with float scalar representation
 using SO2d = SO2<double>;  ///< SO2 with double scalar representation
 
 }  // namespace smooth
-

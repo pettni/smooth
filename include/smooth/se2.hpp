@@ -124,6 +124,22 @@ public:
   }
 
   /**
+   * @brief Jacobian of rotation action w.r.t. group.
+   *
+   * \f[
+   *   \mathrm{d}^r (X v)_X
+   * \f]
+   */
+  template<typename EigenDerived>
+  Eigen::Matrix<Scalar, 2, 3> dr_action(const Eigen::MatrixBase<EigenDerived> & v) const
+  {
+    Eigen::Matrix<Scalar, 2, 3> ret;
+    ret.template leftCols<2>()  = so2().matrix();
+    ret.template rightCols<1>() = so2().dr_action(v);
+    return ret;
+  }
+
+  /**
    * @brief Lift to SE3.
    *
    * @note SE3 header must be included.
@@ -238,4 +254,3 @@ using SE2f = SE2<float>;   ///< SE2 with float
 using SE2d = SE2<double>;  ///< SE2 with double
 
 }  // namespace smooth
-

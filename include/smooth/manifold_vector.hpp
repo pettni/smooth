@@ -5,13 +5,10 @@
 /**
  * @file
  * @brief Trait specialization to make std::vector<Manifold> a Manifold.
- *
- * TODO(pettni) remove class and just use std::vector
  */
 
 #include <Eigen/Sparse>
 
-#include <numeric>
 #include <ranges>
 
 #include "detail/utils.hpp"

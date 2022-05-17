@@ -13,9 +13,13 @@
 
 namespace smooth {
 
+/**
+ * @brief Manifold interface for std::variant<Manifold...>
+ */
 template<Manifold... Ms>
 struct traits::man<std::variant<Ms...>>
 {
+  // \cond
   using Scalar      = std::common_type_t<typename traits::man<Ms>::Scalar...>;
   using PlainObject = std::variant<Ms...>;
   template<typename NewScalar>
@@ -59,6 +63,7 @@ struct traits::man<std::variant<Ms...>>
     };
     return std::visit(visitor, m1);
   }
+  // \endcond
 };
 
 }  // namespace smooth

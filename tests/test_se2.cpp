@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include "smooth/diff.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 
@@ -67,6 +68,24 @@ TEST(SE2, Action)
   Eigen::Vector2d w(5, 5);
 
   ASSERT_TRUE((tr * w).isApprox(Eigen::Vector2d(6, 7)));
+}
+
+TEST(SE2, dAction)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    smooth::SE2d g = smooth::SE2d::Random();
+
+    Eigen::Vector2d v = Eigen::Vector2d::Random();
+
+    const auto f_diff = [&v](const smooth::SE2d & var) { return var * v; };
+
+    const auto [unused, J_num] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
+
+    const auto J_ana = g.dr_action(v);
+
+    ASSERT_TRUE(J_num.isApprox(J_ana, 1e-5));
+  }
 }
 
 TEST(SE2, LiftProject)

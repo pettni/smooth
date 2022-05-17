@@ -2,6 +2,7 @@
 
 #include <gtest/gtest.h>
 
+#include "smooth/diff.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 
@@ -95,6 +96,24 @@ TEST(SO3, Action)
     ASSERT_TRUE((g * v).isApprox(q * v));
     ASSERT_TRUE((g * v).isApprox(g.quat() * v));
     ASSERT_TRUE((g * v).isApprox(g.matrix() * v));
+  }
+}
+
+TEST(SO3, dAction)
+{
+  for (auto i = 0u; i != 5; ++i) {
+    smooth::SO3d g = smooth::SO3d::Random();
+
+    Eigen::Vector3d v = Eigen::Vector3d::Random();
+
+    const auto f_diff = [&v](const smooth::SO3d & var) { return var * v; };
+
+    const auto [unused, J_num] =
+      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
+
+    const auto J_ana = g.dr_action(v);
+
+    ASSERT_TRUE(J_num.isApprox(J_ana, 1e-5));
   }
 }
 

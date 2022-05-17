@@ -105,6 +105,19 @@ public:
   }
 
   /**
+   * @brief Jacobian of rotation action w.r.t. group.
+   *
+   * \f[
+   *   \mathrm{d}^r (X v)_X
+   * \f]
+   */
+  template<typename EigenDerived>
+  Eigen::Matrix3<Scalar> dr_action(const Eigen::MatrixBase<EigenDerived> & v) const
+  {
+    return -Base::matrix() * Base::hat(v);
+  }
+
+  /**
    * @brief Project to SO2.
    *
    * This keeps the yaw/z axis component of the rotation.
@@ -257,4 +270,3 @@ using SO3f = SO3<float>;   ///< SO3 with float scalar representation
 using SO3d = SO3<double>;  ///< SO3 with double scalar representation
 
 }  // namespace smooth
-
