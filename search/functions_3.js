@@ -14,7 +14,7 @@ var searchData=
   ['default_11',['Default',['../manifold_8hpp.html#a9137b03366cf204984cef08ce64dd16d',1,'smooth::Default(Eigen::Index dof)'],['../manifold_8hpp.html#a012f3f090ec7daf2a816f02350bfe949',1,'smooth::Default()']]],
   ['dl_5fexp_12',['dl_exp',['../lie__group_8hpp.html#a4636dfa6cc060b2ace37693d0a7a69ba',1,'smooth']]],
   ['dl_5fexpinv_13',['dl_expinv',['../lie__group_8hpp.html#a68817545d9ca217df930e0ed6c1522c0',1,'smooth']]],
-  ['dof_14',['dof',['../classsmooth_1_1ManifoldVector.html#afe863849b329e3debe6737c72a63d2d0',1,'smooth::ManifoldVector::dof()'],['../manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2',1,'smooth::dof()']]],
+  ['dof_14',['dof',['../manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2',1,'smooth']]],
   ['dr_15',['dr',['../diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292',1,'smooth::diff::dr(auto &amp;&amp;f, auto &amp;&amp;x)'],['../diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431',1,'smooth::diff::dr(auto &amp;&amp;f, auto &amp;&amp;x)']]],
   ['dr_5fautodiff_16',['dr_autodiff',['../autodiff_8hpp.html#aee51398daa2534c0ce4252bade8b342f',1,'smooth::diff']]],
   ['dr_5fceres_17',['dr_ceres',['../ceres_8hpp.html#ad42f5ad6a0991cd8fcacb644fc5fa0c8',1,'smooth']]],

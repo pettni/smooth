@@ -172,7 +172,8 @@ Concepts and Types</h2>
 <ul>
 <li><code>Manifold</code>: type for which <code>rplus</code> (geodesic addition) and <code>rminus</code> (geodesic subtraction) are defined. Examples:<ul>
 <li>All <code>LieGroup</code> types</li>
-<li><code><a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">smooth::ManifoldVector</a>&lt;Manifold&gt;</code> from <code><a class="el" href="manifold__vector_8hpp.html" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold.">manifold_vector.hpp</a></code>&mdash;facilitates e.g. optimization and differentiation w.r.t. a dynamic number of <code>Manifold</code>s</li>
+<li><code>std::vector&lt;Manifold&gt;</code> is a Manifold defined in <code><a class="el" href="manifold__vector_8hpp.html" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold.">manifold_vector.hpp</a></code>&mdash;it facilitates e.g. optimization and differentiation w.r.t. a dynamic number of <code>Manifold</code>s</li>
+<li><code>std::variant&lt;Manifold ...&gt;</code> is a Manifold defined in <code><a class="el" href="manifold__variant_8hpp.html" title="Trait specialization to make std::variant&lt;Manifold...&gt; a Manifold.">manifold_variant.hpp</a></code>. Using <code>std::vector&lt;std::variant&lt;Manifold...&gt;&gt;</code> can be convenient when optimizing over variables with different parameterizations.</li>
 </ul>
 </li>
 <li><code>LieGroup</code>: type for which Lie group operations (<code>exp</code>, <code>log</code>, <code>Ad</code>, etc...) are defined. Examples:<ul>

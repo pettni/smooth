@@ -95,31 +95,22 @@ $(function() {
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>  <a class="code hl_enumvalue" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2aa9febdb972defe22c386d56c08d3a14d">Autodiff</a>,   </div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>  <a class="code hl_enumvalue" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3">Ceres</a>,      </div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>  <a class="code hl_enumvalue" href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791">Analytic</a>,   </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>  <a class="code hl_function" href="manifold_8hpp.html#a9137b03366cf204984cef08ce64dd16d">Default</a>     </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>};</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">static</span> <span class="keyword">constexpr</span> Type DefaultType =</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="preprocessor">#ifdef SMOOTH_DIFF_AUTODIFF</span></div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>  Type::Autodiff;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#elif defined SMOOTH_DIFF_CERES</span></div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  Type::Ceres;</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span><span class="preprocessor">#else</span></div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  Type::Numerical;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="preprocessor">#endif</span></div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, Type D&gt;</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">   65</a></span><span class="keyword">auto</span> <a class="code hl_function" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x);</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K = 1&gt;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">   80</a></span><span class="keyword">auto</span> <a class="code hl_function" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x);</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>}  <span class="comment">// namespace smooth::diff</span></div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="preprocessor">#include &quot;detail/diff_impl.hpp&quot;</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>  <a class="code hl_function" href="manifold_8hpp.html#a9137b03366cf204984cef08ce64dd16d">Default</a>     </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>};</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, Type D&gt;</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">   57</a></span><span class="keyword">auto</span> <a class="code hl_function" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x);</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K = 1&gt;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="diff_8hpp.html#a336ed568f913d4bcf16ea1d612e1e431">   72</a></span><span class="keyword">auto</span> <a class="code hl_function" href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">dr</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x);</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>}  <span class="comment">// namespace smooth::diff</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">#include &quot;detail/diff_impl.hpp&quot;</span></div>
 <div class="ttc" id="adiff_8hpp_html_ad20b9b1df460866e786b8c62aac8b292"><div class="ttname"><a href="diff_8hpp.html#ad20b9b1df460866e786b8c62aac8b292">smooth::diff::dr</a></div><div class="ttdeci">auto dr(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Differentiation in tangent space.</div></div>
 <div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2">smooth::diff::Type</a></div><div class="ttdeci">Type</div><div class="ttdoc">Available differentiation methods.</div><div class="ttdef"><b>Definition:</b> <a href="diff_8hpp_source.html#l00022">diff.hpp:22</a></div></div>
 <div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2a5225763efc97aebd39e5a303fceb57ac"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a5225763efc97aebd39e5a303fceb57ac">smooth::diff::Type::Numerical</a></div><div class="ttdeci">@ Numerical</div><div class="ttdoc">Numerical (forward) derivatives.</div></div>
-<div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791">smooth::diff::Type::Analytic</a></div><div class="ttdeci">@ Analytic</div><div class="ttdoc">Hand-coded derivative,.</div></div>
+<div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791">smooth::diff::Type::Analytic</a></div><div class="ttdeci">@ Analytic</div></div>
 <div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2aa9febdb972defe22c386d56c08d3a14d"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2aa9febdb972defe22c386d56c08d3a14d">smooth::diff::Type::Autodiff</a></div><div class="ttdeci">@ Autodiff</div></div>
 <div class="ttc" id="adiff_8hpp_html_ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3"><div class="ttname"><a href="diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3">smooth::diff::Type::Ceres</a></div><div class="ttdeci">@ Ceres</div></div>
 <div class="ttc" id="amanifold_8hpp_html"><div class="ttname"><a href="manifold_8hpp.html">manifold.hpp</a></div></div>

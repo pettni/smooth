@@ -171,8 +171,7 @@ Functions</h2></td></tr>
 </td></tr>
 <tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3" name="ad993f4e6edc070efeac1192d6663c7c2ae39d9ffcf08b637ebf7ace59509ef5d3"></a>Ceres&#160;</td><td class="fielddoc"><p >Uses the Ceres (<a href="http://ceres-solver.org">http://ceres-solver.org</a>) built-in autodiff; requires <code><a class="el" href="ceres_8hpp.html" title="ceres compatability header.">compat/ceres.hpp</a></code> </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791" name="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"></a>Analytic&#160;</td><td class="fielddoc"><p >Hand-coded derivative,. </p>
-<dl class="section see"><dt>See also</dt><dd>diffable_order1, diffable_order2 </dd></dl>
+<tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791" name="ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791"></a>Analytic&#160;</td><td class="fielddoc"><p >Hand-coded derivative. Type must have a function named 'jacobian' : x -&gt; Mat (order 1) and 'hesssian': x -&gt; Mat (order 2) that compute the derivatives. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67" name="ad993f4e6edc070efeac1192d6663c7c2a7a1920d61156abc05a60135aefe8bc67"></a>Default&#160;</td><td class="fielddoc"><p >Select based on availability (Analytic &gt; Autodiff &gt; Ceres &gt; Numerical) </p>
 </td></tr>

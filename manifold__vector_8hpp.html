@@ -75,8 +75,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle"><div class="title">manifold_vector.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -85,18 +84,22 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;Eigen/Sparse&gt;</code><br />
 <code>#include &lt;numeric&gt;</code><br />
+<code>#include &lt;ranges&gt;</code><br />
+<code>#include &quot;detail/utils.hpp&quot;</code><br />
 <code>#include &quot;<a class="el" href="manifold_8hpp_source.html">manifold.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for manifold_vector.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="manifold__vector_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2manifold__vector_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2manifold__vector_8hpp" id="ainclude_2smooth_2manifold__vector_8hpp">
-<area shape="rect" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="81,5,244,47"/>
+<area shape="rect" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="171,5,333,47"/>
 <area shape="rect" title=" " alt="" coords="5,95,104,121"/>
 <area shape="rect" title=" " alt="" coords="129,95,197,121"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="221,95,315,121"/>
-<area shape="rect" title=" " alt="" coords="173,169,259,196"/>
-<area shape="rect" title=" " alt="" coords="283,169,357,196"/>
+<area shape="rect" title=" " alt="" coords="221,95,283,121"/>
+<area shape="rect" title=" " alt="" coords="307,95,413,121"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="437,95,531,121"/>
+<area shape="rect" title=" " alt="" coords="389,169,475,196"/>
+<area shape="rect" title=" " alt="" coords="499,169,573,196"/>
 </map>
 </div>
 </div>
@@ -104,58 +107,16 @@ Include dependency graph for manifold_vector.hpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1ManifoldVector.html">smooth::ManifoldVector&lt; M &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><code>std::vector</code> based Manifold container.  <a href="classsmooth_1_1ManifoldVector.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1traits_1_1man_3_01std_1_1vector_3_01M_01_4_01_4.html">smooth::traits::man&lt; std::vector&lt; M &gt; &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manifold interface for std::vector&lt;Manifold&gt;  <a href="structsmooth_1_1traits_1_1man_3_01std_1_1vector_3_01M_01_4_01_4.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1traits_1_1man_3_01ManifoldVector_3_01M_01_4_01_4.html">smooth::traits::man&lt; ManifoldVector&lt; M &gt; &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manifold interface for <a class="el" href="classsmooth_1_1ManifoldVector.html" title="std::vector based Manifold container.">ManifoldVector</a>.  <a href="structsmooth_1_1traits_1_1man_3_01ManifoldVector_3_01M_01_4_01_4.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a0596e0f9d76dc7ac52cbc925a37314dd"><td class="memTemplParams" colspan="2">template&lt;typename Stream , <a class="el" href="conceptsmooth_1_1Manifold.html">smooth::Manifold</a> M&gt; </td></tr>
-<tr class="memitem:a0596e0f9d76dc7ac52cbc925a37314dd"><td class="memTemplItemLeft" align="right" valign="top">Stream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="manifold__vector_8hpp.html#a0596e0f9d76dc7ac52cbc925a37314dd">operator&lt;&lt;</a> (Stream &amp;s, const <a class="el" href="classsmooth_1_1ManifoldVector.html">smooth::ManifoldVector</a>&lt; M &gt; &amp;g)</td></tr>
-<tr class="separator:a0596e0f9d76dc7ac52cbc925a37314dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Trait specialization to make std::vector&lt;Manifold&gt; a Manifold. </p>
 <p >TODO(pettni) remove class and just use std::vector </p>
 
 <p class="definition">Definition in file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
-<a id="a0596e0f9d76dc7ac52cbc925a37314dd" name="a0596e0f9d76dc7ac52cbc925a37314dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0596e0f9d76dc7ac52cbc925a37314dd">&#9670;&nbsp;</a></span>operator&lt;&lt;()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Stream , <a class="el" href="conceptsmooth_1_1Manifold.html">smooth::Manifold</a> M&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">Stream &amp; operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype">Stream &amp;&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classsmooth_1_1ManifoldVector.html">smooth::ManifoldVector</a>&lt; M &gt; &amp;&#160;</td>
-          <td class="paramname"><em>g</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="manifold__vector_8hpp_source.html#l00195">195</a> of file <a class="el" href="manifold__vector_8hpp_source.html">manifold_vector.hpp</a>.</p>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.2
