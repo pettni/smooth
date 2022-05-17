@@ -59,10 +59,10 @@ struct TnImpl
 {
   using Scalar = _Scalar;
 
-  static constexpr Eigen::Index Dim     = N + 1;
-  static constexpr Eigen::Index Dof     = N;
-  static constexpr Eigen::Index RepSize = N;
-  static constexpr bool IsCommutative   = true;
+  static constexpr int Dim            = N + 1;
+  static constexpr int Dof            = N;
+  static constexpr int RepSize        = N;
+  static constexpr bool IsCommutative = true;
 
   SMOOTH_DEFINE_REFS;
 

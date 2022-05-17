@@ -59,7 +59,7 @@ requires  (Eigen::Index dof) {
   // Default representation
   typename traits::man<M>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
-  {traits::man<M>::Dof}->std::convertible_to<Eigen::Index>;
+  {traits::man<M>::Dof}->std::convertible_to<int>;
   // A default-initialized Manifold object (if Dof > 0 then dof = Dof can be assumed)
   {traits::man<M>::Default(dof)}->std::convertible_to<typename traits::man<M>::PlainObject>;
 } &&
@@ -210,7 +210,7 @@ struct man<M>
  * @note Equal to -1 for a dynamically sized Manifold
  */
 template<Manifold M>
-static inline constexpr Eigen::Index Dof = traits::man<M>::Dof;
+static inline constexpr int Dof = traits::man<M>::Dof;
 
 // Types
 

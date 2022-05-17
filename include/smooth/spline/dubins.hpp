@@ -175,9 +175,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
       };
     }
   }
@@ -188,9 +188,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
       };
     }
   }
@@ -201,9 +201,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
       };
     }
   }
@@ -214,9 +214,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
       };
     }
   }
@@ -227,9 +227,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
       };
     }
   }
@@ -240,9 +240,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
       };
     }
   }
@@ -258,7 +258,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
  * @param R turning radius.
  * @return Spline representing a Dubins motion starting at Identity.
  */
-template<std::size_t K = 3>
+template<int K = 3>
   requires(K >= 1)
 Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
 {

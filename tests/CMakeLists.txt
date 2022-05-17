@@ -19,12 +19,12 @@ target_compile_options(
   -Wunused
   -Woverloaded-virtual
   -Wpedantic
-  # -Wconversion        TODO enable and fix
-  # -Wsign-conversion   TODO enable and fix
+  -Wconversion
+  -Wsign-conversion
   -Wnull-dereference
   -Wdouble-promotion
   -Wimplicit-fallthrough
-  -Werror
+  # -Werror
 )
 target_link_libraries(
   TestConfig
@@ -129,7 +129,7 @@ gtest_discover_tests(test_sparse)
 # COMPATABILITY TESTS
 
 find_package(Boost QUIET)
-find_package(Ceres 2 QUIET)
+find_package(Ceres 2.1 QUIET)
 find_package(autodiff 0.6 QUIET)
 find_package(geometry_msgs QUIET)
 

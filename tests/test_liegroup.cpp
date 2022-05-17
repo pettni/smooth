@@ -405,9 +405,9 @@ TYPED_TEST(LieGroupInterface, Jacobians)
   }
 
   if constexpr (std::is_same_v<Scalar, float>) {
-    eps = 1e-3;  // precision loss is pretty bad for float
+    eps = Scalar(1e-3);  // precision loss is pretty bad for float
   } else {
-    eps = 1e-6;
+    eps = Scalar(1e-6);
   }
 
   // check infinitesimal step for exp (right)

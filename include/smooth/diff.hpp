@@ -73,12 +73,12 @@ auto dr_numerical(auto && f, auto && x)
   Result fval = std::apply(f, x_nc);
 
   // static sizes
-  static constexpr Eigen::Index Nx = wrt_Dof<Wrt>();
-  static constexpr Eigen::Index Ny = Dof<Result>;
+  static constexpr auto Nx = wrt_Dof<Wrt>();
+  static constexpr auto Ny = Dof<Result>;
 
   // dynamic sizes
-  Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x_nc);
-  Eigen::Index ny = dof<Result>(fval);
+  const auto nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x_nc);
+  const auto ny = dof<Result>(fval);
 
   // output variable
   Eigen::Matrix<Scalar, Ny, Nx> J(ny, nx);
@@ -89,8 +89,8 @@ auto dr_numerical(auto && f, auto && x)
       auto & w = std::get<i>(x_nc);
       using W  = std::decay_t<decltype(w)>;
 
-      static constexpr Eigen::Index Nx_j = Dof<W>;
-      const int nx_j                     = dof<W>(w);
+      static constexpr auto Nx_j = Dof<W>;
+      const auto nx_j            = dof<W>(w);
 
       for (auto j = 0; j != nx_j; ++j) {
         Scalar eps_j = eps;
@@ -116,17 +116,17 @@ auto dr_numerical(auto && f, auto && x)
 
     Eigen::Index I0 = 0;
     utils::static_for<NumArgs>([&](auto i0) {
-      auto & w0                           = std::get<i0>(x_nc);
-      using W0                            = std::decay_t<decltype(w0)>;
-      static constexpr Eigen::Index Nx_i0 = Dof<W0>;
-      const int nx_i0                     = dof<W0>(w0);
+      auto & w0                   = std::get<i0>(x_nc);
+      using W0                    = std::decay_t<decltype(w0)>;
+      static constexpr auto Nx_i0 = Dof<W0>;
+      const auto nx_i0            = dof<W0>(w0);
 
       Eigen::Index I1 = 0;
       utils::static_for<NumArgs>([&](auto i1) {
-        auto & w1                           = std::get<i1>(x_nc);
-        using W1                            = std::decay_t<decltype(w1)>;
-        static constexpr Eigen::Index Nx_i1 = Dof<W1>;
-        const int nx_i1                     = dof<W1>(w1);
+        auto & w1                   = std::get<i1>(x_nc);
+        using W1                    = std::decay_t<decltype(w1)>;
+        static constexpr auto Nx_i1 = Dof<W1>;
+        const auto nx_i1            = dof<W1>(w1);
 
         for (auto k0 = 0; k0 != nx_i0; ++k0) {
           Scalar eps0 = sqrteps;

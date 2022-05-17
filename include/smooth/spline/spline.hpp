@@ -49,7 +49,7 @@ namespace smooth {
  * A Spline is a continuous function \f$ x : [0, T] \rightarrow \mathbb{G} \f$.
  * Internally it is a piecewise collection of cumulative polynomial segments.
  */
-template<std::size_t K, LieGroup G>
+template<int K, LieGroup G>
   requires(Dof<G> > 0)
 class Spline
 {
@@ -392,8 +392,8 @@ public:
     } else {
       // compensate for cropped intervals
       if (seg_T0_[istar] > 0) {
-        g0 = composition(
-          g0, inverse(cspline_eval_vs<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
+        g0 =
+          composition(g0, inverse(cspline_eval_vs<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
       }
       const CastT<S, G> add = cspline_eval_vs<K, CastT<S, G>>(
         Vs_[istar].template cast<S>().colwise(), B_.template cast<S>(), u, vel, acc);
@@ -538,7 +538,8 @@ private:
 
     auto it = utils::binary_interval_search(end_t_, t);
     if (it != end_t_.end()) {
-      istar = std::min<std::size_t>((it - end_t_.begin()) + 1, end_t_.size() - 1);
+      istar = std::min(
+        static_cast<std::size_t>(std::distance(end_t_.begin(), it)) + 1, end_t_.size() - 1);
     }
 
     return istar;

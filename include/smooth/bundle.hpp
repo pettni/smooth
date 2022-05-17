@@ -83,7 +83,7 @@ public:
   /**
    * @brief Number of elements in Bundle.
    */
-  static constexpr Eigen::Index BundleSize = Impl::BundleSize;
+  static constexpr auto BundleSize = Impl::BundleSize;
 
   /**
    * @brief Part type.
@@ -95,13 +95,13 @@ public:
    * @brief Part starting index (degrees of freedom).
    */
   template<std::size_t Idx>
-  static constexpr std::size_t PartStart = Impl::DofsPsum[Idx];
+  static constexpr auto PartStart = Impl::DofsPsum[Idx];
 
   /**
    * @brief Part degrees of freedom.
    */
   template<std::size_t Idx>
-  static constexpr std::size_t PartDof = Impl::Dofs[Idx];
+  static constexpr auto PartDof = Impl::Dofs[Idx];
 
   /**
    * @brief Access part no Idx of Bundle.

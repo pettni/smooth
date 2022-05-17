@@ -77,8 +77,8 @@ binary_interval_search(std::ranges::random_access_range auto && r, auto && t, au
       alpha = (static_cast<double>(t) - static_cast<double>(*left))
             / static_cast<double>(*(rght - 1) - *left);
     }
-
-    pivot = std::ranges::next(left, alpha * std::distance(left, rght - 1), rght - 2);
+    const auto dist = static_cast<double>(std::distance(left, rght - 1));
+    pivot           = std::ranges::next(left, static_cast<intptr_t>(alpha * dist), rght - 2);
 
     if (wo(*next(pivot), t) <= 0) {
       left = pivot + 1;

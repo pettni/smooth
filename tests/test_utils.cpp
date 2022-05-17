@@ -213,13 +213,14 @@ TEST(Utils, Zip2)
   ASSERT_EQ(
     std::ranges::size(smooth::utils::zip(vals1, vals2)), std::min(vals1.size(), vals2.size()));
 
-  for (auto i = 0; const auto & [v1, v2] : smooth::utils::zip(vals1, vals2)) {
+  for (auto i = 0u; const auto & [v1, v2] : smooth::utils::zip(vals1, vals2)) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals2[i]);
     ++i;
   }
 
-  for (auto i = 0; const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::drop(2))) {
+  for (auto i = 0u;
+       const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::drop(2))) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals1[i + 2]);
     ++i;
@@ -227,7 +228,7 @@ TEST(Utils, Zip2)
 
   const auto minus = [](auto x) { return x - 1; };
 
-  for (auto i = 0;
+  for (auto i = 0u;
        const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::transform(minus))) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals1[i] - 1);
@@ -264,7 +265,7 @@ TEST(Utils, Zip3)
     std::ranges::size(smooth::utils::zip(vals1, vals2, vals3)),
     std::min<std::size_t>({vals1.size(), vals2.size(), vals3.size()}));
 
-  for (auto i = 0; const auto & [v1, v2, v3] : smooth::utils::zip(vals1, vals2, vals3)) {
+  for (auto i = 0u; const auto & [v1, v2, v3] : smooth::utils::zip(vals1, vals2, vals3)) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals2[i]);
     ASSERT_EQ(v3, vals3[i]);
@@ -283,7 +284,7 @@ TEST(Utils, Zip4Iota)
     std::min<std::size_t>({vals1.size(), vals2.size(), vals3.size()}));
 
   for (const auto & [i, v1, v2, v3] :
-       smooth::utils::zip(std::views::iota(0), vals1, vals2, vals3)) {
+       smooth::utils::zip(std::views::iota(0u), vals1, vals2, vals3)) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals2[i]);
     ASSERT_EQ(v3, vals3[i]);

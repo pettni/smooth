@@ -61,7 +61,7 @@ requires (Eigen::Index dof) {
   // Default representation
   typename traits::lie<G>::PlainObject;
   // Compile-time degrees of freedom (tangent space dimension). Can be dynamic (equal to -1)
-  {traits::lie<G>::Dof}->std::convertible_to<Eigen::Index>;
+  {traits::lie<G>::Dof}->std::convertible_to<int>;
   // Commutativity
   {traits::lie<G>::IsCommutative}->std::convertible_to<bool>;
   // Return the identity element (dof = Dof for static size)
@@ -131,7 +131,7 @@ concept NativeLieGroup = requires
   typename G::Scalar;
   typename G::Tangent;
   typename G::PlainObject;
-  {G::Dof}->std::convertible_to<Eigen::Index>;
+  {G::Dof}->std::convertible_to<int>;
   {G::IsCommutative}->std::convertible_to<bool>;
 } &&
 (!(G::Dof > 0) || requires {
@@ -162,8 +162,7 @@ requires(const Eigen::Vector<typename G::Scalar, G::Dof> & a) {
 
 // clang-format on
 
-namespace traits
-{
+namespace traits {
 
 /**
  * @brief LieGroup interface for NativeLieGroup
@@ -177,7 +176,7 @@ struct lie<G>
   using CastT       = typename G::template CastT<NewScalar>;
   using PlainObject = typename G::PlainObject;
 
-  static constexpr Eigen::Index Dof   = G::Dof;
+  static constexpr int Dof            = G::Dof;
   static constexpr bool IsCommutative = G::IsCommutative;
 
   // group interface
@@ -428,7 +427,7 @@ struct man<G>
   template<typename NewScalar>
   using CastT = typename traits::lie<G>::template CastT<NewScalar>;
 
-  static constexpr Eigen::Index Dof = traits::lie<G>::Dof;
+  static constexpr int Dof = traits::lie<G>::Dof;
 
   static inline PlainObject Default(Eigen::Index dof) { return traits::lie<G>::Identity(dof); }
 

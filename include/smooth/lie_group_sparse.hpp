@@ -326,12 +326,17 @@ struct lie_sparse<G>
 
   static inline Eigen::SparseMatrix<Scalar<G>> d2_exp_sparse_pattern = [] {
     Eigen::SparseMatrix<Scalar<G>> ret(3, 9);
-    ret.insert(2, 0)     = 0;
-    ret.insert(2, 1)     = 0;
-    ret.insert(2, 2)     = 0;
-    ret.insert(0, 2)     = 0;
-    ret.insert(1, 2)     = 0;
-    ret.middleCols(3, 3) = ret.leftCols(3);
+    ret.insert(2, 0) = 0;
+    ret.insert(2, 1) = 0;
+    ret.insert(2, 2) = 0;
+    ret.insert(0, 2) = 0;
+    ret.insert(1, 2) = 0;
+
+    ret.insert(2, 3) = 0;
+    ret.insert(2, 4) = 0;
+    ret.insert(2, 5) = 0;
+    ret.insert(0, 5) = 0;
+    ret.insert(1, 5) = 0;
     ret.makeCompressed();
     return ret;
   }();

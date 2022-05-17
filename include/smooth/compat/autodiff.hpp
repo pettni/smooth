@@ -77,10 +77,10 @@ auto dr_autodiff(auto && f, auto && x)
 
   Result F = std::apply(f, x);
 
-  static constexpr Eigen::Index Nx = wrt_Dof<decltype(x)>();
-  static constexpr Eigen::Index Ny = Dof<Result>;
-  const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
-  const Eigen::Index ny = dof(F);
+  static constexpr auto Nx = wrt_Dof<decltype(x)>();
+  static constexpr auto Ny = Dof<Result>;
+  const Eigen::Index nx    = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
+  const Eigen::Index ny    = dof(F);
 
   // cast F and x to ad types
   const auto x_ad              = wrt_cast<AdScalar>(x);

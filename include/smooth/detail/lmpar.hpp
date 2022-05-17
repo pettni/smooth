@@ -88,7 +88,7 @@ Eigen::Vector<double, N> solve_ls(
   //      Q = Q G
   //      R = G' R
   Eigen::JacobiRotation<double> G;
-  for (auto j = 0u; j != n; ++j) {  // for each diagonal element
+  for (auto j = 0u; j < n; ++j) {  // for each diagonal element
     // find permuted diagonal index
     const auto permidx = P.indices()(j);
     // initialize row j of B and b
@@ -128,7 +128,7 @@ Eigen::Vector<double, N> solve_ls(
 
   // solve triangular system R z = a to obtain z = R^-1 z
   // first check rank of upper-diagonal R (may happen if d not full-rank)
-  int rank = 0;
+  auto rank = 0u;
   for (; rank != n && R.coeff(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {}
 
   Eigen::Vector<double, N> sol(n);
@@ -252,7 +252,7 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(
 
   // calculate phi(0) by solving J x = -r as x = P R^-1 (-Q' r)
   Eigen::Vector<double, N> x(n);
-  int rank     = J_qr.rank();
+  auto rank    = J_qr.rank();
   x.head(rank) = J_qr.matrixR()
                    .topLeftCorner(rank, rank)
                    .template triangularView<Eigen::Upper>()

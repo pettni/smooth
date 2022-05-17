@@ -39,9 +39,9 @@
 #include <iostream>
 #include <numeric>
 
-#include "diff.hpp"
 #include "detail/lmpar.hpp"
 #include "detail/lmpar_sparse.hpp"
+#include "diff.hpp"
 #include "manifold.hpp"
 #include "wrt.hpp"
 
@@ -89,8 +89,8 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
   // extract some properties from jacobian
   static constexpr bool is_sparse = std::is_base_of_v<Eigen::SparseMatrixBase<JType>, JType>;
-  static constexpr int Nx         = JType::ColsAtCompileTime;
-  const int nx                    = J.cols();
+  static constexpr auto Nx        = JType::ColsAtCompileTime;
+  const auto nx                   = J.cols();
 
   // scaling parameters
   Eigen::Vector<double, Nx> d(nx);
@@ -206,7 +206,7 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
     // parameter tolerance
     // TODO a.size() should be norm(x) for non-angle states
-    if (Da_norm < opts.ptol * a.size()) { break; }
+    if (Da_norm < opts.ptol * static_cast<double>(a.size())) { break; }
   }
 
   //// PRINT STATUS ////

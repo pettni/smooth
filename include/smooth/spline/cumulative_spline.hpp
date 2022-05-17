@@ -59,7 +59,8 @@ using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
  *
  * @return g
  */
-template<std::size_t K, LieGroup G>
+template<int K, LieGroup G>
+  requires (K > 0)
 inline G cspline_eval_vs(
   std::ranges::sized_range auto && vs,
   const MatrixType auto & Bcum,
@@ -68,11 +69,11 @@ inline G cspline_eval_vs(
   OptTangent<G> acc = {}) noexcept;
 
 /// @brief Jacobian of order K spline value w.r.t. coefficients.
-template<LieGroup G, std::size_t K>
+template<LieGroup G, int K>
 using SplineJacobian = Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> == -1 ? -1 : Dof<G> *(K + 1)>;
 
 /// @brief Optional argument for Jacobian of spline w.r.t. coefficients.
-template<LieGroup G, std::size_t K>
+template<LieGroup G, int K>
 using OptSplineJacobian = std::optional<Eigen::Ref<SplineJacobian<G, K>>>;
 
 /**
@@ -92,7 +93,8 @@ using OptSplineJacobian = std::optional<Eigen::Ref<SplineJacobian<G, K>>>;
  *
  * @return dg_dvs derivatives of value w.r.t. vs
  */
-template<std::size_t K, LieGroup G>
+template<int K, LieGroup G>
+  requires (K > 0)
 SplineJacobian<G, K - 1> cspline_eval_dg_dvs(
   std::ranges::sized_range auto && vs,
   const MatrixType auto & Bcum,
@@ -116,7 +118,8 @@ SplineJacobian<G, K - 1> cspline_eval_dg_dvs(
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
  */
-template<std::size_t K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+template<int K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+  requires (K > 0)
 inline G cspline_eval_gs(
   R && gs,
   const MatrixType auto & Bcum,
@@ -142,7 +145,8 @@ inline G cspline_eval_gs(
  *
  * @return dg_dgs derivatives of value w.r.t. gs
  */
-template<std::size_t K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+template<int K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+  requires (K > 0)
 SplineJacobian<G, K> cspline_eval_dg_dgs(
   R && gs,
   const MatrixType auto & Bcum,

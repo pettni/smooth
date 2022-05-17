@@ -66,11 +66,11 @@ protected:
 
 public:
   //! Number of scalars in internal representation.
-  static constexpr Eigen::Index RepSize = Impl::RepSize;
+  static constexpr int RepSize = Impl::RepSize;
   //! Degrees of freedom of manifold (equal to tangent space dimension).
-  static constexpr Eigen::Index Dof = Impl::Dof;
+  static constexpr int Dof = Impl::Dof;
   //! Side of Lie group matrix representation.
-  static constexpr Eigen::Index Dim = Impl::Dim;
+  static constexpr int Dim = Impl::Dim;
   //! Commutativity of group. A commutative group has a zero Lie bracket.
   static constexpr bool IsCommutative = Impl::IsCommutative;
 

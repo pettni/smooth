@@ -53,9 +53,9 @@ struct BundleImpl
     (std::is_same_v<Scalar, typename GsImpl::Scalar> && ...),
     "Implementation Scalar types must be the same");
 
-  static constexpr std::array<Eigen::Index, sizeof...(GsImpl)> RepSizes{GsImpl::RepSize...};
-  static constexpr std::array<Eigen::Index, sizeof...(GsImpl)> Dofs{GsImpl::Dof...};
-  static constexpr std::array<Eigen::Index, sizeof...(GsImpl)> Dims{GsImpl::Dim...};
+  static constexpr std::array<int, sizeof...(GsImpl)> RepSizes{GsImpl::RepSize...};
+  static constexpr std::array<int, sizeof...(GsImpl)> Dofs{GsImpl::Dof...};
+  static constexpr std::array<int, sizeof...(GsImpl)> Dims{GsImpl::Dim...};
 
   static constexpr auto RepSizesPsum = smooth::utils::array_psum(RepSizes);
   static constexpr auto DofsPsum     = smooth::utils::array_psum(Dofs);
@@ -64,12 +64,12 @@ struct BundleImpl
   template<std::size_t Idx>
   using PartImpl = std::tuple_element_t<Idx, std::tuple<GsImpl...>>;
 
-  static constexpr Eigen::Index BundleSize = sizeof...(GsImpl);
+  static constexpr auto BundleSize = sizeof...(GsImpl);
 
-  static constexpr Eigen::Index RepSize = RepSizesPsum.back();
-  static constexpr Eigen::Index Dof     = DofsPsum.back();
-  static constexpr Eigen::Index Dim     = DimsPsum.back();
-  static constexpr bool IsCommutative   = (GsImpl::IsCommutative && ...);
+  static constexpr auto RepSize       = RepSizesPsum.back();
+  static constexpr auto Dof           = DofsPsum.back();
+  static constexpr auto Dim           = DimsPsum.back();
+  static constexpr bool IsCommutative = (GsImpl::IsCommutative && ...);
 
   SMOOTH_DEFINE_REFS;
 

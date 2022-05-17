@@ -69,7 +69,7 @@ namespace smooth {
  * which aligns control points with the maximum of the corresponding
  * basis function.
  */
-template<std::size_t K, LieGroup G>
+template<int K, LieGroup G>
 class BSpline
 {
 public:
@@ -125,7 +125,10 @@ public:
   /**
    * @brief Maximal time for which spline is defined.
    */
-  [[nodiscard]] double t_max() const { return t0_ + (ctrl_pts_.size() - K) * dt_; }
+  [[nodiscard]] double t_max() const
+  {
+    return t0_ + static_cast<double>(ctrl_pts_.size() - K) * dt_;
+  }
 
   /**
    * @brief Access spline control points.
@@ -156,11 +159,11 @@ public:
     if (istar < 0) {
       istar = 0;
       u     = S(0);
-    } else if (istar + K + 1 > ctrl_pts_.size()) {
-      istar = ctrl_pts_.size() - K - 1;
+    } else if (istar + static_cast<int64_t>(K + 1) > static_cast<int64_t>(ctrl_pts_.size())) {
+      istar = static_cast<int64_t>(ctrl_pts_.size() - K - 1);
       u     = S(1);
     } else {
-      u = std::clamp<S>((t - S(t0_) - S(istar * dt_)) / S(dt_), S(0.), S(1.));
+      u = std::clamp<S>((t - S(t0_) - S(istar) * S(dt_)) / S(dt_), S(0.), S(1.));
     }
 
     CastT<S, G> g = cspline_eval_gs<K>(

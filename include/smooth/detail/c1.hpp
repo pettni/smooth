@@ -63,10 +63,10 @@ class C1Impl
 public:
   using Scalar = _Scalar;
 
-  static constexpr Eigen::Index RepSize = 2;
-  static constexpr Eigen::Index Dim     = 2;
-  static constexpr Eigen::Index Dof     = 2;
-  static constexpr bool IsCommutative   = true;
+  static constexpr int RepSize        = 2;
+  static constexpr int Dim            = 2;
+  static constexpr int Dof            = 2;
+  static constexpr bool IsCommutative = true;
 
   SMOOTH_DEFINE_REFS;
 
@@ -76,8 +76,9 @@ public:
   {
     using std::sin, std::cos;
 
-    const Scalar u = Eigen::internal::template random_impl<Scalar>::run(0, 2 * M_PI);
-    const Scalar t = Eigen::internal::template random_impl<Scalar>::run(0.01, 100);
+    const Scalar u =
+      Eigen::internal::template random_impl<Scalar>::run(Scalar(0), Scalar(2 * M_PI));
+    const Scalar t = Eigen::internal::template random_impl<Scalar>::run(Scalar(0.01), Scalar(100));
     g_out << t * sin(u), t * cos(u);
   }
 

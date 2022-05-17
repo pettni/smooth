@@ -64,10 +64,10 @@ class SE2Impl
 public:
   using Scalar = _Scalar;
 
-  static constexpr Eigen::Index RepSize = 4;
-  static constexpr Eigen::Index Dim     = 3;
-  static constexpr Eigen::Index Dof     = 3;
-  static constexpr bool IsCommutative   = false;
+  static constexpr int RepSize        = 4;
+  static constexpr int Dim            = 3;
+  static constexpr int Dof            = 3;
+  static constexpr bool IsCommutative = false;
 
   SMOOTH_DEFINE_REFS;
 

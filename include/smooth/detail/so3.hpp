@@ -61,10 +61,10 @@ class SO3Impl
 public:
   using Scalar = _Scalar;
 
-  static constexpr Eigen::Index RepSize = 4;
-  static constexpr Eigen::Index Dim     = 3;
-  static constexpr Eigen::Index Dof     = 3;
-  static constexpr bool IsCommutative   = false;
+  static constexpr int RepSize        = 4;
+  static constexpr int Dim            = 3;
+  static constexpr int Dof            = 3;
+  static constexpr bool IsCommutative = false;
 
   SMOOTH_DEFINE_REFS;
 
@@ -214,7 +214,7 @@ public:
   static void d2r_exp(TRefIn a_in, THessRefOut H_out)
   {
     const auto [A, B, dA_over_th, dB_over_th] = [&]() -> std::array<Scalar, 4> {
-      using std::sqrt;
+      using std::sqrt, std::sin, std::cos;
 
       const Scalar th2 = a_in.squaredNorm();
       const Scalar th  = sqrt(th2);
@@ -267,7 +267,7 @@ public:
   static void d2r_expinv(TRefIn a_in, THessRefOut H_out)
   {
     const auto [A, dA_over_th] = [&]() -> std::array<Scalar, 2> {
-      using std::sqrt;
+      using std::sqrt, std::cos, std::sin;
 
       const Scalar th2 = a_in.squaredNorm();
       const Scalar th  = sqrt(th2);

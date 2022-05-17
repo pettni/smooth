@@ -56,7 +56,7 @@ constexpr int splinespec_max_deriv()
 template<SplineSpec T>
 struct splinespec_extract;
 
-template<template<LieGroup, std::size_t...> typename T, LieGroup G, std::size_t... Is>
+template<template<LieGroup, int...> typename T, LieGroup G, int... Is>
 struct splinespec_extract<T<G, Is...>>
 {
   using group = G;
@@ -65,19 +65,14 @@ struct splinespec_extract<T<G, Is...>>
 template<SplineSpec T, LieGroup Gnew>
 struct splinespec_rebind;
 
-template<
-  template<LieGroup, std::size_t...>
-  typename T,
-  LieGroup Gold,
-  LieGroup Gnew,
-  std::size_t... Is>
+template<template<LieGroup, int...> typename T, LieGroup Gold, LieGroup Gnew, int... Is>
 struct splinespec_rebind<T<Gold, Is...>, Gnew>
 {
   using type = T<Gnew, Is...>;
 };
 
 template<SplineSpec SS>
-auto splinespec_project(const SS & ss, std::size_t k)
+auto splinespec_project(const SS & ss, const Eigen::Index k)
 {
   using Scalar = Scalar<typename splinespec_extract<SS>::group>;
 
@@ -126,12 +121,13 @@ Eigen::VectorXd fit_spline_1d(
   // d:th derivative of basis polynomial at 0 (resp. 1) is now U0tB.row(d) * x (resp. U1tB.row(d) *
   // x), where x are the coefficients.
 
-  const std::size_t N_coef = (K + 1) * N;
-  const std::size_t N_eq   = ss.LeftDeg.size()                            // left endpoint
-                         + N                                              // value left-segment
-                         + (SS::InnCnt >= 0 ? N : 0)                      // value rght-segment
-                         + (SS::InnCnt > 0 ? (N - 1) * (SS::InnCnt) : 0)  // derivative continuity
-                         + ss.RghtDeg.size();                             // right endpiont
+  const auto N_coef = static_cast<Eigen::Index>((K + 1) * N);
+  const auto N_eq   = static_cast<Eigen::Index>(
+    ss.LeftDeg.size()                                // left endpoint
+    + N                                              // value left-segment
+    + (SS::InnCnt >= 0 ? N : 0)                      // value rght-segment
+    + (SS::InnCnt > 0 ? (N - 1) * (SS::InnCnt) : 0)  // derivative continuity
+    + ss.RghtDeg.size());                            // right endpiont
 
   assert(N_coef >= N_eq);
 
@@ -150,7 +146,7 @@ Eigen::VectorXd fit_spline_1d(
   Eigen::VectorXd b = Eigen::VectorXd::Zero(N_eq);
 
   // current inequality counter
-  std::size_t M = 0;
+  Eigen::Index M{0};
 
   // curve beg derivative constraints
   for (auto i = 0u; i < ss.LeftDeg.size(); ++i) {
@@ -160,20 +156,20 @@ Eigen::VectorXd fit_spline_1d(
 
   // interval beg + end value constraint
   for (const auto & [i, dx] : utils::zip(iota(0u), dx_r)) {
-    for (auto j = 0; j < K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U0tB(0, j); }
+    for (auto j = 0u; j < K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U0tB(0, j); }
     b(M++) = 0;
     if (SS::InnCnt >= 0) {
-      for (auto j = 0; j < K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U1tB(0, j); }
+      for (auto j = 0u; j < K + 1; ++j) { A.insert(M, i * (K + 1) + j) = U1tB(0, j); }
       b(M++) = dx;
     }
   }
 
   // inner derivative continuity constraint
   for (const auto & [k, dt, dt_next] : utils::zip(iota(0u, N - 1), dt_r, dt_r | drop(1))) {
-    for (auto d = 1; d <= SS::InnCnt; ++d) {
+    for (auto d = 1u; d <= static_cast<std::size_t>(SS::InnCnt); ++d) {
       const double fac1 = 1. / std::pow(dt, d);
       const double fac2 = 1. / std::pow(dt_next, d);
-      for (auto j = 0; j < K + 1; ++j) {
+      for (auto j = 0u; j < K + 1; ++j) {
         A.insert(M, k * (K + 1) + j)       = U1tB(d, j) * fac1;
         A.insert(M, (k + 1) * (K + 1) + j) = -U0tB(d, j) * fac2;
       }
@@ -184,7 +180,7 @@ Eigen::VectorXd fit_spline_1d(
   // curve end derivative constraints
   for (auto i = 0u; i < ss.RghtDeg.size(); ++i) {
     for (auto j = 0u; j < K + 1; ++j) {
-      A.insert(M, (K + 1) * (N - 1) + j) = U1tB(ss.RghtDeg[i], j);
+      A.insert(M, static_cast<Eigen::Index>((K + 1) * (N - 1) + j)) = U1tB(ss.RghtDeg[i], j);
     }
     b(M++) = ss.rght_values[i].x();
   }
@@ -334,7 +330,7 @@ namespace detail {
 /**
  * @brief Objective struct for Bspline fitting with analytic jacobian.
  */
-template<std::size_t K, std::ranges::range Rs, std::ranges::range Rg>
+template<int K, std::ranges::range Rs, std::ranges::range Rg>
 struct fit_bspline_objective
 {
   /// @brief LIe group
@@ -346,7 +342,7 @@ struct fit_bspline_objective
 
   double t0, t1, dt;
 
-  std::size_t NumData, NumPts;
+  Eigen::Index NumData, NumPts;
 
   static constexpr auto M_s = polynomial_cumulative_basis<PolynomialBasis::Bspline, K>();
   inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M =
@@ -363,8 +359,8 @@ struct fit_bspline_objective
     t0 = rt0;
     t1 = rt1;
 
-    NumData = std::min(std::ranges::size(ts), std::ranges::size(gs));
-    NumPts  = K + static_cast<std::size_t>((t1 - t0 + dt) / dt);
+    NumData = static_cast<Eigen::Index>(std::min(std::ranges::size(ts), std::ranges::size(gs)));
+    NumPts  = static_cast<Eigen::Index>(K + static_cast<Eigen::Index>((t1 - t0 + dt) / dt));
   }
 
   /// @brief Objective function
@@ -376,7 +372,7 @@ struct fit_bspline_objective
 
     for (const auto & [i, t, gi] : utils::zip(iota(0u), ts, gs)) {
       const int64_t istar = static_cast<int64_t>((t - t0) / dt);
-      const double u      = (t - t0 - istar * dt) / dt;
+      const double u      = (t - t0 - static_cast<double>(istar) * dt) / dt;
 
       // gcc 11.1 bug can't handle uint64_t
       const auto g = cspline_eval_gs<K>(var | drop(istar) | take(int64_t(K + 1)), M, u);
@@ -398,7 +394,7 @@ struct fit_bspline_objective
 
     for (const auto & [i, t, gi] : utils::zip(iota(0u), ts, gs)) {
       const int64_t istar = static_cast<int64_t>((t - t0) / dt);
-      const double u      = (t - t0 - istar * dt) / dt;
+      const double u      = (t - t0 - static_cast<double>(istar) * dt) / dt;
 
       // gcc 11.1 bug can't handle uint64_t
       const auto g      = cspline_eval_gs<K>(var | drop(istar) | take(int64_t(K + 1)), M, u);
@@ -424,7 +420,7 @@ struct fit_bspline_objective
 
 }  // namespace detail
 
-template<std::size_t K>
+template<int K>
 auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, const double dt)
 {
   using namespace std::views;
@@ -437,7 +433,7 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, c
   obj_t obj(std::forward<decltype(ts)>(ts), std::forward<decltype(gs)>(gs), dt);
 
   // create optimization variable
-  ManifoldVector<G> ctrl_pts(obj.NumPts);
+  ManifoldVector<G> ctrl_pts(static_cast<std::size_t>(obj.NumPts));
 
   // create initial guess
   auto t_iter = std::ranges::begin(ts);

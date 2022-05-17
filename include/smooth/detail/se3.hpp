@@ -67,10 +67,10 @@ class SE3Impl
 public:
   using Scalar = _Scalar;
 
-  static constexpr Eigen::Index RepSize = 7;
-  static constexpr Eigen::Index Dim     = 4;
-  static constexpr Eigen::Index Dof     = 6;
-  static constexpr bool IsCommutative   = false;
+  static constexpr int RepSize        = 7;
+  static constexpr int Dim            = 4;
+  static constexpr int Dof            = 6;
+  static constexpr bool IsCommutative = false;
 
   SMOOTH_DEFINE_REFS;
 
@@ -209,6 +209,8 @@ public:
 
   static std::pair<Eigen::Matrix3<Scalar>, Eigen::Matrix<Scalar, 3, 18>> calculate_Q_dQ(TRefIn a)
   {
+    using std::sqrt, std::sin, std::cos;
+
     const Eigen::Vector3<Scalar> v = a.template head<3>();
     const Eigen::Vector3<Scalar> w = a.template tail<3>();
     const Scalar th2               = w.squaredNorm();

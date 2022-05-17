@@ -50,16 +50,16 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
 {
   smooth::CeresLocalParameterization<TypeParam> mf;
 
-  static constexpr uint32_t p = TypeParam::RepSize;
-  static constexpr uint32_t n = TypeParam::Dof;
+  static constexpr auto p = TypeParam::RepSize;
+  static constexpr auto n = TypeParam::Dof;
 
   using ParamsT = Eigen::Matrix<double, p, 1>;
 
   // check that local parameterization gives expected sizes
-  ASSERT_EQ(mf.AmbientSize(), n);
-  ASSERT_EQ(mf.TangentSize(), p);
+  ASSERT_EQ(mf.AmbientSize(), p);
+  ASSERT_EQ(mf.TangentSize(), n);
 
-  for (std::size_t i = 0; i != 10; ++i) {
+  for (auto i = 0u; i < 10; ++i) {
     // random group element and tangent vector
     TypeParam g                   = TypeParam::Random();
     Eigen::Matrix<double, n, 1> b = 1e-4 * Eigen::Matrix<double, n, 1>::Random();

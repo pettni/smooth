@@ -103,12 +103,12 @@ Spline<2, double> reparameterize_spline(
   const double s0 = spline.t_min();
   const double sf = spline.t_max();
 
-  const double ds = (sf - s0) / N;
+  const double ds = (sf - s0) / static_cast<double>(N);
 
   // DETERMINE MAXIMAL FINAL REPARAMETERIZATION VELOCITY
 
   Eigen::VectorXd v2max(N + 1);
-  v2max(N) = [&]() {
+  v2max(static_cast<Eigen::Index>(N)) = [&]() {
     double ret = end_vel * end_vel;
 
     // ensure end velocity is feasible with zero acceleration

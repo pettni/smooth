@@ -61,10 +61,10 @@ class SO2Impl
 public:
   using Scalar = _Scalar;
 
-  static constexpr Eigen::Index RepSize = 2;
-  static constexpr Eigen::Index Dim     = 2;
-  static constexpr Eigen::Index Dof     = 1;
-  static constexpr bool IsCommutative   = true;
+  static constexpr int RepSize        = 2;
+  static constexpr int Dim            = 2;
+  static constexpr int Dof            = 1;
+  static constexpr bool IsCommutative = true;
 
   SMOOTH_DEFINE_REFS;
 
@@ -73,7 +73,7 @@ public:
   static void setRandom(GRefOut g_out)
   {
     using std::sin, std::cos;
-    const Scalar u = Eigen::internal::template random_impl<Scalar>::run(0, 2 * M_PI);
+    const Scalar u = Eigen::internal::template random_impl<Scalar>::run(0, Scalar(2 * M_PI));
     g_out << sin(u), cos(u);
   }
 
