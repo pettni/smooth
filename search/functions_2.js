@@ -12,7 +12,7 @@ var searchData=
   ['constantvelocity_9',['ConstantVelocity',['../classsmooth_1_1Spline.html#a3b90317b916526c5069a93c3eb11e2a4',1,'smooth::Spline']]],
   ['constantvelocitygoal_10',['ConstantVelocityGoal',['../classsmooth_1_1Spline.html#a9b92c0b2fbd7ad1b3efbaa07f6dd9ac6',1,'smooth::Spline']]],
   ['crop_11',['crop',['../classsmooth_1_1Spline.html#a45ba9083cb76839a8a59400513157a4b',1,'smooth::Spline']]],
-  ['cspline_5feval_5fgs_12',['cspline_eval_gs',['../cumulative__spline_8hpp.html#a606eb26f566a0772fc8bd337d2335bf8',1,'smooth']]],
-  ['cspline_5feval_5fvs_13',['cspline_eval_vs',['../cumulative__spline_8hpp.html#abd91a7ef719cdef617bf5f0400847479',1,'smooth']]],
+  ['cspline_5feval_5fgs_12',['cspline_eval_gs',['../cumulative__spline_8hpp.html#a97307ea606dde6acba9d1b9cb399cbfe',1,'smooth']]],
+  ['cspline_5feval_5fvs_13',['cspline_eval_vs',['../cumulative__spline_8hpp.html#a9669dadfe210bd964b87ac9f036ee241',1,'smooth']]],
   ['ctrl_5fpts_14',['ctrl_pts',['../classsmooth_1_1BSpline.html#a59063f8a376018ef06ecfaffe144e856',1,'smooth::BSpline']]]
 ];
