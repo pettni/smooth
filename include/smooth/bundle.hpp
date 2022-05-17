@@ -23,8 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__BUNDLE_HPP_
-#define SMOOTH__BUNDLE_HPP_
+#pragma once
 
 #include "detail/bundle.hpp"
 #include "detail/lie_group_base.hpp"
@@ -227,4 +226,3 @@ class Map<const Bundle<_Gs...>> : public BundleBase<Map<const Bundle<_Gs...>>>
 
 }  // namespace smooth
 
-#endif  // SMOOTH__BUNDLE_HPP_

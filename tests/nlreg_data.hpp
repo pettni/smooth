@@ -1,5 +1,6 @@
-#ifndef DATA_HPP_
-#define DATA_HPP_
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
+
+#pragma once
 
 #include <Eigen/Core>
 
@@ -272,5 +273,3 @@ inline auto MGH09()
 
   return std::make_tuple(std::move(f), data, start1, start2, optim);
 }
-
-#endif  // DATA_HPP_

@@ -24,7 +24,7 @@ target_compile_options(
   -Wnull-dereference
   -Wdouble-promotion
   -Wimplicit-fallthrough
-  # -Werror
+  -Werror
 )
 target_link_libraries(
   TestConfig
