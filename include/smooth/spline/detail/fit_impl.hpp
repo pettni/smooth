@@ -340,7 +340,7 @@ struct fit_bspline_objective
   }
 
   /// @brief Objective function
-  Eigen::VectorXd operator()(const ManifoldVector<G> & var) const
+  Eigen::VectorXd operator()(const std::vector<G> & var) const
   {
     using namespace std::views;
 
@@ -360,7 +360,7 @@ struct fit_bspline_objective
   }
 
   /// @brief Analytic Jacobian
-  Eigen::SparseMatrix<double> jacobian(const ManifoldVector<G> & var) const
+  Eigen::SparseMatrix<double> jacobian(const std::vector<G> & var) const
   {
     using namespace std::views;
 
@@ -409,7 +409,7 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, c
   obj_t obj(std::forward<decltype(ts)>(ts), std::forward<decltype(gs)>(gs), dt);
 
   // create optimization variable
-  ManifoldVector<G> ctrl_pts(static_cast<std::size_t>(obj.NumPts));
+  std::vector<G> ctrl_pts(static_cast<std::size_t>(obj.NumPts));
 
   // create initial guess
   auto t_iter = std::ranges::begin(ts);
@@ -437,4 +437,3 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, c
 }
 
 }  // namespace smooth
-

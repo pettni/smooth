@@ -10,194 +10,95 @@
  */
 
 #include <Eigen/Sparse>
-#include <numeric>
 
+#include <numeric>
+#include <ranges>
+
+#include "detail/utils.hpp"
 #include "manifold.hpp"
 
 namespace smooth {
 
 /**
- * @brief \p std::vector based Manifold container.
- *
- * Convenient to treat a collection
- * \f[
- *   m = (m_1, m_2, ..., m_k) \in M \times M \times ... \times M
- * \f]
- * of Manifold elements as a single Manifold element \f$m\f$.
+ * @brief Manifold interface for std::vector<Manifold>
  */
 template<Manifold M>
-class ManifoldVector : public std::vector<M>
-{
-private:
-  using Base = std::vector<M>;
-
-public:
-  //! Default constructor of empty ManifoldVector
-  ManifoldVector() = default;
-  //! Copy constructor
-  ManifoldVector(const ManifoldVector & o) = default;
-  //! Move constructor
-  ManifoldVector(ManifoldVector && o) = default;
-  //! Copy assignment operator
-  ManifoldVector & operator=(const ManifoldVector & o) = default;
-  //! Move assignment operator
-  ManifoldVector & operator=(ManifoldVector && o) = default;
-  ~ManifoldVector()                               = default;
-
-  /**
-   * Forwarding constructor to std::vector.
-   */
-  template<typename... Ts>
-  ManifoldVector(Ts &&... ts) : Base(std::forward<Ts>(ts)...)
-  {}
-
-  /**
-   * @brief Cast to different scalar type.
-   */
-  template<typename NewScalar>
-  ManifoldVector<CastT<NewScalar, M>> cast() const
-  {
-    ManifoldVector<CastT<NewScalar, M>> ret;
-    ret.reserve(size());
-    std::transform(this->begin(), this->end(), std::back_insert_iterator(ret), [](const auto & x) {
-      return ::smooth::cast<NewScalar>(x);
-    });
-    return ret;
-  }
-
-  /**
-   * @brief Number of elements in ManifoldVector.
-   */
-  std::size_t size() const { return Base::size(); }
-
-  /**
-   * @brief Runtime degrees of freedom.
-   *
-   * Sum of the degrees of freedom of constituent elements.
-   */
-  Eigen::Index dof() const
-  {
-    if constexpr (Dof < M >> 0) {
-      return static_cast<Eigen::Index>(size()) * Dof<M>;
-    } else {
-      return std::accumulate(this->begin(), this->end(), 0u, [](auto s, const auto & item) {
-        return s + ::smooth::dof<M>(item);
-      });
-    }
-  }
-
-  /**
-   * @brief In-place addition.
-   *
-   * @note It must hold that dof() == a.dof()
-   */
-  template<typename Derived>
-  ManifoldVector<M> & operator+=(const Eigen::MatrixBase<Derived> & a)
-  {
-    Eigen::Index dof_cntr = 0;
-    for (auto i = 0u; i != this->size(); ++i) {
-      const auto dof_i = ::smooth::dof<M>(this->operator[](i));
-      this->operator[](i) =
-        rplus<M>(this->operator[](i), a.template segment<Dof<M>>(dof_cntr, dof_i));
-      dof_cntr += dof_i;
-    }
-    return *this;
-  }
-
-  /**
-   * @brief Addition.
-   *
-   * @note It must hold that `dof() == a.dof()`
-   */
-  template<typename Derived>
-  ManifoldVector<M> operator+(const Eigen::MatrixBase<Derived> & a) const
-  {
-    ManifoldVector<M> ret = *this;
-    ret += a;
-    return ret;
-  }
-
-  /**
-   * @brief Subtraction.
-   *
-   * @note It must hold that `dof() == o.dof()`
-   */
-  Eigen::VectorX<Scalar<M>> operator-(const ManifoldVector<M> & o) const
-  {
-    std::size_t dof_cnts = 0;
-    if (Dof < M >> 0) {
-      dof_cnts = Dof<M> * size();
-    } else {
-      for (auto i = 0u; i != size(); ++i) { dof_cnts += ::smooth::dof<M>(this->operator[](i)); }
-    }
-
-    Eigen::VectorX<Scalar<M>> ret(dof_cnts);
-    Eigen::Index idx = 0;
-    for (auto i = 0u; i != size(); ++i) {
-      const auto & size_i                       = ::smooth::dof<M>(this->operator[](i));
-      ret.template segment<Dof<M>>(idx, size_i) = rminus<M>(this->operator[](i), o[i]);
-      idx += size_i;
-    }
-
-    return ret;
-  }
-};
-
-/**
- * @brief Manifold interface for ManifoldVector
- */
-template<Manifold M>
-struct traits::man<ManifoldVector<M>>
+struct traits::man<std::vector<M>>
 {
   // \cond
   using Scalar      = ::smooth::Scalar<M>;
-  using PlainObject = ManifoldVector<M>;
+  using PlainObject = std::vector<M>;
   template<typename NewScalar>
-  using CastT = ManifoldVector<typename man<M>::template CastT<NewScalar>>;
+  using CastT = std::vector<typename man<M>::template CastT<NewScalar>>;
 
   static constexpr int Dof = -1;
 
-  static inline Eigen::Index dof(const ManifoldVector<M> & m) { return m.dof(); }
+  static inline Eigen::Index dof(const PlainObject & m)
+  {
+    if constexpr (traits::man<M>::Dof > 0) {
+      return static_cast<Eigen::Index>(m.size()) * traits::man<M>::Dof;
+    } else {
+      return std::accumulate(m.begin(), m.end(), 0u, [](auto s, const auto & item) {
+        return s + traits::man<M>::dof(item);
+      });
+    }
+  }
 
   static inline PlainObject Default(Eigen::Index dof)
   {
     /// @note If underlying M has dynamic size, mdof not uniquely defined
     const Eigen::Index mdof = ::smooth::Dof<M> != -1 ? ::smooth::Dof<M> : 1;
-    const Eigen::Index size = dof / mdof;
+    const auto size         = static_cast<std::size_t>(dof / mdof);
 
-    return traits::man<M>::PlainObject(size, traits::man<M>::Default(mdof));
+    return PlainObject(size, traits::man<M>::Default(mdof));
   }
 
   template<typename NewScalar>
-  static inline auto cast(const ManifoldVector<M> & m)
+  static inline auto cast(const PlainObject & m)
   {
-    return m.template cast<NewScalar>();
+    const auto transformer = [](const M & mi) ->
+      typename traits::man<M>::template CastT<NewScalar> {
+        return traits::man<M>::template cast<NewScalar>(mi);
+      };
+    const auto casted_view = m | std::views::transform(transformer);
+    return std::vector(std::ranges::begin(casted_view), std::ranges::end(casted_view));
   }
 
   template<typename Derived>
-  static inline ManifoldVector<M>
-  rplus(const ManifoldVector<M> & m, const Eigen::MatrixBase<Derived> & a)
+  static inline PlainObject rplus(const PlainObject & m, const Eigen::MatrixBase<Derived> & a)
   {
-    return m + a;
+    PlainObject m_plus_a;
+    m_plus_a.reserve(m.size());
+    for (Eigen::Index dof_cntr = 0; const auto & mi : m) {
+      const auto dof_i = traits::man<M>::dof(mi);
+      m_plus_a.push_back(
+        traits::man<M>::rplus(mi, a.template segment<traits::man<M>::Dof>(dof_cntr, dof_i)));
+      dof_cntr += dof_i;
+    }
+    return m_plus_a;
   }
 
-  static inline Eigen::Matrix<Scalar, Dof, 1>
-  rminus(const ManifoldVector<M> & m1, const ManifoldVector<M> & m2)
+  static inline Eigen::Matrix<Scalar, Dof, 1> rminus(const PlainObject & m1, const PlainObject & m2)
   {
-    return m1 - m2;
+    Eigen::Index dof_cnts = 0;
+    if (traits::man<M>::Dof > 0) {
+      dof_cnts = static_cast<Eigen::Index>(traits::man<M>::Dof * m1.size());
+    } else {
+      for (auto i = 0u; i != m1.size(); ++i) { dof_cnts += ::smooth::dof<M>(m1[i]); }
+    }
+
+    Eigen::VectorX<Scalar> ret(dof_cnts);
+
+    for (Eigen::Index idx = 0; const auto & [m1i, m2i] : utils::zip(m1, m2)) {
+      const auto & size_i = ::smooth::dof<M>(m1i);
+
+      ret.template segment<traits::man<M>::Dof>(idx, size_i) = traits::man<M>::rminus(m1i, m2i);
+      idx += size_i;
+    }
+
+    return ret;
   }
   // \endcond
 };
 
 }  // namespace smooth
-
-template<typename Stream, smooth::Manifold M>
-Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
-{
-  s << "ManifoldVector with " << g.size() << " elements:\n";
-  for (auto i = 0u; i != g.size(); ++i) {
-    s << i << ": " << g[i];
-    if (i != g.size() - 1) { s << '\n'; }
-  }
-  return s;
-}

@@ -213,6 +213,14 @@ auto dr(auto && f, auto && x)
       return dr<K, Type::Analytic>(std::forward<F>(f), std::forward<Wrt>(x));
     } else {
       // Use best available method
+      static constexpr Type DefaultType =
+#ifdef SMOOTH_DIFF_AUTODIFF
+        Type::Autodiff;
+#elif defined SMOOTH_DIFF_CERES
+        Type::Ceres;
+#else
+        Type::Numerical;
+#endif
       return dr<K, DefaultType>(std::forward<F>(f), std::forward<Wrt>(x));
     }
   }

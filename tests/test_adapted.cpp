@@ -38,7 +38,7 @@ TEST(LieGroup, Concepts)
   static_assert(smooth::Manifold<smooth::Map<const smooth::SE2d>>);
   static_assert(smooth::Manifold<Eigen::Map<const Eigen::Vector2d>>);
 
-  static_assert(smooth::Manifold<smooth::ManifoldVector<smooth::SE2d>>);
+  static_assert(smooth::Manifold<std::vector<smooth::SE2d>>);
 }
 
 template<smooth::LieGroup G>

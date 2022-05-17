@@ -129,7 +129,8 @@ These [C++20 concepts](https://en.cppreference.com/w/cpp/concepts) are implement
 
 * `Manifold`: type for which `rplus` (geodesic addition) and `rminus` (geodesic subtraction) are defined. Examples:
   * All `LieGroup` types
-  * `smooth::ManifoldVector<Manifold>` from `manifold_vector.hpp`---facilitates e.g. optimization and differentiation w.r.t. a dynamic number of `Manifold`s
+  * `std::vector<Manifold>` is a Manifold defined in `manifold_vector.hpp`---it facilitates e.g. optimization and differentiation w.r.t. a dynamic number of `Manifold`s
+  * `std::variant<Manifold ...>` is a Manifold defined in `manifold_variant.hpp`. Using `std::vector<std::variant<Manifold...>>` can be convenient when optimizing over variables with different parameterizations.
 
 * `LieGroup`: type for which Lie group operations (`exp`, `log`, `Ad`, etc...) are defined. Examples:
   * All `NativeLieGroup` types

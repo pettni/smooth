@@ -25,18 +25,10 @@ enum class Type {
               ///< compat/autodiff.hpp
   Ceres,      ///< Uses the Ceres (http://ceres-solver.org) built-in autodiff; requires \p
               ///< compat/ceres.hpp
-  Analytic,   ///< Hand-coded derivative, @see diffable_order1, diffable_order2
+  Analytic,   ///< Hand-coded derivative. Type must have a function named 'jacobian' : x -> Mat
+              ///< (order 1) and 'hesssian': x -> Mat (order 2) that compute the derivatives.
   Default     ///< Select based on availability (Analytic > Autodiff > Ceres > Numerical)
 };
-
-static constexpr Type DefaultType =
-#ifdef SMOOTH_DIFF_AUTODIFF
-  Type::Autodiff;
-#elif defined SMOOTH_DIFF_CERES
-  Type::Ceres;
-#else
-  Type::Numerical;
-#endif
 
 /**
  * @brief Differentiation in tangent space

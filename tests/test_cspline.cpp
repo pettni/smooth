@@ -171,8 +171,8 @@ protected:
   }
 
   double u;
-  smooth::ManifoldVector<G> xs;
-  smooth::ManifoldVector<smooth::Tangent<G>> vs;
+  std::vector<G> xs;
+  std::vector<smooth::Tangent<G>> vs;
 
   static constexpr auto M_s =
     smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>();
@@ -221,7 +221,7 @@ TEST_F(SplineDerivative, dx_dcoef)
   for (auto i = 0u; i < 5; ++i) {
     randomize();
 
-    const auto f_diff = [&](const smooth::ManifoldVector<G> & var) -> G {
+    const auto f_diff = [&](const std::vector<G> & var) -> G {
       return smooth::cspline_eval_gs<K>(var, M, u);
     };
     const auto [unused, diff_aut] =
@@ -238,7 +238,7 @@ TEST_F(SplineDerivative, dvel_dcoef)
   for (auto i = 0u; i < 5; ++i) {
     randomize();
 
-    const auto f_diff = [&](const smooth::ManifoldVector<G> & var) -> smooth::Tangent<G> {
+    const auto f_diff = [&](const std::vector<G> & var) -> smooth::Tangent<G> {
       smooth::Tangent<G> vel;
       smooth::cspline_eval_gs<K>(var, M, u, vel);
       return vel;
@@ -258,7 +258,7 @@ TEST_F(SplineDerivative, dacc_dcoef)
   for (auto i = 0u; i < 5; ++i) {
     randomize();
 
-    const auto f_diff = [&](const smooth::ManifoldVector<G> & var) -> smooth::Tangent<G> {
+    const auto f_diff = [&](const std::vector<G> & var) -> smooth::Tangent<G> {
       smooth::Tangent<G> vel, acc;
       smooth::cspline_eval_gs<K>(var, M, u, vel, acc);
       return acc;
