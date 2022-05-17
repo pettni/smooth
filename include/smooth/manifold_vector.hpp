@@ -2,6 +2,13 @@
 
 #pragma once
 
+/**
+ * @file
+ * @brief Trait specialization to make std::vector<Manifold> a Manifold.
+ *
+ * TODO(pettni) remove class and just use std::vector
+ */
+
 #include <Eigen/Sparse>
 #include <numeric>
 
@@ -148,7 +155,7 @@ struct traits::man<ManifoldVector<M>>
   template<typename NewScalar>
   using CastT = ManifoldVector<typename man<M>::template CastT<NewScalar>>;
 
-  static constexpr Eigen::Index Dof = -1;
+  static constexpr int Dof = -1;
 
   static inline Eigen::Index dof(const ManifoldVector<M> & m) { return m.dof(); }
 
@@ -194,4 +201,3 @@ Stream & operator<<(Stream & s, const smooth::ManifoldVector<M> & g)
   }
   return s;
 }
-

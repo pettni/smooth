@@ -24,7 +24,7 @@ target_compile_options(
   -Wnull-dereference
   -Wdouble-promotion
   -Wimplicit-fallthrough
-  -Werror
+  # -Werror
 )
 target_link_libraries(
   TestConfig
@@ -79,6 +79,14 @@ gtest_discover_tests(test_bundle)
 add_executable(test_adapted test_adapted.cpp)
 target_link_libraries(test_adapted PRIVATE TestConfig)
 gtest_discover_tests(test_adapted)
+
+add_executable(test_manifold_vector test_manifold_vector.cpp)
+target_link_libraries(test_manifold_vector PRIVATE TestConfig)
+gtest_discover_tests(test_manifold_vector)
+
+add_executable(test_manifold_variant test_manifold_variant.cpp)
+target_link_libraries(test_manifold_variant PRIVATE TestConfig)
+gtest_discover_tests(test_manifold_variant)
 
 # ALGO TESTS
 

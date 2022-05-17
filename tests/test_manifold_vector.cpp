@@ -49,7 +49,8 @@ TEST(ManifoldVector, Cast)
 
   auto m1_cast = m1.cast<float>();
 
-  ASSERT_EQ(m1_cast.size(), 9);
+  ASSERT_EQ(m1_cast.size(), 3);
+  ASSERT_EQ(m1_cast.dof(), 9);
 }
 
 TEST(ManifoldVector, Optimize)
