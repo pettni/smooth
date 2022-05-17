@@ -23,8 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef SMOOTH__BUNDLE_HPP_
-#define SMOOTH__BUNDLE_HPP_
+#pragma once
 
 #include "detail/bundle.hpp"
 #include "detail/lie_group_base.hpp"
@@ -83,7 +82,7 @@ public:
   /**
    * @brief Number of elements in Bundle.
    */
-  static constexpr Eigen::Index BundleSize = Impl::BundleSize;
+  static constexpr auto BundleSize = Impl::BundleSize;
 
   /**
    * @brief Part type.
@@ -95,13 +94,13 @@ public:
    * @brief Part starting index (degrees of freedom).
    */
   template<std::size_t Idx>
-  static constexpr std::size_t PartStart = Impl::DofsPsum[Idx];
+  static constexpr auto PartStart = Impl::DofsPsum[Idx];
 
   /**
    * @brief Part degrees of freedom.
    */
   template<std::size_t Idx>
-  static constexpr std::size_t PartDof = Impl::Dofs[Idx];
+  static constexpr auto PartDof = Impl::Dofs[Idx];
 
   /**
    * @brief Access part no Idx of Bundle.
@@ -227,4 +226,3 @@ class Map<const Bundle<_Gs...>> : public BundleBase<Map<const Bundle<_Gs...>>>
 
 }  // namespace smooth
 
-#endif  // SMOOTH__BUNDLE_HPP_

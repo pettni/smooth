@@ -1,30 +1,6 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#ifndef SMOOTH__INTERNAL__UTILS_HPP_
-#define SMOOTH__INTERNAL__UTILS_HPP_
+#pragma once
 
 #include <array>
 #include <cstddef>
@@ -77,8 +53,8 @@ binary_interval_search(std::ranges::random_access_range auto && r, auto && t, au
       alpha = (static_cast<double>(t) - static_cast<double>(*left))
             / static_cast<double>(*(rght - 1) - *left);
     }
-
-    pivot = std::ranges::next(left, alpha * std::distance(left, rght - 1), rght - 2);
+    const auto dist = static_cast<double>(std::distance(left, rght - 1));
+    pivot           = std::ranges::next(left, static_cast<intptr_t>(alpha * dist), rght - 2);
 
     if (wo(*next(pivot), t) <= 0) {
       left = pivot + 1;
@@ -445,4 +421,3 @@ inline constexpr detail::Zip zip;
 
 }  // namespace smooth::utils
 
-#endif  // SMOOTH__INTERNAL__UTILS_HPP_

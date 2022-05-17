@@ -1,30 +1,6 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#ifndef SMOOTH__SPLINE__DUBINS_HPP_
-#define SMOOTH__SPLINE__DUBINS_HPP_
+#pragma once
 
 /**
  * @file
@@ -175,9 +151,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
       };
     }
   }
@@ -188,9 +164,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
       };
     }
   }
@@ -201,9 +177,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
       };
     }
   }
@@ -214,9 +190,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Straight, d2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
       };
     }
   }
@@ -227,9 +203,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a3},
       };
     }
   }
@@ -240,9 +216,9 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
     if (len < min_length) {
       min_length = len;
       ret        = {
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
-        std::pair<DubinsSegment, double>{DubinsSegment::Right, a2},
-        std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a1},
+               std::pair<DubinsSegment, double>{DubinsSegment::Right, a2},
+               std::pair<DubinsSegment, double>{DubinsSegment::Left, a3},
       };
     }
   }
@@ -258,7 +234,7 @@ inline DubinsDescription dubins(const smooth::SE2d & target, double R)
  * @param R turning radius.
  * @return Spline representing a Dubins motion starting at Identity.
  */
-template<std::size_t K = 3>
+template<int K = 3>
   requires(K >= 1)
 Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
 {
@@ -279,5 +255,3 @@ Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1)
 }
 
 }  // namespace smooth
-
-#endif  // SMOOTH__SPLINE__DUBINS_HPP_

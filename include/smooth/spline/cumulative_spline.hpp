@@ -1,30 +1,6 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#ifndef SMOOTH__SPLINE__CUMULATIVE_SPLINE_HPP_
-#define SMOOTH__SPLINE__CUMULATIVE_SPLINE_HPP_
+#pragma once
 
 /**
  * @file
@@ -59,7 +35,8 @@ using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
  *
  * @return g
  */
-template<std::size_t K, LieGroup G>
+template<int K, LieGroup G>
+  requires(K > 0)
 inline G cspline_eval_vs(
   std::ranges::sized_range auto && vs,
   const MatrixType auto & Bcum,
@@ -68,11 +45,11 @@ inline G cspline_eval_vs(
   OptTangent<G> acc = {}) noexcept;
 
 /// @brief Jacobian of order K spline value w.r.t. coefficients.
-template<LieGroup G, std::size_t K>
+template<LieGroup G, int K>
 using SplineJacobian = Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> == -1 ? -1 : Dof<G> *(K + 1)>;
 
 /// @brief Optional argument for Jacobian of spline w.r.t. coefficients.
-template<LieGroup G, std::size_t K>
+template<LieGroup G, int K>
 using OptSplineJacobian = std::optional<Eigen::Ref<SplineJacobian<G, K>>>;
 
 /**
@@ -92,13 +69,15 @@ using OptSplineJacobian = std::optional<Eigen::Ref<SplineJacobian<G, K>>>;
  *
  * @return dg_dvs derivatives of value w.r.t. vs
  */
-template<std::size_t K, LieGroup G>
+template<int K, LieGroup G>
+  requires(K > 0)
 SplineJacobian<G, K - 1> cspline_eval_dg_dvs(
   std::ranges::sized_range auto && vs,
   const MatrixType auto & Bcum,
   const Scalar<G> & u,
   OptSplineJacobian<G, K - 1> dvel_dvs = {},
-  OptSplineJacobian<G, K - 1> dacc_dvs = {}) noexcept;
+  OptSplineJacobian<G, K - 1> dacc_dvs = {})
+noexcept;
 
 /**
  * @brief Evaluate a cumulative basis spline of order K from coefficients.
@@ -116,7 +95,8 @@ SplineJacobian<G, K - 1> cspline_eval_dg_dvs(
  * @param[out] vel calculate first order derivative w.r.t. u
  * @param[out] acc calculate second order derivative w.r.t. u
  */
-template<std::size_t K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+template<int K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+  requires(K > 0)
 inline G cspline_eval_gs(
   R && gs,
   const MatrixType auto & Bcum,
@@ -142,16 +122,16 @@ inline G cspline_eval_gs(
  *
  * @return dg_dgs derivatives of value w.r.t. gs
  */
-template<std::size_t K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+template<int K, std::ranges::sized_range R, LieGroup G = std::ranges::range_value_t<R>>
+  requires(K > 0)
 SplineJacobian<G, K> cspline_eval_dg_dgs(
   R && gs,
   const MatrixType auto & Bcum,
   const Scalar<G> & u,
   OptSplineJacobian<G, K> dvel_dgs = {},
-  OptSplineJacobian<G, K> dacc_dgs = {}) noexcept;
+  OptSplineJacobian<G, K> dacc_dgs = {})
+noexcept;
 
 }  // namespace smooth
 
 #include "detail/cumulative_spline_impl.hpp"
-
-#endif  // SMOOTH__SPLINE__CUMULATIVE_SPLINE_HPP_

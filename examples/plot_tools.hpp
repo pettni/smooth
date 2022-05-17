@@ -1,5 +1,6 @@
-#ifndef EXAMPLES__PLOT_TOOLS_HPP_
-#define EXAMPLES__PLOT_TOOLS_HPP_
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
+
+#pragma once
 
 #include <ranges>
 #include <vector>
@@ -10,5 +11,3 @@ auto r2v(R r)
 {
   return std::vector(r.begin(), r.end());
 }
-
-#endif  // EXAMPLES__PLOT_TOOLS_HPP_

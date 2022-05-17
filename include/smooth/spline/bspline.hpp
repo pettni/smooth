@@ -1,30 +1,6 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#ifndef SMOOTH__SPLINE__BSPLINE_HPP_
-#define SMOOTH__SPLINE__BSPLINE_HPP_
+#pragma once
 
 /**
  * @file
@@ -69,7 +45,7 @@ namespace smooth {
  * which aligns control points with the maximum of the corresponding
  * basis function.
  */
-template<std::size_t K, LieGroup G>
+template<int K, LieGroup G>
 class BSpline
 {
 public:
@@ -125,7 +101,10 @@ public:
   /**
    * @brief Maximal time for which spline is defined.
    */
-  [[nodiscard]] double t_max() const { return t0_ + (ctrl_pts_.size() - K) * dt_; }
+  [[nodiscard]] double t_max() const
+  {
+    return t0_ + static_cast<double>(ctrl_pts_.size() - K) * dt_;
+  }
 
   /**
    * @brief Access spline control points.
@@ -156,11 +135,11 @@ public:
     if (istar < 0) {
       istar = 0;
       u     = S(0);
-    } else if (istar + K + 1 > ctrl_pts_.size()) {
-      istar = ctrl_pts_.size() - K - 1;
+    } else if (istar + static_cast<int64_t>(K + 1) > static_cast<int64_t>(ctrl_pts_.size())) {
+      istar = static_cast<int64_t>(ctrl_pts_.size() - K - 1);
       u     = S(1);
     } else {
-      u = std::clamp<S>((t - S(t0_) - S(istar * dt_)) / S(dt_), S(0.), S(1.));
+      u = std::clamp<S>((t - S(t0_) - S(istar) * S(dt_)) / S(dt_), S(0.), S(1.));
     }
 
     CastT<S, G> g = cspline_eval_gs<K>(
@@ -192,5 +171,3 @@ private:
 };
 
 }  // namespace smooth
-
-#endif  // SMOOTH__SPLINE__BSPLINE_HPP_

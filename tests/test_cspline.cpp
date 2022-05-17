@@ -1,27 +1,4 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
 #include <gtest/gtest.h>
 
@@ -56,13 +33,14 @@ TYPED_TEST(CSpline, BSplineConstantCtrlpts)
 
   smooth::utils::static_for<6>([](auto k) {
     static constexpr uint32_t K = k + 1;
+    static constexpr int Ki     = static_cast<int>(K);
 
     std::vector<TypeParam> ctrl_pts;
     ctrl_pts.push_back(TypeParam::Random());
     for (auto i = 0u; i != K; ++i) { ctrl_pts.push_back(ctrl_pts.back()); }
 
     constexpr auto M_s = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>();
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
+    Eigen::Map<const Eigen::Matrix<double, Ki + 1, Ki + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
@@ -85,6 +63,7 @@ TYPED_TEST(CSpline, BSplineConstantDiffvec)
 
   smooth::utils::static_for<6>([](auto k) {
     static constexpr uint32_t K = k + 1;
+    static constexpr int Ki     = static_cast<int>(K);
 
     TypeParam g0 = TypeParam::Random();
 
@@ -92,7 +71,7 @@ TYPED_TEST(CSpline, BSplineConstantDiffvec)
     for (auto i = 0u; i != K; ++i) { diff_vec.push_back(Tangent::Zero()); }
 
     constexpr auto M_s = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>();
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M(M_s[0].data());
+    Eigen::Map<const Eigen::Matrix<double, Ki + 1, Ki + 1, Eigen::RowMajor>> M(M_s[0].data());
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;

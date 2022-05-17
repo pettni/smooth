@@ -19,12 +19,12 @@ target_compile_options(
   -Wunused
   -Woverloaded-virtual
   -Wpedantic
-  # -Wconversion        TODO enable and fix
-  # -Wsign-conversion   TODO enable and fix
+  -Wconversion
+  -Wsign-conversion
   -Wnull-dereference
   -Wdouble-promotion
   -Wimplicit-fallthrough
-  -Werror
+  # -Werror
 )
 target_link_libraries(
   TestConfig
@@ -80,6 +80,14 @@ add_executable(test_adapted test_adapted.cpp)
 target_link_libraries(test_adapted PRIVATE TestConfig)
 gtest_discover_tests(test_adapted)
 
+add_executable(test_manifold_vector test_manifold_vector.cpp)
+target_link_libraries(test_manifold_vector PRIVATE TestConfig)
+gtest_discover_tests(test_manifold_vector)
+
+add_executable(test_manifold_variant test_manifold_variant.cpp)
+target_link_libraries(test_manifold_variant PRIVATE TestConfig)
+gtest_discover_tests(test_manifold_variant)
+
 # ALGO TESTS
 
 add_executable(test_cspline test_cspline.cpp)
@@ -129,7 +137,7 @@ gtest_discover_tests(test_sparse)
 # COMPATABILITY TESTS
 
 find_package(Boost QUIET)
-find_package(Ceres 2 QUIET)
+find_package(Ceres 2.1 QUIET)
 find_package(autodiff 0.6 QUIET)
 find_package(geometry_msgs QUIET)
 

@@ -1,27 +1,4 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
 #include <gtest/gtest.h>
 
@@ -50,16 +27,16 @@ TYPED_TEST(CeresLocalParam, ComputeRandom)
 {
   smooth::CeresLocalParameterization<TypeParam> mf;
 
-  static constexpr uint32_t p = TypeParam::RepSize;
-  static constexpr uint32_t n = TypeParam::Dof;
+  static constexpr auto p = TypeParam::RepSize;
+  static constexpr auto n = TypeParam::Dof;
 
   using ParamsT = Eigen::Matrix<double, p, 1>;
 
   // check that local parameterization gives expected sizes
-  ASSERT_EQ(mf.AmbientSize(), n);
-  ASSERT_EQ(mf.TangentSize(), p);
+  ASSERT_EQ(mf.AmbientSize(), p);
+  ASSERT_EQ(mf.TangentSize(), n);
 
-  for (std::size_t i = 0; i != 10; ++i) {
+  for (auto i = 0u; i < 10; ++i) {
     // random group element and tangent vector
     TypeParam g                   = TypeParam::Random();
     Eigen::Matrix<double, n, 1> b = 1e-4 * Eigen::Matrix<double, n, 1>::Random();

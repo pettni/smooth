@@ -1,37 +1,13 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2022 Petter Nilsson. MIT License.
 
-#ifndef SMOOTH__COMPAT__CERES_HPP_
-#define SMOOTH__COMPAT__CERES_HPP_
+#pragma once
 
 /**
  * @file
  * @brief ceres compatability header.
  */
 
-#include <ceres/autodiff_local_parameterization.h>
+#include <ceres/autodiff_manifold.h>
 #include <ceres/internal/autodiff.h>
 
 #define SMOOTH_DIFF_CERES
@@ -47,15 +23,25 @@ template<Manifold G>
 struct CeresParamFunctor
 {
   template<typename Scalar>
-  bool operator()(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const
+  bool Plus(const Scalar * x, const Scalar * delta, Scalar * x_plus_delta) const
   {
-    using GCast = typename G::template CastT<Scalar>;
-
-    smooth::MapDispatch<const GCast> mx(x);
-    Eigen::Map<const Tangent<GCast>> mdelta(delta);
-    smooth::MapDispatch<GCast> mx_plus_delta(x_plus_delta);
+    smooth::MapDispatch<const CastT<Scalar, G>> mx(x);
+    Eigen::Map<const Tangent<CastT<Scalar, G>>> mdelta(delta);
+    smooth::MapDispatch<CastT<Scalar, G>> mx_plus_delta(x_plus_delta);
 
     mx_plus_delta = rplus(mx, mdelta);
+
+    return true;
+  }
+
+  template<typename Scalar>
+  bool Minus(const Scalar * x, const Scalar * y, Scalar * x_minus_y) const
+  {
+    smooth::MapDispatch<const CastT<Scalar, G>> mx(x);
+    smooth::MapDispatch<const CastT<Scalar, G>> my(y);
+    Eigen::Map<Tangent<CastT<Scalar, G>>> m_x_minus_y(x_minus_y);
+
+    m_x_minus_y = rminus<CastT<Scalar, G>, CastT<Scalar, G>>(mx, my);
 
     return true;
   }
@@ -66,9 +52,8 @@ struct CeresParamFunctor
  * @brief Parameterization for on-manifold optimization with Ceres.
  */
 template<Manifold G>
-class CeresLocalParameterization
-    : public ceres::AutoDiffLocalParameterization<CeresParamFunctor<G>, G::RepSize, G::Dof>
-{};
+using CeresLocalParameterization =
+  ceres::AutoDiffManifold<CeresParamFunctor<G>, G::RepSize, G::Dof>;
 
 /**
  * @brief Automatic differentiation in tangent space
@@ -112,11 +97,10 @@ auto dr_ceres(auto && f, auto && x)
   Scalar * jac_ptr[1]     = {jac.data()};
 
   ceres::internal::AutoDifferentiate<Dof<Result>, ceres::internal::StaticParameterDims<Nx>>(
-    f_deriv, a_ptr, b.size(), b.data(), jac_ptr);
+    f_deriv, a_ptr, static_cast<int>(b.size()), b.data(), jac_ptr);
 
   return std::make_pair(std::move(fval), Eigen::Matrix<Scalar, Ny, Nx>(jac));
 }
 
 }  // namespace smooth
 
-#endif  // SMOOTH__COMPAT__CERES_HPP_

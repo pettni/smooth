@@ -1,27 +1,4 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
 #include <gtest/gtest.h>
 
@@ -213,13 +190,14 @@ TEST(Utils, Zip2)
   ASSERT_EQ(
     std::ranges::size(smooth::utils::zip(vals1, vals2)), std::min(vals1.size(), vals2.size()));
 
-  for (auto i = 0; const auto & [v1, v2] : smooth::utils::zip(vals1, vals2)) {
+  for (auto i = 0u; const auto & [v1, v2] : smooth::utils::zip(vals1, vals2)) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals2[i]);
     ++i;
   }
 
-  for (auto i = 0; const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::drop(2))) {
+  for (auto i = 0u;
+       const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::drop(2))) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals1[i + 2]);
     ++i;
@@ -227,7 +205,7 @@ TEST(Utils, Zip2)
 
   const auto minus = [](auto x) { return x - 1; };
 
-  for (auto i = 0;
+  for (auto i = 0u;
        const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::transform(minus))) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals1[i] - 1);
@@ -264,7 +242,7 @@ TEST(Utils, Zip3)
     std::ranges::size(smooth::utils::zip(vals1, vals2, vals3)),
     std::min<std::size_t>({vals1.size(), vals2.size(), vals3.size()}));
 
-  for (auto i = 0; const auto & [v1, v2, v3] : smooth::utils::zip(vals1, vals2, vals3)) {
+  for (auto i = 0u; const auto & [v1, v2, v3] : smooth::utils::zip(vals1, vals2, vals3)) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals2[i]);
     ASSERT_EQ(v3, vals3[i]);
@@ -283,7 +261,7 @@ TEST(Utils, Zip4Iota)
     std::min<std::size_t>({vals1.size(), vals2.size(), vals3.size()}));
 
   for (const auto & [i, v1, v2, v3] :
-       smooth::utils::zip(std::views::iota(0), vals1, vals2, vals3)) {
+       smooth::utils::zip(std::views::iota(0u), vals1, vals2, vals3)) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals2[i]);
     ASSERT_EQ(v3, vals3[i]);

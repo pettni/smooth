@@ -1,30 +1,6 @@
-// smooth: Lie Theory for Robotics
-// https://github.com/pettni/smooth
-//
-// Licensed under the MIT License <http://opensource.org/licenses/MIT>.
-//
-// Copyright (c) 2021 Petter Nilsson
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#ifndef SMOOTH__POLYNOMIAL__BASIS_HPP_
-#define SMOOTH__POLYNOMIAL__BASIS_HPP_
+#pragma once
 
 /**
  * @file
@@ -58,12 +34,12 @@ constexpr StaticMatrix<Scalar, 1, K + 1> monomial_derivative(Scalar u, std::size
   Scalar P1      = 1;
   std::size_t P2 = 1;
   for (auto j = 2u; j <= p; ++j) { P2 *= j; }
-  ret[0][p] = P1 * P2;
+  ret[0][p] = P1 * static_cast<Scalar>(P2);
   for (auto i = p + 1; i <= K; ++i) {
     P1 *= u;
     P2 *= i;
     P2 /= i - p;
-    ret[0][i] = P1 * P2;
+    ret[0][i] = P1 * static_cast<Scalar>(P2);
   }
 
   return ret;
@@ -107,14 +83,14 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> bspline_basis()
     StaticMatrix<Scalar, K + 1, K> low, high;
     StaticMatrix<Scalar, K, K + 1> left, right;
 
-    for (std::size_t i = 0; i != K; ++i) {
-      for (std::size_t j = 0; j != K; ++j) {
+    for (auto i = 0u; i != K; ++i) {
+      for (auto j = 0u; j != K; ++j) {
         low[i][j]      = coeff_mat_km1[i][j];
         high[i + 1][j] = coeff_mat_km1[i][j];
       }
     }
 
-    for (std::size_t k = 0; k != K; ++k) {
+    for (auto k = 0u; k != K; ++k) {
       left[k][k + 1] = static_cast<Scalar>(K - (k + 1)) / static_cast<Scalar>(K);
       left[k][k]     = Scalar(1) - left[k][k + 1];
 
@@ -142,14 +118,14 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> bernstein_basis()
     StaticMatrix<Scalar, K + 1, K> low, high;
     StaticMatrix<Scalar, K, K + 1> left, right;
 
-    for (std::size_t i = 0; i != K; ++i) {
-      for (std::size_t j = 0; j != K; ++j) {
+    for (auto i = 0u; i != K; ++i) {
+      for (auto j = 0u; j != K; ++j) {
         low[i][j]      = coeff_mat_km1[i][j];
         high[i + 1][j] = coeff_mat_km1[i][j];
       }
     }
 
-    for (std::size_t k = 0; k != K; ++k) {
+    for (auto k = 0u; k != K; ++k) {
       left[k][k] = Scalar(1);
 
       right[k][k]     = Scalar(-1);
@@ -417,8 +393,8 @@ template<PolynomialBasis Basis, std::size_t K, typename Scalar = double>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_cumulative_basis()
 {
   auto M = polynomial_basis<Basis, K, Scalar>();
-  for (std::size_t i = 0; i != K + 1; ++i) {
-    for (std::size_t j = 0; j != K; ++j) { M[i][K - 1 - j] += M[i][K - j]; }
+  for (auto i = 0u; i != K + 1; ++i) {
+    for (auto j = 0u; j != K; ++j) { M[i][K - 1 - j] += M[i][K - j]; }
   }
   return M;
 }
@@ -441,7 +417,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> monomial_integral()
         std::size_t c = 1;
         for (auto _i = i - P + 1; _i <= i; ++_i) { c *= _i; }
         for (auto _j = j - P + 1; _j <= j; ++_j) { c *= _j; }
-        ret[i][j] = static_cast<Scalar>(c) / (i + j - 2 * P + 1);
+        ret[i][j] = static_cast<Scalar>(c) / static_cast<Scalar>(i + j - 2 * P + 1);
       } else {
         ret[i][j] = 0;
       }
@@ -490,4 +466,3 @@ integrate_absolute_polynomial(double t0, double t1, double A, double B, double C
 
 }  // namespace smooth
 
-#endif  // SMOOTH__POLYNOMIAL__BASIS_HPP_

@@ -1,3 +1,5 @@
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
+
 #include <smooth/diff.hpp>
 #include <smooth/manifold.hpp>
 #include <smooth/optim.hpp>
