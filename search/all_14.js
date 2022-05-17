@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['value_0',['value',['../structsmooth_1_1traits_1_1scalar__trait.html#a61e073725dad8e2fdc72a4a6208bd6ef',1,'smooth::traits::scalar_trait']]],
-  ['verbose_1',['verbose',['../structsmooth_1_1MinimizeOptions.html#a94304c3311c302eb868271421e33c8b2',1,'smooth::MinimizeOptions']]]
+  ['static_5ffor_0',['static_for',['../classsmooth_1_1Bundle.html#a4b5f4b9e266b22a73ae102d3099c98a1',1,'smooth::Bundle']]],
+  ['u1_1',['u1',['../classsmooth_1_1SO2Base.html#a036b29516a2212e409fae92ed83687dc',1,'smooth::SO2Base']]]
 ];
