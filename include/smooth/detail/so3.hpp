@@ -67,39 +67,6 @@ public:
     return Eigen::Matrix3<Scalar>::Identity() / Scalar(2) - sin_3(th2) * M + cos_4(th2) * M * M;
   }
 
-  /// @brief Compute sum S3 = \sum \hat w^k / (k+3)!
-  static Eigen::Matrix3<Scalar> calc_S3(TRefIn a_in)
-  {
-    using detail::cos_4, detail::sin_5;
-
-    const Scalar th2 = a_in.squaredNorm();
-    Eigen::Matrix3<Scalar> M;
-    hat(a_in, M);
-    return Eigen::Matrix3<Scalar>::Identity() / Scalar(6) + cos_4(th2) * M + sin_5(th2) * M * M;
-  }
-
-  /// @brief Compute sum S4 = \sum \hat w^k / (k+4)!
-  static Eigen::Matrix3<Scalar> calc_S4(TRefIn a_in)
-  {
-    using detail::cos_6, detail::sin_5;
-
-    const Scalar th2 = a_in.squaredNorm();
-    Eigen::Matrix3<Scalar> M;
-    hat(a_in, M);
-    return Eigen::Matrix3<Scalar>::Identity() / Scalar(24) + sin_5(th2) * M - cos_6(th2) * M * M;
-  }
-
-  /// @brief Compute sum S5 = \sum \hat w^k / (k+5)!
-  static Eigen::Matrix3<Scalar> calc_S5(TRefIn a_in)
-  {
-    using detail::cos_6, detail::sin_7;
-
-    const Scalar th2 = a_in.squaredNorm();
-    Eigen::Matrix3<Scalar> M;
-    hat(a_in, M);
-    return Eigen::Matrix3<Scalar>::Identity() / Scalar(120) - cos_6(th2) * M - sin_7(th2) * M * M;
-  }
-
   /**
    * @brief Compute matrix inverse of sum
    * \f[

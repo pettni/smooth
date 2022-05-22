@@ -130,6 +130,10 @@ add_executable(test_nlreg test_nlreg.cpp)
 target_link_libraries(test_nlreg PRIVATE TestConfig)
 gtest_discover_tests(test_nlreg)
 
+add_executable(test_jacobians test_jacobians.cpp)
+target_link_libraries(test_jacobians PRIVATE TestConfig)
+gtest_discover_tests(test_jacobians)
+
 add_executable(test_hessian test_hessian.cpp)
 target_link_libraries(test_hessian PRIVATE TestConfig)
 gtest_discover_tests(test_hessian)

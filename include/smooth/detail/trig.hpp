@@ -86,18 +86,4 @@ S cos_6(const S & x2)
   }
 }
 
-template<typename S>
-S sin_7(const S & x2)
-{
-  using std::sin, std::sqrt;
-
-  const S x4 = x2 * x2;
-  if (x2 > S(eps2)) {
-    const S x = sqrt(x2);
-    return (sin(x) - x + x2 * x / 6 - x4 * x / 120) / (x4 * x2 * x);
-  } else {
-    return -S(1) / S(5040) + x2 / S(362880) - x4 / S(39916800);
-  }
-}
-
 }  // namespace smooth::detail

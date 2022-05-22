@@ -5,13 +5,13 @@
 #include <Eigen/Core>
 
 #include "common.hpp"
+#include "se3.hpp"
 #include "smooth/derivatives.hpp"
-#include "so3.hpp"
 
 namespace smooth {
 
 /**
- * @brief Galilei Lie Group represented as S^3 ⋉ R3 ⋉ R3 ⋉ R
+ * @brief Galilei Lie Group represented as (S^3 ⋉ R3) ⋉ (R3 x R)
  *
  * Memory layout
  * -------------
@@ -24,7 +24,7 @@ namespace smooth {
  * [ 0 1 tau ]
  * [ 0 0 1   ]
  *
- * where R ∈ SO(3), v, p ∈ R3, and t ∈ R
+ * where R ∈ SO(3), v, p ∈ R3, and tau ∈ R
  *
  * Lie algebra Matrix form
  * -----------------------
@@ -116,17 +116,17 @@ public:
 
   static void Ad(GRefIn g_in, TMapRefOut A_out)
   {
-    Eigen::Matrix<Scalar, 3, 3> R;
-    SO3Impl<Scalar>::matrix(g_in.template tail<4>(), R);
-
-    const Eigen::Vector3<Scalar> v = g_in.template segment<3>(0);
-    const Eigen::Vector3<Scalar> p = g_in.template segment<3>(3);
-    const double t                 = g_in(6);
+    Eigen::Ref<const Eigen::Vector3<Scalar>> v = g_in.template segment<3>(0);
+    Eigen::Ref<const Eigen::Vector3<Scalar>> p = g_in.template segment<3>(3);
+    const double t                             = g_in(6);
 
     A_out.setZero();
 
+    Eigen::Ref<Eigen::Matrix<Scalar, 3, 3>> R = A_out.template block<3, 3>(0, 0);
+    SO3Impl<Scalar>::matrix(g_in.template tail<4>(), R);
+
     // block row 1 (b)
-    A_out.template block<3, 3>(0, 0) = R;
+    // A_out.template block<3, 3>(0, 0) = R; (already there)
     SO3Impl<Scalar>::hat(v, A_out.template block<3, 3>(0, 7));
     A_out.template block<3, 3>(0, 7) *= R;
 
@@ -146,8 +146,6 @@ public:
 
   static void exp(TRefIn a_in, GRefOut g_out)
   {
-    using std::cos, std::sin;
-
     SO3Impl<Scalar>::exp(a_in.template tail<3>(), g_out.template tail<4>());
 
     const Eigen::Matrix3<Scalar> S1 = SO3Impl<Scalar>::calc_S1(a_in.template tail<3>());
@@ -176,42 +174,101 @@ public:
 
   static void ad(TRefIn a_in, TMapRefOut A_out)
   {
-    // [ W  0 0 B ]
-    // [ sI W b Q ]
-    // [ 0  0 0 0 ]
-    // [ 0  0 0 W ]
-
     Eigen::Ref<const Eigen::Vector3<Scalar>> b = a_in.template segment<3>(0);
     Eigen::Ref<const Eigen::Vector3<Scalar>> q = a_in.template segment<3>(3);
     const Scalar s                             = a_in(6);
     Eigen::Ref<const Eigen::Vector3<Scalar>> w = a_in.template segment<3>(7);
 
-    Eigen::Matrix3<Scalar> B, Q, W;
-    SO3Impl<Scalar>::hat(b, B);
-    SO3Impl<Scalar>::hat(q, Q);
-    SO3Impl<Scalar>::hat(w, W);
-
     A_out.setZero();
 
-    A_out.template block<3, 3>(0, 0) = W;
-    A_out.template block<3, 3>(0, 7) = B;
+    SO3Impl<Scalar>::hat(w, A_out.template topLeftCorner<3, 3>());
+    SO3Impl<Scalar>::hat(b, A_out.template block<3, 3>(0, 7));
 
     A_out.template block<3, 3>(3, 0) = -s * Eigen::Matrix3<Scalar>::Identity();
-    A_out.template block<3, 3>(3, 3) = W;
+    A_out.template block<3, 3>(3, 3) = A_out.template topLeftCorner<3, 3>();
     A_out.template block<3, 1>(3, 6) = b;
-    A_out.template block<3, 3>(3, 7) = Q;
+    SO3Impl<Scalar>::hat(q, A_out.template block<3, 3>(3, 7));
 
-    A_out.template block<3, 3>(7, 7) = W;
+    A_out.template block<3, 3>(7, 7) = A_out.template topLeftCorner<3, 3>();
   }
 
-  static void dr_exp(TRefIn, TMapRefOut)
+  static Eigen::Matrix3<Scalar> calculate_r(
+    Eigen::Ref<const Eigen::Vector3<Scalar>> v, Eigen::Ref<const Eigen::Vector3<Scalar>> w)
   {
-    throw std::runtime_error("Galilei jacobians not implemented");
+    using detail::sin_3, detail::cos_4, detail::sin_5, detail::cos_6;
+
+    const Scalar th2 = w.squaredNorm();
+
+    Eigen::Matrix<Scalar, 3, 3> V, W;
+    SO3Impl<Scalar>::hat(v, V);
+    SO3Impl<Scalar>::hat(w, W);
+    const Scalar vdw = v.dot(w);
+
+    const Eigen::Matrix<Scalar, 3, 3> WV = W * V, VW = V * W, WW = W * W;
+
+    // clang-format off
+    return V / 6 +
+      + sin_3(th2) * (-WV + Scalar(0.5) * vdw * W)
+      + cos_4(th2) * (VW + W * WV - Scalar(2) * WV - Scalar(0.5) * vdw * WW + Scalar(2) * vdw * W)
+      + sin_5(th2) * (V * WW - Scalar(2) * W * WV + Scalar(2) * vdw * (WW - W))
+      + cos_6(th2) * (Scalar(2) * vdw * WW);
+    // clang-format on
   }
 
-  static void dr_expinv(TRefIn, TMapRefOut)
+  static void dr_exp(TRefIn a_in, TMapRefOut A_out)
   {
-    throw std::runtime_error("Galilei jacobians not implemented");
+    Eigen::Ref<const Eigen::Vector3<Scalar>> b = a_in.template segment<3>(0);
+    Eigen::Ref<const Eigen::Vector3<Scalar>> q = a_in.template segment<3>(3);
+    const Scalar s                             = a_in(6);
+    Eigen::Ref<const Eigen::Vector3<Scalar>> w = a_in.template segment<3>(7);
+
+    const Eigen::Matrix3<Scalar> S1 = SO3Impl<Scalar>::calc_S1(-w);
+    const Eigen::Matrix3<Scalar> S2 = SO3Impl<Scalar>::calc_S2(-w);
+    const Eigen::Matrix3<Scalar> Qb = SE3Impl<Scalar>::calculate_q(-b, -w);
+    const Eigen::Matrix3<Scalar> Qq = SE3Impl<Scalar>::calculate_q(-q, -w);
+    const Eigen::Matrix3<Scalar> R  = calculate_r(-b, -w);
+
+    A_out.setZero();
+    A_out.template block<3, 3>(0, 0) = S1;
+    A_out.template block<3, 3>(0, 7) = Qb;
+
+    A_out.template block<3, 3>(3, 0) = s * (S1 - S2);
+    A_out.template block<3, 3>(3, 3) = S1;
+    A_out.template block<3, 1>(3, 6) = -S2 * b;
+    A_out.template block<3, 3>(3, 7) = s * R + Qq;
+
+    A_out.template block<1, 1>(6, 6).setIdentity();
+
+    A_out.template block<3, 3>(7, 7) = S1;
+  }
+
+  static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
+  {
+    Eigen::Ref<const Eigen::Vector3<Scalar>> b = a_in.template segment<3>(0);
+    Eigen::Ref<const Eigen::Vector3<Scalar>> q = a_in.template segment<3>(3);
+    const Scalar s                             = a_in(6);
+    Eigen::Ref<const Eigen::Vector3<Scalar>> w = a_in.template segment<3>(7);
+
+    const Eigen::Matrix3<Scalar> I     = Eigen::Matrix3<Scalar>::Identity();
+    const Eigen::Matrix3<Scalar> S1inv = SO3Impl<Scalar>::calc_S1inv(-w);
+    const Eigen::Matrix3<Scalar> S2    = SO3Impl<Scalar>::calc_S2(-w);
+    const Eigen::Matrix3<Scalar> Qb    = SE3Impl<Scalar>::calculate_q(-b, -w);
+    const Eigen::Matrix3<Scalar> Qq    = SE3Impl<Scalar>::calculate_q(-q, -w);
+    const Eigen::Matrix3<Scalar> R     = calculate_r(-b, -w);
+
+    A_out.setZero();
+    A_out.template block<3, 3>(0, 0)           = S1inv;
+    A_out.template block<3, 3>(0, 7).noalias() = -S1inv * Qb * S1inv;
+
+    A_out.template block<3, 3>(3, 0).noalias() = -s * (I - S1inv * S2) * S1inv;
+    A_out.template block<3, 3>(3, 3).noalias() = S1inv;
+    A_out.template block<3, 1>(3, 6).noalias() = S1inv * S2 * b;
+    A_out.template block<3, 3>(3, 7).noalias() =
+      S1inv * (-s * R - Qq + s * (I - S2 * S1inv) * Qb) * S1inv;
+
+    A_out.template block<1, 1>(6, 6).setIdentity();
+
+    A_out.template block<3, 3>(7, 7) = S1inv;
   }
 };
 
