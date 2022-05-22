@@ -105,12 +105,12 @@ public:
   {
     SO3Impl<Scalar>::log(g_in.template tail<4>(), a_out.template tail<3>());
 
-    const Eigen::Matrix3<Scalar> M1 = SO3Impl<Scalar>::calculate_der1(a_out.template tail<3>());
-    const Eigen::Matrix3<Scalar> M2 = SO3Impl<Scalar>::calculate_der2(a_out.template tail<3>());
+    const Eigen::Matrix3<Scalar> S1inv = SO3Impl<Scalar>::calc_S1inv(a_out.template tail<3>());
+    const Eigen::Matrix3<Scalar> S2    = SO3Impl<Scalar>::calc_S2(a_out.template tail<3>());
 
-    a_out.template segment<3>(0).noalias() = M1.inverse() * g_in.template segment<3>(0);
+    a_out.template segment<3>(0).noalias() = S1inv * g_in.template segment<3>(0);
     a_out.template segment<3>(3).noalias() =
-      M1.inverse() * (g_in.template segment<3>(3) - M2 * a_out.template segment<3>(0) * g_in(6));
+      S1inv * (g_in.template segment<3>(3) - S2 * a_out.template segment<3>(0) * g_in(6));
     a_out(6) = g_in(6);
   }
 
@@ -150,12 +150,12 @@ public:
 
     SO3Impl<Scalar>::exp(a_in.template tail<3>(), g_out.template tail<4>());
 
-    const Eigen::Matrix3<Scalar> M1 = SO3Impl<Scalar>::calculate_der1(a_in.template tail<3>());
-    const Eigen::Matrix3<Scalar> M2 = SO3Impl<Scalar>::calculate_der2(a_in.template tail<3>());
+    const Eigen::Matrix3<Scalar> S1 = SO3Impl<Scalar>::calc_S1(a_in.template tail<3>());
+    const Eigen::Matrix3<Scalar> S2 = SO3Impl<Scalar>::calc_S2(a_in.template tail<3>());
 
-    g_out.template segment<3>(0).noalias() = M1 * a_in.template segment<3>(0);
+    g_out.template segment<3>(0).noalias() = S1 * a_in.template segment<3>(0);
     g_out.template segment<3>(3).noalias() =
-      M1 * a_in.template segment<3>(3) + M2 * a_in.template segment<3>(0) * a_in(6);
+      S1 * a_in.template segment<3>(3) + S2 * a_in.template segment<3>(0) * a_in(6);
     g_out(6) = a_in(6);
   }
 
