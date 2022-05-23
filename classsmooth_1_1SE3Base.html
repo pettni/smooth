@@ -134,31 +134,31 @@ Public Attributes</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename _Derived&gt;<br />
 class smooth::SE3Base&lt; _Derived &gt;</div><p >Base class for <a class="el" href="classsmooth_1_1SE3.html" title="Storage implementation of SE3 Lie group.">SE3</a> Lie group types. </p>
 <p >Internally represented as \(\mathbb{S}^3 \times \mathbb{R}^3\).</p>
-<h2><a class="anchor" id="autotoc_md8"></a>
+<h2><a class="anchor" id="autotoc_md12"></a>
 Memory layout</h2>
 <ul>
 <li>Group: \( \mathbf{x} = [x, y, z, q_x, q_y, q_z, q_w] \)</li>
 <li>Tangent: \( \mathbf{a} = [v_x, v_y, v_z, \omega_x, \omega_y, \omega_z] \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md9"></a>
+<h2><a class="anchor" id="autotoc_md13"></a>
 Constraints</h2>
 <ul>
 <li>Group: \(q_x^2 + q_y^2 + q_z^2 + q_w^2 = 1 \)</li>
 <li>Tangent: \( -\pi &lt; \omega_x, \omega_y, \omega_z \leq \pi \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md10"></a>
+<h2><a class="anchor" id="autotoc_md14"></a>
 Lie group matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{X} = \begin{bmatrix} R &amp; T \\ 0 &amp; 1 \end{bmatrix} \in \mathbb{R}^{4 \times 4} \]
 </p>
 <p >where \(R\) is a 3x3 rotation matrix and \( T = [x, y, z]^T \).</p>
-<h2><a class="anchor" id="autotoc_md11"></a>
+<h2><a class="anchor" id="autotoc_md15"></a>
 Lie algebra matrix form</h2>
 <p class="formulaDsp">
 \[ \mathbf{a}^\wedge = \begin{bmatrix} 0 &amp; -\omega_z &amp; \omega_y &amp; v_x \\ \omega_z &amp; 0 &amp; -\omega_x &amp; v_y \\ -\omega_y &amp; \omega_x &amp; 0 &amp; v_y \\ 0 &amp; 0 &amp; 0 &amp; 0 \end{bmatrix} \in \mathbb{R}^{4 \times 4} \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00067">67</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00065">65</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ab86fc689ac404b7793725998420ceca1" name="ab86fc689ac404b7793725998420ceca1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab86fc689ac404b7793725998420ceca1">&#9670;&nbsp;</a></span>dr_action()</h2>
@@ -193,7 +193,7 @@ template&lt;typename EigenDerived &gt; </div>
 \[ \mathrm{d}^r (X v)_X \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00134">134</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00132">132</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -224,7 +224,7 @@ template&lt;typename _Derived &gt; </div>
 
 <p>Return as 3D Eigen transform. </p>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00112">112</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00110">110</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -258,7 +258,7 @@ template&lt;typename EigenDerived &gt; </div>
 
 <p>Tranformation action on 3D vector. </p>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00121">121</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00119">119</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -290,7 +290,7 @@ template&lt;typename _Derived &gt; </div>
 <p>Project to <a class="el" href="classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group.">SE2</a>. </p>
 <dl class="section note"><dt>Note</dt><dd><a class="el" href="classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group.">SE2</a> header must be included. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00147">147</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00145">145</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -321,7 +321,7 @@ template&lt;typename _Derived &gt; </div>
 
 <p>Access R3 part. </p>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00096">96</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00094">94</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -352,7 +352,7 @@ template&lt;typename _Derived &gt; </div>
 
 <p>Const access R3 part. </p>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00104">104</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00102">102</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -383,7 +383,7 @@ template&lt;typename _Derived &gt; </div>
 
 <p>Access SO(3) part. </p>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00080">80</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00078">78</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -414,7 +414,7 @@ template&lt;typename _Derived &gt; </div>
 
 <p>Const access SO(3) part. </p>
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00088">88</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00086">86</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>
@@ -433,7 +433,7 @@ template&lt;typename _Derived &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00075">75</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="se3_8hpp_source.html#l00073">73</a> of file <a class="el" href="se3_8hpp_source.html">se3.hpp</a>.</p>
 
 </div>
 </div>

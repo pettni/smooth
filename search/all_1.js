@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['ad_0',['ad',['../lie__group_8hpp.html#aaed9c544d4cc93183fd7841ed63fdb1c',1,'smooth']]],
-  ['ad_1',['Ad',['../lie__group_8hpp.html#adb0f57f3ae1d3c3ba4d05412c7f971d1',1,'smooth']]],
+  ['ad_0',['Ad',['../lie__group_8hpp.html#adb0f57f3ae1d3c3ba4d05412c7f971d1',1,'smooth']]],
+  ['ad_1',['ad',['../lie__group_8hpp.html#aaed9c544d4cc93183fd7841ed63fdb1c',1,'smooth']]],
   ['ad_5fsparse_2',['ad_sparse',['../lie__group__sparse_8hpp.html#a42faf6185f19672715121515c674c754',1,'smooth']]],
   ['ad_5fsparse_5fpattern_3',['ad_sparse_pattern',['../lie__group__sparse_8hpp.html#a9d79dbf107de8a378de7c57b7899269b',1,'smooth']]],
   ['analytic_4',['Analytic',['../diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2a8503d71dcafbdc254c2bbea2599e5791',1,'smooth::diff']]],

@@ -1,57 +1,64 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,1027,111,1054"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,1161,111,1187"/>
 <area shape="rect" id="node2" href="$classsmooth_1_1BundleBase.html" title=" " alt="" coords="188,5,329,47"/>
 <area shape="rect" id="node4" href="$classsmooth_1_1BundleBase.html" title=" " alt="" coords="165,71,352,112"/>
 <area shape="rect" id="node6" href="$classsmooth_1_1BundleBase.html" title=" " alt="" coords="187,135,331,191"/>
 <area shape="rect" id="node8" href="$classsmooth_1_1C1Base.html" title=" " alt="" coords="187,215,331,256"/>
 <area shape="rect" id="node10" href="$classsmooth_1_1C1Base.html" title=" " alt="" coords="182,280,335,321"/>
 <area shape="rect" id="node12" href="$classsmooth_1_1C1Base.html" title=" " alt="" coords="173,345,345,387"/>
-<area shape="rect" id="node14" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="178,411,339,452"/>
-<area shape="rect" id="node16" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="169,476,349,517"/>
-<area shape="rect" id="node18" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="179,541,339,583"/>
-<area shape="rect" id="node20" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="178,607,339,648"/>
-<area shape="rect" id="node22" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,672,349,713"/>
-<area shape="rect" id="node24" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,737,348,793"/>
-<area shape="rect" id="node26" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,817,348,873"/>
-<area shape="rect" id="node28" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,897,348,953"/>
-<area shape="rect" id="node30" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,977,348,1033"/>
-<area shape="rect" id="node32" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="179,1056,339,1097"/>
-<area shape="rect" id="node34" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="177,1121,340,1163"/>
-<area shape="rect" id="node36" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="167,1187,350,1228"/>
-<area shape="rect" id="node38" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="177,1252,341,1293"/>
-<area shape="rect" id="node40" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="177,1317,340,1359"/>
-<area shape="rect" id="node42" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="167,1383,350,1424"/>
-<area shape="rect" id="node44" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="167,1447,350,1503"/>
-<area shape="rect" id="node46" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="168,1527,349,1583"/>
-<area shape="rect" id="node48" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="177,1607,341,1648"/>
-<area shape="rect" id="node50" href="$classsmooth_1_1BundleBase.html" title="Base class for Bundle lie groups." alt="" coords="188,1672,329,1713"/>
-<area shape="rect" id="node51" href="$classsmooth_1_1C1Base.html" title="Base class for C1 Lie group types." alt="" coords="163,1738,354,1765"/>
-<area shape="rect" id="node52" href="$classsmooth_1_1SE2Base.html" title="Base class for SE2 Lie group types." alt="" coords="159,1789,358,1815"/>
-<area shape="rect" id="node53" href="$classsmooth_1_1SE3Base.html" title="Base class for SE3 Lie group types." alt="" coords="159,1839,358,1866"/>
-<area shape="rect" id="node54" href="$classsmooth_1_1SO2Base.html" title="Base class for SO2 Lie group types." alt="" coords="159,1890,359,1917"/>
-<area shape="rect" id="node55" href="$classsmooth_1_1SO3Base.html" title="Base class for SO3 Lie group types." alt="" coords="159,1941,359,1967"/>
+<area shape="rect" id="node14" href="$classsmooth_1_1GalileiBase.html" title=" " alt="" coords="185,411,332,452"/>
+<area shape="rect" id="node16" href="$classsmooth_1_1GalileiBase.html" title=" " alt="" coords="162,476,355,517"/>
+<area shape="rect" id="node18" href="$classsmooth_1_1GalileiBase.html" title=" " alt="" coords="189,541,329,597"/>
+<area shape="rect" id="node20" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="178,620,339,661"/>
+<area shape="rect" id="node22" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="169,685,349,727"/>
+<area shape="rect" id="node24" href="$classsmooth_1_1SE2Base.html" title=" " alt="" coords="179,751,339,792"/>
+<area shape="rect" id="node26" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="178,816,339,857"/>
+<area shape="rect" id="node28" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,881,349,923"/>
+<area shape="rect" id="node30" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,946,348,1002"/>
+<area shape="rect" id="node32" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,1026,348,1082"/>
+<area shape="rect" id="node34" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,1106,348,1162"/>
+<area shape="rect" id="node36" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="169,1186,348,1242"/>
+<area shape="rect" id="node38" href="$classsmooth_1_1SE3Base.html" title=" " alt="" coords="179,1265,339,1307"/>
+<area shape="rect" id="node40" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="177,1331,340,1372"/>
+<area shape="rect" id="node42" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="167,1396,350,1437"/>
+<area shape="rect" id="node44" href="$classsmooth_1_1SO2Base.html" title=" " alt="" coords="177,1461,341,1503"/>
+<area shape="rect" id="node46" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="177,1527,340,1568"/>
+<area shape="rect" id="node48" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="167,1592,350,1633"/>
+<area shape="rect" id="node50" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="167,1657,350,1713"/>
+<area shape="rect" id="node52" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="168,1737,349,1793"/>
+<area shape="rect" id="node54" href="$classsmooth_1_1SO3Base.html" title=" " alt="" coords="177,1816,341,1857"/>
+<area shape="rect" id="node56" href="$classsmooth_1_1BundleBase.html" title="Base class for Bundle lie groups." alt="" coords="188,1881,329,1923"/>
+<area shape="rect" id="node57" href="$classsmooth_1_1C1Base.html" title="Base class for C1 Lie group types." alt="" coords="163,1947,354,1974"/>
+<area shape="rect" id="node58" href="$classsmooth_1_1GalileiBase.html" title="Base class for Galielei Lie group types." alt="" coords="190,1999,327,2040"/>
+<area shape="rect" id="node59" href="$classsmooth_1_1SE2Base.html" title="Base class for SE2 Lie group types." alt="" coords="159,2065,358,2091"/>
+<area shape="rect" id="node60" href="$classsmooth_1_1SE3Base.html" title="Base class for SE3 Lie group types." alt="" coords="159,2115,358,2142"/>
+<area shape="rect" id="node61" href="$classsmooth_1_1SO2Base.html" title="Base class for SO2 Lie group types." alt="" coords="159,2166,359,2193"/>
+<area shape="rect" id="node62" href="$classsmooth_1_1SO3Base.html" title="Base class for SO3 Lie group types." alt="" coords="159,2217,359,2243"/>
 <area shape="rect" id="node3" href="$classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group." alt="" coords="428,13,585,39"/>
 <area shape="rect" id="node5" href="$classsmooth_1_1Map_3_01Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Memory mapping of Bundle Lie group." alt="" coords="433,71,580,112"/>
 <area shape="rect" id="node7" href="$classsmooth_1_1Map_3_01const_01Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Const memory mapping of Bundle Lie group." alt="" coords="437,143,576,184"/>
 <area shape="rect" id="node9" href="$classsmooth_1_1C1.html" title="Storage implementation of C1 Lie group." alt="" coords="430,222,583,249"/>
 <area shape="rect" id="node11" href="$classsmooth_1_1Map_3_01C1_3_01__Scalar_01_4_01_4.html" title="Memory mapping of C1 Lie group." alt="" coords="407,287,607,314"/>
 <area shape="rect" id="node13" href="$classsmooth_1_1Map_3_01const_01C1_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of C1 Lie group." alt="" coords="437,345,576,387"/>
-<area shape="rect" id="node15" href="$classsmooth_1_1Map_3_01SE2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE2 Lie group." alt="" coords="435,411,578,452"/>
-<area shape="rect" id="node17" href="$classsmooth_1_1Map_3_01const_01SE2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE2 Lie group." alt="" coords="437,476,576,517"/>
-<area shape="rect" id="node19" href="$classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group." alt="" coords="426,549,587,575"/>
-<area shape="rect" id="node21" href="$classsmooth_1_1Map_3_01SE3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE3 Lie group." alt="" coords="435,607,578,648"/>
-<area shape="rect" id="node23" href="$classsmooth_1_1Map_3_01const_01SE3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE3 Lie group." alt="" coords="437,672,576,713"/>
-<area shape="rect" id="node25" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="433,737,581,793"/>
-<area shape="rect" id="node27" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="433,817,581,873"/>
-<area shape="rect" id="node29" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="427,904,587,945"/>
-<area shape="rect" id="node31" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="423,984,591,1025"/>
-<area shape="rect" id="node33" href="$classsmooth_1_1SE3.html" title="Storage implementation of SE3 Lie group." alt="" coords="426,1063,587,1090"/>
-<area shape="rect" id="node35" href="$classsmooth_1_1Map_3_01SO2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO2 Lie group." alt="" coords="435,1121,579,1163"/>
-<area shape="rect" id="node37" href="$classsmooth_1_1Map_3_01const_01SO2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO2 Lie group." alt="" coords="437,1187,576,1228"/>
-<area shape="rect" id="node39" href="$classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group." alt="" coords="425,1259,588,1286"/>
-<area shape="rect" id="node41" href="$classsmooth_1_1Map_3_01SO3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO3 Lie group." alt="" coords="435,1317,579,1359"/>
-<area shape="rect" id="node43" href="$classsmooth_1_1Map_3_01const_01SO3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO3 Lie group." alt="" coords="437,1383,576,1424"/>
-<area shape="rect" id="node45" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="433,1447,581,1503"/>
-<area shape="rect" id="node47" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="421,1535,593,1576"/>
-<area shape="rect" id="node49" href="$classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group." alt="" coords="425,1614,588,1641"/>
+<area shape="rect" id="node15" href="$classsmooth_1_1Galilei.html" title="Storage implementation of Galilei Lie group." alt="" coords="420,418,593,445"/>
+<area shape="rect" id="node17" href="$classsmooth_1_1Map_3_01Galilei_3_01__Scalar_01_4_01_4.html" title="Memory mapping of Galilei Lie group." alt="" coords="435,476,578,517"/>
+<area shape="rect" id="node19" href="$classsmooth_1_1Map_3_01const_01Galilei_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of Galilei Lie group." alt="" coords="437,548,576,589"/>
+<area shape="rect" id="node21" href="$classsmooth_1_1Map_3_01SE2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE2 Lie group." alt="" coords="435,620,578,661"/>
+<area shape="rect" id="node23" href="$classsmooth_1_1Map_3_01const_01SE2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE2 Lie group." alt="" coords="437,685,576,727"/>
+<area shape="rect" id="node25" href="$classsmooth_1_1SE2.html" title="Storage implementation of SE2 Lie group." alt="" coords="426,758,587,785"/>
+<area shape="rect" id="node27" href="$classsmooth_1_1Map_3_01SE3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE3 Lie group." alt="" coords="435,816,578,857"/>
+<area shape="rect" id="node29" href="$classsmooth_1_1Map_3_01const_01SE3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE3 Lie group." alt="" coords="437,881,576,923"/>
+<area shape="rect" id="node31" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="433,946,581,1002"/>
+<area shape="rect" id="node33" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="433,1026,581,1082"/>
+<area shape="rect" id="node35" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="427,1113,587,1155"/>
+<area shape="rect" id="node37" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="423,1193,591,1235"/>
+<area shape="rect" id="node39" href="$classsmooth_1_1SE3.html" title="Storage implementation of SE3 Lie group." alt="" coords="426,1273,587,1299"/>
+<area shape="rect" id="node41" href="$classsmooth_1_1Map_3_01SO2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO2 Lie group." alt="" coords="435,1331,579,1372"/>
+<area shape="rect" id="node43" href="$classsmooth_1_1Map_3_01const_01SO2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO2 Lie group." alt="" coords="437,1396,576,1437"/>
+<area shape="rect" id="node45" href="$classsmooth_1_1SO2.html" title="Storage implementation of SO2 Lie group." alt="" coords="425,1469,588,1495"/>
+<area shape="rect" id="node47" href="$classsmooth_1_1Map_3_01SO3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO3 Lie group." alt="" coords="435,1527,579,1568"/>
+<area shape="rect" id="node49" href="$classsmooth_1_1Map_3_01const_01SO3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO3 Lie group." alt="" coords="437,1592,576,1633"/>
+<area shape="rect" id="node51" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="433,1657,581,1713"/>
+<area shape="rect" id="node53" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="421,1744,593,1785"/>
+<area shape="rect" id="node55" href="$classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group." alt="" coords="425,1823,588,1850"/>
 </map>

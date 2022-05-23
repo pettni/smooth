@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['_7ebspline_0',['~BSpline',['../classsmooth_1_1BSpline.html#a3d735a15347893ea8383b69f629249a0',1,'smooth::BSpline']]],
-  ['_7espline_1',['~Spline',['../classsmooth_1_1Spline.html#a52ef62f49f2bbc8ee2b432a33856bf55',1,'smooth::Spline']]]
+  ['static_5ffor_0',['static_for',['../classsmooth_1_1Bundle.html#a4b5f4b9e266b22a73ae102d3099c98a1',1,'smooth::Bundle']]],
+  ['u1_1',['u1',['../classsmooth_1_1SO2Base.html#a036b29516a2212e409fae92ed83687dc',1,'smooth::SO2Base']]]
 ];
