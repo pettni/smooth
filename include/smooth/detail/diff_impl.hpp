@@ -51,7 +51,7 @@ auto dr_numerical(auto && f, auto && x)
         if constexpr (std::is_base_of_v<Eigen::MatrixBase<W>, W>) {
           // scale step size if we are in Rn
           eps_j *= abs(w[j]);
-          if (eps_j == 0.) { eps_j = eps; }
+          if (eps_j == Scalar(0.)) { eps_j = eps; }
         }
         w             = rplus<W>(w, (eps_j * Eigen::Vector<Scalar, Nx_j>::Unit(nx_j, j)).eval());
         J.col(I0 + j) = rminus<Result>(std::apply(f, x_nc), fval) / eps_j;

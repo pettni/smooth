@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 
 #include "common.hpp"
+#include "trig.hpp"
 
 namespace smooth {
 
@@ -43,6 +44,54 @@ public:
   static constexpr bool IsCommutative = false;
 
   SMOOTH_DEFINE_REFS;
+
+  /// @brief Compute sum S1 = \sum \hat w^k / (k+1)!
+  static Eigen::Matrix3<Scalar> calc_S1(TRefIn a_in)
+  {
+    using detail::cos_2, detail::sin_3;
+
+    const Scalar th2 = a_in.squaredNorm();
+    Eigen::Matrix3<Scalar> M;
+    hat(a_in, M);
+    return Eigen::Matrix3<Scalar>::Identity() - cos_2(th2) * M - sin_3(th2) * M * M;
+  }
+
+  /// @brief Compute sum S2 = \sum \hat w^k / (k+2)!
+  static Eigen::Matrix3<Scalar> calc_S2(TRefIn a_in)
+  {
+    using detail::cos_4, detail::sin_3;
+
+    const Scalar th2 = a_in.squaredNorm();
+    Eigen::Matrix3<Scalar> M;
+    hat(a_in, M);
+    return Eigen::Matrix3<Scalar>::Identity() / Scalar(2) - sin_3(th2) * M + cos_4(th2) * M * M;
+  }
+
+  /**
+   * @brief Compute matrix inverse of sum
+   * \f[
+   *   \sum_{k \geq 0} \frac {\hat \omega}{(k+1)!}.
+   * \f]
+   */
+  static Eigen::Matrix3<Scalar> calc_S1inv(TRefIn a_in)
+  {
+    using std::sqrt, std::sin, std::cos;
+    const Scalar th2 = a_in.squaredNorm();
+
+    const auto A = [&]() -> Scalar {
+      if (th2 < Scalar(eps2)) {
+        // https://www.wolframalpha.com/input/?i=series+1%2Fx%5E2-%281%2Bcos+x%29%2F%282*x*sin+x%29+at+x%3D0
+        return Scalar(1) / Scalar(12) + th2 / Scalar(720);
+      } else {
+        const Scalar th = sqrt(th2);
+        return Scalar(1) / th2 - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th));
+      }
+    }();
+    Eigen::Matrix3<Scalar> M;
+    hat(a_in, M);
+
+    return Eigen::Matrix3<Scalar>::Identity() - M / Scalar(2) + A * M * M;
+  }
 
   static void setIdentity(GRefOut g_out) { g_out << Scalar(0), Scalar(0), Scalar(0), Scalar(1); }
 
@@ -138,53 +187,13 @@ public:
 
   static void ad(TRefIn a_in, TMapRefOut A_out) { hat(a_in, A_out); }
 
-  static void dr_exp(TRefIn a_in, TMapRefOut A_out)
-  {
-    using std::sqrt, std::sin, std::cos;
-    const Scalar th2 = a_in.squaredNorm();
-
-    const auto [A, B] = [&]() -> std::array<Scalar, 2> {
-      if (th2 < Scalar(eps2)) {
-        return {
-          // https://www.wolframalpha.com/input/?i=series+%281-cos+x%29+%2F+x%5E2+at+x%3D0
-          Scalar(1) / Scalar(2) - th2 / Scalar(24),
-          // https://www.wolframalpha.com/input/?i=series+%28x+-+sin%28x%29%29+%2F+x%5E3+at+x%3D0
-          Scalar(1) / Scalar(6) - th2 / Scalar(120),
-        };
-      } else {
-        const Scalar th = sqrt(th2);
-        return {
-          (Scalar(1) - cos(th)) / th2,
-          (th - sin(th)) / (th2 * th),
-        };
-      }
-    }();
-
-    using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
-    TangentMap ad_a;
-    ad(a_in, ad_a);
-    A_out.noalias() = TangentMap::Identity() - A * ad_a + B * ad_a * ad_a;
-  }
+  static void dr_exp(TRefIn a_in, TMapRefOut A_out) { A_out.noalias() = calc_S1(-a_in); }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
   {
-    using std::sqrt, std::sin, std::cos;
-    const Scalar th2 = a_in.squaredNorm();
-
-    const auto A = [&]() -> Scalar {
-      if (th2 < Scalar(eps2)) {
-        // https://www.wolframalpha.com/input/?i=series+1%2Fx%5E2-%281%2Bcos+x%29%2F%282*x*sin+x%29+at+x%3D0
-        return Scalar(1) / Scalar(12) + th2 / Scalar(720);
-      } else {
-        const Scalar th = sqrt(th2);
-        return Scalar(1) / th2 - (Scalar(1) + cos(th)) / (Scalar(2) * th * sin(th));
-      }
-    }();
-
-    using TangentMap = Eigen::Matrix<Scalar, Dof, Dof>;
-    TangentMap ad_a;
+    Eigen::Matrix3<Scalar> ad_a;
     ad(a_in, ad_a);
-    A_out.noalias() = TangentMap::Identity() + ad_a / Scalar(2) + A * ad_a * ad_a;
+    A_out.noalias() = calc_S1inv(a_in) + ad_a;
   }
 
   static void d2r_exp(TRefIn a_in, THessRefOut H_out)
@@ -285,4 +294,3 @@ public:
 };
 
 }  // namespace smooth
-

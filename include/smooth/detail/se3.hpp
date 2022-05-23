@@ -145,41 +145,24 @@ public:
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
 
-  static Eigen::Matrix<Scalar, 3, 3> calculate_q(TRefIn a)
+  static Eigen::Matrix<Scalar, 3, 3> calculate_q(
+    Eigen::Ref<const Eigen::Vector3<Scalar>> v, Eigen::Ref<const Eigen::Vector3<Scalar>> w)
   {
-    using std::abs, std::sqrt, std::cos, std::sin;
-
-    const Scalar th2 = a.template tail<3>().squaredNorm();
-
-    const auto [A, B, C] = [&]() -> std::array<Scalar, 3> {
-      if (th2 < Scalar(eps2)) {
-        return {
-          // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x%29+%2F+x%5E3+at+x%3D0
-          Scalar(1) / Scalar(6) - th2 / Scalar(120),
-          // https://www.wolframalpha.com/input/?i=series+%28cos+x+-+1+%2B+x%5E2%2F2%29+%2F+x%5E4+at+x%3D0
-          Scalar(1) / Scalar(24) - th2 / Scalar(720),
-          // https://www.wolframalpha.com/input/?i=series+%28x+-+sin+x+-+x%5E3%2F6%29+%2F+x%5E5+at+x%3D0
-          -Scalar(1) / Scalar(120) + th2 / Scalar(5040),
-        };
-      } else {
-        const Scalar th = sqrt(th2), th_4 = th2 * th2, cTh = cos(th), sTh = sin(th);
-        return {
-          (th - sTh) / (th * th2),
-          (cTh - Scalar(1) + th2 / Scalar(2)) / th_4,
-          (th - sTh - th * th2 / Scalar(6)) / (th_4 * th),
-        };
-      }
-    }();
+    using detail::sin_3, detail::cos_4, detail::sin_5;
+    const Scalar th2 = w.squaredNorm();
 
     Eigen::Matrix<Scalar, 3, 3> V, W;
-    SO3Impl<Scalar>::hat(a.template head<3>(), V);
-    SO3Impl<Scalar>::hat(a.template tail<3>(), W);
+    SO3Impl<Scalar>::hat(v, V);
+    SO3Impl<Scalar>::hat(w, W);
 
-    const Scalar vdw                     = a.template tail<3>().dot(a.template head<3>());
+    const Scalar vdw                     = v.dot(w);
     const Eigen::Matrix<Scalar, 3, 3> WV = W * V, VW = V * W, WW = W * W;
 
     // clang-format off
-    return Scalar(0.5) * V + A * (WV + VW - vdw * W) + B * (W * WV + VW * W + vdw * (3 * W - WW)) - C * 3 * vdw * WW;
+    return Scalar(0.5) * V
+      + sin_3(th2) * (-WV - VW + vdw * W)
+      + cos_4(th2) * (W * WV + VW * W + vdw * (Scalar(3) * W - WW))
+      + sin_5(th2) * Scalar(3) * vdw * WW;
     // clang-format on
   }
 
@@ -191,12 +174,13 @@ public:
     const Eigen::Vector3<Scalar> w = a.template tail<3>();
     const Scalar th2               = w.squaredNorm();
 
-    const auto [A, B, C, dA_over_th, dB_over_th, dC_over_th] = [&]() -> std::array<Scalar, 6> {
+    const auto A = -detail::sin_3(th2);
+    const auto B = detail::cos_4(th2);
+    const auto C = -detail::sin_5(th2);
+
+    const auto [dA_over_th, dB_over_th, dC_over_th] = [&]() -> std::array<Scalar, 3> {
       if (th2 < Scalar(eps2)) {
         return {
-          Scalar(1) / Scalar(6) - th2 / Scalar(120),
-          Scalar(1) / Scalar(24) - th2 / Scalar(720),
-          -Scalar(1) / Scalar(120) + th2 / Scalar(5040),
           -Scalar(1) / 60,
           -Scalar(1) / 360,
           Scalar(1) / 2520,
@@ -211,9 +195,6 @@ public:
         const Scalar sTh = sin(th);
         const Scalar cTh = cos(th);
         return {
-          (th - sTh) / (th3),
-          (cTh - Scalar(1) + th2 / Scalar(2)) / th4,
-          (th - sTh - th * th2 / Scalar(6)) / th5,
           -cTh / th4 - 2 / th4 + 3 * sTh / th5,
           -1 / th4 - sTh / th5 - 4 * cTh / th6 + 4 / th6,
           1 / (3 * th4) - cTh / th6 - 4 / th6 + 5 * sTh / th7,
@@ -308,7 +289,8 @@ public:
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)
   {
     SO3Impl<Scalar>::dr_exp(a_in.template tail<3>(), A_out.template topLeftCorner<3, 3>());
-    A_out.template topRightCorner<3, 3>()    = calculate_q(-a_in);
+    A_out.template topRightCorner<3, 3>() =
+      calculate_q(-a_in.template head<3>(), -a_in.template tail<3>());
     A_out.template bottomRightCorner<3, 3>() = A_out.template topLeftCorner<3, 3>();
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
@@ -316,9 +298,10 @@ public:
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
   {
     SO3Impl<Scalar>::dr_expinv(a_in.template tail<3>(), A_out.template topLeftCorner<3, 3>());
-    A_out.template topRightCorner<3, 3>().noalias() = -A_out.template topLeftCorner<3, 3>()
-                                                    * calculate_q(-a_in)
-                                                    * A_out.template topLeftCorner<3, 3>();
+    A_out.template topRightCorner<3, 3>().noalias() =
+      -A_out.template topLeftCorner<3, 3>()
+      * calculate_q(-a_in.template head<3>(), -a_in.template tail<3>())
+      * A_out.template topLeftCorner<3, 3>();
     A_out.template bottomRightCorner<3, 3>() = A_out.template topLeftCorner<3, 3>();
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
@@ -373,4 +356,3 @@ public:
 };
 
 }  // namespace smooth
-

@@ -6,6 +6,7 @@
 
 #include "common.hpp"
 #include "so2.hpp"
+#include "trig.hpp"
 
 namespace smooth {
 
@@ -170,30 +171,11 @@ public:
 
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)
   {
-    using std::sin, std::cos;
-
     const Scalar th2 = a_in.z() * a_in.z();
-
-    const auto [A, B] = [&]() -> std::array<Scalar, 2> {
-      if (th2 < Scalar(eps2)) {
-        return {
-          // https://www.wolframalpha.com/input/?i=series+%281-cos+x%29+%2F+x%5E2+at+x%3D0
-          Scalar(1) / Scalar(2) - th2 / Scalar(24),
-          // https://www.wolframalpha.com/input/?i=series+%28x+-+sin%28x%29%29+%2F+x%5E3+at+x%3D0
-          Scalar(1) / Scalar(6) - th2 / Scalar(120),
-        };
-      } else {
-        const Scalar th = a_in.z();
-        return {
-          (Scalar(1) - cos(th)) / th2,
-          (th - sin(th)) / (th2 * th),
-        };
-      }
-    }();
-
     Eigen::Matrix3<Scalar> ad_a;
     ad(a_in, ad_a);
-    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() - A * ad_a + B * ad_a * ad_a;
+    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() + detail::cos_2(th2) * ad_a
+                    - detail::sin_3(th2) * ad_a * ad_a;
   }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
@@ -306,4 +288,3 @@ public:
 };
 
 }  // namespace smooth
-

@@ -68,6 +68,10 @@ add_executable(test_se3 test_se3.cpp)
 target_link_libraries(test_se3 PRIVATE TestConfig)
 gtest_discover_tests(test_se3)
 
+add_executable(test_galilei test_galilei.cpp)
+target_link_libraries(test_galilei PRIVATE TestConfig)
+gtest_discover_tests(test_galilei)
+
 add_executable(test_c1 test_c1.cpp)
 target_link_libraries(test_c1 PRIVATE TestConfig)
 gtest_discover_tests(test_c1)
@@ -125,6 +129,10 @@ gtest_discover_tests(test_nls)
 add_executable(test_nlreg test_nlreg.cpp)
 target_link_libraries(test_nlreg PRIVATE TestConfig)
 gtest_discover_tests(test_nlreg)
+
+add_executable(test_jacobians test_jacobians.cpp)
+target_link_libraries(test_jacobians PRIVATE TestConfig)
+gtest_discover_tests(test_jacobians)
 
 add_executable(test_hessian test_hessian.cpp)
 target_link_libraries(test_hessian PRIVATE TestConfig)
