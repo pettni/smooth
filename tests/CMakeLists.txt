@@ -9,29 +9,24 @@ configure_file(
 add_library(TestConfig INTERFACE)
 target_compile_options(
   TestConfig
-  INTERFACE
-  -Wall
-  -Wextra
-  -Wshadow
-  -Wnon-virtual-dtor
-  -Wold-style-cast
-  -Wcast-align
-  -Wunused
-  -Woverloaded-virtual
-  -Wpedantic
-  -Wconversion
-  -Wsign-conversion
-  -Wnull-dereference
-  -Wdouble-promotion
-  -Wimplicit-fallthrough
-  # -Werror
+  INTERFACE -Wall
+            -Wextra
+            -Wshadow
+            -Wnon-virtual-dtor
+            -Wold-style-cast
+            -Wcast-align
+            -Wunused
+            -Woverloaded-virtual
+            -Wpedantic
+            -Wconversion
+            -Wsign-conversion
+            -Wnull-dereference
+            -Wdouble-promotion
+            -Wimplicit-fallthrough
+            -Werror
 )
 target_link_libraries(
-  TestConfig
-  INTERFACE
-  smooth
-  GTest::Main
-  -fsanitize=undefined,address
+  TestConfig INTERFACE smooth GTest::Main -fsanitize=undefined,address
 )
 
 # CORE TESTS
@@ -189,7 +184,10 @@ endif()
 
 if(geometry_msgs_FOUND)
   add_executable(test_ros test_ros.cpp)
-  target_link_libraries(test_ros PRIVATE TestConfig geometry_msgs::geometry_msgs__rosidl_typesupport_cpp)
+  target_link_libraries(
+    test_ros PRIVATE TestConfig
+                     geometry_msgs::geometry_msgs__rosidl_typesupport_cpp
+  )
   gtest_discover_tests(test_ros)
 else()
   message(WARNING "geometry_msgs not found, disabling ros test")

@@ -1,4 +1,9 @@
-add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+add_compile_options(
+  -Wall
+  -Wextra
+  -Wpedantic
+  -Werror
+)
 
 add_executable(bspline bspline.cpp)
 target_link_libraries(bspline smooth)
@@ -23,7 +28,7 @@ target_link_libraries(snippets smooth)
 
 find_package(Matplot++ QUIET)
 if(${Matplot++_FOUND})
-  set(CMAKE_CXX_STANDARD 20)  # thanks Matplot++
+  set(CMAKE_CXX_STANDARD 20) # thanks Matplot++
   target_compile_definitions(bspline PRIVATE ENABLE_PLOTTING)
   target_link_libraries(bspline Matplot++::matplot)
 
