@@ -16,7 +16,7 @@ If you are looking for something stable and established, check out
 [manif][manif-link] and [Sophus][sophus-link].*
 
 In robotics it is often convenient to work in non-Euclidean manifolds.
-[Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are 
+[Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are
 easy to work with due to their symmetries, and that are also good models for many robotic
 systems. This header-only C++20 library facilitates leveraging Lie theory in
 robotics software, by enabling:
@@ -37,7 +37,7 @@ The following common Lie groups are implemented:
  * A smooth::Bundle type to treat Lie group products ![](https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n) as a single Lie group. The Bundle type also supports regular Eigen vectors as ![](https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)) components
  * Lie group interfaces for Eigen vectors and builtin scalars
 
-The guiding principles for `smooth` are **brevity, reliability and compatability**. 
+The guiding principles for `smooth` are **brevity, reliability and compatability**.
 
 
 # Getting started
@@ -164,19 +164,21 @@ Example: calculate ![](https://latex.codecogs.com/png.latex?\mathrm{d}^r&space;(
 #include <smooth/diff.hpp>
 #include <smooth/so3.hpp>
 
-auto f = [](auto v1, auto v2) { return (v1 * v2).log(); };
+auto f = []<typename T>(const smooth::SO3<T> & v1, const smooth::SO3<T> & v2) {
+  return (v1 * v2).log();
+};
 
 smooth::SO3d g1 = smooth::SO3d::Random();
 smooth::SO3d g2 = smooth::SO3d::Random();
 
 // differentiate f at (g1, g2) w.r.t. first argument
-auto [fval1, J1] = smooth::diff::dr(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
+auto [fval1, J1] = smooth::diff::dr<1>(f, smooth::wrt(g1, g2), std::index_sequence<0>{});
 
 // differentiate f at (g1, g2) w.r.t. second argument
-auto [fval2, J2] = smooth::diff::dr(std::bind(f, g1, std::placeholders::_1), smooth::wrt(g2));
+auto [fval2, J2] = smooth::diff::dr<1>(f, smooth::wrt(g1, g2), std::index_sequence<1>{});
 
 // differentiate f at (g1, g2) w.r.t. both arguments
-auto [fval, J] = smooth::diff::dr(f, smooth::wrt(g1, g2));
+auto [fval, J] = smooth::diff::dr<1>(f, smooth::wrt(g1, g2));
 
 // Now J == [J1, J2]
 ```
@@ -198,14 +200,16 @@ Example: Calculate ![](https://latex.codecogs.com/svg.image?\mathrm{argmin}_{g_1
 #include <smooth/optim.hpp>
 #include <smooth/so3.hpp>
 
-// function defining residual
-auto f = [](auto v1, auto v2) { return (v1 * v2).log(); };
-
-smooth::SO3d g1 = smooth::SO3d::Random();
+smooth::SO3d g1       = smooth::SO3d::Random();
 const smooth::SO3d g2 = smooth::SO3d::Random();
 
-// minimize || f ||^2 w.r.t. first argument (g1 is modified in-place)
-smooth::minimize(std::bind(f, std::placeholders::_1, g2), smooth::wrt(g1));
+// function defining residual
+auto f = [&g2]<typename T>(const smooth::SO3<T> & v1) {
+  return (v1 * g2.template cast<T>()).log();
+};
+
+// minimize || f ||^2 w.r.t. g1 (g1 is modified in-place)
+smooth::minimize(f, smooth::wrt(g1));
 
 // Now g1 == g2.inverse()
 ```

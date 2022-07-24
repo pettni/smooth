@@ -179,6 +179,52 @@ void test_second_multi()
   ASSERT_TRUE(d2f.block(3, 0, 3, 3).isApprox(d2f_dxy_expected));
 }
 
+template<diff::Type DiffType>
+void test_partial()
+{
+  auto f =
+    []<typename T>(const T & v1, const Eigen::Vector2<T> & v2, const smooth::SO3<T> & v3) -> T {
+    return v1 * v2.sum() + v3.log().sum();
+  };
+
+  std::srand(5);
+
+  const double x1          = Eigen::Vector2d::Random().x();
+  const Eigen::Vector2d x2 = Eigen::Vector2d::Random();
+  smooth::SO3d x3          = smooth::SO3d::Random();
+
+  // all derivatives
+  const auto [fval, df_dx] = diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3));
+  ASSERT_EQ(df_dx.cols(), 6);
+
+  {
+    const auto [fval_part, df_dx_part] =
+      diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3), std::index_sequence<0>{});
+
+    ASSERT_DOUBLE_EQ(fval, fval_part);
+    ASSERT_TRUE(df_dx_part.isApprox(df_dx.leftCols(1), 1e-5));
+  }
+
+  {
+    const auto [fval_part, df_dx_part] =
+      diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3), std::index_sequence<1>{});
+
+    ASSERT_DOUBLE_EQ(fval, fval_part);
+    ASSERT_EQ(df_dx_part.cols(), 2);
+    ASSERT_TRUE(df_dx_part.isApprox(df_dx.middleCols(1, 2), 1e-5));
+  }
+
+  {
+    const auto [fval_part, df_dx_part] =
+      diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3), std::index_sequence<0, 2>{});
+
+    ASSERT_DOUBLE_EQ(fval, fval_part);
+    ASSERT_EQ(df_dx_part.cols(), 4);
+    ASSERT_TRUE(df_dx_part.leftCols(1).isApprox(df_dx.leftCols(1), 1e-5));
+    ASSERT_TRUE(df_dx_part.rightCols(3).isApprox(df_dx.rightCols(3), 1e-5));
+  }
+}
+
 TEST(Differentiation, NumericalSuite)
 {
   test_linear<3, 3, diff::Type::Numerical>(1e-6);
@@ -192,6 +238,8 @@ TEST(Differentiation, NumericalSuite)
   test_second<diff::Type::Numerical>();
   test_second_multi<diff::Type::Numerical>();
   test_second_at_zero<diff::Type::Numerical>();
+
+  test_partial<diff::Type::Numerical>();
 }
 
 #ifdef ENABLE_AUTODIFF_TESTS
@@ -208,6 +256,8 @@ TEST(Differentiation, AutodiffSuite)
   test_second<diff::Type::Autodiff>();
   test_second_multi<diff::Type::Autodiff>();
   test_second_at_zero<diff::Type::Autodiff>();
+
+  test_partial<diff::Type::Autodiff>();
 }
 #endif
 
@@ -221,6 +271,8 @@ TEST(Differentiation, CeresSuite)
   run_rminus_test<diff::Type::Ceres, SO3d>();
   run_composition_test<diff::Type::Ceres, SO3d>();
   run_exp_test<diff::Type::Ceres, SO3d>();
+
+  test_partial<diff::Type::Ceres>();
 }
 #endif
 

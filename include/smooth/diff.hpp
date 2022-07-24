@@ -57,6 +57,18 @@ template<std::size_t K, Type D>
 auto dr(auto && f, auto && x);
 
 /**
+ * @brief Differentiation in tangent space.
+ *
+ * Like above, but calculate a subset idx of derivatives.
+ *
+ * @param f function to differentiate
+ * @param x reference tuple of function arguments
+ * @param idx indices defining subset of x
+ */
+template<std::size_t K, Type D, std::size_t... Idx>
+auto dr(auto && f, auto && x, std::index_sequence<Idx...> idx);
+
+/**
  * @brief Differentiation in tangent space using default method
  *
  * @tparam K differentiation order
@@ -68,8 +80,20 @@ auto dr(auto && f, auto && x);
  * @note All arguments in x as well as the return type \f$f(x)\f$ must satisfy
  * the Manifold concept.
  */
-template<std::size_t K = 1>
+template<std::size_t K>
 auto dr(auto && f, auto && x);
+
+/**
+ * @brief Differentiation in tangent space using default method.
+ *
+ * Like above, but calculate a subset idx of derivatives.
+ *
+ * @param f function to differentiate
+ * @param x reference tuple of function arguments
+ * @param idx indices defining subset of x
+ */
+template<std::size_t K, std::size_t... Idx>
+auto dr(auto && f, auto && x, std::index_sequence<Idx...> idx);
 
 }  // namespace smooth::diff
 
