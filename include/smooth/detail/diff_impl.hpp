@@ -226,10 +226,35 @@ auto dr(auto && f, auto && x)
   }
 }
 
+template<std::size_t K, Type D, std::size_t... Idx>
+auto dr(auto && f, auto && x, std::index_sequence<Idx...>)
+{
+  // function taking reduced argument
+  auto f_wrapped = [f = std::forward<decltype(f)>(f), &x](auto &&... arg_red) {
+    // cast x to scalar type of arg_red
+    using ArgScalar = std::common_type_t<Scalar<std::decay_t<decltype(arg_red)>>...>;
+    auto arg_full   = smooth::wrt_cast<ArgScalar>(x);
+
+    // copy in arg_red to correct positions in x
+    ((std::get<Idx>(arg_full) = arg_red), ...);
+
+    return std::apply(f, arg_full);
+  };
+
+  auto x_red = std::forward_as_tuple(std::get<Idx>(x)...);
+  return dr<K, D>(std::move(f_wrapped), std::move(x_red));
+}
+
 template<std::size_t K>
 auto dr(auto && f, auto && x)
 {
   return dr<K, Type::Default>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x));
+}
+
+template<std::size_t K, std::size_t... Idx>
+auto dr(auto && f, auto && x, std::index_sequence<Idx...> idx)
+{
+  return dr<K, Type::Default>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x), idx);
 }
 
 }  // namespace smooth::diff
