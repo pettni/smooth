@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['halfplane_0',['HalfPlane',['../structlp2d_1_1detail_1_1HalfPlane.html',1,'lp2d::detail']]],
-  ['helper_1',['helper',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#a042258478c729ba2e620b651d8d4ff5b',1,'smooth::detail::BoostOdeintOps::scale_sum']]],
-  ['hermite_2',['Hermite',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a70457be66a37fd77955ebfb026c57a24',1,'smooth']]],
-  ['hermite_5fbasis_3',['hermite_basis',['../basis_8hpp.html#a32a6b89f9fdbf270f8d36b11ba185fdb',1,'smooth::detail']]],
-  ['hessian_4',['Hessian',['../manifold_8hpp.html#a5cf907b049fd3461fefddcc524598625',1,'smooth']]]
+  ['identity_0',['Identity',['../lie__group_8hpp.html#a29b05818d0b9270542af37e0c3692be0',1,'smooth::Identity(Eigen::Index dof)'],['../lie__group_8hpp.html#a18f52b557553d60d983c33f49b5caef5',1,'smooth::Identity()']]],
+  ['inncnt_1',['InnCnt',['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a51ffd9ddf4ac02054bd71a7e9dbf2672',1,'smooth::spline_specs::NoConstraints::InnCnt()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#adbe7cdb963f0e61c27580e6be3e82572',1,'smooth::spline_specs::FixedDerCubic::InnCnt()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#a2e6c6259b4faf597aba511b67cff05e2',1,'smooth::spline_specs::MinDerivative::InnCnt()']]],
+  ['integrate_5fabsolute_5fpolynomial_2',['integrate_absolute_polynomial',['../basis_8hpp.html#a443abbfadd4bc4bc551e86736338c1cf',1,'smooth']]],
+  ['inverse_3',['inverse',['../lie__group_8hpp.html#af7a7e7d515f7f9c0d0f7df7431229378',1,'smooth']]],
+  ['is_5fmutable_4',['is_mutable',['../structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4_01_4.html#a2337702f859350952f2e50447e1ed5e2',1,'smooth::liebase_info&lt; smooth::Map&lt; const geometry_msgs::msg::Quaternion &gt; &gt;::is_mutable()'],['../structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4_01_4.html#ab35f152440860f7ae4f9cfef7601e8b0',1,'smooth::liebase_info&lt; smooth::Map&lt; const geometry_msgs::msg::Pose &gt; &gt;::is_mutable()'],['../structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4_01_4.html#aa92b0799a594640024f0f4dd51156afe',1,'smooth::liebase_info&lt; smooth::Map&lt; const geometry_msgs::msg::Transform &gt; &gt;::is_mutable()']]],
+  ['isapprox_5',['isApprox',['../lie__group_8hpp.html#ac790a82691486f1f10ce5f7d30ccb776',1,'smooth']]],
+  ['isometry_6',['isometry',['../classsmooth_1_1SE2Base.html#abd2be21d48c61a424c170a3f1796674a',1,'smooth::SE2Base::isometry()'],['../classsmooth_1_1SE3Base.html#a12882894bf25c8903d01e754094540bf',1,'smooth::SE3Base::isometry()']]]
 ];

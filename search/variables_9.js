@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['m_5falpha_0',['m_alpha',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#ab40c0a60775dd509aa04a76daa14574a',1,'smooth::detail::BoostOdeintOps::scale_sum']]],
-  ['max_5fiter_1',['max_iter',['../structsmooth_1_1MinimizeOptions.html#a06c8794ce3e364e0f14b3055d5cef01b',1,'smooth::MinimizeOptions']]]
+  ['optdeg_0',['OptDeg',['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a2aa4628346d14f4a498215a2600f6f4d',1,'smooth::spline_specs::NoConstraints::OptDeg()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a062079db495d8c2dc679d2ce2f0a4b11',1,'smooth::spline_specs::FixedDerCubic::OptDeg()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#af3ca1ebc05b109b3c40c2058e92abfd4',1,'smooth::spline_specs::MinDerivative::OptDeg()']]]
 ];
