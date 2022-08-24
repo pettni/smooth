@@ -111,7 +111,7 @@ Download and Build</h2>
 <div class="line"> </div>
 <div class="line"># Specify a C++20-compatible compiler if your default does not support C++20.</div>
 <div class="line"># Build tests and/or examples as desired.</div>
-<div class="line">cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF</div>
+<div class="line">cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF</div>
 <div class="line">make -j8</div>
 <div class="line">sudo make install</div>
 </div><!-- fragment --><p >Alternatively, if using ROS or ROS2 just clone <code>smooth</code> into a catkin/<a href="https://colcon.readthedocs.io/en/released/">colcon</a> workspace source folder and build the workspace with a compiler that supports C++20. Example with colcon: </p><div class="fragment"><div class="line">colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10</div>
