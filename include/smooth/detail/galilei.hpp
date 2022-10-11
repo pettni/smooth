@@ -4,9 +4,9 @@
 
 #include <Eigen/Core>
 
+#include "../derivatives.hpp"
 #include "common.hpp"
 #include "se3.hpp"
-#include "smooth/derivatives.hpp"
 
 namespace smooth {
 

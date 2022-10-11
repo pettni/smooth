@@ -3,8 +3,9 @@
 #include <gtest/gtest.h>
 
 #include "smooth/compat/ros.hpp"
+#include "smooth/lie_groups/native.hpp"
 
-template<smooth::NativeLieGroup G>
+template<smooth::traits::NativeLieGroup G>
 void test(G)
 {}
 

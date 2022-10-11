@@ -458,4 +458,19 @@ Stream & operator<<(Stream & s, const LieGroupBase<Derived> & g)
   return s;
 }
 
+/**
+ * @brief Memory mapping of internal Lie group types.
+ */
+template<typename T>
+class Map;
+
+/**
+ * @brief Send Eigen types to Eigen::Map and other types to smooth::Map.
+ */
+template<typename T>
+using MapDispatch = std::conditional_t<
+  std::is_base_of_v<Eigen::MatrixBase<std::remove_const_t<T>>, std::remove_const_t<T>>,
+  ::Eigen::Map<T>,
+  ::smooth::Map<T>>;
+
 }  // namespace smooth

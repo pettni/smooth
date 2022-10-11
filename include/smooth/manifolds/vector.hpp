@@ -11,16 +11,16 @@
 
 #include <Eigen/Sparse>
 
-#include "detail/utils.hpp"
-#include "manifold.hpp"
+#include "../concepts/manifold.hpp"
+#include "../detail/utils.hpp"
 
-namespace smooth {
+namespace smooth::traits {
 
 /**
  * @brief Manifold interface for std::vector<Manifold>
  */
 template<Manifold M>
-struct traits::man<std::vector<M>>
+struct man<std::vector<M>>
 {
   // \cond
   using Scalar      = ::smooth::Scalar<M>;
@@ -94,4 +94,4 @@ struct traits::man<std::vector<M>>
   // \endcond
 };
 
-}  // namespace smooth
+}  // namespace smooth::traits

@@ -7,10 +7,8 @@
 #include <Eigen/Core>
 
 #include "detail/c1.hpp"
-#include "detail/lie_group_base.hpp"
 #include "detail/macro.hpp"
-#include "lie_group.hpp"
-#include "map.hpp"
+#include "lie_group_base.hpp"
 #include "so2.hpp"
 
 namespace smooth {

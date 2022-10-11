@@ -9,7 +9,7 @@
 
 #include <numbers>
 
-#include "smooth/se2.hpp"
+#include "../se2.hpp"
 #include "spline.hpp"
 
 using namespace std::numbers;

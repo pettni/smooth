@@ -12,7 +12,7 @@
 
 #define SMOOTH_DIFF_CERES
 
-#include "smooth/manifold.hpp"
+#include "smooth/manifolds.hpp"
 #include "smooth/map.hpp"
 #include "smooth/wrt.hpp"
 

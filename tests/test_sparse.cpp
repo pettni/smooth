@@ -6,7 +6,7 @@
 
 #include "smooth/bundle.hpp"
 #include "smooth/c1.hpp"
-#include "smooth/lie_group_sparse.hpp"
+#include "smooth/lie_sparse.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 
