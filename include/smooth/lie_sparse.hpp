@@ -14,8 +14,8 @@
  * Implemented methods contain two parts: a pattern and the function itself. The pattern is in the
  * form of an inline sparse matrix variable that is pre-allocated with the appropriate nonzeros.
  *
- * The intended usage pattern is to copy a pattern and use the resulting variable in calls to these
- * methods. That way no additional  allocation is needed.
+ * The intended usage is to copy a pattern and use the resulting variable in calls to these
+ * methods. That way no additional allocation is needed.
  *
  * Example:
  * @code

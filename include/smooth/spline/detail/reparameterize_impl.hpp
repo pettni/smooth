@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include <cassert>
+
+#include "../../external/lp2d.hpp"
 #include "../reparameterize.hpp"
 
 namespace smooth {

@@ -8,8 +8,7 @@
  */
 
 #include <ranges>
-
-#include <Eigen/Sparse>
+#include <vector>
 
 #include "../concepts/manifold.hpp"
 #include "../detail/utils.hpp"
@@ -17,7 +16,7 @@
 namespace smooth::traits {
 
 /**
- * @brief Manifold interface for std::vector<Manifold>
+ * @brief Manifold model specification for std::vector<Manifold>
  */
 template<Manifold M>
 struct man<std::vector<M>>

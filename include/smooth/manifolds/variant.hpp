@@ -14,7 +14,7 @@
 namespace smooth::traits {
 
 /**
- * @brief Manifold interface for std::variant<Manifold...>
+ * @brief Manifold model specification for std::variant<Manifold...>
  */
 template<Manifold... Ms>
 struct man<std::variant<Ms...>>

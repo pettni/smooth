@@ -157,8 +157,8 @@ public:
   {
     using std::cos, std::sin;
 
-    coeffs_.x() = scaling * sin(angle);
-    coeffs_.y() = scaling * cos(angle);
+    m_coeffs.x() = scaling * sin(angle);
+    m_coeffs.y() = scaling * cos(angle);
   }
 
   /**
@@ -168,8 +168,8 @@ public:
    */
   C1(const std::complex<Scalar> & c)
   {
-    coeffs_.x() = c.imag();
-    coeffs_.y() = c.real();
+    m_coeffs.x() = c.imag();
+    m_coeffs.y() = c.real();
   }
 };
 

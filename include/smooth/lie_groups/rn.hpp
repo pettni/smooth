@@ -5,10 +5,15 @@
 #include "../concepts/lie_group.hpp"
 #include "../detail/traits.hpp"
 
+/**
+ * @file
+ * @brief Trait specialization to make Eigen vectors LieGroups.
+ */
+
 namespace smooth::traits {
 
 /**
- * @brief LieGroup interface for RnType
+ * @brief LieGroup model specification for RnType
  */
 template<RnType G>
 struct lie<G>
