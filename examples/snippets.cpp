@@ -1,20 +1,18 @@
 // Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
+#include <iostream>
+
 #include <smooth/diff.hpp>
 #include <smooth/manifold.hpp>
 #include <smooth/optim.hpp>
 #include <smooth/so3.hpp>
-
-#include <iostream>
 
 void diff()
 {
   std::srand(10);
 
   // mapping \f$ G \times G \rightarrow R^n \f$
-  auto f = []<typename T>(const smooth::SO3<T> & v1, const smooth::SO3<T> & v2) {
-    return (v1 * v2).log();
-  };
+  auto f = []<typename T>(const smooth::SO3<T> & v1, const smooth::SO3<T> & v2) { return (v1 * v2).log(); };
 
   smooth::SO3d g1 = smooth::SO3d::Random();
   smooth::SO3d g2 = smooth::SO3d::Random();
@@ -43,9 +41,7 @@ void optim()
   const smooth::SO3d g2 = smooth::SO3d::Random();
 
   // function defining residual
-  auto f = [&g2]<typename T>(const smooth::SO3<T> & v1) {
-    return (v1 * g2.template cast<T>()).log();
-  };
+  auto f = [&g2]<typename T>(const smooth::SO3<T> & v1) { return (v1 * g2.template cast<T>()).log(); };
 
   // minimize || f ||^2 w.r.t. g1 (g1 is modified in-place)
   smooth::minimize(f, smooth::wrt(g1));

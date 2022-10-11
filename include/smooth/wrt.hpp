@@ -14,8 +14,7 @@ namespace smooth {
  *
  * A tuple of references is created from the input arguments.
  */
-auto wrt(auto &&... args)
-  requires(Manifold<std::decay_t<decltype(args)>> &&...)
+auto wrt(auto &&... args) requires(Manifold<std::decay_t<decltype(args)>> &&...)
 {
   return std::forward_as_tuple(std::forward<decltype(args)>(args)...);
 }
@@ -71,8 +70,7 @@ auto wrt_rplus(auto && wrt, const Eigen::MatrixBase<Derived> & a)
 
   const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)
   {
-    static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{
-      Dof<std::decay_t<std::tuple_element_t<Idx, Wrt>>>...};
+    static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{Dof<std::decay_t<std::tuple_element_t<Idx, Wrt>>>...};
 
     const std::array<Eigen::Index, sizeof...(Idx)> ilen{dof(std::get<Idx>(wrt))...};
     const auto ibeg = utils::array_psum(ilen);
@@ -127,9 +125,7 @@ constexpr auto wrt_copy_if_const(const std::tuple<T...> & in)
 template<typename... T>
 constexpr auto wrt_copy_if_const(std::tuple<T...> && in)
 {
-  return std::make_from_tuple<std::tuple<typename detail::remove_const_ref<T>::type...>>(
-    std::move(in));
+  return std::make_from_tuple<std::tuple<typename detail::remove_const_ref<T>::type...>>(std::move(in));
 }
 
 }  // namespace smooth
-

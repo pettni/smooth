@@ -9,11 +9,8 @@ namespace smooth {
 template<typename At, typename dAt, typename Bt, typename dBt>
 auto d_matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB)
 {
-  using Scalar = std::common_type_t<
-    typename At::Scalar,
-    typename dAt::Scalar,
-    typename Bt::Scalar,
-    typename dBt::Scalar>;
+  using Scalar =
+    std::common_type_t<typename At::Scalar, typename dAt::Scalar, typename Bt::Scalar, typename dBt::Scalar>;
 
   static constexpr int N    = At::ColsAtCompileTime;
   static constexpr int M    = Bt::RowsAtCompileTime;
@@ -40,8 +37,7 @@ auto d_matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB
   Eigen::Matrix<Scalar, N, dAB_cols> dAB = B.transpose() * dA;
   for (auto i = 0u; i < n; ++i) {
     for (auto j = 0u; j < m; ++j) {
-      dAB.template middleCols<Nvar>(i * nvar, nvar) +=
-        A(i, j) * dB.template middleCols<Nvar>(j * Nvar, nvar);
+      dAB.template middleCols<Nvar>(i * nvar, nvar) += A(i, j) * dB.template middleCols<Nvar>(j * Nvar, nvar);
     }
   }
   return dAB;
@@ -50,11 +46,8 @@ auto d_matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB
 template<typename JfT, typename HfT, typename JgT, typename HgT>
 auto d2_fog(const JfT & Jf, const HfT & Hf, const JgT & Jg, const HgT & Hg)
 {
-  using Scalar = std::common_type_t<
-    typename JfT::Scalar,
-    typename HfT::Scalar,
-    typename JgT::Scalar,
-    typename HgT::Scalar>;
+  using Scalar =
+    std::common_type_t<typename JfT::Scalar, typename HfT::Scalar, typename JgT::Scalar, typename HgT::Scalar>;
 
   static constexpr int No = JfT::RowsAtCompileTime;
   static constexpr int Ny = JfT::ColsAtCompileTime;
@@ -77,14 +70,12 @@ auto d2_fog(const JfT & Jf, const HfT & Hf, const JgT & Jg, const HgT & Hg)
   ret.setZero();
 
   for (auto i = 0u; i < no; ++i) {
-    ret.template block<Nx, Nx>(0, i * nx, nx, nx) +=
-      Jg.transpose() * Hf.template middleCols<Ny>(i * ny, ny) * Jg;
+    ret.template block<Nx, Nx>(0, i * nx, nx, nx) += Jg.transpose() * Hf.template middleCols<Ny>(i * ny, ny) * Jg;
   }
 
   for (auto i = 0u; i < Jf.outerSize(); ++i) {
     for (Eigen::InnerIterator it(Jf, i); it; ++it) {
-      ret.template block<Nx, Nx>(0, it.row() * nx) +=
-        it.value() * Hg.template middleCols<Nx>(it.col() * nx, nx);
+      ret.template block<Nx, Nx>(0, it.row() * nx) += it.value() * Hg.template middleCols<Nx>(it.col() * nx, nx);
     }
   }
 

@@ -7,13 +7,13 @@
  * @brief Non-linear least squares optimization on Manifolds.
  */
 
-#include <Eigen/Dense>
-#include <Eigen/Sparse>
-
 #include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <numeric>
+
+#include <Eigen/Dense>
+#include <Eigen/Sparse>
 
 #include "detail/lmpar.hpp"
 #include "detail/lmpar_sparse.hpp"
@@ -71,9 +71,8 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
   // scaling parameters
   Eigen::Vector<double, Nx> d(nx);
   if constexpr (is_sparse) {
-    d = (Eigen::RowVector<double, JType::RowsAtCompileTime>::Ones(J.rows()) * J.cwiseProduct(J))
-          .cwiseSqrt()
-          .transpose();
+    d =
+      (Eigen::RowVector<double, JType::RowsAtCompileTime>::Ones(J.rows()) * J.cwiseProduct(J)).cwiseSqrt().transpose();
   } else {
     d = J.colwise().stableNorm().transpose();
   }
@@ -122,8 +121,8 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
 
     // calculate actual to predicted reduction
     const Eigen::Vector<double, JType::RowsAtCompileTime> Ja = J * a;
-    const double act_red  = 1. - Eigen::numext::abs2(r_cand_norm / r_norm);
-    const double fra2     = Eigen::numext::abs2(Ja.stableNorm() / r_norm);
+    const double act_red                                     = 1. - Eigen::numext::abs2(r_cand_norm / r_norm);
+    const double fra2                                        = Eigen::numext::abs2(Ja.stableNorm() / r_norm);
     const double fra3     = Eigen::numext::abs2(std::sqrt(lambda) * Da_norm / r_norm);
     const double pred_red = fra2 + 2. * fra3;
     const double rho      = act_red / pred_red;

@@ -97,9 +97,7 @@ inline Eigen::SparseMatrix<Scalar<G>> d_exp_sparse_pattern = [] {
   } else {
     // fall back on dense pattern
     for (auto i = 0u; i < Dof<G>; ++i) {
-      for (auto j = 0u; j < Dof<G>; ++j) {
-        ret.insert(i, j) = (i == j) ? Scalar<G>(1) : Scalar<G>(0);
-      }
+      for (auto j = 0u; j < Dof<G>; ++j) { ret.insert(i, j) = (i == j) ? Scalar<G>(1) : Scalar<G>(0); }
     }
   }
   ret.makeCompressed();
@@ -137,8 +135,7 @@ void dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Ei
  * @see d_exp_sparse_pattern() for a pre-allocated pattern.
  */
 template<LieGroup G>
-void dr_expinv_sparse(
-  Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0);
+void dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0);
 
 /**
  * @brief Sparsity pattern of d2r_exp_sparse(), d2r_expinv_sparse() (inline variable).
@@ -190,8 +187,7 @@ void d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, E
  * @see d2_exp_sparse_pattern() for a pre-allocated pattern.
  */
 template<LieGroup G>
-inline void
-d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0);
+inline void d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0);
 
 }  // namespace smooth
 

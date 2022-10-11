@@ -10,10 +10,7 @@ struct Functor
 
   double operator()(const Eigen::Vector2d &) const { return 0.; }
 
-  Eigen::RowVector<double, 5> jacobian(const Eigen::Vector2d &) const
-  {
-    return Eigen::RowVector<double, 5>::Zero();
-  }
+  Eigen::RowVector<double, 5> jacobian(const Eigen::Vector2d &) const { return Eigen::RowVector<double, 5>::Zero(); }
 
   std::reference_wrapper<const Eigen::Matrix<double, 5, 5>> hessian(const Eigen::Vector2d &)
   {

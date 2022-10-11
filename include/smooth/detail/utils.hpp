@@ -30,8 +30,7 @@ namespace smooth::utils {
  *
  * @return range iterator it according to the above rules
  */
-constexpr auto
-binary_interval_search(std::ranges::random_access_range auto && r, auto && t, auto && wo) noexcept
+constexpr auto binary_interval_search(std::ranges::random_access_range auto && r, auto && t, auto && wo) noexcept
 {
   using T  = std::decay_t<decltype(t)>;
   using Rv = std::ranges::range_value_t<std::decay_t<decltype(r)>>;
@@ -50,8 +49,7 @@ binary_interval_search(std::ranges::random_access_range auto && r, auto && t, au
   while (left + 1 < rght) {
     double alpha = 0.5;
     if constexpr (std::is_convertible_v<Rv, double> && std::is_convertible_v<T, double>) {
-      alpha = (static_cast<double>(t) - static_cast<double>(*left))
-            / static_cast<double>(*(rght - 1) - *left);
+      alpha = (static_cast<double>(t) - static_cast<double>(*left)) / static_cast<double>(*(rght - 1) - *left);
     }
     const auto dist = static_cast<double>(std::distance(left, rght - 1));
     pivot           = std::ranges::next(left, static_cast<intptr_t>(alpha * dist), rght - 2);
@@ -71,13 +69,12 @@ binary_interval_search(std::ranges::random_access_range auto && r, auto && t, au
 /**
  * @brief Find interval in sorted range with binary search using default comparison.
  */
-constexpr auto
-binary_interval_search(std::ranges::random_access_range auto && r, auto && t) noexcept
+constexpr auto binary_interval_search(std::ranges::random_access_range auto && r, auto && t) noexcept
 {
   return binary_interval_search(
-    std::forward<decltype(r)>(r),
-    std::forward<decltype(t)>(t),
-    [](const auto & _s, const auto & _t) { return _s <=> _t; });
+    std::forward<decltype(r)>(r), std::forward<decltype(t)>(t), [](const auto & _s, const auto & _t) {
+      return _s <=> _t;
+    });
 }
 
 /////////////////////
@@ -88,8 +85,7 @@ binary_interval_search(std::ranges::random_access_range auto && r, auto && t) no
  * @brief Compile-time for loop equivalent to the statement (f(0), f(1), ..., f(_I-1))
  */
 template<std::size_t _I>
-constexpr auto
-static_for(auto && f) noexcept(noexcept(std::invoke(f, std::integral_constant<std::size_t, 0>())))
+constexpr auto static_for(auto && f) noexcept(noexcept(std::invoke(f, std::integral_constant<std::size_t, 0>())))
 {
   const auto f_caller = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>)
   {
@@ -137,8 +133,7 @@ public:
 
   public:
     using value_type = std::remove_cvref_t<
-      std::
-        invoke_result_t<F &, std::ranges::range_reference_t<R>, std::ranges::range_reference_t<R>>>;
+      std::invoke_result_t<F &, std::ranges::range_reference_t<R>, std::ranges::range_reference_t<R>>>;
     using difference_type = std::ranges::range_difference_t<R>;
 
     _Iterator() = default;
@@ -179,13 +174,9 @@ public:
       return tmp;
     }
 
-    friend constexpr bool operator==(const _Iterator & x, const _Iterator & y)
-    {
-      return x.it1_ == y.it1_;
-    }
+    friend constexpr bool operator==(const _Iterator & x, const _Iterator & y) { return x.it1_ == y.it1_; }
 
-    friend constexpr bool
-    operator==(const _Iterator & x, const std::ranges::sentinel_t<const R> & y)
+    friend constexpr bool operator==(const _Iterator & x, const std::ranges::sentinel_t<const R> & y)
     {
       return x.it2_ == y;
     }
@@ -295,8 +286,7 @@ public:
     {
       return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
       {
-        return std::tuple<std::ranges::range_reference_t<View>...>(
-          std::get<Idx>(its_).operator*()...);
+        return std::tuple<std::ranges::range_reference_t<View>...>(std::get<Idx>(its_).operator*()...);
       }
       (std::make_index_sequence<sizeof...(View)>{});
     }
@@ -321,10 +311,7 @@ public:
       return tmp;
     }
 
-    friend constexpr bool operator==(const _Iterator & x, const _Iterator & y)
-    {
-      return x.its_ == y.its_;
-    }
+    friend constexpr bool operator==(const _Iterator & x, const _Iterator & y) { return x.its_ == y.its_; }
 
     friend constexpr bool operator==(
       const _Iterator & x,
@@ -370,8 +357,7 @@ public:
   {
     return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
     {
-      return std::make_tuple<std::ranges::sentinel_t<View>...>(
-        std::ranges::end(std::get<Idx>(bases_))...);
+      return std::make_tuple<std::ranges::sentinel_t<View>...>(std::ranges::end(std::get<Idx>(bases_))...);
     }
     (std::make_index_sequence<sizeof...(View)>{});
   }
@@ -381,8 +367,7 @@ public:
   {
     return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
     {
-      return std::make_tuple<std::ranges::sentinel_t<const View>...>(
-        std::ranges::end(std::get<Idx>(bases_))...);
+      return std::make_tuple<std::ranges::sentinel_t<const View>...>(std::ranges::end(std::get<Idx>(bases_))...);
     }
     (std::make_index_sequence<sizeof...(View)>{});
   }
@@ -420,4 +405,3 @@ struct Zip
 inline constexpr detail::Zip zip;
 
 }  // namespace smooth::utils
-

@@ -19,10 +19,10 @@ struct Functor
   Functor(const G & g) : xd(g) {}
 
   // make sure we can differentiate without making copies..
-  Functor(const Functor &) = delete;
+  Functor(const Functor &)             = delete;
   Functor & operator=(const Functor &) = delete;
   Functor(Functor &&)                  = delete;
-  Functor & operator=(Functor &&) = delete;
+  Functor & operator=(Functor &&)      = delete;
 
   template<typename Scalar>
   Scalar operator()(const smooth::CastT<Scalar, G> & x) const
@@ -58,11 +58,9 @@ TEST(Hessian, RminusSE2)
     const auto f = Functor<G>{G::Random()};
     const auto x = G::Random();
 
-    const auto [f_num, drf_num, d2f_num] =
-      smooth::diff::dr<2, smooth::diff::Type::Numerical>(f, smooth::wrt(x));
+    const auto [f_num, drf_num, d2f_num] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(f, smooth::wrt(x));
 
-    const auto [f_anal, drf_anal, d2f_anal] =
-      smooth::diff::dr<2, smooth::diff::Type::Analytic>(f, smooth::wrt(x));
+    const auto [f_anal, drf_anal, d2f_anal] = smooth::diff::dr<2, smooth::diff::Type::Analytic>(f, smooth::wrt(x));
 
     const auto [j, dj_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(
       [&f](const auto & var) { return f.jacobian_ad(var); }, smooth::wrt(x));
@@ -74,8 +72,7 @@ TEST(Hessian, RminusSE2)
     ASSERT_TRUE(d2f_anal.isApprox(d2f_num, 1e-3));
 
 #ifdef ENABLE_AUTODIFF_TESTS
-    const auto [f_ad, drf_ad, d2f_ad] =
-      smooth::diff::dr<2, smooth::diff::Type::Autodiff>(f, smooth::wrt(x));
+    const auto [f_ad, drf_ad, d2f_ad] = smooth::diff::dr<2, smooth::diff::Type::Autodiff>(f, smooth::wrt(x));
     ASSERT_TRUE(d2f_ad.isApprox(d2f_num, 1e-3));
     ASSERT_TRUE(drf_ad.isApprox(drf_num, 1e-3));
 #endif
@@ -90,11 +87,9 @@ TEST(Hessian, RminusSE3)
     const auto f = Functor<G>{G::Random()};
     const auto x = G::Random();
 
-    const auto [f_num, drf_num, d2f_num] =
-      smooth::diff::dr<2, smooth::diff::Type::Numerical>(f, smooth::wrt(x));
+    const auto [f_num, drf_num, d2f_num] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(f, smooth::wrt(x));
 
-    const auto [f_anal, drf_anal, d2f_anal] =
-      smooth::diff::dr<2, smooth::diff::Type::Analytic>(f, smooth::wrt(x));
+    const auto [f_anal, drf_anal, d2f_anal] = smooth::diff::dr<2, smooth::diff::Type::Analytic>(f, smooth::wrt(x));
 
     const auto [j, dj_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(
       [&f](const auto & var) { return f.jacobian_ad(var); }, smooth::wrt(x));
@@ -106,8 +101,7 @@ TEST(Hessian, RminusSE3)
     ASSERT_TRUE(d2f_anal.isApprox(d2f_num, 1e-3));
 
 #ifdef ENABLE_AUTODIFF_TESTS
-    const auto [f_ad, drf_ad, d2f_ad] =
-      smooth::diff::dr<2, smooth::diff::Type::Autodiff>(f, smooth::wrt(x));
+    const auto [f_ad, drf_ad, d2f_ad] = smooth::diff::dr<2, smooth::diff::Type::Autodiff>(f, smooth::wrt(x));
     ASSERT_TRUE(d2f_ad.isApprox(d2f_num, 1e-3));
     ASSERT_TRUE(drf_ad.isApprox(drf_num, 1e-3));
 #endif
@@ -130,16 +124,11 @@ TEST(Hessian, ScalarFunc)
 
   const auto [f, df, d2f] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun, smooth::wrt(x));
 
-  const auto [f1, df1, d2f1] =
-    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun1, smooth::wrt(x));
-  const auto [f2, df2, d2f2] =
-    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun2, smooth::wrt(x));
-  const auto [f3, df3, d2f3] =
-    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun3, smooth::wrt(x));
-  const auto [f4, df4, d2f4] =
-    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun4, smooth::wrt(x));
-  const auto [f5, df5, d2f5] =
-    smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun5, smooth::wrt(x));
+  const auto [f1, df1, d2f1] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun1, smooth::wrt(x));
+  const auto [f2, df2, d2f2] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun2, smooth::wrt(x));
+  const auto [f3, df3, d2f3] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun3, smooth::wrt(x));
+  const auto [f4, df4, d2f4] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun4, smooth::wrt(x));
+  const auto [f5, df5, d2f5] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(fun5, smooth::wrt(x));
 
   ASSERT_EQ(d2f.rows(), 5);
   ASSERT_EQ(d2f.cols(), 25);
@@ -151,8 +140,7 @@ TEST(Hessian, ScalarFunc)
   ASSERT_TRUE(d2f5.isApprox(d2f.middleCols(20, 5)));
 
 #ifdef ENABLE_AUTODIFF_TESTS
-  const auto [f_ad, df_ad, d2f_ad] =
-    smooth::diff::dr<2, smooth::diff::Type::Autodiff>(fun, smooth::wrt(x));
+  const auto [f_ad, df_ad, d2f_ad] = smooth::diff::dr<2, smooth::diff::Type::Autodiff>(fun, smooth::wrt(x));
   ASSERT_TRUE(d2f_ad.isApprox(d2f, 1e-3));
 #endif
 }
@@ -167,8 +155,7 @@ TEST(Hessian, Rminus_full)
     return (xvar - y.template cast<T>()).template head<3>();
   };
 
-  const auto [f_num, df_num, d2f_num] =
-    smooth::diff::dr<2, smooth::diff::Type::Numerical>(f, smooth::wrt(x));
+  const auto [f_num, df_num, d2f_num] = smooth::diff::dr<2, smooth::diff::Type::Numerical>(f, smooth::wrt(x));
 
   ASSERT_EQ(df_num.rows(), 3);
   ASSERT_EQ(df_num.cols(), 6);
@@ -176,8 +163,7 @@ TEST(Hessian, Rminus_full)
   ASSERT_EQ(d2f_num.cols(), 3 * 6);
 
 #ifdef ENABLE_AUTODIFF_TESTS
-  const auto [f_ad, df_ad, d2f_ad] =
-    smooth::diff::dr<2, smooth::diff::Type::Autodiff>(f, smooth::wrt(x));
+  const auto [f_ad, df_ad, d2f_ad] = smooth::diff::dr<2, smooth::diff::Type::Autodiff>(f, smooth::wrt(x));
   ASSERT_TRUE(f_ad.isApprox(f_num, 1e-3));
   ASSERT_TRUE(df_ad.isApprox(df_num, 1e-3));
   ASSERT_TRUE(d2f_ad.isApprox(d2f_num, 1e-3));

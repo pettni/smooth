@@ -178,9 +178,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> laguerre_basis()
         ret[i][k] += (2 * k - 1) * ret[i][k - 1] / k;
         ret[i + 1][k] -= ret[i][k - 1] / k;
       }
-      for (auto i = 0u; i + 1 < k; ++i) {
-        ret[i][k] -= static_cast<double>(k - 1) * ret[i][k - 2] / k;
-      }
+      for (auto i = 0u; i + 1 < k; ++i) { ret[i][k] -= static_cast<double>(k - 1) * ret[i][k - 2] / k; }
     }
   }
   return ret;
@@ -212,9 +210,8 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> jacobi_basis(double alpha, double b
     for (auto k = 2u; k < K + 1; ++k) {
       const auto frac = 1. / ((2 * k) * (k + alpha + beta) * (2 * k + alpha + beta - 2));
       const auto c1   = (2 * k + alpha + beta - 1) * (alpha * alpha - beta * beta);
-      const auto c2 =
-        (2 * k + alpha + beta - 1) * (2 * k + alpha + beta) * (2 * k + alpha + beta - 2);
-      const auto c3 = 2 * (k + alpha - 1) * (k + beta - 1) * (2 * k + alpha + beta);
+      const auto c2   = (2 * k + alpha + beta - 1) * (2 * k + alpha + beta) * (2 * k + alpha + beta - 2);
+      const auto c3   = 2 * (k + alpha - 1) * (k + beta - 1) * (2 * k + alpha + beta);
       for (auto i = 0u; i < k; ++i) {
         ret[i][k] += c1 * ret[i][k - 1] * frac;
         ret[i + 1][k] += c2 * ret[i][k - 1] * frac;
@@ -271,14 +268,10 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_basis()
     for (auto k = 0u; k <= K; ++k) { ret[k][k] = Scalar(1); }
     return ret;
   }
-  if constexpr (Basis == PolynomialBasis::Bernstein) {
-    return detail::bernstein_basis<K, Scalar>();
-  }
+  if constexpr (Basis == PolynomialBasis::Bernstein) { return detail::bernstein_basis<K, Scalar>(); }
   if constexpr (Basis == PolynomialBasis::Laguerre) { return detail::laguerre_basis<K, Scalar>(); }
   if constexpr (Basis == PolynomialBasis::Hermite) { return detail::hermite_basis<K, Scalar>(); }
-  if constexpr (Basis == PolynomialBasis::Legendre) {
-    return detail::jacobi_basis<K, Scalar>(0, 0);
-  }
+  if constexpr (Basis == PolynomialBasis::Legendre) { return detail::jacobi_basis<K, Scalar>(0, 0); }
   if constexpr (Basis == PolynomialBasis::Chebyshev1st) {
     auto ret       = detail::jacobi_basis<K, Scalar>(-0.5, -0.5);
     const auto fac = monomial_derivative<K>(1.) * ret;
@@ -316,10 +309,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> polynomial_basis()
  *  p_i(t) = \prod_{j \in [0,K], j \neq i} \frac{t - t_j}{t_i - t_j}.
  * \f]
  */
-template<
-  std::size_t K,
-  std::ranges::random_access_range R,
-  typename Scalar = std::ranges::range_value_t<R>>
+template<std::size_t K, std::ranges::random_access_range R, typename Scalar = std::ranges::range_value_t<R>>
 constexpr StaticMatrix<Scalar, K + 1, K + 1> lagrange_basis(const R & ts)
 {
   StaticMatrix<Scalar, K + 1, K + 1> ret;
@@ -332,8 +322,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> lagrange_basis(const R & ts)
         ret[row].fill(0);
         for (auto i = 0u; i <= col - (col > row ? 1 : 0); ++i) {
           ret[row][i + 1] += row_copy[i] / (*(ts.begin() + row) - *(ts.begin() + col));
-          ret[row][i] -=
-            *(ts.begin() + col) * row_copy[i] / (*(ts.begin() + row) - *(ts.begin() + col));
+          ret[row][i] -= *(ts.begin() + col) * row_copy[i] / (*(ts.begin() + row) - *(ts.begin() + col));
         }
       }
     }
@@ -435,8 +424,7 @@ constexpr StaticMatrix<Scalar, K + 1, K + 1> monomial_integral()
  *   \int_{t_0}^{t_1} \left| At^2 + Bt + C \right| \mathrm{d} t.
  * \f]
  */
-inline constexpr double
-integrate_absolute_polynomial(double t0, double t1, double A, double B, double C)
+inline constexpr double integrate_absolute_polynomial(double t0, double t1, double A, double B, double C)
 {
   // location of first zero (if any)
   double mid1 = std::numeric_limits<double>::infinity();
@@ -465,4 +453,3 @@ integrate_absolute_polynomial(double t0, double t1, double A, double B, double C
 }
 
 }  // namespace smooth
-

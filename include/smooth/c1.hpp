@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <Eigen/Core>
-
 #include <complex>
+
+#include <Eigen/Core>
 
 #include "detail/c1.hpp"
 #include "detail/lie_group_base.hpp"
@@ -76,9 +76,7 @@ public:
   {
     using std::atan2;
 
-    return atan2(
-      static_cast<const _Derived &>(*this).coeffs().x(),
-      static_cast<const _Derived &>(*this).coeffs().y());
+    return atan2(static_cast<const _Derived &>(*this).coeffs().x(), static_cast<const _Derived &>(*this).coeffs().y());
   }
 
   /**
@@ -89,10 +87,8 @@ public:
     using std::sqrt;
 
     return sqrt(
-      static_cast<const _Derived &>(*this).coeffs().x()
-        * static_cast<const _Derived &>(*this).coeffs().x()
-      + static_cast<const _Derived &>(*this).coeffs().y()
-          * static_cast<const _Derived &>(*this).coeffs().y());
+      static_cast<const _Derived &>(*this).coeffs().x() * static_cast<const _Derived &>(*this).coeffs().x()
+      + static_cast<const _Derived &>(*this).coeffs().y() * static_cast<const _Derived &>(*this).coeffs().y());
   }
 
   /**
@@ -109,8 +105,7 @@ public:
   std::complex<Scalar> c1() const
   {
     return std::complex<Scalar>(
-      static_cast<const _Derived &>(*this).coeffs().y(),
-      static_cast<const _Derived &>(*this).coeffs().x());
+      static_cast<const _Derived &>(*this).coeffs().y(), static_cast<const _Derived &>(*this).coeffs().x());
   }
 
   /**
@@ -224,4 +219,3 @@ using C1f = C1<float>;   ///< C1 with float scalar representation
 using C1d = C1<double>;  ///< C1 with double scalar representation
 
 }  // namespace smooth
-

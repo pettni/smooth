@@ -1,8 +1,7 @@
 // Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#include <gtest/gtest.h>
-
 #include <boost/numeric/odeint.hpp>
+#include <gtest/gtest.h>
 
 #include "smooth/compat/odeint.hpp"
 #include "smooth/so3.hpp"
@@ -16,9 +15,7 @@ TEST(OdeInt, Euler)
 
   auto system = [](const state_t &, deriv_t & d, double) { d.setConstant(1); };
 
-  boost::numeric::odeint::
-    euler<state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra>
-      stepper;
+  boost::numeric::odeint::euler<state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra> stepper;
 
   state_t s;
   s.setIdentity();
@@ -35,9 +32,8 @@ TEST(OdeInt, RunkeKutta4)
 
   auto system = [](const state_t &, deriv_t & d, double) { d.setConstant(1); };
 
-  boost::numeric::odeint::
-    runge_kutta4<state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra>
-      stepper;
+  boost::numeric::odeint::runge_kutta4<state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra>
+    stepper;
 
   state_t s;
   s.setIdentity();
@@ -54,13 +50,9 @@ TEST(OdeInt, CashKarp54)
 
   auto system = [](const state_t &, deriv_t & d, double) { d.setConstant(1); };
 
-  boost::numeric::odeint::runge_kutta_cash_karp54<
-    state_t,
-    double,
-    deriv_t,
-    double,
-    boost::numeric::odeint::vector_space_algebra>
-    stepper;
+  boost::numeric::odeint::
+    runge_kutta_cash_karp54<state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra>
+      stepper;
 
   state_t s;
   s.setIdentity();
@@ -77,13 +69,9 @@ TEST(OdeInt, Fehlberg78)
 
   auto system = [](const state_t &, deriv_t & d, double) { d.setConstant(1); };
 
-  boost::numeric::odeint::runge_kutta_fehlberg78<
-    state_t,
-    double,
-    deriv_t,
-    double,
-    boost::numeric::odeint::vector_space_algebra>
-    stepper;
+  boost::numeric::odeint::
+    runge_kutta_fehlberg78<state_t, double, deriv_t, double, boost::numeric::odeint::vector_space_algebra>
+      stepper;
 
   state_t s;
   s.setIdentity();

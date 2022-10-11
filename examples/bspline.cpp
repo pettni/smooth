@@ -5,11 +5,13 @@
  */
 
 #include "smooth/spline/bspline.hpp"
+
 #include "smooth/so3.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include "plot_tools.hpp"
 #include <matplot/matplot.h>
+
+#include "plot_tools.hpp"
 
 using matplot::plot;
 using std::views::transform;

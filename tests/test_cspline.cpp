@@ -6,6 +6,7 @@
 #include "smooth/compat/autodiff.hpp"
 #endif
 
+#include "adapted.hpp"
 #include "smooth/bundle.hpp"
 #include "smooth/diff.hpp"
 #include "smooth/manifold_vector.hpp"
@@ -14,8 +15,6 @@
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 #include "smooth/spline/bspline.hpp"
-
-#include "adapted.hpp"
 
 template<typename G>
 class CSpline : public ::testing::Test
@@ -75,8 +74,7 @@ TYPED_TEST(CSpline, BSplineConstantDiffvec)
 
     for (double u = 0.; u < 1; u += 0.05) {
       Tangent vel, acc;
-      auto g =
-        smooth::composition(g0, smooth::cspline_eval_vs<K, TypeParam>(diff_vec, M, u, vel, acc));
+      auto g = smooth::composition(g0, smooth::cspline_eval_vs<K, TypeParam>(diff_vec, M, u, vel, acc));
 
       ASSERT_TRUE(g.isApprox(g0));
       ASSERT_TRUE(vel.norm() <= 1e-8);
@@ -174,8 +172,7 @@ protected:
   std::vector<G> xs;
   std::vector<smooth::Tangent<G>> vs;
 
-  static constexpr auto M_s =
-    smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>();
+  static constexpr auto M_s = smooth::polynomial_cumulative_basis<smooth::PolynomialBasis::Bspline, K>();
   inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> M =
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(M_s[0].data());
 };
@@ -185,9 +182,8 @@ TEST_F(SplineDerivative, vel)
   for (auto i = 0u; i < 5; ++i) {
     randomize();
 
-    const auto f_diff = [&](auto var) -> G { return smooth::cspline_eval_gs<K>(xs, M, var); };
-    const auto [unused, dx_dt_num] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
+    const auto f_diff              = [&](auto var) -> G { return smooth::cspline_eval_gs<K>(xs, M, var); };
+    const auto [unused, dx_dt_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
 
     smooth::Tangent<G> dx_dt_ana;
     smooth::cspline_eval_gs<K>(xs, M, u, dx_dt_ana);
@@ -206,8 +202,7 @@ TEST_F(SplineDerivative, acc)
       smooth::cspline_eval_gs<K>(xs, M, var, vel);
       return vel;
     };
-    const auto [unused, d2x_dt_num] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
+    const auto [unused, d2x_dt_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
 
     smooth::Tangent<G> dx_dt_ana, d2x_dt_ana;
     smooth::cspline_eval_gs<K>(xs, M, u, dx_dt_ana, d2x_dt_ana);
@@ -226,8 +221,7 @@ TEST_F(SplineDerivative, jer)
       smooth::cspline_eval_gs<K>(xs, M, var, vel, acc);
       return acc;
     };
-    const auto [unused, d3x_dt_num] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
+    const auto [unused, d3x_dt_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(u));
 
     smooth::Tangent<G> dx_dt_ana, d2x_dt_ana, d3x_dt_ana;
     smooth::cspline_eval_gs<K>(xs, M, u, dx_dt_ana, d2x_dt_ana, d3x_dt_ana);
@@ -241,11 +235,8 @@ TEST_F(SplineDerivative, dx_dcoef)
   for (auto i = 0u; i < 5; ++i) {
     randomize();
 
-    const auto f_diff = [&](const std::vector<G> & var) -> G {
-      return smooth::cspline_eval_gs<K>(var, M, u);
-    };
-    const auto [unused, diff_aut] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
+    const auto f_diff = [&](const std::vector<G> & var) -> G { return smooth::cspline_eval_gs<K>(var, M, u); };
+    const auto [unused, diff_aut] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
 
     const auto diff_ana = smooth::cspline_eval_dg_dgs<K>(xs, M, u);
 
@@ -263,8 +254,7 @@ TEST_F(SplineDerivative, dvel_dcoef)
       smooth::cspline_eval_gs<K>(var, M, u, vel);
       return vel;
     };
-    const auto [unused, diff_aut] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
+    const auto [unused, diff_aut] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
 
     smooth::SplineJacobian<G, K> dvel_dgs;
     smooth::cspline_eval_dg_dgs<K>(xs, M, u, dvel_dgs);
@@ -283,8 +273,7 @@ TEST_F(SplineDerivative, dacc_dcoef)
       smooth::cspline_eval_gs<K>(var, M, u, vel, acc);
       return acc;
     };
-    const auto [unused, diff_aut] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
+    const auto [unused, diff_aut] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(xs));
 
     smooth::SplineJacobian<G, K> dvel_dgs, dacc_dgs;
     smooth::cspline_eval_dg_dgs<K>(xs, M, u, dvel_dgs, dacc_dgs);

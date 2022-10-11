@@ -39,14 +39,10 @@ public:
   static PlainObject Random([[maybe_unused]] Eigen::Index dof)
   {
     assert(dof == 1);
-    return PlainObject(
-      Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
+    return PlainObject(Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
   }
   static TangentMap Ad(PlainObject) { return TangentMap{1}; }
-  static PlainObject composition(PlainObject g1, PlainObject g2)
-  {
-    return PlainObject{.data = g1.data + g2.data};
-  }
+  static PlainObject composition(PlainObject g1, PlainObject g2) { return PlainObject{.data = g1.data + g2.data}; }
   static Eigen::Index dof(PlainObject) { return 1; }
   static Eigen::Index dim(PlainObject) { return 2; }
   static PlainObject inverse(PlainObject g) { return PlainObject{.data = -g.data}; }

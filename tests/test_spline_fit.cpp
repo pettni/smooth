@@ -16,8 +16,7 @@ TEST(SplineFit, MinJerk5)
   const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, ss);
 
   constexpr auto Ms = smooth::polynomial_basis<smooth::PolynomialBasis::Bernstein, K>();
-  Eigen::MatrixXd M =
-    Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
+  Eigen::MatrixXd M = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 
   Eigen::VectorXd mon_coefs = M * alpha;
 
@@ -40,8 +39,7 @@ TEST(SplineFit, MinJerk6)
   const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, ss);
 
   constexpr auto Ms = smooth::polynomial_basis<smooth::PolynomialBasis::Bernstein, K>();
-  Eigen::MatrixXd M =
-    Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
+  Eigen::MatrixXd M = Eigen::Map<const Eigen::Matrix<double, -1, -1, Eigen::RowMajor>>(Ms[0].data(), K + 1, K + 1);
 
   Eigen::VectorXd mon_coefs = M * alpha;
 
@@ -59,8 +57,7 @@ TEST(SplineFit, Minimize)
   const std::vector<double> dtvec{1, 3};
   const std::vector<double> dxvec{0, 0};
 
-  const auto alpha =
-    smooth::fit_spline_1d(dtvec, dxvec, smooth::spline_specs::FixedDerCubic<double>{});
+  const auto alpha = smooth::fit_spline_1d(dtvec, dxvec, smooth::spline_specs::FixedDerCubic<double>{});
   ASSERT_LE(alpha.norm(), 1e-8);
 }
 

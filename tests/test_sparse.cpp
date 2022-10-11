@@ -1,8 +1,8 @@
 // Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#include <gtest/gtest.h>
-
 #include <iostream>
+
+#include <gtest/gtest.h>
 
 #include "smooth/bundle.hpp"
 #include "smooth/c1.hpp"
@@ -12,14 +12,8 @@
 
 using BundleT1 = smooth::Bundle<Eigen::Vector3d, smooth::SO2d>;
 using BundleT2 = smooth::Bundle<Eigen::Vector3d, smooth::SO3d>;
-using BundleT3 = smooth::Bundle<
-  smooth::SE2d,
-  Eigen::Vector3d,
-  smooth::SO3d,
-  Eigen::Vector2d,
-  smooth::C1d,
-  BundleT2,
-  smooth::SE3d>;
+using BundleT3 =
+  smooth::Bundle<smooth::SE2d, Eigen::Vector3d, smooth::SO3d, Eigen::Vector2d, smooth::C1d, BundleT2, smooth::SE3d>;
 
 TEST(Sparse, ad_nonzeros)
 {

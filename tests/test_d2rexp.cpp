@@ -2,10 +2,9 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/compat/autodiff.hpp"
-
 #include "smooth/bundle.hpp"
 #include "smooth/c1.hpp"
+#include "smooth/compat/autodiff.hpp"
 #include "smooth/diff.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
@@ -26,8 +25,7 @@ Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2r_exp_autodiff(const Tangent
 
   Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> ret;
   for (auto i = 0u; i < Dof<G>; ++i) {
-    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) =
-      D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
+    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) = D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
   }
   return ret;
 }
@@ -44,8 +42,7 @@ Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2r_expinv_autodiff(const Tang
 
   Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> ret;
   for (auto i = 0u; i < Dof<G>; ++i) {
-    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) =
-      D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
+    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) = D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
   }
   return ret;
 }
@@ -62,8 +59,7 @@ Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2l_exp_autodiff(const Tangent
 
   Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> ret;
   for (auto i = 0u; i < Dof<G>; ++i) {
-    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) =
-      D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
+    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) = D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
   }
   return ret;
 }
@@ -80,8 +76,7 @@ Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2l_expinv_autodiff(const Tang
 
   Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> ret;
   for (auto i = 0u; i < Dof<G>; ++i) {
-    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) =
-      D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
+    ret.template block<Dof<G>, Dof<G>>(0, Dof<G> * i) = D.template block<Dof<G>, Dof<G>>(Dof<G> * i, 0);
   }
   return ret;
 }

@@ -2,10 +2,9 @@
 
 #include <gtest/gtest.h>
 
+#include "nlreg_data.hpp"
 #include "smooth/lie_group.hpp"
 #include "smooth/optim.hpp"
-
-#include "nlreg_data.hpp"
 
 TEST(NlReg, Misra1aStatic)
 {
@@ -14,8 +13,8 @@ TEST(NlReg, Misra1aStatic)
 
   auto [f, data, start1, start2, optim] = Misra1a();
 
-  auto f_vec = [f = std::move(f), data = std::move(data)](
-                 const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
+  auto f_vec = [f    = std::move(f),
+                data = std::move(data)](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
     return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
   };
 
@@ -32,8 +31,8 @@ TEST(NlReg, Misra1aDynamic)
 {
   auto [f, data, start1, start2, optim] = Misra1a();
 
-  auto f_vec = [f = std::move(f), data = std::move(data)](
-                 const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
+  auto f_vec = [f    = std::move(f),
+                data = std::move(data)](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
     return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
   };
 
@@ -53,8 +52,8 @@ TEST(NlReg, Kirby2Static)
 
   auto [f, data, start1, start2, optim] = Kirby2();
 
-  auto f_vec = [f = std::move(f), data = std::move(data)](
-                 const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
+  auto f_vec = [f    = std::move(f),
+                data = std::move(data)](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
     return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
   };
 
@@ -75,8 +74,8 @@ TEST(NlReg, Kirby2Dynamic)
 {
   auto [f, data, start1, start2, optim] = Kirby2();
 
-  auto f_vec = [f = std::move(f), data = std::move(data)](
-                 const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
+  auto f_vec = [f    = std::move(f),
+                data = std::move(data)](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
     return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
   };
 

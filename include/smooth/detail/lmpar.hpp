@@ -38,15 +38,12 @@ namespace smooth::detail {
  * NOTE To maximize performance in the sparse case R should be Row-Major
  */
 template<int N>
-Eigen::Vector<double, N> solve_ls(
-  auto & R,
-  const Eigen::Vector<double, N> & Qt_r,
-  const auto & P,
-  const Eigen::Vector<double, N> & d)
+Eigen::Vector<double, N>
+solve_ls(auto & R, const Eigen::Vector<double, N> & Qt_r, const auto & P, const Eigen::Vector<double, N> & d)
 {
   // true if R is sparse
-  static constexpr bool is_sparse = std::
-    is_base_of_v<Eigen::SparseMatrixBase<std::decay_t<decltype(R)>>, std::decay_t<decltype(R)>>;
+  static constexpr bool is_sparse =
+    std::is_base_of_v<Eigen::SparseMatrixBase<std::decay_t<decltype(R)>>, std::decay_t<decltype(R)>>;
 
   const auto n               = R.cols();
   Eigen::Vector<double, N> a = Qt_r;
@@ -109,8 +106,7 @@ Eigen::Vector<double, N> solve_ls(
 
   Eigen::Vector<double, N> sol(n);
   sol.tail(n - rank).setZero();
-  sol.head(rank) =
-    R.topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(a.head(rank));
+  sol.head(rank) = R.topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(a.head(rank));
 
   // solution is now equal to -P z
   return -(P * sol);
@@ -134,15 +130,12 @@ Eigen::Vector<double, N>
 solve_ls(const auto & J_qr, const Eigen::Vector<double, N> & d, const Eigen::Vector<double, M> & r)
 {
   // true if it's a sparse decomposition
-  static constexpr bool is_sparse = std::is_base_of_v<
-    Eigen::SparseMatrixBase<std::decay_t<decltype(J_qr)>>,
-    std::decay_t<decltype(J_qr)>>;
+  static constexpr bool is_sparse =
+    std::is_base_of_v<Eigen::SparseMatrixBase<std::decay_t<decltype(J_qr)>>, std::decay_t<decltype(J_qr)>>;
 
   // figure type to use for A matrix
-  using AType = std::conditional_t<
-    is_sparse,
-    Eigen::SparseMatrix<double, Eigen::RowMajor>,
-    Eigen::Matrix<double, N, N>>;
+  using AType =
+    std::conditional_t<is_sparse, Eigen::SparseMatrix<double, Eigen::RowMajor>, Eigen::Matrix<double, N, N>>;
 
   static constexpr int NM_min  = std::min(N, M);
   static constexpr int NM_rest = NM_min == -1 ? -1 : N - NM_min;
@@ -165,8 +158,7 @@ solve_ls(const auto & J_qr, const Eigen::Vector<double, N> & d, const Eigen::Vec
   R.template topRows<NM_min>(nm_min) = J_qr.matrixR().template topRows<NM_min>(nm_min);
 
   Eigen::Vector<double, N> Qt_r(n);
-  Qt_r.template head<NM_min>(nm_min) =
-    (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
+  Qt_r.template head<NM_min>(nm_min) = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
   Qt_r.template bottomRows<NM_rest>(nm_rest).setZero();
 
   return solve_ls<N>(R, Qt_r, J_qr.colsPermutation(), d);
@@ -192,11 +184,8 @@ solve_ls(const auto & J_qr, const Eigen::Vector<double, N> & d, const Eigen::Vec
  * Consider using lmpar_sparse instead.
  */
 template<int N, int M>
-std::pair<double, Eigen::Vector<double, N>> lmpar(
-  const auto & J,
-  const Eigen::Vector<double, N> & d,
-  const Eigen::Vector<double, M> & r,
-  double Delta)
+std::pair<double, Eigen::Vector<double, N>>
+lmpar(const auto & J, const Eigen::Vector<double, N> & d, const Eigen::Vector<double, M> & r, double Delta)
 {
   using MatrixT = std::decay_t<decltype(J)>;
 
@@ -212,27 +201,22 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(
   const auto nm_rest = n - nm_min;
 
   // calculate qr decomposition of J
-  std::conditional_t<
-    is_sparse,
-    Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<int>>,
-    Eigen::ColPivHouseholderQR<MatrixT>>
-    J_qr;
+  std::
+    conditional_t<is_sparse, Eigen::SparseQR<MatrixT, Eigen::COLAMDOrdering<int>>, Eigen::ColPivHouseholderQR<MatrixT>>
+      J_qr;
 
   J_qr.compute(J);
 
   // calculate size n Qt_r
   Eigen::Vector<double, N> Qt_r(n);
-  Qt_r.template head<NM_min>(nm_min) =
-    (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
+  Qt_r.template head<NM_min>(nm_min) = (J_qr.matrixQ().transpose() * r).template head<NM_min>(nm_min);
   Qt_r.template bottomRows<NM_rest>(nm_rest).setZero();
 
   // calculate phi(0) by solving J x = -r as x = P R^-1 (-Q' r)
   Eigen::Vector<double, N> x(n);
-  auto rank    = J_qr.rank();
-  x.head(rank) = J_qr.matrixR()
-                   .topLeftCorner(rank, rank)
-                   .template triangularView<Eigen::Upper>()
-                   .solve(-Qt_r.head(rank));
+  auto rank = J_qr.rank();
+  x.head(rank) =
+    J_qr.matrixR().topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(-Qt_r.head(rank));
   x.tail(n - rank).setZero();
   x.applyOnTheLeft(J_qr.colsPermutation());
 
@@ -253,13 +237,9 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(
   if (J_qr.rank() == n) {
     // full rank means we can calculate dphi(0)
     // as - \| D x \| * \| Rinv (P' D' D x) / \| Dx \| \|^2
-    Eigen::Vector<double, N> y =
-      J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
-    J_qr.matrixR()
-      .template topLeftCorner<N, N>(n, n)
-      .template triangularView<Eigen::Upper>()
-      .transpose()
-      .solveInPlace(y);
+    Eigen::Vector<double, N> y = J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
+    J_qr.matrixR().template topLeftCorner<N, N>(n, n).template triangularView<Eigen::Upper>().transpose().solveInPlace(
+      y);
     dphi = -D_x_iter_norm * y.squaredNorm();
     l    = std::max(l, -phi / dphi);
   }
@@ -273,10 +253,8 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(
     if (!(l < alpha && alpha < u)) { alpha = std::max<double>(0.001 * u, sqrt(l * u)); }
 
     // solve least-squares problem
-    using RType = std::conditional_t<
-      is_sparse,
-      Eigen::SparseMatrix<double, Eigen::RowMajor>,
-      Eigen::Matrix<double, N, N>>;
+    using RType =
+      std::conditional_t<is_sparse, Eigen::SparseMatrix<double, Eigen::RowMajor>, Eigen::Matrix<double, N, N>>;
     RType R(n, n);
     R.template topRows<NM_min>(nm_min) = J_qr.matrixR().template topRows<NM_min>(nm_min);
     if constexpr (!is_sparse) { R.template bottomRows<NM_rest>(nm_rest).setZero(); }
@@ -293,8 +271,7 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(
     }
 
     // calculate derivative of phi wrt alpha
-    Eigen::Vector<double, N> y =
-      J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
+    Eigen::Vector<double, N> y = J_qr.colsPermutation().inverse() * (d.cwiseProduct(D_x_iter) / D_x_iter_norm);
     R.template triangularView<Eigen::Upper>().transpose().solveInPlace(y);
     dphi = -D_x_iter_norm * y.squaredNorm();
 
@@ -310,4 +287,3 @@ std::pair<double, Eigen::Vector<double, N>> lmpar(
 }
 
 }  // namespace smooth::detail
-

@@ -60,9 +60,7 @@ public:
    * @param dt distance between spline knots
    * @param ctrl_pts spline control points
    */
-  BSpline(double t0, double dt, std::vector<G> && ctrl_pts)
-      : t0_(t0), dt_(dt), ctrl_pts_(std::move(ctrl_pts))
-  {}
+  BSpline(double t0, double dt, std::vector<G> && ctrl_pts) : t0_(t0), dt_(dt), ctrl_pts_(std::move(ctrl_pts)) {}
 
   /**
    * @brief Create a BSpline
@@ -101,10 +99,7 @@ public:
   /**
    * @brief Maximal time for which spline is defined.
    */
-  [[nodiscard]] double t_max() const
-  {
-    return t0_ + static_cast<double>(ctrl_pts_.size() - K) * dt_;
-  }
+  [[nodiscard]] double t_max() const { return t0_ + static_cast<double>(ctrl_pts_.size() - K) * dt_; }
 
   /**
    * @brief Access spline control points.
@@ -124,8 +119,7 @@ public:
    * @note Input \p t is clamped to spline interval of definition
    */
   template<typename S = double>
-  CastT<S, G>
-  operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const
+  CastT<S, G> operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const
   {
     // index of relevant interval
     int64_t istar = static_cast<int64_t>((static_cast<double>(t) - t0_) / dt_);

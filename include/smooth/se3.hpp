@@ -75,18 +75,12 @@ public:
   /**
    * @brief Access SO(3) part.
    */
-  Map<SO3<Scalar>> so3() requires is_mutable
-  {
-    return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3);
-  }
+  Map<SO3<Scalar>> so3() requires is_mutable { return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3); }
 
   /**
    * @brief Const access SO(3) part.
    */
-  Map<const SO3<Scalar>> so3() const
-  {
-    return Map<const SO3<Scalar>>(static_cast<const _Derived &>(*this).data() + 3);
-  }
+  Map<const SO3<Scalar>> so3() const { return Map<const SO3<Scalar>>(static_cast<const _Derived &>(*this).data() + 3); }
 
   /**
    * @brief Access R3 part.
@@ -142,10 +136,7 @@ public:
    *
    * @note SE2 header must be included.
    */
-  SE2<Scalar> project_se2() const
-  {
-    return SE2<Scalar>(so3().project_so2(), r3().template head<2>());
-  }
+  SE2<Scalar> project_se2() const { return SE2<Scalar>(so3().project_so2(), r3().template head<2>()); }
 };
 
 // \cond

@@ -65,8 +65,7 @@ public:
 
   static void composition(GRefIn g_in1, GRefIn g_in2, GRefOut g_out)
   {
-    SO2Impl<Scalar>::composition(
-      g_in1.template tail<2>(), g_in2.template tail<2>(), g_out.template tail<2>());
+    SO2Impl<Scalar>::composition(g_in1.template tail<2>(), g_in2.template tail<2>(), g_out.template tail<2>());
     Eigen::Matrix<Scalar, 2, 2> R1;
     SO2Impl<Scalar>::matrix(g_in1.template tail<2>(), R1);
     g_out.template head<2>().noalias() = R1 * g_in2.template head<2>() + g_in1.template head<2>();
@@ -174,8 +173,7 @@ public:
     const Scalar th2 = a_in.z() * a_in.z();
     Eigen::Matrix3<Scalar> ad_a;
     ad(a_in, ad_a);
-    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() + detail::cos_2(th2) * ad_a
-                    - detail::sin_3(th2) * ad_a * ad_a;
+    A_out.noalias() = Eigen::Matrix3<Scalar>::Identity() + detail::cos_2(th2) * ad_a - detail::sin_3(th2) * ad_a * ad_a;
   }
 
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
@@ -262,8 +260,8 @@ public:
         const Scalar wz3 = wz2 * wz;
         return {
           Scalar(1) / wz2 - (Scalar(1) + cTh) / (Scalar(2) * wz * sTh),
-          1 / (2 * wz) + cTh * cTh / (2 * wz * sTh * sTh) + cTh / (2 * wz * sTh * sTh)
-            + cTh / (2 * wz2 * sTh) + 1 / (2 * wz2 * sTh) - 2 / wz3,
+          1 / (2 * wz) + cTh * cTh / (2 * wz * sTh * sTh) + cTh / (2 * wz * sTh * sTh) + cTh / (2 * wz2 * sTh)
+            + 1 / (2 * wz2 * sTh) - 2 / wz3,
         };
       }
     }();
@@ -281,9 +279,7 @@ public:
     ad(a_in, ad_a);
     const Eigen::Matrix3<Scalar> ad_a2 = ad_a * ad_a;
 
-    for (auto j = 0u; j < 3; ++j) {
-      H_out.col(2 + 3 * j).noalias() += dA_dwz * ad_a2.row(j).transpose();
-    }
+    for (auto j = 0u; j < 3; ++j) { H_out.col(2 + 3 * j).noalias() += dA_dwz * ad_a2.row(j).transpose(); }
   }
 };
 

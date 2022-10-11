@@ -43,8 +43,7 @@ TEST(SO3, Eulerangles)
 
 TEST(SO3, rotXYZ)
 {
-  const Eigen::Vector3d ex = Eigen::Vector3d::UnitX(), ey = Eigen::Vector3d::UnitY(),
-                        ez = Eigen::Vector3d::UnitZ();
+  const Eigen::Vector3d ex = Eigen::Vector3d::UnitX(), ey = Eigen::Vector3d::UnitY(), ez = Eigen::Vector3d::UnitZ();
 
   for (double ang = 0.345; ang < 12; ang += 0.123) {
     smooth::SO3d rx = smooth::SO3d::rot_x(ang);
@@ -108,8 +107,7 @@ TEST(SO3, dAction)
 
     const auto f_diff = [&v](const smooth::SO3d & var) { return var * v; };
 
-    const auto [unused, J_num] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
+    const auto [unused, J_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
 
     const auto J_ana = g.dr_action(v);
 

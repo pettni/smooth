@@ -2,10 +2,10 @@
 
 #pragma once
 
+#include <complex>
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
-#include <complex>
 
 #include "detail/lie_group_base.hpp"
 #include "detail/macro.hpp"
@@ -77,18 +77,12 @@ public:
   /**
    * @brief Access SO(2) part.
    */
-  Map<SO2<Scalar>> so2() requires is_mutable
-  {
-    return Map<SO2<Scalar>>(static_cast<_Derived &>(*this).data() + 2);
-  }
+  Map<SO2<Scalar>> so2() requires is_mutable { return Map<SO2<Scalar>>(static_cast<_Derived &>(*this).data() + 2); }
 
   /**
    * @brief Const access SO(2) part.
    */
-  Map<const SO2<Scalar>> so2() const
-  {
-    return Map<const SO2<Scalar>>(static_cast<const _Derived &>(*this).data() + 2);
-  }
+  Map<const SO2<Scalar>> so2() const { return Map<const SO2<Scalar>>(static_cast<const _Derived &>(*this).data() + 2); }
 
   /**
    * @brief Access R2 part.

@@ -50,9 +50,7 @@ struct traits::man<std::variant<Ms...>>
   template<typename Derived>
   static inline PlainObject rplus(const PlainObject & m, const Eigen::MatrixBase<Derived> & a)
   {
-    const auto visitor = [&a]<Manifold Mi>(const Mi & x) -> PlainObject {
-      return traits::man<Mi>::rplus(x, a);
-    };
+    const auto visitor = [&a]<Manifold Mi>(const Mi & x) -> PlainObject { return traits::man<Mi>::rplus(x, a); };
     return std::visit(visitor, m);
   }
 

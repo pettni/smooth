@@ -1,9 +1,9 @@
 // Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
+#include <sstream>
+
 #include <gtest/gtest.h>
 #include <unsupported/Eigen/MatrixFunctions>
-
-#include <sstream>
 
 #include "smooth/bundle.hpp"
 #include "smooth/c1.hpp"
@@ -24,8 +24,7 @@ using GroupsToTest = ::testing::Types<
   smooth::SE3f,
   smooth::C1f,
   smooth::Galileid,
-  smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d, smooth::SE3d>
-  >;
+  smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d, smooth::SE3d>>;
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest, );
 
@@ -172,9 +171,7 @@ TYPED_TEST(LieGroupInterface, Copying)
   g1.setRandom();
   g2 = g1;
   ASSERT_TRUE(g2.isApprox(g1));
-  for (auto i = 0u; i != TypeParam::RepSize; ++i) {
-    ASSERT_DOUBLE_EQ(g1.coeffs()[i], g2.coeffs()[i]);
-  }
+  for (auto i = 0u; i != TypeParam::RepSize; ++i) { ASSERT_DOUBLE_EQ(g1.coeffs()[i], g2.coeffs()[i]); }
 
   // group to map
   g1.setRandom();
@@ -304,8 +301,7 @@ TYPED_TEST(LieGroupInterface, Ad)
 
     typename TypeParam::TangentMap Ad_basis;
     for (auto j = 0u; j < TypeParam::Dof; ++j) {
-      Ad_basis.col(j) = TypeParam::vee(
-        g.matrix() * TypeParam::hat(TypeParam::Tangent::Unit(j)) * g.inverse().matrix());
+      Ad_basis.col(j) = TypeParam::vee(g.matrix() * TypeParam::hat(TypeParam::Tangent::Unit(j)) * g.inverse().matrix());
     }
 
     ASSERT_TRUE(g.Ad().isApprox(Ad_basis));

@@ -71,4 +71,3 @@ struct TnImpl
 };
 
 }  // namespace smooth
-

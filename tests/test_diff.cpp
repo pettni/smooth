@@ -22,10 +22,10 @@ void run_rminus_test()
   g1.setRandom();
   g2.setRandom();
 
-  auto [f1, jac1] = diff::dr<1, dm>(
-    [&g2](auto v1) { return v1 - g2.template cast<typename decltype(v1)::Scalar>(); }, wrt(g1));
-  auto [f2, jac2] = diff::dr<1, dm>(
-    [&g1](auto v2) { return g1.template cast<typename decltype(v2)::Scalar>() - v2; }, wrt(g2));
+  auto [f1, jac1] =
+    diff::dr<1, dm>([&g2](auto v1) { return v1 - g2.template cast<typename decltype(v1)::Scalar>(); }, wrt(g1));
+  auto [f2, jac2] =
+    diff::dr<1, dm>([&g1](auto v2) { return g1.template cast<typename decltype(v2)::Scalar>() - v2; }, wrt(g2));
   auto [f3, jac3] = diff::dr<1, dm>([](auto v1, auto v2) { return v1 - v2; }, wrt(g1, g2));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == traits::man<TypeParam>::Dof, "Error");
@@ -79,8 +79,7 @@ void run_exp_test()
   a.setRandom();
 
   auto [f, jac] = diff::dr<1, dm>(
-    [](auto var) { return TypeParam::template CastT<typename decltype(var)::Scalar>::exp(var); },
-    wrt(a));
+    [](auto var) { return TypeParam::template CastT<typename decltype(var)::Scalar>::exp(var); }, wrt(a));
 
   static_assert(decltype(jac)::RowsAtCompileTime == TypeParam::Dof, "Error");
   static_assert(decltype(jac)::ColsAtCompileTime == TypeParam::Dof, "Error");
@@ -165,8 +164,7 @@ void test_second_multi()
   const Eigen::RowVector3d df_dy_expected = y / ny + x;
 
   const Eigen::Matrix3d d2f_dx2_expected = 2 * Eigen::Matrix3d::Identity();
-  const Eigen::Matrix3d d2f_dy2_expected =
-    Eigen::Matrix3d::Identity() / ny - y * y.transpose() / (ny * ny * ny);
+  const Eigen::Matrix3d d2f_dy2_expected = Eigen::Matrix3d::Identity() / ny - y * y.transpose() / (ny * ny * ny);
   const Eigen::Matrix3d d2f_dxy_expected = Eigen::Matrix3d::Identity();
 
   ASSERT_TRUE(df.head(3).isApprox(df_dx_expected, 1e-4));
@@ -182,8 +180,7 @@ void test_second_multi()
 template<diff::Type DiffType>
 void test_partial()
 {
-  auto f =
-    []<typename T>(const T & v1, const Eigen::Vector2<T> & v2, const smooth::SO3<T> & v3) -> T {
+  auto f = []<typename T>(const T & v1, const Eigen::Vector2<T> & v2, const smooth::SO3<T> & v3) -> T {
     return v1 * v2.sum() + v3.log().sum();
   };
 
@@ -294,8 +291,7 @@ TEST(Differentiation, Dynamic)
   Eigen::VectorXd v(3);
   v.setRandom();
 
-  auto [f1, jac1] =
-    diff::dr<1, diff::Type::Numerical>([](auto v1) { return (2 * v1).eval(); }, wrt(v));
+  auto [f1, jac1] = diff::dr<1, diff::Type::Numerical>([](auto v1) { return (2 * v1).eval(); }, wrt(v));
 
   static_assert(decltype(jac1)::RowsAtCompileTime == -1, "Error");
   static_assert(decltype(jac1)::ColsAtCompileTime == -1, "Error");

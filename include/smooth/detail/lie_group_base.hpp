@@ -134,9 +134,8 @@ public:
    */
   template<typename OtherDerived>
     requires(std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  bool isApprox(
-    const LieGroupBase<OtherDerived> & o,
-    const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision()) const noexcept
+  bool isApprox(const LieGroupBase<OtherDerived> & o, const Scalar & eps = Eigen::NumTraits<Scalar>::dummy_precision())
+    const noexcept
   {
     return cderived().coeffs().isApprox(static_cast<const OtherDerived &>(o).coeffs(), eps);
   }
@@ -160,8 +159,7 @@ public:
   PlainObject operator*(const LieGroupBase<OtherDerived> & o) const noexcept
   {
     PlainObject ret;
-    Impl::composition(
-      cderived().coeffs(), static_cast<const OtherDerived &>(o).coeffs(), ret.coeffs());
+    Impl::composition(cderived().coeffs(), static_cast<const OtherDerived &>(o).coeffs(), ret.coeffs());
     return ret;
   }
 
@@ -251,10 +249,7 @@ public:
    */
   template<typename OtherDerived>
     requires(std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  Tangent operator-(const LieGroupBase<OtherDerived> & xo) const noexcept
-  {
-    return (xo.inverse() * *this).log();
-  }
+  Tangent operator-(const LieGroupBase<OtherDerived> & xo) const noexcept { return (xo.inverse() * *this).log(); }
 
   // Tangent API
 
@@ -328,9 +323,8 @@ public:
    * \mathbf{a}^\wedge \right)^\vee. \f]
    */
   template<typename TangentDerived1, typename TangentDerived2>
-  static Tangent lie_bracket(
-    const Eigen::MatrixBase<TangentDerived1> & a,
-    const Eigen::MatrixBase<TangentDerived2> & b) noexcept
+  static Tangent
+  lie_bracket(const Eigen::MatrixBase<TangentDerived1> & a, const Eigen::MatrixBase<TangentDerived2> & b) noexcept
   {
     if constexpr (IsCommutative) {
       return Tangent::Zero();
@@ -465,4 +459,3 @@ Stream & operator<<(Stream & s, const LieGroupBase<Derived> & g)
 }
 
 }  // namespace smooth
-

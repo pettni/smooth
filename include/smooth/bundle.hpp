@@ -85,8 +85,7 @@ public:
   template<std::size_t Idx>
   MapDispatch<PartType<Idx>> part() requires is_mutable
   {
-    return MapDispatch<PartType<Idx>>(
-      static_cast<_Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
+    return MapDispatch<PartType<Idx>>(static_cast<_Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
 
   /**
@@ -122,16 +121,14 @@ struct liebase_info<Bundle<_Gs...>>
   using Impl   = BundleImpl<typename liebase_info<_Gs>::Impl...>;
   using Scalar = std::common_type_t<typename liebase_info<_Gs>::Scalar...>;
 
-  static_assert(
-    (std::is_same_v<Scalar, typename liebase_info<_Gs>::Scalar> && ...),
-    "Scalar types must be identical");
+  static_assert((std::is_same_v<Scalar, typename liebase_info<_Gs>::Scalar> && ...), "Scalar types must be identical");
 
   template<typename NewScalar>
   using PlainObject = Bundle<typename liebase_info<_Gs>::template PlainObject<NewScalar>...>;
 
   template<std::size_t Idx>
-  using PartPlainObject = typename liebase_info<
-    std::tuple_element_t<Idx, std::tuple<_Gs...>>>::template PlainObject<Scalar>;
+  using PartPlainObject =
+    typename liebase_info<std::tuple_element_t<Idx, std::tuple<_Gs...>>>::template PlainObject<Scalar>;
 };
 // \endcond
 
@@ -156,8 +153,7 @@ public:
   Bundle(S &&... gs)
   {
     const auto tpl = std::forward_as_tuple(gs...);
-    utils::static_for<sizeof...(_Gs)>(
-      [this, &tpl](auto i) { Base::template part<i>() = std::get<i>(tpl); });
+    utils::static_for<sizeof...(_Gs)>([this, &tpl](auto i) { Base::template part<i>() = std::get<i>(tpl); });
   }
 };
 

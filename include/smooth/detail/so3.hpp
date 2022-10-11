@@ -175,8 +175,7 @@ public:
 
   static void hat(TRefIn a_in, MRefOut A_out)
   {
-    A_out << Scalar(0), -a_in(2), a_in(1), a_in(2), Scalar(0), -a_in(0), -a_in(1), a_in(0),
-      Scalar(0);
+    A_out << Scalar(0), -a_in(2), a_in(1), a_in(2), Scalar(0), -a_in(0), -a_in(1), a_in(0), Scalar(0);
   }
 
   static void vee(MRefIn A_in, TRefOut a_out)
@@ -268,8 +267,8 @@ public:
         const Scalar cTh = cos(th);
         return {
           Scalar(1) / th2 - (Scalar(1) + cTh) / (Scalar(2) * th * sTh),
-          1 / (2 * th2) + cTh * cTh / (2 * th2 * sTh * sTh) + cTh / (2 * th2 * sTh * sTh)
-            + cTh / (2 * th3 * sTh) + 1 / (2 * th3 * sTh) - 2 / th4,
+          1 / (2 * th2) + cTh * cTh / (2 * th2 * sTh * sTh) + cTh / (2 * th2 * sTh * sTh) + cTh / (2 * th3 * sTh)
+            + 1 / (2 * th3 * sTh) - 2 / th4,
         };
       }
     }();

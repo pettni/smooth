@@ -143,9 +143,7 @@ Spline<2, double> reparameterize_spline(
     }();
 
     if (ai != inf) {
-      const double dt = std::abs(ai) < eps
-                        ? ds / vi
-                        : (-vi + std::sqrt(std::max<double>(eps, vi2 + 2 * ds * ai))) / ai;
+      const double dt = std::abs(ai) < eps ? ds / vi : (-vi + std::sqrt(std::max<double>(eps, vi2 + 2 * ds * ai))) / ai;
 
       // add segment to spline
       ret.concat_global(Spline<2, double>{

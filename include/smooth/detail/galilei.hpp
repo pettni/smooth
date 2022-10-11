@@ -74,15 +74,12 @@ public:
 
   static void composition(GRefIn g_in1, GRefIn g_in2, GRefOut g_out)
   {
-    SO3Impl<Scalar>::composition(
-      g_in1.template tail<4>(), g_in2.template tail<4>(), g_out.template tail<4>());
+    SO3Impl<Scalar>::composition(g_in1.template tail<4>(), g_in2.template tail<4>(), g_out.template tail<4>());
     Eigen::Matrix<Scalar, 3, 3> R1;
     SO3Impl<Scalar>::matrix(g_in1.template tail<4>(), R1);
-    g_out.template segment<3>(0).noalias() =
-      R1 * g_in2.template segment<3>(0) + g_in1.template segment<3>(0);
-    g_out.template segment<3>(3).noalias() = R1 * g_in2.template segment<3>(3)
-                                           + g_in1.template segment<3>(0) * g_in2(6)
-                                           + g_in1.template segment<3>(3);
+    g_out.template segment<3>(0).noalias() = R1 * g_in2.template segment<3>(0) + g_in1.template segment<3>(0);
+    g_out.template segment<3>(3).noalias() =
+      R1 * g_in2.template segment<3>(3) + g_in1.template segment<3>(0) * g_in2(6) + g_in1.template segment<3>(3);
     g_out(6) = g_in1(6) + g_in2(6);
   }
 
@@ -192,8 +189,8 @@ public:
     A_out.template block<3, 3>(7, 7) = A_out.template topLeftCorner<3, 3>();
   }
 
-  static Eigen::Matrix3<Scalar> calculate_r(
-    Eigen::Ref<const Eigen::Vector3<Scalar>> v, Eigen::Ref<const Eigen::Vector3<Scalar>> w)
+  static Eigen::Matrix3<Scalar>
+  calculate_r(Eigen::Ref<const Eigen::Vector3<Scalar>> v, Eigen::Ref<const Eigen::Vector3<Scalar>> w)
   {
     using detail::sin_3, detail::cos_4, detail::sin_5, detail::cos_6;
 
@@ -263,8 +260,7 @@ public:
     A_out.template block<3, 3>(3, 0).noalias() = -s * (I - S1inv * S2) * S1inv;
     A_out.template block<3, 3>(3, 3).noalias() = S1inv;
     A_out.template block<3, 1>(3, 6).noalias() = S1inv * S2 * b;
-    A_out.template block<3, 3>(3, 7).noalias() =
-      S1inv * (-s * R - Qq + s * (I - S2 * S1inv) * Qb) * S1inv;
+    A_out.template block<3, 3>(3, 7).noalias() = S1inv * (-s * R - Qq + s * (I - S2 * S1inv) * Qb) * S1inv;
 
     A_out.template block<1, 1>(6, 6).setIdentity();
 

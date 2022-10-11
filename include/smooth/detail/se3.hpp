@@ -71,8 +71,7 @@ public:
 
   static void composition(GRefIn g_in1, GRefIn g_in2, GRefOut g_out)
   {
-    SO3Impl<Scalar>::composition(
-      g_in1.template tail<4>(), g_in2.template tail<4>(), g_out.template tail<4>());
+    SO3Impl<Scalar>::composition(g_in1.template tail<4>(), g_in2.template tail<4>(), g_out.template tail<4>());
     Eigen::Matrix<Scalar, 3, 3> R1;
     SO3Impl<Scalar>::matrix(g_in1.template tail<4>(), R1);
     g_out.template head<3>().noalias() = R1 * g_in2.template head<3>() + g_in1.template head<3>();
@@ -145,8 +144,8 @@ public:
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
 
-  static Eigen::Matrix<Scalar, 3, 3> calculate_q(
-    Eigen::Ref<const Eigen::Vector3<Scalar>> v, Eigen::Ref<const Eigen::Vector3<Scalar>> w)
+  static Eigen::Matrix<Scalar, 3, 3>
+  calculate_q(Eigen::Ref<const Eigen::Vector3<Scalar>> v, Eigen::Ref<const Eigen::Vector3<Scalar>> w)
   {
     using detail::sin_3, detail::cos_4, detail::sin_5;
     const Scalar th2 = w.squaredNorm();
@@ -278,8 +277,8 @@ public:
       const Scalar dB_dwi = dB_over_th * w(i);
       const Scalar dC_dwi = dC_over_th * w(i);
       for (auto j = 0u; j < 3; ++j) {
-        dQ.col(3 + i + 6 * j) += dA_dwi * PA.row(j).transpose() + dB_dwi * PB.row(j).transpose()
-                               + dC_dwi * PC.row(j).transpose();
+        dQ.col(3 + i + 6 * j) +=
+          dA_dwi * PA.row(j).transpose() + dB_dwi * PB.row(j).transpose() + dC_dwi * PC.row(j).transpose();
       }
     }
 
@@ -289,8 +288,7 @@ public:
   static void dr_exp(TRefIn a_in, TMapRefOut A_out)
   {
     SO3Impl<Scalar>::dr_exp(a_in.template tail<3>(), A_out.template topLeftCorner<3, 3>());
-    A_out.template topRightCorner<3, 3>() =
-      calculate_q(-a_in.template head<3>(), -a_in.template tail<3>());
+    A_out.template topRightCorner<3, 3>()    = calculate_q(-a_in.template head<3>(), -a_in.template tail<3>());
     A_out.template bottomRightCorner<3, 3>() = A_out.template topLeftCorner<3, 3>();
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
@@ -298,10 +296,9 @@ public:
   static void dr_expinv(TRefIn a_in, TMapRefOut A_out)
   {
     SO3Impl<Scalar>::dr_expinv(a_in.template tail<3>(), A_out.template topLeftCorner<3, 3>());
-    A_out.template topRightCorner<3, 3>().noalias() =
-      -A_out.template topLeftCorner<3, 3>()
-      * calculate_q(-a_in.template head<3>(), -a_in.template tail<3>())
-      * A_out.template topLeftCorner<3, 3>();
+    A_out.template topRightCorner<3, 3>().noalias() = -A_out.template topLeftCorner<3, 3>()
+                                                    * calculate_q(-a_in.template head<3>(), -a_in.template tail<3>())
+                                                    * A_out.template topLeftCorner<3, 3>();
     A_out.template bottomRightCorner<3, 3>() = A_out.template topLeftCorner<3, 3>();
     A_out.template bottomLeftCorner<3, 3>().setZero();
   }
@@ -345,9 +342,7 @@ public:
     SO3Impl<Scalar>::dr_expinv(a_in.template tail<3>(), Jso3);
     // Hso3 contains derivatives w.r.t. w, we extend for derivatives w.r.t. [v, w]
     Eigen::Matrix<Scalar, 3, 18> Hso3_exp = Eigen::Matrix<Scalar, 3, 18>::Zero();
-    for (auto i = 0u; i < 3; ++i) {
-      Hso3_exp.template middleCols<3>(6 * i + 3) = Hso3.template middleCols<3>(3 * i);
-    }
+    for (auto i = 0u; i < 3; ++i) { Hso3_exp.template middleCols<3>(6 * i + 3) = Hso3.template middleCols<3>(3 * i); }
 
     const Eigen::Matrix3<Scalar> Jtmp       = Jso3 * Q;
     const Eigen::Matrix<Scalar, 3, 18> Htmp = d_matrix_product(Jso3, Hso3_exp, Q, dQ);

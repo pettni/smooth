@@ -52,8 +52,7 @@ public:
   {
     using std::sin, std::cos;
 
-    const Scalar u =
-      Eigen::internal::template random_impl<Scalar>::run(Scalar(0), Scalar(2 * M_PI));
+    const Scalar u = Eigen::internal::template random_impl<Scalar>::run(Scalar(0), Scalar(2 * M_PI));
     const Scalar t = Eigen::internal::template random_impl<Scalar>::run(Scalar(0.01), Scalar(100));
     g_out << t * sin(u), t * cos(u);
   }
@@ -96,4 +95,3 @@ public:
 };
 
 }  // namespace smooth
-

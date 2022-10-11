@@ -24,4 +24,3 @@ static constexpr double eps2 = 1e-8;
   static_assert(true)
 
 }  // namespace smooth
-

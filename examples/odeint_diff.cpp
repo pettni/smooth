@@ -11,8 +11,9 @@
 #include "smooth/so3.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include "plot_tools.hpp"
 #include <matplot/matplot.h>
+
+#include "plot_tools.hpp"
 
 using matplot::plot;
 using std::views::transform;
@@ -48,16 +49,13 @@ int main(int, char const **)
 
   state_t state1(X1, X1 + d), state2(X2, X2 + d);
 
-  boost::numeric::odeint::integrate_const(
-    stepper, ode, state1, 0., 10., 0.01, [&](const state_t & s, double t) {
-      tvec.push_back(t);
-      v1.push_back(s.part<1>() - s.part<0>());
-    });
+  boost::numeric::odeint::integrate_const(stepper, ode, state1, 0., 10., 0.01, [&](const state_t & s, double t) {
+    tvec.push_back(t);
+    v1.push_back(s.part<1>() - s.part<0>());
+  });
 
   boost::numeric::odeint::integrate_const(
-    stepper, ode, state2, 0., 10., 0.01, [&](const state_t & s, double) {
-      v2.push_back(s.part<1>() - s.part<0>());
-    });
+    stepper, ode, state2, 0., 10., 0.01, [&](const state_t & s, double) { v2.push_back(s.part<1>() - s.part<0>()); });
 
 #ifdef ENABLE_PLOTTING
   matplot::figure();

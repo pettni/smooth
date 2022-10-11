@@ -8,7 +8,6 @@
  */
 
 #include "smooth/external/lp2d.hpp"
-
 #include "spline.hpp"
 
 namespace smooth {

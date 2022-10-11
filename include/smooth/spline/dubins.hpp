@@ -35,8 +35,7 @@ inline double dubins_angle(const smooth::SO2d & x1, const smooth::SO2d & x2, Dub
 }
 
 /// @brief Calculate segment lengths for a CCC Dubin's curve with fixed segment types.
-inline std::array<double, 3>
-dubins_ccc(const smooth::SE2d & target, double R, DubinsSegment c13, DubinsSegment c2)
+inline std::array<double, 3> dubins_ccc(const smooth::SE2d & target, double R, DubinsSegment c13, DubinsSegment c2)
 {
   static constexpr double inf = std::numeric_limits<double>::infinity();
 
@@ -85,8 +84,7 @@ dubins_ccc(const smooth::SE2d & target, double R, DubinsSegment c13, DubinsSegme
 }
 
 /// @brief Calculate segment lengths for a CSC Dubin's curve with fixed segment types.
-inline std::array<double, 3>
-dubins_csc(const smooth::SE2d & target, double R, DubinsSegment c1, DubinsSegment c3)
+inline std::array<double, 3> dubins_csc(const smooth::SE2d & target, double R, DubinsSegment c1, DubinsSegment c3)
 {
   static constexpr double inf = std::numeric_limits<double>::infinity();
 

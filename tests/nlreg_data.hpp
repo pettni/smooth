@@ -6,9 +6,7 @@
 
 inline auto Misra1a()
 {
-  auto f = [](double y, double x, const Eigen::VectorXd & p) -> double {
-    return y - (p(0) * (1 - exp(-p(1) * x)));
-  };
+  auto f = [](double y, double x, const Eigen::VectorXd & p) -> double { return y - (p(0) * (1 - exp(-p(1) * x))); };
 
   Eigen::MatrixXd data(14, 2);
   Eigen::VectorXd start1(2), start2(2), optim(2);
@@ -37,8 +35,7 @@ inline auto Misra1a()
       5.5015643181E-04;
   // clang-format on
 
-  return std::make_tuple(
-    std::move(f), std::move(data), std::move(start1), std::move(start2), std::move(optim));
+  return std::make_tuple(std::move(f), std::move(data), std::move(start1), std::move(start2), std::move(optim));
 }
 
 inline auto Kirby2()

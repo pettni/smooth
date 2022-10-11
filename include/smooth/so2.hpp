@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <Eigen/Core>
-
 #include <complex>
+
+#include <Eigen/Core>
 
 #include "detail/lie_group_base.hpp"
 #include "detail/macro.hpp"
@@ -81,8 +81,7 @@ public:
   std::complex<Scalar> u1() const
   {
     return std::complex<Scalar>(
-      static_cast<const _Derived &>(*this).coeffs().y(),
-      static_cast<const _Derived &>(*this).coeffs().x());
+      static_cast<const _Derived &>(*this).coeffs().y(), static_cast<const _Derived &>(*this).coeffs().x());
   }
 
   /**

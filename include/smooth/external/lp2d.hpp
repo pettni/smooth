@@ -52,8 +52,8 @@ inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> &);
  * If problem is infeasible yopt = inf
  */
 template<std::ranges::range R>
-inline std::tuple<Scalar, Scalar, Status> solve(Scalar cx, Scalar cy, const R & rows) requires(
-  std::tuple_size_v<std::ranges::range_value_t<R>> == 3)
+inline std::tuple<Scalar, Scalar, Status>
+solve(Scalar cx, Scalar cy, const R & rows) requires(std::tuple_size_v<std::ranges::range_value_t<R>> == 3)
 {
   const Scalar sqnorm = cx * cx + cy * cy;
 
@@ -108,8 +108,7 @@ inline std::tuple<Scalar, Scalar, Status> solve(Scalar cx, Scalar cy, const R & 
 //////// IMPLEMENTATION ////////
 ////////////////////////////////
 
-namespace detail
-{
+namespace detail {
 
 // value and derivative
 using ValDer = std::tuple<Scalar, Scalar>;
@@ -311,8 +310,7 @@ inline std::optional<Scalar> find_candidate(std::vector<HalfPlane> & hps, Scalar
   // IF NO POINTS WERE FOUND AND THERE'S A SINGLE LOWER, INTERSECT IT WITH THE UPPERS
 
   if (small.empty() && std::count_if(hps.cbegin(), hps.cend(), active_y_lower) == 1) {
-    const auto hp_l =
-      *std::find_if(std::ranges::begin(hps), std::ranges::end(hps), active_y_lower);
+    const auto hp_l = *std::find_if(std::ranges::begin(hps), std::ranges::end(hps), active_y_lower);
     for (auto & hp_u : hps | std::views::filter(active_y_upper)) {
       const auto isec = intersection(hp_l, hp_u);
       if (isec.has_value() && a + eps < *isec && *isec + eps < b) { addnum(*isec); }
@@ -383,9 +381,8 @@ inline uint8_t check(const std::vector<HalfPlane> & hps, const Scalar x)
 inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> & hps)
 {
   // halfplanes that define a lower bound on x (independent of y)
-  auto hps_x_lower = hps | std::views::filter([](const auto & hp) {
-                       return hp.active && std::abs(hp.b) < eps && hp.a < 0;
-                     });
+  auto hps_x_lower =
+    hps | std::views::filter([](const auto & hp) { return hp.active && std::abs(hp.b) < eps && hp.a < 0; });
 
   // initial lower bound on x
   Scalar a = std::transform_reduce(
@@ -396,9 +393,8 @@ inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> & hp
     [](const HalfPlane & hp) { return hp.c / hp.a; });
 
   // halfplanes that define an upper bound on x (independent of y)
-  auto hps_x_upper = hps | std::views::filter([](const auto & hp) {
-                       return hp.active && std::abs(hp.b) < eps && hp.a > 0;
-                     });
+  auto hps_x_upper =
+    hps | std::views::filter([](const auto & hp) { return hp.active && std::abs(hp.b) < eps && hp.a > 0; });
 
   // initial upper bound on x
   Scalar b = std::transform_reduce(
@@ -413,9 +409,7 @@ inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> & hp
     const auto x = find_candidate(hps, a, b);
 
     // remove hps that were marked as not active
-    hps.erase(
-      std::remove_if(hps.begin(), hps.end(), [](const auto & hp) { return !hp.active; }),
-      hps.end());
+    hps.erase(std::remove_if(hps.begin(), hps.end(), [](const auto & hp) { return !hp.active; }), hps.end());
 
     if (!x.has_value()) { break; }
 
@@ -463,4 +457,3 @@ inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> & hp
 }  // namespace detail
 
 }  // namespace lp2d
-

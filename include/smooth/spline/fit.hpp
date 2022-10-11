@@ -149,10 +149,8 @@ struct MinDerivative
  *
  * @note Allocates heap memory.
  */
-Eigen::VectorXd fit_spline_1d(
-  std::ranges::sized_range auto && dt_r,
-  std::ranges::sized_range auto && dx_r,
-  const SplineSpec auto & ss);
+Eigen::VectorXd
+fit_spline_1d(std::ranges::sized_range auto && dt_r, std::ranges::sized_range auto && dx_r, const SplineSpec auto & ss);
 
 /**
  * @brief Fit a Spline to given points.
@@ -169,9 +167,7 @@ Eigen::VectorXd fit_spline_1d(
  * @note Allocates heap memory.
  */
 auto fit_spline(
-  std::ranges::random_access_range auto && ts,
-  std::ranges::random_access_range auto && gs,
-  const SplineSpec auto & ss);
+  std::ranges::random_access_range auto && ts, std::ranges::random_access_range auto && gs, const SplineSpec auto & ss);
 
 /**
  * @brief Fit a cubic Spline with natural boundary conditions

@@ -2,15 +2,14 @@
 
 #pragma once
 
-#include "../fit.hpp"
+#include <cassert>
+#include <ranges>
 
 #include <Eigen/Sparse>
 #include <Eigen/SparseCholesky>
 #include <Eigen/SparseLU>
 
-#include <cassert>
-#include <ranges>
-
+#include "../fit.hpp"
 #include "smooth/manifold_vector.hpp"
 #include "smooth/optim.hpp"
 
@@ -53,21 +52,15 @@ auto splinespec_project(const SS & ss, const Eigen::Index k)
   using Scalar = Scalar<typename splinespec_extract<SS>::group>;
 
   typename splinespec_rebind<SS, Scalar>::type ret;
-  for (auto i = 0u; i < ss.LeftDeg.size(); ++i) {
-    ret.left_values[i] = ss.left_values[i].template segment<1>(k);
-  }
-  for (auto i = 0u; i < ss.RghtDeg.size(); ++i) {
-    ret.rght_values[i] = ss.rght_values[i].template segment<1>(k);
-  }
+  for (auto i = 0u; i < ss.LeftDeg.size(); ++i) { ret.left_values[i] = ss.left_values[i].template segment<1>(k); }
+  for (auto i = 0u; i < ss.RghtDeg.size(); ++i) { ret.rght_values[i] = ss.rght_values[i].template segment<1>(k); }
   return ret;
 }
 
 }  // namespace detail
 
-Eigen::VectorXd fit_spline_1d(
-  std::ranges::sized_range auto && dt_r,
-  std::ranges::sized_range auto && dx_r,
-  const SplineSpec auto & ss)
+Eigen::VectorXd
+fit_spline_1d(std::ranges::sized_range auto && dt_r, std::ranges::sized_range auto && dx_r, const SplineSpec auto & ss)
 {
   using namespace std::views;
 
@@ -113,8 +106,7 @@ Eigen::VectorXd fit_spline_1d(
   Eigen::VectorXi A_pattern(N_coef);
   A_pattern.head(K + 1).setConstant(1 + ss.LeftDeg.size() + (SS::InnCnt >= 0 ? 1 + SS::InnCnt : 0));
   if (N >= 2) {
-    A_pattern.segment(K + 1, (N - 2) * (K + 1))
-      .setConstant(1 + (SS::InnCnt >= 0 ? 1 + 2 * SS::InnCnt : 0));
+    A_pattern.segment(K + 1, (N - 2) * (K + 1)).setConstant(1 + (SS::InnCnt >= 0 ? 1 + 2 * SS::InnCnt : 0));
   }
   A_pattern.tail(K + 1).setConstant(1 + ss.RghtDeg.size() + (SS::InnCnt >= 0 ? 1 + SS::InnCnt : 0));
   A.reserve(A_pattern);
@@ -182,7 +174,7 @@ Eigen::VectorXd fit_spline_1d(
     // Let M = \int_{0}^1 u^{(D)} u^{(D)}' du   u : 0 -> 1, then the cost matrix P
     // is (1 / T)^{2D - 1} * B' * M * B
 
-    static constexpr auto Mmat = monomial_integral<K, SS::OptDeg, double>();
+    static constexpr auto Mmat                              = monomial_integral<K, SS::OptDeg, double>();
     static constexpr StaticMatrix<double, K + 1, K + 1> P_s = B_s.transpose() * Mmat * B_s;
 
     Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> P(P_s[0].data());
@@ -198,9 +190,7 @@ Eigen::VectorXd fit_spline_1d(
     Eigen::SparseMatrix<double> H(N_coef + N_eq, N_coef + N_eq);
 
     Eigen::Matrix<int, -1, 1> H_pattern(N_coef + N_eq);
-    for (auto i = 0u; i != N_coef; ++i) {
-      H_pattern(i) = (K + 1) + A.outerIndexPtr()[i + 1] - A.outerIndexPtr()[i];
-    }
+    for (auto i = 0u; i != N_coef; ++i) { H_pattern(i) = (K + 1) + A.outerIndexPtr()[i + 1] - A.outerIndexPtr()[i]; }
     H_pattern.tail(N_eq).setZero();
 
     H.reserve(H_pattern);
@@ -232,9 +222,7 @@ Eigen::VectorXd fit_spline_1d(
 }
 
 auto fit_spline(
-  std::ranges::random_access_range auto && ts,
-  std::ranges::random_access_range auto && gs,
-  const SplineSpec auto & ss)
+  std::ranges::random_access_range auto && ts, std::ranges::random_access_range auto && gs, const SplineSpec auto & ss)
 {
   using namespace std::views;
 
@@ -258,7 +246,7 @@ auto fit_spline(
 
   for (auto k = 0u; k < Dof<G>; ++k) {
     const auto ss_proj = detail::splinespec_project(ss, k);
-    V.row(k) = fit_spline_1d(dts, dgs | transform([k](const auto & v) { return v(k); }), ss_proj);
+    V.row(k)           = fit_spline_1d(dts, dgs | transform([k](const auto & v) { return v(k); }), ss_proj);
   }
 
   Spline<K, G> ret;
@@ -275,12 +263,8 @@ auto fit_spline(
       auto mid = K / 2;
 
       G midval = composition<G>(::smooth::inverse<G>(g), g_next);
-      for (auto k = 0; k < mid; ++k) {
-        midval = composition<G>(::smooth::exp<G>(-cum_coefs.col(k)), midval);
-      }
-      for (auto k = K - 1; k > mid; --k) {
-        midval = composition<G>(midval, ::smooth::exp<G>(-cum_coefs.col(k)));
-      }
+      for (auto k = 0; k < mid; ++k) { midval = composition<G>(::smooth::exp<G>(-cum_coefs.col(k)), midval); }
+      for (auto k = K - 1; k > mid; --k) { midval = composition<G>(midval, ::smooth::exp<G>(-cum_coefs.col(k))); }
       cum_coefs.col(mid) = ::smooth::log<G>(midval);
     }
 
@@ -296,9 +280,7 @@ auto fit_spline_cubic(std::ranges::range auto && ts, std::ranges::range auto && 
 {
   using G = std::ranges::range_value_t<std::decay_t<decltype(gs)>>;
   return fit_spline(
-    std::forward<decltype(ts)>(ts),
-    std::forward<decltype(gs)>(gs),
-    spline_specs::FixedDerCubic<G, 2, 2>{});
+    std::forward<decltype(ts)>(ts), std::forward<decltype(gs)>(gs), spline_specs::FixedDerCubic<G, 2, 2>{});
 }
 
 namespace detail {
@@ -326,8 +308,7 @@ struct fit_bspline_objective
   // \endcond
 
   /// @brief Constructor
-  fit_bspline_objective(
-    std::ranges::range auto && tsin, std::ranges::range auto && gsin, double dtin)
+  fit_bspline_objective(std::ranges::range auto && tsin, std::ranges::range auto && gsin, double dtin)
       : ts(std::forward<decltype(tsin)>(tsin)), gs(std::forward<decltype(gsin)>(gsin)), dt(dtin)
   {
     const auto [rt0, rt1] = std::ranges::minmax(ts);
@@ -416,8 +397,7 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, c
   auto g_iter = std::ranges::begin(gs);
   for (auto i = 0u; i != obj.NumPts; ++i) {
     const double t_target = obj.t0 + (i - static_cast<double>(K - 1) / 2) * dt;
-    while (t_iter + 1 < std::ranges::end(ts)
-           && std::abs(t_target - *(t_iter + 1)) < std::abs(t_target - *t_iter)) {
+    while (t_iter + 1 < std::ranges::end(ts) && std::abs(t_target - *(t_iter + 1)) < std::abs(t_target - *t_iter)) {
       ++t_iter;
       ++g_iter;
     }

@@ -140,12 +140,7 @@ noexcept
 template<int K, std::ranges::sized_range R, LieGroup G>
   requires(K > 0)
 G cspline_eval_gs(
-  R && gs,
-  const MatrixType auto & Bcum,
-  Scalar<G> u,
-  OptTangent<G> vel,
-  OptTangent<G> acc,
-  OptTangent<G> jer)
+  R && gs, const MatrixType auto & Bcum, Scalar<G> u, OptTangent<G> vel, OptTangent<G> acc, OptTangent<G> jer)
 noexcept
 {
   assert(std::ranges::size(gs) == K + 1);
@@ -188,19 +183,15 @@ noexcept
   for (const auto & [j, vj] : utils::zip(std::views::iota(0u), vs)) {
     const TangentMap<G> DrExpinv = dr_expinv<G>(vj);
     const TangentMap<G> DlExpinv = -ad<G>(vj) + DrExpinv;  // cheaper formula
-    dg_dgs.template middleCols<Dof<G>>(j * Dof<G>) -=
-      dg_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DlExpinv;
-    dg_dgs.template middleCols<Dof<G>>((j + 1) * Dof<G>) +=
-      dg_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DrExpinv;
+    dg_dgs.template middleCols<Dof<G>>(j * Dof<G>) -= dg_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DlExpinv;
+    dg_dgs.template middleCols<Dof<G>>((j + 1) * Dof<G>) += dg_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DrExpinv;
     if (dvel_dgs.has_value()) {
-      dvel_dgs->template middleCols<Dof<G>>(j * Dof<G>) -=
-        dvel_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DlExpinv;
+      dvel_dgs->template middleCols<Dof<G>>(j * Dof<G>) -= dvel_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DlExpinv;
       dvel_dgs->template middleCols<Dof<G>>((j + 1) * Dof<G>) +=
         dvel_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DrExpinv;
     }
     if (dacc_dgs.has_value()) {
-      dacc_dgs->template middleCols<Dof<G>>(j * Dof<G>) -=
-        dacc_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DlExpinv;
+      dacc_dgs->template middleCols<Dof<G>>(j * Dof<G>) -= dacc_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DlExpinv;
       dacc_dgs->template middleCols<Dof<G>>((j + 1) * Dof<G>) +=
         dacc_dvs.template middleCols<Dof<G>>(j * Dof<G>) * DrExpinv;
     }
