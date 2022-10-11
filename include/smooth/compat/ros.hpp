@@ -77,20 +77,20 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     SMOOTH_INHERIT_TYPEDEFS;                                                              \
                                                                                           \
     /*! Map message as Lie group type. */                                                 \
-    Map(DATATYPE & msg) : coeffs_(reinterpret_cast<double *>(&msg)) {}                    \
+    Map(DATATYPE & msg) : m_coeffs(reinterpret_cast<double *>(&msg)) {}                   \
     /*! Underlying storage is Eigen::Map */                                               \
     using Storage = Eigen::Map<Eigen::Matrix<double, RepSize, 1>>;                        \
     /*! Access underlying Eigen::Map */                                                   \
-    Storage & coeffs() { return coeffs_; }                                                \
+    Storage & coeffs() { return m_coeffs; }                                               \
     /*! Const access underlying Eigen::Map */                                             \
-    const Storage & coeffs() const { return coeffs_; }                                    \
+    const Storage & coeffs() const { return m_coeffs; }                                   \
     /*! Access raw pointer */                                                             \
-    Scalar * data() { return coeffs_.data(); }                                            \
+    Scalar * data() { return m_coeffs.data(); }                                           \
     /*! Const access raw pointer */                                                       \
-    const Scalar * data() const { return coeffs_.data(); }                                \
+    const Scalar * data() const { return m_coeffs.data(); }                               \
                                                                                           \
   private:                                                                                \
-    Storage coeffs_;                                                                      \
+    Storage m_coeffs;                                                                     \
   };                                                                                      \
                                                                                           \
   /*! @brief Specialize liebase_info. */                                                  \
@@ -112,16 +112,16 @@ static_assert(offsetof(Transform, rotation) == sizeof(Vector3));
     SMOOTH_INHERIT_TYPEDEFS;                                                              \
                                                                                           \
     /*! Const map message as Lie group type. */                                           \
-    Map(const DATATYPE & msg) : coeffs_(reinterpret_cast<const double *>(&msg)) {}        \
+    Map(const DATATYPE & msg) : m_coeffs(reinterpret_cast<const double *>(&msg)) {}       \
     /*! Underlying storage is Eigen const Map */                                          \
     using Storage = Eigen::Map<const Eigen::Matrix<double, RepSize, 1>>;                  \
     /*! Access underlying Eigen::Map */                                                   \
-    const Storage & coeffs() const { return coeffs_; }                                    \
+    const Storage & coeffs() const { return m_coeffs; }                                   \
     /*! Access raw pointer */                                                             \
-    const Scalar * data() const { return coeffs_.data(); }                                \
+    const Scalar * data() const { return m_coeffs.data(); }                               \
                                                                                           \
   private:                                                                                \
-    Storage coeffs_;                                                                      \
+    Storage m_coeffs;                                                                     \
   };                                                                                      \
                                                                                           \
   static_assert(true, "")

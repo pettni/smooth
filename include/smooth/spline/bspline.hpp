@@ -7,12 +7,10 @@
  * @brief B-splines on Lie groups.
  */
 
-#include <algorithm>
-#include <cassert>
 #include <ranges>
 
-#include "../polynomial/basis.hpp"
 #include "cumulative_spline.hpp"
+#include "common.hpp"
 
 namespace smooth {
 
@@ -49,10 +47,12 @@ template<int K, LieGroup G>
 class BSpline
 {
 public:
+  static_assert(Dof<G> > 0, "Dof<G> must be known at compile time.");
+
   /**
    * @brief Construct a constant bspline defined on [0, 1) equal to identity.
    */
-  BSpline() requires(Dof<G> > 0) : t0_(0), dt_(1), ctrl_pts_(K + 1, G::Identity()) {}
+  BSpline();
 
   /**
    * @brief Create a BSpline
@@ -60,7 +60,7 @@ public:
    * @param dt distance between spline knots
    * @param ctrl_pts spline control points
    */
-  BSpline(double t0, double dt, std::vector<G> && ctrl_pts) : t0_(t0), dt_(dt), ctrl_pts_(std::move(ctrl_pts)) {}
+  BSpline(double t0, double dt, std::vector<G> && ctrl_pts);
 
   /**
    * @brief Create a BSpline
@@ -71,9 +71,7 @@ public:
    */
   template<std::ranges::range Rv>
     requires(std::is_same_v<std::ranges::range_value_t<Rv>, G>)
-  BSpline(double t0, double dt, const Rv & ctrl_pts)
-      : t0_(t0), dt_(dt), ctrl_pts_(std::ranges::begin(ctrl_pts), std::ranges::end(ctrl_pts))
-  {}
+  BSpline(double t0, double dt, const Rv & ctrl_pts);
 
   /// @brief Copy constructor
   BSpline(const BSpline &) = default;
@@ -89,27 +87,27 @@ public:
   /**
    * @brief Distance between knots
    */
-  [[nodiscard]] double dt() const { return dt_; }
+  [[nodiscard]] double dt() const;
 
   /**
    * @brief Minimal time for which spline is defined.
    */
-  [[nodiscard]] double t_min() const { return t0_; }
+  [[nodiscard]] double t_min() const;
 
   /**
    * @brief Maximal time for which spline is defined.
    */
-  [[nodiscard]] double t_max() const { return t0_ + static_cast<double>(ctrl_pts_.size() - K) * dt_; }
+  [[nodiscard]] double t_max() const;
 
   /**
    * @brief Access spline control points.
    */
-  const std::vector<G> & ctrl_pts() const { return ctrl_pts_; }
+  const std::vector<G> & ctrl_pts() const;
 
   /**
-   * @brief Evaluate Bspline.
+   * @brief Evaluate BSpline.
    *
-   * @tparam time type
+   * @tparam S time type
    *
    * @param[in] t time point to evaluate at
    * @param[out] vel output body velocity at evaluation time
@@ -119,49 +117,13 @@ public:
    * @note Input \p t is clamped to spline interval of definition
    */
   template<typename S = double>
-  CastT<S, G> operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const
-  {
-    // index of relevant interval
-    int64_t istar = static_cast<int64_t>((static_cast<double>(t) - t0_) / dt_);
-
-    S u;
-    // clamp to end of range if necessary
-    if (istar < 0) {
-      istar = 0;
-      u     = S(0);
-    } else if (istar + static_cast<int64_t>(K + 1) > static_cast<int64_t>(ctrl_pts_.size())) {
-      istar = static_cast<int64_t>(ctrl_pts_.size() - K - 1);
-      u     = S(1);
-    } else {
-      u = std::clamp<S>((t - S(t0_) - S(istar) * S(dt_)) / S(dt_), S(0.), S(1.));
-    }
-
-    CastT<S, G> g = cspline_eval_gs<K>(
-      // clang-format off
-      ctrl_pts_
-        | std::views::drop(istar)
-        | std::views::take(int64_t(K + 1))  // gcc 11.1 bug can't handle uint64_t
-        | std::views::transform([](const auto & glocal) { return cast<S>(glocal); }),
-      // clang-format on
-      B_.template cast<S>(),
-      u,
-      vel,
-      acc);
-
-    if (vel.has_value()) { vel.value() /= S(dt_); }
-    if (acc.has_value()) { acc.value() /= S(dt_ * dt_); }
-
-    return g;
-  }
+  CastT<S, G> operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const;
 
 private:
-  // cumulative basis functions
-  static constexpr auto B_s_ = polynomial_cumulative_basis<PolynomialBasis::Bspline, K, double>();
-  inline static const Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>> B_ =
-    Eigen::Map<const Eigen::Matrix<double, K + 1, K + 1, Eigen::RowMajor>>(B_s_[0].data());
-
-  double t0_, dt_;
-  std::vector<G> ctrl_pts_;
+  double m_t0, m_dt;
+  std::vector<G> m_ctrl_pts;
 };
 
 }  // namespace smooth
+
+#include "detail/bspline_impl.hpp"

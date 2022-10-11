@@ -1,4 +1,11 @@
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
+
 #pragma once
+
+/**
+ * @file
+ * @brief Trait specialization to make scalars LieGroups.
+ */
 
 #include "../concepts/lie_group.hpp"
 #include "../detail/traits.hpp"
@@ -6,7 +13,7 @@
 namespace smooth::traits {
 
 /**
- * @brief LieGroup interface for ScalarType
+ * @brief LieGroup model specification for ScalarType
  */
 template<ScalarType G>
 struct lie<G>

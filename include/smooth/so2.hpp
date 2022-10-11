@@ -164,8 +164,8 @@ public:
     using std::sqrt;
 
     const Scalar n = sqrt(qw * qw + qz * qz);
-    coeffs_.x()    = qz / n;
-    coeffs_.y()    = qw / n;
+    m_coeffs.x()   = qz / n;
+    m_coeffs.y()   = qw / n;
   }
 
   /**
@@ -177,8 +177,8 @@ public:
   {
     using std::cos, std::sin;
 
-    coeffs_.x() = sin(angle);
-    coeffs_.y() = cos(angle);
+    m_coeffs.x() = sin(angle);
+    m_coeffs.y() = cos(angle);
   }
 
   /**
@@ -193,8 +193,8 @@ public:
     using std::sqrt;
 
     const Scalar n = sqrt(c.imag() * c.imag() + c.real() * c.real());
-    coeffs_.x()    = c.imag() / n;
-    coeffs_.y()    = c.real() / n;
+    m_coeffs.x()   = c.imag() / n;
+    m_coeffs.y()   = c.real() / n;
   }
 };
 

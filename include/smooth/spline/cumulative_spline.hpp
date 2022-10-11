@@ -13,12 +13,9 @@
 #include "../detail/traits.hpp"
 #include "../lie_groups.hpp"
 #include "../polynomial/basis.hpp"
+#include "common.hpp"
 
 namespace smooth {
-
-/// @brief Optional argument for spline time derivatives
-template<LieGroup G>
-using OptTangent = std::optional<Eigen::Ref<Tangent<G>>>;
 
 /**
  * @brief Evaluate a cumulative spline of order \f$K\f$ from differences.
@@ -46,14 +43,6 @@ inline G cspline_eval_vs(
   OptTangent<G> vel = {},
   OptTangent<G> acc = {},
   OptTangent<G> jer = {}) noexcept;
-
-/// @brief Jacobian of order K spline value w.r.t. coefficients.
-template<LieGroup G, int K>
-using SplineJacobian = Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> == -1 ? -1 : Dof<G> *(K + 1)>;
-
-/// @brief Optional argument for Jacobian of spline w.r.t. coefficients.
-template<LieGroup G, int K>
-using OptSplineJacobian = std::optional<Eigen::Ref<SplineJacobian<G, K>>>;
 
 /**
  * @brief Derivatives of a cumulative spline w.r.t. the differences.

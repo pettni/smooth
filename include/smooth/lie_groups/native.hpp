@@ -2,8 +2,12 @@
 
 #pragma once
 
+/**
+ * @file
+ * @brief Trait specialization to make native Lie groups LieGroups.
+ */
+
 #include "../concepts/lie_group.hpp"
-#include "../detail/traits.hpp"
 
 namespace smooth::traits {
 
@@ -50,7 +54,7 @@ requires(const Eigen::Vector<typename G::Scalar, G::Dof> & a) {
 };
 
 /**
- * @brief LieGroup interface for NativeLieGroup
+ * @brief LieGroup model specification for NativeLieGroup
  */
 template<NativeLieGroup G>
 struct lie<G>

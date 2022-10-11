@@ -7,7 +7,6 @@
  * @brief Fit Spline and Bspline from data.
  */
 
-#include <cassert>
 #include <ranges>
 
 #include "bspline.hpp"

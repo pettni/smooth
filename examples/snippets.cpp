@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include <smooth/diff.hpp>
-#include <smooth/manifold.hpp>
 #include <smooth/optim.hpp>
 #include <smooth/so3.hpp>
 
