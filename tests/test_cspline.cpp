@@ -9,7 +9,6 @@
 #include "adapted.hpp"
 #include "smooth/bundle.hpp"
 #include "smooth/diff.hpp"
-#include "smooth/manifold_vector.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"

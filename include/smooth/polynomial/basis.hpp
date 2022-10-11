@@ -9,7 +9,6 @@
 
 #include <cassert>
 
-#include "smooth/manifold.hpp"
 #include "static_matrix.hpp"
 
 namespace smooth {

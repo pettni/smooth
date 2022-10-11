@@ -3,6 +3,7 @@
 #pragma once
 
 #include "../diff.hpp"
+#include "wrt_impl.hpp"
 
 namespace smooth::diff {
 

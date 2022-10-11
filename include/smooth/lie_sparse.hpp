@@ -5,7 +5,7 @@
 #include <Eigen/Sparse>
 
 #include "detail/utils.hpp"
-#include "lie_group.hpp"
+#include "lie_groups.hpp"
 
 /**
  * @file

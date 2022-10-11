@@ -4,7 +4,7 @@
 
 #include <Eigen/Core>
 
-#include "lie_group.hpp"
+#include "lie_groups.hpp"
 
 /**
  * @file

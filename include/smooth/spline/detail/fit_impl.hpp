@@ -9,9 +9,9 @@
 #include <Eigen/SparseCholesky>
 #include <Eigen/SparseLU>
 
+#include "../../manifolds/vector.hpp"
+#include "../../optim.hpp"
 #include "../fit.hpp"
-#include "smooth/manifold_vector.hpp"
-#include "smooth/optim.hpp"
 
 namespace smooth {
 

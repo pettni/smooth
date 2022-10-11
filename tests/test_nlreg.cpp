@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 
 #include "nlreg_data.hpp"
-#include "smooth/lie_group.hpp"
 #include "smooth/optim.hpp"
 
 TEST(NlReg, Misra1aStatic)

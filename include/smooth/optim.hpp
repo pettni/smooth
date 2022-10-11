@@ -18,7 +18,7 @@
 #include "detail/lmpar.hpp"
 #include "detail/lmpar_sparse.hpp"
 #include "diff.hpp"
-#include "manifold.hpp"
+#include "manifolds.hpp"
 #include "wrt.hpp"
 
 using std::chrono::duration_cast, std::chrono::microseconds;

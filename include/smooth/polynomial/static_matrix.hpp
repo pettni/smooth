@@ -10,7 +10,7 @@
 #include <array>
 #include <cmath>
 
-#include "smooth/detail/utils.hpp"
+#include "../detail/utils.hpp"
 
 namespace smooth {
 

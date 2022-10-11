@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "smooth/lie_group.hpp"
+#include "smooth/concepts/lie_group.hpp"
 
 template<typename Scalar>
 struct MyGroup

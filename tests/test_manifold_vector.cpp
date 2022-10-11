@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/manifold_vector.hpp"
+#include "smooth/manifolds.hpp"
 #include "smooth/optim.hpp"
 #include "smooth/so3.hpp"
 

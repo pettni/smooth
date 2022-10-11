@@ -4,7 +4,7 @@
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "smooth/bundle.hpp"
-#include "smooth/manifold_vector.hpp"
+#include "smooth/manifolds.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 
@@ -39,6 +39,8 @@ TEST(LieGroup, Concepts)
   static_assert(smooth::Manifold<Eigen::Map<const Eigen::Vector2d>>);
 
   static_assert(smooth::Manifold<std::vector<smooth::SE2d>>);
+
+  static_assert(smooth::Manifold<std::variant<smooth::SE2d, double>>);
 }
 
 template<smooth::LieGroup G>

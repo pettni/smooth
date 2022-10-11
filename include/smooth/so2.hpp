@@ -6,11 +6,9 @@
 
 #include <Eigen/Core>
 
-#include "detail/lie_group_base.hpp"
 #include "detail/macro.hpp"
 #include "detail/so2.hpp"
-#include "lie_group.hpp"
-#include "map.hpp"
+#include "lie_group_base.hpp"
 
 namespace smooth {
 

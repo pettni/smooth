@@ -9,7 +9,7 @@
 
 #include <boost/numeric/odeint/algebra/operations_dispatcher.hpp>
 
-#include "smooth/manifold.hpp"
+#include "smooth/manifolds.hpp"
 
 namespace smooth::detail {
 

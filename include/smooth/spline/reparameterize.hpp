@@ -7,7 +7,7 @@
  * @brief Reparamterize a Spline to satisfy derivative constraints.
  */
 
-#include "smooth/external/lp2d.hpp"
+#include "../external/lp2d.hpp"
 #include "spline.hpp"
 
 namespace smooth {

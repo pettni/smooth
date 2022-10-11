@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/lie_group.hpp"
+#include "smooth/lie_groups/rn.hpp"
 
 TEST(LieGroupDynamic, Basics)
 {

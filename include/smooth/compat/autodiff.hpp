@@ -15,15 +15,16 @@
 
 #define SMOOTH_DIFF_AUTODIFF
 
+#include "smooth/detail/traits.hpp"
 #include "smooth/detail/utils.hpp"
-#include "smooth/manifold.hpp"
-#include "smooth/wrt.hpp"
+#include "smooth/detail/wrt_impl.hpp"
+#include "smooth/manifolds.hpp"
 
 namespace smooth {
 
 /// @brief Specialize trait to make autodiff type a Manifold
 template<typename T>
-struct traits::scalar_trait<autodiff::Dual<T, T>>
+struct detail::scalar_trait<autodiff::Dual<T, T>>
 {
   // \cond
   static constexpr bool value = true;

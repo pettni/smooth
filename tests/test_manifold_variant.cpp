@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-#include "smooth/manifold_variant.hpp"
+#include "smooth/manifolds.hpp"
 #include "smooth/so3.hpp"
 
 template<smooth::Manifold M>

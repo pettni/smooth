@@ -7,12 +7,9 @@
  * @brief Differentiation on Manifolds.
  */
 
-#include <type_traits>
+#include <utility>
 
-#include <Eigen/Core>
-
-#include "detail/utils.hpp"
-#include "manifold.hpp"
+#include "manifolds.hpp"
 #include "wrt.hpp"
 
 namespace smooth::diff {

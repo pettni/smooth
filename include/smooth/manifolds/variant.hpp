@@ -9,15 +9,15 @@
 
 #include <variant>
 
-#include "manifold.hpp"
+#include "../concepts/manifold.hpp"
 
-namespace smooth {
+namespace smooth::traits {
 
 /**
  * @brief Manifold interface for std::variant<Manifold...>
  */
 template<Manifold... Ms>
-struct traits::man<std::variant<Ms...>>
+struct man<std::variant<Ms...>>
 {
   // \cond
   using Scalar      = std::common_type_t<typename traits::man<Ms>::Scalar...>;
@@ -64,4 +64,4 @@ struct traits::man<std::variant<Ms...>>
   // \endcond
 };
 
-}  // namespace smooth
+}  // namespace smooth::traits

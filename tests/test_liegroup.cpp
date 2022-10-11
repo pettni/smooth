@@ -8,12 +8,13 @@
 #include "smooth/bundle.hpp"
 #include "smooth/c1.hpp"
 #include "smooth/galilei.hpp"
+#include "smooth/lie_groups/native.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 
-template<smooth::NativeLieGroup G>
+template<smooth::traits::NativeLieGroup G>
 class LieGroupInterface : public ::testing::Test
 {};
 
@@ -28,13 +29,13 @@ using GroupsToTest = ::testing::Types<
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest, );
 
-template<smooth::NativeLieGroup T>
+template<smooth::traits::NativeLieGroup T>
 void test()
 {}
 
 TYPED_TEST(LieGroupInterface, CheckLieGroupLike)
 {
-  // check that groups satisfy NativeLieGroup concept
+  // check that groups satisfy traits::NativeLieGroup concept
   test<TypeParam>();
   test<smooth::Map<TypeParam>>();
   test<smooth::Map<const TypeParam>>();

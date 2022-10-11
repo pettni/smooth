@@ -10,8 +10,9 @@
 #include <cassert>
 #include <optional>
 
-#include "smooth/lie_group.hpp"
-#include "smooth/polynomial/basis.hpp"
+#include "../detail/traits.hpp"
+#include "../lie_groups.hpp"
+#include "../polynomial/basis.hpp"
 
 namespace smooth {
 

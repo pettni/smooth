@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../lie_group_sparse.hpp"
+#include "../lie_sparse.hpp"
 
 namespace smooth {
 

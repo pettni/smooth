@@ -11,8 +11,9 @@
 #include <cassert>
 #include <ranges>
 
+#include "../lie_groups.hpp"
+#include "../polynomial/basis.hpp"
 #include "cumulative_spline.hpp"
-#include "smooth/polynomial/basis.hpp"
 
 namespace smooth {
 
