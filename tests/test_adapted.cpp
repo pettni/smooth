@@ -220,8 +220,7 @@ TYPED_TEST(LieGroupInterface, dr_expinv)
     smooth::Tangent<TypeParam> da = eps0 * smooth::Tangent<TypeParam>::Random();
 
     smooth::Tangent<TypeParam> t1 = smooth::log(smooth::rplus(g, da));
-    smooth::Tangent<TypeParam> t2 =
-      smooth::log(g) + smooth::dr_expinv<TypeParam>(smooth::log(g)) * da;
+    smooth::Tangent<TypeParam> t2 = smooth::log(g) + smooth::dr_expinv<TypeParam>(smooth::log(g)) * da;
 
     ASSERT_TRUE(smooth::isApprox(t1, t2, eps1));
   }
@@ -243,8 +242,7 @@ TYPED_TEST(LieGroupInterface, dl_expinv)
     smooth::Tangent<TypeParam> da = eps0 * smooth::Tangent<TypeParam>::Random();
 
     smooth::Tangent<TypeParam> t1 = smooth::log(smooth::lplus(g, da));
-    smooth::Tangent<TypeParam> t2 =
-      smooth::log(g) + smooth::dl_expinv<TypeParam>(smooth::log(g)) * da;
+    smooth::Tangent<TypeParam> t2 = smooth::log(g) + smooth::dl_expinv<TypeParam>(smooth::log(g)) * da;
 
     ASSERT_TRUE(smooth::isApprox(t1, t2, eps1));
   }

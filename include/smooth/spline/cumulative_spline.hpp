@@ -7,11 +7,11 @@
  * @brief Evaluation of cumulative Lie group splines.
  */
 
-#include "smooth/lie_group.hpp"
-#include "smooth/polynomial/basis.hpp"
-
 #include <cassert>
 #include <optional>
+
+#include "smooth/lie_group.hpp"
+#include "smooth/polynomial/basis.hpp"
 
 namespace smooth {
 

@@ -1,8 +1,8 @@
 // Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#include <gtest/gtest.h>
-
 #include <sstream>
+
+#include <gtest/gtest.h>
 
 #include "smooth/manifold_vector.hpp"
 #include "smooth/optim.hpp"

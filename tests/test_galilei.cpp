@@ -53,9 +53,8 @@ TEST(Galilei, dAction)
 
     const auto f_diff = [&v](const smooth::Galileid & var) { return var * v; };
 
-    const auto [unused, J_num] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
-    const auto J_ana = g.dr_action(v);
+    const auto [unused, J_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
+    const auto J_ana           = g.dr_action(v);
 
     ASSERT_TRUE(J_num.isApprox(J_ana, 1e-5));
   }

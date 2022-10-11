@@ -4,15 +4,17 @@
  * @file odeint.cpp ODE numerical integration example.
  */
 
+#include "smooth/compat/odeint.hpp"
+
 #include <boost/numeric/odeint.hpp>
 
 #include "smooth/bundle.hpp"
-#include "smooth/compat/odeint.hpp"
 #include "smooth/so3.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include "plot_tools.hpp"
 #include <matplot/matplot.h>
+
+#include "plot_tools.hpp"
 
 using matplot::plot;
 using std::views::transform;
@@ -75,8 +77,7 @@ int main(int, char const **)
     matplot::plot3(zsph, xsph, ysph)->line_width(0.25).color("gray");
   }
   // plot the trajectory
-  auto xyz =
-    gvec | transform([](auto s) { return s.template part<0>() * Eigen::Vector3d::UnitZ(); });
+  auto xyz = gvec | transform([](auto s) { return s.template part<0>() * Eigen::Vector3d::UnitZ(); });
   matplot::plot3(
     r2v(xyz | transform([](auto s) { return s.x(); })),
     r2v(xyz | transform([](auto s) { return s.y(); })),
@@ -87,12 +88,9 @@ int main(int, char const **)
 
   matplot::figure();
   matplot::hold(matplot::on);
-  plot(tvec, r2v(gvec | transform([](auto s) { return s.template part<1>()[0]; })), "r")
-    ->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) { return s.template part<1>()[1]; })), "g")
-    ->line_width(2);
-  plot(tvec, r2v(gvec | transform([](auto s) { return s.template part<1>()[2]; })), "b")
-    ->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) { return s.template part<1>()[0]; })), "r")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) { return s.template part<1>()[1]; })), "g")->line_width(2);
+  plot(tvec, r2v(gvec | transform([](auto s) { return s.template part<1>()[2]; })), "b")->line_width(2);
   matplot::title("Velocity");
 
   matplot::show();

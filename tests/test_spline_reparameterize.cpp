@@ -135,17 +135,11 @@ TEST(Spline, ReparameterizeTurnInPlace)
 {
   smooth::CubicSpline<smooth::SE2d> c;
   c += smooth::CubicSpline<smooth::SE2d>::FixedCubic(
-    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d::Zero()),
-    Eigen::Vector3d::Zero(),
-    Eigen::Vector3d::Zero());
+    smooth::SE2d(smooth::SO2d(M_PI), Eigen::Vector2d::Zero()), Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
   c += smooth::CubicSpline<smooth::SE2d>::FixedCubic(
-    smooth::SE2d(smooth::SO2d(0), Eigen::Vector2d(1, 0)),
-    Eigen::Vector3d::Zero(),
-    Eigen::Vector3d::Zero());
+    smooth::SE2d(smooth::SO2d(0), Eigen::Vector2d(1, 0)), Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
   c += smooth::CubicSpline<smooth::SE2d>::FixedCubic(
-    smooth::SE2d(smooth::SO2d(-M_PI), Eigen::Vector2d::Zero()),
-    Eigen::Vector3d::Zero(),
-    Eigen::Vector3d::Zero());
+    smooth::SE2d(smooth::SO2d(-M_PI), Eigen::Vector2d::Zero()), Eigen::Vector3d::Zero(), Eigen::Vector3d::Zero());
 
   Eigen::Vector3d vmin(-2, -1, -1);
   Eigen::Vector3d vmax(3, 1, 1);

@@ -25,10 +25,7 @@ namespace detail {
 template<std::size_t K>
 constexpr auto pow_s(const auto x) noexcept
 {
-  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
-  {
-    return ((static_cast<void>(Is), x) * ... * 1.);
-  };
+  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>) { return ((static_cast<void>(Is), x) * ... * 1.); };
   return f(std::make_index_sequence<K>{});
 }
 
@@ -99,8 +96,7 @@ constexpr std::pair<std::array<double, K>, std::array<double, K>> lgr_nodes()
   ws[0] = 2. / (K * K);
 
   // two rightmost column of legendre basis matrix
-  constexpr auto B =
-    polynomial_basis<PolynomialBasis::Legendre, K>().template block<K + 1, 2>(0, K - 1);
+  constexpr auto B = polynomial_basis<PolynomialBasis::Legendre, K>().template block<K + 1, 2>(0, K - 1);
 
   for (auto i = 1u; i < K; ++i) {
     StaticMatrix<double, 1, 2> U_B;
@@ -118,4 +114,3 @@ constexpr std::pair<std::array<double, K>, std::array<double, K>> lgr_nodes()
 }
 
 }  // namespace smooth
-

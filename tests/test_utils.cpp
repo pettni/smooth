@@ -1,8 +1,8 @@
 // Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#include <gtest/gtest.h>
-
 #include <algorithm>
+
+#include <gtest/gtest.h>
 
 #include "smooth/detail/utils.hpp"
 
@@ -187,8 +187,7 @@ TEST(Utils, Zip2)
   const std::vector<double> vals1{1, 2.5, 5.5, 2.1, 5, 6, 7, 8, 10};
   const std::vector<int> vals2{1, 5, 6, 7, 8, 10};
 
-  ASSERT_EQ(
-    std::ranges::size(smooth::utils::zip(vals1, vals2)), std::min(vals1.size(), vals2.size()));
+  ASSERT_EQ(std::ranges::size(smooth::utils::zip(vals1, vals2)), std::min(vals1.size(), vals2.size()));
 
   for (auto i = 0u; const auto & [v1, v2] : smooth::utils::zip(vals1, vals2)) {
     ASSERT_EQ(v1, vals1[i]);
@@ -196,8 +195,7 @@ TEST(Utils, Zip2)
     ++i;
   }
 
-  for (auto i = 0u;
-       const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::drop(2))) {
+  for (auto i = 0u; const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::drop(2))) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals1[i + 2]);
     ++i;
@@ -205,8 +203,7 @@ TEST(Utils, Zip2)
 
   const auto minus = [](auto x) { return x - 1; };
 
-  for (auto i = 0u;
-       const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::transform(minus))) {
+  for (auto i = 0u; const auto & [v1, v2] : smooth::utils::zip(vals1, vals1 | std::views::transform(minus))) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals1[i] - 1);
     ++i;
@@ -260,8 +257,7 @@ TEST(Utils, Zip4Iota)
     std::ranges::size(smooth::utils::zip(vals1, vals2, vals3)),
     std::min<std::size_t>({vals1.size(), vals2.size(), vals3.size()}));
 
-  for (const auto & [i, v1, v2, v3] :
-       smooth::utils::zip(std::views::iota(0u), vals1, vals2, vals3)) {
+  for (const auto & [i, v1, v2, v3] : smooth::utils::zip(std::views::iota(0u), vals1, vals2, vals3)) {
     ASSERT_EQ(v1, vals1[i]);
     ASSERT_EQ(v2, vals2[i]);
     ASSERT_EQ(v3, vals3[i]);

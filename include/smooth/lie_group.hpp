@@ -2,9 +2,9 @@
 
 #pragma once
 
-#include <Eigen/Core>
-
 #include <concepts>
+
+#include <Eigen/Core>
 
 #include "manifold.hpp"
 
@@ -297,18 +297,14 @@ struct lie<G>
     return Eigen::Matrix<Scalar, Dof, Dof>::Identity(a.size(), a.size());
   }
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>
-  d2r_exp(const Eigen::MatrixBase<Derived> & a)
+  static inline Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)> d2r_exp(const Eigen::MatrixBase<Derived> & a)
   {
-    return Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>::Zero(
-      a.size(), a.size() * a.size());
+    return Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>::Zero(a.size(), a.size() * a.size());
   }
   template<typename Derived>
-  static inline Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>
-  d2r_expinv(const Eigen::MatrixBase<Derived> & a)
+  static inline Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)> d2r_expinv(const Eigen::MatrixBase<Derived> & a)
   {
-    return Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>::Zero(
-      a.size(), a.size() * a.size());
+    return Eigen::Matrix<Scalar, Dof, (Dof > 0 ? Dof * Dof : -1)>::Zero(a.size(), a.size() * a.size());
   }
   // \endcond
 };
@@ -519,8 +515,7 @@ template<LieGroup G, typename Arg>
 inline bool isApprox(
   const G & g,
   Arg && a,
-  typename traits::lie<G>::Scalar eps =
-    Eigen::NumTraits<typename traits::lie<G>::Scalar>::dummy_precision())
+  typename traits::lie<G>::Scalar eps = Eigen::NumTraits<typename traits::lie<G>::Scalar>::dummy_precision())
 {
   return traits::lie<G>::isApprox(g, std::forward<Arg>(a), eps);
 }
@@ -651,4 +646,3 @@ inline Hessian<G> d2l_expinv(const Eigen::MatrixBase<Derived> & a)
 }
 
 }  // namespace smooth
-

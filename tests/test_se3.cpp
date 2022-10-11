@@ -49,8 +49,7 @@ TEST(SE3, dAction)
 
     const auto f_diff = [&v](const smooth::SE3d & var) { return var * v; };
 
-    const auto [unused, J_num] =
-      smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
+    const auto [unused, J_num] = smooth::diff::dr<1, smooth::diff::Type::Numerical>(f_diff, smooth::wrt(g));
 
     const auto J_ana = g.dr_action(v);
 

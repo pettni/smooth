@@ -77,9 +77,8 @@ auto dr_autodiff(auto && f, auto && x)
     return std::make_pair(std::move(F), std::move(J));
   } else if constexpr (K == 2) {
     // function to differentiate
-    const auto f_ad = [&f, &x_ad, &F_ad](
-                        Matrix<AdScalar, Nx, 1> & var1,
-                        Matrix<AdScalar, Nx, 1> & var2) -> Matrix<AdScalar, Ny, 1> {
+    const auto f_ad =
+      [&f, &x_ad, &F_ad](Matrix<AdScalar, Nx, 1> & var1, Matrix<AdScalar, Nx, 1> & var2) -> Matrix<AdScalar, Ny, 1> {
       return rminus(std::apply(f, wrt_rplus(wrt_rplus(x_ad, var1), var2)), F_ad);
     };
 
@@ -97,8 +96,7 @@ auto dr_autodiff(auto && f, auto && x)
       a_wrt1, [&](auto && i, auto && xi) constexpr {
         autodiff::detail::ForEachWrtVar(
           a_wrt2, [&](auto && j, auto && xj) constexpr {
-            const auto u =
-              autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));
+            const auto u = autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));
             for (auto k = 0u; k < ny; ++k) {
               J(k, i)          = static_cast<double>(autodiff::detail::derivative<1>(u[k]));
               H(j, k * nx + i) = autodiff::detail::derivative<2>(u[k]);
@@ -112,4 +110,3 @@ auto dr_autodiff(auto && f, auto && x)
 
 }  // namespace diff
 }  // namespace smooth
-

@@ -4,17 +4,17 @@
 
 namespace smooth {
 
-#define SMOOTH_INHERIT_TYPEDEFS                 \
-  using Base::is_mutable;                       \
-  using Base::Dof;                              \
-  using Base::RepSize;                          \
-  /*! @brief Scalar type. */                    \
-  using Scalar = typename Base::Scalar;         \
-  /*! @brief Tangent type. */                   \
-  using Tangent       = typename Base::Tangent; \
-  using Base::operator=;                        \
-  using Base::operator*;                        \
-                                                \
+#define SMOOTH_INHERIT_TYPEDEFS           \
+  using Base::is_mutable;                 \
+  using Base::Dof;                        \
+  using Base::RepSize;                    \
+  /*! @brief Scalar type. */              \
+  using Scalar = typename Base::Scalar;   \
+  /*! @brief Tangent type. */             \
+  using Tangent = typename Base::Tangent; \
+  using Base::operator=;                  \
+  using Base::operator*;                  \
+                                          \
   static_assert(true, "")
 
 #define SMOOTH_GROUP_API(X)                                              \
@@ -109,4 +109,3 @@ private:                                                               \
   static_assert(true, "")
 
 }  // namespace smooth
-

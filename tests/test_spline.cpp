@@ -326,8 +326,7 @@ TEST(Spline, ArcLengthConstant)
 
 TEST(Spline, ArcLengthNonConstant)
 {
-  std::vector<Eigen::Vector2d> vs{
-    Eigen::Vector2d{1, -1}, Eigen::Vector2d{-2, 2}, Eigen::Vector2d{1, -1}};
+  std::vector<Eigen::Vector2d> vs{Eigen::Vector2d{1, -1}, Eigen::Vector2d{-2, 2}, Eigen::Vector2d{1, -1}};
   smooth::CubicSpline<Eigen::Vector2d> c(1, vs);
 
   ASSERT_NEAR(c.arclength(c.t_max()).x(), 1.1547, 1e-4);
@@ -339,11 +338,7 @@ TEST(Spline, ArcLengthNonConstant)
 TEST(Spline, Autodiff)
 {
   const auto spl = smooth::CubicSpline<smooth::SO3d>::FixedCubic(
-    smooth::SO3d::Random(),
-    Eigen::Vector3d::Random(),
-    Eigen::Vector3d::Random(),
-    1,
-    smooth::SO3d::Random());
+    smooth::SO3d::Random(), Eigen::Vector3d::Random(), Eigen::Vector3d::Random(), 1, smooth::SO3d::Random());
 
   for (double d = 0.1; d < 1; d += 0.1) {
     // velocity with autodiff

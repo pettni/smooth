@@ -52,8 +52,7 @@ struct CeresParamFunctor
  * @brief Parameterization for on-manifold optimization with Ceres.
  */
 template<Manifold G>
-using CeresLocalParameterization =
-  ceres::AutoDiffManifold<CeresParamFunctor<G>, G::RepSize, G::Dof>;
+using CeresLocalParameterization = ceres::AutoDiffManifold<CeresParamFunctor<G>, G::RepSize, G::Dof>;
 
 /**
  * @brief Automatic differentiation in tangent space
@@ -77,8 +76,8 @@ auto dr_ceres(auto && f, auto && x)
 
   static constexpr Eigen::Index Nx = wrt_Dof<decltype(x)>();
   static constexpr Eigen::Index Ny = Dof<Result>;
-  const Eigen::Index nx = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
-  const Eigen::Index ny = dof<Result>(fval);
+  const Eigen::Index nx            = std::apply([](auto &&... args) { return (dof(args) + ...); }, x);
+  const Eigen::Index ny            = dof<Result>(fval);
 
   static_assert(Nx > 0, "Ceres autodiff does not support dynamic sizes");
 
@@ -89,8 +88,7 @@ auto dr_ceres(auto && f, auto && x)
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
     Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
     Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
-    mo =
-      rminus<CastT<T, Result>>(std::apply(f, wrt_rplus(wrt_cast<T>(x), mi)), cast<T, Result>(fval));
+    mo = rminus<CastT<T, Result>>(std::apply(f, wrt_rplus(wrt_cast<T>(x), mi)), cast<T, Result>(fval));
     return true;
   };
   const Scalar * a_ptr[1] = {a.data()};
@@ -103,4 +101,3 @@ auto dr_ceres(auto && f, auto && x)
 }
 
 }  // namespace smooth
-

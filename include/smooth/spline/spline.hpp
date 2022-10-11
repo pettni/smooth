@@ -34,8 +34,7 @@ public:
    * @brief Default constructor creates an empty Spline starting at a given point.
    * @param ga Spline starting point (defaults to identity)
    */
-  Spline(const G & ga = Identity<G>()) : g0_{ga}, end_t_{}, end_g_{}, Vs_{}, seg_T0_{}, seg_Del_{}
-  {}
+  Spline(const G & ga = Identity<G>()) : g0_{ga}, end_t_{}, end_g_{}, Vs_{}, seg_T0_{}, seg_Del_{} {}
 
   /**
    * @brief Create Spline with one segment and given velocity control points
@@ -78,8 +77,7 @@ public:
    */
   template<std::ranges::range Rv>
     requires(std::is_same_v<std::ranges::range_value_t<Rv>, Tangent<G>>)
-  Spline(double T, const Rv & vs, const G & ga = Identity<G>())
-      : g0_(ga), end_t_{T}, seg_T0_{0}, seg_Del_{1}
+  Spline(double T, const Rv & vs, const G & ga = Identity<G>()) : g0_(ga), end_t_{T}, seg_T0_{0}, seg_Del_{1}
   {
     assert(T > 0);
     assert(std::ranges::size(vs) == K);
@@ -168,8 +166,7 @@ public:
     Eigen::Matrix<double, Dof<G>, K> V;
     V.col(0) = T * va / 3;
     V.col(2) = T * vb / 3;
-    V.col(1) = log(composition(
-      ::smooth::exp<G>(-V.col(0)), composition(inverse(ga), gb), ::smooth::exp<G>(-V.col(2))));
+    V.col(1) = log(composition(::smooth::exp<G>(-V.col(0)), composition(inverse(ga), gb), ::smooth::exp<G>(-V.col(2))));
     return Spline(T, std::move(V), ga);
   }
 
@@ -337,8 +334,7 @@ public:
    * the acceleration and velocity is zero.
    */
   template<typename S = double>
-  CastT<S, G>
-  operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const
+  CastT<S, G> operator()(const S & t, OptTangent<CastT<S, G>> vel = {}, OptTangent<CastT<S, G>> acc = {}) const
   {
     if (empty() || t < S(0)) {
       if (vel.has_value()) { vel.value().setZero(); }
@@ -368,11 +364,10 @@ public:
     } else {
       // compensate for cropped intervals
       if (seg_T0_[istar] > 0) {
-        g0 =
-          composition(g0, inverse(cspline_eval_vs<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
+        g0 = composition(g0, inverse(cspline_eval_vs<K, G>(Vs_[istar].colwise(), B_, seg_T0_[istar])));
       }
-      const CastT<S, G> add = cspline_eval_vs<K, CastT<S, G>>(
-        Vs_[istar].template cast<S>().colwise(), B_.template cast<S>(), u, vel, acc);
+      const CastT<S, G> add =
+        cspline_eval_vs<K, CastT<S, G>>(Vs_[istar].template cast<S>().colwise(), B_.template cast<S>(), u, vel, acc);
       if (vel.has_value()) { vel.value() *= S(Del / T); }
       if (acc.has_value()) { acc.value() *= S(Del * Del / (T * T)); }
       return composition(cast<S>(g0), add);
@@ -409,8 +404,7 @@ public:
 
       for (auto k = 0u; k < Dof<G>; ++k) {
         // derivative b0 + b1 x + b2 x2 has coefficients [b0, b1, b2] = [a1, 2a2, 3a3]
-        ret(k) +=
-          integrate_absolute_polynomial(ua, ub, 3 * coefs(3, k), 2 * coefs(2, k), coefs(1, k));
+        ret(k) += integrate_absolute_polynomial(ua, ub, 3 * coefs(3, k), 2 * coefs(2, k), coefs(1, k));
       }
     }
 
@@ -433,8 +427,7 @@ public:
    *  y(t) = x(t - t_a)
    * \f]
    */
-  [[nodiscard]] Spline
-  crop(double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
+  [[nodiscard]] Spline crop(double ta, double tb = std::numeric_limits<double>::infinity(), bool localize = true) const
   {
     ta = std::max<double>(ta, 0);
     tb = std::min<double>(tb, t_max());
@@ -514,8 +507,7 @@ private:
 
     auto it = utils::binary_interval_search(end_t_, t);
     if (it != end_t_.end()) {
-      istar = std::min(
-        static_cast<std::size_t>(std::distance(end_t_.begin(), it)) + 1, end_t_.size() - 1);
+      istar = std::min(static_cast<std::size_t>(std::distance(end_t_.begin(), it)) + 1, end_t_.size() - 1);
     }
 
     return istar;

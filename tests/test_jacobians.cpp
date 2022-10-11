@@ -39,7 +39,7 @@ TYPED_TEST(JacobianTest, drexp)
     this->set_random();
     const auto J_ana = dr_exp<TypeParam>(this->a);
 
-    const auto f_diff = [](const auto & var) -> TypeParam { return ::smooth::exp<TypeParam>(var); };
+    const auto f_diff          = [](const auto & var) -> TypeParam { return ::smooth::exp<TypeParam>(var); };
     const auto [unused, J_num] = diff::dr<1, diff::Type::Numerical>(f_diff, wrt(this->a));
 
     ASSERT_TRUE(J_ana.isApprox(J_num, 1e-5));
@@ -52,7 +52,7 @@ TYPED_TEST(JacobianTest, drexpinv)
     this->set_random();
     const auto J_ana = dr_expinv<TypeParam>(this->a);
 
-    const auto f_diff = [](const auto & var) -> Tangent<TypeParam> { return ::smooth::log(var); };
+    const auto f_diff          = [](const auto & var) -> Tangent<TypeParam> { return ::smooth::log(var); };
     const auto [unused, J_num] = diff::dr<1, diff::Type::Numerical>(f_diff, wrt(this->g));
 
     ASSERT_TRUE(J_ana.isApprox(J_num, 1e-5));

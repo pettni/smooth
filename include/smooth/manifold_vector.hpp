@@ -7,9 +7,9 @@
  * @brief Trait specialization to make std::vector<Manifold> a Manifold.
  */
 
-#include <Eigen/Sparse>
-
 #include <ranges>
+
+#include <Eigen/Sparse>
 
 #include "detail/utils.hpp"
 #include "manifold.hpp"
@@ -35,9 +35,8 @@ struct traits::man<std::vector<M>>
     if constexpr (traits::man<M>::Dof > 0) {
       return static_cast<Eigen::Index>(m.size()) * traits::man<M>::Dof;
     } else {
-      return std::accumulate(m.begin(), m.end(), 0u, [](auto s, const auto & item) {
-        return s + traits::man<M>::dof(item);
-      });
+      return std::accumulate(
+        m.begin(), m.end(), 0u, [](auto s, const auto & item) { return s + traits::man<M>::dof(item); });
     }
   }
 
@@ -54,9 +53,7 @@ struct traits::man<std::vector<M>>
   static inline auto cast(const PlainObject & m)
   {
     const auto transformer = [](const M & mi) ->
-      typename traits::man<M>::template CastT<NewScalar> {
-        return traits::man<M>::template cast<NewScalar>(mi);
-      };
+      typename traits::man<M>::template CastT<NewScalar> { return traits::man<M>::template cast<NewScalar>(mi); };
     const auto casted_view = m | std::views::transform(transformer);
     return std::vector(std::ranges::begin(casted_view), std::ranges::end(casted_view));
   }
@@ -68,8 +65,7 @@ struct traits::man<std::vector<M>>
     m_plus_a.reserve(m.size());
     for (Eigen::Index dof_cntr = 0; const auto & mi : m) {
       const auto dof_i = traits::man<M>::dof(mi);
-      m_plus_a.push_back(
-        traits::man<M>::rplus(mi, a.template segment<traits::man<M>::Dof>(dof_cntr, dof_i)));
+      m_plus_a.push_back(traits::man<M>::rplus(mi, a.template segment<traits::man<M>::Dof>(dof_cntr, dof_i)));
       dof_cntr += dof_i;
     }
     return m_plus_a;

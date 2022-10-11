@@ -7,8 +7,9 @@
  * @brief Differentiation on Manifolds.
  */
 
-#include <Eigen/Core>
 #include <type_traits>
+
+#include <Eigen/Core>
 
 #include "detail/utils.hpp"
 #include "manifold.hpp"

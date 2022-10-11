@@ -24,11 +24,7 @@ namespace smooth::detail {
  */
 template<int N, int M>
 std::tuple<Eigen::Vector<double, N>, double, double> calc_phi(
-  const auto & J,
-  const Eigen::Vector<double, N> & d,
-  const Eigen::Vector<double, M> & r,
-  double Delta,
-  double alpha)
+  const auto & J, const Eigen::Vector<double, N> & d, const Eigen::Vector<double, M> & r, double Delta, double alpha)
 {
   const auto n = J.cols();
 
@@ -82,11 +78,8 @@ std::tuple<Eigen::Vector<double, N>, double, double> calc_phi(
  * @return pair(lambda, x) where x solves the least-squares problem for lambda
  */
 template<int N, int M>
-std::pair<double, Eigen::Vector<double, N>> lmpar_sparse(
-  const auto & J,
-  const Eigen::Vector<double, N> & d,
-  const Eigen::Matrix<double, M, 1> & r,
-  double Delta)
+std::pair<double, Eigen::Vector<double, N>>
+lmpar_sparse(const auto & J, const Eigen::Vector<double, N> & d, const Eigen::Matrix<double, M, 1> & r, double Delta)
 {
   double alpha = 0;
 
@@ -123,4 +116,3 @@ std::pair<double, Eigen::Vector<double, N>> lmpar_sparse(
 }
 
 }  // namespace smooth::detail
-

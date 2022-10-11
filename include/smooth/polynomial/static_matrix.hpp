@@ -53,8 +53,7 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
   /**
    * @brief Matrix addition
    */
-  constexpr StaticMatrix<_Scalar, _Rows, _Cols>
-  operator+(const StaticMatrix<_Scalar, _Rows, _Cols> & o) const
+  constexpr StaticMatrix<_Scalar, _Rows, _Cols> operator+(const StaticMatrix<_Scalar, _Rows, _Cols> & o) const
   {
     StaticMatrix<_Scalar, _Rows, _Cols> ret;
     for (auto i = 0u; i < _Rows; ++i) {
@@ -79,8 +78,7 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
    * @brief Matrix multiplication
    */
   template<std::size_t _NCols>
-  constexpr StaticMatrix<_Scalar, _Rows, _NCols>
-  operator*(const StaticMatrix<_Scalar, _Cols, _NCols> & o) const
+  constexpr StaticMatrix<_Scalar, _Rows, _NCols> operator*(const StaticMatrix<_Scalar, _Cols, _NCols> & o) const
   {
     StaticMatrix<_Scalar, _Rows, _NCols> ret;
     for (auto i = 0u; i < _Rows; ++i) {
@@ -93,4 +91,3 @@ struct StaticMatrix : public std::array<std::array<_Scalar, _Cols>, _Rows>
 };
 
 }  // namespace smooth
-

@@ -571,8 +571,7 @@ TEST(Polynomial, LagrangeDeriv)
 {
   static constexpr std::array<double, 5> ts{-3, -1, 0, 2, 5};
   static constexpr smooth::StaticMatrix<double, 5, 5> B = smooth::lagrange_basis<4>(ts);
-  static constexpr smooth::StaticMatrix<double, 5, 5> D =
-    smooth::polynomial_basis_derivatives<4, 5>(B, ts);
+  static constexpr smooth::StaticMatrix<double, 5, 5> D = smooth::polynomial_basis_derivatives<4, 5>(B, ts);
 
   static_assert(std::abs(D[0][0] - -139. / 120) < 1e-10);
   static_assert(std::abs(D[0][1] - -3. / 40) < 1e-10);
@@ -596,9 +595,7 @@ TEST(Polynomial, LagrangeDeriv)
     Eigen::Map<const Eigen::Matrix<double, 5, 5, Eigen::RowMajor>>(D[0].data()).leftCols(4);
 
   ASSERT_LE((Eigen::Matrix<double, 1, 5>::Ones() * De).norm(), 1e-10);
-  ASSERT_LE(
-    (De.topRows(1) * De.bottomRows(4).inverse() + Eigen::Matrix<double, 1, 4>::Ones()).norm(),
-    1e-10);
+  ASSERT_LE((De.topRows(1) * De.bottomRows(4).inverse() + Eigen::Matrix<double, 1, 4>::Ones()).norm(), 1e-10);
 }
 
 TEST(Polynomial, IntegrateAbsolute)

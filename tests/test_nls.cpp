@@ -1,8 +1,7 @@
 // Copyright (C) 2021-2022 Petter Nilsson. MIT License.
 
-#include <gtest/gtest.h>
-
 #include <Eigen/Sparse>
+#include <gtest/gtest.h>
 
 #include "smooth/optim.hpp"
 #include "smooth/so3.hpp"
@@ -318,8 +317,7 @@ TEST(NLS, MixedArgs)
 struct AnalyticSparseFunctor
 {
   template<typename T>
-  Eigen::VectorX<T>
-  operator()(const smooth::SO3<T> & g1, const smooth::SO3<T> & g2, const smooth::SO3<T> & g3)
+  Eigen::VectorX<T> operator()(const smooth::SO3<T> & g1, const smooth::SO3<T> & g2, const smooth::SO3<T> & g3)
   {
     Eigen::VectorX<T> f(9);
     f.template segment<3>(0) = g1.log();
@@ -328,8 +326,7 @@ struct AnalyticSparseFunctor
     return f;
   }
 
-  Eigen::SparseMatrix<double>
-  jacobian(const smooth::SO3d & g1, const smooth::SO3d & g2, const smooth::SO3d & g3) const
+  Eigen::SparseMatrix<double> jacobian(const smooth::SO3d & g1, const smooth::SO3d & g2, const smooth::SO3d & g3) const
   {
     const Eigen::Matrix3d dr_f1_g1 = smooth::SO3d::dr_expinv(g1.log());
 

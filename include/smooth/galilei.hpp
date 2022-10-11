@@ -75,18 +75,12 @@ public:
   /**
    * @brief Access SO(3) part.
    */
-  Map<SO3<Scalar>> so3() requires is_mutable
-  {
-    return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 7);
-  }
+  Map<SO3<Scalar>> so3() requires is_mutable { return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 7); }
 
   /**
    * @brief Const access SO(3) part.
    */
-  Map<const SO3<Scalar>> so3() const
-  {
-    return Map<const SO3<Scalar>>(static_cast<const _Derived &>(*this).data() + 7);
-  }
+  Map<const SO3<Scalar>> so3() const { return Map<const SO3<Scalar>>(static_cast<const _Derived &>(*this).data() + 7); }
 
   /**
    * @brief Access R3 velocity part.
@@ -101,8 +95,7 @@ public:
    */
   Eigen::Map<const Eigen::Vector3<Scalar>> r3_v() const
   {
-    return Eigen::Map<const Eigen::Vector3<Scalar>>(
-      static_cast<const _Derived &>(*this).data() + 0);
+    return Eigen::Map<const Eigen::Vector3<Scalar>>(static_cast<const _Derived &>(*this).data() + 0);
   }
 
   /**
@@ -118,8 +111,7 @@ public:
    */
   Eigen::Map<const Eigen::Vector3<Scalar>> r3_p() const
   {
-    return Eigen::Map<const Eigen::Vector3<Scalar>>(
-      static_cast<const _Derived &>(*this).data() + 3);
+    return Eigen::Map<const Eigen::Vector3<Scalar>>(static_cast<const _Derived &>(*this).data() + 3);
   }
 
   /**
@@ -135,8 +127,7 @@ public:
    */
   Eigen::Map<const Eigen::Vector<Scalar, 1>> r1_t() const
   {
-    return Eigen::Map<const Eigen::Vector<Scalar, 1>>(
-      static_cast<const _Derived &>(*this).data() + 6);
+    return Eigen::Map<const Eigen::Vector<Scalar, 1>>(static_cast<const _Derived &>(*this).data() + 6);
   }
 
   /**

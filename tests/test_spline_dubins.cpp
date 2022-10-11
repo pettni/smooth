@@ -46,15 +46,13 @@ TEST(Spline, Dubins)
 
   // RLR
   dubins_pbms.push_back({
-    smooth::SE2d(
-      smooth::SO2d(3 * M_PI / 4), Eigen::Vector2d(2 - std::sin(M_PI_4), 1 - std::sin(M_PI_4))),
+    smooth::SE2d(smooth::SO2d(3 * M_PI / 4), Eigen::Vector2d(2 - std::sin(M_PI_4), 1 - std::sin(M_PI_4))),
     2 * M_PI + M_PI / 4,
   });
 
   // RLR / LRL
   dubins_pbms.push_back({
-    smooth::SE2d(
-      smooth::SO2d(5 * M_PI / 4), Eigen::Vector2d(2 - std::sin(M_PI_4), -1 + std::sin(M_PI_4))),
+    smooth::SE2d(smooth::SO2d(5 * M_PI / 4), Eigen::Vector2d(2 - std::sin(M_PI_4), -1 + std::sin(M_PI_4))),
     2 * M_PI + M_PI / 4,
   });
 

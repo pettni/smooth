@@ -22,4 +22,3 @@ using MapDispatch = std::conditional_t<
   ::smooth::Map<T>>;
 
 }  // namespace smooth
-

@@ -26,8 +26,7 @@ struct BundleImpl
   using Scalar = std::common_type_t<typename GsImpl::Scalar...>;
 
   static_assert(
-    (std::is_same_v<Scalar, typename GsImpl::Scalar> && ...),
-    "Implementation Scalar types must be the same");
+    (std::is_same_v<Scalar, typename GsImpl::Scalar> && ...), "Implementation Scalar types must be the same");
 
   static constexpr std::array<int, sizeof...(GsImpl)> RepSizes{GsImpl::RepSize...};
   static constexpr std::array<int, sizeof...(GsImpl)> Dofs{GsImpl::Dof...};
@@ -231,4 +230,3 @@ struct BundleImpl
 };
 
 }  // namespace smooth
-

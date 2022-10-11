@@ -58,15 +58,13 @@ void dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Ei
 }
 
 template<LieGroup G>
-inline void
-dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0)
+inline void dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0)
 {
   dr_exp_sparse<G, true>(sp, a, i0);
 }
 
 template<LieGroup G, bool Inv>
-inline void
-d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0)
+inline void d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0)
 {
   using T = traits::lie_sparse<G>;
   assert(sp.isCompressed());
@@ -102,8 +100,7 @@ d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen:
 }
 
 template<LieGroup G>
-inline void
-d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0)
+inline void d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0)
 {
   return d2r_exp_sparse<G, true>(sp, a, i0);
 }
@@ -192,9 +189,7 @@ struct lie_sparse<G>
       static constexpr auto Dof0 = G::template PartStart<I>;
       const auto & tmp           = ::smooth::d_exp_sparse_pattern<typename G::template PartType<I>>;
       for (auto i = 0u; i < tmp.outerSize(); ++i) {
-        for (Eigen::InnerIterator it(tmp, i); it; ++it) {
-          ret.insert(Dof0 + it.row(), Dof0 + it.col()) = it.value();
-        }
+        for (Eigen::InnerIterator it(tmp, i); it; ++it) { ret.insert(Dof0 + it.row(), Dof0 + it.col()) = it.value(); }
       }
     });
     ret.makeCompressed();
@@ -202,8 +197,7 @@ struct lie_sparse<G>
   }();
 
   /// @brief Sparse calculation of dr_exp
-  static void
-  dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
+  static void dr_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;
@@ -213,8 +207,7 @@ struct lie_sparse<G>
   }
 
   /// @brief Sparse calculation of dr_expinv
-  static void
-  dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
+  static void dr_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;
@@ -244,8 +237,7 @@ struct lie_sparse<G>
   }();
 
   /// @brief Sparse calculation of d2r_exp
-  static void
-  d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
+  static void d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;
@@ -255,8 +247,7 @@ struct lie_sparse<G>
   }
 
   /// @brief Sparse calculation of d2r_expinv
-  static void
-  d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
+  static void d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0)
   {
     utils::static_for<G::BundleSize>([&](auto I) {
       static constexpr auto Dof0 = G::template PartStart<I>;

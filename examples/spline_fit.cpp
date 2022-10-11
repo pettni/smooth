@@ -9,8 +9,9 @@
 #include "smooth/spline/fit.hpp"
 
 #ifdef ENABLE_PLOTTING
-#include "plot_tools.hpp"
 #include <matplot/matplot.h>
+
+#include "plot_tools.hpp"
 #endif
 
 int main(int, char const **)
