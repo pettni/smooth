@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structsmooth_1_1spline__specs_1_1MinDerivative.html" title="SplineSpec for optimized spline." alt="" coords="5,5,153,61"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1C1Base.html" title=" " alt="" coords="208,5,352,47"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1C1.html" title="Storage implementation of C1 Lie group." alt="" coords="400,13,553,39"/>
 </map>

@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structsmooth_1_1traits_1_1lie__sparse.html" title="Traits that defines sparsity patterns for various groups." alt="" coords="5,5,124,47"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,179,47"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1C1Base.html" title=" " alt="" coords="227,5,380,47"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1Map_3_01C1_3_01__Scalar_01_4_01_4.html" title="Memory mapping of C1 Lie group." alt="" coords="428,13,628,39"/>
 </map>

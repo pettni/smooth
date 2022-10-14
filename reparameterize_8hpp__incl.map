@@ -1,25 +1,18 @@
 <map id="include/smooth/spline/reparameterize.hpp" name="include/smooth/spline/reparameterize.hpp">
-<area shape="rect" id="node1" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="609,5,757,47"/>
-<area shape="rect" id="node2" href="$lp2d_8hpp_source.html" title=" " alt="" coords="600,102,767,129"/>
-<area shape="rect" id="node9" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="427,102,507,129"/>
-<area shape="rect" id="node23" title=" " alt="" coords="791,95,933,136"/>
-<area shape="rect" id="node3" title=" " alt="" coords="555,184,630,211"/>
-<area shape="rect" id="node4" title=" " alt="" coords="737,184,790,211"/>
-<area shape="rect" id="node5" title=" " alt="" coords="815,184,883,211"/>
-<area shape="rect" id="node6" title=" " alt="" coords="907,184,964,211"/>
-<area shape="rect" id="node7" title=" " alt="" coords="470,184,531,211"/>
-<area shape="rect" id="node8" title=" " alt="" coords="654,184,713,211"/>
-<area shape="rect" id="node10" title=" " alt="" coords="281,348,347,375"/>
-<area shape="rect" id="node11" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="244,184,395,211"/>
-<area shape="rect" id="node16" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="527,266,717,293"/>
-<area shape="rect" id="node12" href="$lie__group_8hpp.html" title=" " alt="" coords="357,266,503,293"/>
-<area shape="rect" id="node21" title=" " alt="" coords="29,266,95,293"/>
-<area shape="rect" id="node22" title=" " alt="" coords="120,259,281,300"/>
-<area shape="rect" id="node13" title=" " alt="" coords="342,423,427,449"/>
-<area shape="rect" id="node14" title=" " alt="" coords="451,423,526,449"/>
-<area shape="rect" id="node15" href="$manifold_8hpp.html" title=" " alt="" coords="473,348,568,375"/>
-<area shape="rect" id="node17" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="593,348,713,375"/>
-<area shape="rect" id="node18" title=" " alt="" coords="550,423,601,449"/>
-<area shape="rect" id="node19" title=" " alt="" coords="625,423,683,449"/>
-<area shape="rect" id="node20" title=" " alt="" coords="707,423,859,449"/>
+<area shape="rect" id="node1" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="370,5,518,47"/>
+<area shape="rect" id="node2" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="337,102,417,129"/>
+<area shape="rect" id="node16" title=" " alt="" coords="441,95,583,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="188,184,249,211"/>
+<area shape="rect" id="node4" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="273,184,388,211"/>
+<area shape="rect" id="node13" href="$common_8hpp_source.html" title=" " alt="" coords="536,259,632,285"/>
+<area shape="rect" id="node15" title=" " alt="" coords="463,184,609,211"/>
+<area shape="rect" id="node5" href="$lie__group_8hpp.html" title=" " alt="" coords="265,333,420,360"/>
+<area shape="rect" id="node9" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="368,259,512,285"/>
+<area shape="rect" id="node10" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="173,259,293,285"/>
+<area shape="rect" id="node12" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="5,259,149,285"/>
+<area shape="rect" id="node6" title=" " alt="" coords="259,483,333,509"/>
+<area shape="rect" id="node7" title=" " alt="" coords="391,483,476,509"/>
+<area shape="rect" id="node8" href="$manifold_8hpp.html" title=" " alt="" coords="301,408,395,435"/>
+<area shape="rect" id="node11" title=" " alt="" coords="76,333,196,360"/>
+<area shape="rect" id="node14" title=" " alt="" coords="551,333,617,360"/>
 </map>

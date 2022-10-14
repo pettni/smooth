@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['polynomialbasis_0',['PolynomialBasis',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097',1,'smooth']]]
+  ['type_0',['Type',['../diff_8hpp.html#ad993f4e6edc070efeac1192d6663c7c2',1,'smooth::diff']]]
 ];

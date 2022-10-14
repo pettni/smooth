@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hessian_0',['Hessian',['../manifold_8hpp.html#a5cf907b049fd3461fefddcc524598625',1,'smooth']]]
+  ['impl_0',['Impl',['../classsmooth_1_1LieGroupBase.html#a55f732e687efa0c2b44c3174f1e620fb',1,'smooth::LieGroupBase']]]
 ];

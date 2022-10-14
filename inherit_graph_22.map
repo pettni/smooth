@@ -1,4 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,13,80,39"/>
-<area shape="rect" id="node2" href="$structsmooth_1_1StaticMatrix.html" title="Elementary structure for compile&#45;time matrix algebra." alt="" coords="128,5,303,47"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,199,47"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1GalileiBase.html" title=" " alt="" coords="247,5,440,47"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1Map_3_01Galilei_3_01__Scalar_01_4_01_4.html" title="Memory mapping of Galilei Lie group." alt="" coords="488,5,631,47"/>
 </map>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dubinssegment_0',['DubinsSegment',['../dubins_8hpp.html#a4268d34f1ec4fc44febdcc9a5b7f4e14',1,'smooth']]]
+  ['polynomialbasis_0',['PolynomialBasis',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097',1,'smooth']]]
 ];

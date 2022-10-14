@@ -1,0 +1,11 @@
+<map id="include/smooth/lie_groups.hpp" name="include/smooth/lie_groups.hpp">
+<area shape="rect" id="node1" title="Meta header to include all LieGroup concept model specifications." alt="" coords="110,5,237,47"/>
+<area shape="rect" id="node2" href="$lie__group_8hpp.html" title=" " alt="" coords="93,169,248,196"/>
+<area shape="rect" id="node6" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="24,95,168,121"/>
+<area shape="rect" id="node7" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="192,95,312,121"/>
+<area shape="rect" id="node9" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="336,95,480,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="81,319,156,345"/>
+<area shape="rect" id="node4" title=" " alt="" coords="196,319,281,345"/>
+<area shape="rect" id="node5" href="$manifold_8hpp.html" title=" " alt="" coords="123,244,218,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="309,169,429,196"/>
+</map>

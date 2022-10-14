@@ -83,39 +83,51 @@ $(function() {
 
 <p>Non-linear least squares optimization on Manifolds.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;Eigen/Dense&gt;</code><br />
-<code>#include &lt;Eigen/Sparse&gt;</code><br />
-<code>#include &lt;chrono&gt;</code><br />
+<div class="textblock"><code>#include &lt;chrono&gt;</code><br />
 <code>#include &lt;iomanip&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;numeric&gt;</code><br />
+<code>#include &lt;Eigen/Dense&gt;</code><br />
+<code>#include &lt;Eigen/Sparse&gt;</code><br />
 <code>#include &quot;detail/lmpar.hpp&quot;</code><br />
 <code>#include &quot;detail/lmpar_sparse.hpp&quot;</code><br />
 <code>#include &quot;<a class="el" href="diff_8hpp_source.html">diff.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="manifold_8hpp_source.html">manifold.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="manifolds_8hpp_source.html">manifolds.hpp</a>&quot;</code><br />
 <code>#include &quot;wrt.hpp&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for optim.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="optim_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2optim_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2optim_8hpp" id="ainclude_2smooth_2optim_8hpp">
-<area shape="rect" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="469,5,639,32"/>
-<area shape="rect" title=" " alt="" coords="5,80,100,107"/>
-<area shape="rect" title=" " alt="" coords="125,80,223,107"/>
-<area shape="rect" title=" " alt="" coords="247,80,309,107"/>
-<area shape="rect" title=" " alt="" coords="333,80,399,107"/>
-<area shape="rect" title=" " alt="" coords="423,80,495,107"/>
-<area shape="rect" title=" " alt="" coords="520,80,588,107"/>
-<area shape="rect" title=" " alt="" coords="612,80,725,107"/>
-<area shape="rect" title=" " alt="" coords="749,80,908,107"/>
-<area shape="rect" href="diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="1104,80,1167,107"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="924,229,1019,256"/>
-<area shape="rect" href="wrt_8hpp_source.html" title=" " alt="" coords="1034,155,1098,181"/>
-<area shape="rect" title=" " alt="" coords="1178,304,1263,331"/>
-<area shape="rect" title=" " alt="" coords="1171,229,1254,256"/>
-<area shape="rect" title=" " alt="" coords="1043,229,1148,256"/>
-<area shape="rect" title=" " alt="" coords="1224,155,1353,181"/>
-<area shape="rect" title=" " alt="" coords="934,304,1009,331"/>
+<area shape="rect" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="453,5,624,32"/>
+<area shape="rect" title=" " alt="" coords="5,80,67,107"/>
+<area shape="rect" title=" " alt="" coords="91,80,157,107"/>
+<area shape="rect" title=" " alt="" coords="181,80,253,107"/>
+<area shape="rect" title=" " alt="" coords="278,80,346,107"/>
+<area shape="rect" title=" " alt="" coords="370,80,465,107"/>
+<area shape="rect" title=" " alt="" coords="489,80,588,107"/>
+<area shape="rect" title=" " alt="" coords="613,80,726,107"/>
+<area shape="rect" title=" " alt="" coords="750,80,909,107"/>
+<area shape="rect" href="diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="985,80,1047,107"/>
+<area shape="rect" href="manifolds_8hpp.html" title="Meta header to include all Manifold concept model specifications." alt="" coords="822,155,925,181"/>
+<area shape="rect" href="wrt_8hpp_source.html" title=" " alt="" coords="1179,155,1243,181"/>
+<area shape="rect" title=" " alt="" coords="949,155,1001,181"/>
+<area shape="rect" title=" " alt="" coords="1025,155,1154,181"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="747,453,899,480"/>
+<area shape="rect" href="lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="466,229,571,256"/>
+<area shape="rect" href="variant_8hpp.html" title="Trait specialization to make std::variant&lt;Manifold...&gt; a Manifold." alt="" coords="690,229,835,256"/>
+<area shape="rect" href="vector_8hpp.html" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="991,229,1134,256"/>
+<area shape="rect" title=" " alt="" coords="764,528,839,555"/>
+<area shape="rect" title=" " alt="" coords="635,528,720,555"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="551,379,705,405"/>
+<area shape="rect" href="native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="556,304,700,331"/>
+<area shape="rect" href="rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="361,304,481,331"/>
+<area shape="rect" href="scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="193,304,337,331"/>
+<area shape="rect" title=" " alt="" coords="284,379,404,405"/>
+<area shape="rect" title=" " alt="" coords="724,304,785,331"/>
+<area shape="rect" title=" " alt="" coords="1100,304,1161,331"/>
+<area shape="rect" title=" " alt="" coords="1185,304,1244,331"/>
+<area shape="rect" title=" " alt="" coords="911,304,1025,331"/>
 </map>
 </div>
 </div>
@@ -250,7 +262,7 @@ template&lt;diff::Type D&gt; </div>
 </dl>
 <p>All arguments in x as well as the return type \(f(x)\) must satisfy the Manifold concept. </p>
 
-<p class="definition">Definition at line <a class="el" href="optim_8hpp_source.html#l00215">215</a> of file <a class="el" href="optim_8hpp_source.html">optim.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="optim_8hpp_source.html#l00214">214</a> of file <a class="el" href="optim_8hpp_source.html">optim.hpp</a>.</p>
 
 </div>
 </div>

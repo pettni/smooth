@@ -1,8 +1,5 @@
 <map id="include/smooth/spline/cumulative_spline.hpp" name="include/smooth/spline/cumulative_spline.hpp">
-<area shape="rect" id="node1" title="Evaluation of cumulative Lie group splines." alt="" coords="87,5,242,47"/>
-<area shape="rect" id="node2" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="5,95,153,136"/>
-<area shape="rect" id="node4" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="177,95,325,136"/>
-<area shape="rect" id="node3" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="5,184,153,225"/>
-<area shape="rect" id="node5" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="177,184,325,225"/>
-<area shape="rect" id="node6" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="349,184,497,225"/>
+<area shape="rect" id="node1" title="Evaluation of cumulative Lie group splines." alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node2" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="9,95,157,136"/>
+<area shape="rect" id="node3" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="9,184,157,225"/>
 </map>

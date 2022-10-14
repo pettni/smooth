@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dubinsdescription_0',['DubinsDescription',['../dubins_8hpp.html#ad09fdac8c8a208733dd8b6d6ea78fe37',1,'smooth']]]
+  ['hessian_0',['Hessian',['../classsmooth_1_1LieGroupBase.html#ab5862b33b16cfb1a3bfd7cadea62733a',1,'smooth::LieGroupBase::Hessian()'],['../manifold_8hpp.html#a5cf907b049fd3461fefddcc524598625',1,'smooth::Hessian()']]]
 ];

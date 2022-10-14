@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structsmooth_1_1traits_1_1man_3_01M_01_4.html" title="Manifold interface for RnType." alt="" coords="5,5,169,32"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,213,47"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1C1Base.html" title=" " alt="" coords="261,5,433,47"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1Map_3_01const_01C1_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of C1 Lie group." alt="" coords="481,5,620,47"/>
 </map>

@@ -6,7 +6,7 @@ var searchData=
   ['parttype_3',['PartType',['../classsmooth_1_1BundleBase.html#af98cc54d8b91c8d8212caf6eb0e2ded9',1,'smooth::BundleBase']]],
   ['piecewiseconstant_4',['PiecewiseConstant',['../fit_8hpp.html#a59512b2d4f2266f4bed37d77ccdd8ad0',1,'smooth::spline_specs']]],
   ['piecewiselinear_5',['PiecewiseLinear',['../fit_8hpp.html#a0c275ecbeb49d8563f17470d7433c851',1,'smooth::spline_specs']]],
-  ['plainobject_6',['PlainObject',['../manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f',1,'smooth']]],
+  ['plainobject_6',['PlainObject',['../classsmooth_1_1LieGroupBase.html#ac327be62b1c469fd965d244d02c0ba5b',1,'smooth::LieGroupBase::PlainObject()'],['../manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f',1,'smooth::PlainObject()']]],
   ['polynomial_5fbasis_7',['polynomial_basis',['../basis_8hpp.html#ac109e2f9fee62480547480f92b59ade4',1,'smooth']]],
   ['polynomial_5fbasis_5fderivatives_8',['polynomial_basis_derivatives',['../basis_8hpp.html#ae656bfc9c9155bdbf4f06635ffb6e15b',1,'smooth']]],
   ['polynomial_5fcumulative_5fbasis_9',['polynomial_cumulative_basis',['../basis_8hpp.html#a1a53d5e1debd2272c70d44054f9e6e6f',1,'smooth']]],

@@ -1,3 +1,10 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classsmooth_1_1Spline.html" title="Single&#45;parameter Lie group&#45;valued function." alt="" coords="5,5,160,32"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,181,160,223"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1BundleBase.html" title="Base class for Bundle lie groups." alt="" coords="237,5,379,47"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1C1Base.html" title="Base class for C1 Lie group types." alt="" coords="213,71,403,98"/>
+<area shape="rect" id="node4" href="$classsmooth_1_1GalileiBase.html" title="Base class for Galielei Lie group types." alt="" coords="239,123,377,164"/>
+<area shape="rect" id="node5" href="$classsmooth_1_1SE2Base.html" title="Base class for SE2 Lie group types." alt="" coords="209,189,407,215"/>
+<area shape="rect" id="node6" href="$classsmooth_1_1SE3Base.html" title="Base class for SE3 Lie group types." alt="" coords="209,239,407,266"/>
+<area shape="rect" id="node7" href="$classsmooth_1_1SO2Base.html" title="Base class for SO2 Lie group types." alt="" coords="208,290,408,317"/>
+<area shape="rect" id="node8" href="$classsmooth_1_1SO3Base.html" title="Base class for SO3 Lie group types." alt="" coords="208,341,408,367"/>
 </map>

@@ -124,29 +124,37 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" 
 &#160;</td><td class="memItemRight" valign="bottom"><b>~Spline</b> ()=default</td></tr>
 <tr class="memdesc:a52ef62f49f2bbc8ee2b432a33856bf55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor. <br /></td></tr>
 <tr class="separator:a52ef62f49f2bbc8ee2b432a33856bf55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a351040564088820571da1875a38388dc"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a351040564088820571da1875a38388dc">size</a> () const</td></tr>
-<tr class="memdesc:a351040564088820571da1875a38388dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> segments.  <a href="classsmooth_1_1Spline.html#a351040564088820571da1875a38388dc">More...</a><br /></td></tr>
+<tr class="memitem:a351040564088820571da1875a38388dc"><td class="memItemLeft" align="right" valign="top"><a id="a351040564088820571da1875a38388dc" name="a351040564088820571da1875a38388dc"></a>
+std::size_t&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> () const</td></tr>
+<tr class="memdesc:a351040564088820571da1875a38388dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> segments. <br /></td></tr>
 <tr class="separator:a351040564088820571da1875a38388dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aad551f729d1ddddd1c3ea78ba1932a71"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#aad551f729d1ddddd1c3ea78ba1932a71">empty</a> () const</td></tr>
-<tr class="memdesc:aad551f729d1ddddd1c3ea78ba1932a71"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> has zero <a class="el" href="classsmooth_1_1Spline.html#a351040564088820571da1875a38388dc" title="Number of Spline segments.">size()</a>  <a href="classsmooth_1_1Spline.html#aad551f729d1ddddd1c3ea78ba1932a71">More...</a><br /></td></tr>
+<tr class="memitem:aad551f729d1ddddd1c3ea78ba1932a71"><td class="memItemLeft" align="right" valign="top"><a id="aad551f729d1ddddd1c3ea78ba1932a71" name="aad551f729d1ddddd1c3ea78ba1932a71"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>empty</b> () const</td></tr>
+<tr class="memdesc:aad551f729d1ddddd1c3ea78ba1932a71"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> has zero <a class="el" href="classsmooth_1_1Spline.html#a351040564088820571da1875a38388dc" title="Number of Spline segments.">size()</a> <br /></td></tr>
 <tr class="separator:aad551f729d1ddddd1c3ea78ba1932a71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a947eacfca0127c710e964cba21a25865"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a947eacfca0127c710e964cba21a25865">reserve</a> (std::size_t capacity)</td></tr>
-<tr class="memdesc:a947eacfca0127c710e964cba21a25865"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate space for capacity segments.  <a href="classsmooth_1_1Spline.html#a947eacfca0127c710e964cba21a25865">More...</a><br /></td></tr>
+<tr class="memitem:a947eacfca0127c710e964cba21a25865"><td class="memItemLeft" align="right" valign="top"><a id="a947eacfca0127c710e964cba21a25865" name="a947eacfca0127c710e964cba21a25865"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>reserve</b> (std::size_t capacity)</td></tr>
+<tr class="memdesc:a947eacfca0127c710e964cba21a25865"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate space for capacity segments. <br /></td></tr>
 <tr class="separator:a947eacfca0127c710e964cba21a25865"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5be3be93c60298961f76ffe3a6420d91"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a5be3be93c60298961f76ffe3a6420d91">t_min</a> () const</td></tr>
-<tr class="memdesc:a5be3be93c60298961f76ffe3a6420d91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start time of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> (always equal to zero).  <a href="classsmooth_1_1Spline.html#a5be3be93c60298961f76ffe3a6420d91">More...</a><br /></td></tr>
+<tr class="memitem:a5be3be93c60298961f76ffe3a6420d91"><td class="memItemLeft" align="right" valign="top"><a id="a5be3be93c60298961f76ffe3a6420d91" name="a5be3be93c60298961f76ffe3a6420d91"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>t_min</b> () const</td></tr>
+<tr class="memdesc:a5be3be93c60298961f76ffe3a6420d91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start time of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> (always equal to zero). <br /></td></tr>
 <tr class="separator:a5be3be93c60298961f76ffe3a6420d91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ea41ce9b9d488e980d82eb1284408f8"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a8ea41ce9b9d488e980d82eb1284408f8">t_max</a> () const</td></tr>
-<tr class="memdesc:a8ea41ce9b9d488e980d82eb1284408f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">End time of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>.  <a href="classsmooth_1_1Spline.html#a8ea41ce9b9d488e980d82eb1284408f8">More...</a><br /></td></tr>
+<tr class="memitem:a8ea41ce9b9d488e980d82eb1284408f8"><td class="memItemLeft" align="right" valign="top"><a id="a8ea41ce9b9d488e980d82eb1284408f8" name="a8ea41ce9b9d488e980d82eb1284408f8"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><b>t_max</b> () const</td></tr>
+<tr class="memdesc:a8ea41ce9b9d488e980d82eb1284408f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">End time of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>. <br /></td></tr>
 <tr class="separator:a8ea41ce9b9d488e980d82eb1284408f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc2b1cf61e641d2912d4f3079fb09dce"><td class="memItemLeft" align="right" valign="top">G&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#acc2b1cf61e641d2912d4f3079fb09dce">start</a> () const</td></tr>
-<tr class="memdesc:acc2b1cf61e641d2912d4f3079fb09dce"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> start value (always equal to identity).  <a href="classsmooth_1_1Spline.html#acc2b1cf61e641d2912d4f3079fb09dce">More...</a><br /></td></tr>
+<tr class="memitem:acc2b1cf61e641d2912d4f3079fb09dce"><td class="memItemLeft" align="right" valign="top"><a id="acc2b1cf61e641d2912d4f3079fb09dce" name="acc2b1cf61e641d2912d4f3079fb09dce"></a>
+G&#160;</td><td class="memItemRight" valign="bottom"><b>start</b> () const</td></tr>
+<tr class="memdesc:acc2b1cf61e641d2912d4f3079fb09dce"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> start value (always equal to identity). <br /></td></tr>
 <tr class="separator:acc2b1cf61e641d2912d4f3079fb09dce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae2d715425252a1e80ef39eb48cc6e77"><td class="memItemLeft" align="right" valign="top">G&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#aae2d715425252a1e80ef39eb48cc6e77">end</a> () const</td></tr>
-<tr class="memdesc:aae2d715425252a1e80ef39eb48cc6e77"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> end value.  <a href="classsmooth_1_1Spline.html#aae2d715425252a1e80ef39eb48cc6e77">More...</a><br /></td></tr>
+<tr class="memitem:aae2d715425252a1e80ef39eb48cc6e77"><td class="memItemLeft" align="right" valign="top"><a id="aae2d715425252a1e80ef39eb48cc6e77" name="aae2d715425252a1e80ef39eb48cc6e77"></a>
+G&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> () const</td></tr>
+<tr class="memdesc:aae2d715425252a1e80ef39eb48cc6e77"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> end value. <br /></td></tr>
 <tr class="separator:aae2d715425252a1e80ef39eb48cc6e77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfe15102bcb7b72bccec632b6cbebba7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#adfe15102bcb7b72bccec632b6cbebba7">make_local</a> ()</td></tr>
-<tr class="memdesc:adfe15102bcb7b72bccec632b6cbebba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move start of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> to <a class="el" href="lie__group_8hpp.html#a29b05818d0b9270542af37e0c3692be0" title="Identity in Lie group.">Identity()</a>  <a href="classsmooth_1_1Spline.html#adfe15102bcb7b72bccec632b6cbebba7">More...</a><br /></td></tr>
+<tr class="memitem:adfe15102bcb7b72bccec632b6cbebba7"><td class="memItemLeft" align="right" valign="top"><a id="adfe15102bcb7b72bccec632b6cbebba7" name="adfe15102bcb7b72bccec632b6cbebba7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>make_local</b> ()</td></tr>
+<tr class="memdesc:adfe15102bcb7b72bccec632b6cbebba7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move start of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> to <a class="el" href="lie__group_8hpp.html#a29b05818d0b9270542af37e0c3692be0" title="Identity in Lie group.">Identity()</a> <br /></td></tr>
 <tr class="separator:adfe15102bcb7b72bccec632b6cbebba7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a00e61bbcb63524b882820527bd67e6ad"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsmooth_1_1Spline.html">Spline</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a00e61bbcb63524b882820527bd67e6ad">concat_global</a> (const <a class="el" href="classsmooth_1_1Spline.html">Spline</a> &amp;other)</td></tr>
 <tr class="memdesc:a00e61bbcb63524b882820527bd67e6ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">In-place concatenation with a global <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>.  <a href="classsmooth_1_1Spline.html#a00e61bbcb63524b882820527bd67e6ad">More...</a><br /></td></tr>
@@ -161,7 +169,7 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" 
 <tr class="memdesc:a66e2e8c045a0cac819cf293412b62b43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> concatenation.  <a href="classsmooth_1_1Spline.html#a66e2e8c045a0cac819cf293412b62b43">More...</a><br /></td></tr>
 <tr class="separator:a66e2e8c045a0cac819cf293412b62b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8ec3bde593bef780f4346491c3eee95"><td class="memTemplParams" colspan="2">template&lt;typename S  = double&gt; </td></tr>
-<tr class="memitem:ae8ec3bde593bef780f4346491c3eee95"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#ae8ec3bde593bef780f4346491c3eee95">operator()</a> (const S &amp;t, <a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; vel={}, <a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; acc={}) const</td></tr>
+<tr class="memitem:ae8ec3bde593bef780f4346491c3eee95"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#ae8ec3bde593bef780f4346491c3eee95">operator()</a> (const S &amp;t, OptTangent&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; vel={}, OptTangent&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt; acc={}) const</td></tr>
 <tr class="memdesc:ae8ec3bde593bef780f4346491c3eee95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluate <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> at given time.  <a href="classsmooth_1_1Spline.html#ae8ec3bde593bef780f4346491c3eee95">More...</a><br /></td></tr>
 <tr class="separator:ae8ec3bde593bef780f4346491c3eee95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1197737baa0a16baa6bef49efe73088d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent</a>&lt; G &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsmooth_1_1Spline.html#a1197737baa0a16baa6bef49efe73088d">arclength</a> (double t) const</td></tr>
@@ -185,7 +193,6 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;int K, LieGroup G&gt;<br />
-requires (Dof&lt;G&gt; &gt; 0)<br />
 class smooth::Spline&lt; K, G &gt;</div><p >Single-parameter Lie group-valued function. </p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -196,7 +203,7 @@ class smooth::Spline&lt; K, G &gt;</div><p >Single-parameter Lie group-valued fu
 </dl>
 <p>A <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> is a continuous function \( x : [0, T] \rightarrow \mathbb{G} \). Internally it is a piecewise collection of cumulative polynomial segments. </p>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00030">30</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00027">27</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9b236d826e29b45a4d7cbb2423631a50" name="a9b236d826e29b45a4d7cbb2423631a50"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9b236d826e29b45a4d7cbb2423631a50">&#9670;&nbsp;</a></span>Spline() <span class="overload">[1/4]</span></h2>
@@ -205,23 +212,15 @@ class smooth::Spline&lt; K, G &gt;</div><p >Single-parameter Lie group-valued fu
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::Spline </td>
           <td>(</td>
           <td class="paramtype">const G &amp;&#160;</td>
-          <td class="paramname"><em>ga</em> = <code>Identity&lt;G&gt;()</code></td><td>)</td>
+          <td class="paramname"><em>ga</em> = <code>Identity&lt;&#160;G&#160;&gt;()</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Default constructor creates an empty <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> starting at a given point. </p>
@@ -232,8 +231,6 @@ template&lt;int K, LieGroup G&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00037">37</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a611571ea938d34ed47b6d394d48c5750" name="a611571ea938d34ed47b6d394d48c5750"></a>
@@ -243,9 +240,6 @@ template&lt;int K, LieGroup G&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::Spline </td>
@@ -263,7 +257,7 @@ template&lt;int K, LieGroup G&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">G &amp;&amp;&#160;</td>
-          <td class="paramname"><em>ga</em> = <code>Identity&lt;G&gt;()</code>&#160;</td>
+          <td class="paramname"><em>ga</em> = <code>Identity&lt;&#160;G&#160;&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -271,11 +265,6 @@ template&lt;int K, LieGroup G&gt; </div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Create <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> with one segment and given velocity control points. </p>
@@ -288,8 +277,6 @@ template&lt;int K, LieGroup G&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00047">47</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a72329ddd4131323c36aed9a3fdd555a3" name="a72329ddd4131323c36aed9a3fdd555a3"></a>
@@ -301,9 +288,6 @@ template&lt;int K, LieGroup G&gt; </div>
 template&lt;int K, LieGroup G&gt; </div>
 <div class="memtemplate">
 template&lt;typename Derived &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::Spline </td>
@@ -321,7 +305,7 @@ template&lt;typename Derived &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const G &amp;&#160;</td>
-          <td class="paramname"><em>ga</em> = <code>Identity&lt;G&gt;()</code>&#160;</td>
+          <td class="paramname"><em>ga</em> = <code>Identity&lt;&#160;G&#160;&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -329,11 +313,6 @@ template&lt;typename Derived &gt; </div>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Create <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> with one segment and given velocity control points. </p>
@@ -345,8 +324,6 @@ template&lt;typename Derived &gt; </div>
   </table>
   </dd>
 </dl>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00068">68</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -360,9 +337,6 @@ template&lt;int K, LieGroup G&gt; </div>
 <div class="memtemplate">
 template&lt;std::ranges::range Rv&gt; <br />
 requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent</a>&lt;G&gt;&gt;)</div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::Spline </td>
@@ -380,7 +354,7 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" 
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const G &amp;&#160;</td>
-          <td class="paramname"><em>ga</em> = <code>Identity&lt;G&gt;()</code>&#160;</td>
+          <td class="paramname"><em>ga</em> = <code>Identity&lt;&#160;G&#160;&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -388,11 +362,6 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" 
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Create <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> with one segment and given velocities. </p>
@@ -405,8 +374,6 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00081">81</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -417,9 +384,6 @@ requires (std::is_same_v&lt;std::ranges::range_value_t&lt;Rv&gt;, <a class="el" 
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="manifold_8hpp.html#a1050d2ff261807ed963b67efe0b40eba">Tangent</a>&lt; G &gt; <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::arclength </td>
@@ -429,11 +393,6 @@ template&lt;int K, LieGroup G&gt; </div>
           <td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Get approximate arclength traversed at time T. </p>
@@ -445,8 +404,6 @@ template&lt;int K, LieGroup G&gt; </div>
 <p> where the absolute value is component-wise.</p>
 <dl class="section note"><dt>Note</dt><dd>This function is approximate for Lie groups with curvature. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00393">393</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a00e61bbcb63524b882820527bd67e6ad" name="a00e61bbcb63524b882820527bd67e6ad"></a>
@@ -456,9 +413,6 @@ template&lt;int K, LieGroup G&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">Spline</a> &amp; <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::concat_global </td>
@@ -468,11 +422,6 @@ template&lt;int K, LieGroup G&gt; </div>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>In-place concatenation with a global <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>. </p>
@@ -491,8 +440,6 @@ template&lt;int K, LieGroup G&gt; </div>
 \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00228">228</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <a id="af28ec29340407ec596280268f8b41e21" name="af28ec29340407ec596280268f8b41e21"></a>
@@ -502,9 +449,6 @@ template&lt;int K, LieGroup G&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">Spline</a> &amp; <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::concat_local </td>
@@ -514,11 +458,6 @@ template&lt;int K, LieGroup G&gt; </div>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>In-place local concatenation. </p>
@@ -537,8 +476,6 @@ template&lt;int K, LieGroup G&gt; </div>
 \]
 </p>
 <p >That is, other is considered a <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> in the local frame of <a class="el" href="classsmooth_1_1Spline.html#aae2d715425252a1e80ef39eb48cc6e77" title="Spline end value.">end()</a>. For global concatenation see concat_global. </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00274">274</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -569,7 +506,7 @@ template&lt;int K, LieGroup G&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const G &amp;&#160;</td>
-          <td class="paramname"><em>ga</em> = <code>Identity&lt;G&gt;()</code>&#160;</td>
+          <td class="paramname"><em>ga</em> = <code>Identity&lt;&#160;G&#160;&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -579,7 +516,7 @@ template&lt;int K, LieGroup G&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -598,8 +535,6 @@ template&lt;int K, LieGroup G&gt; </div>
   </table>
   </dd>
 </dl>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00143">143</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -630,7 +565,7 @@ template&lt;int K, LieGroup G&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const G &amp;&#160;</td>
-          <td class="paramname"><em>ga</em> = <code>Identity&lt;G&gt;()</code>&#160;</td>
+          <td class="paramname"><em>ga</em> = <code>Identity&lt;&#160;G&#160;&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -640,7 +575,7 @@ template&lt;int K, LieGroup G&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -660,8 +595,6 @@ template&lt;int K, LieGroup G&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00125">125</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a45ba9083cb76839a8a59400513157a4b" name="a45ba9083cb76839a8a59400513157a4b"></a>
@@ -671,9 +604,6 @@ template&lt;int K, LieGroup G&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">Spline</a> <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::crop </td>
@@ -685,7 +615,7 @@ template&lt;int K, LieGroup G&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>tb</em> = <code>std::numeric_limits&lt;double&gt;::infinity()</code>, </td>
+          <td class="paramname"><em>tb</em> = <code>std::numeric_limits&lt;&#160;double&#160;&gt;::infinity()</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -699,11 +629,6 @@ template&lt;int K, LieGroup G&gt; </div>
           <td></td><td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Crop <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>. </p>
@@ -728,70 +653,6 @@ template&lt;int K, LieGroup G&gt; </div>
 </p>
  </li>
 </ul>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00437">437</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="aad551f729d1ddddd1c3ea78ba1932a71" name="aad551f729d1ddddd1c3ea78ba1932a71"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad551f729d1ddddd1c3ea78ba1932a71">&#9670;&nbsp;</a></span>empty()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::empty </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>True if <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> has zero <a class="el" href="classsmooth_1_1Spline.html#a351040564088820571da1875a38388dc" title="Number of Spline segments.">size()</a> </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00180">180</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="aae2d715425252a1e80ef39eb48cc6e77" name="aae2d715425252a1e80ef39eb48cc6e77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae2d715425252a1e80ef39eb48cc6e77">&#9670;&nbsp;</a></span>end()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">G <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::end </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p><a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> end value. </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00206">206</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -834,7 +695,7 @@ template&lt;int K, LieGroup G&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const G &amp;&#160;</td>
-          <td class="paramname"><em>ga</em> = <code>Identity&lt;G&gt;()</code>&#160;</td>
+          <td class="paramname"><em>ga</em> = <code>Identity&lt;&#160;G&#160;&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -844,7 +705,7 @@ template&lt;int K, LieGroup G&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -860,39 +721,6 @@ template&lt;int K, LieGroup G&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00161">161</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="adfe15102bcb7b72bccec632b6cbebba7" name="adfe15102bcb7b72bccec632b6cbebba7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfe15102bcb7b72bccec632b6cbebba7">&#9670;&nbsp;</a></span>make_local()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::make_local </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Move start of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> to <a class="el" href="lie__group_8hpp.html#a29b05818d0b9270542af37e0c3692be0" title="Identity in Lie group.">Identity()</a> </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00213">213</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <a id="ae8ec3bde593bef780f4346491c3eee95" name="ae8ec3bde593bef780f4346491c3eee95"></a>
@@ -904,9 +732,6 @@ template&lt;int K, LieGroup G&gt; </div>
 template&lt;int K, LieGroup G&gt; </div>
 <div class="memtemplate">
 template&lt;typename S  = double&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::operator() </td>
@@ -917,13 +742,13 @@ template&lt;typename S  = double&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
+          <td class="paramtype">OptTangent&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
           <td class="paramname"><em>vel</em> = <code>{}</code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="cumulative__spline_8hpp.html#a9cf3f0fe92c41d10dd9ccffd12ed9dd2">OptTangent</a>&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
+          <td class="paramtype">OptTangent&lt; <a class="el" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT</a>&lt; S, G &gt; &gt;&#160;</td>
           <td class="paramname"><em>acc</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
@@ -932,11 +757,6 @@ template&lt;typename S  = double&gt; </div>
           <td></td><td> const</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Evaluate <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> at given time. </p>
@@ -957,8 +777,6 @@ template&lt;typename S  = double&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>value at time t</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Outside the support [<a class="el" href="classsmooth_1_1Spline.html#a5be3be93c60298961f76ffe3a6420d91" title="Start time of Spline (always equal to zero).">t_min()</a>, <a class="el" href="classsmooth_1_1Spline.html#a8ea41ce9b9d488e980d82eb1284408f8" title="End time of Spline.">t_max()</a>] the result is clamped to the end points, and the acceleration and velocity is zero. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00341">341</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
 </div>
 </div>
 <a id="a66e2e8c045a0cac819cf293412b62b43" name="a66e2e8c045a0cac819cf293412b62b43"></a>
@@ -968,9 +786,6 @@ template&lt;typename S  = double&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">Spline</a> <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::operator+ </td>
@@ -980,17 +795,10 @@ template&lt;int K, LieGroup G&gt; </div>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Local <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> concatenation. </p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1Spline.html#af28ec29340407ec596280268f8b41e21" title="In-place local concatenation.">concat_local()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00319">319</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
@@ -1001,9 +809,6 @@ template&lt;int K, LieGroup G&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classsmooth_1_1Spline.html">Spline</a> &amp; <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::operator+= </td>
@@ -1013,11 +818,6 @@ template&lt;int K, LieGroup G&gt; </div>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Operator overload for local concatenation. </p>
@@ -1028,164 +828,6 @@ template&lt;int K, LieGroup G&gt; </div>
   </dd>
 </dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classsmooth_1_1Spline.html#af28ec29340407ec596280268f8b41e21" title="In-place local concatenation.">concat_local()</a> </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00312">312</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a947eacfca0127c710e964cba21a25865" name="a947eacfca0127c710e964cba21a25865"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a947eacfca0127c710e964cba21a25865">&#9670;&nbsp;</a></span>reserve()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::reserve </td>
-          <td>(</td>
-          <td class="paramtype">std::size_t&#160;</td>
-          <td class="paramname"><em>capacity</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Allocate space for capacity segments. </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00183">183</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a351040564088820571da1875a38388dc" name="a351040564088820571da1875a38388dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a351040564088820571da1875a38388dc">&#9670;&nbsp;</a></span>size()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::size_t <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::size </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Number of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> segments. </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00177">177</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="acc2b1cf61e641d2912d4f3079fb09dce" name="acc2b1cf61e641d2912d4f3079fb09dce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc2b1cf61e641d2912d4f3079fb09dce">&#9670;&nbsp;</a></span>start()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">G <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::start </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p><a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> start value (always equal to identity). </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00203">203</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a8ea41ce9b9d488e980d82eb1284408f8" name="a8ea41ce9b9d488e980d82eb1284408f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ea41ce9b9d488e980d82eb1284408f8">&#9670;&nbsp;</a></span>t_max()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">double <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::t_max </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>End time of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a>. </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00196">196</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a5be3be93c60298961f76ffe3a6420d91" name="a5be3be93c60298961f76ffe3a6420d91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5be3be93c60298961f76ffe3a6420d91">&#9670;&nbsp;</a></span>t_min()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;int K, LieGroup G&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">double <a class="el" href="classsmooth_1_1Spline.html">smooth::Spline</a>&lt; K, G &gt;::t_min </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Start time of <a class="el" href="classsmooth_1_1Spline.html" title="Single-parameter Lie group-valued function.">Spline</a> (always equal to zero). </p>
-
-<p class="definition">Definition at line <a class="el" href="spline_8hpp_source.html#l00193">193</a> of file <a class="el" href="spline_8hpp_source.html">spline.hpp</a>.</p>
 
 </div>
 </div>
