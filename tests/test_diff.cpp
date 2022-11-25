@@ -236,7 +236,9 @@ TEST(Differentiation, NumericalSuite)
   test_second_multi<diff::Type::Numerical>();
   test_second_at_zero<diff::Type::Numerical>();
 
+#ifdef ENABLE_AUTODIFF_TESTS
   test_partial<diff::Type::Numerical>();
+#endif
 }
 
 #ifdef ENABLE_AUTODIFF_TESTS
