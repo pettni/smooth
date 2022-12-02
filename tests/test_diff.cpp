@@ -191,20 +191,18 @@ void test_partial()
   smooth::SO3d x3          = smooth::SO3d::Random();
 
   // all derivatives
-  const auto [fval, df_dx] = diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3));
+  const auto [fval, df_dx] = diff::dr<1, DiffType>(f, smooth::wrt(x1, x2, x3));
   ASSERT_EQ(df_dx.cols(), 6);
 
   {
-    const auto [fval_part, df_dx_part] =
-      diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3), std::index_sequence<0>{});
+    const auto [fval_part, df_dx_part] = diff::dr<1, DiffType>(f, smooth::wrt(x1, x2, x3), std::index_sequence<0>{});
 
     ASSERT_DOUBLE_EQ(fval, fval_part);
     ASSERT_TRUE(df_dx_part.isApprox(df_dx.leftCols(1), 1e-5));
   }
 
   {
-    const auto [fval_part, df_dx_part] =
-      diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3), std::index_sequence<1>{});
+    const auto [fval_part, df_dx_part] = diff::dr<1, DiffType>(f, smooth::wrt(x1, x2, x3), std::index_sequence<1>{});
 
     ASSERT_DOUBLE_EQ(fval, fval_part);
     ASSERT_EQ(df_dx_part.cols(), 2);
@@ -212,8 +210,7 @@ void test_partial()
   }
 
   {
-    const auto [fval_part, df_dx_part] =
-      diff::dr<1, diff::Type::Autodiff>(f, smooth::wrt(x1, x2, x3), std::index_sequence<0, 2>{});
+    const auto [fval_part, df_dx_part] = diff::dr<1, DiffType>(f, smooth::wrt(x1, x2, x3), std::index_sequence<0, 2>{});
 
     ASSERT_DOUBLE_EQ(fval, fval_part);
     ASSERT_EQ(df_dx_part.cols(), 4);
@@ -236,9 +233,7 @@ TEST(Differentiation, NumericalSuite)
   test_second_multi<diff::Type::Numerical>();
   test_second_at_zero<diff::Type::Numerical>();
 
-#ifdef ENABLE_AUTODIFF_TESTS
   test_partial<diff::Type::Numerical>();
-#endif
 }
 
 #ifdef ENABLE_AUTODIFF_TESTS
