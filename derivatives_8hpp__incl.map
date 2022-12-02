@@ -1,13 +1,13 @@
 <map id="include/smooth/derivatives.hpp" name="include/smooth/derivatives.hpp">
-<area shape="rect" id="node1" title="Various useful derivatives." alt="" coords="158,5,359,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="93,393,179,420"/>
-<area shape="rect" id="node3" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="206,87,311,114"/>
-<area shape="rect" id="node11" title=" " alt="" coords="336,80,456,121"/>
-<area shape="rect" id="node4" href="$lie__group_8hpp.html" title=" " alt="" coords="187,244,341,271"/>
-<area shape="rect" id="node7" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="355,169,499,196"/>
-<area shape="rect" id="node8" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="43,169,163,196"/>
-<area shape="rect" id="node10" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="187,169,331,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="236,393,311,420"/>
-<area shape="rect" id="node6" href="$manifold_8hpp.html" title=" " alt="" coords="174,319,269,345"/>
-<area shape="rect" id="node9" title=" " alt="" coords="43,244,163,271"/>
+<area shape="rect" id="node1" title="Various useful derivatives." coords="158,5,359,31"/>
+<area shape="rect" id="node2" title=" " coords="93,387,179,412"/>
+<area shape="rect" id="node3" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." coords="206,86,311,111"/>
+<area shape="rect" id="node11" title=" " coords="336,79,456,119"/>
+<area shape="rect" id="node4" href="$lie__group_8hpp.html" title=" " coords="187,240,341,265"/>
+<area shape="rect" id="node7" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." coords="355,167,499,192"/>
+<area shape="rect" id="node8" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." coords="43,167,163,192"/>
+<area shape="rect" id="node10" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." coords="187,167,331,192"/>
+<area shape="rect" id="node5" title=" " coords="236,387,311,412"/>
+<area shape="rect" id="node6" href="$manifold_8hpp.html" title=" " coords="174,313,269,339"/>
+<area shape="rect" id="node9" title=" " coords="43,240,163,265"/>
 </map>

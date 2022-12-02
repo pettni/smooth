@@ -1,5 +1,5 @@
 <map id="include/smooth/spline/cumulative_spline.hpp" name="include/smooth/spline/cumulative_spline.hpp">
-<area shape="rect" id="node1" title="Evaluation of cumulative Lie group splines." alt="" coords="5,5,160,47"/>
-<area shape="rect" id="node2" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="9,95,157,136"/>
-<area shape="rect" id="node3" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="9,184,157,225"/>
+<area shape="rect" id="node1" title="Evaluation of cumulative Lie group splines." coords="5,5,160,45"/>
+<area shape="rect" id="node2" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." coords="9,93,157,133"/>
+<area shape="rect" id="node3" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." coords="9,181,157,221"/>
 </map>

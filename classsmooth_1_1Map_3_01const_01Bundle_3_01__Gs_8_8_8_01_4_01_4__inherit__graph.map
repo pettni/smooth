@@ -1,5 +1,5 @@
 <map id="smooth::Map&lt; const Bundle&lt; _Gs... &gt; &gt;" name="smooth::Map&lt; const Bundle&lt; _Gs... &gt; &gt;">
-<area shape="rect" id="node1" title="Const memory mapping of Bundle Lie group." alt="" coords="13,213,152,255"/>
-<area shape="rect" id="node2" href="$classsmooth_1_1BundleBase.html" title=" " alt="" coords="11,109,155,165"/>
-<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,160,61"/>
+<area shape="rect" id="node1" title="Const memory mapping of Bundle Lie group." coords="13,196,152,236"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1BundleBase.html" title=" " coords="11,93,155,148"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1LieGroupBase.html" title="Base class for Lie group types." coords="5,5,160,45"/>
 </map>

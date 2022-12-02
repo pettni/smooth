@@ -1,22 +1,22 @@
 <map id="include/smooth/concepts/lie_group.hpp" name="include/smooth/concepts/lie_group.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="613,5,779,47"/>
-<area shape="rect" id="node2" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="479,184,606,225"/>
-<area shape="rect" id="node17" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="324,95,455,136"/>
-<area shape="rect" id="node18" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="479,95,606,136"/>
-<area shape="rect" id="node19" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="631,95,761,136"/>
-<area shape="rect" id="node20" href="$common_8hpp_source.html" title=" " alt="" coords="819,184,967,225"/>
-<area shape="rect" id="node3" href="$derivatives_8hpp.html" title="Various useful derivatives." alt="" coords="30,281,231,307"/>
-<area shape="rect" id="node4" href="$lie__sparse_8hpp.html" title="Sparse versions of certain Lie group methods." alt="" coords="255,273,382,315"/>
-<area shape="rect" id="node5" href="$manifolds_8hpp.html" title="Meta header to include all Manifold concept model specifications." alt="" coords="407,281,601,307"/>
-<area shape="rect" id="node11" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="953,273,1108,315"/>
-<area shape="rect" id="node14" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="781,273,929,315"/>
-<area shape="rect" id="node6" href="$autodiff_8hpp.html" title="autodiff compatability header." alt="" coords="416,363,573,404"/>
-<area shape="rect" id="node7" href="$ceres_8hpp.html" title="ceres compatability header." alt="" coords="597,363,755,404"/>
-<area shape="rect" id="node8" href="$odeint_8hpp.html" title="boost::odeint compatability header." alt="" coords="5,363,163,404"/>
-<area shape="rect" id="node9" href="$diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="187,370,341,397"/>
-<area shape="rect" id="node10" href="$optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="236,459,407,486"/>
-<area shape="rect" id="node12" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="1174,363,1322,404"/>
-<area shape="rect" id="node13" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="946,452,1094,493"/>
-<area shape="rect" id="node15" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="1002,363,1150,404"/>
-<area shape="rect" id="node16" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="830,363,978,404"/>
+<area shape="rect" id="node1" title=" " coords="613,5,779,45"/>
+<area shape="rect" id="node2" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." coords="479,181,606,221"/>
+<area shape="rect" id="node17" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." coords="324,93,455,133"/>
+<area shape="rect" id="node18" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." coords="479,93,606,133"/>
+<area shape="rect" id="node19" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." coords="631,93,761,133"/>
+<area shape="rect" id="node20" href="$common_8hpp_source.html" title=" " coords="819,181,967,221"/>
+<area shape="rect" id="node3" href="$derivatives_8hpp.html" title="Various useful derivatives." coords="30,277,231,302"/>
+<area shape="rect" id="node4" href="$lie__sparse_8hpp.html" title="Sparse versions of certain Lie group methods." coords="255,269,382,309"/>
+<area shape="rect" id="node5" href="$manifolds_8hpp.html" title="Meta header to include all Manifold concept model specifications." coords="407,277,601,302"/>
+<area shape="rect" id="node11" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." coords="953,269,1108,309"/>
+<area shape="rect" id="node14" href="$spline_8hpp.html" title="Piecewise polynomial splines on lie groups." coords="781,269,929,309"/>
+<area shape="rect" id="node6" href="$autodiff_8hpp.html" title="autodiff compatability header." coords="416,357,573,397"/>
+<area shape="rect" id="node7" href="$ceres_8hpp.html" title="ceres compatability header." coords="597,357,755,397"/>
+<area shape="rect" id="node8" href="$odeint_8hpp.html" title="boost::odeint compatability header." coords="5,357,163,397"/>
+<area shape="rect" id="node9" href="$diff_8hpp.html" title="Differentiation on Manifolds." coords="187,365,341,390"/>
+<area shape="rect" id="node10" href="$optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." coords="236,453,407,478"/>
+<area shape="rect" id="node12" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." coords="1174,357,1322,397"/>
+<area shape="rect" id="node13" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." coords="946,445,1094,485"/>
+<area shape="rect" id="node15" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." coords="1002,357,1150,397"/>
+<area shape="rect" id="node16" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." coords="830,357,978,397"/>
 </map>

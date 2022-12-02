@@ -1,8 +1,8 @@
 <map id="include/smooth/lie_groups/rn.hpp" name="include/smooth/lie_groups/rn.hpp">
-<area shape="rect" id="node1" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="114,5,241,47"/>
-<area shape="rect" id="node2" href="$lie__group_8hpp.html" title=" " alt="" coords="12,95,177,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="201,95,321,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,244,80,271"/>
-<area shape="rect" id="node4" title=" " alt="" coords="120,244,205,271"/>
-<area shape="rect" id="node5" href="$manifold_8hpp.html" title=" " alt="" coords="47,169,142,196"/>
+<area shape="rect" id="node1" title="Trait specialization to make Eigen vectors LieGroups." coords="114,5,241,45"/>
+<area shape="rect" id="node2" href="$lie__group_8hpp.html" title=" " coords="12,93,177,119"/>
+<area shape="rect" id="node6" title=" " coords="201,93,321,119"/>
+<area shape="rect" id="node3" title=" " coords="5,240,80,265"/>
+<area shape="rect" id="node4" title=" " coords="120,240,205,265"/>
+<area shape="rect" id="node5" href="$manifold_8hpp.html" title=" " coords="47,167,142,192"/>
 </map>

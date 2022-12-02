@@ -1,9 +1,9 @@
 <map id="include/smooth/manifolds/vector.hpp" name="include/smooth/manifolds/vector.hpp">
-<area shape="rect" id="node1" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="361,5,532,47"/>
-<area shape="rect" id="node2" href="$manifolds_8hpp.html" title="Meta header to include all Manifold concept model specifications." alt="" coords="349,95,544,121"/>
-<area shape="rect" id="node3" href="$autodiff_8hpp.html" title="autodiff compatability header." alt="" coords="5,169,163,211"/>
-<area shape="rect" id="node4" href="$ceres_8hpp.html" title="ceres compatability header." alt="" coords="187,169,344,211"/>
-<area shape="rect" id="node5" href="$odeint_8hpp.html" title="boost::odeint compatability header." alt="" coords="368,169,525,211"/>
-<area shape="rect" id="node6" href="$diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="549,177,704,203"/>
-<area shape="rect" id="node7" href="$optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="599,259,769,285"/>
+<area shape="rect" id="node1" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." coords="361,5,532,45"/>
+<area shape="rect" id="node2" href="$manifolds_8hpp.html" title="Meta header to include all Manifold concept model specifications." coords="349,93,544,119"/>
+<area shape="rect" id="node3" href="$autodiff_8hpp.html" title="autodiff compatability header." coords="5,167,163,207"/>
+<area shape="rect" id="node4" href="$ceres_8hpp.html" title="ceres compatability header." coords="187,167,344,207"/>
+<area shape="rect" id="node5" href="$odeint_8hpp.html" title="boost::odeint compatability header." coords="368,167,525,207"/>
+<area shape="rect" id="node6" href="$diff_8hpp.html" title="Differentiation on Manifolds." coords="549,174,704,199"/>
+<area shape="rect" id="node7" href="$optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." coords="599,255,769,280"/>
 </map>

@@ -1,8 +1,8 @@
 <map id="include/smooth/polynomial/basis.hpp" name="include/smooth/polynomial/basis.hpp">
-<area shape="rect" id="node1" title="Compile&#45;time polynomial manipulation." alt="" coords="9,5,184,47"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,95,71,121"/>
-<area shape="rect" id="node3" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="95,95,215,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="51,169,102,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="126,169,185,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="209,169,323,196"/>
+<area shape="rect" id="node1" title="Compile&#45;time polynomial manipulation." coords="9,5,184,45"/>
+<area shape="rect" id="node2" title=" " coords="5,93,71,119"/>
+<area shape="rect" id="node3" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." coords="95,93,215,119"/>
+<area shape="rect" id="node4" title=" " coords="51,167,102,192"/>
+<area shape="rect" id="node5" title=" " coords="126,167,185,192"/>
+<area shape="rect" id="node6" title=" " coords="209,167,323,192"/>
 </map>
