@@ -259,7 +259,7 @@ features such as [concepts](https://en.cppreference.com/w/cpp/language/constrain
 <!-- MARKDOWN LINKS AND IMAGES -->
 [doc-link]: https://pettni.github.io/smooth
 
-[ci-shield]: https://img.shields.io/github/workflow/status/pettni/smooth/build_and_test/master?style=flat-square
+[ci-shield]: https://img.shields.io/github/actions/workflow/status/pettni/smooth/build_and_test.yml?style=flat-square
 [ci-link]: https://github.com/pettni/lie/actions/workflows/build_and_test.yml
 
 [cov-shield]: https://img.shields.io/codecov/c/gh/pettni/smooth/master?style=flat-square
@@ -271,4 +271,3 @@ features such as [concepts](https://en.cppreference.com/w/cpp/language/constrain
 [manif-link]: https://github.com/artivis/manif/
 [manif-paper-link]: https://arxiv.org/abs/1812.01537
 [sophus-link]: https://github.com/strasdat/Sophus/
-
