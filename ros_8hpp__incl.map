@@ -1,13 +1,13 @@
 <map id="include/smooth/compat/ros.hpp" name="include/smooth/compat/ros.hpp">
-<area shape="rect" id="node1" title="ROS message compatablity header." coords="263,5,421,45"/>
-<area shape="rect" id="node2" title=" " coords="5,93,204,119"/>
-<area shape="rect" id="node3" title=" " coords="229,93,455,119"/>
-<area shape="rect" id="node4" href="$se3_8hpp_source.html" title=" " coords="479,93,594,119"/>
-<area shape="rect" id="node5" title=" " coords="266,313,351,339"/>
-<area shape="rect" id="node6" title=" " coords="578,240,693,265"/>
-<area shape="rect" id="node7" title=" " coords="717,240,834,265"/>
-<area shape="rect" id="node8" title=" " coords="661,167,764,192"/>
-<area shape="rect" id="node9" href="$lie__group__base_8hpp_source.html" title=" " coords="242,240,375,265"/>
-<area shape="rect" id="node10" href="$so3_8hpp_source.html" title=" " coords="469,167,535,192"/>
-<area shape="rect" id="node11" title=" " coords="451,240,553,265"/>
+<area shape="rect" id="node1" title="ROS message compatablity header." alt="" coords="263,5,421,45"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,93,204,119"/>
+<area shape="rect" id="node3" title=" " alt="" coords="229,93,455,119"/>
+<area shape="rect" id="node4" href="$se3_8hpp_source.html" title=" " alt="" coords="479,93,594,119"/>
+<area shape="rect" id="node5" title=" " alt="" coords="266,313,351,339"/>
+<area shape="rect" id="node6" title=" " alt="" coords="578,240,693,265"/>
+<area shape="rect" id="node7" title=" " alt="" coords="717,240,834,265"/>
+<area shape="rect" id="node8" title=" " alt="" coords="661,167,764,192"/>
+<area shape="rect" id="node9" href="$lie__group__base_8hpp_source.html" title=" " alt="" coords="242,240,375,265"/>
+<area shape="rect" id="node10" href="$so3_8hpp_source.html" title=" " alt="" coords="469,167,535,192"/>
+<area shape="rect" id="node11" title=" " alt="" coords="451,240,553,265"/>
 </map>

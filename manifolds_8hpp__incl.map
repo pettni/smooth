@@ -1,18 +1,18 @@
 <map id="include/smooth/manifolds.hpp" name="include/smooth/manifolds.hpp">
-<area shape="rect" id="node1" title="Meta header to include all Manifold concept model specifications." coords="532,5,727,31"/>
-<area shape="rect" id="node2" href="$manifold_8hpp.html" title=" " coords="555,299,707,324"/>
-<area shape="rect" id="node5" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." coords="278,79,383,104"/>
-<area shape="rect" id="node11" href="$variant_8hpp.html" title="Trait specialization to make std::variant&lt;Manifold...&gt; a Manifold." coords="502,79,647,104"/>
-<area shape="rect" id="node13" href="$vector_8hpp.html" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." coords="747,79,890,104"/>
-<area shape="rect" id="node3" title=" " coords="575,372,649,397"/>
-<area shape="rect" id="node4" title=" " coords="448,372,533,397"/>
-<area shape="rect" id="node6" href="$lie__group_8hpp.html" title=" " coords="363,225,517,251"/>
-<area shape="rect" id="node7" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." coords="368,152,512,177"/>
-<area shape="rect" id="node8" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." coords="173,152,293,177"/>
-<area shape="rect" id="node10" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." coords="5,152,149,177"/>
-<area shape="rect" id="node9" title=" " coords="96,225,216,251"/>
-<area shape="rect" id="node12" title=" " coords="536,152,597,177"/>
-<area shape="rect" id="node14" title=" " coords="995,152,1056,177"/>
-<area shape="rect" id="node15" title=" " coords="723,152,781,177"/>
-<area shape="rect" id="node16" title=" " coords="856,152,971,177"/>
+<area shape="rect" id="node1" title="Meta header to include all Manifold concept model specifications." alt="" coords="532,5,727,31"/>
+<area shape="rect" id="node2" href="$manifold_8hpp.html" title=" " alt="" coords="555,299,707,324"/>
+<area shape="rect" id="node5" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="278,79,383,104"/>
+<area shape="rect" id="node11" href="$variant_8hpp.html" title="Trait specialization to make std::variant&lt;Manifold...&gt; a Manifold." alt="" coords="502,79,647,104"/>
+<area shape="rect" id="node13" href="$vector_8hpp.html" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="747,79,890,104"/>
+<area shape="rect" id="node3" title=" " alt="" coords="575,372,649,397"/>
+<area shape="rect" id="node4" title=" " alt="" coords="448,372,533,397"/>
+<area shape="rect" id="node6" href="$lie__group_8hpp.html" title=" " alt="" coords="363,225,517,251"/>
+<area shape="rect" id="node7" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="368,152,512,177"/>
+<area shape="rect" id="node8" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="173,152,293,177"/>
+<area shape="rect" id="node10" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="5,152,149,177"/>
+<area shape="rect" id="node9" title=" " alt="" coords="96,225,216,251"/>
+<area shape="rect" id="node12" title=" " alt="" coords="536,152,597,177"/>
+<area shape="rect" id="node14" title=" " alt="" coords="995,152,1056,177"/>
+<area shape="rect" id="node15" title=" " alt="" coords="723,152,781,177"/>
+<area shape="rect" id="node16" title=" " alt="" coords="856,152,971,177"/>
 </map>

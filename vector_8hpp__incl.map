@@ -1,9 +1,9 @@
 <map id="include/smooth/manifolds/vector.hpp" name="include/smooth/manifolds/vector.hpp">
-<area shape="rect" id="node1" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." coords="101,5,272,45"/>
-<area shape="rect" id="node2" title=" " coords="5,93,67,119"/>
-<area shape="rect" id="node3" title=" " coords="91,93,149,119"/>
-<area shape="rect" id="node4" href="$manifold_8hpp.html" title=" " coords="173,93,336,119"/>
-<area shape="rect" id="node7" title=" " coords="360,93,475,119"/>
-<area shape="rect" id="node5" title=" " coords="165,167,240,192"/>
-<area shape="rect" id="node6" title=" " coords="264,167,349,192"/>
+<area shape="rect" id="node1" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="101,5,272,45"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,93,67,119"/>
+<area shape="rect" id="node3" title=" " alt="" coords="91,93,149,119"/>
+<area shape="rect" id="node4" href="$manifold_8hpp.html" title=" " alt="" coords="173,93,336,119"/>
+<area shape="rect" id="node7" title=" " alt="" coords="360,93,475,119"/>
+<area shape="rect" id="node5" title=" " alt="" coords="165,167,240,192"/>
+<area shape="rect" id="node6" title=" " alt="" coords="264,167,349,192"/>
 </map>

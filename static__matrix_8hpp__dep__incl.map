@@ -1,8 +1,8 @@
 <map id="include/smooth/polynomial/static_matrix.hpp" name="include/smooth/polynomial/static_matrix.hpp">
-<area shape="rect" id="node1" title="Utilities for compile&#45;time matrix algebra." coords="68,5,243,45"/>
-<area shape="rect" id="node2" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." coords="131,93,305,133"/>
-<area shape="rect" id="node3" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." coords="5,181,180,221"/>
-<area shape="rect" id="node4" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." coords="205,181,359,221"/>
-<area shape="rect" id="node5" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." coords="208,269,356,309"/>
-<area shape="rect" id="node6" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." coords="208,357,356,397"/>
+<area shape="rect" id="node1" title="Utilities for compile&#45;time matrix algebra." alt="" coords="68,5,243,45"/>
+<area shape="rect" id="node2" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="131,93,305,133"/>
+<area shape="rect" id="node3" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,181,180,221"/>
+<area shape="rect" id="node4" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="205,181,359,221"/>
+<area shape="rect" id="node5" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="208,269,356,309"/>
+<area shape="rect" id="node6" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="208,357,356,397"/>
 </map>

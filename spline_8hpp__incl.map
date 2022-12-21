@@ -1,16 +1,16 @@
 <map id="include/smooth/spline/spline.hpp" name="include/smooth/spline/spline.hpp">
-<area shape="rect" id="node1" title="Piecewise polynomial splines on lie groups." coords="303,5,451,45"/>
-<area shape="rect" id="node2" title=" " coords="188,93,249,119"/>
-<area shape="rect" id="node3" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." coords="273,93,388,119"/>
-<area shape="rect" id="node12" href="$common_8hpp_source.html" title=" " coords="536,167,632,192"/>
-<area shape="rect" id="node14" title=" " coords="463,93,609,119"/>
-<area shape="rect" id="node4" href="$lie__group_8hpp.html" title=" " coords="265,240,420,265"/>
-<area shape="rect" id="node8" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." coords="368,167,512,192"/>
-<area shape="rect" id="node9" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." coords="173,167,293,192"/>
-<area shape="rect" id="node11" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." coords="5,167,149,192"/>
-<area shape="rect" id="node5" title=" " coords="259,387,333,412"/>
-<area shape="rect" id="node6" title=" " coords="391,387,476,412"/>
-<area shape="rect" id="node7" href="$manifold_8hpp.html" title=" " coords="301,313,395,339"/>
-<area shape="rect" id="node10" title=" " coords="76,240,196,265"/>
-<area shape="rect" id="node13" title=" " coords="551,240,617,265"/>
+<area shape="rect" id="node1" title="Piecewise polynomial splines on lie groups." alt="" coords="303,5,451,45"/>
+<area shape="rect" id="node2" title=" " alt="" coords="188,93,249,119"/>
+<area shape="rect" id="node3" href="$lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="273,93,388,119"/>
+<area shape="rect" id="node12" href="$common_8hpp_source.html" title=" " alt="" coords="536,167,632,192"/>
+<area shape="rect" id="node14" title=" " alt="" coords="463,93,609,119"/>
+<area shape="rect" id="node4" href="$lie__group_8hpp.html" title=" " alt="" coords="265,240,420,265"/>
+<area shape="rect" id="node8" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="368,167,512,192"/>
+<area shape="rect" id="node9" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="173,167,293,192"/>
+<area shape="rect" id="node11" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="5,167,149,192"/>
+<area shape="rect" id="node5" title=" " alt="" coords="259,387,333,412"/>
+<area shape="rect" id="node6" title=" " alt="" coords="391,387,476,412"/>
+<area shape="rect" id="node7" href="$manifold_8hpp.html" title=" " alt="" coords="301,313,395,339"/>
+<area shape="rect" id="node10" title=" " alt="" coords="76,240,196,265"/>
+<area shape="rect" id="node13" title=" " alt="" coords="551,240,617,265"/>
 </map>
