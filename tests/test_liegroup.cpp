@@ -11,6 +11,7 @@
 #include "smooth/lie_groups/native.hpp"
 #include "smooth/se2.hpp"
 #include "smooth/se3.hpp"
+#include "smooth/se_k_3.hpp"
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 
@@ -19,13 +20,14 @@ class LieGroupInterface : public ::testing::Test
 {};
 
 using GroupsToTest = ::testing::Types<
-  smooth::SO2f,
-  smooth::SO3f,
-  smooth::SE2f,
-  smooth::SE3f,
+  smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d, smooth::SE3d>,
   smooth::C1f,
   smooth::Galileid,
-  smooth::Bundle<smooth::SO2d, smooth::SO3d, smooth::SE2d, Eigen::Vector2d, smooth::SE3d>>;
+  smooth::SE2f,
+  smooth::SE3f,
+  smooth::SE_K_3<double, 2>,
+  smooth::SO2f,
+  smooth::SO3f>;
 
 TYPED_TEST_SUITE(LieGroupInterface, GroupsToTest, );
 
@@ -257,12 +259,16 @@ TYPED_TEST(LieGroupInterface, Inverse)
 
 TYPED_TEST(LieGroupInterface, Exp)
 {
-  const smooth::Tangent<TypeParam> a = smooth::Tangent<TypeParam>::Random();
+  std::srand(5);
 
-  const typename TypeParam::Matrix exp1 = TypeParam::exp(a).matrix();
-  const typename TypeParam::Matrix exp2 = TypeParam::hat(a).exp();
+  for (auto i = 0u; i != 10; ++i) {
+    const smooth::Tangent<TypeParam> a = smooth::Tangent<TypeParam>::Random();
 
-  ASSERT_TRUE(exp1.isApprox(exp2, typename TypeParam::Scalar(1e-6)));
+    const typename TypeParam::Matrix exp1 = TypeParam::exp(a).matrix();
+    const typename TypeParam::Matrix exp2 = TypeParam::hat(a).exp();
+
+    ASSERT_TRUE(exp1.isApprox(exp2, typename TypeParam::Scalar(1e-6)));
+  }
 }
 
 TYPED_TEST(LieGroupInterface, LogAndExp)
