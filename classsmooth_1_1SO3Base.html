@@ -276,22 +276,22 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename _Derived&gt;<br />
 class smooth::SO3Base&lt; _Derived &gt;</div><p >Base class for <a class="el" href="classsmooth_1_1SO3.html" title="Storage implementation of SO3 Lie group.">SO3</a> Lie group types. </p>
 <p >Internally represented as a member of \( \mathbb{S}^3 \) (unit quaternions).</p>
-<h2><a class="anchor" id="autotoc_md35"></a>
+<h2><a class="anchor" id="autotoc_md39"></a>
 Memory layout</h2>
 <ul>
 <li>Group: \( \mathbf{x} = [q_x, q_y, q_z, q_w] \) (same as Eigen quaternion).</li>
 <li>Tangent: \( \mathbf{a} = [\omega_x, \omega_y, \omega_z] \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md36"></a>
+<h2><a class="anchor" id="autotoc_md40"></a>
 Constraints</h2>
 <ul>
 <li>Group: \( q_x^2 + q_y^2 + q_z^2 + q_w^2 = 1, q_w &gt;= 0 \)</li>
 <li>Tangent: \( -\pi &lt; \omega_x, \omega_y, \omega_z \leq \pi \)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md37"></a>
+<h2><a class="anchor" id="autotoc_md41"></a>
 Lie group matrix form</h2>
 <p >3x3 rotation matrix</p>
-<h2><a class="anchor" id="autotoc_md38"></a>
+<h2><a class="anchor" id="autotoc_md42"></a>
 Lie algebra matrix form</h2>
 <p class="formulaDsp">
 \[

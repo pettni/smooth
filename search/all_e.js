@@ -1,17 +1,13 @@
 var searchData=
 [
-  ['part_0',['part',['../classsmooth_1_1BundleBase.html#a024ad55f6a4e0eb678247e14b0e5d564',1,'smooth::BundleBase::part()'],['../classsmooth_1_1BundleBase.html#aff7f0a90eade55c1237883a71a9fc259',1,'smooth::BundleBase::part() const']]],
-  ['partdof_1',['PartDof',['../classsmooth_1_1BundleBase.html#aba67ed27a0aeb2a23e451cd0b936ed46',1,'smooth::BundleBase']]],
-  ['partstart_2',['PartStart',['../classsmooth_1_1BundleBase.html#ad7f0e12164ce3caecde16cd4af1e688d',1,'smooth::BundleBase']]],
-  ['parttype_3',['PartType',['../classsmooth_1_1BundleBase.html#af98cc54d8b91c8d8212caf6eb0e2ded9',1,'smooth::BundleBase']]],
-  ['piecewiseconstant_4',['PiecewiseConstant',['../fit_8hpp.html#a59512b2d4f2266f4bed37d77ccdd8ad0',1,'smooth::spline_specs']]],
-  ['piecewiselinear_5',['PiecewiseLinear',['../fit_8hpp.html#a0c275ecbeb49d8563f17470d7433c851',1,'smooth::spline_specs']]],
-  ['plainobject_6',['PlainObject',['../classsmooth_1_1LieGroupBase.html#ac327be62b1c469fd965d244d02c0ba5b',1,'smooth::LieGroupBase::PlainObject()'],['../manifold_8hpp.html#adb56aa6a7e496d840696a0c5d1ad3d3f',1,'smooth::PlainObject()']]],
-  ['polynomial_5fbasis_7',['polynomial_basis',['../basis_8hpp.html#ac109e2f9fee62480547480f92b59ade4',1,'smooth']]],
-  ['polynomial_5fbasis_5fderivatives_8',['polynomial_basis_derivatives',['../basis_8hpp.html#ae656bfc9c9155bdbf4f06635ffb6e15b',1,'smooth']]],
-  ['polynomial_5fcumulative_5fbasis_9',['polynomial_cumulative_basis',['../basis_8hpp.html#a1a53d5e1debd2272c70d44054f9e6e6f',1,'smooth']]],
-  ['polynomialbasis_10',['PolynomialBasis',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097',1,'smooth']]],
-  ['project_5fse2_11',['project_se2',['../classsmooth_1_1SE3Base.html#a321f1f85b53d6716eb1ba1d26d15e2d1',1,'smooth::SE3Base']]],
-  ['project_5fso2_12',['project_so2',['../classsmooth_1_1SO3Base.html#a23fbee46af3d5a7737ef1c90d9aaa01d',1,'smooth::SO3Base']]],
-  ['ptol_13',['ptol',['../structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530',1,'smooth::MinimizeOptions']]]
+  ['odeint_2ehpp_0',['odeint.hpp',['../odeint_8hpp.html',1,'']]],
+  ['operator_28_29_1',['operator()',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#aa75812d5d483479e46fd649644ecff99',1,'smooth::detail::BoostOdeintOps::scale_sum::operator()()'],['../classsmooth_1_1BSpline.html#a0fdf6ca7fb6d07781e04c396f29147a7',1,'smooth::BSpline::operator()()'],['../classsmooth_1_1Spline.html#ae8ec3bde593bef780f4346491c3eee95',1,'smooth::Spline::operator()()']]],
+  ['operator_2a_2',['operator*',['../classsmooth_1_1C1Base.html#acc63fa461dc00923abb0a88bb785a711',1,'smooth::C1Base::operator*()'],['../classsmooth_1_1GalileiBase.html#a9a61dafc2c5cd23c113a8eee22d21f23',1,'smooth::GalileiBase::operator*()'],['../classsmooth_1_1LieGroupBase.html#ac8cc2918d902747dd4316fdaed78c8ba',1,'smooth::LieGroupBase::operator*()'],['../structsmooth_1_1StaticMatrix.html#a148039a21e3397722527053ab0ea2ec4',1,'smooth::StaticMatrix::operator*()'],['../classsmooth_1_1SE2Base.html#ad947b351af914bfaa7ed60e3e745203d',1,'smooth::SE2Base::operator*()'],['../classsmooth_1_1SE3Base.html#af41e22d5a60872d2e6017f4470481a33',1,'smooth::SE3Base::operator*()'],['../classsmooth_1_1SO2Base.html#ac03e4fa67c0f2f948fdd2b607ceb7928',1,'smooth::SO2Base::operator*()'],['../classsmooth_1_1SO3Base.html#a47501090046cf27641c6badc98c73ab4',1,'smooth::SO3Base::operator*()']]],
+  ['operator_2a_3d_3',['operator*=',['../classsmooth_1_1LieGroupBase.html#ab8107491cf91f122ebe75806b03e6670',1,'smooth::LieGroupBase']]],
+  ['operator_2b_4',['operator+',['../classsmooth_1_1LieGroupBase.html#abead5ef228e731561b860d32a9300cb1',1,'smooth::LieGroupBase::operator+()'],['../structsmooth_1_1StaticMatrix.html#a8f8d3c9777f9aaf94aa58d9879874829',1,'smooth::StaticMatrix::operator+()'],['../classsmooth_1_1Spline.html#a66e2e8c045a0cac819cf293412b62b43',1,'smooth::Spline::operator+()']]],
+  ['operator_2b_3d_5',['operator+=',['../classsmooth_1_1LieGroupBase.html#a8f1737db2ef8b8447a7540cf1604c14c',1,'smooth::LieGroupBase::operator+=()'],['../classsmooth_1_1Spline.html#a8dc6e1ceff34a53cfc85e6020bf104e7',1,'smooth::Spline::operator+=()']]],
+  ['operator_2d_6',['operator-',['../classsmooth_1_1LieGroupBase.html#acefe9f019080cbf2bfee32b78e51f886',1,'smooth::LieGroupBase']]],
+  ['operator_3d_7',['operator=',['../classsmooth_1_1LieGroupBase.html#ac34c8d74efb55b3413423df40fce03ad',1,'smooth::LieGroupBase::operator=()'],['../classsmooth_1_1BSpline.html#a7d583d606086bef41205b2cfbe468b0c',1,'smooth::BSpline::operator=(const BSpline &amp;)=default'],['../classsmooth_1_1BSpline.html#a47fa23561b317313998891481567708a',1,'smooth::BSpline::operator=(BSpline &amp;&amp;)=default'],['../classsmooth_1_1Spline.html#aac8c25da3c670a7a757f931b327c6a47',1,'smooth::Spline::operator=(const Spline &amp;)=default'],['../classsmooth_1_1Spline.html#a65e7fcbe212e885678c64837e94dfcb2',1,'smooth::Spline::operator=(Spline &amp;&amp;)=default']]],
+  ['optdeg_8',['OptDeg',['../structsmooth_1_1spline__specs_1_1MinDerivative.html#af3ca1ebc05b109b3c40c2058e92abfd4',1,'smooth::spline_specs::MinDerivative::OptDeg()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a062079db495d8c2dc679d2ce2f0a4b11',1,'smooth::spline_specs::FixedDerCubic::OptDeg()'],['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a2aa4628346d14f4a498215a2600f6f4d',1,'smooth::spline_specs::NoConstraints::OptDeg()']]],
+  ['optim_2ehpp_9',['optim.hpp',['../optim_8hpp.html',1,'']]]
 ];

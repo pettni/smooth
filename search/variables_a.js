@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['partdof_0',['PartDof',['../classsmooth_1_1BundleBase.html#aba67ed27a0aeb2a23e451cd0b936ed46',1,'smooth::BundleBase']]],
-  ['partstart_1',['PartStart',['../classsmooth_1_1BundleBase.html#ad7f0e12164ce3caecde16cd4af1e688d',1,'smooth::BundleBase']]],
-  ['ptol_2',['ptol',['../structsmooth_1_1MinimizeOptions.html#a8e289c23101bd1eb1671e59b5a350530',1,'smooth::MinimizeOptions']]]
+  ['optdeg_0',['OptDeg',['../structsmooth_1_1spline__specs_1_1NoConstraints.html#a2aa4628346d14f4a498215a2600f6f4d',1,'smooth::spline_specs::NoConstraints::OptDeg()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a062079db495d8c2dc679d2ce2f0a4b11',1,'smooth::spline_specs::FixedDerCubic::OptDeg()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#af3ca1ebc05b109b3c40c2058e92abfd4',1,'smooth::spline_specs::MinDerivative::OptDeg()']]]
 ];
