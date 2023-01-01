@@ -34,6 +34,7 @@ The following common Lie groups are implemented:
  * smooth::SE3: three-dimensional rigid motions
  * smooth::C1: complex numbers (excluding zero) under multiplication
  * smooth::Galilei: the [Galilean group](https://en.wikipedia.org/wiki/Galilean_transformation#Galilean_group). It includes SE\_2(3) as a special case.
+ * smooth::SE_K_3: generalization of SE3 with multiple translations
  * A smooth::Bundle type to treat Lie group products ![](https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n) as a single Lie group. The Bundle type also supports regular Eigen vectors as ![](https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)) components
  * Lie group interfaces for Eigen vectors and builtin scalars
 
