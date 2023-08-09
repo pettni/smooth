@@ -1,34 +1,35 @@
 cmake_minimum_required(VERSION 3.15)
-project(smooth VERSION 0.0.1)
+project(smooth VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(BUILD_EXAMPLES "Build the examples." OFF)
+message(STATUS "BUILD_EXAMPLES set to: ${BUILD_EXAMPLES}")
+
 option(BUILD_TESTS "Build the tests." OFF)
+message(STATUS "BUILD_TESTS set to: ${BUILD_TESTS}")
 
 find_package(Eigen3 3.4 REQUIRED)
 
 # ---------------------------------------------------------------------------------------
 # TARGETS
 # ---------------------------------------------------------------------------------------
-
 add_library(smooth INTERFACE)
 target_include_directories(
   smooth INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                   $<INSTALL_INTERFACE:include>
+  $<INSTALL_INTERFACE:include>
 )
 target_link_libraries(smooth INTERFACE Eigen3::Eigen)
 
 # ---------------------------------------------------------------------------------------
 # INSTALLATION
 # ---------------------------------------------------------------------------------------
-
 include(GNUInstallDirs)
 
 # Header files
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
 # Targets
@@ -42,7 +43,6 @@ install(
 # ---------------------------------------------------------------------------------------
 # CMAKE CONFIGURATION
 # ---------------------------------------------------------------------------------------
-
 set(export_dest_dir ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 
 # Generate TARGETS files
@@ -71,14 +71,13 @@ write_basic_package_version_file(
 
 # Install CONFIG and VERSION files
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Version.cmake
-        DESTINATION ${export_dest_dir}
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Version.cmake
+  DESTINATION ${export_dest_dir}
 )
 
 # ---------------------------------------------------------------------------------------
 # EXECUTABLES
 # ---------------------------------------------------------------------------------------
-
 if(BUILD_EXAMPLES)
   add_subdirectory(examples)
 endif()

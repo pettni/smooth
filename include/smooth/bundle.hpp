@@ -81,7 +81,8 @@ public:
    * @brief Access part no Idx of Bundle.
    */
   template<std::size_t Idx>
-  MapDispatch<PartType<Idx>> part() requires is_mutable
+  MapDispatch<PartType<Idx>> part()
+    requires is_mutable
   {
     return MapDispatch<PartType<Idx>>(static_cast<_Derived &>(*this).data() + std::get<Idx>(Impl::RepSizesPsum));
   }
@@ -99,8 +100,7 @@ public:
 
 /// Type for which liebase_info is properly specified.
 template<typename T>
-concept LieImplemented = requires
-{
+concept LieImplemented = requires {
   typename liebase_info<T>::Scalar;
   typename liebase_info<T>::Impl;
 };
@@ -147,11 +147,18 @@ public:
    * @brief Construct Bundle from parts.
    */
   template<typename... S>
-    requires(std::is_assignable_v<_Gs, S> &&...)
+    requires(std::is_assignable_v<_Gs, S> && ...)
   Bundle(S &&... gs)
   {
     const auto tpl = std::forward_as_tuple(gs...);
+#ifdef __clang__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-lambda-capture"
+#endif
     utils::static_for<sizeof...(_Gs)>([this, &tpl](auto i) { Base::template part<i>() = std::get<i>(tpl); });
+#ifdef __clang__
+#pragma GCC diagnostic pop
+#endif
   }
 };
 

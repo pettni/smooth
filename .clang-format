@@ -27,16 +27,16 @@ BinPackParameters: false
 
 BreakBeforeBraces: Custom
 BraceWrapping:
-    AfterCaseLabel: false
-    AfterClass: true
-    AfterEnum: false
-    AfterFunction: true
-    AfterNamespace: false
-    AfterStruct: true
-    BeforeElse: false
-    SplitEmptyFunction: false
-    SplitEmptyRecord: false
-    SplitEmptyNamespace: false
+  AfterCaseLabel: false
+  AfterClass: true
+  AfterEnum: false
+  AfterFunction: true
+  AfterNamespace: false
+  AfterStruct: true
+  BeforeElse: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
 
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeConceptDeclarations: true
@@ -49,12 +49,12 @@ FixNamespaceComments: true
 
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex:     '^<[a-z_]*>$'   # system headers
-    Priority:  1
-  - Regex:     '^<.*>'         # third-party headers
-    Priority:  2
-  - Regex:     '".*"'          # local headers
-    Priority:  3
+  - Regex: "^<[a-z_]*>$" # system headers
+    Priority: 1
+  - Regex: "^<.*>" # third-party headers
+    Priority: 2
+  - Regex: '".*"' # local headers
+    Priority: 3
 
 IndentCaseLabels: false
 IndentRequires: true
