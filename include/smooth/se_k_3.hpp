@@ -81,7 +81,11 @@ public:
   /**
    * @brief Access SO(3) part.
    */
-  Map<SO3<Scalar>> so3() requires is_mutable { return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3 * K); }
+  Map<SO3<Scalar>> so3()
+    requires is_mutable
+  {
+    return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3 * K);
+  }
 
   /**
    * @brief Const access SO(3) part.
@@ -97,7 +101,8 @@ public:
    * @tparam Ksel select part
    */
   template<int Ksel>
-  Eigen::Map<Eigen::Vector3<Scalar>> r3() requires(is_mutable && Ksel < K)
+  Eigen::Map<Eigen::Vector3<Scalar>> r3()
+    requires(is_mutable && Ksel < K)
   {
     return Eigen::Map<Eigen::Vector3<Scalar>>(static_cast<_Derived &>(*this).data() + 3 * Ksel);
   }
@@ -107,7 +112,8 @@ public:
    *
    * @param k select part
    */
-  Eigen::Map<Eigen::Vector3<Scalar>> r3(int k) requires is_mutable
+  Eigen::Map<Eigen::Vector3<Scalar>> r3(int k)
+    requires is_mutable
   {
     assert(k < K);
     return Eigen::Map<Eigen::Vector3<Scalar>>(static_cast<_Derived &>(*this).data() + 3 * k);
@@ -119,7 +125,8 @@ public:
    * @tparam Ksel select part
    */
   template<int Ksel>
-  Eigen::Map<const Eigen::Vector3<Scalar>> r3() const requires(Ksel < K)
+  Eigen::Map<const Eigen::Vector3<Scalar>> r3() const
+    requires(Ksel < K)
   {
     return Eigen::Map<const Eigen::Vector3<Scalar>>(static_cast<const _Derived &>(*this).data() + 3 * Ksel);
   }
@@ -181,11 +188,18 @@ public:
    */
   template<typename SO3Derived, typename... RnDerived>
   SE_K_3(const SO3Base<SO3Derived> & so3, const Eigen::MatrixBase<RnDerived> &... r3s)
-  requires(sizeof...(r3s) == K)
+    requires(sizeof...(r3s) == K)
   {
     const auto tpl = std::forward_as_tuple(r3s...);
     Base::so3()    = static_cast<const SO3Derived &>(so3);
+#ifdef __clang__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-lambda-capture"
+#endif
     utils::static_for<K>([this, &tpl](auto i) { Base::template r3<i>() = std::get<i>(tpl); });
+#ifdef __clang__
+#pragma GCC diagnostic pop
+#endif
   }
 };
 

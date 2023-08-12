@@ -74,7 +74,7 @@ struct man<std::vector<M>>
   {
     Eigen::Index dof_cnts = 0;
     if (traits::man<M>::Dof > 0) {
-      dof_cnts = static_cast<Eigen::Index>(traits::man<M>::Dof * m1.size());
+      dof_cnts = static_cast<Eigen::Index>(traits::man<M>::Dof * static_cast<Eigen::Index>(m1.size()));
     } else {
       for (auto i = 0u; i != m1.size(); ++i) { dof_cnts += ::smooth::dof<M>(m1[i]); }
     }

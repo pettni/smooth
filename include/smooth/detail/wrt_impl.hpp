@@ -20,8 +20,7 @@ constexpr int wrt_Dof()
 {
   using DWrt = std::decay_t<Wrt>;
 
-  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)->int
-  {
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>) -> int {
     constexpr auto min_dof = std::min<int>({Dof<std::decay_t<std::tuple_element_t<Idx, DWrt>>>...});
 
     if constexpr (min_dof == -1) {
@@ -42,8 +41,7 @@ auto wrt_cast(auto && wrt)
 {
   using Wrt = std::decay_t<decltype(wrt)>;
 
-  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)
-  {
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>) {
     return std::make_tuple(cast<Scalar>(std::get<Idx>(wrt))...);
   };
 
@@ -58,8 +56,7 @@ auto wrt_rplus(auto && wrt, const Eigen::MatrixBase<Derived> & a)
 {
   using Wrt = std::decay_t<decltype(wrt)>;
 
-  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>)
-  {
+  const auto f = [&]<std::size_t... Idx>(std::index_sequence<Idx...>) {
     static constexpr std::array<Eigen::Index, sizeof...(Idx)> Nx{Dof<std::decay_t<std::tuple_element_t<Idx, Wrt>>>...};
 
     const std::array<Eigen::Index, sizeof...(Idx)> ilen{dof(std::get<Idx>(wrt))...};

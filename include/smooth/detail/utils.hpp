@@ -87,8 +87,7 @@ constexpr auto binary_interval_search(std::ranges::random_access_range auto && r
 template<std::size_t _I>
 constexpr auto static_for(auto && f) noexcept(noexcept(std::invoke(f, std::integral_constant<std::size_t, 0>())))
 {
-  const auto f_caller = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>)
-  {
+  const auto f_caller = [&]<std::size_t... _Idx>(std::index_sequence<_Idx...>) {
     return (std::invoke(f, std::integral_constant<std::size_t, _Idx>()), ...);
   };
 
@@ -154,20 +153,23 @@ public:
 
     constexpr void operator++(int) { ++it1_, ++it2_; }
 
-    constexpr _Iterator operator++(int) requires std::ranges::forward_range<R>
+    constexpr _Iterator operator++(int)
+      requires std::ranges::forward_range<R>
     {
       _Iterator tmp = *this;
       ++this;
       return tmp;
     }
 
-    constexpr _Iterator & operator--() requires std::ranges::bidirectional_range<R>
+    constexpr _Iterator & operator--()
+      requires std::ranges::bidirectional_range<R>
     {
       --it1_, --it2_;
       return *this;
     }
 
-    constexpr _Iterator operator--(int) requires std::ranges::bidirectional_range<R>
+    constexpr _Iterator operator--(int)
+      requires std::ranges::bidirectional_range<R>
     {
       auto tmp = *this;
       --this;
@@ -187,8 +189,6 @@ private:
   F f_{};
 
 public:
-  constexpr pairwise_transform_view() = default;
-
   template<typename Fp>
   constexpr pairwise_transform_view(R base, Fp && f) : base_(base), f_(std::forward<Fp>(f))
   {}
@@ -197,7 +197,8 @@ public:
 
   constexpr std::ranges::sentinel_t<const R> end() const { return std::ranges::end(base_); }
 
-  constexpr auto size() const requires std::ranges::sized_range<const R>
+  constexpr auto size() const
+    requires std::ranges::sized_range<const R>
   {
     const auto s = std::ranges::size(base_);
     return (s >= 2) ? s - 1 : 0;
@@ -262,7 +263,7 @@ inline constexpr detail::PairwiseTransform pairwise_transform;
 
 /// @brief Zip views
 template<std::ranges::input_range... View>
-  requires(std::ranges::view<View> &&...)
+  requires(std::ranges::view<View> && ...)
 class zip_view : public std::ranges::view_interface<zip_view<View...>>
 {
 public:
@@ -280,31 +281,35 @@ public:
 
     constexpr _Iterator(auto &&... its) : its_(its...) {}
 
-    constexpr _Iterator(_Iterator<!Const> i) requires Const : its_(i.its_) {}
+    constexpr _Iterator(_Iterator<!Const> i)
+      requires Const
+        : its_(i.its_)
+    {}
 
     constexpr decltype(auto) operator*() const
     {
-      return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
-      {
+      return [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
         return std::tuple<std::ranges::range_reference_t<View>...>(std::get<Idx>(its_).operator*()...);
-      }
-      (std::make_index_sequence<sizeof...(View)>{});
+      }(std::make_index_sequence<sizeof...(View)>{});
     }
 
     constexpr _Iterator & operator++()
     {
-      [this]<std::size_t... Idx>(std::index_sequence<Idx...>) { (++std::get<Idx>(its_), ...); }
-      (std::make_index_sequence<sizeof...(View)>{});
+      [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
+        (++std::get<Idx>(its_), ...);
+      }(std::make_index_sequence<sizeof...(View)>{});
       return *this;
     }
 
     constexpr void operator++(int)
     {
-      [this]<std::size_t... Idx>(std::index_sequence<Idx...>) { (++std::get<Idx>(its_), ...); }
-      (std::make_index_sequence<sizeof...(View)>{});
+      [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
+        (++std::get<Idx>(its_), ...);
+      }(std::make_index_sequence<sizeof...(View)>{});
     }
 
-    constexpr _Iterator operator++(int) requires(std::ranges::forward_range<View> &&...)
+    constexpr _Iterator operator++(int)
+      requires(std::ranges::forward_range<View> && ...)
     {
       _Iterator tmp = *this;
       ++this;
@@ -317,11 +322,9 @@ public:
       const _Iterator & x,
       const std::tuple<std::ranges::sentinel_t<std::conditional_t<Const, const View, View>>...> & y)
     {
-      return [&x, &y ]<std::size_t... Idx>(std::index_sequence<Idx...>)
-      {
+      return [&x, &y]<std::size_t... Idx>(std::index_sequence<Idx...>) {
         return ((std::get<Idx>(x.its_) == std::get<Idx>(y)) || ...);
-      }
-      (std::make_index_sequence<sizeof...(View)>{});
+      }(std::make_index_sequence<sizeof...(View)>{});
     }
   };  // _Iterator
 
@@ -335,50 +338,43 @@ public:
 
   constexpr _Iterator<false> begin()
   {
-    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
-    {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
       return _Iterator<false>(std::ranges::begin(std::get<Idx>(bases_))...);
-    }
-    (std::make_index_sequence<sizeof...(View)>{});
+    }(std::make_index_sequence<sizeof...(View)>{});
   }
 
   // some views only support mutable iteration (e.g. drop view over non-random access view). zip can
   // only allow const iteration if all underlying views support it
-  constexpr _Iterator<true> begin() const requires(std::ranges::range<const View> &&...)
+  constexpr _Iterator<true> begin() const
+    requires(std::ranges::range<const View> && ...)
   {
-    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
-    {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
       return _Iterator<true>(std::ranges::begin(std::get<Idx>(bases_))...);
-    }
-    (std::make_index_sequence<sizeof...(View)>{});
+    }(std::make_index_sequence<sizeof...(View)>{});
   }
 
   constexpr decltype(auto) end()
   {
-    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
-    {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
       return std::make_tuple<std::ranges::sentinel_t<View>...>(std::ranges::end(std::get<Idx>(bases_))...);
-    }
-    (std::make_index_sequence<sizeof...(View)>{});
+    }(std::make_index_sequence<sizeof...(View)>{});
   }
 
   // see comment for const begin
-  constexpr decltype(auto) end() const requires(std::ranges::range<const View> &&...)
+  constexpr decltype(auto) end() const
+    requires(std::ranges::range<const View> && ...)
   {
-    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
-    {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
       return std::make_tuple<std::ranges::sentinel_t<const View>...>(std::ranges::end(std::get<Idx>(bases_))...);
-    }
-    (std::make_index_sequence<sizeof...(View)>{});
+    }(std::make_index_sequence<sizeof...(View)>{});
   }
 
-  constexpr auto size() const requires(std::ranges::sized_range<View> &&...)
+  constexpr auto size() const
+    requires(std::ranges::sized_range<View> && ...)
   {
-    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>)
-    {
+    return [this]<std::size_t... Idx>(std::index_sequence<Idx...>) {
       return std::min({std::ranges::size(std::get<Idx>(bases_))...});
-    }
-    (std::make_index_sequence<sizeof...(View)>{});
+    }(std::make_index_sequence<sizeof...(View)>{});
   }
 };
 
