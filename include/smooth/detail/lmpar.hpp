@@ -105,7 +105,7 @@ solve_ls(auto & R, const Eigen::Vector<double, N> & Qt_r, const auto & P, const 
   for (; rank != n && R.coeff(rank, rank) >= Eigen::NumTraits<double>::dummy_precision(); ++rank) {}
 
   Eigen::Vector<double, N> sol(n);
-  sol.tail(n - rank).setZero();
+  sol.setZero();
   sol.head(rank) = R.topLeftCorner(rank, rank).template triangularView<Eigen::Upper>().solve(a.head(rank));
 
   // solution is now equal to -P z
@@ -190,6 +190,7 @@ lmpar(const auto & J, const Eigen::Vector<double, N> & d, const Eigen::Vector<do
   using MatrixT = std::decay_t<decltype(J)>;
 
   static constexpr bool is_sparse = std::is_base_of_v<Eigen::SparseMatrixBase<MatrixT>, MatrixT>;
+  static_assert(!is_sparse, "Use lmpar_sparse");
 
   static constexpr int NM_min  = std::min(N, M);
   static constexpr int NM_rest = NM_min == -1 ? -1 : N - NM_min;

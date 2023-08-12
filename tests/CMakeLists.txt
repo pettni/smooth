@@ -1,3 +1,9 @@
+option(ENABLE_TEST_COVERAGE "Enable code coverage for debug build" OFF)
+message(STATUS "ENABLE_TEST_COVERAGE set to: ${ENABLE_TEST_COVERAGE}")
+
+option(ENABLE_TEST_SANITIZERS "Enable santitzers for debug build" OFF)
+message(STATUS "ENABLE_TEST_SANITIZERS set to: ${ENABLE_TEST_SANITIZERS}")
+
 include(GoogleTest)
 find_package(GTest REQUIRED)
 
@@ -10,24 +16,35 @@ add_library(TestConfig INTERFACE)
 target_compile_options(
   TestConfig
   INTERFACE -Wall
-            -Wextra
-            -Wshadow
-            -Wnon-virtual-dtor
-            -Wold-style-cast
             -Wcast-align
-            -Wunused
+            -Wconversion
+            -Wdouble-promotion
+            -Werror
+            -Wextra
+            -Wimplicit-fallthrough
+            -Wnon-virtual-dtor
+            -Wnull-dereference
+            -Wold-style-cast
             -Woverloaded-virtual
             -Wpedantic
-            -Wconversion
+            -Wshadow
             -Wsign-conversion
-            -Wnull-dereference
-            -Wdouble-promotion
-            -Wimplicit-fallthrough
-            -Werror
+            -Wunused
+            -fdiagnostics-color=always
 )
 target_link_libraries(
   TestConfig INTERFACE smooth GTest::Main -fsanitize=undefined,address
 )
+
+if (ENABLE_TEST_COVERAGE)
+  target_compile_options(TestConfig INTERFACE $<$<CONFIG:Debug>:--coverage>)
+  target_link_libraries(TestConfig INTERFACE $<$<CONFIG:Debug>:--coverage>)
+endif()
+
+if (ENABLE_TEST_SANITIZERS)
+  target_compile_options(TestConfig INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined,address>)
+  target_link_options(TestConfig INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined,address>)
+endif()
 
 # CORE TESTS
 
@@ -145,7 +162,7 @@ gtest_discover_tests(test_sparse)
 
 find_package(Boost QUIET)
 find_package(Ceres 2.1 QUIET)
-find_package(autodiff 0.6 QUIET)
+find_package(autodiff QUIET)
 find_package(geometry_msgs QUIET)
 
 if(autodiff_FOUND)
@@ -192,7 +209,7 @@ if(geometry_msgs_FOUND)
     test_ros PRIVATE TestConfig
                      geometry_msgs::geometry_msgs__rosidl_typesupport_cpp
   )
-  gtest_discover_tests(test_ros)
+gtest_discover_tests(test_ros)
 else()
   message(WARNING "geometry_msgs not found, disabling ros test")
 endif()

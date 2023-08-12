@@ -11,10 +11,6 @@
 * Compatible with: autodiff, boost::numeric::odeint, Ceres, ROS
 * Written in an extensible functional programming style
 
-*This project is currently being developed---breaking changes and bugs should be expected.
-If you are looking for something stable and established, check out
-[manif][manif-link] and [Sophus][sophus-link].*
-
 In robotics it is often convenient to work in non-Euclidean manifolds.
 [Lie groups](https://en.wikipedia.org/wiki/Lie_group) are a class of manifolds that are
 easy to work with due to their symmetries, and that are also good models for many robotic
@@ -38,8 +34,6 @@ The following common Lie groups are implemented:
  * A smooth::Bundle type to treat Lie group products ![](https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n) as a single Lie group. The Bundle type also supports regular Eigen vectors as ![](https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)) components
  * Lie group interfaces for Eigen vectors and builtin scalars
 
-The guiding principles for `smooth` are **brevity, reliability and compatability**.
-
 
 # Getting started
 
@@ -53,7 +47,7 @@ mkdir build && cd build
 
 # Specify a C++20-compatible compiler if your default does not support C++20.
 # Build tests and/or examples as desired.
-cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF
+cmake .. -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF
 make -j8
 sudo make install
 ```
