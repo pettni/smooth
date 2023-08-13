@@ -88,7 +88,6 @@ $(function() {
 <li>Compatible with: autodiff, boost::numeric::odeint, Ceres, ROS</li>
 <li>Written in an extensible functional programming style</li>
 </ul>
-<p ><em>This project is currently being developed&mdash;breaking changes and bugs should be expected. If you are looking for something stable and established, check out <a href="https://github.com/artivis/manif/">manif</a> and <a href="https://github.com/strasdat/Sophus/">Sophus</a>.</em></p>
 <p >In robotics it is often convenient to work in non-Euclidean manifolds. <a href="https://en.wikipedia.org/wiki/Lie_group">Lie groups</a> are a class of manifolds that are easy to work with due to their symmetries, and that are also good models for many robotic systems. This header-only C++20 library facilitates leveraging Lie theory in robotics software, by enabling:</p>
 <ul>
 <li>Algebraic manipulation</li>
@@ -108,7 +107,6 @@ $(function() {
 <li>A <a class="el" href="classsmooth_1_1Bundle.html" title="Storage implementation of Bundle lie group.">smooth::Bundle</a> type to treat Lie group products <img src="https://latex.codecogs.com/png.latex?G&space;=&space;G_1&space;\times&space;\ldots&space;\times&space;G_n" alt="" class="inline"/> as a single Lie group. The Bundle type also supports regular Eigen vectors as <img src="https://latex.codecogs.com/png.latex?\mathbb{R}^n\cong\mathbb{T}(n)" alt="" class="inline"/> components</li>
 <li>Lie group interfaces for Eigen vectors and builtin scalars</li>
 </ul>
-<p >The guiding principles for <code>smooth</code> are <b>brevity, reliability and compatability</b>.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Getting started</h1>
 <h2><a class="anchor" id="autotoc_md2"></a>
@@ -119,7 +117,7 @@ Download and Build</h2>
 <div class="line"> </div>
 <div class="line"># Specify a C++20-compatible compiler if your default does not support C++20.</div>
 <div class="line"># Build tests and/or examples as desired.</div>
-<div class="line">cmake .. -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF</div>
+<div class="line">cmake .. -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF</div>
 <div class="line">make -j8</div>
 <div class="line">sudo make install</div>
 </div><!-- fragment --><p >Alternatively, if using ROS or ROS2 just clone <code>smooth</code> into a catkin/<a href="https://colcon.readthedocs.io/en/released/">colcon</a> workspace source folder and build the workspace with a compiler that supports C++20. Example with colcon: </p><div class="fragment"><div class="line">colcon build --cmake-args -DCMAKE_CXX_COMPILER=/usr/bin/g++-10</div>
