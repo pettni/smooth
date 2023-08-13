@@ -12,11 +12,19 @@
 
 #define SMOOTH_DIFF_CERES
 
+#include "smooth/detail/wrt_impl.hpp"
+#include "smooth/lie_group_base.hpp"
 #include "smooth/manifolds.hpp"
-#include "smooth/map.hpp"
 #include "smooth/wrt.hpp"
 
 namespace smooth {
+
+// mark Jet as a valid scalar
+template<typename T, int I>
+struct detail::scalar_trait<ceres::Jet<T, I>>
+{
+  static constexpr bool value = true;
+};
 
 // \cond
 template<Manifold G>
@@ -84,6 +92,7 @@ auto dr_ceres(auto && f, auto && x)
   Eigen::Matrix<Scalar, Nx, 1> a = Eigen::Matrix<Scalar, Nx, 1>::Zero(nx);
   Eigen::Matrix<Scalar, Ny, 1> b(ny);
   Eigen::Matrix<Scalar, Ny, Nx, (Nx == 1) ? Eigen::ColMajor : Eigen::RowMajor> jac(ny, nx);
+  jac.setZero();
 
   const auto f_deriv = [&]<typename T>(const T * in, T * out) {
     Eigen::Map<const Eigen::Matrix<T, Nx, 1>> mi(in, nx);
