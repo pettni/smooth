@@ -5,6 +5,7 @@
 #include "../cumulative_spline.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 template<int K, LieGroup G>
   requires(K > 0)
@@ -14,8 +15,7 @@ G cspline_eval_vs(
   Scalar<G> u,
   OptTangent<G> vel,
   OptTangent<G> acc,
-  OptTangent<G> jer)
-noexcept
+  OptTangent<G> jer) noexcept
 {
   assert(std::ranges::size(vs) == K);
   assert(Bcum.cols() == K + 1);
@@ -74,8 +74,7 @@ SplineJacobian<G, K - 1> cspline_eval_dg_dvs(
   const MatrixType auto & Bcum,
   const Scalar<G> & u,
   OptSplineJacobian<G, K - 1> dvel_dvs,
-  OptSplineJacobian<G, K - 1> dacc_dvs)
-noexcept
+  OptSplineJacobian<G, K - 1> dacc_dvs) noexcept
 {
   assert(std::ranges::size(vs) == K);
   assert(Bcum.cols() == K + 1);
@@ -140,8 +139,7 @@ noexcept
 template<int K, std::ranges::sized_range R, LieGroup G>
   requires(K > 0)
 G cspline_eval_gs(
-  R && gs, const MatrixType auto & Bcum, Scalar<G> u, OptTangent<G> vel, OptTangent<G> acc, OptTangent<G> jer)
-noexcept
+  R && gs, const MatrixType auto & Bcum, Scalar<G> u, OptTangent<G> vel, OptTangent<G> acc, OptTangent<G> jer) noexcept
 {
   assert(std::ranges::size(gs) == K + 1);
 
@@ -158,8 +156,7 @@ SplineJacobian<G, K> cspline_eval_dg_dgs(
   const MatrixType auto & Bcum,
   const Scalar<G> & u,
   OptSplineJacobian<G, K> dvel_dgs,
-  OptSplineJacobian<G, K> dacc_dgs)
-noexcept
+  OptSplineJacobian<G, K> dacc_dgs) noexcept
 {
   assert(std::ranges::size(gs) == K + 1);
 
@@ -206,4 +203,5 @@ noexcept
   return dg_dgs;
 }
 
+}  // namespace v1_0
 }  // namespace smooth

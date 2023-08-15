@@ -10,6 +10,7 @@
 #include "lie_group_base.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 // \cond
 template<typename Scalar>
@@ -64,7 +65,8 @@ public:
   /**
    * @brief Access quaterion.
    */
-  Eigen::Map<Eigen::Quaternion<Scalar>> quat() requires is_mutable
+  Eigen::Map<Eigen::Quaternion<Scalar>> quat()
+    requires is_mutable
   {
     return Eigen::Map<Eigen::Quaternion<Scalar>>(static_cast<_Derived &>(*this).data());
   }
@@ -265,4 +267,5 @@ class Map<const SO3<_Scalar>> : public SO3Base<Map<const SO3<_Scalar>>>
 using SO3f = SO3<float>;   ///< SO3 with float scalar representation
 using SO3d = SO3<double>;  ///< SO3 with double scalar representation
 
+}  // namespace v1_0
 }  // namespace smooth

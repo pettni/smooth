@@ -10,7 +10,25 @@ message(STATUS "BUILD_EXAMPLES set to: ${BUILD_EXAMPLES}")
 option(BUILD_TESTS "Build the tests." OFF)
 message(STATUS "BUILD_TESTS set to: ${BUILD_TESTS}")
 
+# ---------------------------------------------------------------------------------------
+# INCLUDES
+# ---------------------------------------------------------------------------------------
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+
+# ---------------------------------------------------------------------------------------
+# DEPENDENCIES
+# ---------------------------------------------------------------------------------------
 find_package(Eigen3 3.4 REQUIRED)
+
+# ---------------------------------------------------------------------------------------
+# CONFIGURATION
+# ---------------------------------------------------------------------------------------
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/config/version.hpp.in
+  ${CMAKE_CURRENT_BINARY_DIR}/include/smooth/version.hpp
+  @ONLY
+)
 
 # ---------------------------------------------------------------------------------------
 # TARGETS
@@ -25,7 +43,6 @@ target_link_libraries(smooth INTERFACE Eigen3::Eigen)
 # ---------------------------------------------------------------------------------------
 # INSTALLATION
 # ---------------------------------------------------------------------------------------
-include(GNUInstallDirs)
 
 # Header files
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
@@ -54,7 +71,6 @@ install(
 )
 
 # Generate CONFIG file
-include(CMakePackageConfigHelpers)
 configure_package_config_file(
   cmake/ConfigTemplate.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake

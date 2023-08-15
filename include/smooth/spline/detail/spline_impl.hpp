@@ -12,6 +12,7 @@
 #include "../spline.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 // cumulative basis functions
 template<int K>
@@ -84,8 +85,9 @@ Spline<K, G> Spline<K, G>::ConstantVelocity(const Tangent<G> & v, double T, cons
 }
 
 template<int K, LieGroup G>
-Spline<K, G> Spline<K, G>::FixedCubic(
-  const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T, const G & ga) requires(K == 3)
+Spline<K, G>
+Spline<K, G>::FixedCubic(const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T, const G & ga)
+  requires(K == 3)
 {
   Eigen::Matrix<double, Dof<G>, K> V;
   V.col(0) = T * va / 3;
@@ -269,7 +271,8 @@ CastT<S, G> Spline<K, G>::operator()(const S & t, OptTangent<CastT<S, G>> vel, O
 }
 
 template<int K, LieGroup G>
-Tangent<G> Spline<K, G>::arclength(double t) const requires(K == 3)
+Tangent<G> Spline<K, G>::arclength(double t) const
+  requires(K == 3)
 {
   Tangent<G> ret = Tangent<G>::Zero();
 
@@ -382,4 +385,5 @@ std::size_t Spline<K, G>::find_idx(double t) const
   return istar;
 }
 
+}  // namespace v1_0
 }  // namespace smooth

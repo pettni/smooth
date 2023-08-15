@@ -5,8 +5,9 @@
 #include <Eigen/Sparse>
 #include <Eigen/SparseCholesky>
 
-namespace smooth::detail {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace detail {
 /**
  * @brief Calculate the value and derivative of the function
  * \f[
@@ -115,4 +116,6 @@ lmpar_sparse(const auto & J, const Eigen::Vector<double, N> & d, const Eigen::Ma
   return std::make_pair(alpha, std::move(x));
 }
 
-}  // namespace smooth::detail
+}  // namespace detail
+}  // namespace v1_0
+}  // namespace smooth

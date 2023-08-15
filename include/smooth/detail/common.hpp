@@ -3,6 +3,7 @@
 #pragma once
 
 namespace smooth {
+inline namespace v1_0 {
 
 static constexpr double eps2 = 1e-8;
 
@@ -23,4 +24,5 @@ static constexpr double eps2 = 1e-8;
                                                                                 \
   static_assert(true)
 
+}  // namespace v1_0
 }  // namespace smooth

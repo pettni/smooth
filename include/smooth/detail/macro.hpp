@@ -3,6 +3,7 @@
 #pragma once
 
 namespace smooth {
+inline namespace v1_0 {
 
 #define SMOOTH_INHERIT_TYPEDEFS           \
   using Base::is_mutable;                 \
@@ -35,8 +36,7 @@ public:                                                                   \
   ~X() = default;                                                         \
   /*! @brief Copy constructor from other storage type */                  \
   template<typename OtherDerived>                                         \
-  X(const X##Base<OtherDerived> & o)                                      \
-  noexcept                                                                \
+  X(const X##Base<OtherDerived> & o) noexcept                             \
   {                                                                       \
     coeffs() = static_cast<const OtherDerived &>(o).coeffs();             \
   }                                                                       \
@@ -108,4 +108,5 @@ private:                                                               \
                                                                        \
   static_assert(true, "")
 
+}  // namespace v1_0
 }  // namespace smooth

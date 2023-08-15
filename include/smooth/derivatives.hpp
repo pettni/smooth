@@ -12,6 +12,7 @@
  */
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Derivative of matrix product.
@@ -70,6 +71,7 @@ Eigen::RowVector<Scalar<G>, Dof<G>> dr_rminus_squarednorm(const Tangent<G> & e);
 template<LieGroup G>
 Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G>> d2r_rminus_squarednorm(const Tangent<G> & e);
 
+}  // namespace v1_0
 }  // namespace smooth
 
 #include "detail/derivatives_impl.hpp"

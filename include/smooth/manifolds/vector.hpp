@@ -13,8 +13,9 @@
 #include "../concepts/manifold.hpp"
 #include "../detail/utils.hpp"
 
-namespace smooth::traits {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace traits {
 /**
  * @brief Manifold model specification for std::vector<Manifold>
  */
@@ -93,4 +94,6 @@ struct man<std::vector<M>>
   // \endcond
 };
 
-}  // namespace smooth::traits
+}  // namespace traits
+}  // namespace v1_0
+}  // namespace smooth

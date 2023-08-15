@@ -8,6 +8,7 @@
 #include "trig.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief SO(3) Lie group represented as S^3
@@ -292,4 +293,5 @@ public:
   }
 };
 
+}  // namespace v1_0
 }  // namespace smooth

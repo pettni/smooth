@@ -9,6 +9,7 @@
 #include "../bspline.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 template<int K, LieGroup G>
 BSpline<K, G>::BSpline() : m_t0(0), m_dt(1), m_ctrl_pts(K + 1, G::Identity())
@@ -91,4 +92,5 @@ CastT<S, G> BSpline<K, G>::operator()(const S & t, OptTangent<CastT<S, G>> vel, 
   return g;
 }
 
+}  // namespace v1_0
 }  // namespace smooth

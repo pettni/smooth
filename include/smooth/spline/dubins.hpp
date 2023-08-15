@@ -11,6 +11,7 @@
 #include "spline.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Create dubins Spline.
@@ -24,6 +25,7 @@ template<int K = 3>
   requires(K >= 1)
 Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R = 1);
 
+}  // namespace v1_0
 }  // namespace smooth
 
 #include "detail/dubins_impl.hpp"

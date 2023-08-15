@@ -21,6 +21,7 @@
 #include "smooth/manifolds.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /// @brief Specialize trait to make autodiff type a Manifold
 template<typename T>
@@ -93,21 +94,20 @@ auto dr_autodiff(auto && f, auto && x)
     const auto a_wrt1 = autodiff::wrt(a_ad1);
     const auto a_wrt2 = autodiff::wrt(a_ad2);
 
-    autodiff::detail::ForEachWrtVar(
-      a_wrt1, [&](auto && i, auto && xi) constexpr {
-        autodiff::detail::ForEachWrtVar(
-          a_wrt2, [&](auto && j, auto && xj) constexpr {
-            const auto u = autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));
-            for (auto k = 0u; k < ny; ++k) {
-              J(k, i)          = static_cast<double>(autodiff::detail::derivative<1>(u[k]));
-              H(j, k * nx + i) = autodiff::detail::derivative<2>(u[k]);
-            }
-          });
+    autodiff::detail::ForEachWrtVar(a_wrt1, [&](auto && i, auto && xi) constexpr {
+      autodiff::detail::ForEachWrtVar(a_wrt2, [&](auto && j, auto && xj) constexpr {
+        const auto u = autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));
+        for (auto k = 0u; k < ny; ++k) {
+          J(k, i)          = static_cast<double>(autodiff::detail::derivative<1>(u[k]));
+          H(j, k * nx + i) = autodiff::detail::derivative<2>(u[k]);
+        }
       });
+    });
 
     return std::make_tuple(std::move(F), std::move(J), std::move(H));
   }
 }
 
 }  // namespace diff
+}  // namespace v1_0
 }  // namespace smooth

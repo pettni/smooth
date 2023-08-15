@@ -12,6 +12,7 @@
 #include "smooth/so3.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 template<LieGroup G>
 Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2r_exp_autodiff(const Tangent<G> & a)
@@ -81,6 +82,7 @@ Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2l_expinv_autodiff(const Tang
   return ret;
 }
 
+}  // namespace v1_0
 }  // namespace smooth
 
 template<smooth::LieGroup G>

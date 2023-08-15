@@ -5,6 +5,7 @@
 #include <Eigen/Core>
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Type trait that maps a type to Lie group operations.
@@ -249,7 +250,10 @@ public:
    */
   template<typename OtherDerived>
     requires(std::is_same_v<Impl, typename liebase_info<OtherDerived>::Impl>)
-  Tangent operator-(const LieGroupBase<OtherDerived> & xo) const noexcept { return (xo.inverse() * *this).log(); }
+  Tangent operator-(const LieGroupBase<OtherDerived> & xo) const noexcept
+  {
+    return (xo.inverse() * *this).log();
+  }
 
   // Tangent API
 
@@ -473,4 +477,5 @@ using MapDispatch = std::conditional_t<
   ::Eigen::Map<T>,
   ::smooth::Map<T>>;
 
+}  // namespace v1_0
 }  // namespace smooth

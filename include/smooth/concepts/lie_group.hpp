@@ -13,6 +13,7 @@
  */
 
 namespace smooth {
+inline namespace v1_0 {
 
 namespace traits {
 
@@ -132,7 +133,7 @@ struct man<G>
   // \endcond
 };
 
-}  // namespace smooth::traits
+}  // namespace
 
 ////////////////////////////////////////////////////////
 //// Free functions that dispatch to traits::lie<G> ////
@@ -352,4 +353,4 @@ inline Hessian<G> d2l_expinv(const Eigen::MatrixBase<Derived> & a)
   return -d2r_expinv<G>(-a);
 }
 
-}  // namespace smooth
+}}  // namespace smooth

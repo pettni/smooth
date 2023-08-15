@@ -14,6 +14,7 @@
 #include "../fit.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 namespace detail {
 
@@ -416,4 +417,5 @@ auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, c
   return BSpline<K, G>(obj.t0, dt, std::move(ctrl_pts));
 }
 
+}  // namespace v1_0
 }  // namespace smooth

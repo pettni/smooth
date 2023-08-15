@@ -11,6 +11,7 @@
  */
 
 namespace smooth {
+inline namespace v1_0 {
 
 namespace traits {
 
@@ -132,7 +133,8 @@ inline PlainObject<M> Default(Eigen::Index dof)
  * @brief Default-initialized Manifold with static dof
  */
 template<Manifold M>
-inline PlainObject<M> Default() requires(Dof<M> > 0)
+inline PlainObject<M> Default()
+  requires(Dof<M> > 0)
 {
   return traits::man<M>::Default(Dof<M>);
 }
@@ -173,4 +175,5 @@ inline Tangent<M> rminus(const M & g1, const Mo & g2)
   return traits::man<M>::rminus(g1, g2);
 }
 
+}  // namespace v1_0
 }  // namespace smooth

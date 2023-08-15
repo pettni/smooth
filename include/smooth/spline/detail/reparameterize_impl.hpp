@@ -8,6 +8,7 @@
 #include "../reparameterize.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 Spline<2, double> reparameterize_spline(
   const SplineLike auto & spline,
@@ -166,4 +167,5 @@ Spline<2, double> reparameterize_spline(
   return ret;
 }
 
+}  // namespace v1_0
 }  // namespace smooth

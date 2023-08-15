@@ -13,13 +13,13 @@
 #include "spline.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Spline specification.
  */
 template<typename T>
-concept SplineSpec = requires(T t)
-{
+concept SplineSpec = requires(T t) {
   // clang-format off
   { T::Degree } -> std::convertible_to<int>;
   { T::OptDeg } -> std::convertible_to<int>;
@@ -201,6 +201,7 @@ auto fit_spline_cubic(std::ranges::range auto && ts, std::ranges::range auto && 
 template<int K>
 auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, const double dt);
 
+}  // namespace v1_0
 }  // namespace smooth
 
 #include "detail/fit_impl.hpp"

@@ -16,6 +16,7 @@
 #include "common.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Evaluate a cumulative spline of order \f$K\f$ from differences.
@@ -68,8 +69,7 @@ SplineJacobian<G, K - 1> cspline_eval_dg_dvs(
   const MatrixType auto & Bcum,
   const Scalar<G> & u,
   OptSplineJacobian<G, K - 1> dvel_dvs = {},
-  OptSplineJacobian<G, K - 1> dacc_dvs = {})
-noexcept;
+  OptSplineJacobian<G, K - 1> dacc_dvs = {}) noexcept;
 
 /**
  * @brief Evaluate a cumulative basis spline of order K from coefficients.
@@ -123,9 +123,9 @@ SplineJacobian<G, K> cspline_eval_dg_dgs(
   const MatrixType auto & Bcum,
   const Scalar<G> & u,
   OptSplineJacobian<G, K> dvel_dgs = {},
-  OptSplineJacobian<G, K> dacc_dgs = {})
-noexcept;
+  OptSplineJacobian<G, K> dacc_dgs = {}) noexcept;
 
+}  // namespace v1_0
 }  // namespace smooth
 
 #include "detail/cumulative_spline_impl.hpp"

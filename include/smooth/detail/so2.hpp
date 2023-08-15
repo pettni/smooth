@@ -7,6 +7,7 @@
 #include "common.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief SO(2) Lie Group represented as U(1)
@@ -79,4 +80,5 @@ public:
   static void vee(MRefIn A_in, TRefOut a_out) { a_out << (A_in(1, 0) - A_in(0, 1)) / Scalar(2); }
 };
 
+}  // namespace v1_0
 }  // namespace smooth

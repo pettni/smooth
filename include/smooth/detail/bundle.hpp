@@ -17,6 +17,7 @@
  * for Lie groups G1 ... Gk.
  */
 namespace smooth {
+inline namespace v1_0 {
 
 using std::get;
 
@@ -229,4 +230,5 @@ struct BundleImpl
   // clang-format on
 };
 
+}  // namespace v1_0
 }  // namespace smooth
