@@ -102,94 +102,94 @@ $(function() {
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">#include &quot;<a class="code" href="manifolds_8hpp.html">smooth/manifolds.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">namespace </span>smooth {</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="structsmooth_1_1detail_1_1scalar__trait_3_01autodiff_1_1Dual_3_01T_00_01T_01_4_01_4.html">   27</a></span><span class="keyword">struct </span>detail::scalar_trait&lt;autodiff::Dual&lt;T, T&gt;&gt;</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>{</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>  <span class="comment">// \cond</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <span class="keyword">true</span>;</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>  <span class="comment">// \endcond</span></div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>};</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="keyword">namespace </span>diff {</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K = 1&gt;</div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>  <span class="keyword">requires</span>(K &gt;= 1 &amp;&amp; K &lt;= 2)</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="autodiff_8hpp.html#aee51398daa2534c0ce4252bade8b342f">   45</a></span><span class="keyword">auto</span> <a class="code hl_function" href="autodiff_8hpp.html#aee51398daa2534c0ce4252bade8b342f">dr_autodiff</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x)</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>{</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>  <span class="keyword">using </span>Result = <span class="keyword">decltype</span>(std::apply(f, x));</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>  <span class="keyword">using </span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">::smooth::Scalar&lt;Result&gt;</a>;</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  <span class="keyword">using </span>Eigen::Matrix;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>  <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptsmooth_1_1Manifold.html">Manifold&lt;Result&gt;</a>, <span class="stringliteral">&quot;f(x) is not a Manifold&quot;</span>);</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>  <span class="keyword">using </span>AdScalar = autodiff::HigherOrderDual&lt;K, Scalar&gt;;</div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span> </div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>  Result F = std::apply(f, x);</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> Nx = wrt_Dof&lt;decltype(x)&gt;();</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> Ny = Dof&lt;Result&gt;;</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>  <span class="keyword">const</span> Eigen::Index nx    = std::apply([](<span class="keyword">auto</span> &amp;&amp;... args) { <span class="keywordflow">return</span> (<a class="code hl_function" href="manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2">dof</a>(args) + ...); }, x);</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keyword">const</span> Eigen::Index ny    = <a class="code hl_function" href="manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2">dof</a>(F);</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>  <span class="comment">// cast F and x to ad types</span></div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <span class="keyword">const</span> <span class="keyword">auto</span> x_ad              = wrt_cast&lt;AdScalar&gt;(x);</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  <a class="code hl_typedef" href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">CastT&lt;AdScalar, Result&gt;</a> F_ad = cast&lt;AdScalar&gt;(F);</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 1) {</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="comment">// zero-valued tangent element</span></div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    Matrix&lt;AdScalar, Nx, 1&gt; a_ad = Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="comment">// function to differentiate</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keyword">const</span> <span class="keyword">auto</span> f_ad = [&amp;](Matrix&lt;AdScalar, Nx, 1&gt; &amp; var) -&gt; Matrix&lt;AdScalar, Ny, 1&gt; {</div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>      <span class="keywordflow">return</span> rminus&lt;CastT&lt;AdScalar, Result&gt;&gt;(std::apply(f, wrt_rplus(x_ad, var)), F_ad);</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    };</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    Matrix&lt;Scalar, Ny, Nx&gt; J(ny, nx);</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    J = autodiff::jacobian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad));</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    <span class="keywordflow">return</span> std::make_pair(std::move(F), std::move(J));</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 2) {</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="comment">// function to differentiate</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keyword">const</span> <span class="keyword">auto</span> f_ad =</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>      [&amp;f, &amp;x_ad, &amp;F_ad](Matrix&lt;AdScalar, Nx, 1&gt; &amp; var1, Matrix&lt;AdScalar, Nx, 1&gt; &amp; var2) -&gt; Matrix&lt;AdScalar, Ny, 1&gt; {</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>      <span class="keywordflow">return</span> <a class="code hl_function" href="manifold_8hpp.html#ab1b40a3c99fb18a4a468a3b8d4b6631a">rminus</a>(std::apply(f, wrt_rplus(wrt_rplus(x_ad, var1), var2)), F_ad);</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    };</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    Matrix&lt;Scalar, Ny, Nx&gt; J(ny, nx);</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    Matrix&lt;<a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>, Nx, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny&gt; H(nx, nx * ny);</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="comment">// zero-valued tangent elements</span></div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    Matrix&lt;AdScalar, Nx, 1&gt; a_ad1 = Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    Matrix&lt;AdScalar, Nx, 1&gt; a_ad2 = Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keyword">const</span> <span class="keyword">auto</span> a_wrt1 = autodiff::wrt(a_ad1);</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keyword">const</span> <span class="keyword">auto</span> a_wrt2 = autodiff::wrt(a_ad2);</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>    autodiff::detail::ForEachWrtVar(</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>      a_wrt1, [&amp;](<span class="keyword">auto</span> &amp;&amp; i, <span class="keyword">auto</span> &amp;&amp; xi) <span class="keyword">constexpr</span> {</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>        autodiff::detail::ForEachWrtVar(</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>          a_wrt2, [&amp;](<span class="keyword">auto</span> &amp;&amp; j, <span class="keyword">auto</span> &amp;&amp; xj) <span class="keyword">constexpr</span> {</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>            <span class="keyword">const</span> <span class="keyword">auto</span> u = autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>            <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; ny; ++k) {</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>              J(k, i)          = <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(autodiff::detail::derivative&lt;1&gt;(u[k]));</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>              H(j, k * nx + i) = autodiff::detail::derivative&lt;2&gt;(u[k]);</div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>            }</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>          });</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>      });</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="keywordflow">return</span> std::make_tuple(std::move(F), std::move(J), std::move(H));</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>  }</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>}</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>}  <span class="comment">// namespace diff</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">inline</span> <span class="keyword">namespace </span>v1_0 {</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structsmooth_1_1v1__0_1_1detail_1_1scalar__trait_3_01autodiff_1_1Dual_3_01T_00_01T_01_4_01_4.html">   28</a></span><span class="keyword">struct </span>detail::scalar_trait&lt;autodiff::Dual&lt;T, T&gt;&gt;</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>{</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>  <span class="comment">// \cond</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keywordtype">bool</span> value = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>  <span class="comment">// \endcond</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>};</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">namespace </span>diff {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K = 1&gt;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>  <span class="keyword">requires</span>(K &gt;= 1 &amp;&amp; K &lt;= 2)</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="autodiff_8hpp.html#aac0d704df882a56bafd8bdf8dcf01484">   46</a></span><span class="keyword">auto</span> <a class="code hl_function" href="autodiff_8hpp.html#aac0d704df882a56bafd8bdf8dcf01484">dr_autodiff</a>(<span class="keyword">auto</span> &amp;&amp; f, <span class="keyword">auto</span> &amp;&amp; x)</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>{</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>  <span class="keyword">using </span>Result = <span class="keyword">decltype</span>(std::apply(f, x));</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>  <span class="keyword">using </span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> = ::smooth::Scalar&lt;Result&gt;;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>  <span class="keyword">using </span>Eigen::Matrix;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>  <span class="keyword">static_assert</span>(<a class="code hl_concept" href="conceptsmooth_1_1v1__0_1_1Manifold.html">Manifold&lt;Result&gt;</a>, <span class="stringliteral">&quot;f(x) is not a Manifold&quot;</span>);</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>  <span class="keyword">using </span>AdScalar = autodiff::HigherOrderDual&lt;K, Scalar&gt;;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>  Result F = std::apply(f, x);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> Nx = wrt_Dof&lt;decltype(x)&gt;();</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>  <span class="keyword">static</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> Ny = Dof&lt;Result&gt;;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>  <span class="keyword">const</span> Eigen::Index nx    = std::apply([](<span class="keyword">auto</span> &amp;&amp;... args) { <span class="keywordflow">return</span> (<a class="code hl_function" href="manifold_8hpp.html#ad496ecc31022b016262fa7f3f32dd5c6">dof</a>(args) + ...); }, x);</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>  <span class="keyword">const</span> Eigen::Index ny    = <a class="code hl_function" href="manifold_8hpp.html#ad496ecc31022b016262fa7f3f32dd5c6">dof</a>(F);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <span class="comment">// cast F and x to ad types</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  <span class="keyword">const</span> <span class="keyword">auto</span> x_ad              = wrt_cast&lt;AdScalar&gt;(x);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>  <a class="code hl_typedef" href="manifold_8hpp.html#a052b3084cf063a15098d7babeefe516f">CastT&lt;AdScalar, Result&gt;</a> F_ad = cast&lt;AdScalar&gt;(F);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 1) {</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="comment">// zero-valued tangent element</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    Matrix&lt;AdScalar, Nx, 1&gt; a_ad = Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="comment">// function to differentiate</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keyword">const</span> <span class="keyword">auto</span> f_ad = [&amp;](Matrix&lt;AdScalar, Nx, 1&gt; &amp; var) -&gt; Matrix&lt;AdScalar, Ny, 1&gt; {</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>      <span class="keywordflow">return</span> rminus&lt;CastT&lt;AdScalar, Result&gt;&gt;(std::apply(f, wrt_rplus(x_ad, var)), F_ad);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    };</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    Matrix&lt;Scalar, Ny, Nx&gt; J(ny, nx);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span> </div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    J = autodiff::jacobian(f_ad, autodiff::wrt(a_ad), autodiff::at(a_ad));</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keywordflow">return</span> std::make_pair(std::move(F), std::move(J));</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 2) {</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="comment">// function to differentiate</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keyword">const</span> <span class="keyword">auto</span> f_ad =</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>      [&amp;f, &amp;x_ad, &amp;F_ad](Matrix&lt;AdScalar, Nx, 1&gt; &amp; var1, Matrix&lt;AdScalar, Nx, 1&gt; &amp; var2) -&gt; Matrix&lt;AdScalar, Ny, 1&gt; {</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>      <span class="keywordflow">return</span> <a class="code hl_function" href="manifold_8hpp.html#a2335259ce4f485b1c9c362831f951a38">rminus</a>(std::apply(f, wrt_rplus(wrt_rplus(x_ad, var1), var2)), F_ad);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    };</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span> </div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    Matrix&lt;Scalar, Ny, Nx&gt; J(ny, nx);</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    Matrix&lt;<a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>, Nx, std::min(Nx, Ny) == -1 ? -1 : Nx * Ny&gt; H(nx, nx * ny);</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="comment">// zero-valued tangent elements</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    Matrix&lt;AdScalar, Nx, 1&gt; a_ad1 = Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    Matrix&lt;AdScalar, Nx, 1&gt; a_ad2 = Matrix&lt;AdScalar, Nx, 1&gt;::Zero(nx);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span> </div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>    <span class="keyword">const</span> <span class="keyword">auto</span> a_wrt1 = autodiff::wrt(a_ad1);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keyword">const</span> <span class="keyword">auto</span> a_wrt2 = autodiff::wrt(a_ad2);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    autodiff::detail::ForEachWrtVar(a_wrt1, [&amp;](<span class="keyword">auto</span> &amp;&amp; i, <span class="keyword">auto</span> &amp;&amp; xi) <span class="keyword">constexpr</span> {</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>      autodiff::detail::ForEachWrtVar(a_wrt2, [&amp;](<span class="keyword">auto</span> &amp;&amp; j, <span class="keyword">auto</span> &amp;&amp; xj) <span class="keyword">constexpr</span> {</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>        <span class="keyword">const</span> <span class="keyword">auto</span> u = autodiff::detail::eval(f_ad, autodiff::at(a_ad1, a_ad2), autodiff::wrt(xi, xj));</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; ny; ++k) {</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>          J(k, i)          = <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(autodiff::detail::derivative&lt;1&gt;(u[k]));</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>          H(j, k * nx + i) = autodiff::detail::derivative&lt;2&gt;(u[k]);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        }</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>      });</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>    });</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span> </div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <span class="keywordflow">return</span> std::make_tuple(std::move(F), std::move(J), std::move(H));</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>  }</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>}</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span> </div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>}  <span class="comment">// namespace diff</span></div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>}  <span class="comment">// namespace v1_0</span></div>
 <div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>}  <span class="comment">// namespace smooth</span></div>
-<div class="ttc" id="aautodiff_8hpp_html_aee51398daa2534c0ce4252bade8b342f"><div class="ttname"><a href="autodiff_8hpp.html#aee51398daa2534c0ce4252bade8b342f">smooth::diff::dr_autodiff</a></div><div class="ttdeci">auto dr_autodiff(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Automatic differentiation in tangent space using the autodiff library.</div><div class="ttdef"><b>Definition:</b> <a href="autodiff_8hpp_source.html#l00045">autodiff.hpp:45</a></div></div>
-<div class="ttc" id="aconceptsmooth_1_1Manifold_html"><div class="ttname"><a href="conceptsmooth_1_1Manifold.html">smooth::Manifold</a></div><div class="ttdoc">Class-external Manifold interface defined through the traits::man trait class.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00031">manifold.hpp:31</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_a536ec32222e9ec834c91ad0d5fe80dac"><div class="ttname"><a href="manifold_8hpp.html#a536ec32222e9ec834c91ad0d5fe80dac">smooth::CastT</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::template CastT&lt; NewScalar &gt; CastT</div><div class="ttdoc">Cast'ed type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00100">manifold.hpp:100</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_a85d829dc273faa1e9618040cdebdf74c"><div class="ttname"><a href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">smooth::Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00088">manifold.hpp:88</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_a9dfb3e1e148ba2880a7e96726c9e7bc2"><div class="ttname"><a href="manifold_8hpp.html#a9dfb3e1e148ba2880a7e96726c9e7bc2">smooth::dof</a></div><div class="ttdeci">Eigen::Index dof(const M &amp;m)</div><div class="ttdoc">Manifold degrees of freedom (tangent space dimension)</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00144">manifold.hpp:144</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_ab1b40a3c99fb18a4a468a3b8d4b6631a"><div class="ttname"><a href="manifold_8hpp.html#ab1b40a3c99fb18a4a468a3b8d4b6631a">smooth::rminus</a></div><div class="ttdeci">Tangent&lt; M &gt; rminus(const M &amp;g1, const Mo &amp;g2)</div><div class="ttdoc">Manifold right-minus.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00171">manifold.hpp:171</a></div></div>
+<div class="ttc" id="aautodiff_8hpp_html_aac0d704df882a56bafd8bdf8dcf01484"><div class="ttname"><a href="autodiff_8hpp.html#aac0d704df882a56bafd8bdf8dcf01484">smooth::v1_0::diff::dr_autodiff</a></div><div class="ttdeci">auto dr_autodiff(auto &amp;&amp;f, auto &amp;&amp;x)</div><div class="ttdoc">Automatic differentiation in tangent space using the autodiff library.</div><div class="ttdef"><b>Definition:</b> <a href="autodiff_8hpp_source.html#l00046">autodiff.hpp:46</a></div></div>
+<div class="ttc" id="aconceptsmooth_1_1v1__0_1_1Manifold_html"><div class="ttname"><a href="conceptsmooth_1_1v1__0_1_1Manifold.html">smooth::v1_0::Manifold</a></div><div class="ttdoc">Class-external Manifold interface defined through the traits::man trait class.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00032">manifold.hpp:32</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_a052b3084cf063a15098d7babeefe516f"><div class="ttname"><a href="manifold_8hpp.html#a052b3084cf063a15098d7babeefe516f">smooth::v1_0::CastT</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::template CastT&lt; NewScalar &gt; CastT</div><div class="ttdoc">Cast'ed type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00101">manifold.hpp:101</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_a2335259ce4f485b1c9c362831f951a38"><div class="ttname"><a href="manifold_8hpp.html#a2335259ce4f485b1c9c362831f951a38">smooth::v1_0::rminus</a></div><div class="ttdeci">Tangent&lt; M &gt; rminus(const M &amp;g1, const Mo &amp;g2)</div><div class="ttdoc">Manifold right-minus.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00173">manifold.hpp:173</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_ab867ac39a760114909e5e9fdfddae0c9"><div class="ttname"><a href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">smooth::v1_0::Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00089">manifold.hpp:89</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_ad496ecc31022b016262fa7f3f32dd5c6"><div class="ttname"><a href="manifold_8hpp.html#ad496ecc31022b016262fa7f3f32dd5c6">smooth::v1_0::dof</a></div><div class="ttdeci">Eigen::Index dof(const M &amp;m)</div><div class="ttdoc">Manifold degrees of freedom (tangent space dimension)</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00146">manifold.hpp:146</a></div></div>
 <div class="ttc" id="amanifolds_8hpp_html"><div class="ttname"><a href="manifolds_8hpp.html">manifolds.hpp</a></div><div class="ttdoc">Meta header to include all Manifold concept model specifications.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

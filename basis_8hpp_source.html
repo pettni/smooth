@@ -93,337 +93,339 @@ $(function() {
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="static__matrix_8hpp.html">static_matrix.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span>smooth {</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar&gt;</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="basis_8hpp.html#afec4f1ca74bf095280205080ff07aecb">   26</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#afec4f1ca74bf095280205080ff07aecb">monomial_derivative</a>(<a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> u, std::size_t p = 0)</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>{</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>  <span class="keywordflow">if</span> (p &gt; K) { <span class="keywordflow">return</span> ret; }</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; p; ++i) { ret[0][i] = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>(0); }</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>  <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> P1      = 1;</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>  std::size_t P2 = 1;</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 2u; j &lt;= p; ++j) { P2 *= j; }</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  ret[0][p] = P1 * <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(P2);</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = p + 1; i &lt;= K; ++i) {</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    P1 *= u;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    P2 *= i;</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    P2 /= i - p;</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    ret[0][i] = P1 * <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(P2);</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>  }</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>  <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>}</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::<span class="keywordtype">size_t</span> P, <span class="keyword">typename</span> Scalar&gt;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="basis_8hpp.html#aee20e01a6f9b1f9f4631237694cce4e1">   60</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, P + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#aee20e01a6f9b1f9f4631237694cce4e1">monomial_derivatives</a>(<a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> u)</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>{</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, P + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> p = 0u; p &lt;= P; ++p) { ret[p] = monomial_derivative&lt;K, Scalar&gt;(u, p)[0]; }</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>}</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keyword">namespace </span>detail {</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a1843fd15f91787b986824c50312e2e7b">   74</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a1843fd15f91787b986824c50312e2e7b">bspline_basis</a>()</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>{</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 0) {</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    ret[0][0] = 1;</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keyword">const</span> <span class="keyword">auto</span> coeff_mat_km1 = <a class="code hl_function" href="basis_8hpp.html#a1843fd15f91787b986824c50312e2e7b">bspline_basis</a>&lt;K - 1, <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>&gt;();</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K&gt;</a> low, high;</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K, K + 1&gt;</a> left, right;</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span> </div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != K; ++i) {</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j != K; ++j) {</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>        low[i][j]      = coeff_mat_km1[i][j];</div>
-<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        high[i + 1][j] = coeff_mat_km1[i][j];</div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>      }</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    }</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k != K; ++k) {</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>      left[k][k + 1] = <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(K - (k + 1)) / <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(K);</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>      left[k][k]     = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>(1) - left[k][k + 1];</div>
-<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
-<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>      right[k][k + 1] = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>(1) / <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(K);</div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>      right[k][k]     = -right[k][k + 1];</div>
-<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    }</div>
-<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <span class="keywordflow">return</span> low * left + high * right;</div>
-<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>  }</div>
-<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>}</div>
-<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a7b28fe0e65bdfde00c10c4039670f332">  109</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a7b28fe0e65bdfde00c10c4039670f332">bernstein_basis</a>()</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>{</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 0) {</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    ret[0][0] = 1;</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> coeff_mat_km1 = <a class="code hl_function" href="basis_8hpp.html#a7b28fe0e65bdfde00c10c4039670f332">bernstein_basis</a>&lt;K - 1, <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>&gt;();</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K&gt;</a> low, high;</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K, K + 1&gt;</a> left, right;</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span> </div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != K; ++i) {</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j != K; ++j) {</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        low[i][j]      = coeff_mat_km1[i][j];</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        high[i + 1][j] = coeff_mat_km1[i][j];</div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>      }</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>    }</div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k != K; ++k) {</div>
-<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>      left[k][k] = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>(1);</div>
-<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>      right[k][k]     = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>(-1);</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>      right[k][k + 1] = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>(1);</div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    }</div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span> </div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>    <span class="keywordflow">return</span> low * left + high * right;</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>  }</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>}</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span> </div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a32a6b89f9fdbf270f8d36b11ba185fdb">  143</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a32a6b89f9fdbf270f8d36b11ba185fdb">hermite_basis</a>()</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>{</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>  ret[0][0] = 1;</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span> </div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 0) { ret[1][1] = 2; }</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 1) {</div>
-<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 2u; k &lt; K + 1; ++k) {</div>
-<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; k; ++i) { ret[i + 1][k] += 2 * ret[i][k - 1]; }</div>
-<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i + 1 &lt; k; ++i) { ret[i][k] -= 2 * (k - 1) * ret[i][k - 2]; }</div>
-<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>    }</div>
-<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>  }</div>
-<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>  <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>}</div>
-<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span> </div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno"><a class="line" href="basis_8hpp.html#ac9e7f67be44a7b8481b564de97ead9e3">  164</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#ac9e7f67be44a7b8481b564de97ead9e3">laguerre_basis</a>()</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>{</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>  ret[0][0] = 1;</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span> </div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 0) {</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>    ret[0][1] = 1.;</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    ret[1][1] = -1;</div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>  }</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span> </div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 1) {</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 2u; k &lt; K + 1; ++k) {</div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; k; ++i) {</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>        ret[i][k] += (2 * k - 1) * ret[i][k - 1] / k;</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        ret[i + 1][k] -= ret[i][k - 1] / k;</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>      }</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i + 1 &lt; k; ++i) { ret[i][k] -= <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(k - 1) * ret[i][k - 2] / k; }</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>    }</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>  }</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>  <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>}</div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span> </div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a0edfcc92899222e5da06924859af4d32">  198</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a0edfcc92899222e5da06924859af4d32">jacobi_basis</a>(<span class="keywordtype">double</span> alpha, <span class="keywordtype">double</span> beta)</div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>{</div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>  ret[0][0] = 1;</div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span> </div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 0) {</div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>    ret[0][1] = alpha + 1. - (alpha + beta + 2) / 2;</div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    ret[1][1] = (alpha + beta + 2.) / 2;</div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>  }</div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span> </div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 1) {</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 2u; k &lt; K + 1; ++k) {</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>      <span class="keyword">const</span> <span class="keyword">auto</span> frac = 1. / ((2 * k) * (k + alpha + beta) * (2 * k + alpha + beta - 2));</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>      <span class="keyword">const</span> <span class="keyword">auto</span> c1   = (2 * k + alpha + beta - 1) * (alpha * alpha - beta * beta);</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>      <span class="keyword">const</span> <span class="keyword">auto</span> c2   = (2 * k + alpha + beta - 1) * (2 * k + alpha + beta) * (2 * k + alpha + beta - 2);</div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>      <span class="keyword">const</span> <span class="keyword">auto</span> c3   = 2 * (k + alpha - 1) * (k + beta - 1) * (2 * k + alpha + beta);</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; k; ++i) {</div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>        ret[i][k] += c1 * ret[i][k - 1] * frac;</div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        ret[i + 1][k] += c2 * ret[i][k - 1] * frac;</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>      }</div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i + 1 &lt; k; ++i) { ret[i][k] -= c3 * ret[i][k - 2] * frac; }</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    }</div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>  }</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span> </div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>  <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>}</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>}  <span class="comment">// namespace detail</span></div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097">  228</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097">PolynomialBasis</a> {</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a6b8e5e9520304bfdbf74fa045375911f">Bernstein</a>,</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb">Bspline</a>,</div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097aebd0a86bd37dcfed8c4874eaf84138a5">Chebyshev1st</a>,</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097aea9ca096aac74c32f1098b6099924302">Chebyshev2nd</a>,</div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a70457be66a37fd77955ebfb026c57a24">Hermite</a>,</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a8a8b8d9a0dab81c51557bb230a1cab76">Laguerre</a>,</div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097af9d917a770fac9457858a6e6bfdd9d9c">Legendre</a>,</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a9ed6b9b00759d6ba0aff01399161dd28">Monomial</a>,</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>};</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span> </div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span><span class="keyword">template</span>&lt;PolynomialBasis Basis, std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno"><a class="line" href="basis_8hpp.html#ac109e2f9fee62480547480f92b59ade4">  263</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#ac109e2f9fee62480547480f92b59ade4">polynomial_basis</a>()</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>{</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Monomial) {</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt;= K; ++k) { ret[k][k] = <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a>(1); }</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>  }</div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Bernstein) { <span class="keywordflow">return</span> detail::bernstein_basis&lt;K, Scalar&gt;(); }</div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Laguerre) { <span class="keywordflow">return</span> detail::laguerre_basis&lt;K, Scalar&gt;(); }</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Hermite) { <span class="keywordflow">return</span> detail::hermite_basis&lt;K, Scalar&gt;(); }</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Legendre) { <span class="keywordflow">return</span> detail::jacobi_basis&lt;K, Scalar&gt;(0, 0); }</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Chebyshev1st) {</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    <span class="keyword">auto</span> ret       = detail::jacobi_basis&lt;K, Scalar&gt;(-0.5, -0.5);</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keyword">const</span> <span class="keyword">auto</span> fac = monomial_derivative&lt;K&gt;(1.) * ret;</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; K + 1; ++k) {</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r &lt; K + 1; ++r) { ret[r][k] /= fac[0][k]; }</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>    }</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>  }</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Chebyshev2nd) {</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>    <span class="keyword">auto</span> ret       = detail::jacobi_basis&lt;K, Scalar&gt;(0.5, 0.5);</div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    <span class="keyword">const</span> <span class="keyword">auto</span> fac = monomial_derivative&lt;K&gt;(1.) * ret;</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; K + 1; ++k) {</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r &lt; K + 1; ++r) { ret[r][k] *= <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(k + 1) / fac[0][k]; }</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    }</div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>  }</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Bspline) { <span class="keywordflow">return</span> detail::bspline_basis&lt;K, Scalar&gt;(); }</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>}</div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span> </div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::ranges::random_access_range R, <span class="keyword">typename</span> Scalar = std::ranges::range_value_t&lt;R&gt;&gt;</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno"><a class="line" href="basis_8hpp.html#ad9cd7f1d8db8874f6f19a0137b51a90f">  312</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#ad9cd7f1d8db8874f6f19a0137b51a90f">lagrange_basis</a>(<span class="keyword">const</span> R &amp; ts)</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>{</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span> </div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> row = 0u; row &lt; K + 1; ++row) {</div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>    ret[row][0] = 1;</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> col = 0u; col &lt; K + 1; ++col) {</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>      <span class="keywordflow">if</span> (col != row) {</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>        <span class="keyword">const</span> <span class="keyword">auto</span> row_copy = ret[row];</div>
-<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        ret[row].fill(0);</div>
-<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt;= col - (col &gt; row ? 1 : 0); ++i) {</div>
-<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>          ret[row][i + 1] += row_copy[i] / (*(ts.begin() + row) - *(ts.begin() + col));</div>
-<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>          ret[row][i] -= *(ts.begin() + col) * row_copy[i] / (*(ts.begin() + row) - *(ts.begin() + col));</div>
-<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>        }</div>
-<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>      }</div>
-<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>    }</div>
-<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>  }</div>
-<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span> </div>
-<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span>  <span class="keywordflow">return</span> ret.<a class="code hl_function" href="structsmooth_1_1StaticMatrix.html#aa4297080fdb79a03c2695d6ce613e74d">transpose</a>();</div>
-<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>}</div>
-<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span> </div>
-<div class="line"><a id="l00344" name="l00344"></a><span class="lineno">  344</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::<span class="keywordtype">size_t</span> N, <span class="keyword">typename</span> Scalar, std::ranges::sized_range R&gt;</div>
-<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span><span class="keyword">constexpr</span> StaticMatrix&lt;Scalar, K + 1, N&gt;</div>
-<div class="line"><a id="l00346" name="l00346"></a><span class="lineno"><a class="line" href="basis_8hpp.html#ae656bfc9c9155bdbf4f06635ffb6e15b">  346</a></span><a class="code hl_function" href="basis_8hpp.html#ae656bfc9c9155bdbf4f06635ffb6e15b">polynomial_basis_derivatives</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> &amp; B, <span class="keyword">const</span> R &amp; ts)</div>
-<div class="line"><a id="l00347" name="l00347"></a><span class="lineno">  347</span>{</div>
-<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>  assert(std::ranges::size(ts) == N);</div>
-<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span> </div>
-<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, N&gt;</a> ret;</div>
-<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span> </div>
-<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; <span class="keyword">const</span> <span class="keyword">auto</span> t : ts) {</div>
-<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>    <span class="keyword">const</span> <span class="keyword">auto</span> U   = monomial_derivative&lt;K&gt;(t, 1);</div>
-<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>    <span class="keyword">const</span> <span class="keyword">auto</span> U_B = U * B;</div>
-<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; K + 1; ++i) { ret[i][j] = U_B[0][i]; }</div>
-<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>    ++j;</div>
-<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>  }</div>
-<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span> </div>
-<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span>  <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>}</div>
-<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span> </div>
-<div class="line"><a id="l00380" name="l00380"></a><span class="lineno">  380</span><span class="keyword">template</span>&lt;PolynomialBasis Basis, std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00381" name="l00381"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a1a53d5e1debd2272c70d44054f9e6e6f">  381</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a1a53d5e1debd2272c70d44054f9e6e6f">polynomial_cumulative_basis</a>()</div>
-<div class="line"><a id="l00382" name="l00382"></a><span class="lineno">  382</span>{</div>
-<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>  <span class="keyword">auto</span> M = polynomial_basis&lt;Basis, K, Scalar&gt;();</div>
-<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != K + 1; ++i) {</div>
-<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j != K; ++j) { M[i][K - 1 - j] += M[i][K - j]; }</div>
-<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>  }</div>
-<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>  <span class="keywordflow">return</span> M;</div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>}</div>
-<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span> </div>
-<div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::<span class="keywordtype">size_t</span> P, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
-<div class="line"><a id="l00399" name="l00399"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a2befcade061332c2d8e0cbc4b478f39b">  399</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a2befcade061332c2d8e0cbc4b478f39b">monomial_integral</a>()</div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>{</div>
-<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>  <a class="code hl_struct" href="structsmooth_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
-<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt;= K; ++i) {</div>
-<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = i; j &lt;= K; ++j) {</div>
-<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>      <span class="keywordflow">if</span> (i &gt;= P &amp;&amp; j &gt;= P) {</div>
-<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>        std::size_t c = 1;</div>
-<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> _i = i - P + 1; _i &lt;= i; ++_i) { c *= _i; }</div>
-<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> _j = j - P + 1; _j &lt;= j; ++_j) { c *= _j; }</div>
-<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>        ret[i][j] = <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(c) / <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a><span class="keyword">&gt;</span>(i + j - 2 * P + 1);</div>
-<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>        ret[i][j] = 0;</div>
-<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>      }</div>
-<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>      ret[j][i] = ret[i][j];</div>
-<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>    }</div>
-<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>  }</div>
-<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>  <span class="keywordflow">return</span> ret;</div>
-<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>}</div>
-<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span> </div>
-<div class="line"><a id="l00426" name="l00426"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a443abbfadd4bc4bc551e86736338c1cf">  426</a></span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keywordtype">double</span> <a class="code hl_function" href="basis_8hpp.html#a443abbfadd4bc4bc551e86736338c1cf">integrate_absolute_polynomial</a>(<span class="keywordtype">double</span> t0, <span class="keywordtype">double</span> t1, <span class="keywordtype">double</span> A, <span class="keywordtype">double</span> B, <span class="keywordtype">double</span> C)</div>
-<div class="line"><a id="l00427" name="l00427"></a><span class="lineno">  427</span>{</div>
-<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>  <span class="comment">// location of first zero (if any)</span></div>
-<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>  <span class="keywordtype">double</span> mid1 = std::numeric_limits&lt;double&gt;::infinity();</div>
-<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>  <span class="comment">// location of second zero (if any)</span></div>
-<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>  <span class="keywordtype">double</span> mid2 = std::numeric_limits&lt;double&gt;::infinity();</div>
-<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span> </div>
-<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span>  <span class="keywordflow">if</span> (std::abs(A) &lt; 1e-9 &amp;&amp; std::abs(B) &gt; 1e-9) {</div>
-<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>    <span class="comment">// linear non-constant function</span></div>
-<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span>    mid1 = std::clamp(-C / B, t0, t1);</div>
-<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span>  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (std::abs(A) &gt; 1e-9) {</div>
-<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>    <span class="comment">// quadratic function</span></div>
-<div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span>    <span class="keyword">const</span> <span class="keywordtype">double</span> res = B * B / (4 * A * A) - C / A;</div>
-<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span> </div>
-<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span>    <span class="keywordflow">if</span> (res &gt; 0) {</div>
-<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span>      mid1 = -B / (2 * A) - std::sqrt(res);</div>
-<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>      mid2 = -B / (2 * A) + std::sqrt(res);</div>
-<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>    }</div>
-<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span>  }</div>
-<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span> </div>
-<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span>  <span class="keyword">const</span> <span class="keyword">auto</span> integ = [&amp;](<span class="keywordtype">double</span> u) { <span class="keywordflow">return</span> A * u * u * u / 3 + B * u * u / 2 + C * u; };</div>
-<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span> </div>
-<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span>  <span class="keyword">const</span> <span class="keywordtype">double</span> mid1cl = std::clamp(mid1, t0, t1);</div>
-<div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span>  <span class="keyword">const</span> <span class="keywordtype">double</span> mid2cl = std::clamp(mid2, t0, t1);</div>
-<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span> </div>
-<div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span>  <span class="keywordflow">return</span> std::abs(integ(t1) - integ(t0) + 2 * integ(mid1cl) - 2 * integ(mid2cl));</div>
-<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span>}</div>
-<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span> </div>
-<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span>}  <span class="comment">// namespace smooth</span></div>
-<div class="ttc" id="abasis_8hpp_html_a0edfcc92899222e5da06924859af4d32"><div class="ttname"><a href="basis_8hpp.html#a0edfcc92899222e5da06924859af4d32">smooth::detail::jacobi_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; jacobi_basis(double alpha, double beta)</div><div class="ttdoc">Jacobi basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00198">basis.hpp:198</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_a1843fd15f91787b986824c50312e2e7b"><div class="ttname"><a href="basis_8hpp.html#a1843fd15f91787b986824c50312e2e7b">smooth::detail::bspline_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; bspline_basis()</div><div class="ttdoc">Bspline basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00074">basis.hpp:74</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_a1a53d5e1debd2272c70d44054f9e6e6f"><div class="ttname"><a href="basis_8hpp.html#a1a53d5e1debd2272c70d44054f9e6e6f">smooth::polynomial_cumulative_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; polynomial_cumulative_basis()</div><div class="ttdoc">Cumulative coefficient matrix for given basis.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00381">basis.hpp:381</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_a2befcade061332c2d8e0cbc4b478f39b"><div class="ttname"><a href="basis_8hpp.html#a2befcade061332c2d8e0cbc4b478f39b">smooth::monomial_integral</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; monomial_integral()</div><div class="ttdoc">Calculate integral over matrix of squared monomial P-derivatives.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00399">basis.hpp:399</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_a32a6b89f9fdbf270f8d36b11ba185fdb"><div class="ttname"><a href="basis_8hpp.html#a32a6b89f9fdbf270f8d36b11ba185fdb">smooth::detail::hermite_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; hermite_basis()</div><div class="ttdoc">Hermite basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00143">basis.hpp:143</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_a443abbfadd4bc4bc551e86736338c1cf"><div class="ttname"><a href="basis_8hpp.html#a443abbfadd4bc4bc551e86736338c1cf">smooth::integrate_absolute_polynomial</a></div><div class="ttdeci">constexpr double integrate_absolute_polynomial(double t0, double t1, double A, double B, double C)</div><div class="ttdoc">Integrate the absolute value of a quadratic 1D polynomial.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00426">basis.hpp:426</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097">smooth::PolynomialBasis</a></div><div class="ttdeci">PolynomialBasis</div><div class="ttdoc">Polynomial basis types.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00228">basis.hpp:228</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a233df4c286d574c9467f3ff09e8744cb">smooth::PolynomialBasis::Bspline</a></div><div class="ttdeci">@ Bspline</div><div class="ttdoc">Basis on [0, 1] with left to right ordering.</div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097a6b8e5e9520304bfdbf74fa045375911f"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a6b8e5e9520304bfdbf74fa045375911f">smooth::PolynomialBasis::Bernstein</a></div><div class="ttdeci">@ Bernstein</div><div class="ttdoc">Basis on [0, 1] with left to right ordering.</div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097a70457be66a37fd77955ebfb026c57a24"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a70457be66a37fd77955ebfb026c57a24">smooth::PolynomialBasis::Hermite</a></div><div class="ttdeci">@ Hermite</div><div class="ttdoc">Orthogonal basis on [-inf, inf] w.r.t the weight exp(-x^2)</div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097a8a8b8d9a0dab81c51557bb230a1cab76"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a8a8b8d9a0dab81c51557bb230a1cab76">smooth::PolynomialBasis::Laguerre</a></div><div class="ttdeci">@ Laguerre</div><div class="ttdoc">Orthogonal basis on [0, inf] w.r.t the weight exp(-x)</div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097a9ed6b9b00759d6ba0aff01399161dd28"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a9ed6b9b00759d6ba0aff01399161dd28">smooth::PolynomialBasis::Monomial</a></div><div class="ttdeci">@ Monomial</div><div class="ttdoc">The standard monomial basis (1, x, x^2, ...)</div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097aea9ca096aac74c32f1098b6099924302"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097aea9ca096aac74c32f1098b6099924302">smooth::PolynomialBasis::Chebyshev2nd</a></div><div class="ttdeci">@ Chebyshev2nd</div><div class="ttdoc">Orthogonal basis on [-1, 1] w.r.t the weight sqrt(1-x^2)</div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097aebd0a86bd37dcfed8c4874eaf84138a5"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097aebd0a86bd37dcfed8c4874eaf84138a5">smooth::PolynomialBasis::Chebyshev1st</a></div><div class="ttdeci">@ Chebyshev1st</div><div class="ttdoc">Orthogonal basis on [-1, 1] w.r.t the weight 1 / sqrt(1-x^2)</div></div>
-<div class="ttc" id="abasis_8hpp_html_a5335c03b41cdb1fb5cc7c8fef5c66097af9d917a770fac9457858a6e6bfdd9d9c"><div class="ttname"><a href="basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097af9d917a770fac9457858a6e6bfdd9d9c">smooth::PolynomialBasis::Legendre</a></div><div class="ttdeci">@ Legendre</div><div class="ttdoc">Orthogonal basis on [-1, 1].</div></div>
-<div class="ttc" id="abasis_8hpp_html_a7b28fe0e65bdfde00c10c4039670f332"><div class="ttname"><a href="basis_8hpp.html#a7b28fe0e65bdfde00c10c4039670f332">smooth::detail::bernstein_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; bernstein_basis()</div><div class="ttdoc">Bernstein basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00109">basis.hpp:109</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_ac109e2f9fee62480547480f92b59ade4"><div class="ttname"><a href="basis_8hpp.html#ac109e2f9fee62480547480f92b59ade4">smooth::polynomial_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; polynomial_basis()</div><div class="ttdoc">Compile-time coefficient matrix for given basis.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00263">basis.hpp:263</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_ac9e7f67be44a7b8481b564de97ead9e3"><div class="ttname"><a href="basis_8hpp.html#ac9e7f67be44a7b8481b564de97ead9e3">smooth::detail::laguerre_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; laguerre_basis()</div><div class="ttdoc">Laguerre basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00164">basis.hpp:164</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_ad9cd7f1d8db8874f6f19a0137b51a90f"><div class="ttname"><a href="basis_8hpp.html#ad9cd7f1d8db8874f6f19a0137b51a90f">smooth::lagrange_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; lagrange_basis(const R &amp;ts)</div><div class="ttdoc">Lagrange polynomial basis coefficients.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00312">basis.hpp:312</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_ae656bfc9c9155bdbf4f06635ffb6e15b"><div class="ttname"><a href="basis_8hpp.html#ae656bfc9c9155bdbf4f06635ffb6e15b">smooth::polynomial_basis_derivatives</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, N &gt; polynomial_basis_derivatives(const StaticMatrix&lt; Scalar, K+1, K+1 &gt; &amp;B, const R &amp;ts)</div><div class="ttdoc">Polynomial basis derivative coefficients.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00346">basis.hpp:346</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_aee20e01a6f9b1f9f4631237694cce4e1"><div class="ttname"><a href="basis_8hpp.html#aee20e01a6f9b1f9f4631237694cce4e1">smooth::monomial_derivatives</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, P+1, K+1 &gt; monomial_derivatives(Scalar u)</div><div class="ttdoc">Monomial derivatives up to order.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00060">basis.hpp:60</a></div></div>
-<div class="ttc" id="abasis_8hpp_html_afec4f1ca74bf095280205080ff07aecb"><div class="ttname"><a href="basis_8hpp.html#afec4f1ca74bf095280205080ff07aecb">smooth::monomial_derivative</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, 1, K+1 &gt; monomial_derivative(Scalar u, std::size_t p=0)</div><div class="ttdoc">Monomial derivative (compile-time version).</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00026">basis.hpp:26</a></div></div>
-<div class="ttc" id="amanifold_8hpp_html_a85d829dc273faa1e9618040cdebdf74c"><div class="ttname"><a href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">smooth::Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00088">manifold.hpp:88</a></div></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">inline</span> <span class="keyword">namespace </span>v1_0 {</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar&gt;</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a9c02989aca1e7a4666229cbb851ae1f6">   27</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a9c02989aca1e7a4666229cbb851ae1f6">monomial_derivative</a>(<a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> u, std::size_t p = 0)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>{</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>  <span class="keywordflow">if</span> (p &gt; K) { <span class="keywordflow">return</span> ret; }</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; p; ++i) { ret[0][i] = <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>(0); }</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>  <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> P1      = 1;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>  std::size_t P2 = 1;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 2u; j &lt;= p; ++j) { P2 *= j; }</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>  ret[0][p] = P1 * <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(P2);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = p + 1; i &lt;= K; ++i) {</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    P1 *= u;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    P2 *= i;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    P2 /= i - p;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    ret[0][i] = P1 * <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(P2);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>  }</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>}</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::<span class="keywordtype">size_t</span> P, <span class="keyword">typename</span> Scalar&gt;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a021e2ad3834f2dc7590fc97814696de6">   61</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, P + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a021e2ad3834f2dc7590fc97814696de6">monomial_derivatives</a>(<a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> u)</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>{</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, P + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> p = 0u; p &lt;= P; ++p) { ret[p] = monomial_derivative&lt;K, Scalar&gt;(u, p)[0]; }</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>}</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="keyword">namespace </span>detail {</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a6d0234f81b099c6a3d115562f2cb44e9">   75</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a6d0234f81b099c6a3d115562f2cb44e9">bspline_basis</a>()</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>{</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 0) {</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    ret[0][0] = 1;</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keyword">const</span> <span class="keyword">auto</span> coeff_mat_km1 = <a class="code hl_function" href="basis_8hpp.html#a6d0234f81b099c6a3d115562f2cb44e9">bspline_basis</a>&lt;K - 1, <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>&gt;();</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K&gt;</a> low, high;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K, K + 1&gt;</a> left, right;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != K; ++i) {</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j != K; ++j) {</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>        low[i][j]      = coeff_mat_km1[i][j];</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>        high[i + 1][j] = coeff_mat_km1[i][j];</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>      }</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    }</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span> </div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k != K; ++k) {</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>      left[k][k + 1] = <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(K - (k + 1)) / <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(K);</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>      left[k][k]     = <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>(1) - left[k][k + 1];</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>      right[k][k + 1] = <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>(1) / <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(K);</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>      right[k][k]     = -right[k][k + 1];</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>    }</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    <span class="keywordflow">return</span> low * left + high * right;</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>  }</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>}</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="basis_8hpp.html#ab041b820fbd2c91b9da6f8f6d549188b">  110</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#ab041b820fbd2c91b9da6f8f6d549188b">bernstein_basis</a>()</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>{</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K == 0) {</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span>    ret[0][0] = 1;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>  } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="keyword">constexpr</span> <span class="keyword">auto</span> coeff_mat_km1 = <a class="code hl_function" href="basis_8hpp.html#ab041b820fbd2c91b9da6f8f6d549188b">bernstein_basis</a>&lt;K - 1, <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>&gt;();</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>    <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K&gt;</a> low, high;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K, K + 1&gt;</a> left, right;</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != K; ++i) {</div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j != K; ++j) {</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span>        low[i][j]      = coeff_mat_km1[i][j];</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>        high[i + 1][j] = coeff_mat_km1[i][j];</div>
+<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>      }</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>    }</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span> </div>
+<div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k != K; ++k) {</div>
+<div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>      left[k][k] = <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>(1);</div>
+<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span> </div>
+<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>      right[k][k]     = <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>(-1);</div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>      right[k][k + 1] = <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>(1);</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    }</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keywordflow">return</span> low * left + high * right;</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>  }</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>}</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span> </div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a37d156c856efe00e3e4bfafce5fafbc8">  144</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a37d156c856efe00e3e4bfafce5fafbc8">hermite_basis</a>()</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>{</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>  ret[0][0] = 1;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span> </div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 0) { ret[1][1] = 2; }</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span> </div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 1) {</div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 2u; k &lt; K + 1; ++k) {</div>
+<div class="line"><a id="l00153" name="l00153"></a><span class="lineno">  153</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; k; ++i) { ret[i + 1][k] += 2 * ret[i][k - 1]; }</div>
+<div class="line"><a id="l00154" name="l00154"></a><span class="lineno">  154</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i + 1 &lt; k; ++i) { ret[i][k] -= 2 * (k - 1) * ret[i][k - 2]; }</div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span>    }</div>
+<div class="line"><a id="l00156" name="l00156"></a><span class="lineno">  156</span>  }</div>
+<div class="line"><a id="l00157" name="l00157"></a><span class="lineno">  157</span>  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00158" name="l00158"></a><span class="lineno">  158</span>}</div>
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno">  159</span> </div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00165" name="l00165"></a><span class="lineno"><a class="line" href="basis_8hpp.html#ab62d4d386efb64e3c9183ddd757b3bed">  165</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#ab62d4d386efb64e3c9183ddd757b3bed">laguerre_basis</a>()</div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>{</div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>  ret[0][0] = 1;</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 0) {</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    ret[0][1] = 1.;</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    ret[1][1] = -1;</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>  }</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span> </div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 1) {</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 2u; k &lt; K + 1; ++k) {</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; k; ++i) {</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>        ret[i][k] += (2 * k - 1) * ret[i][k - 1] / k;</div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>        ret[i + 1][k] -= ret[i][k - 1] / k;</div>
+<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>      }</div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i + 1 &lt; k; ++i) { ret[i][k] -= <span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(k - 1) * ret[i][k - 2] / k; }</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>    }</div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>  }</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>}</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span> </div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno"><a class="line" href="basis_8hpp.html#aaab58bd24b34be5af6f635c6601bf765">  199</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#aaab58bd24b34be5af6f635c6601bf765">jacobi_basis</a>(<span class="keywordtype">double</span> alpha, <span class="keywordtype">double</span> beta)</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>{</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>  ret[0][0] = 1;</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span> </div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 0) {</div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>    ret[0][1] = alpha + 1. - (alpha + beta + 2) / 2;</div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>    ret[1][1] = (alpha + beta + 2.) / 2;</div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>  }</div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span> </div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (K &gt; 1) {</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 2u; k &lt; K + 1; ++k) {</div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>      <span class="keyword">const</span> <span class="keyword">auto</span> frac = 1. / ((2 * k) * (k + alpha + beta) * (2 * k + alpha + beta - 2));</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>      <span class="keyword">const</span> <span class="keyword">auto</span> c1   = (2 * k + alpha + beta - 1) * (alpha * alpha - beta * beta);</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>      <span class="keyword">const</span> <span class="keyword">auto</span> c2   = (2 * k + alpha + beta - 1) * (2 * k + alpha + beta) * (2 * k + alpha + beta - 2);</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>      <span class="keyword">const</span> <span class="keyword">auto</span> c3   = 2 * (k + alpha - 1) * (k + beta - 1) * (2 * k + alpha + beta);</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; k; ++i) {</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>        ret[i][k] += c1 * ret[i][k - 1] * frac;</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>        ret[i + 1][k] += c2 * ret[i][k - 1] * frac;</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>      }</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i + 1 &lt; k; ++i) { ret[i][k] -= c3 * ret[i][k - 2] * frac; }</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>    }</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>  }</div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span> </div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>}</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span> </div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>}  <span class="comment">// namespace detail</span></div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323">  229</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323">PolynomialBasis</a> {</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a6b8e5e9520304bfdbf74fa045375911f">Bernstein</a>,</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a233df4c286d574c9467f3ff09e8744cb">Bspline</a>,</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323aebd0a86bd37dcfed8c4874eaf84138a5">Chebyshev1st</a>,</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323aea9ca096aac74c32f1098b6099924302">Chebyshev2nd</a>,</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a70457be66a37fd77955ebfb026c57a24">Hermite</a>,</div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a8a8b8d9a0dab81c51557bb230a1cab76">Laguerre</a>,</div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323af9d917a770fac9457858a6e6bfdd9d9c">Legendre</a>,</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>  <a class="code hl_enumvalue" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a9ed6b9b00759d6ba0aff01399161dd28">Monomial</a>,</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>};</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span><span class="keyword">template</span>&lt;PolynomialBasis Basis, std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a0e4dadea5ccbefc9e9ca07ccfdc4a6da">  264</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a0e4dadea5ccbefc9e9ca07ccfdc4a6da">polynomial_basis</a>()</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>{</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Monomial) {</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt;= K; ++k) { ret[k][k] = <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a>(1); }</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>  }</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Bernstein) { <span class="keywordflow">return</span> detail::bernstein_basis&lt;K, Scalar&gt;(); }</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Laguerre) { <span class="keywordflow">return</span> detail::laguerre_basis&lt;K, Scalar&gt;(); }</div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Hermite) { <span class="keywordflow">return</span> detail::hermite_basis&lt;K, Scalar&gt;(); }</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Legendre) { <span class="keywordflow">return</span> detail::jacobi_basis&lt;K, Scalar&gt;(0, 0); }</div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Chebyshev1st) {</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    <span class="keyword">auto</span> ret       = detail::jacobi_basis&lt;K, Scalar&gt;(-0.5, -0.5);</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    <span class="keyword">const</span> <span class="keyword">auto</span> fac = monomial_derivative&lt;K&gt;(1.) * ret;</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; K + 1; ++k) {</div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r &lt; K + 1; ++r) { ret[r][k] /= fac[0][k]; }</div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    }</div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>  }</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Chebyshev2nd) {</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    <span class="keyword">auto</span> ret       = detail::jacobi_basis&lt;K, Scalar&gt;(0.5, 0.5);</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    <span class="keyword">const</span> <span class="keyword">auto</span> fac = monomial_derivative&lt;K&gt;(1.) * ret;</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> k = 0u; k &lt; K + 1; ++k) {</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>      <span class="keywordflow">for</span> (<span class="keyword">auto</span> r = 0u; r &lt; K + 1; ++r) { ret[r][k] *= <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(k + 1) / fac[0][k]; }</div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>    }</div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>  }</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (Basis == PolynomialBasis::Bspline) { <span class="keywordflow">return</span> detail::bspline_basis&lt;K, Scalar&gt;(); }</div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>}</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span> </div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::ranges::random_access_range R, <span class="keyword">typename</span> Scalar = std::ranges::range_value_t&lt;R&gt;&gt;</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a5389408ca59fc46cdd94a7f88af2c1a0">  313</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a5389408ca59fc46cdd94a7f88af2c1a0">lagrange_basis</a>(<span class="keyword">const</span> R &amp; ts)</div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>{</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span> </div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> row = 0u; row &lt; K + 1; ++row) {</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>    ret[row][0] = 1;</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> col = 0u; col &lt; K + 1; ++col) {</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>      <span class="keywordflow">if</span> (col != row) {</div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>        <span class="keyword">const</span> <span class="keyword">auto</span> row_copy = ret[row];</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        ret[row].fill(0);</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt;= col - (col &gt; row ? 1 : 0); ++i) {</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span>          ret[row][i + 1] += row_copy[i] / (*(ts.begin() + row) - *(ts.begin() + col));</div>
+<div class="line"><a id="l00325" name="l00325"></a><span class="lineno">  325</span>          ret[row][i] -= *(ts.begin() + col) * row_copy[i] / (*(ts.begin() + row) - *(ts.begin() + col));</div>
+<div class="line"><a id="l00326" name="l00326"></a><span class="lineno">  326</span>        }</div>
+<div class="line"><a id="l00327" name="l00327"></a><span class="lineno">  327</span>      }</div>
+<div class="line"><a id="l00328" name="l00328"></a><span class="lineno">  328</span>    }</div>
+<div class="line"><a id="l00329" name="l00329"></a><span class="lineno">  329</span>  }</div>
+<div class="line"><a id="l00330" name="l00330"></a><span class="lineno">  330</span> </div>
+<div class="line"><a id="l00331" name="l00331"></a><span class="lineno">  331</span>  <span class="keywordflow">return</span> ret.<a class="code hl_function" href="structsmooth_1_1v1__0_1_1StaticMatrix.html#afcd350f8d6b3d8d9d6030b477ddf15f9">transpose</a>();</div>
+<div class="line"><a id="l00332" name="l00332"></a><span class="lineno">  332</span>}</div>
+<div class="line"><a id="l00333" name="l00333"></a><span class="lineno">  333</span> </div>
+<div class="line"><a id="l00345" name="l00345"></a><span class="lineno">  345</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::<span class="keywordtype">size_t</span> N, <span class="keyword">typename</span> Scalar, std::ranges::sized_range R&gt;</div>
+<div class="line"><a id="l00346" name="l00346"></a><span class="lineno">  346</span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, N&gt;</a></div>
+<div class="line"><a id="l00347" name="l00347"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a38d7d8002e161df9cc59aaf15d35ac87">  347</a></span><a class="code hl_function" href="basis_8hpp.html#a38d7d8002e161df9cc59aaf15d35ac87">polynomial_basis_derivatives</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> &amp; B, <span class="keyword">const</span> R &amp; ts)</div>
+<div class="line"><a id="l00348" name="l00348"></a><span class="lineno">  348</span>{</div>
+<div class="line"><a id="l00349" name="l00349"></a><span class="lineno">  349</span>  assert(std::ranges::size(ts) == N);</div>
+<div class="line"><a id="l00350" name="l00350"></a><span class="lineno">  350</span> </div>
+<div class="line"><a id="l00351" name="l00351"></a><span class="lineno">  351</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, N&gt;</a> ret;</div>
+<div class="line"><a id="l00352" name="l00352"></a><span class="lineno">  352</span> </div>
+<div class="line"><a id="l00353" name="l00353"></a><span class="lineno">  353</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; <span class="keyword">const</span> <span class="keyword">auto</span> t : ts) {</div>
+<div class="line"><a id="l00354" name="l00354"></a><span class="lineno">  354</span>    <span class="keyword">const</span> <span class="keyword">auto</span> U   = monomial_derivative&lt;K&gt;(t, 1);</div>
+<div class="line"><a id="l00355" name="l00355"></a><span class="lineno">  355</span>    <span class="keyword">const</span> <span class="keyword">auto</span> U_B = U * B;</div>
+<div class="line"><a id="l00356" name="l00356"></a><span class="lineno">  356</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; K + 1; ++i) { ret[i][j] = U_B[0][i]; }</div>
+<div class="line"><a id="l00357" name="l00357"></a><span class="lineno">  357</span>    ++j;</div>
+<div class="line"><a id="l00358" name="l00358"></a><span class="lineno">  358</span>  }</div>
+<div class="line"><a id="l00359" name="l00359"></a><span class="lineno">  359</span> </div>
+<div class="line"><a id="l00360" name="l00360"></a><span class="lineno">  360</span>  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00361" name="l00361"></a><span class="lineno">  361</span>}</div>
+<div class="line"><a id="l00362" name="l00362"></a><span class="lineno">  362</span> </div>
+<div class="line"><a id="l00381" name="l00381"></a><span class="lineno">  381</span><span class="keyword">template</span>&lt;PolynomialBasis Basis, std::<span class="keywordtype">size_t</span> K, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00382" name="l00382"></a><span class="lineno"><a class="line" href="basis_8hpp.html#abe1f32489e7f05bb82253b450d5fbf54">  382</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#abe1f32489e7f05bb82253b450d5fbf54">polynomial_cumulative_basis</a>()</div>
+<div class="line"><a id="l00383" name="l00383"></a><span class="lineno">  383</span>{</div>
+<div class="line"><a id="l00384" name="l00384"></a><span class="lineno">  384</span>  <span class="keyword">auto</span> M = polynomial_basis&lt;Basis, K, Scalar&gt;();</div>
+<div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i != K + 1; ++i) {</div>
+<div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j != K; ++j) { M[i][K - 1 - j] += M[i][K - j]; }</div>
+<div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>  }</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>  <span class="keywordflow">return</span> M;</div>
+<div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>}</div>
+<div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span> </div>
+<div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span><span class="keyword">template</span>&lt;std::<span class="keywordtype">size_t</span> K, std::<span class="keywordtype">size_t</span> P, <span class="keyword">typename</span> Scalar = <span class="keywordtype">double</span>&gt;</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a9a9e932f71e69513f74c61f34a005c4b">  400</a></span><span class="keyword">constexpr</span> <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> <a class="code hl_function" href="basis_8hpp.html#a9a9e932f71e69513f74c61f34a005c4b">monomial_integral</a>()</div>
+<div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>{</div>
+<div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>  <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix&lt;Scalar, K + 1, K + 1&gt;</a> ret;</div>
+<div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt;= K; ++i) {</div>
+<div class="line"><a id="l00404" name="l00404"></a><span class="lineno">  404</span>    <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = i; j &lt;= K; ++j) {</div>
+<div class="line"><a id="l00405" name="l00405"></a><span class="lineno">  405</span>      <span class="keywordflow">if</span> (i &gt;= P &amp;&amp; j &gt;= P) {</div>
+<div class="line"><a id="l00406" name="l00406"></a><span class="lineno">  406</span>        std::size_t c = 1;</div>
+<div class="line"><a id="l00407" name="l00407"></a><span class="lineno">  407</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> _i = i - P + 1; _i &lt;= i; ++_i) { c *= _i; }</div>
+<div class="line"><a id="l00408" name="l00408"></a><span class="lineno">  408</span>        <span class="keywordflow">for</span> (<span class="keyword">auto</span> _j = j - P + 1; _j &lt;= j; ++_j) { c *= _j; }</div>
+<div class="line"><a id="l00409" name="l00409"></a><span class="lineno">  409</span>        ret[i][j] = <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(c) / <span class="keyword">static_cast&lt;</span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a><span class="keyword">&gt;</span>(i + j - 2 * P + 1);</div>
+<div class="line"><a id="l00410" name="l00410"></a><span class="lineno">  410</span>      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00411" name="l00411"></a><span class="lineno">  411</span>        ret[i][j] = 0;</div>
+<div class="line"><a id="l00412" name="l00412"></a><span class="lineno">  412</span>      }</div>
+<div class="line"><a id="l00413" name="l00413"></a><span class="lineno">  413</span>      ret[j][i] = ret[i][j];</div>
+<div class="line"><a id="l00414" name="l00414"></a><span class="lineno">  414</span>    }</div>
+<div class="line"><a id="l00415" name="l00415"></a><span class="lineno">  415</span>  }</div>
+<div class="line"><a id="l00416" name="l00416"></a><span class="lineno">  416</span>  <span class="keywordflow">return</span> ret;</div>
+<div class="line"><a id="l00417" name="l00417"></a><span class="lineno">  417</span>}</div>
+<div class="line"><a id="l00418" name="l00418"></a><span class="lineno">  418</span> </div>
+<div class="line"><a id="l00427" name="l00427"></a><span class="lineno"><a class="line" href="basis_8hpp.html#a67c1e24159654b1b8f24f3175ad8d3f3">  427</a></span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keywordtype">double</span> <a class="code hl_function" href="basis_8hpp.html#a67c1e24159654b1b8f24f3175ad8d3f3">integrate_absolute_polynomial</a>(<span class="keywordtype">double</span> t0, <span class="keywordtype">double</span> t1, <span class="keywordtype">double</span> A, <span class="keywordtype">double</span> B, <span class="keywordtype">double</span> C)</div>
+<div class="line"><a id="l00428" name="l00428"></a><span class="lineno">  428</span>{</div>
+<div class="line"><a id="l00429" name="l00429"></a><span class="lineno">  429</span>  <span class="comment">// location of first zero (if any)</span></div>
+<div class="line"><a id="l00430" name="l00430"></a><span class="lineno">  430</span>  <span class="keywordtype">double</span> mid1 = std::numeric_limits&lt;double&gt;::infinity();</div>
+<div class="line"><a id="l00431" name="l00431"></a><span class="lineno">  431</span>  <span class="comment">// location of second zero (if any)</span></div>
+<div class="line"><a id="l00432" name="l00432"></a><span class="lineno">  432</span>  <span class="keywordtype">double</span> mid2 = std::numeric_limits&lt;double&gt;::infinity();</div>
+<div class="line"><a id="l00433" name="l00433"></a><span class="lineno">  433</span> </div>
+<div class="line"><a id="l00434" name="l00434"></a><span class="lineno">  434</span>  <span class="keywordflow">if</span> (std::abs(A) &lt; 1e-9 &amp;&amp; std::abs(B) &gt; 1e-9) {</div>
+<div class="line"><a id="l00435" name="l00435"></a><span class="lineno">  435</span>    <span class="comment">// linear non-constant function</span></div>
+<div class="line"><a id="l00436" name="l00436"></a><span class="lineno">  436</span>    mid1 = std::clamp(-C / B, t0, t1);</div>
+<div class="line"><a id="l00437" name="l00437"></a><span class="lineno">  437</span>  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (std::abs(A) &gt; 1e-9) {</div>
+<div class="line"><a id="l00438" name="l00438"></a><span class="lineno">  438</span>    <span class="comment">// quadratic function</span></div>
+<div class="line"><a id="l00439" name="l00439"></a><span class="lineno">  439</span>    <span class="keyword">const</span> <span class="keywordtype">double</span> res = B * B / (4 * A * A) - C / A;</div>
+<div class="line"><a id="l00440" name="l00440"></a><span class="lineno">  440</span> </div>
+<div class="line"><a id="l00441" name="l00441"></a><span class="lineno">  441</span>    <span class="keywordflow">if</span> (res &gt; 0) {</div>
+<div class="line"><a id="l00442" name="l00442"></a><span class="lineno">  442</span>      mid1 = -B / (2 * A) - std::sqrt(res);</div>
+<div class="line"><a id="l00443" name="l00443"></a><span class="lineno">  443</span>      mid2 = -B / (2 * A) + std::sqrt(res);</div>
+<div class="line"><a id="l00444" name="l00444"></a><span class="lineno">  444</span>    }</div>
+<div class="line"><a id="l00445" name="l00445"></a><span class="lineno">  445</span>  }</div>
+<div class="line"><a id="l00446" name="l00446"></a><span class="lineno">  446</span> </div>
+<div class="line"><a id="l00447" name="l00447"></a><span class="lineno">  447</span>  <span class="keyword">const</span> <span class="keyword">auto</span> integ = [&amp;](<span class="keywordtype">double</span> u) { <span class="keywordflow">return</span> A * u * u * u / 3 + B * u * u / 2 + C * u; };</div>
+<div class="line"><a id="l00448" name="l00448"></a><span class="lineno">  448</span> </div>
+<div class="line"><a id="l00449" name="l00449"></a><span class="lineno">  449</span>  <span class="keyword">const</span> <span class="keywordtype">double</span> mid1cl = std::clamp(mid1, t0, t1);</div>
+<div class="line"><a id="l00450" name="l00450"></a><span class="lineno">  450</span>  <span class="keyword">const</span> <span class="keywordtype">double</span> mid2cl = std::clamp(mid2, t0, t1);</div>
+<div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span> </div>
+<div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span>  <span class="keywordflow">return</span> std::abs(integ(t1) - integ(t0) + 2 * integ(mid1cl) - 2 * integ(mid2cl));</div>
+<div class="line"><a id="l00453" name="l00453"></a><span class="lineno">  453</span>}</div>
+<div class="line"><a id="l00454" name="l00454"></a><span class="lineno">  454</span> </div>
+<div class="line"><a id="l00455" name="l00455"></a><span class="lineno">  455</span>}  <span class="comment">// namespace v1_0</span></div>
+<div class="line"><a id="l00456" name="l00456"></a><span class="lineno">  456</span>}  <span class="comment">// namespace smooth</span></div>
+<div class="ttc" id="abasis_8hpp_html_a021e2ad3834f2dc7590fc97814696de6"><div class="ttname"><a href="basis_8hpp.html#a021e2ad3834f2dc7590fc97814696de6">smooth::v1_0::monomial_derivatives</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, P+1, K+1 &gt; monomial_derivatives(Scalar u)</div><div class="ttdoc">Monomial derivatives up to order.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00061">basis.hpp:61</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a0e4dadea5ccbefc9e9ca07ccfdc4a6da"><div class="ttname"><a href="basis_8hpp.html#a0e4dadea5ccbefc9e9ca07ccfdc4a6da">smooth::v1_0::polynomial_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; polynomial_basis()</div><div class="ttdoc">Compile-time coefficient matrix for given basis.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00264">basis.hpp:264</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a37d156c856efe00e3e4bfafce5fafbc8"><div class="ttname"><a href="basis_8hpp.html#a37d156c856efe00e3e4bfafce5fafbc8">smooth::v1_0::detail::hermite_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; hermite_basis()</div><div class="ttdoc">Hermite basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00144">basis.hpp:144</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a38d7d8002e161df9cc59aaf15d35ac87"><div class="ttname"><a href="basis_8hpp.html#a38d7d8002e161df9cc59aaf15d35ac87">smooth::v1_0::polynomial_basis_derivatives</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, N &gt; polynomial_basis_derivatives(const StaticMatrix&lt; Scalar, K+1, K+1 &gt; &amp;B, const R &amp;ts)</div><div class="ttdoc">Polynomial basis derivative coefficients.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00347">basis.hpp:347</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a5389408ca59fc46cdd94a7f88af2c1a0"><div class="ttname"><a href="basis_8hpp.html#a5389408ca59fc46cdd94a7f88af2c1a0">smooth::v1_0::lagrange_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; lagrange_basis(const R &amp;ts)</div><div class="ttdoc">Lagrange polynomial basis coefficients.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00313">basis.hpp:313</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a67c1e24159654b1b8f24f3175ad8d3f3"><div class="ttname"><a href="basis_8hpp.html#a67c1e24159654b1b8f24f3175ad8d3f3">smooth::v1_0::integrate_absolute_polynomial</a></div><div class="ttdeci">constexpr double integrate_absolute_polynomial(double t0, double t1, double A, double B, double C)</div><div class="ttdoc">Integrate the absolute value of a quadratic 1D polynomial.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00427">basis.hpp:427</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a6d0234f81b099c6a3d115562f2cb44e9"><div class="ttname"><a href="basis_8hpp.html#a6d0234f81b099c6a3d115562f2cb44e9">smooth::v1_0::detail::bspline_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; bspline_basis()</div><div class="ttdoc">Bspline basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00075">basis.hpp:75</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323">smooth::v1_0::PolynomialBasis</a></div><div class="ttdeci">PolynomialBasis</div><div class="ttdoc">Polynomial basis types.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00229">basis.hpp:229</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323a233df4c286d574c9467f3ff09e8744cb"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a233df4c286d574c9467f3ff09e8744cb">smooth::v1_0::PolynomialBasis::Bspline</a></div><div class="ttdeci">@ Bspline</div><div class="ttdoc">Basis on [0, 1] with left to right ordering.</div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323a6b8e5e9520304bfdbf74fa045375911f"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a6b8e5e9520304bfdbf74fa045375911f">smooth::v1_0::PolynomialBasis::Bernstein</a></div><div class="ttdeci">@ Bernstein</div><div class="ttdoc">Basis on [0, 1] with left to right ordering.</div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323a70457be66a37fd77955ebfb026c57a24"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a70457be66a37fd77955ebfb026c57a24">smooth::v1_0::PolynomialBasis::Hermite</a></div><div class="ttdeci">@ Hermite</div><div class="ttdoc">Orthogonal basis on [-inf, inf] w.r.t the weight exp(-x^2)</div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323a8a8b8d9a0dab81c51557bb230a1cab76"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a8a8b8d9a0dab81c51557bb230a1cab76">smooth::v1_0::PolynomialBasis::Laguerre</a></div><div class="ttdeci">@ Laguerre</div><div class="ttdoc">Orthogonal basis on [0, inf] w.r.t the weight exp(-x)</div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323a9ed6b9b00759d6ba0aff01399161dd28"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a9ed6b9b00759d6ba0aff01399161dd28">smooth::v1_0::PolynomialBasis::Monomial</a></div><div class="ttdeci">@ Monomial</div><div class="ttdoc">The standard monomial basis (1, x, x^2, ...)</div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323aea9ca096aac74c32f1098b6099924302"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323aea9ca096aac74c32f1098b6099924302">smooth::v1_0::PolynomialBasis::Chebyshev2nd</a></div><div class="ttdeci">@ Chebyshev2nd</div><div class="ttdoc">Orthogonal basis on [-1, 1] w.r.t the weight sqrt(1-x^2)</div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323aebd0a86bd37dcfed8c4874eaf84138a5"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323aebd0a86bd37dcfed8c4874eaf84138a5">smooth::v1_0::PolynomialBasis::Chebyshev1st</a></div><div class="ttdeci">@ Chebyshev1st</div><div class="ttdoc">Orthogonal basis on [-1, 1] w.r.t the weight 1 / sqrt(1-x^2)</div></div>
+<div class="ttc" id="abasis_8hpp_html_a8272c386da29b1b47f6af696fe567323af9d917a770fac9457858a6e6bfdd9d9c"><div class="ttname"><a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323af9d917a770fac9457858a6e6bfdd9d9c">smooth::v1_0::PolynomialBasis::Legendre</a></div><div class="ttdeci">@ Legendre</div><div class="ttdoc">Orthogonal basis on [-1, 1].</div></div>
+<div class="ttc" id="abasis_8hpp_html_a9a9e932f71e69513f74c61f34a005c4b"><div class="ttname"><a href="basis_8hpp.html#a9a9e932f71e69513f74c61f34a005c4b">smooth::v1_0::monomial_integral</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; monomial_integral()</div><div class="ttdoc">Calculate integral over matrix of squared monomial P-derivatives.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00400">basis.hpp:400</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_a9c02989aca1e7a4666229cbb851ae1f6"><div class="ttname"><a href="basis_8hpp.html#a9c02989aca1e7a4666229cbb851ae1f6">smooth::v1_0::monomial_derivative</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, 1, K+1 &gt; monomial_derivative(Scalar u, std::size_t p=0)</div><div class="ttdoc">Monomial derivative (compile-time version).</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00027">basis.hpp:27</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_aaab58bd24b34be5af6f635c6601bf765"><div class="ttname"><a href="basis_8hpp.html#aaab58bd24b34be5af6f635c6601bf765">smooth::v1_0::detail::jacobi_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; jacobi_basis(double alpha, double beta)</div><div class="ttdoc">Jacobi basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00199">basis.hpp:199</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_ab041b820fbd2c91b9da6f8f6d549188b"><div class="ttname"><a href="basis_8hpp.html#ab041b820fbd2c91b9da6f8f6d549188b">smooth::v1_0::detail::bernstein_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; bernstein_basis()</div><div class="ttdoc">Bernstein basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00110">basis.hpp:110</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_ab62d4d386efb64e3c9183ddd757b3bed"><div class="ttname"><a href="basis_8hpp.html#ab62d4d386efb64e3c9183ddd757b3bed">smooth::v1_0::detail::laguerre_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; laguerre_basis()</div><div class="ttdoc">Laguerre basis coefficient matrix.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00165">basis.hpp:165</a></div></div>
+<div class="ttc" id="abasis_8hpp_html_abe1f32489e7f05bb82253b450d5fbf54"><div class="ttname"><a href="basis_8hpp.html#abe1f32489e7f05bb82253b450d5fbf54">smooth::v1_0::polynomial_cumulative_basis</a></div><div class="ttdeci">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; polynomial_cumulative_basis()</div><div class="ttdoc">Cumulative coefficient matrix for given basis.</div><div class="ttdef"><b>Definition:</b> <a href="basis_8hpp_source.html#l00382">basis.hpp:382</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_ab867ac39a760114909e5e9fdfddae0c9"><div class="ttname"><a href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">smooth::v1_0::Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00089">manifold.hpp:89</a></div></div>
 <div class="ttc" id="astatic__matrix_8hpp_html"><div class="ttname"><a href="static__matrix_8hpp.html">static_matrix.hpp</a></div><div class="ttdoc">Utilities for compile-time matrix algebra.</div></div>
-<div class="ttc" id="astructsmooth_1_1StaticMatrix_html"><div class="ttname"><a href="structsmooth_1_1StaticMatrix.html">smooth::StaticMatrix</a></div><div class="ttdoc">Elementary structure for compile-time matrix algebra.</div><div class="ttdef"><b>Definition:</b> <a href="static__matrix_8hpp_source.html#l00023">static_matrix.hpp:24</a></div></div>
-<div class="ttc" id="astructsmooth_1_1StaticMatrix_html_aa4297080fdb79a03c2695d6ce613e74d"><div class="ttname"><a href="structsmooth_1_1StaticMatrix.html#aa4297080fdb79a03c2695d6ce613e74d">smooth::StaticMatrix::transpose</a></div><div class="ttdeci">constexpr StaticMatrix&lt; _Scalar, _Rows, _Cols &gt; transpose() const</div><div class="ttdoc">Matrix transpose.</div><div class="ttdef"><b>Definition:</b> <a href="static__matrix_8hpp_source.html#l00068">static_matrix.hpp:68</a></div></div>
+<div class="ttc" id="astructsmooth_1_1v1__0_1_1StaticMatrix_html"><div class="ttname"><a href="structsmooth_1_1v1__0_1_1StaticMatrix.html">smooth::v1_0::StaticMatrix</a></div><div class="ttdoc">Elementary structure for compile-time matrix algebra.</div><div class="ttdef"><b>Definition:</b> <a href="static__matrix_8hpp_source.html#l00024">static_matrix.hpp:25</a></div></div>
+<div class="ttc" id="astructsmooth_1_1v1__0_1_1StaticMatrix_html_afcd350f8d6b3d8d9d6030b477ddf15f9"><div class="ttname"><a href="structsmooth_1_1v1__0_1_1StaticMatrix.html#afcd350f8d6b3d8d9d6030b477ddf15f9">smooth::v1_0::StaticMatrix::transpose</a></div><div class="ttdeci">constexpr StaticMatrix&lt; _Scalar, _Rows, _Cols &gt; transpose() const</div><div class="ttdoc">Matrix transpose.</div><div class="ttdef"><b>Definition:</b> <a href="static__matrix_8hpp_source.html#l00069">static_matrix.hpp:69</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -97,7 +97,7 @@ $(function() {
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">namespace </span>lp2d {</div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">using </span><a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> = double;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">using </span><a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> = double;</div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">enum class</span> Status { Optimal, PrimaryInfeasible, DualInfeasible };</div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span> </div>
@@ -130,8 +130,8 @@ $(function() {
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>  <span class="comment">// transformation matrix:</span></div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>  <span class="comment">//  [x; y] = [cP -sP; sP cP] [xt; yt]</span></div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> cP = cy / sqnorm;</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> sP = -cx / sqnorm;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> cP = cy / sqnorm;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> sP = -cx / sqnorm;</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>  <span class="comment">// insert rotated halfplanes with unit vector norm 1</span></div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>  std::vector&lt;detail::HalfPlane&gt; input;</div>
@@ -153,7 +153,7 @@ $(function() {
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>  }</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>  <span class="comment">// scale factor</span></div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>  <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> lambda{1};</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>  <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> lambda{1};</div>
 <div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; hp : input) { lambda = std::max(lambda, std::abs(hp.c)); }</div>
 <div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
 <div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>  <span class="keywordflow">for</span> (<span class="keyword">auto</span> &amp; hp : input) { hp.c /= lambda; }</div>
@@ -161,7 +161,7 @@ $(function() {
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>  <span class="keyword">const</span> <span class="keyword">auto</span> [xt_opt, yt_opt, status] = solve_impl(input);</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span> </div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>  <span class="comment">// multiplication that returns 0 for 0 * inf (regular multiplication returns nan)</span></div>
-<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  <span class="keyword">const</span> <span class="keyword">auto</span> mul = [](<a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> a, <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> b) { <span class="keywordflow">return</span> std::abs(a) &gt; detail::eps ? a * b : 0; };</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>  <span class="keyword">const</span> <span class="keyword">auto</span> mul = [](<a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> a, <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> b) { <span class="keywordflow">return</span> std::abs(a) &gt; detail::eps ? a * b : 0; };</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span>  <span class="comment">// return solution in original coordinates</span></div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>  <span class="keywordflow">return</span> {</div>
@@ -185,10 +185,10 @@ $(function() {
 <div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> active_y_lower = [](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; hp) { <span class="keywordflow">return</span> hp.active &amp;&amp; hp.b &lt; 0; };</div>
 <div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span> </div>
 <div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="comment">// halfplane as bounds on y</span></div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> hp_to_yslope = [](<span class="keyword">const</span> HalfPlane &amp; hp, <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> x) -&gt; std::pair&lt;Scalar, Scalar&gt; {</div>
+<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keyword">auto</span> hp_to_yslope = [](<span class="keyword">const</span> HalfPlane &amp; hp, <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> x) -&gt; std::pair&lt;Scalar, Scalar&gt; {</div>
 <div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span>  <span class="comment">// ax + by &lt;=&gt; c  for  b != 0   &lt;==&gt;   y &lt;=&gt; c/b - (a/b) x</span></div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> alpha = -hp.a / hp.b;</div>
-<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> beta  = hp.c / hp.b;</div>
+<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> alpha = -hp.a / hp.b;</div>
+<div class="line"><a id="l00127" name="l00127"></a><span class="lineno">  127</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> beta  = hp.c / hp.b;</div>
 <div class="line"><a id="l00128" name="l00128"></a><span class="lineno">  128</span> </div>
 <div class="line"><a id="l00129" name="l00129"></a><span class="lineno">  129</span>  <span class="comment">// ensure we can evaluate at \pm inf</span></div>
 <div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span>  <span class="keywordflow">if</span> (std::abs(alpha) &lt;= eps) { <span class="keywordflow">return</span> {beta, alpha}; }</div>
@@ -198,13 +198,13 @@ $(function() {
 <div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span> </div>
 <div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span><span class="keyword">inline</span> std::optional&lt;Scalar&gt; intersection(<span class="keyword">const</span> HalfPlane &amp; hp1, <span class="keyword">const</span> HalfPlane &amp; hp2)</div>
 <div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>{</div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> lhs = hp1.a * hp2.b - hp2.a * hp1.b;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>  <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> lhs = hp1.a * hp2.b - hp2.a * hp1.b;</div>
 <div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>  <span class="keywordflow">if</span> (std::abs(lhs) &gt; eps) { <span class="keywordflow">return</span> (hp2.b * hp1.c - hp1.b * hp2.c) / lhs; }</div>
 <div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>  <span class="keywordflow">return</span> {};</div>
 <div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>}</div>
 <div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
 <div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="comment">// g(x) = max { ai * x + bi },    and its subderivative</span></div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="keyword">inline</span> <span class="keyword">const</span> <span class="keyword">auto</span> gfun = [](<span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; hps, <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> x) -&gt; ValSubDer {</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="keyword">inline</span> <span class="keyword">const</span> <span class="keyword">auto</span> gfun = [](<span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; hps, <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> x) -&gt; ValSubDer {</div>
 <div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>  ValSubDer ret{-inf, 0, 0};</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; hp : hps | std::views::filter(active_y_lower)) {</div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <span class="keyword">const</span> <span class="keyword">auto</span> [yx, dyx] = hp_to_yslope(hp, x);</div>
@@ -221,7 +221,7 @@ $(function() {
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span>};</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span> </div>
 <div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span><span class="comment">// h(x) = min { a * x + b },   and its subderivative</span></div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="keyword">inline</span> <span class="keyword">const</span> <span class="keyword">auto</span> hfun = [](<span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; hps, <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> x) -&gt; ValSubDer {</div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span><span class="keyword">inline</span> <span class="keyword">const</span> <span class="keyword">auto</span> hfun = [](<span class="keyword">const</span> std::ranges::range <span class="keyword">auto</span> &amp; hps, <span class="keyword">const</span> <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> x) -&gt; ValSubDer {</div>
 <div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>  ValSubDer ret{inf, 0, 0};</div>
 <div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp; hp : hps | std::views::filter(active_y_upper)) {</div>
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="keyword">const</span> <span class="keyword">auto</span> [yx, dyx] = hp_to_yslope(hp, x);</div>
@@ -243,7 +243,7 @@ $(function() {
 <div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span> </div>
 <div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>  <span class="comment">// keep track of median using two priority queues</span></div>
 <div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>  std::priority_queue&lt;Scalar&gt; small, large;</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>  <span class="keyword">const</span> <span class="keyword">auto</span> addnum = [&amp;small, &amp;large](<a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> d) {</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>  <span class="keyword">const</span> <span class="keyword">auto</span> addnum = [&amp;small, &amp;large](<a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> d) {</div>
 <div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    small.push(d);</div>
 <div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    large.push(-small.top());</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    small.pop();</div>
@@ -424,7 +424,7 @@ $(function() {
 <div class="line"><a id="l00385" name="l00385"></a><span class="lineno">  385</span>    hps | std::views::filter([](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; hp) { <span class="keywordflow">return</span> hp.active &amp;&amp; std::abs(hp.b) &lt; eps &amp;&amp; hp.a &lt; 0; });</div>
 <div class="line"><a id="l00386" name="l00386"></a><span class="lineno">  386</span> </div>
 <div class="line"><a id="l00387" name="l00387"></a><span class="lineno">  387</span>  <span class="comment">// initial lower bound on x</span></div>
-<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>  <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> a = std::transform_reduce(</div>
+<div class="line"><a id="l00388" name="l00388"></a><span class="lineno">  388</span>  <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> a = std::transform_reduce(</div>
 <div class="line"><a id="l00389" name="l00389"></a><span class="lineno">  389</span>    std::ranges::begin(hps_x_lower),</div>
 <div class="line"><a id="l00390" name="l00390"></a><span class="lineno">  390</span>    std::ranges::end(hps_x_lower),</div>
 <div class="line"><a id="l00391" name="l00391"></a><span class="lineno">  391</span>    -inf,</div>
@@ -436,7 +436,7 @@ $(function() {
 <div class="line"><a id="l00397" name="l00397"></a><span class="lineno">  397</span>    hps | std::views::filter([](<span class="keyword">const</span> <span class="keyword">auto</span> &amp; hp) { <span class="keywordflow">return</span> hp.active &amp;&amp; std::abs(hp.b) &lt; eps &amp;&amp; hp.a &gt; 0; });</div>
 <div class="line"><a id="l00398" name="l00398"></a><span class="lineno">  398</span> </div>
 <div class="line"><a id="l00399" name="l00399"></a><span class="lineno">  399</span>  <span class="comment">// initial upper bound on x</span></div>
-<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>  <a class="code hl_typedef" href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">Scalar</a> b = std::transform_reduce(</div>
+<div class="line"><a id="l00400" name="l00400"></a><span class="lineno">  400</span>  <a class="code hl_typedef" href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">Scalar</a> b = std::transform_reduce(</div>
 <div class="line"><a id="l00401" name="l00401"></a><span class="lineno">  401</span>    std::ranges::begin(hps_x_upper),</div>
 <div class="line"><a id="l00402" name="l00402"></a><span class="lineno">  402</span>    std::ranges::end(hps_x_upper),</div>
 <div class="line"><a id="l00403" name="l00403"></a><span class="lineno">  403</span>    inf,</div>
@@ -496,7 +496,7 @@ $(function() {
 <div class="line"><a id="l00457" name="l00457"></a><span class="lineno">  457</span>}  <span class="comment">// namespace detail</span></div>
 <div class="line"><a id="l00458" name="l00458"></a><span class="lineno">  458</span> </div>
 <div class="line"><a id="l00459" name="l00459"></a><span class="lineno">  459</span>}  <span class="comment">// namespace lp2d</span></div>
-<div class="ttc" id="amanifold_8hpp_html_a85d829dc273faa1e9618040cdebdf74c"><div class="ttname"><a href="manifold_8hpp.html#a85d829dc273faa1e9618040cdebdf74c">smooth::Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00088">manifold.hpp:88</a></div></div>
+<div class="ttc" id="amanifold_8hpp_html_ab867ac39a760114909e5e9fdfddae0c9"><div class="ttname"><a href="manifold_8hpp.html#ab867ac39a760114909e5e9fdfddae0c9">smooth::v1_0::Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00089">manifold.hpp:89</a></div></div>
 <div class="ttc" id="astructlp2d_1_1detail_1_1HalfPlane_html"><div class="ttname"><a href="structlp2d_1_1detail_1_1HalfPlane.html">lp2d::detail::HalfPlane</a></div><div class="ttdoc">Halfplane represented as inequality ax + by &lt;= c.</div><div class="ttdef"><b>Definition:</b> <a href="lp2d_8hpp_source.html#l00028">lp2d.hpp:29</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

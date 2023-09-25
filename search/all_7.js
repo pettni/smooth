@@ -1,9 +1,9 @@
 var searchData=
 [
   ['halfplane_0',['HalfPlane',['../structlp2d_1_1detail_1_1HalfPlane.html',1,'lp2d::detail']]],
-  ['hat_1',['hat',['../classsmooth_1_1LieGroupBase.html#a69016aa3f21e32e1982a74c4933bf017',1,'smooth::LieGroupBase']]],
-  ['helper_2',['helper',['../structsmooth_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#a042258478c729ba2e620b651d8d4ff5b',1,'smooth::detail::BoostOdeintOps::scale_sum']]],
-  ['hermite_3',['Hermite',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097a70457be66a37fd77955ebfb026c57a24',1,'smooth']]],
-  ['hermite_5fbasis_4',['hermite_basis',['../basis_8hpp.html#a32a6b89f9fdbf270f8d36b11ba185fdb',1,'smooth::detail']]],
-  ['hessian_5',['Hessian',['../classsmooth_1_1LieGroupBase.html#ab5862b33b16cfb1a3bfd7cadea62733a',1,'smooth::LieGroupBase::Hessian()'],['../manifold_8hpp.html#a5cf907b049fd3461fefddcc524598625',1,'smooth::Hessian()']]]
+  ['hat_1',['hat',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#aca0827f77ec5960a08bb906eae93db31',1,'smooth::v1_0::LieGroupBase']]],
+  ['helper_2',['helper',['../structsmooth_1_1v1__0_1_1detail_1_1BoostOdeintOps_1_1scale__sum.html#a0c6449795edbfe58bf73b9137eaa40f2',1,'smooth::v1_0::detail::BoostOdeintOps::scale_sum']]],
+  ['hermite_3',['Hermite',['../basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a70457be66a37fd77955ebfb026c57a24',1,'smooth::v1_0']]],
+  ['hermite_5fbasis_4',['hermite_basis',['../basis_8hpp.html#a37d156c856efe00e3e4bfafce5fafbc8',1,'smooth::v1_0::detail']]],
+  ['hessian_5',['Hessian',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#abf5ace6773d12c9443af79ebd539bb89',1,'smooth::v1_0::LieGroupBase::Hessian()'],['../manifold_8hpp.html#a3f9b5f9051d2da97d664bf26d6a5e167',1,'smooth::v1_0::Hessian()']]]
 ];

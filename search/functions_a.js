@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['lagrange_5fbasis_0',['lagrange_basis',['../basis_8hpp.html#ad9cd7f1d8db8874f6f19a0137b51a90f',1,'smooth']]],
-  ['laguerre_5fbasis_1',['laguerre_basis',['../basis_8hpp.html#ac9e7f67be44a7b8481b564de97ead9e3',1,'smooth::detail']]],
-  ['lgr_5fnodes_2',['lgr_nodes',['../quadrature_8hpp.html#a89528e1dfb155b7fa5abae5172c0a7a8',1,'smooth']]],
-  ['lie_5fbracket_3',['lie_bracket',['../classsmooth_1_1LieGroupBase.html#a9c5775d59a6d1120892d456dccb3b750',1,'smooth::LieGroupBase']]],
-  ['lift_5fse3_4',['lift_se3',['../classsmooth_1_1SE2Base.html#a5f97d36fda96b7538d74e6c7a1bae3b9',1,'smooth::SE2Base']]],
-  ['lift_5fso3_5',['lift_so3',['../classsmooth_1_1SO2Base.html#acda1d62d1e0ad8fd1ddaffb235812b70',1,'smooth::SO2Base']]],
-  ['lminus_6',['lminus',['../lie__group_8hpp.html#a8f5eb87f84a67a30849168de08ecb69e',1,'smooth']]],
-  ['log_7',['log',['../classsmooth_1_1LieGroupBase.html#a3a59117b76c9b20ad36d378f7a5e1130',1,'smooth::LieGroupBase::log()'],['../lie__group_8hpp.html#ac71325c1fbf15c4cb723f2e7a817bbea',1,'smooth::log(const G &amp;g)']]],
-  ['lplus_8',['lplus',['../lie__group_8hpp.html#a29f5224adb0b585a1663bd230b63f4ee',1,'smooth']]]
+  ['lagrange_5fbasis_0',['lagrange_basis',['../basis_8hpp.html#a5389408ca59fc46cdd94a7f88af2c1a0',1,'smooth::v1_0']]],
+  ['laguerre_5fbasis_1',['laguerre_basis',['../basis_8hpp.html#ab62d4d386efb64e3c9183ddd757b3bed',1,'smooth::v1_0::detail']]],
+  ['lgr_5fnodes_2',['lgr_nodes',['../quadrature_8hpp.html#a615dcab82b765779e001c2c3f6e053f2',1,'smooth::v1_0']]],
+  ['lie_5fbracket_3',['lie_bracket',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#a3ec5c10ada7477bdecf22c463919cee9',1,'smooth::v1_0::LieGroupBase']]],
+  ['lift_5fse3_4',['lift_se3',['../classsmooth_1_1v1__0_1_1SE2Base.html#ae3fd8e995375eae5b4bccda3ce3fa0db',1,'smooth::v1_0::SE2Base']]],
+  ['lift_5fso3_5',['lift_so3',['../classsmooth_1_1v1__0_1_1SO2Base.html#ad9dae3a65062f3d8f28163052017fee0',1,'smooth::v1_0::SO2Base']]],
+  ['lminus_6',['lminus',['../lie__group_8hpp.html#abe3cbae2b16fbaa8ea761e22f1bbf5a6',1,'smooth::v1_0']]],
+  ['log_7',['log',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#ae789eef8b66ca6a7bb566957013f3418',1,'smooth::v1_0::LieGroupBase::log()'],['../lie__group_8hpp.html#a02283abc8e3eb01e0c27457a8820513a',1,'smooth::v1_0::log(const G &amp;g)']]],
+  ['lplus_8',['lplus',['../lie__group_8hpp.html#adab4afe31b88b3bcb505f149c9833500',1,'smooth::v1_0']]]
 ];

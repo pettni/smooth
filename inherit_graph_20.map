@@ -1,3 +1,11 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classsmooth_1_1LieGroupBase.html" title=" " alt="" coords="5,5,221,45"/>
+<area shape="rect" id="node1" href="$classsmooth_1_1v1__0_1_1LieGroupBase.html" title=" " alt="" coords="5,229,193,269"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1v1__0_1_1BundleBase.html" title="Base class for Bundle lie groups." alt="" coords="241,5,416,45"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1v1__0_1_1C1Base.html" title="Base class for C1 Lie group types." alt="" coords="253,69,404,109"/>
+<area shape="rect" id="node4" href="$classsmooth_1_1v1__0_1_1GalileiBase.html" title="Base class for Galielei Lie group types." alt="" coords="243,133,414,173"/>
+<area shape="rect" id="node5" href="$classsmooth_1_1v1__0_1_1SE2Base.html" title="Base class for SE2 Lie group types." alt="" coords="249,197,408,237"/>
+<area shape="rect" id="node6" href="$classsmooth_1_1v1__0_1_1SE3Base.html" title="Base class for SE3 Lie group types." alt="" coords="249,261,408,301"/>
+<area shape="rect" id="node7" href="$classsmooth_1_1v1__0_1_1SE__K__3Base.html" title="Base class for SE_k(3) Lie group types." alt="" coords="259,325,398,365"/>
+<area shape="rect" id="node8" href="$classsmooth_1_1v1__0_1_1SO2Base.html" title="Base class for SO2 Lie group types." alt="" coords="248,389,409,429"/>
+<area shape="rect" id="node9" href="$classsmooth_1_1v1__0_1_1SO3Base.html" title="Base class for SO3 Lie group types." alt="" coords="248,453,409,493"/>
 </map>

@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['d2_5fexp_5fsparse_5fpattern_0',['d2_exp_sparse_pattern',['../lie__sparse_8hpp.html#a395ca24eb2e8fd9928eab2a6be451d0c',1,'smooth']]],
-  ['d_5fexp_5fsparse_5fpattern_1',['d_exp_sparse_pattern',['../lie__sparse_8hpp.html#a1f47baf7699c86ec140a74560a6876d5',1,'smooth']]],
-  ['degree_2',['Degree',['../structsmooth_1_1spline__specs_1_1NoConstraints.html#aabb628acc8e7da44faafb7808ecd7210',1,'smooth::spline_specs::NoConstraints::Degree()'],['../structsmooth_1_1spline__specs_1_1FixedDerCubic.html#a0fb7a98380d28055bf0c5e291ad85de8',1,'smooth::spline_specs::FixedDerCubic::Degree()'],['../structsmooth_1_1spline__specs_1_1MinDerivative.html#a244e09257c03decd93a05a60ad3c4ad0',1,'smooth::spline_specs::MinDerivative::Degree()']]],
-  ['dim_3',['Dim',['../classsmooth_1_1LieGroupBase.html#abfff29e3112772363122ea2c7c67d2ec',1,'smooth::LieGroupBase']]],
-  ['dof_4',['Dof',['../classsmooth_1_1LieGroupBase.html#aedc4026178e459da1c9b8ffa7aeaec1a',1,'smooth::LieGroupBase']]]
+  ['d2_5fexp_5fsparse_5fpattern_0',['d2_exp_sparse_pattern',['../lie__sparse_8hpp.html#a60a574775bfef7cd97d433899f1c7931',1,'smooth::v1_0']]],
+  ['d_5fexp_5fsparse_5fpattern_1',['d_exp_sparse_pattern',['../lie__sparse_8hpp.html#a9efa4aef08249c036e3a8828eea1334d',1,'smooth::v1_0']]],
+  ['degree_2',['Degree',['../structsmooth_1_1v1__0_1_1spline__specs_1_1NoConstraints.html#ac60fe8040210a298f92d44be8a34a32b',1,'smooth::v1_0::spline_specs::NoConstraints::Degree()'],['../structsmooth_1_1v1__0_1_1spline__specs_1_1FixedDerCubic.html#aa167de15d48e5434bf7bd2680f0683ac',1,'smooth::v1_0::spline_specs::FixedDerCubic::Degree()'],['../structsmooth_1_1v1__0_1_1spline__specs_1_1MinDerivative.html#a7f36056b64e20c090f5c9dd563b4985b',1,'smooth::v1_0::spline_specs::MinDerivative::Degree()']]],
+  ['dim_3',['Dim',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#aaa1092df9d821558aad57cc6bdad1799',1,'smooth::v1_0::LieGroupBase']]],
+  ['dof_4',['Dof',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#a5dfc324a758861f4484c71e7c1678696',1,'smooth::v1_0::LieGroupBase']]]
 ];

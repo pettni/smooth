@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['polynomialbasis_0',['PolynomialBasis',['../basis_8hpp.html#a5335c03b41cdb1fb5cc7c8fef5c66097',1,'smooth']]]
+  ['polynomialbasis_0',['PolynomialBasis',['../basis_8hpp.html#a8272c386da29b1b47f6af696fe567323',1,'smooth::v1_0']]]
 ];

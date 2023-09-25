@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vee_0',['vee',['../classsmooth_1_1LieGroupBase.html#ac06eff5bcfa8f777d27d16280ee66ef1',1,'smooth::LieGroupBase']]]
+  ['vee_0',['vee',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#a0a07610dd5c609c40ffc51136f69dee2',1,'smooth::v1_0::LieGroupBase']]]
 ];
