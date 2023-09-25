@@ -9,6 +9,7 @@
 #include "so3.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief SE_k(3) Lie Group represented as S^3 ⋉ R3 ... ⋉ R3
@@ -218,4 +219,5 @@ public:
   }
 };
 
+}  // namespace v1_0
 }  // namespace smooth

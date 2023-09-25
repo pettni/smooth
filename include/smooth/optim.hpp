@@ -24,6 +24,7 @@
 using std::chrono::duration_cast, std::chrono::microseconds;
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Optimization options.
@@ -216,4 +217,5 @@ void minimize(auto && f, auto && x, const MinimizeOptions & opts = MinimizeOptio
   minimize<diff::Type::Default>(std::forward<decltype(f)>(f), std::forward<decltype(x)>(x), opts);
 }
 
+}  // namespace v1_0
 }  // namespace smooth

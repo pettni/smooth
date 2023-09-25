@@ -11,8 +11,9 @@
 
 #include "smooth/manifolds.hpp"
 
-namespace smooth::detail {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace detail {
 /**
  * @brief \p boost::odeint Stepper operations for Manifold types.
  *
@@ -109,8 +110,9 @@ struct BoostOdeintOps
   // \endcond
 };
 
-}  // namespace smooth::detail
-
+}  // namespace detail
+}  // namespace v1_0
+}  // namespace smooth
 /**
  * @brief SFINAE dispatcher for Manifold types.
  */

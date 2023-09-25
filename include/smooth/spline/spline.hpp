@@ -13,6 +13,7 @@
 #include "common.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Single-parameter Lie group-valued function.
@@ -116,12 +117,9 @@ public:
    * @param T duration
    * @param ga Spline starting point (default Identity)
    */
-  [[nodiscard]] static Spline FixedCubic(
-    const G & gb,
-    const Tangent<G> & va,
-    const Tangent<G> & vb,
-    double T     = 1,
-    const G & ga = Identity<G>()) requires(K == 3);
+  [[nodiscard]] static Spline
+  FixedCubic(const G & gb, const Tangent<G> & va, const Tangent<G> & vb, double T = 1, const G & ga = Identity<G>())
+    requires(K == 3);
 
   /// @brief Number of Spline segments.
   [[nodiscard]] std::size_t size() const;
@@ -223,7 +221,8 @@ public:
    *
    * @note This function is approximate for Lie groups with curvature.
    */
-  [[nodiscard]] Tangent<G> arclength(double t) const requires(K == 3);
+  [[nodiscard]] Tangent<G> arclength(double t) const
+    requires(K == 3);
 
   /**
    * @brief Crop Spline
@@ -281,6 +280,7 @@ private:
 template<LieGroup G>
 using CubicSpline = Spline<3, G>;
 
+}  // namespace v1_0
 }  // namespace smooth
 
 #include "detail/spline_impl.hpp"

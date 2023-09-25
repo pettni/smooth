@@ -11,6 +11,7 @@
 #include "so3.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Base class for Galielei Lie group types.
@@ -73,7 +74,11 @@ public:
   /**
    * @brief Access SO(3) part.
    */
-  Map<SO3<Scalar>> so3() requires is_mutable { return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 7); }
+  Map<SO3<Scalar>> so3()
+    requires is_mutable
+  {
+    return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 7);
+  }
 
   /**
    * @brief Const access SO(3) part.
@@ -83,7 +88,8 @@ public:
   /**
    * @brief Access R3 velocity part.
    */
-  Eigen::Map<Eigen::Vector3<Scalar>> r3_v() requires is_mutable
+  Eigen::Map<Eigen::Vector3<Scalar>> r3_v()
+    requires is_mutable
   {
     return Eigen::Map<Eigen::Vector3<Scalar>>(static_cast<_Derived &>(*this).data() + 0);
   }
@@ -99,7 +105,8 @@ public:
   /**
    * @brief Access R3 position part.
    */
-  Eigen::Map<Eigen::Vector3<Scalar>> r3_p() requires is_mutable
+  Eigen::Map<Eigen::Vector3<Scalar>> r3_p()
+    requires is_mutable
   {
     return Eigen::Map<Eigen::Vector3<Scalar>>(static_cast<_Derived &>(*this).data() + 3);
   }
@@ -115,7 +122,8 @@ public:
   /**
    * @brief Access R1 time part.
    */
-  Eigen::Map<Eigen::Vector<Scalar, 1>> r1_t() requires is_mutable
+  Eigen::Map<Eigen::Vector<Scalar, 1>> r1_t()
+    requires is_mutable
   {
     return Eigen::Map<Eigen::Vector<Scalar, 1>>(static_cast<_Derived &>(*this).data() + 6);
   }
@@ -264,4 +272,5 @@ class Map<const Galilei<_Scalar>> : public GalileiBase<Map<const Galilei<_Scalar
 using Galileif = Galilei<float>;   ///< Galilei with float
 using Galileid = Galilei<double>;  ///< Galilei with double
 
+}  // namespace v1_0
 }  // namespace smooth

@@ -13,8 +13,9 @@
 
 #include "common.hpp"
 
-namespace smooth::detail {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace detail {
 template<typename S>
 S cos_2(const S & x2)
 {
@@ -81,4 +82,6 @@ S cos_6(const S & x2)
   }
 }
 
-}  // namespace smooth::detail
+}  // namespace detail
+}  // namespace v1_0
+}  // namespace smooth

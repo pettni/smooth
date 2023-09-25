@@ -18,6 +18,7 @@
 #include "smooth/wrt.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 // mark Jet as a valid scalar
 template<typename T, int I>
@@ -109,4 +110,5 @@ auto dr_ceres(auto && f, auto && x)
   return std::make_pair(std::move(fval), Eigen::Matrix<Scalar, Ny, Nx>(jac));
 }
 
+}  // namespace v1_0
 }  // namespace smooth

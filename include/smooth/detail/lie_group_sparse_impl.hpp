@@ -5,6 +5,7 @@
 #include "../lie_sparse.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /// @brief Forward-declare
 // clang-format off
@@ -259,4 +260,5 @@ struct lie_sparse<G>
 
 }  // namespace traits
 
+}  // namespace v1_0
 }  // namespace smooth

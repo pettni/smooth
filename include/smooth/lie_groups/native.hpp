@@ -9,17 +9,18 @@
 
 #include "../concepts/lie_group.hpp"
 
-namespace smooth::traits {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace traits {
 /**
  * @brief Concept defining class with an internal Lie group interface.
  *
  * Concept satisfied if G has members that correspond to the LieGroup concept.
  */
 template<typename G>
-concept NativeLieGroup = requires
-{
-  // clang-format off
+concept NativeLieGroup =
+  requires {
+    // clang-format off
   typename G::Scalar;
   typename G::Tangent;
   typename G::PlainObject;
@@ -50,8 +51,8 @@ requires(const Eigen::Vector<typename G::Scalar, G::Dof> & a) {
   {G::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof>>;
   {G::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
   {G::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
-  // clang-format on
-};
+    // clang-format on
+  };
 
 /**
  * @brief LieGroup model specification for NativeLieGroup
@@ -141,4 +142,6 @@ struct lie<G>
   // \endcond
 };
 
-}  // namespace smooth::traits
+}  // namespace traits
+}  // namespace v1_0
+}  // namespace smooth

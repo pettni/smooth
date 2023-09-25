@@ -17,6 +17,7 @@
 using namespace std::numbers;
 
 namespace smooth {
+inline namespace v1_0 {
 
 // \cond
 namespace detail {
@@ -40,8 +41,7 @@ constexpr auto factorial_s() noexcept
 /// @brief Constexpr cos that is moderately accurate on [0, pi]
 constexpr auto cos_s(const auto x) noexcept
 {
-  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>)
-  {
+  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>) {
     return ((pow_s<Is>(-1.) * pow_s<2 * Is>(x) / factorial_s<2 * Is>()) + ...);
   };
   return f(std::make_index_sequence<8>{});
@@ -113,4 +113,5 @@ constexpr std::pair<std::array<double, K>, std::array<double, K>> lgr_nodes()
   return {xs, ws};
 }
 
+}  // namespace v1_0
 }  // namespace smooth

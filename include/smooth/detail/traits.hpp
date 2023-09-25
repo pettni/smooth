@@ -7,6 +7,7 @@
 #include <Eigen/Core>
 
 namespace smooth {
+inline namespace v1_0 {
 
 namespace detail {
 
@@ -40,4 +41,5 @@ concept MatrixType = std::is_base_of_v<Eigen::MatrixBase<G>, G>;
 template<typename G>
 concept RnType = MatrixType<G> && G::ColsAtCompileTime == 1;
 
+}  // namespace v1_0
 }  // namespace smooth

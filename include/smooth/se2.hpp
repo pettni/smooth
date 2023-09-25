@@ -13,6 +13,7 @@
 #include "so2.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 // \cond
 template<typename Scalar>
@@ -75,7 +76,11 @@ public:
   /**
    * @brief Access SO(2) part.
    */
-  Map<SO2<Scalar>> so2() requires is_mutable { return Map<SO2<Scalar>>(static_cast<_Derived &>(*this).data() + 2); }
+  Map<SO2<Scalar>> so2()
+    requires is_mutable
+  {
+    return Map<SO2<Scalar>>(static_cast<_Derived &>(*this).data() + 2);
+  }
 
   /**
    * @brief Const access SO(2) part.
@@ -85,7 +90,8 @@ public:
   /**
    * @brief Access R2 part.
    */
-  Eigen::Map<Eigen::Vector2<Scalar>> r2() requires is_mutable
+  Eigen::Map<Eigen::Vector2<Scalar>> r2()
+    requires is_mutable
   {
     return Eigen::Map<Eigen::Vector2<Scalar>>(static_cast<_Derived &>(*this).data());
   }
@@ -245,4 +251,5 @@ class Map<const SE2<_Scalar>> : public SE2Base<Map<const SE2<_Scalar>>>
 using SE2f = SE2<float>;   ///< SE2 with float
 using SE2d = SE2<double>;  ///< SE2 with double
 
+}  // namespace v1_0
 }  // namespace smooth

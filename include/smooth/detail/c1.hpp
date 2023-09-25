@@ -7,6 +7,7 @@
 #include "common.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief C(1) Lie group of rotation and scaling
@@ -94,4 +95,5 @@ public:
   }
 };
 
+}  // namespace v1_0
 }  // namespace smooth

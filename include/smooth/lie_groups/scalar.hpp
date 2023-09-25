@@ -10,8 +10,9 @@
 #include "../concepts/lie_group.hpp"
 #include "../detail/traits.hpp"
 
-namespace smooth::traits {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace traits {
 /**
  * @brief LieGroup model specification for ScalarType
  */
@@ -85,4 +86,6 @@ struct lie<G>
   // \endcond
 };
 
-}  // namespace smooth::traits
+}  // namespace traits
+}  // namespace v1_0
+}  // namespace smooth

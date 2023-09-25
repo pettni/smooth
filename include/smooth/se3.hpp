@@ -11,6 +11,7 @@
 #include "so3.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 template<typename Scalar>
 class SE2;
@@ -73,7 +74,11 @@ public:
   /**
    * @brief Access SO(3) part.
    */
-  Map<SO3<Scalar>> so3() requires is_mutable { return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3); }
+  Map<SO3<Scalar>> so3()
+    requires is_mutable
+  {
+    return Map<SO3<Scalar>>(static_cast<_Derived &>(*this).data() + 3);
+  }
 
   /**
    * @brief Const access SO(3) part.
@@ -83,7 +88,8 @@ public:
   /**
    * @brief Access R3 part.
    */
-  Eigen::Map<Eigen::Vector3<Scalar>> r3() requires is_mutable
+  Eigen::Map<Eigen::Vector3<Scalar>> r3()
+    requires is_mutable
   {
     return Eigen::Map<Eigen::Vector3<Scalar>>(static_cast<_Derived &>(*this).data());
   }
@@ -235,4 +241,5 @@ class Map<const SE3<_Scalar>> : public SE3Base<Map<const SE3<_Scalar>>>
 using SE3f = SE3<float>;   ///< SE3 with float
 using SE3d = SE3<double>;  ///< SE3 with double
 
+}  // namespace v1_0
 }  // namespace smooth

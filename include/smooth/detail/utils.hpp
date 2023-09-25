@@ -10,8 +10,9 @@
 #include <ranges>
 #include <utility>
 
-namespace smooth::utils {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace utils {
 ////////////////////////////
 // INTERVAL BINARY SEARCH //
 ////////////////////////////
@@ -401,4 +402,6 @@ struct Zip
 /// @brief Zip views
 inline constexpr detail::Zip zip;
 
-}  // namespace smooth::utils
+}  // namespace utils
+}  // namespace v1_0
+}  // namespace smooth

@@ -1,0 +1,39 @@
+// Copyright (C) 2023 Petter Nilsson. MIT License.
+
+#pragma once
+
+/// \def SMOOTH_VERSION_MAJOR
+/// Defines SMOOTH major version number
+#define SMOOTH_VERSION_MAJOR (@CMAKE_PROJECT_VERSION_MAJOR@)
+
+/// \def RCLCPP_VERSION_MINOR
+/// Defines SMOOTH minor version number
+#define SMOOTH_VERSION_MINOR (@CMAKE_PROJECT_VERSION_MINOR@)
+
+/// \def RCLCPP_VERSION_PATCH
+/// Defines SMOOTH version patch number
+#define SMOOTH_VERSION_PATCH (@CMAKE_PROJECT_VERSION_PATCH@)
+
+/// \def RCLCPP_VERSION_STR
+/// Defines SMOOTH version string
+#define SMOOTH_VERSION_STR "@CMAKE_PROJECT_VERSION@"
+
+/// \def SMOOTH_VERSION_GTE
+/// Defines a macro to check whether the version of SMOOTH is greater than or equal to the
+/// given version triple.
+#define SMOOTH_VERSION_GTE(major, minor, patch) \
+  ((major < SMOOTH_VERSION_MAJOR)   ? true      \
+   : (major > SMOOTH_VERSION_MAJOR) ? false     \
+   : (minor < SMOOTH_VERSION_MINOR) ? true      \
+   : (minor > SMOOTH_VERSION_MINOR) ? false     \
+   : (patch < SMOOTH_VERSION_PATCH) ? true      \
+   : (patch > SMOOTH_VERSION_PATCH) ? false     \
+                                    : true)
+
+/// \def SMOOTH_VERSION_EQ
+/// Defines a macro to check whether the version of SMOOTH is equal to the given version triple.
+#define SMOOTH_VERSION_EQ(major, minor, patch) \
+  ((major != SMOOTH_VERSION_MAJOR)   ? false   \
+   : (minor != SMOOTH_VERSION_MINOR) ? false   \
+   : (patch != SMOOTH_VERSION_PATCH) ? false   \
+                                     : true)

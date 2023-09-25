@@ -12,6 +12,7 @@
 #include "so3.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Base class for SE_k(3) Lie group types.
@@ -243,4 +244,5 @@ class Map<const SE_K_3<_Scalar, _K>> : public SE_K_3Base<Map<const SE_K_3<_Scala
   SMOOTH_CONST_MAP_API();
 };
 
+}  // namespace v1_0
 }  // namespace smooth

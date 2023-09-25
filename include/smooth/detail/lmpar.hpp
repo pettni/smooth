@@ -10,8 +10,9 @@
 
 #include "utils.hpp"
 
-namespace smooth::detail {
-
+namespace smooth {
+inline namespace v1_0 {
+namespace detail {
 /**
  * @brief Solve structured least-squares probelm
  *
@@ -287,4 +288,6 @@ lmpar(const auto & J, const Eigen::Vector<double, N> & d, const Eigen::Vector<do
   return std::make_pair(alpha, std::move(x));
 }
 
-}  // namespace smooth::detail
+}  // namespace detail
+}  // namespace v1_0
+}  // namespace smooth

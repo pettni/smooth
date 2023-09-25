@@ -5,6 +5,7 @@
 #include "../derivatives.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 template<typename At, typename dAt, typename Bt, typename dBt>
 auto d_matrix_product(const At & A, const dAt & dA, const Bt & B, const dBt & dB)
@@ -114,4 +115,5 @@ Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G>> d2r_rminus_squarednorm(const Tangent<G>
   return d2_fog(e.transpose(), Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G>>::Identity(), J1, H1);
 }
 
+}  // namespace v1_0
 }  // namespace smooth

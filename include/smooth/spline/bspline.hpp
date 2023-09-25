@@ -9,10 +9,11 @@
 
 #include <ranges>
 
-#include "cumulative_spline.hpp"
 #include "common.hpp"
+#include "cumulative_spline.hpp"
 
 namespace smooth {
+inline namespace v1_0 {
 
 /**
  * @brief Cardinal Bspline on a Lie group
@@ -124,6 +125,7 @@ private:
   std::vector<G> m_ctrl_pts;
 };
 
+}  // namespace v1_0
 }  // namespace smooth
 
 #include "detail/bspline_impl.hpp"
