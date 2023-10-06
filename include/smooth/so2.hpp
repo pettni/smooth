@@ -109,6 +109,15 @@ public:
   /**
    * @brief Unit complex number (U(1)) representation.
    */
+  Eigen::Vector2<Scalar> unit_complex() const
+  {
+    return Eigen::Vector2<Scalar>(
+      static_cast<const _Derived &>(*this).coeffs().y(), static_cast<const _Derived &>(*this).coeffs().x());
+  }
+
+  /**
+   * @brief Unit complex number (U(1)) representation.
+   */
   std::complex<Scalar> u1() const
   {
     return std::complex<Scalar>(
