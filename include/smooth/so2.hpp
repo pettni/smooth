@@ -70,9 +70,41 @@ public:
   SMOOTH_INHERIT_TYPEDEFS;
 
   /**
-   * @brief Angle represetation.
+   * @brief Angle representation, in \f$[-\pi,\pi]\f$ range
    */
   Scalar angle() const { return Base::log().x(); }
+
+  /**
+   * @brief Angle representation in clockwise direction, in \f$[-2\pi,0]\f$ range
+   */
+  Scalar angle_cw() const
+  {
+    const auto & x = static_cast<const _Derived &>(*this).coeffs().y();
+    const auto & y = static_cast<const _Derived &>(*this).coeffs().x();
+
+    using std::atan2;
+    if (y <= 0.) {
+      return atan2(y, x);
+    } else {
+      return atan2(-y, -x) - Scalar(M_PI);
+    }
+  }
+
+  /**
+   * @brief Angle representation in clockwise direction, in \f$[0,2\pi]\f$ range
+   */
+  Scalar angle_ccw() const
+  {
+    const auto & x = static_cast<const _Derived &>(*this).coeffs().y();
+    const auto & y = static_cast<const _Derived &>(*this).coeffs().x();
+
+    using std::atan2;
+    if (y >= 0.) {
+      return atan2(y, x);
+    } else {
+      return Scalar(M_PI) + atan2(-y, -x);
+    }
+  }
 
   /**
    * @brief Unit complex number (U(1)) representation.

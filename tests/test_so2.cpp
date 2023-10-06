@@ -10,10 +10,27 @@ TEST(SO2, Angle)
   for (auto i = 0; i != 5; ++i) {
     const auto g1 = smooth::SO2d::Random();
     const auto g2 = smooth::SO2d::Random();
+    {
+      smooth::SO2d g_prod(g1.angle() + g2.angle());
 
-    smooth::SO2d g_prod(g1.angle() + g2.angle());
+      ASSERT_TRUE(g_prod.isApprox(g1 * g2));
+      ASSERT_LE(g1.angle(), M_PI);
+      ASSERT_GE(g1.angle(), -M_PI);
+    }
+    {
+      smooth::SO2d g_prod(g1.angle_cw() + g2.angle_cw());
 
-    ASSERT_TRUE(g_prod.isApprox(g1 * g2));
+      ASSERT_TRUE(g_prod.isApprox(g1 * g2));
+      ASSERT_LE(g1.angle_cw(), 0);
+      ASSERT_GE(g1.angle_cw(), -2. * M_PI);
+    }
+    {
+      smooth::SO2d g_prod(g1.angle_ccw() + g2.angle_ccw());
+
+      ASSERT_TRUE(g_prod.isApprox(g1 * g2));
+      ASSERT_LE(g1.angle_ccw(), 2. * M_PI);
+      ASSERT_GE(g1.angle_ccw(), 0);
+    }
   }
 }
 
