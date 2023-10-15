@@ -1,15 +1,16 @@
+include(GoogleTest)
+find_package(GTest REQUIRED)
+
 option(ENABLE_TEST_COVERAGE "Enable code coverage for debug build" OFF)
 message(STATUS "ENABLE_TEST_COVERAGE set to: ${ENABLE_TEST_COVERAGE}")
 
 option(ENABLE_TEST_SANITIZERS "Enable santitzers for debug build" OFF)
 message(STATUS "ENABLE_TEST_SANITIZERS set to: ${ENABLE_TEST_SANITIZERS}")
 
-include(GoogleTest)
-find_package(GTest REQUIRED)
+find_package(fmt QUIET)
 
 configure_file(
-  ${CMAKE_ROOT}/Modules/DartConfiguration.tcl.in
-  ${PROJECT_BINARY_DIR}/DartConfiguration.tcl
+  ${CMAKE_ROOT}/Modules/DartConfiguration.tcl.in ${PROJECT_BINARY_DIR}/DartConfiguration.tcl
 )
 
 add_library(TestConfig INTERFACE)
@@ -32,139 +33,92 @@ target_compile_options(
             -Wunused
             -fdiagnostics-color=always
 )
-target_link_libraries(
-  TestConfig INTERFACE smooth GTest::Main -fsanitize=undefined,address
-)
+target_link_libraries(TestConfig INTERFACE smooth GTest::Main)
+if(fmt_FOUND)
+  message(STATUS "fmt found")
+  target_link_libraries(TestConfig INTERFACE fmt::fmt)
+  target_compile_definitions(TestConfig INTERFACE SMOOTH_HAS_FMT)
+else()
+  message(STATUS "fmt NOT found")
+endif()
 
-if (ENABLE_TEST_COVERAGE)
+if(ENABLE_TEST_COVERAGE)
   target_compile_options(TestConfig INTERFACE $<$<CONFIG:Debug>:--coverage>)
   target_link_libraries(TestConfig INTERFACE $<$<CONFIG:Debug>:--coverage>)
 endif()
 
-if (ENABLE_TEST_SANITIZERS)
+if(ENABLE_TEST_SANITIZERS)
+  set(SANITIZERS "address,leak,undefined")
+  target_compile_options(TestConfig INTERFACE $<$<CONFIG:Debug>:-fsanitize=${SANITIZERS}>)
+  target_link_options(TestConfig INTERFACE $<$<CONFIG:Debug>:-fsanitize=${SANITIZERS}>)
+endif()
+
+function(add_smooth_test name)
+  set(options)
+  set(oneValueArgs)
+  set(multiValueArgs LINK_LIBRARIES)
+  cmake_parse_arguments(
+    add_smooth_test
+    "${options}"
+    "${oneValueArgs}"
+    "${multiValueArgs}"
+    ${ARGN}
+  )
+  message(STATUS "adding test '${name}' (extra libraries '${add_smooth_test_LINK_LIBRARIES}')")
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} PRIVATE TestConfig ${add_smooth_test_LINK_LIBRARIES})
+  gtest_discover_tests(${name})
+endfunction()
+
+if(ENABLE_TEST_COVERAGE)
+  target_compile_options(TestConfig INTERFACE $<$<CONFIG:Debug>:--coverage>)
+  target_link_libraries(TestConfig INTERFACE $<$<CONFIG:Debug>:--coverage>)
+endif()
+
+if(ENABLE_TEST_SANITIZERS)
   target_compile_options(TestConfig INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined,address>)
   target_link_options(TestConfig INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined,address>)
 endif()
 
 # CORE TESTS
 
-add_executable(test_utils test_utils.cpp)
-target_link_libraries(test_utils PRIVATE TestConfig)
-gtest_discover_tests(test_utils)
-
-add_executable(test_polynomial test_polynomial.cpp)
-target_link_libraries(test_polynomial PRIVATE TestConfig)
-gtest_discover_tests(test_polynomial)
-
-add_executable(test_lie_api test_liegroup.cpp)
-target_link_libraries(test_lie_api PRIVATE TestConfig)
-gtest_discover_tests(test_lie_api)
-
-add_executable(test_lie_dynamic test_liegroup_dynamic.cpp)
-target_link_libraries(test_lie_dynamic PRIVATE TestConfig)
-gtest_discover_tests(test_lie_dynamic)
-
-add_executable(test_so2 test_so2.cpp)
-target_link_libraries(test_so2 PRIVATE TestConfig)
-gtest_discover_tests(test_so2)
-
-add_executable(test_so3 test_so3.cpp)
-target_link_libraries(test_so3 PRIVATE TestConfig)
-gtest_discover_tests(test_so3)
-
-add_executable(test_se2 test_se2.cpp)
-target_link_libraries(test_se2 PRIVATE TestConfig)
-gtest_discover_tests(test_se2)
-
-add_executable(test_se3 test_se3.cpp)
-target_link_libraries(test_se3 PRIVATE TestConfig)
-gtest_discover_tests(test_se3)
-
-add_executable(test_galilei test_galilei.cpp)
-target_link_libraries(test_galilei PRIVATE TestConfig)
-gtest_discover_tests(test_galilei)
-
-add_executable(test_se_k_3 test_se_k_3.cpp)
-target_link_libraries(test_se_k_3 PRIVATE TestConfig)
-gtest_discover_tests(test_se_k_3)
-
-add_executable(test_c1 test_c1.cpp)
-target_link_libraries(test_c1 PRIVATE TestConfig)
-gtest_discover_tests(test_c1)
-
-add_executable(test_bundle test_bundle.cpp)
-target_link_libraries(test_bundle PRIVATE TestConfig)
-gtest_discover_tests(test_bundle)
-
-add_executable(test_adapted test_adapted.cpp)
-target_link_libraries(test_adapted PRIVATE TestConfig)
-gtest_discover_tests(test_adapted)
-
-add_executable(test_manifold_vector test_manifold_vector.cpp)
-target_link_libraries(test_manifold_vector PRIVATE TestConfig)
-gtest_discover_tests(test_manifold_vector)
-
-add_executable(test_manifold_variant test_manifold_variant.cpp)
-target_link_libraries(test_manifold_variant PRIVATE TestConfig)
-gtest_discover_tests(test_manifold_variant)
+add_smooth_test(test_adapted)
+add_smooth_test(test_bundle)
+add_smooth_test(test_c1)
+add_smooth_test(test_galilei)
+add_smooth_test(test_lie_api)
+add_smooth_test(test_lie_dynamic)
+add_smooth_test(test_manifold_any)
+add_smooth_test(test_manifold_sub)
+add_smooth_test(test_manifold_variant)
+add_smooth_test(test_manifold_vector)
+add_smooth_test(test_polynomial)
+add_smooth_test(test_se2)
+add_smooth_test(test_se3)
+add_smooth_test(test_se_k_3)
+add_smooth_test(test_so2)
+add_smooth_test(test_so3)
+add_smooth_test(test_utils)
 
 # ALGO TESTS
 
-add_executable(test_cspline test_cspline.cpp)
-target_link_libraries(test_cspline PRIVATE TestConfig)
-gtest_discover_tests(test_cspline)
-
-add_executable(test_spline test_spline.cpp)
-target_link_libraries(test_spline PRIVATE TestConfig)
-gtest_discover_tests(test_spline)
-
-add_executable(test_spline_fit test_spline_fit.cpp)
-target_link_libraries(test_spline_fit PRIVATE TestConfig)
-gtest_discover_tests(test_spline_fit)
-
-add_executable(test_spline_dubins test_spline_dubins.cpp)
-target_link_libraries(test_spline_dubins PRIVATE TestConfig)
-gtest_discover_tests(test_spline_dubins)
-
-add_executable(test_spline_reparameterize test_spline_reparameterize.cpp)
-target_link_libraries(test_spline_reparameterize PRIVATE TestConfig)
-gtest_discover_tests(test_spline_reparameterize)
-
-add_executable(test_diff test_diff.cpp)
-target_link_libraries(test_diff PRIVATE TestConfig)
-gtest_discover_tests(test_diff)
-
-add_executable(test_diff_analytic test_diff_analytic.cpp)
-target_link_libraries(test_diff_analytic PRIVATE TestConfig)
-gtest_discover_tests(test_diff_analytic)
-
-add_executable(test_nls test_nls.cpp)
-target_link_libraries(test_nls PRIVATE TestConfig)
-gtest_discover_tests(test_nls)
-
-add_executable(test_nlreg test_nlreg.cpp)
-target_link_libraries(test_nlreg PRIVATE TestConfig)
-gtest_discover_tests(test_nlreg)
-
-add_executable(test_jacobians test_jacobians.cpp)
-target_link_libraries(test_jacobians PRIVATE TestConfig)
-gtest_discover_tests(test_jacobians)
-
-add_executable(test_hessian test_hessian.cpp)
-target_link_libraries(test_hessian PRIVATE TestConfig)
-gtest_discover_tests(test_hessian)
-
-add_executable(test_sparse test_sparse.cpp)
-target_link_libraries(test_sparse PRIVATE TestConfig)
-gtest_discover_tests(test_sparse)
+add_smooth_test(test_cspline)
+add_smooth_test(test_diff)
+add_smooth_test(test_diff_analytic)
+add_smooth_test(test_hessian)
+add_smooth_test(test_jacobians)
+add_smooth_test(test_nlreg)
+add_smooth_test(test_nls)
+add_smooth_test(test_optim)
+add_smooth_test(test_sparse)
+add_smooth_test(test_spline)
+add_smooth_test(test_spline_dubins)
+add_smooth_test(test_spline_fit)
+add_smooth_test(test_spline_reparameterize)
 
 # COMPATABILITY TESTS
 
-find_package(Boost QUIET)
-find_package(Ceres 2.1 QUIET)
 find_package(autodiff QUIET)
-find_package(geometry_msgs QUIET)
-
 if(autodiff_FOUND)
   target_compile_definitions(test_diff PRIVATE ENABLE_AUTODIFF_TESTS)
   target_compile_definitions(test_spline PRIVATE ENABLE_AUTODIFF_TESTS)
@@ -176,40 +130,31 @@ if(autodiff_FOUND)
   target_link_libraries(test_cspline PRIVATE autodiff::autodiff)
   target_link_libraries(test_hessian PRIVATE autodiff::autodiff)
 
-  add_executable(test_d2rexp test_d2rexp.cpp)
-  target_link_libraries(test_d2rexp PRIVATE TestConfig autodiff::autodiff)
-  gtest_discover_tests(test_d2rexp)
-
+  add_smooth_test(test_d2rexp LINK_LIBRARIES autodiff::autodiff)
 else()
   message(WARNING "autodiff not found, disabling autodiff tests")
 endif()
 
+find_package(Boost QUIET)
 if(Boost_FOUND)
-  add_executable(test_odeint test_odeint.cpp)
-  target_link_libraries(test_odeint PRIVATE TestConfig Boost::headers)
-  gtest_discover_tests(test_odeint)
+  add_smooth_test(test_odeint LINK_LIBRARIES Boost::headers)
 else()
   message(WARNING "Boost not found, disabling odeint test")
 endif()
 
+find_package(Ceres 2.1 QUIET)
 if(Ceres_FOUND)
   target_compile_definitions(test_diff PRIVATE ENABLE_CERESDIFF_TESTS)
   target_link_libraries(test_diff PRIVATE Ceres::ceres)
 
-  add_executable(test_ceres test_ceres.cpp)
-  target_link_libraries(test_ceres PRIVATE TestConfig Ceres::ceres)
-  gtest_discover_tests(test_ceres)
+  add_smooth_test(test_ceres LINK_LIBRARIES Ceres::ceres)
 else()
   message(WARNING "ceres not found, disabling ceres tests")
 endif()
 
+find_package(geometry_msgs QUIET)
 if(geometry_msgs_FOUND)
-  add_executable(test_ros test_ros.cpp)
-  target_link_libraries(
-    test_ros PRIVATE TestConfig
-                     geometry_msgs::geometry_msgs__rosidl_typesupport_cpp
-  )
-gtest_discover_tests(test_ros)
+  add_smooth_test(test_ros LINK_LIBRARIES geometry_msgs::geometry_msgs__rosidl_typesupport_cpp)
 else()
   message(WARNING "geometry_msgs not found, disabling ros test")
 endif()

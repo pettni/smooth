@@ -12,8 +12,7 @@
  * @file lie_group.hpp Internal and external LieGroup interfaces and free LieGroup functions.
  */
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 namespace traits {
 
@@ -353,4 +352,4 @@ inline Hessian<G> d2l_expinv(const Eigen::MatrixBase<Derived> & a)
   return -d2r_expinv<G>(-a);
 }
 
-}}  // namespace smooth
+SMOOTH_END_NAMESPACE

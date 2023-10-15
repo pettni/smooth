@@ -13,8 +13,8 @@
 
 #include "common.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
+
 namespace detail {
 template<typename S>
 S cos_2(const S & x2)
@@ -83,5 +83,5 @@ S cos_6(const S & x2)
 }
 
 }  // namespace detail
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

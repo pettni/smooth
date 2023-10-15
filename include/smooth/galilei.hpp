@@ -10,8 +10,7 @@
 #include "lie_group_base.hpp"
 #include "so3.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Base class for Galielei Lie group types.
@@ -272,5 +271,4 @@ class Map<const Galilei<_Scalar>> : public GalileiBase<Map<const Galilei<_Scalar
 using Galileif = Galilei<float>;   ///< Galilei with float
 using Galileid = Galilei<double>;  ///< Galilei with double
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

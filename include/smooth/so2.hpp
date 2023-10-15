@@ -10,8 +10,7 @@
 #include "detail/so2.hpp"
 #include "lie_group_base.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 // \cond
 template<typename Scalar>
@@ -283,5 +282,4 @@ class Map<const SO2<_Scalar>> : public SO2Base<Map<const SO2<_Scalar>>>
 using SO2f = SO2<float>;   ///< SO2 with float scalar representation
 using SO2d = SO2<double>;  ///< SO2 with double scalar representation
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

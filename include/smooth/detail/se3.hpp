@@ -8,8 +8,7 @@
 #include "common.hpp"
 #include "so3.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief SE(3) Lie Group represented as S^3 ⋉ R3
@@ -351,5 +350,4 @@ public:
   }
 };
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

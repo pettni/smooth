@@ -4,8 +4,7 @@
 
 #include "../cumulative_spline.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 template<int K, LieGroup G>
   requires(K > 0)
@@ -203,5 +202,4 @@ SplineJacobian<G, K> cspline_eval_dg_dgs(
   return dg_dgs;
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

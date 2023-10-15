@@ -2,9 +2,6 @@
 
 #pragma once
 
-namespace smooth {
-inline namespace v1_0 {
-
 #define SMOOTH_INHERIT_TYPEDEFS           \
   using Base::is_mutable;                 \
   using Base::Dof;                        \
@@ -107,6 +104,3 @@ private:                                                               \
   Storage m_coeffs;                                                    \
                                                                        \
   static_assert(true, "")
-
-}  // namespace v1_0
-}  // namespace smooth

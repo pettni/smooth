@@ -11,8 +11,7 @@
 #include "smooth/so2.hpp"
 #include "smooth/so3.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+using namespace smooth;
 
 template<LieGroup G>
 Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2r_exp_autodiff(const Tangent<G> & a)
@@ -82,9 +81,6 @@ Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> * Dof<G>> d2l_expinv_autodiff(const Tang
   return ret;
 }
 
-}  // namespace v1_0
-}  // namespace smooth
-
 template<smooth::LieGroup G>
 class SecondDerivatives : public ::testing::Test
 {};
@@ -109,7 +105,7 @@ TYPED_TEST(SecondDerivatives, d2rexp)
     if (i == 0) { a *= 1e-6; }
 
     const auto diff_ana  = smooth::d2r_exp<TypeParam>(a);
-    const auto diff_auto = smooth::d2r_exp_autodiff<TypeParam>(a);
+    const auto diff_auto = d2r_exp_autodiff<TypeParam>(a);
 
     ASSERT_TRUE(diff_ana.isApprox(diff_auto, 1e-6));
   }
@@ -124,7 +120,7 @@ TYPED_TEST(SecondDerivatives, d2rexpinv)
     if (i == 0) { a *= 1e-6; }
 
     const auto diff_ana  = smooth::d2r_expinv<TypeParam>(a);
-    const auto diff_auto = smooth::d2r_expinv_autodiff<TypeParam>(a);
+    const auto diff_auto = d2r_expinv_autodiff<TypeParam>(a);
 
     ASSERT_TRUE(diff_ana.isApprox(diff_auto, 1e-6));
   }
@@ -140,7 +136,7 @@ TYPED_TEST(SecondDerivatives, d2lexp)
 
     const auto diff_ana1 = smooth::d2l_exp<TypeParam>(a);
     const auto diff_ana2 = TypeParam::d2l_exp(a);
-    const auto diff_auto = smooth::d2l_exp_autodiff<TypeParam>(a);
+    const auto diff_auto = d2l_exp_autodiff<TypeParam>(a);
 
     ASSERT_TRUE(diff_ana1.isApprox(diff_auto, 1e-6));
     ASSERT_TRUE(diff_ana2.isApprox(diff_auto, 1e-6));
@@ -157,7 +153,7 @@ TYPED_TEST(SecondDerivatives, d2lexpinv)
 
     const auto diff_ana1 = smooth::d2l_expinv<TypeParam>(a);
     const auto diff_ana2 = TypeParam::d2l_expinv(a);
-    const auto diff_auto = smooth::d2l_expinv_autodiff<TypeParam>(a);
+    const auto diff_auto = d2l_expinv_autodiff<TypeParam>(a);
 
     ASSERT_TRUE(diff_ana2.isApprox(diff_auto, 1e-6));
     ASSERT_TRUE(diff_ana1.isApprox(diff_auto, 1e-6));

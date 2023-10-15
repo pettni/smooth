@@ -16,8 +16,7 @@
 
 using namespace std::numbers;
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 // \cond
 namespace detail {
@@ -113,5 +112,4 @@ constexpr std::pair<std::array<double, K>, std::array<double, K>> lgr_nodes()
   return {xs, ws};
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

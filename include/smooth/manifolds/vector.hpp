@@ -10,11 +10,11 @@
 #include <ranges>
 #include <vector>
 
-#include "../concepts/manifold.hpp"
-#include "../detail/utils.hpp"
+#include "smooth/concepts/manifold.hpp"
+#include "smooth/detail/utils.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
+
 namespace traits {
 /**
  * @brief Manifold model specification for std::vector<Manifold>
@@ -95,5 +95,5 @@ struct man<std::vector<M>>
 };
 
 }  // namespace traits
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

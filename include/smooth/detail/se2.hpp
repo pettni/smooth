@@ -8,8 +8,7 @@
 #include "so2.hpp"
 #include "trig.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief SE(2) Lie Group represented as C^1 ⋉ R^2
@@ -284,5 +283,4 @@ public:
   }
 };
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

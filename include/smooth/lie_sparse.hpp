@@ -24,8 +24,7 @@
  * @endcode
  */
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 namespace traits {
 
@@ -190,7 +189,6 @@ void d2r_exp_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, E
 template<LieGroup G>
 inline void d2r_expinv_sparse(Eigen::SparseMatrix<Scalar<G>> & sp, const Tangent<G> & a, Eigen::Index i0 = 0);
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE
 
 #include "detail/lie_group_sparse_impl.hpp"

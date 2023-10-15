@@ -16,6 +16,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: lukka/get-cmake@latest
 
     - name: Install dependencies
       run: |
@@ -24,6 +25,7 @@ jobs:
         lcov \
         libboost-dev \
         libeigen3-dev \
+        libfmt-dev \
         libgtest-dev \
         ninja-build
 

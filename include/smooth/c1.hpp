@@ -9,10 +9,10 @@
 #include "detail/c1.hpp"
 #include "detail/macro.hpp"
 #include "lie_group_base.hpp"
+#include "smooth/detail/macro.hpp"
 #include "so2.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 // \cond
 template<typename Scalar>
@@ -217,5 +217,4 @@ class Map<const C1<_Scalar>> : public C1Base<Map<const C1<_Scalar>>>
 using C1f = C1<float>;   ///< C1 with float scalar representation
 using C1d = C1<double>;  ///< C1 with double scalar representation
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

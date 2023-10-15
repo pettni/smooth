@@ -9,10 +9,10 @@
 
 #include <variant>
 
-#include "../concepts/manifold.hpp"
+#include "smooth/concepts/manifold.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
+
 namespace traits {
 /**
  * @brief Manifold model specification for std::variant<Manifold...>
@@ -66,5 +66,5 @@ struct man<std::variant<Ms...>>
 };
 
 }  // namespace traits
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

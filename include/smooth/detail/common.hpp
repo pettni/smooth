@@ -2,8 +2,9 @@
 
 #pragma once
 
-namespace smooth {
-inline namespace v1_0 {
+#include "smooth/version.hpp"
+
+SMOOTH_BEGIN_NAMESPACE
 
 static constexpr double eps2 = 1e-8;
 
@@ -24,5 +25,4 @@ static constexpr double eps2 = 1e-8;
                                                                                 \
   static_assert(true)
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

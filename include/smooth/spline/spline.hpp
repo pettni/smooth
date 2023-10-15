@@ -12,8 +12,7 @@
 #include "../lie_groups.hpp"
 #include "common.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Single-parameter Lie group-valued function.
@@ -280,7 +279,5 @@ private:
 template<LieGroup G>
 using CubicSpline = Spline<3, G>;
 
-}  // namespace v1_0
-}  // namespace smooth
-
+SMOOTH_END_NAMESPACE
 #include "detail/spline_impl.hpp"

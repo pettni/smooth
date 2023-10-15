@@ -20,8 +20,7 @@
 #include "smooth/detail/wrt_impl.hpp"
 #include "smooth/manifolds.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /// @brief Specialize trait to make autodiff type a Manifold
 template<typename T>
@@ -109,5 +108,5 @@ auto dr_autodiff(auto && f, auto && x)
 }
 
 }  // namespace diff
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

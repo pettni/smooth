@@ -7,10 +7,10 @@
  * @brief Trait specialization to make native Lie groups LieGroups.
  */
 
-#include "../concepts/lie_group.hpp"
+#include "smooth/concepts/lie_group.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
+
 namespace traits {
 /**
  * @brief Concept defining class with an internal Lie group interface.
@@ -143,5 +143,5 @@ struct lie<G>
 };
 
 }  // namespace traits
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

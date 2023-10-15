@@ -10,8 +10,7 @@
 #include "lie_group_base.hpp"
 #include "so3.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 template<typename Scalar>
 class SE2;
@@ -241,5 +240,4 @@ class Map<const SE3<_Scalar>> : public SE3Base<Map<const SE3<_Scalar>>>
 using SE3f = SE3<float>;   ///< SE3 with float
 using SE3d = SE3<double>;  ///< SE3 with double
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

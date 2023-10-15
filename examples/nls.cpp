@@ -16,8 +16,7 @@ int main()
 {
   MyFunctor f;
   auto g = smooth::SO3d::Random();
-  smooth::MinimizeOptions opts;
-  opts.verbose = true;
+  smooth::MinimizeOptions opts{.verbose = true};
   smooth::minimize(f, smooth::wrt(g), opts);
 
   return EXIT_SUCCESS;

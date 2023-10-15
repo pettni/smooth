@@ -10,8 +10,10 @@
 #include <ranges>
 #include <utility>
 
-namespace smooth {
-inline namespace v1_0 {
+#include "smooth/version.hpp"
+
+SMOOTH_BEGIN_NAMESPACE
+
 namespace utils {
 ////////////////////////////
 // INTERVAL BINARY SEARCH //
@@ -54,7 +56,7 @@ constexpr auto binary_interval_search(std::ranges::random_access_range auto && r
       alpha = (static_cast<double>(t) - static_cast<double>(*left)) / static_cast<double>(*(rght - 1) - *left);
     }
     const auto dist = static_cast<double>(std::distance(left, rght - 1));
-    pivot           = std::ranges::next(left, static_cast<intptr_t>(alpha * dist), rght - 2);
+    pivot           = std::ranges::next(left, static_cast<std::intptr_t>(alpha * dist), rght - 2);
 
     if (wo(*next(pivot), t) <= 0) {
       left = pivot + 1;
@@ -403,5 +405,5 @@ struct Zip
 inline constexpr detail::Zip zip;
 
 }  // namespace utils
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

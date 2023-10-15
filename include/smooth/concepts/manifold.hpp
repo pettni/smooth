@@ -6,12 +6,13 @@
 
 #include <Eigen/Core>
 
+#include "smooth/version.hpp"
+
 /**
  * @file manifold.hpp Manifold interface and free Manifold functions.
  */
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 namespace traits {
 
@@ -175,5 +176,4 @@ inline Tangent<M> rminus(const M & g1, const Mo & g2)
   return traits::man<M>::rminus(g1, g2);
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

@@ -9,8 +9,7 @@
 
 #include "spline.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief SplineLike concept.
@@ -58,7 +57,5 @@ Spline<2, double> reparameterize_spline(
   const double end_vel   = std::numeric_limits<double>::infinity(),
   const std::size_t N    = 100);
 
-}  // namespace v1_0
-}  // namespace smooth
-
+SMOOTH_END_NAMESPACE
 #include "detail/reparameterize_impl.hpp"

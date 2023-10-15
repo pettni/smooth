@@ -4,8 +4,7 @@
 
 #include "concepts/manifold.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Grouping of function arguments.
@@ -18,5 +17,4 @@ auto wrt(auto &&... args)
   return std::forward_as_tuple(std::forward<decltype(args)>(args)...);
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

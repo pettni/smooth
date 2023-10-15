@@ -6,8 +6,7 @@
 
 #include "common.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief T(n) Lie Group represented as R^n
@@ -71,5 +70,4 @@ struct TnImpl
   static void ad(TRefIn, TMapRefOut A_out) { A_out.setZero(); }
 };
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

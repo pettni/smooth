@@ -17,7 +17,7 @@
         "BUILD_TESTS": "ON",
         "BUILD_EXAMPLES": "ON",
         "ENABLE_TEST_COVERAGE": "ON",
-        "ENABLE_TEST_SANITIZERS": "OFF"
+        "ENABLE_TEST_SANITIZERS": "ON"
       },
       "environment": {},
       "vendor": {}

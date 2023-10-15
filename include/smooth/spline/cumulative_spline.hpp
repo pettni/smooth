@@ -15,8 +15,7 @@
 #include "../polynomial/basis.hpp"
 #include "common.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Evaluate a cumulative spline of order \f$K\f$ from differences.
@@ -125,7 +124,5 @@ SplineJacobian<G, K> cspline_eval_dg_dgs(
   OptSplineJacobian<G, K> dvel_dgs = {},
   OptSplineJacobian<G, K> dacc_dgs = {}) noexcept;
 
-}  // namespace v1_0
-}  // namespace smooth
-
+SMOOTH_END_NAMESPACE
 #include "detail/cumulative_spline_impl.hpp"

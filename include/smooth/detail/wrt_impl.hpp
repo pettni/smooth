@@ -7,8 +7,7 @@
 #include "../concepts/manifold.hpp"
 #include "utils.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Compile-time size of a tuple of variables.
@@ -116,5 +115,4 @@ constexpr auto wrt_copy_if_const(std::tuple<T...> && in)
   return std::make_from_tuple<std::tuple<typename detail::remove_const_ref<T>::type...>>(std::move(in));
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

@@ -9,8 +9,7 @@
 
 using namespace std::numbers;
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 namespace detail {
 
@@ -240,5 +239,4 @@ Spline<K, smooth::SE2d> dubins_curve(const smooth::SE2d & gb, double R)
   return ret;
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

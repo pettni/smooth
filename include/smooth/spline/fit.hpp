@@ -12,8 +12,7 @@
 #include "bspline.hpp"
 #include "spline.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Spline specification.
@@ -201,7 +200,5 @@ auto fit_spline_cubic(std::ranges::range auto && ts, std::ranges::range auto && 
 template<int K>
 auto fit_bspline(std::ranges::range auto && ts, std::ranges::range auto && gs, const double dt);
 
-}  // namespace v1_0
-}  // namespace smooth
-
+SMOOTH_END_NAMESPACE
 #include "detail/fit_impl.hpp"

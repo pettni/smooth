@@ -16,8 +16,7 @@
  *  G1 x G2 x ... x Gk
  * for Lie groups G1 ... Gk.
  */
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 using std::get;
 
@@ -230,5 +229,4 @@ struct BundleImpl
   // clang-format on
 };
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

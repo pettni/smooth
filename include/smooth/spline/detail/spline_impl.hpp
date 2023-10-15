@@ -11,8 +11,7 @@
 #include "../cumulative_spline.hpp"
 #include "../spline.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 // cumulative basis functions
 template<int K>
@@ -385,5 +384,4 @@ std::size_t Spline<K, G>::find_idx(double t) const
   return istar;
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

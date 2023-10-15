@@ -8,8 +8,7 @@
 #include "common.hpp"
 #include "se3.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Galilei Lie Group represented as (S^3 ⋉ R3) ⋉ (R3 x R)
@@ -269,5 +268,4 @@ public:
   }
 };
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

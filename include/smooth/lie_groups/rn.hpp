@@ -2,16 +2,16 @@
 
 #pragma once
 
-#include "../concepts/lie_group.hpp"
-#include "../detail/traits.hpp"
+#include "smooth/concepts/lie_group.hpp"
+#include "smooth/detail/traits.hpp"
 
 /**
  * @file
  * @brief Trait specialization to make Eigen vectors LieGroups.
  */
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
+
 namespace traits {
 /**
  * @brief LieGroup model specification for RnType
@@ -91,5 +91,5 @@ struct lie<G>
 };
 
 }  // namespace traits
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

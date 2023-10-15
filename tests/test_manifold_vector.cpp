@@ -80,10 +80,11 @@ TEST(ManifoldVector, Cast)
 
 TEST(ManifoldVector, Optimize)
 {
-  auto f = []<typename T>(const std::vector<smooth::SO3<T>> & var) -> Eigen::Vector3<T> {
-    Eigen::Vector3<T> ret;
-    ret.setZero();
-    for (const auto & gi : var) { ret += gi.log().cwiseAbs2(); }
+  std::srand(42);
+
+  auto f = []<typename T>(const std::vector<smooth::SO3<T>> & var) -> Eigen::VectorX<T> {
+    Eigen::VectorX<T> ret(3 * static_cast<Eigen::Index>(var.size()));
+    for (auto i = 0u; i < var.size(); ++i) { ret.segment(3 * i, 3) = var[i].log(); }
     return ret;
   };
 
@@ -94,7 +95,11 @@ TEST(ManifoldVector, Optimize)
   m.push_back(smooth::SO3d::Random());
   m.push_back(smooth::SO3d::Random());
 
-  smooth::minimize(f, smooth::wrt(m));
+  smooth::MinimizeOptions opts{.ptol = 1e-9, .verbose = true};
 
-  for (auto x : m) { ASSERT_LE(x.log().norm(), 1e-5); }
+  auto res = smooth::minimize(f, smooth::wrt(m), opts);
+
+  std::cout << static_cast<int>(res.status) << std::endl;
+
+  for (const auto & x : m) { ASSERT_LE(x.log().norm(), 1e-5); }
 }

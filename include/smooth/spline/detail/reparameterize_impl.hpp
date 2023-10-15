@@ -7,8 +7,7 @@
 #include "../../external/lp2d.hpp"
 #include "../reparameterize.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 Spline<2, double> reparameterize_spline(
   const SplineLike auto & spline,
@@ -167,5 +166,4 @@ Spline<2, double> reparameterize_spline(
   return ret;
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

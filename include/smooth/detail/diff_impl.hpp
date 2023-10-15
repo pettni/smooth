@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "../diff.hpp"
+#include "smooth/diff.hpp"
 #include "wrt_impl.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
+
 namespace diff {
 
 namespace detail {
@@ -256,5 +256,5 @@ auto dr(auto && f, auto && x, std::index_sequence<Idx...> idx)
 }
 
 }  // namespace diff
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE

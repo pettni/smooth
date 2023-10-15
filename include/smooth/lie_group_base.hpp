@@ -4,8 +4,9 @@
 
 #include <Eigen/Core>
 
-namespace smooth {
-inline namespace v1_0 {
+#include "version.hpp"
+
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Type trait that maps a type to Lie group operations.
@@ -477,5 +478,4 @@ using MapDispatch = std::conditional_t<
   ::Eigen::Map<T>,
   ::smooth::Map<T>>;
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

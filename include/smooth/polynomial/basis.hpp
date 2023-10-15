@@ -11,8 +11,7 @@
 
 #include "static_matrix.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /**
  * @brief Monomial derivative (compile-time version).
@@ -452,5 +451,4 @@ inline constexpr double integrate_absolute_polynomial(double t0, double t1, doub
   return std::abs(integ(t1) - integ(t0) + 2 * integ(mid1cl) - 2 * integ(mid2cl));
 }
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE

@@ -3,6 +3,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstdint>
 #include <limits>
 #include <numeric>
 #include <queue>
@@ -52,8 +53,8 @@ inline std::tuple<Scalar, Scalar, Status> solve_impl(std::vector<HalfPlane> &);
  * If problem is infeasible yopt = inf
  */
 template<std::ranges::range R>
-inline std::tuple<Scalar, Scalar, Status>
-solve(Scalar cx, Scalar cy, const R & rows) requires(std::tuple_size_v<std::ranges::range_value_t<R>> == 3)
+inline std::tuple<Scalar, Scalar, Status> solve(Scalar cx, Scalar cy, const R & rows)
+  requires(std::tuple_size_v<std::ranges::range_value_t<R>> == 3)
 {
   const Scalar sqnorm = cx * cx + cy * cy;
 

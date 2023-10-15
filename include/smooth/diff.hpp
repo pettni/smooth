@@ -12,8 +12,8 @@
 #include "manifolds.hpp"
 #include "wrt.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
+
 namespace diff {
 /**
  * @brief Available differentiation methods
@@ -95,7 +95,7 @@ template<std::size_t K, std::size_t... Idx>
 auto dr(auto && f, auto && x, std::index_sequence<Idx...> idx);
 
 }  // namespace diff
-}  // namespace v1_0
-}  // namespace smooth
+
+SMOOTH_END_NAMESPACE
 
 #include "detail/diff_impl.hpp"

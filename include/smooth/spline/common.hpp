@@ -8,8 +8,7 @@
 
 #include "../concepts/lie_group.hpp"
 
-namespace smooth {
-inline namespace v1_0 {
+SMOOTH_BEGIN_NAMESPACE
 
 /// @brief Optional argument for spline time derivatives
 template<LieGroup G>
@@ -23,5 +22,4 @@ using SplineJacobian = Eigen::Matrix<Scalar<G>, Dof<G>, Dof<G> == -1 ? -1 : Dof<
 template<LieGroup G, int K>
 using OptSplineJacobian = std::optional<Eigen::Ref<SplineJacobian<G, K>>>;
 
-}  // namespace v1_0
-}  // namespace smooth
+SMOOTH_END_NAMESPACE
