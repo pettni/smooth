@@ -2,17 +2,19 @@
 
 #pragma once
 
+// clang-format off
 /// \def SMOOTH_VERSION_MAJOR
 /// Defines SMOOTH major version number
-#define SMOOTH_VERSION_MAJOR (@CMAKE_PROJECT_VERSION_MAJOR@)
+#define SMOOTH_VERSION_MAJOR @CMAKE_PROJECT_VERSION_MAJOR@
 
 /// \def RCLCPP_VERSION_MINOR
 /// Defines SMOOTH minor version number
-#define SMOOTH_VERSION_MINOR (@CMAKE_PROJECT_VERSION_MINOR@)
+#define SMOOTH_VERSION_MINOR @CMAKE_PROJECT_VERSION_MINOR@
 
 /// \def RCLCPP_VERSION_PATCH
 /// Defines SMOOTH version patch number
-#define SMOOTH_VERSION_PATCH (@CMAKE_PROJECT_VERSION_PATCH@)
+#define SMOOTH_VERSION_PATCH @CMAKE_PROJECT_VERSION_PATCH@
+// clang-format on
 
 /// \def RCLCPP_VERSION_STR
 /// Defines SMOOTH version string
@@ -37,3 +39,17 @@
    : (minor != SMOOTH_VERSION_MINOR) ? false   \
    : (patch != SMOOTH_VERSION_PATCH) ? false   \
                                      : true)
+
+#define NS_CONCATENATE_IMPL(MAJOR, MINOR) v##MAJOR##_##MINOR
+#define NS_CONCATENATE(MAJOR, MINOR) NS_CONCATENATE_IMPL(MAJOR, MINOR)
+
+#define SMOOTH_NAMESPACE NS_CONCATENATE(SMOOTH_VERSION_MAJOR, SMOOTH_VERSION_MINOR)
+
+#ifndef SMOOTH_BEGIN_NAMESPACE
+#define SMOOTH_BEGIN_NAMESPACE \
+  namespace smooth {           \
+  inline namespace SMOOTH_NAMESPACE {
+#define SMOOTH_END_NAMESPACE \
+  }                          \
+  }
+#endif

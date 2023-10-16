@@ -4,7 +4,7 @@
 
 #include <Eigen/Core>
 
-#include "version.hpp"
+#include "smooth/version.hpp"
 
 SMOOTH_BEGIN_NAMESPACE
 

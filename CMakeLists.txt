@@ -26,8 +26,7 @@ find_package(Eigen3 3.4 REQUIRED)
 # ---------------------------------------------------------------------------------------
 configure_file(
   ${CMAKE_CURRENT_SOURCE_DIR}/config/version.hpp.in
-  ${CMAKE_CURRENT_BINARY_DIR}/include/smooth/version.hpp
-  @ONLY
+  ${CMAKE_CURRENT_BINARY_DIR}/include/smooth/version.hpp @ONLY
 )
 
 # ---------------------------------------------------------------------------------------
@@ -35,8 +34,10 @@ configure_file(
 # ---------------------------------------------------------------------------------------
 add_library(smooth INTERFACE)
 target_include_directories(
-  smooth INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
+  smooth
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+            $<INSTALL_INTERFACE:include>
 )
 target_link_libraries(smooth INTERFACE Eigen3::Eigen)
 
@@ -46,7 +47,11 @@ target_link_libraries(smooth INTERFACE Eigen3::Eigen)
 
 # Header files
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/smooth/version.hpp
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
 )
 
 # Targets
@@ -72,8 +77,7 @@ install(
 
 # Generate CONFIG file
 configure_package_config_file(
-  cmake/ConfigTemplate.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+  cmake/ConfigTemplate.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
   INSTALL_DESTINATION ${export_dest_dir}
   NO_SET_AND_CHECK_MACRO
 )
@@ -87,8 +91,8 @@ write_basic_package_version_file(
 
 # Install CONFIG and VERSION files
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Version.cmake
-  DESTINATION ${export_dest_dir}
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Version.cmake
+        DESTINATION ${export_dest_dir}
 )
 
 # ---------------------------------------------------------------------------------------
