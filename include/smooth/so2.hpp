@@ -283,3 +283,32 @@ using SO2f = SO2<float>;   ///< SO2 with float scalar representation
 using SO2d = SO2<double>;  ///< SO2 with double scalar representation
 
 SMOOTH_END_NAMESPACE
+
+// Std format
+#if __has_include(<format>)
+#include <format>
+#include <string>
+
+template<class Scalar>
+struct std::formatter<smooth::SO2<Scalar>>
+{
+  std::string m_format;
+
+  constexpr auto parse(std::format_parse_context & ctx)
+  {
+    m_format = "{:";
+    for (auto it = ctx.begin(); it != ctx.end(); ++it) {
+      char c = *it;
+      m_format += c;
+      if (c == '}') return it;
+    }
+    return ctx.end();
+  }
+
+  auto format(const smooth::SO2<Scalar> & obj, std::format_context & ctx) const
+  {
+    return std::vformat_to(ctx.out(), m_format, std::make_format_args(obj.angle()));
+  }
+};
+
+#endif

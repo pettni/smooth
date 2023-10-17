@@ -251,3 +251,32 @@ using SE2f = SE2<float>;   ///< SE2 with float
 using SE2d = SE2<double>;  ///< SE2 with double
 
 SMOOTH_END_NAMESPACE
+
+#if __has_include(<format>)
+#include <format>
+#include <string>
+
+template<class Scalar>
+struct std::formatter<smooth::SE2<Scalar>>
+{
+  std::string m_format;
+
+  constexpr auto parse(std::format_parse_context & ctx)
+  {
+    m_format = "{:";
+    for (auto it = ctx.begin(); it != ctx.end(); ++it) {
+      char c = *it;
+      m_format += c;
+      if (c == '}') return it;
+    }
+    return ctx.end();
+  }
+
+  auto format(const smooth::SE2<Scalar> & obj, std::format_context & ctx) const
+  {
+    const auto fmtSting = std::format("r2: [{0}, {0}], so2: {0}", m_format);
+    return std::vformat_to(ctx.out(), fmtSting, std::make_format_args(obj.r2().x(), obj.r2().y(), obj.so2().angle()));
+  }
+};
+
+#endif
