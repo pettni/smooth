@@ -12,9 +12,9 @@ TEST(NlReg, Misra1aStatic)
 
   auto [f, data, start1, start2, optim] = Misra1a();
 
-  auto f_vec = [f    = std::move(f),
-                data = std::move(data)](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
-    return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
+  auto f_vec = [m_f    = std::move(f),
+                m_data = std::move(data)](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
+    return m_data.col(0).binaryExpr(m_data.col(1), [&](double y, double x) { return m_f(y, x, p); });
   };
 
   Eigen::Matrix<double, np, 1> p1 = start1;
@@ -30,9 +30,9 @@ TEST(NlReg, Misra1aDynamic)
 {
   auto [f, data, start1, start2, optim] = Misra1a();
 
-  auto f_vec = [f    = std::move(f),
-                data = std::move(data)](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
-    return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
+  auto f_vec = [m_f    = std::move(f),
+                m_data = std::move(data)](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
+    return m_data.col(0).binaryExpr(m_data.col(1), [&](double y, double x) { return m_f(y, x, p); });
   };
 
   Eigen::Matrix<double, -1, 1> p1 = start1;
@@ -51,9 +51,9 @@ TEST(NlReg, Kirby2Static)
 
   auto [f, data, start1, start2, optim] = Kirby2();
 
-  auto f_vec = [f    = std::move(f),
-                data = std::move(data)](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
-    return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
+  auto f_vec = [m_f    = std::move(f),
+                m_data = std::move(data)](const Eigen::Matrix<double, np, 1> & p) -> Eigen::Matrix<double, nobs, 1> {
+    return m_data.col(0).binaryExpr(m_data.col(1), [&](double y, double x) { return m_f(y, x, p); });
   };
 
   smooth::MinimizeOptions opts;
@@ -73,9 +73,9 @@ TEST(NlReg, Kirby2Dynamic)
 {
   auto [f, data, start1, start2, optim] = Kirby2();
 
-  auto f_vec = [f    = std::move(f),
-                data = std::move(data)](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
-    return data.col(0).binaryExpr(data.col(1), [&](double y, double x) { return f(y, x, p); });
+  auto f_vec = [m_f    = std::move(f),
+                m_data = std::move(data)](const Eigen::Matrix<double, -1, 1> & p) -> Eigen::Matrix<double, -1, 1> {
+    return m_data.col(0).binaryExpr(m_data.col(1), [&](double y, double x) { return m_f(y, x, p); });
   };
 
   smooth::MinimizeOptions opts;
