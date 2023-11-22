@@ -69,10 +69,10 @@ public:
   using PlainObject = CastT<Scalar>;
 
   /*! @brief Const access underlying storages */
-  const auto & coeffs() const { return derived().coeffs(); }
+  const auto & coeffs() const { return cderived().coeffs(); }
 
   /*! @brief Const access raw pointer */
-  const auto * data() const { return derived().data(); }
+  const auto * data() const { return cderived().data(); }
 
   /**
    * Assignment operation from other storage type.
