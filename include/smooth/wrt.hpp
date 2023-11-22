@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "concepts/manifold.hpp"
 
 SMOOTH_BEGIN_NAMESPACE

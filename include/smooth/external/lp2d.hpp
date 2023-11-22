@@ -8,6 +8,8 @@
 #include <numeric>
 #include <queue>
 #include <ranges>
+#include <tuple>
+#include <utility>
 #include <vector>
 
 namespace lp2d {
@@ -197,7 +199,6 @@ inline std::optional<Scalar> find_candidate(std::vector<HalfPlane> & hps, Scalar
   // INTERSECT LOWERS AMONGST THEMSELVES
 
   for (auto it2 = hps.begin(); it2 != hps.end(); ++it2) {
-
     if (!active_y_lower(*it2)) { continue; }
 
     if (!it1_store.has_value()) {

@@ -3,6 +3,7 @@
 #pragma once
 
 #include <memory>
+#include <utility>
 
 #include "smooth/concepts/manifold.hpp"
 
@@ -19,7 +20,7 @@ public:
 
   /// @brief Construct from typed manifoild
   template<typename M>
-  AnyManifold(const M & m) : m_val(std::make_unique<wrapper<std::decay_t<M>>>(m))
+  explicit AnyManifold(const M & m) : m_val(std::make_unique<wrapper<std::decay_t<M>>>(m))
   {}
 
   /// @brief Copy constructor.
@@ -80,18 +81,18 @@ private:
   class wrapper : public wrapper_base
   {
   public:
-    wrapper(const M & val) : m_val(val) {}
-    wrapper(M && val) : m_val(std::move(val)) {}
+    explicit wrapper(const M & val) : m_val(val) {}
+    explicit wrapper(M && val) : m_val(std::move(val)) {}
     Eigen::Index dof() const override { return ::smooth::dof(m_val); }
     std::unique_ptr<wrapper_base> rplus(Eigen::Ref<const Eigen::VectorXd> a) const override
     {
       return std::make_unique<wrapper<M>>(::smooth::rplus(m_val, a));
     }
-    virtual Eigen::VectorXd rminus(const std::unique_ptr<wrapper_base> & o) const override
+    Eigen::VectorXd rminus(const std::unique_ptr<wrapper_base> & o) const override
     {
       return ::smooth::rminus(m_val, static_cast<const wrapper<M> *>(o.get())->m_val);
     }
-    virtual std::unique_ptr<wrapper_base> clone() const override { return std::make_unique<wrapper<M>>(m_val); }
+    std::unique_ptr<wrapper_base> clone() const override { return std::make_unique<wrapper<M>>(m_val); }
     M & get() { return m_val; }
     const M & get() const { return m_val; }
 
@@ -100,7 +101,7 @@ private:
   };
 
 private:
-  AnyManifold(std::unique_ptr<wrapper_base> val) : m_val(std::move(val)) {}
+  explicit AnyManifold(std::unique_ptr<wrapper_base> val) : m_val(std::move(val)) {}
   std::unique_ptr<wrapper_base> m_val;
 };
 

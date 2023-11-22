@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <complex>
-
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
@@ -195,7 +193,7 @@ public:
   /**
    * @brief Construct from Eigen transform.
    */
-  SE2(const Eigen::Transform<Scalar, 2, Eigen::Isometry> & t)
+  explicit SE2(const Eigen::Transform<Scalar, 2, Eigen::Isometry> & t)
   {
     Eigen::Matrix2<Scalar> rotmat = t.rotation();
     coeffs().x()                  = t.translation().x();

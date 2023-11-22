@@ -1,3 +1,5 @@
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
+
 #pragma once
 
 #include <Eigen/Core>

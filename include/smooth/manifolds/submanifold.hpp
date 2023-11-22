@@ -1,6 +1,8 @@
+// Copyright (C) 2021-2022 Petter Nilsson. MIT License.
+
 #pragma once
 
-#include <numeric>
+#include <algorithm>
 
 #include "smooth/concepts/manifold.hpp"
 

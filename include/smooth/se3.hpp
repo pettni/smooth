@@ -190,7 +190,7 @@ public:
   /**
    * @brief Construct from Eigen transform.
    */
-  SE3(const Eigen::Transform<Scalar, 3, Eigen::Isometry> & t)
+  explicit SE3(const Eigen::Transform<Scalar, 3, Eigen::Isometry> & t)
   {
     Base::so3() = smooth::SO3<Scalar>(Eigen::Quaternion<Scalar>(t.rotation()));
     Base::r3()  = t.translation();

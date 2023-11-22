@@ -8,13 +8,11 @@
  */
 
 #include <array>
-#include <cmath>
 #include <numbers>
+#include <utility>
 
 #include "basis.hpp"
 #include "static_matrix.hpp"
-
-using namespace std::numbers;
 
 SMOOTH_BEGIN_NAMESPACE
 
@@ -25,7 +23,9 @@ namespace detail {
 template<std::size_t K>
 constexpr auto pow_s(const auto x) noexcept
 {
-  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>) { return ((static_cast<void>(Is), x) * ... * 1.); };
+  const auto f = [&x]<auto... Is>(std::index_sequence<Is...>) {
+    return ((static_cast<void>(Is), x) * ... * 1.);
+  };  // NOLINT
   return f(std::make_index_sequence<K>{});
 }
 
@@ -33,7 +33,7 @@ constexpr auto pow_s(const auto x) noexcept
 template<std::size_t K>
 constexpr auto factorial_s() noexcept
 {
-  const auto f = []<auto... Is>(std::index_sequence<Is...>) { return ((Is + 1) * ... * 1.); };
+  const auto f = []<auto... Is>(std::index_sequence<Is...>) { return ((Is + 1) * ... * 1.); };  // NOLINT
   return f(std::make_index_sequence<K>{});
 }
 
@@ -42,7 +42,7 @@ constexpr auto cos_s(const auto x) noexcept
 {
   const auto f = [&x]<auto... Is>(std::index_sequence<Is...>) {
     return ((pow_s<Is>(-1.) * pow_s<2 * Is>(x) / factorial_s<2 * Is>()) + ...);
-  };
+  };  // NOLINT
   return f(std::make_index_sequence<8>{});
 }
 
@@ -58,7 +58,7 @@ template<std::size_t K>
 constexpr std::array<double, K> cgr_nodes()
 {
   std::array<double, K> x;
-  for (auto i = 0u; i < K; ++i) { x[i] = -detail::cos_s(2. * pi_v<double> * i / (2 * K - 1)); }
+  for (auto i = 0u; i < K; ++i) { x[i] = -detail::cos_s(2. * std::numbers::pi_v<double> * i / (2 * K - 1)); }
   return x;
 }
 

@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include <algorithm>
+#include <utility>
+
 #include "smooth/diff.hpp"
 #include "wrt_impl.hpp"
 
@@ -131,21 +134,15 @@ auto dr_numerical(auto && f, auto && x)
 /// @brief Callable types that provide first-order derivative
 template<class F, class Wrt>
 concept diffable_order1 = requires(F && f, Wrt && wrt) {
-  {
-    std::apply(f, wrt)
-  };
-  {
-    std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::jacobian), f), wrt)
-  };
-};
+  std::apply(f, wrt);
+  std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::jacobian), f), wrt);
+};  // NOLINT
 
 /// @brief Callable types that provide second-order derivative
 template<class F, class Wrt>
 concept diffable_order2 = diffable_order1<F, Wrt> && requires(F && f, Wrt && wrt) {
-  {
-    std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::hessian), f), wrt)
-  };
-};
+  std::apply(std::bind_front(std::mem_fn(&std::decay_t<decltype(f)>::hessian), f), wrt);
+};  // NOLINT
 
 }  // namespace detail
 

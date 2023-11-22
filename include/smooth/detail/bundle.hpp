@@ -3,6 +3,7 @@
 #pragma once
 
 #include <array>
+#include <tuple>
 
 #include <Eigen/Core>
 
@@ -55,7 +56,7 @@ struct BundleImpl
     smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
       PartImpl<i>::setIdentity(
         g_out.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum))
-      );
+      );  //NOLINT
     });
   }
 
@@ -64,7 +65,7 @@ struct BundleImpl
     smooth::utils::static_for<sizeof...(GsImpl)>([&](auto i) {
       PartImpl<i>::setRandom(
         g_out.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -75,7 +76,7 @@ struct BundleImpl
       PartImpl<i>::matrix(
         g_in.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
         m_out.template block<get<i>(Dims), get<i>(Dims)>(get<i>(DimsPsum), get<i>(DimsPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -86,7 +87,7 @@ struct BundleImpl
         g_in1.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
         g_in2.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
         g_out.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -96,7 +97,7 @@ struct BundleImpl
       PartImpl<i>::inverse(
         g_in.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
         g_out.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -106,7 +107,7 @@ struct BundleImpl
       PartImpl<i>::log(
         g_in.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
         a_out.template segment<get<i>(Dofs)>(get<i>(DofsPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -118,7 +119,7 @@ struct BundleImpl
         PartImpl<i>::Ad(
           g_in.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum)),
           A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-        );
+        ); //NOLINT
       } else {
         A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum)).setIdentity();
       }
@@ -131,7 +132,7 @@ struct BundleImpl
       PartImpl<i>::exp(
         a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
         g_out.template segment<get<i>(RepSizes)>(get<i>(RepSizesPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -142,7 +143,7 @@ struct BundleImpl
       PartImpl<i>::hat(
         a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
         A_out.template block<get<i>(Dims), get<i>(Dims)>(get<i>(DimsPsum), get<i>(DimsPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -152,7 +153,7 @@ struct BundleImpl
       PartImpl<i>::vee(
         A_in.template block<get<i>(Dims), get<i>(Dims)>(get<i>(DimsPsum), get<i>(DimsPsum)),
         a_out.template segment<get<i>(Dofs)>(get<i>(DofsPsum))
-      );
+      ); //NOLINT
     });
   }
 
@@ -163,7 +164,7 @@ struct BundleImpl
         PartImpl<i>::ad(
           a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
           A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-        );
+        ); //NOLINT
       }
     });
   }
@@ -175,7 +176,7 @@ struct BundleImpl
         PartImpl<i>::dr_exp(
           a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
           A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-        );
+        ); //NOLINT
       } else {
           A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum)).setIdentity();
       }
@@ -189,7 +190,7 @@ struct BundleImpl
         PartImpl<i>::dr_expinv(
           a_in.template segment<get<i>(Dofs)>(get<i>(DofsPsum)),
           A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum))
-        );
+        ); //NOLINT
       } else {
         A_out.template block<get<i>(Dofs), get<i>(Dofs)>(get<i>(DofsPsum), get<i>(DofsPsum)).setIdentity();
       }

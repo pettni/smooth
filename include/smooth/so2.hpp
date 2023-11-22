@@ -229,7 +229,7 @@ public:
    *
    * @note Input is normalized to ensure group constraint.
    */
-  SO2(const std::complex<Scalar> & c)
+  explicit SO2(const std::complex<Scalar> & c)
   {
     using std::sqrt;
 

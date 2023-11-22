@@ -68,6 +68,12 @@ public:
   //! Plain return type
   using PlainObject = CastT<Scalar>;
 
+  /*! @brief Const access underlying storages */
+  const auto & coeffs() const { return derived().coeffs(); }
+
+  /*! @brief Const access raw pointer */
+  const auto * data() const { return derived().data(); }
+
   /**
    * Assignment operation from other storage type.
    */
