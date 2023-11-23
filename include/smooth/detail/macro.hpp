@@ -23,7 +23,7 @@ public:                                                                   \
   X() = default;                                                          \
   /*! @brief Copy constructor */                                          \
   X(const X &) = default;                                                 \
-  /*! @brief Move contructor */                                           \
+  /*! @brief Move constructor */                                          \
   X(X &&) = default;                                                      \
   /*! @brief Copy assignment */                                           \
   X & operator=(const X &) = default;                                     \

@@ -7,6 +7,8 @@
  * @brief ceres compatability header.
  */
 
+#include <utility>
+
 #include <ceres/autodiff_manifold.h>
 #include <ceres/internal/autodiff.h>
 
@@ -100,7 +102,7 @@ auto dr_ceres(auto && f, auto && x)
     Eigen::Map<Eigen::Matrix<T, Ny, 1>> mo(out, ny);
     mo = rminus<CastT<T, Result>>(std::apply(f, wrt_rplus(wrt_cast<T>(x), mi)), cast<T, Result>(fval));
     return true;
-  };
+  };  // NOLINT
   const Scalar * a_ptr[1] = {a.data()};
   Scalar * jac_ptr[1]     = {jac.data()};
 

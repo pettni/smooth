@@ -8,6 +8,7 @@
  */
 
 #include <cassert>
+#include <limits>
 
 #include "static_matrix.hpp"
 

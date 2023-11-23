@@ -2,12 +2,14 @@
 
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <numeric>
 #include <ranges>
+#include <tuple>
 #include <utility>
 
 #include "smooth/version.hpp"
@@ -220,7 +222,7 @@ struct PairwiseTransformClosure
 {
   F f_;
 
-  constexpr PairwiseTransformClosure(F && f) : f_(std::forward<F>(f)) {}
+  explicit constexpr PairwiseTransformClosure(F && f) : f_(std::forward<F>(f)) {}
 
   template<std::ranges::viewable_range R>
   constexpr auto operator()(R && r) const
@@ -283,9 +285,9 @@ public:
 
     _Iterator() = default;
 
-    constexpr _Iterator(auto &&... its) : its_(its...) {}
+    explicit constexpr _Iterator(auto &&... its) : its_(its...) {}
 
-    constexpr _Iterator(_Iterator<!Const> i)
+    explicit constexpr _Iterator(_Iterator<!Const> i)
       requires Const
         : its_(i.its_)
     {}
@@ -338,7 +340,7 @@ private:
 public:
   constexpr zip_view() = default;
 
-  constexpr zip_view(View... base) : bases_(base...) {}
+  explicit constexpr zip_view(View... base) : bases_(base...) {}
 
   constexpr _Iterator<false> begin()
   {

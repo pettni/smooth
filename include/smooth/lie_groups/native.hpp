@@ -31,7 +31,7 @@ concept NativeLieGroup =
   {G::Identity()}->std::convertible_to<typename G::PlainObject>;
   {G::Random()}->std::convertible_to<typename G::PlainObject>;
 }) &&
-(!(G::Dof == -1) || requires (Eigen::Index dof) {
+(!(G::Dof == -1) || requires (Eigen::Index dof) {  //NOLINT
   {G::Identity(dof)}->std::convertible_to<typename G::PlainObject>;
   {G::Random(dof)}->std::convertible_to<typename G::PlainObject>;
 }) &&
@@ -52,7 +52,7 @@ requires(const Eigen::Vector<typename G::Scalar, G::Dof> & a) {
   {G::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
   {G::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename G::Scalar, G::Dof, G::Dof * G::Dof>>;
     // clang-format on
-  };
+  };  // NOLINT
 
 /**
  * @brief LieGroup model specification for NativeLieGroup

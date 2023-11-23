@@ -7,6 +7,7 @@
  * @brief Trait specialization to make std::vector<Manifold> a Manifold.
  */
 
+#include <algorithm>
 #include <ranges>
 #include <vector>
 

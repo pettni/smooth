@@ -167,7 +167,7 @@ public:
    *
    * @param c complex number.
    */
-  C1(const std::complex<Scalar> & c)
+  explicit C1(const std::complex<Scalar> & c)
   {
     m_coeffs.x() = c.imag();
     m_coeffs.y() = c.real();

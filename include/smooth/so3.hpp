@@ -175,7 +175,7 @@ public:
    * @note Input is normalized inside constructor.
    */
   template<typename Derived>
-  SO3(const Eigen::QuaternionBase<Derived> & quat) : m_coeffs(quat.normalized().coeffs())
+  explicit SO3(const Eigen::QuaternionBase<Derived> & quat) : m_coeffs(quat.normalized().coeffs())
   {
     if (m_coeffs(3) < 0) { m_coeffs *= Scalar(-1); }
   }

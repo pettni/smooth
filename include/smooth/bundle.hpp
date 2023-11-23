@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <tuple>
+
 #include "detail/bundle.hpp"
 #include "detail/macro.hpp"
 #include "detail/tn.hpp"
@@ -148,7 +150,7 @@ public:
    */
   template<typename... S>
     requires(std::is_assignable_v<_Gs, S> && ...)
-  Bundle(S &&... gs)
+  explicit Bundle(S &&... gs)
   {
     const auto tpl = std::forward_as_tuple(gs...);
 #ifdef __clang__

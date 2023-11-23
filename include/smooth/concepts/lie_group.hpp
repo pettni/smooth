@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <concepts>
+#include <utility>
 
 #include <Eigen/Core>
 
@@ -31,7 +31,7 @@ struct lie;
  */
 template<typename G>
 concept LieGroup =
-requires (Eigen::Index dof) {
+requires (Eigen::Index dof) { //NOLINT
   // Underlying scalar type
   typename traits::lie<G>::Scalar;
   // Default representation
@@ -48,7 +48,7 @@ requires (Eigen::Index dof) {
 // GROUP INTERFACE
 requires(const G & g1, const G & g2, typename traits::lie<G>::Scalar eps) {
   // Group adjoint
-  {traits::lie<G>::Ad(g1)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
+  {traits::lie<G>::Ad(g1)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>; //NOLINT
   // Group composition
   {traits::lie<G>::composition(g1, g2)}->std::convertible_to<typename traits::lie<G>::PlainObject>;
   // Run-time degrees of freedom (tangent space dimension).
@@ -63,27 +63,27 @@ requires(const G & g1, const G & g2, typename traits::lie<G>::Scalar eps) {
 // TANGENT INTERFACE
 requires(const Eigen::Vector<typename traits::lie<G>::Scalar, traits::lie<G>::Dof> & a) {
   // Algebra adjoint
-  {traits::lie<G>::ad(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
+  {traits::lie<G>::ad(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>; //NOLINT
   // Algebra exponential (maps from algebra to group)
   {traits::lie<G>::exp(a)}->std::convertible_to<typename traits::lie<G>::PlainObject>;
   // Right derivative of the exponential map
-  {traits::lie<G>::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
+  {traits::lie<G>::dr_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>; //NOLINT
   // Right derivative of the exponential map inverse
-  {traits::lie<G>::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>;
+  {traits::lie<G>::dr_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, traits::lie<G>::Dof>>; //NOLINT
   // Second right derivative of the exponential map
-  {traits::lie<G>::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>;
+  {traits::lie<G>::d2r_exp(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>; //NOLINT
   // Second right derivative of the exponential map inverse
-  {traits::lie<G>::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>;
+  {traits::lie<G>::d2r_expinv(a)}->std::convertible_to<Eigen::Matrix<typename traits::lie<G>::Scalar, traits::lie<G>::Dof, (traits::lie<G>::Dof > 0 ? traits::lie<G>::Dof * traits::lie<G>::Dof : -1)>>; //NOLINT
 } && (
   // Cast to different scalar type
   !std::is_convertible_v<typename traits::lie<G>::Scalar, double> ||
-  requires (const G & g) {
-    {traits::lie<G>::template cast<double>(g)};
+  requires (const G & g) { //NOLINT
+    {traits::lie<G>::template cast<double>(g)}; //NOLINT
   }
 ) && (
   !std::is_convertible_v<typename traits::lie<G>::Scalar, float> ||
-  requires (const G & g) {
-    {traits::lie<G>::template cast<double>(g)};
+  requires (const G & g) { //NOLINT
+    {traits::lie<G>::template cast<double>(g)}; //NOLINT
   }
 ) &&
 // PlainObject must be default-constructible
@@ -132,7 +132,7 @@ struct man<G>
   // \endcond
 };
 
-}  // namespace
+}  // namespace //NOLINT
 
 ////////////////////////////////////////////////////////
 //// Free functions that dispatch to traits::lie<G> ////

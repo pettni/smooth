@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <concepts>
-
 #include <Eigen/Core>
 
 #include "smooth/version.hpp"
@@ -31,7 +29,7 @@ struct man;
  */
 template<typename M>
 concept Manifold =
-requires  (Eigen::Index dof) {
+requires  (Eigen::Index dof) { //NOLINT
   // Underlying scalar type
   typename traits::man<M>::Scalar;
   // Default representation
@@ -47,15 +45,15 @@ requires(const M & m1, const M & m2, const Eigen::Vector<typename traits::man<M>
   // Right-plus: add a tangent vector to a Manifold element to obtain a new Manifold element
   {traits::man<M>::rplus(m1, a)}->std::convertible_to<typename traits::man<M>::PlainObject>;
   // Right-minus: subtract a Manifold element from another to obtain the difference tangent vector
-  {traits::man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Vector<typename traits::man<M>::Scalar, traits::man<M>::Dof>>;
+  {traits::man<M>::rminus(m1, m2)}->std::convertible_to<Eigen::Vector<typename traits::man<M>::Scalar, traits::man<M>::Dof>>; //NOLINT
 } && (
   !std::is_convertible_v<typename traits::man<M>::Scalar, double> ||
-  requires (const M & m) {
+  requires (const M & m) { //NOLINT
     {traits::man<M>::template cast<double>(m)}->std::convertible_to<typename traits::man<M>::template CastT<double>>;
   }
 ) && (
   !std::is_convertible_v<typename traits::man<M>::Scalar, float> ||
-  requires (const M & m) {
+  requires (const M & m) { //NOLINT
     {traits::man<M>::template cast<float>(m)}->std::convertible_to<typename traits::man<M>::template CastT<float>>;
   }
 ) &&

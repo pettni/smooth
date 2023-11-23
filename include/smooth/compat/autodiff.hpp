@@ -10,6 +10,9 @@
 // TODO switch to autodiff::Real when it supports atan2
 // https://github.com/autodiff/autodiff/issues/185
 
+#include <algorithm>
+#include <utility>
+
 #include <autodiff/forward/dual.hpp>
 #include <autodiff/forward/dual/eigen.hpp>
 

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include <memory>
+#include <algorithm>
 
 #include "smooth/version.hpp"
 

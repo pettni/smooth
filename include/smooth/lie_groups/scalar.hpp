@@ -7,6 +7,8 @@
  * @brief Trait specialization to make scalars LieGroups.
  */
 
+#include <random>
+
 #include "../concepts/lie_group.hpp"
 #include "../detail/traits.hpp"
 
@@ -33,7 +35,9 @@ struct lie<G>
   static inline PlainObject Identity(Eigen::Index) { return G(0); }
   static inline PlainObject Random(Eigen::Index)
   {
-    return G(Scalar(-1) + static_cast<Scalar>(rand()) / static_cast<Scalar>(RAND_MAX / 2));
+    std::minstd_rand gen;
+    std::uniform_real_distribution<Scalar> dist(-1., 1.);
+    return G(dist(gen));
   }
   static inline Eigen::Matrix<Scalar, 1, 1> Ad(G) { return Eigen::Matrix<Scalar, 1, 1>{1}; }
   static inline PlainObject composition(G g1, G g2) { return g1 + g2; }

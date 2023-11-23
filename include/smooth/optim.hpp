@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <memory>
+#include <utility>
 
 #include <Eigen/Sparse>
 
@@ -106,8 +107,8 @@ SolveResult minimize(auto && f, auto && x, auto && cb, const MinimizeOptions & o
 
     if (opts.verbose) {
 #ifdef SMOOTH_HAS_FMT
-      using namespace fmt;
-      using namespace std::chrono;
+      using namespace fmt;          // NOLINT
+      using namespace std::chrono;  // NOLINT
       if (iter % 25 == 0) {
         print("{:<6s}", "ITER");
         print("{:^10s}", "TIME");
@@ -152,8 +153,8 @@ SolveResult minimize(auto && f, auto && x, auto && cb, const MinimizeOptions & o
 
   if (opts.verbose) {
 #ifdef SMOOTH_HAS_FMT
-    using namespace fmt;
-    using namespace std::chrono;
+    using namespace fmt;          // NOLINT
+    using namespace std::chrono;  // NOLINT
 
     print("{0:x^69s}\n", "");
     print("{:>10s}: {}\n", "Total time", duration_cast<milliseconds>(high_resolution_clock::now() - t0));

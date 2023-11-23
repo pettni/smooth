@@ -4,7 +4,6 @@
 
 #include <Eigen/Core>
 
-#include "../derivatives.hpp"
 #include "common.hpp"
 #include "so3.hpp"
 

@@ -8,6 +8,7 @@
  */
 
 #include <optional>
+#include <utility>
 
 #include <Eigen/Cholesky>
 #include <Eigen/Sparse>
