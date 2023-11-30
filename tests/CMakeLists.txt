@@ -152,7 +152,7 @@ else()
   message(WARNING "ceres not found, disabling ceres tests")
 endif()
 
-find_package(geometry_msgs QUIET)
+find_package(geometry_msgs 4.0.0 QUIET)
 if(geometry_msgs_FOUND)
   add_smooth_test(test_ros LINK_LIBRARIES geometry_msgs::geometry_msgs__rosidl_typesupport_cpp)
 else()

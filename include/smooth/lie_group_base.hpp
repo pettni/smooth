@@ -68,9 +68,23 @@ public:
   //! Plain return type
   using PlainObject = CastT<Scalar>;
 
+  /*! @brief Access underlying storages */
+  template<bool = true>
+    requires(is_mutable)
+  auto & coeffs() const
+  {
+    return derived().coeffs();
+  }
   /*! @brief Const access underlying storages */
   const auto & coeffs() const { return cderived().coeffs(); }
 
+  /*! @brief Access raw pointer */
+  template<bool = true>
+    requires(is_mutable)
+  auto * data() const
+  {
+    return derived().data();
+  }
   /*! @brief Const access raw pointer */
   const auto * data() const { return cderived().data(); }
 
