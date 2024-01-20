@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Quaternion_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="5,5,153,60"/>
+<area shape="rect" id="node1" href="$structliebase__info.html" title=" " alt="" coords="5,131,151,171"/>
+<area shape="rect" id="node2" href="$structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4_01_4.html" title="Specialize liebase_info." alt="" coords="213,5,419,60"/>
+<area shape="rect" id="node3" href="$structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4_01_4.html" title="Specialize liebase_info." alt="" coords="199,84,433,139"/>
+<area shape="rect" id="node4" href="$structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4_01_4.html" title="Specialize liebase_info ." alt="" coords="231,163,401,217"/>
+<area shape="rect" id="node5" href="$structsmooth_1_1liebase__info_3_01smooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4_01_4.html" title="Specialize liebase_info ." alt="" coords="227,241,405,296"/>
 </map>

@@ -1,10 +1,13 @@
 var searchData=
 [
-  ['t_5fmax_0',['t_max',['../classsmooth_1_1v1__0_1_1BSpline.html#a1bd0d1299fa3255fd5f03e6ef65b3120',1,'smooth::v1_0::BSpline::t_max()'],['../classsmooth_1_1v1__0_1_1Spline.html#abab21e7f0ea0fa1910a1d3310f63bb2e',1,'smooth::v1_0::Spline::t_max()']]],
-  ['t_5fmin_1',['t_min',['../classsmooth_1_1v1__0_1_1BSpline.html#a558edfa6e15c966c939d0af1a243a37f',1,'smooth::v1_0::BSpline::t_min()'],['../classsmooth_1_1v1__0_1_1Spline.html#a5811d6f9458feb4edba7560f40e2dbdc',1,'smooth::v1_0::Spline::t_min()']]],
-  ['tangent_2',['Tangent',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#a8cc54a44830e0dd47f54d5022633879a',1,'smooth::v1_0::LieGroupBase::Tangent()'],['../manifold_8hpp.html#a22693149521ab22c138013fd301ede33',1,'smooth::v1_0::Tangent()']]],
-  ['tangentmap_3',['TangentMap',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#a22f7628b0f8be9b1752453b7624658fb',1,'smooth::v1_0::LieGroupBase::TangentMap()'],['../manifold_8hpp.html#a7a1847d5acf2d1ea95fde12f0f6cf9b5',1,'smooth::v1_0::TangentMap()']]],
-  ['traits_4',['traits',['../classsmooth_1_1v1__0_1_1LieGroupBase.html#a8ceb64e6760a9072e848cd7058b5361a',1,'smooth::v1_0::LieGroupBase']]],
-  ['transpose_5',['transpose',['../structsmooth_1_1v1__0_1_1StaticMatrix.html#afcd350f8d6b3d8d9d6030b477ddf15f9',1,'smooth::v1_0::StaticMatrix']]],
-  ['type_6',['Type',['../diff_8hpp.html#af6feea6b3132033e879c815ca07e5457',1,'smooth::v1_0::diff']]]
+  ['nativeliegroup_0',['NativeLieGroup',['../concepttraits_1_1NativeLieGroup.html',1,'traits']]],
+  ['t_5fmax_1',['t_max',['../classBSpline.html#ab814f0c03d9dd73a0a656100fb460bc7',1,'BSpline::t_max()'],['../classSpline.html#a271a009fc45332ceb4b0f5f0bf52111d',1,'Spline::t_max()']]],
+  ['t_5fmin_2',['t_min',['../classBSpline.html#a0298b70548f729f07a375ef1060b7537',1,'BSpline::t_min()'],['../classSpline.html#a0fd01cb36b2bd21190aabbf4f9f87ba7',1,'Spline::t_min()']]],
+  ['tangent_3',['Tangent',['../classLieGroupBase.html#a96e4eed3c6fc5b6f42d89903baf97fa2',1,'LieGroupBase::Tangent()'],['../manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7',1,'Tangent():&#160;manifold.hpp']]],
+  ['tangentmap_4',['TangentMap',['../classLieGroupBase.html#aa254a149bcb967f91243fabb99133b51',1,'LieGroupBase::TangentMap()'],['../manifold_8hpp.html#a76f8653452d066c7f3183fa7634e3812',1,'TangentMap():&#160;manifold.hpp']]],
+  ['tr_5fsolver_2ehpp_5',['tr_solver.hpp',['../tr__solver_8hpp.html',1,'']]],
+  ['traits_6',['traits',['../classLieGroupBase.html#a23a0db9b7811818dc82e04f66066f789',1,'LieGroupBase']]],
+  ['transpose_7',['transpose',['../structStaticMatrix.html#a88f5460a68c3a2f62f5e1411d3b9b488',1,'StaticMatrix']]],
+  ['trustregionstrategy_8',['TrustRegionStrategy',['../classTrustRegionStrategy.html',1,'']]],
+  ['type_9',['Type',['../diff_8hpp.html#acbb496d861ce1f034c3b0469daa8514f',1,'diff']]]
 ];

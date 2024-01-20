@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classsmooth_1_1v1__0_1_1LieGroupBase.html" title=" " alt="" coords="5,5,193,45"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,135,131,160"/>
+<area shape="rect" id="node2" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="189,5,337,60"/>
+<area shape="rect" id="node3" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="189,84,337,139"/>
+<area shape="rect" id="node4" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="183,163,343,203"/>
+<area shape="rect" id="node5" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="179,227,347,267"/>
 </map>

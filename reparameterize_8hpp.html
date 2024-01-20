@@ -88,7 +88,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>Reparamterize a Spline to satisfy derivative constraints.  
+<p>Reparamterize a <a class="el" href="classSpline.html" title="Single-parameter Lie group-valued function.">Spline</a> to satisfy derivative constraints.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="spline_8hpp_source.html">spline.hpp</a>&quot;</code><br />
 <code>#include &quot;detail/reparameterize_impl.hpp&quot;</code><br />
@@ -97,22 +97,25 @@ Include dependency graph for reparameterize.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="reparameterize_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2spline_2reparameterize_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2spline_2reparameterize_8hpp" id="ainclude_2smooth_2spline_2reparameterize_8hpp">
-<area shape="rect" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="371,5,519,45"/>
-<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="337,101,417,126"/>
-<area shape="rect" title=" " alt="" coords="442,93,585,133"/>
-<area shape="rect" title=" " alt="" coords="188,181,249,207"/>
-<area shape="rect" href="lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="273,181,388,207"/>
-<area shape="rect" href="common_8hpp_source.html" title=" " alt="" coords="536,255,632,280"/>
-<area shape="rect" title=" " alt="" coords="463,181,609,207"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="265,328,420,353"/>
-<area shape="rect" href="native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="368,255,512,280"/>
-<area shape="rect" href="rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="173,255,293,280"/>
-<area shape="rect" href="scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="5,255,149,280"/>
-<area shape="rect" title=" " alt="" coords="259,475,333,500"/>
-<area shape="rect" title=" " alt="" coords="391,475,476,500"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="301,401,395,427"/>
-<area shape="rect" title=" " alt="" coords="76,328,196,353"/>
-<area shape="rect" title=" " alt="" coords="551,328,617,353"/>
+<area shape="rect" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="411,5,559,45"/>
+<area shape="rect" href="spline_8hpp.html" title="Piecewise polynomial splines on lie groups." alt="" coords="377,101,457,126"/>
+<area shape="rect" title=" " alt="" coords="482,93,625,133"/>
+<area shape="rect" title=" " alt="" coords="228,181,289,207"/>
+<area shape="rect" href="lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="313,181,428,207"/>
+<area shape="rect" href="common_8hpp_source.html" title=" " alt="" coords="611,255,707,280"/>
+<area shape="rect" title=" " alt="" coords="503,181,649,207"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="277,328,432,353"/>
+<area shape="rect" href="native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="299,255,443,280"/>
+<area shape="rect" href="rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="467,255,587,280"/>
+<area shape="rect" href="scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="80,255,224,280"/>
+<area shape="rect" title=" " alt="" coords="281,401,333,427"/>
+<area shape="rect" title=" " alt="" coords="483,475,568,500"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="357,401,451,427"/>
+<area shape="rect" title=" " alt="" coords="323,475,458,500"/>
+<area shape="rect" title=" " alt="" coords="456,328,613,353"/>
+<area shape="rect" title=" " alt="" coords="150,328,215,353"/>
+<area shape="rect" title=" " alt="" coords="5,328,125,353"/>
+<area shape="rect" title=" " alt="" coords="688,328,755,353"/>
 </map>
 </div>
 </div>
@@ -120,31 +123,31 @@ Include dependency graph for reparameterize.hpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
 Concepts</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptsmooth_1_1v1__0_1_1SplineLike.html">smooth::v1_0::SplineLike</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptSplineLike.html">SplineLike</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">SplineLike concept. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a61b3671c00a53a38b7a8a21d0bdf4aef"><td class="memItemLeft" align="right" valign="top">Spline&lt; 2, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reparameterize_8hpp.html#a61b3671c00a53a38b7a8a21d0bdf4aef">smooth::reparameterize_spline</a> (const SplineLike auto &amp;spline, const auto &amp;vel_min, const auto &amp;vel_max, const auto &amp;acc_min, const auto &amp;acc_max, const double start_vel=1, const double end_vel=std::numeric_limits&lt; double &gt;::infinity(), const std::size_t N=100)</td></tr>
-<tr class="memdesc:a61b3671c00a53a38b7a8a21d0bdf4aef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reparameterize a spline to satisfy velocity and acceleration constraints.  <a href="reparameterize_8hpp.html#a61b3671c00a53a38b7a8a21d0bdf4aef">More...</a><br /></td></tr>
-<tr class="separator:a61b3671c00a53a38b7a8a21d0bdf4aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1bb1fa4423e168a51c3bd61b15ad4fb7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSpline.html">Spline</a>&lt; 2, double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="reparameterize_8hpp.html#a1bb1fa4423e168a51c3bd61b15ad4fb7">reparameterize_spline</a> (const <a class="el" href="conceptSplineLike.html">SplineLike</a> auto &amp;spline, const auto &amp;vel_min, const auto &amp;vel_max, const auto &amp;acc_min, const auto &amp;acc_max, const double start_vel=1, const double end_vel=std::numeric_limits&lt; double &gt;::infinity(), const std::size_t N=100)</td></tr>
+<tr class="memdesc:a1bb1fa4423e168a51c3bd61b15ad4fb7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reparameterize a spline to satisfy velocity and acceleration constraints.  <a href="reparameterize_8hpp.html#a1bb1fa4423e168a51c3bd61b15ad4fb7">More...</a><br /></td></tr>
+<tr class="separator:a1bb1fa4423e168a51c3bd61b15ad4fb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Reparamterize a Spline to satisfy derivative constraints. </p>
+<div class="textblock"><p >Reparamterize a <a class="el" href="classSpline.html" title="Single-parameter Lie group-valued function.">Spline</a> to satisfy derivative constraints. </p>
 
 <p class="definition">Definition in file <a class="el" href="reparameterize_8hpp_source.html">reparameterize.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a61b3671c00a53a38b7a8a21d0bdf4aef" name="a61b3671c00a53a38b7a8a21d0bdf4aef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61b3671c00a53a38b7a8a21d0bdf4aef">&#9670;&#160;</a></span>reparameterize_spline()</h2>
+<a id="a1bb1fa4423e168a51c3bd61b15ad4fb7" name="a1bb1fa4423e168a51c3bd61b15ad4fb7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1bb1fa4423e168a51c3bd61b15ad4fb7">&#9670;&#160;</a></span>reparameterize_spline()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Spline&lt; 2, double &gt; smooth::v1_0::reparameterize_spline </td>
+          <td class="memname"><a class="el" href="classSpline.html">Spline</a>&lt; 2, double &gt; reparameterize_spline </td>
           <td>(</td>
-          <td class="paramtype">const SplineLike auto &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="conceptSplineLike.html">SplineLike</a> auto &amp;&#160;</td>
           <td class="paramname"><em>spline</em>, </td>
         </tr>
         <tr>
@@ -198,7 +201,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reparameterize a spline to satisfy velocity and acceleration constraints. </p>
-<p >If \( x(\cdot) \) is a Spline, then this function generates a function \( s(t) \) s.t. the reparamterized spline \( x(s(t)) \) has body velocity bounded between vel_min and vel_max, and body acceleration bounded between acc_min and acc_max.</p>
+<p >If \( x(\cdot) \) is a <a class="el" href="classSpline.html" title="Single-parameter Lie group-valued function.">Spline</a>, then this function generates a function \( s(t) \) s.t. the reparamterized spline \( x(s(t)) \) has body velocity bounded between vel_min and vel_max, and body acceleration bounded between acc_min and acc_max.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">spline</td><td>spline \( x(t) \) to reparameterize. </td></tr>

@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structsmooth_1_1v1__0_1_1traits_1_1man_3_01std_1_1vector_3_01M_01_4_01_4.html" title="Manifold model specification for std::vector&lt;Manifold&gt;" alt="" coords="5,5,173,45"/>
+<area shape="rect" id="node1" href="$classTrustRegionStrategy.html" title=" " alt="" coords="5,31,145,56"/>
+<area shape="rect" id="node2" href="$classCeresStrategy.html" title="Trust region strategy used in the Ceres solver." alt="" coords="196,5,300,31"/>
+<area shape="rect" id="node3" href="$classDisneyStrategy.html" title="Trust region strategy used in:" alt="" coords="193,55,303,80"/>
 </map>

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['partdof_0',['PartDof',['../classsmooth_1_1v1__0_1_1BundleBase.html#a582fb29a05c83a9d9c6c5525220a8ccd',1,'smooth::v1_0::BundleBase']]],
-  ['partstart_1',['PartStart',['../classsmooth_1_1v1__0_1_1BundleBase.html#ae15e2f5683f2970bebc8eab2ff47932a',1,'smooth::v1_0::BundleBase']]],
-  ['ptol_2',['ptol',['../structsmooth_1_1v1__0_1_1MinimizeOptions.html#af60a45309b3a91d2bb4ce3bbb2174b52',1,'smooth::v1_0::MinimizeOptions']]]
+  ['partdof_0',['PartDof',['../classBundleBase.html#a88c4e5a6c02b1ee0e3e08658ae023826',1,'BundleBase']]],
+  ['partstart_1',['PartStart',['../classBundleBase.html#ac618f1ba076ca66ba5e075d9655aab3b',1,'BundleBase']]],
+  ['ptol_2',['ptol',['../structMinimizeOptions.html#a4de1d325e7d0436ae3d23375e1873459',1,'MinimizeOptions']]]
 ];

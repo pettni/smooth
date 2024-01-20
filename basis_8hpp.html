@@ -91,18 +91,19 @@ $(function() {
 <p>Compile-time polynomial manipulation.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
 <code>#include &quot;<a class="el" href="static__matrix_8hpp_source.html">static_matrix.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for basis.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="basis_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2polynomial_2basis_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2polynomial_2basis_8hpp" id="ainclude_2smooth_2polynomial_2basis_8hpp">
-<area shape="rect" title="Compile&#45;time polynomial manipulation." alt="" coords="9,5,184,45"/>
+<area shape="rect" title="Compile&#45;time polynomial manipulation." alt="" coords="35,5,209,45"/>
 <area shape="rect" title=" " alt="" coords="5,93,71,119"/>
-<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="95,93,215,119"/>
-<area shape="rect" title=" " alt="" coords="51,167,102,192"/>
-<area shape="rect" title=" " alt="" coords="126,167,185,192"/>
-<area shape="rect" title=" " alt="" coords="209,167,323,192"/>
+<area shape="rect" title=" " alt="" coords="95,93,149,119"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="173,93,293,119"/>
+<area shape="rect" title=" " alt="" coords="154,167,205,192"/>
+<area shape="rect" title=" " alt="" coords="229,167,343,192"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -122,82 +123,82 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a8272c386da29b1b47f6af696fe567323"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323">smooth::PolynomialBasis</a> { <br />
-&#160;&#160;<a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a6b8e5e9520304bfdbf74fa045375911f">Bernstein</a>
-, <a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a233df4c286d574c9467f3ff09e8744cb">Bspline</a>
-, <a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323aebd0a86bd37dcfed8c4874eaf84138a5">Chebyshev1st</a>
-, <a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323aea9ca096aac74c32f1098b6099924302">Chebyshev2nd</a>
-, <a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a70457be66a37fd77955ebfb026c57a24">Hermite</a>
-, <a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a8a8b8d9a0dab81c51557bb230a1cab76">Laguerre</a>
+<tr class="memitem:ae6ab8d0444c30a84e466f27994bb6439"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439">PolynomialBasis</a> { <br />
+&#160;&#160;<a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439a6b8e5e9520304bfdbf74fa045375911f">Bernstein</a>
+, <a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439a233df4c286d574c9467f3ff09e8744cb">Bspline</a>
+, <a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439aebd0a86bd37dcfed8c4874eaf84138a5">Chebyshev1st</a>
+, <a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439aea9ca096aac74c32f1098b6099924302">Chebyshev2nd</a>
+, <a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439a70457be66a37fd77955ebfb026c57a24">Hermite</a>
+, <a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439a8a8b8d9a0dab81c51557bb230a1cab76">Laguerre</a>
 , <br />
-&#160;&#160;<a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323af9d917a770fac9457858a6e6bfdd9d9c">Legendre</a>
-, <a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323a9ed6b9b00759d6ba0aff01399161dd28">Monomial</a>
+&#160;&#160;<a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439af9d917a770fac9457858a6e6bfdd9d9c">Legendre</a>
+, <a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439a9ed6b9b00759d6ba0aff01399161dd28">Monomial</a>
 <br />
  }</td></tr>
-<tr class="memdesc:a8272c386da29b1b47f6af696fe567323"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polynomial basis types.  <a href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323">More...</a><br /></td></tr>
-<tr class="separator:a8272c386da29b1b47f6af696fe567323"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memdesc:ae6ab8d0444c30a84e466f27994bb6439"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polynomial basis types.  <a href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439">More...</a><br /></td></tr>
+<tr class="separator:ae6ab8d0444c30a84e466f27994bb6439"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9c02989aca1e7a4666229cbb851ae1f6"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename Scalar &gt; </td></tr>
-<tr class="memitem:a9c02989aca1e7a4666229cbb851ae1f6"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, 1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a9c02989aca1e7a4666229cbb851ae1f6">smooth::monomial_derivative</a> (Scalar u, std::size_t p=0)</td></tr>
-<tr class="memdesc:a9c02989aca1e7a4666229cbb851ae1f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monomial derivative (compile-time version).  <a href="basis_8hpp.html#a9c02989aca1e7a4666229cbb851ae1f6">More...</a><br /></td></tr>
-<tr class="separator:a9c02989aca1e7a4666229cbb851ae1f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a021e2ad3834f2dc7590fc97814696de6"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t P, typename Scalar &gt; </td></tr>
-<tr class="memitem:a021e2ad3834f2dc7590fc97814696de6"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, P+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a021e2ad3834f2dc7590fc97814696de6">smooth::monomial_derivatives</a> (Scalar u)</td></tr>
-<tr class="memdesc:a021e2ad3834f2dc7590fc97814696de6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monomial derivatives up to order.  <a href="basis_8hpp.html#a021e2ad3834f2dc7590fc97814696de6">More...</a><br /></td></tr>
-<tr class="separator:a021e2ad3834f2dc7590fc97814696de6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d0234f81b099c6a3d115562f2cb44e9"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:a6d0234f81b099c6a3d115562f2cb44e9"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a6d0234f81b099c6a3d115562f2cb44e9">smooth::v1_0::detail::bspline_basis</a> ()</td></tr>
-<tr class="memdesc:a6d0234f81b099c6a3d115562f2cb44e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bspline basis coefficient matrix.  <a href="basis_8hpp.html#a6d0234f81b099c6a3d115562f2cb44e9">More...</a><br /></td></tr>
-<tr class="separator:a6d0234f81b099c6a3d115562f2cb44e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab041b820fbd2c91b9da6f8f6d549188b"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:ab041b820fbd2c91b9da6f8f6d549188b"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#ab041b820fbd2c91b9da6f8f6d549188b">smooth::v1_0::detail::bernstein_basis</a> ()</td></tr>
-<tr class="memdesc:ab041b820fbd2c91b9da6f8f6d549188b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bernstein basis coefficient matrix.  <a href="basis_8hpp.html#ab041b820fbd2c91b9da6f8f6d549188b">More...</a><br /></td></tr>
-<tr class="separator:ab041b820fbd2c91b9da6f8f6d549188b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37d156c856efe00e3e4bfafce5fafbc8"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:a37d156c856efe00e3e4bfafce5fafbc8"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a37d156c856efe00e3e4bfafce5fafbc8">smooth::v1_0::detail::hermite_basis</a> ()</td></tr>
-<tr class="memdesc:a37d156c856efe00e3e4bfafce5fafbc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hermite basis coefficient matrix.  <a href="basis_8hpp.html#a37d156c856efe00e3e4bfafce5fafbc8">More...</a><br /></td></tr>
-<tr class="separator:a37d156c856efe00e3e4bfafce5fafbc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab62d4d386efb64e3c9183ddd757b3bed"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:ab62d4d386efb64e3c9183ddd757b3bed"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#ab62d4d386efb64e3c9183ddd757b3bed">smooth::v1_0::detail::laguerre_basis</a> ()</td></tr>
-<tr class="memdesc:ab62d4d386efb64e3c9183ddd757b3bed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Laguerre basis coefficient matrix.  <a href="basis_8hpp.html#ab62d4d386efb64e3c9183ddd757b3bed">More...</a><br /></td></tr>
-<tr class="separator:ab62d4d386efb64e3c9183ddd757b3bed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaab58bd24b34be5af6f635c6601bf765"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:aaab58bd24b34be5af6f635c6601bf765"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#aaab58bd24b34be5af6f635c6601bf765">smooth::v1_0::detail::jacobi_basis</a> (double alpha, double beta)</td></tr>
-<tr class="memdesc:aaab58bd24b34be5af6f635c6601bf765"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobi basis coefficient matrix.  <a href="basis_8hpp.html#aaab58bd24b34be5af6f635c6601bf765">More...</a><br /></td></tr>
-<tr class="separator:aaab58bd24b34be5af6f635c6601bf765"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e4dadea5ccbefc9e9ca07ccfdc4a6da"><td class="memTemplParams" colspan="2">template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:a0e4dadea5ccbefc9e9ca07ccfdc4a6da"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a0e4dadea5ccbefc9e9ca07ccfdc4a6da">smooth::polynomial_basis</a> ()</td></tr>
-<tr class="memdesc:a0e4dadea5ccbefc9e9ca07ccfdc4a6da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile-time coefficient matrix for given basis.  <a href="basis_8hpp.html#a0e4dadea5ccbefc9e9ca07ccfdc4a6da">More...</a><br /></td></tr>
-<tr class="separator:a0e4dadea5ccbefc9e9ca07ccfdc4a6da"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5389408ca59fc46cdd94a7f88af2c1a0"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::ranges::random_access_range R, typename Scalar  = std::ranges::range_value_t&lt;R&gt;&gt; </td></tr>
-<tr class="memitem:a5389408ca59fc46cdd94a7f88af2c1a0"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a5389408ca59fc46cdd94a7f88af2c1a0">smooth::lagrange_basis</a> (const R &amp;ts)</td></tr>
-<tr class="memdesc:a5389408ca59fc46cdd94a7f88af2c1a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lagrange polynomial basis coefficients.  <a href="basis_8hpp.html#a5389408ca59fc46cdd94a7f88af2c1a0">More...</a><br /></td></tr>
-<tr class="separator:a5389408ca59fc46cdd94a7f88af2c1a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38d7d8002e161df9cc59aaf15d35ac87"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t N, typename Scalar , std::ranges::sized_range R&gt; </td></tr>
-<tr class="memitem:a38d7d8002e161df9cc59aaf15d35ac87"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a38d7d8002e161df9cc59aaf15d35ac87">smooth::polynomial_basis_derivatives</a> (const StaticMatrix&lt; Scalar, K+1, K+1 &gt; &amp;B, const R &amp;ts)</td></tr>
-<tr class="memdesc:a38d7d8002e161df9cc59aaf15d35ac87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polynomial basis derivative coefficients.  <a href="basis_8hpp.html#a38d7d8002e161df9cc59aaf15d35ac87">More...</a><br /></td></tr>
-<tr class="separator:a38d7d8002e161df9cc59aaf15d35ac87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe1f32489e7f05bb82253b450d5fbf54"><td class="memTemplParams" colspan="2">template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:abe1f32489e7f05bb82253b450d5fbf54"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#abe1f32489e7f05bb82253b450d5fbf54">smooth::polynomial_cumulative_basis</a> ()</td></tr>
-<tr class="memdesc:abe1f32489e7f05bb82253b450d5fbf54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cumulative coefficient matrix for given basis.  <a href="basis_8hpp.html#abe1f32489e7f05bb82253b450d5fbf54">More...</a><br /></td></tr>
-<tr class="separator:abe1f32489e7f05bb82253b450d5fbf54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a9e932f71e69513f74c61f34a005c4b"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t P, typename Scalar  = double&gt; </td></tr>
-<tr class="memitem:a9a9e932f71e69513f74c61f34a005c4b"><td class="memTemplItemLeft" align="right" valign="top">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a9a9e932f71e69513f74c61f34a005c4b">smooth::monomial_integral</a> ()</td></tr>
-<tr class="memdesc:a9a9e932f71e69513f74c61f34a005c4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate integral over matrix of squared monomial P-derivatives.  <a href="basis_8hpp.html#a9a9e932f71e69513f74c61f34a005c4b">More...</a><br /></td></tr>
-<tr class="separator:a9a9e932f71e69513f74c61f34a005c4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67c1e24159654b1b8f24f3175ad8d3f3"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a67c1e24159654b1b8f24f3175ad8d3f3">smooth::integrate_absolute_polynomial</a> (double t0, double t1, double A, double B, double C)</td></tr>
-<tr class="memdesc:a67c1e24159654b1b8f24f3175ad8d3f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate the absolute value of a quadratic 1D polynomial.  <a href="basis_8hpp.html#a67c1e24159654b1b8f24f3175ad8d3f3">More...</a><br /></td></tr>
-<tr class="separator:a67c1e24159654b1b8f24f3175ad8d3f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e35c93cdbfd059488a399bc3fdbf35a"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> &gt; </td></tr>
+<tr class="memitem:a3e35c93cdbfd059488a399bc3fdbf35a"><td class="memTemplItemLeft" align="right" valign="top">SMOOTH_BEGIN_NAMESPACE constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, 1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a3e35c93cdbfd059488a399bc3fdbf35a">monomial_derivative</a> (<a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> u, std::size_t p=0)</td></tr>
+<tr class="memdesc:a3e35c93cdbfd059488a399bc3fdbf35a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monomial derivative (compile-time version).  <a href="basis_8hpp.html#a3e35c93cdbfd059488a399bc3fdbf35a">More...</a><br /></td></tr>
+<tr class="separator:a3e35c93cdbfd059488a399bc3fdbf35a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4031db58d8d732e9e24aff0e639e0370"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t P, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> &gt; </td></tr>
+<tr class="memitem:a4031db58d8d732e9e24aff0e639e0370"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, P+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a4031db58d8d732e9e24aff0e639e0370">monomial_derivatives</a> (<a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> u)</td></tr>
+<tr class="memdesc:a4031db58d8d732e9e24aff0e639e0370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Monomial derivatives up to order.  <a href="basis_8hpp.html#a4031db58d8d732e9e24aff0e639e0370">More...</a><br /></td></tr>
+<tr class="separator:a4031db58d8d732e9e24aff0e639e0370"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c70f725972a3e718249818d376a3d80"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:a8c70f725972a3e718249818d376a3d80"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a8c70f725972a3e718249818d376a3d80">detail::bspline_basis</a> ()</td></tr>
+<tr class="memdesc:a8c70f725972a3e718249818d376a3d80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bspline basis coefficient matrix.  <a href="basis_8hpp.html#a8c70f725972a3e718249818d376a3d80">More...</a><br /></td></tr>
+<tr class="separator:a8c70f725972a3e718249818d376a3d80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5748f5d583364bb71e9f36414ac3211f"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:a5748f5d583364bb71e9f36414ac3211f"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a5748f5d583364bb71e9f36414ac3211f">detail::bernstein_basis</a> ()</td></tr>
+<tr class="memdesc:a5748f5d583364bb71e9f36414ac3211f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bernstein basis coefficient matrix.  <a href="basis_8hpp.html#a5748f5d583364bb71e9f36414ac3211f">More...</a><br /></td></tr>
+<tr class="separator:a5748f5d583364bb71e9f36414ac3211f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa153f5b3fa32d4ac9da3738cbcde5817"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:aa153f5b3fa32d4ac9da3738cbcde5817"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#aa153f5b3fa32d4ac9da3738cbcde5817">detail::hermite_basis</a> ()</td></tr>
+<tr class="memdesc:aa153f5b3fa32d4ac9da3738cbcde5817"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hermite basis coefficient matrix.  <a href="basis_8hpp.html#aa153f5b3fa32d4ac9da3738cbcde5817">More...</a><br /></td></tr>
+<tr class="separator:aa153f5b3fa32d4ac9da3738cbcde5817"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbc17563d5c399cc5828681e3f91596b"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:afbc17563d5c399cc5828681e3f91596b"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#afbc17563d5c399cc5828681e3f91596b">detail::laguerre_basis</a> ()</td></tr>
+<tr class="memdesc:afbc17563d5c399cc5828681e3f91596b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Laguerre basis coefficient matrix.  <a href="basis_8hpp.html#afbc17563d5c399cc5828681e3f91596b">More...</a><br /></td></tr>
+<tr class="separator:afbc17563d5c399cc5828681e3f91596b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a117677545bdf8851c5a8d50009431c58"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:a117677545bdf8851c5a8d50009431c58"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a117677545bdf8851c5a8d50009431c58">detail::jacobi_basis</a> (double alpha, double beta)</td></tr>
+<tr class="memdesc:a117677545bdf8851c5a8d50009431c58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobi basis coefficient matrix.  <a href="basis_8hpp.html#a117677545bdf8851c5a8d50009431c58">More...</a><br /></td></tr>
+<tr class="separator:a117677545bdf8851c5a8d50009431c58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab95b3ea4ae1f10c4462b9c5392bbe874"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439">PolynomialBasis</a> Basis, std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:ab95b3ea4ae1f10c4462b9c5392bbe874"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#ab95b3ea4ae1f10c4462b9c5392bbe874">polynomial_basis</a> ()</td></tr>
+<tr class="memdesc:ab95b3ea4ae1f10c4462b9c5392bbe874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compile-time coefficient matrix for given basis.  <a href="basis_8hpp.html#ab95b3ea4ae1f10c4462b9c5392bbe874">More...</a><br /></td></tr>
+<tr class="separator:ab95b3ea4ae1f10c4462b9c5392bbe874"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e12d184ed8ee4baa147fcfb051089c2"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::ranges::random_access_range R, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = std::ranges::range_value_t&lt;R&gt;&gt; </td></tr>
+<tr class="memitem:a4e12d184ed8ee4baa147fcfb051089c2"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a4e12d184ed8ee4baa147fcfb051089c2">lagrange_basis</a> (const R &amp;ts)</td></tr>
+<tr class="memdesc:a4e12d184ed8ee4baa147fcfb051089c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lagrange polynomial basis coefficients.  <a href="basis_8hpp.html#a4e12d184ed8ee4baa147fcfb051089c2">More...</a><br /></td></tr>
+<tr class="separator:a4e12d184ed8ee4baa147fcfb051089c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7316cc6604e6e3b62e17c7b13d26d16f"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t N, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> , std::ranges::sized_range R&gt; </td></tr>
+<tr class="memitem:a7316cc6604e6e3b62e17c7b13d26d16f"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, N &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a7316cc6604e6e3b62e17c7b13d26d16f">polynomial_basis_derivatives</a> (const <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; &amp;B, const R &amp;ts)</td></tr>
+<tr class="memdesc:a7316cc6604e6e3b62e17c7b13d26d16f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Polynomial basis derivative coefficients.  <a href="basis_8hpp.html#a7316cc6604e6e3b62e17c7b13d26d16f">More...</a><br /></td></tr>
+<tr class="separator:a7316cc6604e6e3b62e17c7b13d26d16f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2e42cba3daa70f03da850d31ea68166"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439">PolynomialBasis</a> Basis, std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:ac2e42cba3daa70f03da850d31ea68166"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#ac2e42cba3daa70f03da850d31ea68166">polynomial_cumulative_basis</a> ()</td></tr>
+<tr class="memdesc:ac2e42cba3daa70f03da850d31ea68166"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cumulative coefficient matrix for given basis.  <a href="basis_8hpp.html#ac2e42cba3daa70f03da850d31ea68166">More...</a><br /></td></tr>
+<tr class="separator:ac2e42cba3daa70f03da850d31ea68166"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a19697c6914cf677ece21545087615d19"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t P, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </td></tr>
+<tr class="memitem:a19697c6914cf677ece21545087615d19"><td class="memTemplItemLeft" align="right" valign="top">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a19697c6914cf677ece21545087615d19">monomial_integral</a> ()</td></tr>
+<tr class="memdesc:a19697c6914cf677ece21545087615d19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate integral over matrix of squared monomial P-derivatives.  <a href="basis_8hpp.html#a19697c6914cf677ece21545087615d19">More...</a><br /></td></tr>
+<tr class="separator:a19697c6914cf677ece21545087615d19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56aab12b35e3612912a2d3ddac45721e"><td class="memItemLeft" align="right" valign="top">constexpr double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basis_8hpp.html#a56aab12b35e3612912a2d3ddac45721e">integrate_absolute_polynomial</a> (double t0, double t1, double A, double B, double C)</td></tr>
+<tr class="memdesc:a56aab12b35e3612912a2d3ddac45721e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integrate the absolute value of a quadratic 1D polynomial.  <a href="basis_8hpp.html#a56aab12b35e3612912a2d3ddac45721e">More...</a><br /></td></tr>
+<tr class="separator:a56aab12b35e3612912a2d3ddac45721e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Compile-time polynomial manipulation. </p>
 
 <p class="definition">Definition in file <a class="el" href="basis_8hpp_source.html">basis.hpp</a>.</p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a8272c386da29b1b47f6af696fe567323" name="a8272c386da29b1b47f6af696fe567323"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8272c386da29b1b47f6af696fe567323">&#9670;&#160;</a></span>PolynomialBasis</h2>
+<a id="ae6ab8d0444c30a84e466f27994bb6439" name="ae6ab8d0444c30a84e466f27994bb6439"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6ab8d0444c30a84e466f27994bb6439">&#9670;&#160;</a></span>PolynomialBasis</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -206,7 +207,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum class <a class="el" href="basis_8hpp.html#a8272c386da29b1b47f6af696fe567323">smooth::v1_0::PolynomialBasis</a></td>
+          <td class="memname">enum class <a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439">PolynomialBasis</a></td>
         </tr>
       </table>
   </td>
@@ -218,21 +219,21 @@ Functions</h2></td></tr>
 
 <p>Polynomial basis types. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323a6b8e5e9520304bfdbf74fa045375911f" name="a8272c386da29b1b47f6af696fe567323a6b8e5e9520304bfdbf74fa045375911f"></a>Bernstein&#160;</td><td class="fielddoc"><p >Basis on [0, 1] with left to right ordering. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439a6b8e5e9520304bfdbf74fa045375911f" name="ae6ab8d0444c30a84e466f27994bb6439a6b8e5e9520304bfdbf74fa045375911f"></a>Bernstein&#160;</td><td class="fielddoc"><p >Basis on [0, 1] with left to right ordering. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323a233df4c286d574c9467f3ff09e8744cb" name="a8272c386da29b1b47f6af696fe567323a233df4c286d574c9467f3ff09e8744cb"></a>Bspline&#160;</td><td class="fielddoc"><p >Basis on [0, 1] with left to right ordering. </p>
+<tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439a233df4c286d574c9467f3ff09e8744cb" name="ae6ab8d0444c30a84e466f27994bb6439a233df4c286d574c9467f3ff09e8744cb"></a>Bspline&#160;</td><td class="fielddoc"><p >Basis on [0, 1] with left to right ordering. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323aebd0a86bd37dcfed8c4874eaf84138a5" name="a8272c386da29b1b47f6af696fe567323aebd0a86bd37dcfed8c4874eaf84138a5"></a>Chebyshev1st&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-1, 1] w.r.t the weight 1 / sqrt(1-x^2) </p>
+<tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439aebd0a86bd37dcfed8c4874eaf84138a5" name="ae6ab8d0444c30a84e466f27994bb6439aebd0a86bd37dcfed8c4874eaf84138a5"></a>Chebyshev1st&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-1, 1] w.r.t the weight 1 / sqrt(1-x^2) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323aea9ca096aac74c32f1098b6099924302" name="a8272c386da29b1b47f6af696fe567323aea9ca096aac74c32f1098b6099924302"></a>Chebyshev2nd&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-1, 1] w.r.t the weight sqrt(1-x^2) </p>
+<tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439aea9ca096aac74c32f1098b6099924302" name="ae6ab8d0444c30a84e466f27994bb6439aea9ca096aac74c32f1098b6099924302"></a>Chebyshev2nd&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-1, 1] w.r.t the weight sqrt(1-x^2) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323a70457be66a37fd77955ebfb026c57a24" name="a8272c386da29b1b47f6af696fe567323a70457be66a37fd77955ebfb026c57a24"></a>Hermite&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-inf, inf] w.r.t the weight exp(-x^2) </p>
+<tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439a70457be66a37fd77955ebfb026c57a24" name="ae6ab8d0444c30a84e466f27994bb6439a70457be66a37fd77955ebfb026c57a24"></a>Hermite&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-inf, inf] w.r.t the weight exp(-x^2) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323a8a8b8d9a0dab81c51557bb230a1cab76" name="a8272c386da29b1b47f6af696fe567323a8a8b8d9a0dab81c51557bb230a1cab76"></a>Laguerre&#160;</td><td class="fielddoc"><p >Orthogonal basis on [0, inf] w.r.t the weight exp(-x) </p>
+<tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439a8a8b8d9a0dab81c51557bb230a1cab76" name="ae6ab8d0444c30a84e466f27994bb6439a8a8b8d9a0dab81c51557bb230a1cab76"></a>Laguerre&#160;</td><td class="fielddoc"><p >Orthogonal basis on [0, inf] w.r.t the weight exp(-x) </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323af9d917a770fac9457858a6e6bfdd9d9c" name="a8272c386da29b1b47f6af696fe567323af9d917a770fac9457858a6e6bfdd9d9c"></a>Legendre&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-1, 1]. </p>
+<tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439af9d917a770fac9457858a6e6bfdd9d9c" name="ae6ab8d0444c30a84e466f27994bb6439af9d917a770fac9457858a6e6bfdd9d9c"></a>Legendre&#160;</td><td class="fielddoc"><p >Orthogonal basis on [-1, 1]. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a8272c386da29b1b47f6af696fe567323a9ed6b9b00759d6ba0aff01399161dd28" name="a8272c386da29b1b47f6af696fe567323a9ed6b9b00759d6ba0aff01399161dd28"></a>Monomial&#160;</td><td class="fielddoc"><p >The standard monomial basis (1, x, x^2, ...) </p>
+<tr><td class="fieldname"><a id="ae6ab8d0444c30a84e466f27994bb6439a9ed6b9b00759d6ba0aff01399161dd28" name="ae6ab8d0444c30a84e466f27994bb6439a9ed6b9b00759d6ba0aff01399161dd28"></a>Monomial&#160;</td><td class="fielddoc"><p >The standard monomial basis (1, x, x^2, ...) </p>
 </td></tr>
 </table>
 
@@ -241,19 +242,19 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ab041b820fbd2c91b9da6f8f6d549188b" name="ab041b820fbd2c91b9da6f8f6d549188b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab041b820fbd2c91b9da6f8f6d549188b">&#9670;&#160;</a></span>bernstein_basis()</h2>
+<a id="a5748f5d583364bb71e9f36414ac3211f" name="a5748f5d583364bb71e9f36414ac3211f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5748f5d583364bb71e9f36414ac3211f">&#9670;&#160;</a></span>bernstein_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, typename Scalar  = double&gt; </div>
+template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::detail::bernstein_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; detail::bernstein_basis </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -278,19 +279,19 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
 
 </div>
 </div>
-<a id="a6d0234f81b099c6a3d115562f2cb44e9" name="a6d0234f81b099c6a3d115562f2cb44e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6d0234f81b099c6a3d115562f2cb44e9">&#9670;&#160;</a></span>bspline_basis()</h2>
+<a id="a8c70f725972a3e718249818d376a3d80" name="a8c70f725972a3e718249818d376a3d80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c70f725972a3e718249818d376a3d80">&#9670;&#160;</a></span>bspline_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, typename Scalar  = double&gt; </div>
+template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::detail::bspline_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; detail::bspline_basis </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -315,19 +316,19 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
 
 </div>
 </div>
-<a id="a37d156c856efe00e3e4bfafce5fafbc8" name="a37d156c856efe00e3e4bfafce5fafbc8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a37d156c856efe00e3e4bfafce5fafbc8">&#9670;&#160;</a></span>hermite_basis()</h2>
+<a id="aa153f5b3fa32d4ac9da3738cbcde5817" name="aa153f5b3fa32d4ac9da3738cbcde5817"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa153f5b3fa32d4ac9da3738cbcde5817">&#9670;&#160;</a></span>hermite_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, typename Scalar  = double&gt; </div>
+template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::detail::hermite_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; detail::hermite_basis </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -352,8 +353,8 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
 
 </div>
 </div>
-<a id="a67c1e24159654b1b8f24f3175ad8d3f3" name="a67c1e24159654b1b8f24f3175ad8d3f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67c1e24159654b1b8f24f3175ad8d3f3">&#9670;&#160;</a></span>integrate_absolute_polynomial()</h2>
+<a id="a56aab12b35e3612912a2d3ddac45721e" name="a56aab12b35e3612912a2d3ddac45721e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56aab12b35e3612912a2d3ddac45721e">&#9670;&#160;</a></span>integrate_absolute_polynomial()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -362,7 +363,7 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr double smooth::v1_0::integrate_absolute_polynomial </td>
+          <td class="memname">constexpr double integrate_absolute_polynomial </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>t0</em>, </td>
@@ -415,19 +416,19 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
 
 </div>
 </div>
-<a id="aaab58bd24b34be5af6f635c6601bf765" name="aaab58bd24b34be5af6f635c6601bf765"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaab58bd24b34be5af6f635c6601bf765">&#9670;&#160;</a></span>jacobi_basis()</h2>
+<a id="a117677545bdf8851c5a8d50009431c58" name="a117677545bdf8851c5a8d50009431c58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a117677545bdf8851c5a8d50009431c58">&#9670;&#160;</a></span>jacobi_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, typename Scalar  = double&gt; </div>
+template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::detail::jacobi_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; detail::jacobi_basis </td>
           <td>(</td>
           <td class="paramtype">double&#160;</td>
           <td class="paramname"><em>alpha</em>, </td>
@@ -475,19 +476,19 @@ The Chebyshev polynomials of the second kind correspond to \( \alpha = \beta = 1
 
 </div>
 </div>
-<a id="a5389408ca59fc46cdd94a7f88af2c1a0" name="a5389408ca59fc46cdd94a7f88af2c1a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5389408ca59fc46cdd94a7f88af2c1a0">&#9670;&#160;</a></span>lagrange_basis()</h2>
+<a id="a4e12d184ed8ee4baa147fcfb051089c2" name="a4e12d184ed8ee4baa147fcfb051089c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e12d184ed8ee4baa147fcfb051089c2">&#9670;&#160;</a></span>lagrange_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, std::ranges::random_access_range R, typename Scalar  = std::ranges::range_value_t&lt;R&gt;&gt; </div>
+template&lt;std::size_t K, std::ranges::random_access_range R, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = std::ranges::range_value_t&lt;R&gt;&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::lagrange_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; lagrange_basis </td>
           <td>(</td>
           <td class="paramtype">const R &amp;&#160;</td>
           <td class="paramname"><em>ts</em></td><td>)</td>
@@ -531,19 +532,19 @@ template&lt;std::size_t K, std::ranges::random_access_range R, typename Scalar  
 
 </div>
 </div>
-<a id="ab62d4d386efb64e3c9183ddd757b3bed" name="ab62d4d386efb64e3c9183ddd757b3bed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab62d4d386efb64e3c9183ddd757b3bed">&#9670;&#160;</a></span>laguerre_basis()</h2>
+<a id="afbc17563d5c399cc5828681e3f91596b" name="afbc17563d5c399cc5828681e3f91596b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbc17563d5c399cc5828681e3f91596b">&#9670;&#160;</a></span>laguerre_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, typename Scalar  = double&gt; </div>
+template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::detail::laguerre_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; detail::laguerre_basis </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -568,21 +569,21 @@ template&lt;std::size_t K, typename Scalar  = double&gt; </div>
 
 </div>
 </div>
-<a id="a9c02989aca1e7a4666229cbb851ae1f6" name="a9c02989aca1e7a4666229cbb851ae1f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c02989aca1e7a4666229cbb851ae1f6">&#9670;&#160;</a></span>monomial_derivative()</h2>
+<a id="a3e35c93cdbfd059488a399bc3fdbf35a" name="a3e35c93cdbfd059488a399bc3fdbf35a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e35c93cdbfd059488a399bc3fdbf35a">&#9670;&#160;</a></span>monomial_derivative()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, typename Scalar &gt; </div>
+template&lt;std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, 1, K+1 &gt; smooth::v1_0::monomial_derivative </td>
+          <td class="memname">SMOOTH_BEGIN_NAMESPACE constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, 1, K+1 &gt; monomial_derivative </td>
           <td>(</td>
-          <td class="paramtype">Scalar&#160;</td>
+          <td class="paramtype"><a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&#160;</td>
           <td class="paramname"><em>u</em>, </td>
         </tr>
         <tr>
@@ -625,21 +626,21 @@ template&lt;std::size_t K, typename Scalar &gt; </div>
 
 </div>
 </div>
-<a id="a021e2ad3834f2dc7590fc97814696de6" name="a021e2ad3834f2dc7590fc97814696de6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a021e2ad3834f2dc7590fc97814696de6">&#9670;&#160;</a></span>monomial_derivatives()</h2>
+<a id="a4031db58d8d732e9e24aff0e639e0370" name="a4031db58d8d732e9e24aff0e639e0370"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4031db58d8d732e9e24aff0e639e0370">&#9670;&#160;</a></span>monomial_derivatives()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, std::size_t P, typename Scalar &gt; </div>
+template&lt;std::size_t K, std::size_t P, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, P+1, K+1 &gt; smooth::v1_0::monomial_derivatives </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, P+1, K+1 &gt; monomial_derivatives </td>
           <td>(</td>
-          <td class="paramtype">Scalar&#160;</td>
+          <td class="paramtype"><a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&#160;</td>
           <td class="paramname"><em>u</em></td><td>)</td>
           <td></td>
         </tr>
@@ -674,19 +675,19 @@ template&lt;std::size_t K, std::size_t P, typename Scalar &gt; </div>
 
 </div>
 </div>
-<a id="a9a9e932f71e69513f74c61f34a005c4b" name="a9a9e932f71e69513f74c61f34a005c4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a9e932f71e69513f74c61f34a005c4b">&#9670;&#160;</a></span>monomial_integral()</h2>
+<a id="a19697c6914cf677ece21545087615d19" name="a19697c6914cf677ece21545087615d19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19697c6914cf677ece21545087615d19">&#9670;&#160;</a></span>monomial_integral()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, std::size_t P, typename Scalar  = double&gt; </div>
+template&lt;std::size_t K, std::size_t P, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::monomial_integral </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; monomial_integral </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -714,19 +715,19 @@ template&lt;std::size_t K, std::size_t P, typename Scalar  = double&gt; </div>
 
 </div>
 </div>
-<a id="a0e4dadea5ccbefc9e9ca07ccfdc4a6da" name="a0e4dadea5ccbefc9e9ca07ccfdc4a6da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e4dadea5ccbefc9e9ca07ccfdc4a6da">&#9670;&#160;</a></span>polynomial_basis()</h2>
+<a id="ab95b3ea4ae1f10c4462b9c5392bbe874" name="ab95b3ea4ae1f10c4462b9c5392bbe874"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab95b3ea4ae1f10c4462b9c5392bbe874">&#9670;&#160;</a></span>polynomial_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar  = double&gt; </div>
+template&lt;<a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439">PolynomialBasis</a> Basis, std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::polynomial_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; polynomial_basis </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -758,21 +759,21 @@ template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar  = double&gt; 
 
 </div>
 </div>
-<a id="a38d7d8002e161df9cc59aaf15d35ac87" name="a38d7d8002e161df9cc59aaf15d35ac87"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38d7d8002e161df9cc59aaf15d35ac87">&#9670;&#160;</a></span>polynomial_basis_derivatives()</h2>
+<a id="a7316cc6604e6e3b62e17c7b13d26d16f" name="a7316cc6604e6e3b62e17c7b13d26d16f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7316cc6604e6e3b62e17c7b13d26d16f">&#9670;&#160;</a></span>polynomial_basis_derivatives()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;std::size_t K, std::size_t N, typename Scalar , std::ranges::sized_range R&gt; </div>
+template&lt;std::size_t K, std::size_t N, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a> , std::ranges::sized_range R&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, N &gt; smooth::v1_0::polynomial_basis_derivatives </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, N &gt; polynomial_basis_derivatives </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structsmooth_1_1v1__0_1_1StaticMatrix.html">StaticMatrix</a>&lt; Scalar, K+1, K+1 &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; &amp;&#160;</td>
           <td class="paramname"><em>B</em>, </td>
         </tr>
         <tr>
@@ -815,19 +816,19 @@ template&lt;std::size_t K, std::size_t N, typename Scalar , std::ranges::sized_r
 
 </div>
 </div>
-<a id="abe1f32489e7f05bb82253b450d5fbf54" name="abe1f32489e7f05bb82253b450d5fbf54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe1f32489e7f05bb82253b450d5fbf54">&#9670;&#160;</a></span>polynomial_cumulative_basis()</h2>
+<a id="ac2e42cba3daa70f03da850d31ea68166" name="ac2e42cba3daa70f03da850d31ea68166"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2e42cba3daa70f03da850d31ea68166">&#9670;&#160;</a></span>polynomial_cumulative_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;PolynomialBasis Basis, std::size_t K, typename Scalar  = double&gt; </div>
+template&lt;<a class="el" href="basis_8hpp.html#ae6ab8d0444c30a84e466f27994bb6439">PolynomialBasis</a> Basis, std::size_t K, typename <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>  = double&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr StaticMatrix&lt; Scalar, K+1, K+1 &gt; smooth::v1_0::polynomial_cumulative_basis </td>
+          <td class="memname">constexpr <a class="el" href="structStaticMatrix.html">StaticMatrix</a>&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>, K+1, K+1 &gt; polynomial_cumulative_basis </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

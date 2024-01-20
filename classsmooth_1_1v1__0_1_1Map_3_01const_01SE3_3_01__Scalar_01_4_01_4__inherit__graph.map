@@ -1,5 +1,0 @@
-<map id="smooth::v1_0::Map&lt; const SE3&lt; _Scalar &gt; &gt;" name="smooth::v1_0::Map&lt; const SE3&lt; _Scalar &gt; &gt;">
-<area shape="rect" id="node1" title="Const memory mapping of SE3 Lie group." alt="" coords="33,181,194,221"/>
-<area shape="rect" id="node2" href="$classsmooth_1_1v1__0_1_1SE3Base.html" title=" " alt="" coords="5,93,221,133"/>
-<area shape="rect" id="node3" href="$classsmooth_1_1v1__0_1_1LieGroupBase.html" title="Base class for Lie group types." alt="" coords="19,5,207,45"/>
-</map>

@@ -90,8 +90,8 @@ $(function() {
 <p>Compile-time quadrature scheme generation.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
-<code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;numbers&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="basis_8hpp_source.html">basis.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="static__matrix_8hpp_source.html">static_matrix.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -99,14 +99,15 @@ Include dependency graph for quadrature.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="quadrature_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2polynomial_2quadrature_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2polynomial_2quadrature_8hpp" id="ainclude_2smooth_2polynomial_2quadrature_8hpp">
-<area shape="rect" title="Compile&#45;time quadrature scheme generation." alt="" coords="143,5,318,45"/>
-<area shape="rect" title=" " alt="" coords="5,240,56,265"/>
-<area shape="rect" title=" " alt="" coords="252,240,311,265"/>
-<area shape="rect" title=" " alt="" coords="353,93,425,119"/>
-<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="192,93,269,119"/>
-<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="68,167,188,192"/>
-<area shape="rect" title=" " alt="" coords="213,167,278,192"/>
-<area shape="rect" title=" " alt="" coords="80,240,195,265"/>
+<area shape="rect" title="Compile&#45;time quadrature scheme generation." alt="" coords="62,5,236,45"/>
+<area shape="rect" title=" " alt="" coords="73,240,124,265"/>
+<area shape="rect" title=" " alt="" coords="26,93,98,119"/>
+<area shape="rect" title=" " alt="" coords="123,93,175,119"/>
+<area shape="rect" href="basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="200,93,277,119"/>
+<area shape="rect" href="static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="254,167,374,192"/>
+<area shape="rect" title=" " alt="" coords="87,167,152,192"/>
+<area shape="rect" title=" " alt="" coords="177,167,230,192"/>
+<area shape="rect" title=" " alt="" coords="257,240,372,265"/>
 </map>
 </div>
 </div>
@@ -114,23 +115,23 @@ Include dependency graph for quadrature.hpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af54fa684340bb5c635207118507f0243"><td class="memTemplParams" colspan="2">template&lt;std::size_t K&gt; </td></tr>
-<tr class="memitem:af54fa684340bb5c635207118507f0243"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::array&lt; double, K &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="quadrature_8hpp.html#af54fa684340bb5c635207118507f0243">smooth::cgr_nodes</a> ()</td></tr>
-<tr class="memdesc:af54fa684340bb5c635207118507f0243"><td class="mdescLeft">&#160;</td><td class="mdescRight">Chebyshev-Gauss-Radau nodes on [-1, 1].  <a href="quadrature_8hpp.html#af54fa684340bb5c635207118507f0243">More...</a><br /></td></tr>
-<tr class="separator:af54fa684340bb5c635207118507f0243"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a615dcab82b765779e001c2c3f6e053f2"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t I = 8&gt; <br />
+<tr class="memitem:aa07f5d0f1f13a0b6a2dbb3bcf912fda0"><td class="memTemplParams" colspan="2">template&lt;std::size_t K&gt; </td></tr>
+<tr class="memitem:aa07f5d0f1f13a0b6a2dbb3bcf912fda0"><td class="memTemplItemLeft" align="right" valign="top">SMOOTH_BEGIN_NAMESPACE constexpr std::array&lt; double, K &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="quadrature_8hpp.html#aa07f5d0f1f13a0b6a2dbb3bcf912fda0">cgr_nodes</a> ()</td></tr>
+<tr class="memdesc:aa07f5d0f1f13a0b6a2dbb3bcf912fda0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Chebyshev-Gauss-Radau nodes on [-1, 1].  <a href="quadrature_8hpp.html#aa07f5d0f1f13a0b6a2dbb3bcf912fda0">More...</a><br /></td></tr>
+<tr class="separator:aa07f5d0f1f13a0b6a2dbb3bcf912fda0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a969b43439a9fa51c567fef91c5c47bd2"><td class="memTemplParams" colspan="2">template&lt;std::size_t K, std::size_t I = 8&gt; <br />
 requires (K &lt;= 40)</td></tr>
-<tr class="memitem:a615dcab82b765779e001c2c3f6e053f2"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::pair&lt; std::array&lt; double, K &gt;, std::array&lt; double, K &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="quadrature_8hpp.html#a615dcab82b765779e001c2c3f6e053f2">smooth::lgr_nodes</a> ()</td></tr>
-<tr class="memdesc:a615dcab82b765779e001c2c3f6e053f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Legendre-Gauss-Radau (LGR) nodes and weights on [-1, 1].  <a href="quadrature_8hpp.html#a615dcab82b765779e001c2c3f6e053f2">More...</a><br /></td></tr>
-<tr class="separator:a615dcab82b765779e001c2c3f6e053f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a969b43439a9fa51c567fef91c5c47bd2"><td class="memTemplItemLeft" align="right" valign="top">constexpr std::pair&lt; std::array&lt; double, K &gt;, std::array&lt; double, K &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="quadrature_8hpp.html#a969b43439a9fa51c567fef91c5c47bd2">lgr_nodes</a> ()</td></tr>
+<tr class="memdesc:a969b43439a9fa51c567fef91c5c47bd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Legendre-Gauss-Radau (LGR) nodes and weights on [-1, 1].  <a href="quadrature_8hpp.html#a969b43439a9fa51c567fef91c5c47bd2">More...</a><br /></td></tr>
+<tr class="separator:a969b43439a9fa51c567fef91c5c47bd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Compile-time quadrature scheme generation. </p>
 
 <p class="definition">Definition in file <a class="el" href="quadrature_8hpp_source.html">quadrature.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="af54fa684340bb5c635207118507f0243" name="af54fa684340bb5c635207118507f0243"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af54fa684340bb5c635207118507f0243">&#9670;&#160;</a></span>cgr_nodes()</h2>
+<a id="aa07f5d0f1f13a0b6a2dbb3bcf912fda0" name="aa07f5d0f1f13a0b6a2dbb3bcf912fda0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa07f5d0f1f13a0b6a2dbb3bcf912fda0">&#9670;&#160;</a></span>cgr_nodes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,7 +142,7 @@ template&lt;std::size_t K&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr std::array&lt; double, K &gt; smooth::v1_0::cgr_nodes </td>
+          <td class="memname">SMOOTH_BEGIN_NAMESPACE constexpr std::array&lt; double, K &gt; cgr_nodes </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -162,12 +163,12 @@ template&lt;std::size_t K&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="quadrature_8hpp_source.html#l00059">59</a> of file <a class="el" href="quadrature_8hpp_source.html">quadrature.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="quadrature_8hpp_source.html#l00058">58</a> of file <a class="el" href="quadrature_8hpp_source.html">quadrature.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a615dcab82b765779e001c2c3f6e053f2" name="a615dcab82b765779e001c2c3f6e053f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a615dcab82b765779e001c2c3f6e053f2">&#9670;&#160;</a></span>lgr_nodes()</h2>
+<a id="a969b43439a9fa51c567fef91c5c47bd2" name="a969b43439a9fa51c567fef91c5c47bd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a969b43439a9fa51c567fef91c5c47bd2">&#9670;&#160;</a></span>lgr_nodes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -179,7 +180,7 @@ requires (K &lt;= 40)</div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr std::pair&lt; std::array&lt; double, K &gt;, std::array&lt; double, K &gt; &gt; smooth::v1_0::lgr_nodes </td>
+          <td class="memname">constexpr std::pair&lt; std::array&lt; double, K &gt;, std::array&lt; double, K &gt; &gt; lgr_nodes </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -214,7 +215,7 @@ requires (K &lt;= 40)</div>
 \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="quadrature_8hpp_source.html#l00089">89</a> of file <a class="el" href="quadrature_8hpp_source.html">quadrature.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="quadrature_8hpp_source.html#l00088">88</a> of file <a class="el" href="quadrature_8hpp_source.html">quadrature.hpp</a>.</p>
 
 </div>
 </div>

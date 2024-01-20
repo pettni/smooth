@@ -1,10 +1,11 @@
 <map id="include/smooth/polynomial/quadrature.hpp" name="include/smooth/polynomial/quadrature.hpp">
-<area shape="rect" id="node1" title="Compile&#45;time quadrature scheme generation." alt="" coords="143,5,318,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,240,56,265"/>
-<area shape="rect" id="node3" title=" " alt="" coords="252,240,311,265"/>
-<area shape="rect" id="node4" title=" " alt="" coords="353,93,425,119"/>
-<area shape="rect" id="node5" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="192,93,269,119"/>
-<area shape="rect" id="node7" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="68,167,188,192"/>
-<area shape="rect" id="node6" title=" " alt="" coords="213,167,278,192"/>
-<area shape="rect" id="node8" title=" " alt="" coords="80,240,195,265"/>
+<area shape="rect" id="node1" title="Compile&#45;time quadrature scheme generation." alt="" coords="62,5,236,45"/>
+<area shape="rect" id="node2" title=" " alt="" coords="73,240,124,265"/>
+<area shape="rect" id="node3" title=" " alt="" coords="26,93,98,119"/>
+<area shape="rect" id="node4" title=" " alt="" coords="123,93,175,119"/>
+<area shape="rect" id="node5" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="200,93,277,119"/>
+<area shape="rect" id="node8" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="254,167,374,192"/>
+<area shape="rect" id="node6" title=" " alt="" coords="87,167,152,192"/>
+<area shape="rect" id="node7" title=" " alt="" coords="177,167,230,192"/>
+<area shape="rect" id="node9" title=" " alt="" coords="257,240,372,265"/>
 </map>

@@ -105,14 +105,17 @@ Include dependency graph for lie_sparse.hpp:</div>
 <area shape="rect" title=" " alt="" coords="129,101,234,126"/>
 <area shape="rect" href="lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="258,101,363,126"/>
 <area shape="rect" title=" " alt="" coords="388,93,543,133"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="229,255,384,280"/>
-<area shape="rect" href="native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="160,181,304,207"/>
-<area shape="rect" href="rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="328,181,448,207"/>
-<area shape="rect" href="scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="472,181,616,207"/>
-<area shape="rect" title=" " alt="" coords="217,401,292,427"/>
-<area shape="rect" title=" " alt="" coords="332,401,417,427"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="259,328,354,353"/>
-<area shape="rect" title=" " alt="" coords="445,255,565,280"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="152,255,307,280"/>
+<area shape="rect" href="native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="161,181,305,207"/>
+<area shape="rect" href="rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="329,181,449,207"/>
+<area shape="rect" href="scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="473,181,617,207"/>
+<area shape="rect" title=" " alt="" coords="139,328,191,353"/>
+<area shape="rect" title=" " alt="" coords="187,401,272,427"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="267,328,362,353"/>
+<area shape="rect" title=" " alt="" coords="297,401,431,427"/>
+<area shape="rect" title=" " alt="" coords="331,255,488,280"/>
+<area shape="rect" title=" " alt="" coords="513,255,578,280"/>
+<area shape="rect" title=" " alt="" coords="603,255,723,280"/>
 </map>
 </div>
 </div>
@@ -120,79 +123,81 @@ Include dependency graph for lie_sparse.hpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1v1__0_1_1traits_1_1lie__sparse.html">smooth::v1_0::traits::lie_sparse&lt; G &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traits that defines sparsity patterns for various groups.  <a href="structsmooth_1_1v1__0_1_1traits_1_1lie__sparse.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtraits_1_1lie__sparse.html">traits::lie_sparse&lt; G &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Traits that defines sparsity patterns for various groups.  <a href="structtraits_1_1lie__sparse.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a9abcb3c8e815834c72348f93c7d94ce2"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a9abcb3c8e815834c72348f93c7d94ce2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a9abcb3c8e815834c72348f93c7d94ce2">smooth::ad_sparse</a> (Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;sp, const Tangent&lt; G &gt; &amp;a)</td></tr>
-<tr class="memdesc:a9abcb3c8e815834c72348f93c7d94ce2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse ad.  <a href="lie__sparse_8hpp.html#a9abcb3c8e815834c72348f93c7d94ce2">More...</a><br /></td></tr>
-<tr class="separator:a9abcb3c8e815834c72348f93c7d94ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c72049bfedacaffec8a9d78b4f330e5"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, bool Inv = false&gt; </td></tr>
-<tr class="memitem:a6c72049bfedacaffec8a9d78b4f330e5"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a6c72049bfedacaffec8a9d78b4f330e5">smooth::dr_exp_sparse</a> (Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;sp, const Tangent&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
-<tr class="memdesc:a6c72049bfedacaffec8a9d78b4f330e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse dr_exp.  <a href="lie__sparse_8hpp.html#a6c72049bfedacaffec8a9d78b4f330e5">More...</a><br /></td></tr>
-<tr class="separator:a6c72049bfedacaffec8a9d78b4f330e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab88d98ffdf28487a194181aa8ed6297f"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:ab88d98ffdf28487a194181aa8ed6297f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#ab88d98ffdf28487a194181aa8ed6297f">smooth::dr_expinv_sparse</a> (Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;sp, const Tangent&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
-<tr class="memdesc:ab88d98ffdf28487a194181aa8ed6297f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse dr_expinv.  <a href="lie__sparse_8hpp.html#ab88d98ffdf28487a194181aa8ed6297f">More...</a><br /></td></tr>
-<tr class="separator:ab88d98ffdf28487a194181aa8ed6297f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bd386650cb76b776271275753896b99"><td class="memTemplParams" colspan="2">template&lt;LieGroup G, bool Inv = false&gt; </td></tr>
-<tr class="memitem:a9bd386650cb76b776271275753896b99"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a9bd386650cb76b776271275753896b99">smooth::d2r_exp_sparse</a> (Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;sp, const Tangent&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
-<tr class="memdesc:a9bd386650cb76b776271275753896b99"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse d2r_exp.  <a href="lie__sparse_8hpp.html#a9bd386650cb76b776271275753896b99">More...</a><br /></td></tr>
-<tr class="separator:a9bd386650cb76b776271275753896b99"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a53f3ff0697e26ed2ebc932b99abf7e72"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a53f3ff0697e26ed2ebc932b99abf7e72"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a53f3ff0697e26ed2ebc932b99abf7e72">smooth::d2r_expinv_sparse</a> (Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;sp, const Tangent&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
-<tr class="memdesc:a53f3ff0697e26ed2ebc932b99abf7e72"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse d2r_expinv.  <a href="lie__sparse_8hpp.html#a53f3ff0697e26ed2ebc932b99abf7e72">More...</a><br /></td></tr>
-<tr class="separator:a53f3ff0697e26ed2ebc932b99abf7e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6264de98c6d95882ca56968ea68ed3a8"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a6264de98c6d95882ca56968ea68ed3a8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a6264de98c6d95882ca56968ea68ed3a8">ad_sparse</a> (Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;sp, const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;a)</td></tr>
+<tr class="memdesc:a6264de98c6d95882ca56968ea68ed3a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse ad.  <a href="lie__sparse_8hpp.html#a6264de98c6d95882ca56968ea68ed3a8">More...</a><br /></td></tr>
+<tr class="separator:a6264de98c6d95882ca56968ea68ed3a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cb8ba347a26614cd2e79fd25a643158"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G, bool Inv = false&gt; </td></tr>
+<tr class="memitem:a0cb8ba347a26614cd2e79fd25a643158"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a0cb8ba347a26614cd2e79fd25a643158">dr_exp_sparse</a> (Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;sp, const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
+<tr class="memdesc:a0cb8ba347a26614cd2e79fd25a643158"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse dr_exp.  <a href="lie__sparse_8hpp.html#a0cb8ba347a26614cd2e79fd25a643158">More...</a><br /></td></tr>
+<tr class="separator:a0cb8ba347a26614cd2e79fd25a643158"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a634708a848dfbe770a5639e2bc47520f"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a634708a848dfbe770a5639e2bc47520f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a634708a848dfbe770a5639e2bc47520f">dr_expinv_sparse</a> (Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;sp, const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
+<tr class="memdesc:a634708a848dfbe770a5639e2bc47520f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse dr_expinv.  <a href="lie__sparse_8hpp.html#a634708a848dfbe770a5639e2bc47520f">More...</a><br /></td></tr>
+<tr class="separator:a634708a848dfbe770a5639e2bc47520f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af311830600a449827a8965a642c92344"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G, bool Inv = false&gt; </td></tr>
+<tr class="memitem:af311830600a449827a8965a642c92344"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#af311830600a449827a8965a642c92344">d2r_exp_sparse</a> (Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;sp, const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
+<tr class="memdesc:af311830600a449827a8965a642c92344"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse d2r_exp.  <a href="lie__sparse_8hpp.html#af311830600a449827a8965a642c92344">More...</a><br /></td></tr>
+<tr class="separator:af311830600a449827a8965a642c92344"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cae38114739295c5c7e6bb64436f107"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a3cae38114739295c5c7e6bb64436f107"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a3cae38114739295c5c7e6bb64436f107">d2r_expinv_sparse</a> (Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;sp, const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;a, Eigen::Index i0=0)</td></tr>
+<tr class="memdesc:a3cae38114739295c5c7e6bb64436f107"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparse d2r_expinv.  <a href="lie__sparse_8hpp.html#a3cae38114739295c5c7e6bb64436f107">More...</a><br /></td></tr>
+<tr class="separator:a3cae38114739295c5c7e6bb64436f107"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a032c2ad4742b16d09a4b27966cfd3f28"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a032c2ad4742b16d09a4b27966cfd3f28"><td class="memTemplItemLeft" align="right" valign="top">std::array&lt; Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt;, Dof&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a032c2ad4742b16d09a4b27966cfd3f28">smooth::generators_sparse</a></td></tr>
-<tr class="memdesc:a032c2ad4742b16d09a4b27966cfd3f28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generators of lie algebra (inline variable).  <a href="lie__sparse_8hpp.html#a032c2ad4742b16d09a4b27966cfd3f28">More...</a><br /></td></tr>
-<tr class="separator:a032c2ad4742b16d09a4b27966cfd3f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae018963900514ec6a80056ba1f2a61ca"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:ae018963900514ec6a80056ba1f2a61ca"><td class="memTemplItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#ae018963900514ec6a80056ba1f2a61ca">smooth::ad_sparse_pattern</a></td></tr>
-<tr class="memdesc:ae018963900514ec6a80056ba1f2a61ca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparsity pattern of ad_sparse (inline variable).  <a href="lie__sparse_8hpp.html#ae018963900514ec6a80056ba1f2a61ca">More...</a><br /></td></tr>
-<tr class="separator:ae018963900514ec6a80056ba1f2a61ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9efa4aef08249c036e3a8828eea1334d"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a9efa4aef08249c036e3a8828eea1334d"><td class="memTemplItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a9efa4aef08249c036e3a8828eea1334d">smooth::d_exp_sparse_pattern</a></td></tr>
-<tr class="memdesc:a9efa4aef08249c036e3a8828eea1334d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparsity pattern of dr_exp_sparse, dr_expinv_sparse (inline variable).  <a href="lie__sparse_8hpp.html#a9efa4aef08249c036e3a8828eea1334d">More...</a><br /></td></tr>
-<tr class="separator:a9efa4aef08249c036e3a8828eea1334d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60a574775bfef7cd97d433899f1c7931"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a60a574775bfef7cd97d433899f1c7931"><td class="memTemplItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a60a574775bfef7cd97d433899f1c7931">smooth::d2_exp_sparse_pattern</a></td></tr>
-<tr class="memdesc:a60a574775bfef7cd97d433899f1c7931"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparsity pattern of <a class="el" href="lie__sparse_8hpp.html#a9bd386650cb76b776271275753896b99" title="Sparse d2r_exp.">d2r_exp_sparse()</a>, <a class="el" href="lie__sparse_8hpp.html#a53f3ff0697e26ed2ebc932b99abf7e72" title="Sparse d2r_expinv.">d2r_expinv_sparse()</a> (inline variable).  <a href="lie__sparse_8hpp.html#a60a574775bfef7cd97d433899f1c7931">More...</a><br /></td></tr>
-<tr class="separator:a60a574775bfef7cd97d433899f1c7931"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a683c846b6bfe9989108f80d4f83ee17d"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a683c846b6bfe9989108f80d4f83ee17d"><td class="memTemplItemLeft" align="right" valign="top">std::array&lt; Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt;, Dof&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a683c846b6bfe9989108f80d4f83ee17d">generators_sparse</a></td></tr>
+<tr class="memdesc:a683c846b6bfe9989108f80d4f83ee17d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generators of lie algebra (inline variable).  <a href="lie__sparse_8hpp.html#a683c846b6bfe9989108f80d4f83ee17d">More...</a><br /></td></tr>
+<tr class="separator:a683c846b6bfe9989108f80d4f83ee17d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a980a83e63f4d126a3ba153409116fa8b"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a980a83e63f4d126a3ba153409116fa8b"><td class="memTemplItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a980a83e63f4d126a3ba153409116fa8b">ad_sparse_pattern</a></td></tr>
+<tr class="memdesc:a980a83e63f4d126a3ba153409116fa8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparsity pattern of ad_sparse (inline variable).  <a href="lie__sparse_8hpp.html#a980a83e63f4d126a3ba153409116fa8b">More...</a><br /></td></tr>
+<tr class="separator:a980a83e63f4d126a3ba153409116fa8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20601d364fc6ad4c2fa3275df3b957a3"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a20601d364fc6ad4c2fa3275df3b957a3"><td class="memTemplItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#a20601d364fc6ad4c2fa3275df3b957a3">d_exp_sparse_pattern</a></td></tr>
+<tr class="memdesc:a20601d364fc6ad4c2fa3275df3b957a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparsity pattern of dr_exp_sparse, dr_expinv_sparse (inline variable).  <a href="lie__sparse_8hpp.html#a20601d364fc6ad4c2fa3275df3b957a3">More...</a><br /></td></tr>
+<tr class="separator:a20601d364fc6ad4c2fa3275df3b957a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af57348d9fa441e0406c19c4a6365b90e"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:af57348d9fa441e0406c19c4a6365b90e"><td class="memTemplItemLeft" align="right" valign="top">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="lie__sparse_8hpp.html#af57348d9fa441e0406c19c4a6365b90e">d2_exp_sparse_pattern</a></td></tr>
+<tr class="memdesc:af57348d9fa441e0406c19c4a6365b90e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sparsity pattern of <a class="el" href="lie__sparse_8hpp.html#af311830600a449827a8965a642c92344" title="Sparse d2r_exp.">d2r_exp_sparse()</a>, <a class="el" href="lie__sparse_8hpp.html#a3cae38114739295c5c7e6bb64436f107" title="Sparse d2r_expinv.">d2r_expinv_sparse()</a> (inline variable).  <a href="lie__sparse_8hpp.html#af57348d9fa441e0406c19c4a6365b90e">More...</a><br /></td></tr>
+<tr class="separator:af57348d9fa441e0406c19c4a6365b90e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Sparse versions of certain Lie group methods. </p>
 <p >Implemented methods contain two parts: a pattern and the function itself. The pattern is in the form of an inline sparse matrix variable that is pre-allocated with the appropriate nonzeros.</p>
 <p >The intended usage is to copy a pattern and use the resulting variable in calls to these methods. That way no additional allocation is needed.</p>
-<p >Example: </p><div class="fragment"><div class="line"><span class="keyword">auto</span> my_var = ad_sparse_pattern;  <span class="comment">// copy pattern</span></div>
-<div class="line">ad_sparse(my_var, a);             <span class="comment">// update my_var in-place without allocation</span></div>
+<p >Example: </p><div class="fragment"><div class="line"><span class="keyword">auto</span> my_var = <a class="code hl_variable" href="lie__sparse_8hpp.html#a980a83e63f4d126a3ba153409116fa8b">ad_sparse_pattern</a>;  <span class="comment">// copy pattern</span></div>
+<div class="line"><a class="code hl_function" href="lie__sparse_8hpp.html#a6264de98c6d95882ca56968ea68ed3a8">ad_sparse</a>(my_var, a);             <span class="comment">// update my_var in-place without allocation</span></div>
+<div class="ttc" id="alie__sparse_8hpp_html_a6264de98c6d95882ca56968ea68ed3a8"><div class="ttname"><a href="lie__sparse_8hpp.html#a6264de98c6d95882ca56968ea68ed3a8">ad_sparse</a></div><div class="ttdeci">void ad_sparse(Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;sp, const Tangent&lt; G &gt; &amp;a)</div><div class="ttdoc">Sparse ad.</div></div>
+<div class="ttc" id="alie__sparse_8hpp_html_a980a83e63f4d126a3ba153409116fa8b"><div class="ttname"><a href="lie__sparse_8hpp.html#a980a83e63f4d126a3ba153409116fa8b">ad_sparse_pattern</a></div><div class="ttdeci">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; ad_sparse_pattern</div><div class="ttdoc">Sparsity pattern of ad_sparse (inline variable).</div><div class="ttdef"><b>Definition:</b> <a href="lie__sparse_8hpp_source.html#l00062">lie_sparse.hpp:62</a></div></div>
 </div><!-- fragment --> 
 <p class="definition">Definition in file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a9abcb3c8e815834c72348f93c7d94ce2" name="a9abcb3c8e815834c72348f93c7d94ce2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9abcb3c8e815834c72348f93c7d94ce2">&#9670;&#160;</a></span>ad_sparse()</h2>
+<a id="a6264de98c6d95882ca56968ea68ed3a8" name="a6264de98c6d95882ca56968ea68ed3a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6264de98c6d95882ca56968ea68ed3a8">&#9670;&#160;</a></span>ad_sparse()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void smooth::v1_0::ad_sparse </td>
+          <td class="memname">void ad_sparse </td>
           <td>(</td>
-          <td class="paramtype">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;&#160;</td>
+          <td class="paramtype">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;&#160;</td>
           <td class="paramname"><em>sp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>a</em>&#160;</td>
         </tr>
         <tr>
@@ -212,28 +217,28 @@ template&lt;LieGroup G&gt; </div>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>sp must be pre-allocated with the appropriate nonzeros and compressed</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>ad_sparse_pattern() for a pre-allocated pattern. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__sparse_8hpp.html#a980a83e63f4d126a3ba153409116fa8b" title="Sparsity pattern of ad_sparse (inline variable).">ad_sparse_pattern()</a> for a pre-allocated pattern. </dd></dl>
 
 </div>
 </div>
-<a id="a9bd386650cb76b776271275753896b99" name="a9bd386650cb76b776271275753896b99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9bd386650cb76b776271275753896b99">&#9670;&#160;</a></span>d2r_exp_sparse()</h2>
+<a id="af311830600a449827a8965a642c92344" name="af311830600a449827a8965a642c92344"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af311830600a449827a8965a642c92344">&#9670;&#160;</a></span>d2r_exp_sparse()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G, bool Inv = false&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G, bool Inv = false&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void smooth::v1_0::d2r_exp_sparse </td>
+          <td class="memname">void d2r_exp_sparse </td>
           <td>(</td>
-          <td class="paramtype">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;&#160;</td>
+          <td class="paramtype">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;&#160;</td>
           <td class="paramname"><em>sp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
@@ -267,31 +272,31 @@ template&lt;LieGroup G, bool Inv = false&gt; </div>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>sp must be pre-allocated with the appropriate nonzeros and compressed</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>d2_exp_sparse_pattern() for a pre-allocated pattern. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__sparse_8hpp.html#af57348d9fa441e0406c19c4a6365b90e" title="Sparsity pattern of d2r_exp_sparse(), d2r_expinv_sparse() (inline variable).">d2_exp_sparse_pattern()</a> for a pre-allocated pattern. </dd></dl>
 
 </div>
 </div>
-<a id="a53f3ff0697e26ed2ebc932b99abf7e72" name="a53f3ff0697e26ed2ebc932b99abf7e72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53f3ff0697e26ed2ebc932b99abf7e72">&#9670;&#160;</a></span>d2r_expinv_sparse()</h2>
+<a id="a3cae38114739295c5c7e6bb64436f107" name="a3cae38114739295c5c7e6bb64436f107"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cae38114739295c5c7e6bb64436f107">&#9670;&#160;</a></span>d2r_expinv_sparse()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void smooth::v1_0::d2r_expinv_sparse </td>
+          <td class="memname">void d2r_expinv_sparse </td>
           <td>(</td>
-          <td class="paramtype">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;&#160;</td>
+          <td class="paramtype">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;&#160;</td>
           <td class="paramname"><em>sp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
@@ -329,28 +334,28 @@ template&lt;LieGroup G&gt; </div>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>sp must be pre-allocated with the appropriate nonzeros and compressed</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>d2_exp_sparse_pattern() for a pre-allocated pattern. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__sparse_8hpp.html#af57348d9fa441e0406c19c4a6365b90e" title="Sparsity pattern of d2r_exp_sparse(), d2r_expinv_sparse() (inline variable).">d2_exp_sparse_pattern()</a> for a pre-allocated pattern. </dd></dl>
 
 </div>
 </div>
-<a id="a6c72049bfedacaffec8a9d78b4f330e5" name="a6c72049bfedacaffec8a9d78b4f330e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c72049bfedacaffec8a9d78b4f330e5">&#9670;&#160;</a></span>dr_exp_sparse()</h2>
+<a id="a0cb8ba347a26614cd2e79fd25a643158" name="a0cb8ba347a26614cd2e79fd25a643158"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cb8ba347a26614cd2e79fd25a643158">&#9670;&#160;</a></span>dr_exp_sparse()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G, bool Inv = false&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G, bool Inv = false&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void smooth::v1_0::dr_exp_sparse </td>
+          <td class="memname">void dr_exp_sparse </td>
           <td>(</td>
-          <td class="paramtype">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;&#160;</td>
+          <td class="paramtype">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;&#160;</td>
           <td class="paramname"><em>sp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
@@ -384,28 +389,28 @@ template&lt;LieGroup G, bool Inv = false&gt; </div>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>sp must be pre-allocated with the appropriate nonzeros and compressed</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>d_exp_sparse_pattern() for a pre-allocated pattern. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__sparse_8hpp.html#a20601d364fc6ad4c2fa3275df3b957a3" title="Sparsity pattern of dr_exp_sparse, dr_expinv_sparse (inline variable).">d_exp_sparse_pattern()</a> for a pre-allocated pattern. </dd></dl>
 
 </div>
 </div>
-<a id="ab88d98ffdf28487a194181aa8ed6297f" name="ab88d98ffdf28487a194181aa8ed6297f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab88d98ffdf28487a194181aa8ed6297f">&#9670;&#160;</a></span>dr_expinv_sparse()</h2>
+<a id="a634708a848dfbe770a5639e2bc47520f" name="a634708a848dfbe770a5639e2bc47520f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a634708a848dfbe770a5639e2bc47520f">&#9670;&#160;</a></span>dr_expinv_sparse()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void smooth::v1_0::dr_expinv_sparse </td>
+          <td class="memname">void dr_expinv_sparse </td>
           <td>(</td>
-          <td class="paramtype">Eigen::SparseMatrix&lt; Scalar&lt; G &gt; &gt; &amp;&#160;</td>
+          <td class="paramtype">Eigen::SparseMatrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt; &gt; &amp;&#160;</td>
           <td class="paramname"><em>sp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
@@ -438,24 +443,24 @@ template&lt;LieGroup G&gt; </div>
   </dd>
 </dl>
 <dl class="section warning"><dt>Warning</dt><dd>sp must be pre-allocated with the appropriate nonzeros and compressed</dd></dl>
-<dl class="section see"><dt>See also</dt><dd>d_exp_sparse_pattern() for a pre-allocated pattern. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lie__sparse_8hpp.html#a20601d364fc6ad4c2fa3275df3b957a3" title="Sparsity pattern of dr_exp_sparse, dr_expinv_sparse (inline variable).">d_exp_sparse_pattern()</a> for a pre-allocated pattern. </dd></dl>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="ae018963900514ec6a80056ba1f2a61ca" name="ae018963900514ec6a80056ba1f2a61ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae018963900514ec6a80056ba1f2a61ca">&#9670;&#160;</a></span>ad_sparse_pattern</h2>
+<a id="a980a83e63f4d126a3ba153409116fa8b" name="a980a83e63f4d126a3ba153409116fa8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a980a83e63f4d126a3ba153409116fa8b">&#9670;&#160;</a></span>ad_sparse_pattern</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::SparseMatrix&lt;Scalar&lt;G&gt; &gt; smooth::v1_0::ad_sparse_pattern</td>
+          <td class="memname">Eigen::SparseMatrix&lt;<a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt;G&gt; &gt; ad_sparse_pattern</td>
         </tr>
       </table>
   </td>
@@ -476,23 +481,23 @@ template&lt;LieGroup G&gt; </div>
 </div><!-- fragment -->
 <p>Sparsity pattern of ad_sparse (inline variable). </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00063">63</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00062">62</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a60a574775bfef7cd97d433899f1c7931" name="a60a574775bfef7cd97d433899f1c7931"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60a574775bfef7cd97d433899f1c7931">&#9670;&#160;</a></span>d2_exp_sparse_pattern</h2>
+<a id="af57348d9fa441e0406c19c4a6365b90e" name="af57348d9fa441e0406c19c4a6365b90e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af57348d9fa441e0406c19c4a6365b90e">&#9670;&#160;</a></span>d2_exp_sparse_pattern</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::SparseMatrix&lt;Scalar&lt;G&gt; &gt; smooth::v1_0::d2_exp_sparse_pattern</td>
+          <td class="memname">Eigen::SparseMatrix&lt;<a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt;G&gt; &gt; d2_exp_sparse_pattern</td>
         </tr>
       </table>
   </td>
@@ -505,9 +510,9 @@ template&lt;LieGroup G&gt; </div>
 <div class="line">  Eigen::SparseMatrix&lt;Scalar&lt;G&gt;&gt; ret(Dof&lt;G&gt;, Dof&lt;G&gt; * Dof&lt;G&gt;);</div>
 <div class="line">  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (IsCommutative&lt;G&gt;) {</div>
 <div class="line">    </div>
-<div class="line">  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">requires</span> { <a class="code hl_struct" href="structsmooth_1_1v1__0_1_1traits_1_1lie__sparse.html">traits::lie_sparse&lt;G&gt;::d2_exp_sparse_pattern</a>; }) {</div>
+<div class="line">  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">requires</span> { <a class="code hl_struct" href="structtraits_1_1lie__sparse.html">traits::lie_sparse&lt;G&gt;::d2_exp_sparse_pattern</a>; }) {</div>
 <div class="line">    </div>
-<div class="line">    ret = traits::lie_sparse&lt;G&gt;::d2_exp_sparse_pattern;</div>
+<div class="line">    ret = <a class="code hl_struct" href="structtraits_1_1lie__sparse.html">traits::lie_sparse&lt;G&gt;::d2_exp_sparse_pattern</a>;</div>
 <div class="line">  } <span class="keywordflow">else</span> {</div>
 <div class="line">    </div>
 <div class="line">    ret = Eigen::Matrix&lt;Scalar&lt;G&gt;, Dof&lt;G&gt;, Dof&lt;G&gt; * Dof&lt;G&gt;&gt;::Ones().sparseView();</div>
@@ -515,27 +520,27 @@ template&lt;LieGroup G&gt; </div>
 <div class="line">  ret.makeCompressed();</div>
 <div class="line">  <span class="keywordflow">return</span> ret;</div>
 <div class="line">}()</div>
-<div class="ttc" id="astructsmooth_1_1v1__0_1_1traits_1_1lie__sparse_html"><div class="ttname"><a href="structsmooth_1_1v1__0_1_1traits_1_1lie__sparse.html">smooth::v1_0::traits::lie_sparse</a></div><div class="ttdoc">Traits that defines sparsity patterns for various groups.</div><div class="ttdef"><b>Definition:</b> <a href="lie__sparse_8hpp_source.html#l00036">lie_sparse.hpp:37</a></div></div>
+<div class="ttc" id="astructtraits_1_1lie__sparse_html"><div class="ttname"><a href="structtraits_1_1lie__sparse.html">traits::lie_sparse</a></div><div class="ttdoc">Traits that defines sparsity patterns for various groups.</div><div class="ttdef"><b>Definition:</b> <a href="lie__sparse_8hpp_source.html#l00035">lie_sparse.hpp:36</a></div></div>
 </div><!-- fragment -->
-<p>Sparsity pattern of d2r_exp_sparse(), d2r_expinv_sparse() (inline variable). </p>
+<p>Sparsity pattern of <a class="el" href="lie__sparse_8hpp.html#af311830600a449827a8965a642c92344" title="Sparse d2r_exp.">d2r_exp_sparse()</a>, <a class="el" href="lie__sparse_8hpp.html#a3cae38114739295c5c7e6bb64436f107" title="Sparse d2r_expinv.">d2r_expinv_sparse()</a> (inline variable). </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00145">145</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00144">144</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a9efa4aef08249c036e3a8828eea1334d" name="a9efa4aef08249c036e3a8828eea1334d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9efa4aef08249c036e3a8828eea1334d">&#9670;&#160;</a></span>d_exp_sparse_pattern</h2>
+<a id="a20601d364fc6ad4c2fa3275df3b957a3" name="a20601d364fc6ad4c2fa3275df3b957a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20601d364fc6ad4c2fa3275df3b957a3">&#9670;&#160;</a></span>d_exp_sparse_pattern</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::SparseMatrix&lt;Scalar&lt;G&gt; &gt; smooth::v1_0::d_exp_sparse_pattern</td>
+          <td class="memname">Eigen::SparseMatrix&lt;<a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt;G&gt; &gt; d_exp_sparse_pattern</td>
         </tr>
       </table>
   </td>
@@ -548,39 +553,40 @@ template&lt;LieGroup G&gt; </div>
 <div class="line">  Eigen::SparseMatrix&lt;Scalar&lt;G&gt;&gt; ret(Dof&lt;G&gt;, Dof&lt;G&gt;);</div>
 <div class="line">  <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (IsCommutative&lt;G&gt;) {</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; Dof&lt;G&gt;; ++i) { ret.insert(i, i) = Scalar&lt;G&gt;(1); }</div>
-<div class="line">  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">requires</span> { traits::lie_sparse&lt;G&gt;::d_exp_sparse_pattern; }) {</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; Dof&lt;G&gt;; ++i) { ret.insert(i, i) = <a class="code hl_typedef" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar&lt;G&gt;</a>(1); }</div>
+<div class="line">  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> <span class="keyword">constexpr</span> (<span class="keyword">requires</span> { <a class="code hl_struct" href="structtraits_1_1lie__sparse.html">traits::lie_sparse&lt;G&gt;::d_exp_sparse_pattern</a>; }) {</div>
 <div class="line">    </div>
-<div class="line">    ret = traits::lie_sparse&lt;G&gt;::d_exp_sparse_pattern;</div>
+<div class="line">    ret = <a class="code hl_struct" href="structtraits_1_1lie__sparse.html">traits::lie_sparse&lt;G&gt;::d_exp_sparse_pattern</a>;</div>
 <div class="line">  } <span class="keywordflow">else</span> {</div>
 <div class="line">    </div>
 <div class="line">    <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; Dof&lt;G&gt;; ++i) {</div>
-<div class="line">      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; Dof&lt;G&gt;; ++j) { ret.insert(i, j) = (i == j) ? Scalar&lt;G&gt;(1) : Scalar&lt;G&gt;(0); }</div>
+<div class="line">      <span class="keywordflow">for</span> (<span class="keyword">auto</span> j = 0u; j &lt; Dof&lt;G&gt;; ++j) { ret.insert(i, j) = (i == j) ? <a class="code hl_typedef" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar&lt;G&gt;</a>(1) : <a class="code hl_typedef" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar&lt;G&gt;</a>(0); }</div>
 <div class="line">    }</div>
 <div class="line">  }</div>
 <div class="line">  ret.makeCompressed();</div>
 <div class="line">  <span class="keywordflow">return</span> ret;</div>
 <div class="line">}()</div>
+<div class="ttc" id="amanifold_8hpp_html_a2b36cb81d1a22497327a0f3864ca89d8"><div class="ttname"><a href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a></div><div class="ttdeci">typename traits::man&lt; M &gt;::Scalar Scalar</div><div class="ttdoc">Manifold scalar type.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00088">manifold.hpp:88</a></div></div>
 </div><!-- fragment -->
 <p>Sparsity pattern of dr_exp_sparse, dr_expinv_sparse (inline variable). </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00090">90</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00089">89</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a032c2ad4742b16d09a4b27966cfd3f28" name="a032c2ad4742b16d09a4b27966cfd3f28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a032c2ad4742b16d09a4b27966cfd3f28">&#9670;&#160;</a></span>generators_sparse</h2>
+<a id="a683c846b6bfe9989108f80d4f83ee17d" name="a683c846b6bfe9989108f80d4f83ee17d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a683c846b6bfe9989108f80d4f83ee17d">&#9670;&#160;</a></span>generators_sparse</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;Eigen::SparseMatrix&lt;Scalar&lt;G&gt; &gt;, Dof&lt;G&gt; &gt; smooth::v1_0::generators_sparse</td>
+          <td class="memname">std::array&lt;Eigen::SparseMatrix&lt;<a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt;G&gt; &gt;, Dof&lt;G&gt; &gt; generators_sparse</td>
         </tr>
       </table>
   </td>
@@ -590,18 +596,19 @@ template&lt;LieGroup G&gt; </div>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
-<div class="line">  []() -&gt; std::array&lt;Eigen::SparseMatrix&lt;Scalar&lt;G&gt;&gt;, Dof&lt;G&gt;&gt; {</div>
+<div class="line">  []() -&gt; std::array&lt;Eigen::SparseMatrix&lt;<a class="code hl_typedef" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar&lt;G&gt;</a>&gt;, Dof&lt;G&gt;&gt; {</div>
 <div class="line">  std::array&lt;Eigen::SparseMatrix&lt;Scalar&lt;G&gt;&gt;, Dof&lt;G&gt;&gt; ret;</div>
 <div class="line">  <span class="keywordflow">for</span> (<span class="keyword">auto</span> i = 0u; i &lt; Dof&lt;G&gt;; ++i) {</div>
-<div class="line">    ret[i] = ad&lt;G&gt;(Tangent&lt;G&gt;::Unit(i)).sparseView();</div>
+<div class="line">    ret[i] = ad&lt;G&gt;(<a class="code hl_typedef" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent&lt;G&gt;::Unit</a>(i)).sparseView();</div>
 <div class="line">    ret[i].makeCompressed();</div>
 <div class="line">  }</div>
 <div class="line">  <span class="keywordflow">return</span> ret;</div>
 <div class="line">}()</div>
+<div class="ttc" id="amanifold_8hpp_html_a1c9675a2607be58300eef50fe432a7c7"><div class="ttname"><a href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a></div><div class="ttdeci">Eigen::Vector&lt; Scalar&lt; M &gt;, Dof&lt; M &gt; &gt; Tangent</div><div class="ttdoc">Tangent as a Dof-length vector.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00106">manifold.hpp:106</a></div></div>
 </div><!-- fragment -->
 <p>Generators of lie algebra (inline variable). </p>
 
-<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00049">49</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="lie__sparse_8hpp_source.html#l00048">48</a> of file <a class="el" href="lie__sparse_8hpp_source.html">lie_sparse.hpp</a>.</p>
 
 </div>
 </div>

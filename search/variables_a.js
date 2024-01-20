@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['optdeg_0',['OptDeg',['../structsmooth_1_1v1__0_1_1spline__specs_1_1NoConstraints.html#aa12e53bee201dc4013566e295be3c2de',1,'smooth::v1_0::spline_specs::NoConstraints::OptDeg()'],['../structsmooth_1_1v1__0_1_1spline__specs_1_1FixedDerCubic.html#a38f6228e3c0401baccbd1bbddfd6e001',1,'smooth::v1_0::spline_specs::FixedDerCubic::OptDeg()'],['../structsmooth_1_1v1__0_1_1spline__specs_1_1MinDerivative.html#afacb69d6cd1b92dcaad706903c99deea',1,'smooth::v1_0::spline_specs::MinDerivative::OptDeg()']]]
+  ['optdeg_0',['OptDeg',['../structspline__specs_1_1NoConstraints.html#a720efeb1d940e09d9a1ab1c8ec417212',1,'spline_specs::NoConstraints::OptDeg()'],['../structspline__specs_1_1FixedDerCubic.html#a4bfa9659a356c7c4b385955adf9d7ea2',1,'spline_specs::FixedDerCubic::OptDeg()'],['../structspline__specs_1_1MinDerivative.html#ab7830c12c09f8664dfef1b1ae553fb79',1,'spline_specs::MinDerivative::OptDeg()']]]
 ];

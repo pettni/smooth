@@ -97,17 +97,20 @@ Include dependency graph for derivatives.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="derivatives_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2derivatives_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2derivatives_8hpp" id="ainclude_2smooth_2derivatives_8hpp">
-<area shape="rect" title="Various useful derivatives." alt="" coords="158,5,359,31"/>
-<area shape="rect" title=" " alt="" coords="93,387,179,412"/>
-<area shape="rect" href="lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="206,86,311,111"/>
-<area shape="rect" title=" " alt="" coords="336,79,456,119"/>
-<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="187,240,341,265"/>
-<area shape="rect" href="native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="355,167,499,192"/>
-<area shape="rect" href="rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="43,167,163,192"/>
-<area shape="rect" href="scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="187,167,331,192"/>
-<area shape="rect" title=" " alt="" coords="236,387,311,412"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="174,313,269,339"/>
-<area shape="rect" title=" " alt="" coords="43,240,163,265"/>
+<area shape="rect" title="Various useful derivatives." alt="" coords="167,5,369,31"/>
+<area shape="rect" title=" " alt="" coords="191,387,276,412"/>
+<area shape="rect" href="lie__groups_8hpp.html" title="Meta header to include all LieGroup concept model specifications." alt="" coords="215,86,321,111"/>
+<area shape="rect" title=" " alt="" coords="345,79,465,119"/>
+<area shape="rect" href="lie__group_8hpp.html" title=" " alt="" coords="224,240,379,265"/>
+<area shape="rect" href="native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="196,167,340,192"/>
+<area shape="rect" href="rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="52,167,172,192"/>
+<area shape="rect" href="scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="415,167,559,192"/>
+<area shape="rect" title=" " alt="" coords="169,313,221,339"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="297,313,391,339"/>
+<area shape="rect" title=" " alt="" coords="301,387,435,412"/>
+<area shape="rect" title=" " alt="" coords="43,240,200,265"/>
+<area shape="rect" title=" " alt="" coords="559,240,625,265"/>
+<area shape="rect" title=" " alt="" coords="415,240,535,265"/>
 </map>
 </div>
 </div>
@@ -115,38 +118,38 @@ Include dependency graph for derivatives.hpp:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4563621333f9fb10d0096fd11ff0e3ea"><td class="memTemplParams" colspan="2">template&lt;typename At , typename dAt , typename Bt , typename dBt &gt; </td></tr>
-<tr class="memitem:a4563621333f9fb10d0096fd11ff0e3ea"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a4563621333f9fb10d0096fd11ff0e3ea">smooth::d_matrix_product</a> (const At &amp;A, const dAt &amp;dA, const Bt &amp;B, const dBt &amp;dB)</td></tr>
-<tr class="memdesc:a4563621333f9fb10d0096fd11ff0e3ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derivative of matrix product.  <a href="derivatives_8hpp.html#a4563621333f9fb10d0096fd11ff0e3ea">More...</a><br /></td></tr>
-<tr class="separator:a4563621333f9fb10d0096fd11ff0e3ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4eab690f643d4253625ed084e2201ae8"><td class="memTemplParams" colspan="2">template&lt;typename JfT , typename HfT , typename JgT , typename HgT &gt; </td></tr>
-<tr class="memitem:a4eab690f643d4253625ed084e2201ae8"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a4eab690f643d4253625ed084e2201ae8">smooth::d2_fog</a> (const JfT &amp;Jf, const HfT &amp;Hf, const JgT &amp;Jg, const HgT &amp;Hg)</td></tr>
-<tr class="memdesc:a4eab690f643d4253625ed084e2201ae8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hessian of composed function \( (f \circ g)(x) \).  <a href="derivatives_8hpp.html#a4eab690f643d4253625ed084e2201ae8">More...</a><br /></td></tr>
-<tr class="separator:a4eab690f643d4253625ed084e2201ae8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e5fcadf574cf7c8ad8aedf50ceb8953"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a5e5fcadf574cf7c8ad8aedf50ceb8953"><td class="memTemplItemLeft" align="right" valign="top">TangentMap&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a5e5fcadf574cf7c8ad8aedf50ceb8953">smooth::dr_rminus</a> (const Tangent&lt; G &gt; &amp;e)</td></tr>
-<tr class="memdesc:a5e5fcadf574cf7c8ad8aedf50ceb8953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobian of rminus.  <a href="derivatives_8hpp.html#a5e5fcadf574cf7c8ad8aedf50ceb8953">More...</a><br /></td></tr>
-<tr class="separator:a5e5fcadf574cf7c8ad8aedf50ceb8953"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c1f9f70b8c26e32bd8868662f2cd41e"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a3c1f9f70b8c26e32bd8868662f2cd41e"><td class="memTemplItemLeft" align="right" valign="top">Hessian&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a3c1f9f70b8c26e32bd8868662f2cd41e">smooth::d2r_rminus</a> (const Tangent&lt; G &gt; &amp;e)</td></tr>
-<tr class="memdesc:a3c1f9f70b8c26e32bd8868662f2cd41e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hessian of rminus.  <a href="derivatives_8hpp.html#a3c1f9f70b8c26e32bd8868662f2cd41e">More...</a><br /></td></tr>
-<tr class="separator:a3c1f9f70b8c26e32bd8868662f2cd41e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae231951a435aacca334d4e2073610ba8"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:ae231951a435aacca334d4e2073610ba8"><td class="memTemplItemLeft" align="right" valign="top">Eigen::RowVector&lt; Scalar&lt; G &gt;, Dof&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#ae231951a435aacca334d4e2073610ba8">smooth::dr_rminus_squarednorm</a> (const Tangent&lt; G &gt; &amp;e)</td></tr>
-<tr class="memdesc:ae231951a435aacca334d4e2073610ba8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobian of the squared norm of rminus.  <a href="derivatives_8hpp.html#ae231951a435aacca334d4e2073610ba8">More...</a><br /></td></tr>
-<tr class="separator:ae231951a435aacca334d4e2073610ba8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76ec58fc66e2ce3095bc6cd4723b62d6"><td class="memTemplParams" colspan="2">template&lt;LieGroup G&gt; </td></tr>
-<tr class="memitem:a76ec58fc66e2ce3095bc6cd4723b62d6"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; Scalar&lt; G &gt;, Dof&lt; G &gt;, Dof&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a76ec58fc66e2ce3095bc6cd4723b62d6">smooth::d2r_rminus_squarednorm</a> (const Tangent&lt; G &gt; &amp;e)</td></tr>
-<tr class="memdesc:a76ec58fc66e2ce3095bc6cd4723b62d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hessian of the squared norm of rminus.  <a href="derivatives_8hpp.html#a76ec58fc66e2ce3095bc6cd4723b62d6">More...</a><br /></td></tr>
-<tr class="separator:a76ec58fc66e2ce3095bc6cd4723b62d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f1f48a1d34e611530fdc0696604b300"><td class="memTemplParams" colspan="2">template&lt;typename At , typename dAt , typename Bt , typename dBt &gt; </td></tr>
+<tr class="memitem:a5f1f48a1d34e611530fdc0696604b300"><td class="memTemplItemLeft" align="right" valign="top">SMOOTH_BEGIN_NAMESPACE auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a5f1f48a1d34e611530fdc0696604b300">d_matrix_product</a> (const At &amp;A, const dAt &amp;dA, const Bt &amp;B, const dBt &amp;dB)</td></tr>
+<tr class="memdesc:a5f1f48a1d34e611530fdc0696604b300"><td class="mdescLeft">&#160;</td><td class="mdescRight">Derivative of matrix product.  <a href="derivatives_8hpp.html#a5f1f48a1d34e611530fdc0696604b300">More...</a><br /></td></tr>
+<tr class="separator:a5f1f48a1d34e611530fdc0696604b300"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae50ae7fb898db6b5691afa723684173f"><td class="memTemplParams" colspan="2">template&lt;typename JfT , typename HfT , typename JgT , typename HgT &gt; </td></tr>
+<tr class="memitem:ae50ae7fb898db6b5691afa723684173f"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#ae50ae7fb898db6b5691afa723684173f">d2_fog</a> (const JfT &amp;Jf, const HfT &amp;Hf, const JgT &amp;Jg, const HgT &amp;Hg)</td></tr>
+<tr class="memdesc:ae50ae7fb898db6b5691afa723684173f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hessian of composed function \( (f \circ g)(x) \).  <a href="derivatives_8hpp.html#ae50ae7fb898db6b5691afa723684173f">More...</a><br /></td></tr>
+<tr class="separator:ae50ae7fb898db6b5691afa723684173f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e1d85c25be82aa2bba6b4274e0e777d"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a6e1d85c25be82aa2bba6b4274e0e777d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a76f8653452d066c7f3183fa7634e3812">TangentMap</a>&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a6e1d85c25be82aa2bba6b4274e0e777d">dr_rminus</a> (const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;e)</td></tr>
+<tr class="memdesc:a6e1d85c25be82aa2bba6b4274e0e777d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobian of rminus.  <a href="derivatives_8hpp.html#a6e1d85c25be82aa2bba6b4274e0e777d">More...</a><br /></td></tr>
+<tr class="separator:a6e1d85c25be82aa2bba6b4274e0e777d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12b7de6235f2427544251e4ee294c82b"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:a12b7de6235f2427544251e4ee294c82b"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="manifold_8hpp.html#a1bbf2ae606e1d16cabaeac4207423a9c">Hessian</a>&lt; G &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#a12b7de6235f2427544251e4ee294c82b">d2r_rminus</a> (const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;e)</td></tr>
+<tr class="memdesc:a12b7de6235f2427544251e4ee294c82b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hessian of rminus.  <a href="derivatives_8hpp.html#a12b7de6235f2427544251e4ee294c82b">More...</a><br /></td></tr>
+<tr class="separator:a12b7de6235f2427544251e4ee294c82b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace83fea30e14046b0e65068e99bc26b4"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:ace83fea30e14046b0e65068e99bc26b4"><td class="memTemplItemLeft" align="right" valign="top">Eigen::RowVector&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt;, Dof&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#ace83fea30e14046b0e65068e99bc26b4">dr_rminus_squarednorm</a> (const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;e)</td></tr>
+<tr class="memdesc:ace83fea30e14046b0e65068e99bc26b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jacobian of the squared norm of rminus.  <a href="derivatives_8hpp.html#ace83fea30e14046b0e65068e99bc26b4">More...</a><br /></td></tr>
+<tr class="separator:ace83fea30e14046b0e65068e99bc26b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa867350ee42e86e29ae547845fbb7f6"><td class="memTemplParams" colspan="2">template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </td></tr>
+<tr class="memitem:aaa867350ee42e86e29ae547845fbb7f6"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt;, Dof&lt; G &gt;, Dof&lt; G &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="derivatives_8hpp.html#aaa867350ee42e86e29ae547845fbb7f6">d2r_rminus_squarednorm</a> (const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;e)</td></tr>
+<tr class="memdesc:aaa867350ee42e86e29ae547845fbb7f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Hessian of the squared norm of rminus.  <a href="derivatives_8hpp.html#aaa867350ee42e86e29ae547845fbb7f6">More...</a><br /></td></tr>
+<tr class="separator:aaa867350ee42e86e29ae547845fbb7f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Various useful derivatives. </p>
 
 <p class="definition">Definition in file <a class="el" href="derivatives_8hpp_source.html">derivatives.hpp</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a4eab690f643d4253625ed084e2201ae8" name="a4eab690f643d4253625ed084e2201ae8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4eab690f643d4253625ed084e2201ae8">&#9670;&#160;</a></span>d2_fog()</h2>
+<a id="ae50ae7fb898db6b5691afa723684173f" name="ae50ae7fb898db6b5691afa723684173f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae50ae7fb898db6b5691afa723684173f">&#9670;&#160;</a></span>d2_fog()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -154,7 +157,7 @@ Functions</h2></td></tr>
 template&lt;typename JfT , typename HfT , typename JgT , typename HgT &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto smooth::v1_0::d2_fog </td>
+          <td class="memname">auto d2_fog </td>
           <td>(</td>
           <td class="paramtype">const JfT &amp;&#160;</td>
           <td class="paramname"><em>Jf</em>, </td>
@@ -199,18 +202,18 @@ template&lt;typename JfT , typename HfT , typename JgT , typename HgT &gt; </div
 
 </div>
 </div>
-<a id="a3c1f9f70b8c26e32bd8868662f2cd41e" name="a3c1f9f70b8c26e32bd8868662f2cd41e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c1f9f70b8c26e32bd8868662f2cd41e">&#9670;&#160;</a></span>d2r_rminus()</h2>
+<a id="a12b7de6235f2427544251e4ee294c82b" name="a12b7de6235f2427544251e4ee294c82b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12b7de6235f2427544251e4ee294c82b">&#9670;&#160;</a></span>d2r_rminus()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Hessian&lt; G &gt; smooth::v1_0::d2r_rminus </td>
+          <td class="memname"><a class="el" href="manifold_8hpp.html#a1bbf2ae606e1d16cabaeac4207423a9c">Hessian</a>&lt; G &gt; d2r_rminus </td>
           <td>(</td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>e</em></td><td>)</td>
           <td></td>
         </tr>
@@ -228,18 +231,18 @@ template&lt;LieGroup G&gt; </div>
 
 </div>
 </div>
-<a id="a76ec58fc66e2ce3095bc6cd4723b62d6" name="a76ec58fc66e2ce3095bc6cd4723b62d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a76ec58fc66e2ce3095bc6cd4723b62d6">&#9670;&#160;</a></span>d2r_rminus_squarednorm()</h2>
+<a id="aaa867350ee42e86e29ae547845fbb7f6" name="aaa867350ee42e86e29ae547845fbb7f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa867350ee42e86e29ae547845fbb7f6">&#9670;&#160;</a></span>d2r_rminus_squarednorm()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::Matrix&lt; Scalar&lt; G &gt;, Dof&lt; G &gt;, Dof&lt; G &gt; &gt; smooth::v1_0::d2r_rminus_squarednorm </td>
+          <td class="memname">Eigen::Matrix&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt;, Dof&lt; G &gt;, Dof&lt; G &gt; &gt; d2r_rminus_squarednorm </td>
           <td>(</td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>e</em></td><td>)</td>
           <td></td>
         </tr>
@@ -257,8 +260,8 @@ template&lt;LieGroup G&gt; </div>
 
 </div>
 </div>
-<a id="a4563621333f9fb10d0096fd11ff0e3ea" name="a4563621333f9fb10d0096fd11ff0e3ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4563621333f9fb10d0096fd11ff0e3ea">&#9670;&#160;</a></span>d_matrix_product()</h2>
+<a id="a5f1f48a1d34e611530fdc0696604b300" name="a5f1f48a1d34e611530fdc0696604b300"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f1f48a1d34e611530fdc0696604b300">&#9670;&#160;</a></span>d_matrix_product()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -266,7 +269,7 @@ template&lt;LieGroup G&gt; </div>
 template&lt;typename At , typename dAt , typename Bt , typename dBt &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">auto smooth::v1_0::d_matrix_product </td>
+          <td class="memname">SMOOTH_BEGIN_NAMESPACE auto d_matrix_product </td>
           <td>(</td>
           <td class="paramtype">const At &amp;&#160;</td>
           <td class="paramname"><em>A</em>, </td>
@@ -311,18 +314,18 @@ template&lt;typename At , typename dAt , typename Bt , typename dBt &gt; </div>
 
 </div>
 </div>
-<a id="a5e5fcadf574cf7c8ad8aedf50ceb8953" name="a5e5fcadf574cf7c8ad8aedf50ceb8953"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e5fcadf574cf7c8ad8aedf50ceb8953">&#9670;&#160;</a></span>dr_rminus()</h2>
+<a id="a6e1d85c25be82aa2bba6b4274e0e777d" name="a6e1d85c25be82aa2bba6b4274e0e777d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e1d85c25be82aa2bba6b4274e0e777d">&#9670;&#160;</a></span>dr_rminus()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">TangentMap&lt; G &gt; smooth::v1_0::dr_rminus </td>
+          <td class="memname"><a class="el" href="manifold_8hpp.html#a76f8653452d066c7f3183fa7634e3812">TangentMap</a>&lt; G &gt; dr_rminus </td>
           <td>(</td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>e</em></td><td>)</td>
           <td></td>
         </tr>
@@ -340,18 +343,18 @@ template&lt;LieGroup G&gt; </div>
 
 </div>
 </div>
-<a id="ae231951a435aacca334d4e2073610ba8" name="ae231951a435aacca334d4e2073610ba8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae231951a435aacca334d4e2073610ba8">&#9670;&#160;</a></span>dr_rminus_squarednorm()</h2>
+<a id="ace83fea30e14046b0e65068e99bc26b4" name="ace83fea30e14046b0e65068e99bc26b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace83fea30e14046b0e65068e99bc26b4">&#9670;&#160;</a></span>dr_rminus_squarednorm()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;LieGroup G&gt; </div>
+template&lt;<a class="el" href="conceptLieGroup.html">LieGroup</a> G&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">Eigen::RowVector&lt; Scalar&lt; G &gt;, Dof&lt; G &gt; &gt; smooth::v1_0::dr_rminus_squarednorm </td>
+          <td class="memname">Eigen::RowVector&lt; <a class="el" href="manifold_8hpp.html#a2b36cb81d1a22497327a0f3864ca89d8">Scalar</a>&lt; G &gt;, Dof&lt; G &gt; &gt; dr_rminus_squarednorm </td>
           <td>(</td>
-          <td class="paramtype">const Tangent&lt; G &gt; &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="manifold_8hpp.html#a1c9675a2607be58300eef50fe432a7c7">Tangent</a>&lt; G &gt; &amp;&#160;</td>
           <td class="paramname"><em>e</em></td><td>)</td>
           <td></td>
         </tr>

@@ -1,8 +1,10 @@
 var searchData=
 [
-  ['c1_0',['C1',['../classsmooth_1_1v1__0_1_1C1.html',1,'smooth::C1&lt; _Scalar &gt;'],['../classsmooth_1_1v1__0_1_1C1.html',1,'smooth::v1_0::C1&lt; _Scalar &gt;']]],
-  ['c1base_1',['C1Base',['../classsmooth_1_1v1__0_1_1C1Base.html',1,'smooth::C1Base&lt; _Derived &gt;'],['../classsmooth_1_1v1__0_1_1C1Base.html',1,'smooth::v1_0::C1Base&lt; _Derived &gt;']]],
-  ['c1base_3c_20c1_3c_20_5fscalar_20_3e_20_3e_2',['C1Base&lt; C1&lt; _Scalar &gt; &gt;',['../classsmooth_1_1v1__0_1_1C1Base.html',1,'smooth::v1_0']]],
-  ['c1base_3c_20map_3c_20c1_3c_20_5fscalar_20_3e_20_3e_20_3e_3',['C1Base&lt; Map&lt; C1&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1v1__0_1_1C1Base.html',1,'smooth::v1_0']]],
-  ['c1base_3c_20map_3c_20const_20c1_3c_20_5fscalar_20_3e_20_3e_20_3e_4',['C1Base&lt; Map&lt; const C1&lt; _Scalar &gt; &gt; &gt;',['../classsmooth_1_1v1__0_1_1C1Base.html',1,'smooth::v1_0']]]
+  ['boostodeintops_0',['BoostOdeintOps',['../structdetail_1_1BoostOdeintOps.html',1,'detail']]],
+  ['bspline_1',['BSpline',['../classBSpline.html',1,'']]],
+  ['bundle_2',['Bundle',['../classBundle.html',1,'']]],
+  ['bundlebase_3',['BundleBase',['../classBundleBase.html',1,'']]],
+  ['bundlebase_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_4',['BundleBase&lt; Bundle&lt; _Gs... &gt; &gt;',['../classBundleBase.html',1,'']]],
+  ['bundlebase_3c_20map_3c_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_5',['BundleBase&lt; Map&lt; Bundle&lt; _Gs... &gt; &gt; &gt;',['../classBundleBase.html',1,'']]],
+  ['bundlebase_3c_20map_3c_20const_20bundle_3c_20_5fgs_2e_2e_2e_20_3e_20_3e_20_3e_6',['BundleBase&lt; Map&lt; const Bundle&lt; _Gs... &gt; &gt; &gt;',['../classBundleBase.html',1,'']]]
 ];

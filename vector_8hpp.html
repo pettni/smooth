@@ -89,22 +89,24 @@ $(function() {
 
 <p>Trait specialization to make std::vector&lt;Manifold&gt; a Manifold.  
 <a href="#details">More...</a></p>
-<div class="textblock"><code>#include &lt;ranges&gt;</code><br />
+<div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;ranges&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
-<code>#include &quot;<a class="el" href="manifold_8hpp_source.html">../concepts/manifold.hpp</a>&quot;</code><br />
-<code>#include &quot;../detail/utils.hpp&quot;</code><br />
+<code>#include &quot;<a class="el" href="manifold_8hpp_source.html">smooth/concepts/manifold.hpp</a>&quot;</code><br />
+<code>#include &quot;smooth/detail/utils.hpp&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for vector.hpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="vector_8hpp__incl.png" border="0" usemap="#ainclude_2smooth_2manifolds_2vector_8hpp" alt=""/></div>
 <map name="ainclude_2smooth_2manifolds_2vector_8hpp" id="ainclude_2smooth_2manifolds_2vector_8hpp">
-<area shape="rect" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="101,5,272,45"/>
-<area shape="rect" title=" " alt="" coords="5,93,67,119"/>
-<area shape="rect" title=" " alt="" coords="91,93,149,119"/>
-<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="173,93,336,119"/>
-<area shape="rect" title=" " alt="" coords="360,93,475,119"/>
-<area shape="rect" title=" " alt="" coords="165,167,240,192"/>
-<area shape="rect" title=" " alt="" coords="264,167,349,192"/>
+<area shape="rect" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="133,5,304,45"/>
+<area shape="rect" title=" " alt="" coords="5,93,80,119"/>
+<area shape="rect" title=" " alt="" coords="104,93,165,119"/>
+<area shape="rect" title=" " alt="" coords="189,93,248,119"/>
+<area shape="rect" href="manifold_8hpp.html" title=" " alt="" coords="273,93,471,119"/>
+<area shape="rect" title=" " alt="" coords="496,93,648,119"/>
+<area shape="rect" title=" " alt="" coords="261,167,347,192"/>
+<area shape="rect" title=" " alt="" coords="371,167,506,192"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -112,13 +114,13 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="vector_8hpp__dep__incl.png" border="0" usemap="#ainclude_2smooth_2manifolds_2vector_8hppdep" alt=""/></div>
 <map name="ainclude_2smooth_2manifolds_2vector_8hppdep" id="ainclude_2smooth_2manifolds_2vector_8hppdep">
-<area shape="rect" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="361,5,532,45"/>
-<area shape="rect" href="manifolds_8hpp.html" title="Meta header to include all Manifold concept model specifications." alt="" coords="349,93,544,119"/>
+<area shape="rect" title="Trait specialization to make std::vector&lt;Manifold&gt; a Manifold." alt="" coords="271,5,441,45"/>
+<area shape="rect" href="manifolds_8hpp.html" title="Meta header to include all Manifold concept model specifications." alt="" coords="259,93,453,119"/>
 <area shape="rect" href="autodiff_8hpp.html" title="autodiff compatability header." alt="" coords="5,167,163,207"/>
 <area shape="rect" href="ceres_8hpp.html" title="ceres compatability header." alt="" coords="187,167,344,207"/>
 <area shape="rect" href="odeint_8hpp.html" title="boost::odeint compatability header." alt="" coords="368,167,525,207"/>
 <area shape="rect" href="diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="549,174,704,199"/>
-<area shape="rect" href="optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="599,255,769,280"/>
+<area shape="rect" href="optim_8hpp_source.html" title=" " alt="" coords="541,255,712,280"/>
 </map>
 </div>
 </div>
@@ -126,8 +128,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsmooth_1_1v1__0_1_1traits_1_1man_3_01std_1_1vector_3_01M_01_4_01_4.html">smooth::v1_0::traits::man&lt; std::vector&lt; M &gt; &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manifold model specification for std::vector&lt;Manifold&gt;  <a href="structsmooth_1_1v1__0_1_1traits_1_1man_3_01std_1_1vector_3_01M_01_4_01_4.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtraits_1_1man_3_01std_1_1vector_3_01M_01_4_01_4.html">traits::man&lt; std::vector&lt; M &gt; &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manifold model specification for std::vector&lt;Manifold&gt;  <a href="structtraits_1_1man_3_01std_1_1vector_3_01M_01_4_01_4.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>

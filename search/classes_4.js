@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['halfplane_0',['HalfPlane',['../structlp2d_1_1detail_1_1HalfPlane.html',1,'lp2d::detail']]]
+  ['fixeddercubic_0',['FixedDerCubic',['../structspline__specs_1_1FixedDerCubic.html',1,'spline_specs']]]
 ];

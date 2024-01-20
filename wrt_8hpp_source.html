@@ -88,19 +88,20 @@ $(function() {
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span> </div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span> </div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;<a class="code" href="manifold_8hpp.html">concepts/manifold.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="keyword">namespace </span>smooth {</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="keyword">inline</span> <span class="keyword">namespace </span>v1_0 {</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">auto</span> wrt(<span class="keyword">auto</span> &amp;&amp;... args)</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>  <span class="keyword">requires</span>(Manifold&lt;std::decay_t&lt;<span class="keyword">decltype</span>(args)&gt;&gt; &amp;&amp; ...)</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>{</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>  <span class="keywordflow">return</span> std::forward_as_tuple(std::forward&lt;<span class="keyword">decltype</span>(args)&gt;(args)...);</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>}</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span> </div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>}  <span class="comment">// namespace v1_0</span></div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>}  <span class="comment">// namespace smooth</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="manifold_8hpp.html">concepts/manifold.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span>SMOOTH_BEGIN_NAMESPACE</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">auto</span> wrt(<span class="keyword">auto</span> &amp;&amp;... args)</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>  <span class="keyword">requires</span>(<a class="code hl_concept" href="conceptManifold.html">Manifold</a>&lt;std::decay_t&lt;<span class="keyword">decltype</span>(args)&gt;&gt; &amp;&amp; ...)</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>{</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>  <span class="keywordflow">return</span> std::forward_as_tuple(std::forward&lt;<span class="keyword">decltype</span>(args)&gt;(args)...);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>SMOOTH_END_NAMESPACE</div>
+<div class="ttc" id="aconceptManifold_html"><div class="ttname"><a href="conceptManifold.html">Manifold</a></div><div class="ttdoc">Class-external Manifold interface defined through the traits::man trait class.</div><div class="ttdef"><b>Definition:</b> <a href="manifold_8hpp_source.html#l00031">manifold.hpp:31</a></div></div>
 <div class="ttc" id="amanifold_8hpp_html"><div class="ttname"><a href="manifold_8hpp.html">manifold.hpp</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

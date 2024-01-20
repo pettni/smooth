@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['k_0',['K',['../classsmooth_1_1v1__0_1_1SE__K__3Base.html#a02bbeacc0ef75fc163cdbba595f4e557',1,'smooth::v1_0::SE_K_3Base']]]
+  ['k_0',['K',['../classSE__K__3Base.html#a4040ae0b4c2b2b64ea51be8e475c3e56',1,'SE_K_3Base']]]
 ];

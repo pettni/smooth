@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ftol_0',['ftol',['../structsmooth_1_1v1__0_1_1MinimizeOptions.html#aafeafbd9c95aac506eeb78d728190406',1,'smooth::v1_0::MinimizeOptions']]]
+  ['ftol_0',['ftol',['../structMinimizeOptions.html#a5a988babb60af2b14c88542ac09a8c77',1,'MinimizeOptions']]]
 ];

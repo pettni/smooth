@@ -1,8 +1,8 @@
 <map id="include/smooth/manifolds.hpp" name="include/smooth/manifolds.hpp">
-<area shape="rect" id="node1" title="Meta header to include all Manifold concept model specifications." alt="" coords="349,5,544,31"/>
+<area shape="rect" id="node1" title="Meta header to include all Manifold concept model specifications." alt="" coords="259,5,453,31"/>
 <area shape="rect" id="node2" href="$autodiff_8hpp.html" title="autodiff compatability header." alt="" coords="5,79,163,119"/>
 <area shape="rect" id="node3" href="$ceres_8hpp.html" title="ceres compatability header." alt="" coords="187,79,344,119"/>
 <area shape="rect" id="node4" href="$odeint_8hpp.html" title="boost::odeint compatability header." alt="" coords="368,79,525,119"/>
 <area shape="rect" id="node5" href="$diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="549,86,704,111"/>
-<area shape="rect" id="node6" href="$optim_8hpp.html" title="Non&#45;linear least squares optimization on Manifolds." alt="" coords="599,167,769,192"/>
+<area shape="rect" id="node6" href="$optim_8hpp_source.html" title=" " alt="" coords="541,167,712,192"/>
 </map>
