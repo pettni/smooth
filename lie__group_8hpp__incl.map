@@ -1,7 +1,12 @@
 <map id="include/smooth/concepts/lie_group.hpp" name="include/smooth/concepts/lie_group.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="12,5,179,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,93,57,119"/>
-<area shape="rect" id="node3" title=" " alt="" coords="53,167,138,192"/>
-<area shape="rect" id="node4" href="$manifold_8hpp.html" title=" " alt="" coords="133,93,228,119"/>
-<area shape="rect" id="node5" title=" " alt="" coords="163,167,297,192"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="11,5,177,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,57,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,48,52,83,48,80,76,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="52,168,136,193"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="96,46,96,152,91,152,91,46"/>
+<area shape="rect" id="Node000004" href="$manifold_8hpp.html" title=" " alt="" coords="131,94,225,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="116,44,156,81,152,85,113,48"/>
+<area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="165,122,121,159,118,155,162,118"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="160,168,294,193"/>
+<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="188,118,212,153,208,156,184,121"/>
 </map>

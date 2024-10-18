@@ -1,8 +1,13 @@
 <map id="include/smooth/polynomial/basis.hpp" name="include/smooth/polynomial/basis.hpp">
-<area shape="rect" id="node1" title="Compile&#45;time polynomial manipulation." alt="" coords="35,5,209,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,93,71,119"/>
-<area shape="rect" id="node3" title=" " alt="" coords="95,93,149,119"/>
-<area shape="rect" id="node4" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="173,93,293,119"/>
-<area shape="rect" id="node5" title=" " alt="" coords="154,167,205,192"/>
-<area shape="rect" id="node6" title=" " alt="" coords="229,167,343,192"/>
+<area shape="rect" id="Node000001" title="Compile&#45;time polynomial manipulation." alt="" coords="33,5,207,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,70,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,48,63,85,60,81,98,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="94,94,146,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="123,46,123,78,118,78,118,46"/>
+<area shape="rect" id="Node000004" href="$static__matrix_8hpp.html" title="Utilities for compile&#45;time matrix algebra." alt="" coords="170,94,289,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="149,44,202,82,199,87,146,49"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="152,168,201,193"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="223,121,196,157,192,153,219,118"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="224,168,339,193"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="240,118,266,153,262,157,236,121"/>
 </map>

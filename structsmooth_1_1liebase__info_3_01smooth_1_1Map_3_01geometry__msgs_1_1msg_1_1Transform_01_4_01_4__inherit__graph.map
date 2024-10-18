@@ -1,4 +1,5 @@
 <map id="smooth::liebase_info&lt; smooth::Map&lt; geometry_msgs::msg::Transform &gt; &gt;" name="smooth::liebase_info&lt; smooth::Map&lt; geometry_msgs::msg::Transform &gt; &gt;">
-<area shape="rect" id="node1" title="Specialize liebase_info ." alt="" coords="5,93,184,148"/>
-<area shape="rect" id="node2" href="$structliebase__info.html" title=" " alt="" coords="22,5,167,45"/>
+<area shape="rect" id="Node000001" title="Specialize liebase_info ." alt="" coords="5,94,184,150"/>
+<area shape="rect" id="Node000002" href="$structliebase__info.html" title=" " alt="" coords="22,5,167,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,61,97,93,92,93,92,61"/>
 </map>

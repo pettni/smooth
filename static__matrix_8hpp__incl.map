@@ -1,5 +1,7 @@
 <map id="include/smooth/polynomial/static_matrix.hpp" name="include/smooth/polynomial/static_matrix.hpp">
-<area shape="rect" id="node1" title="Utilities for compile&#45;time matrix algebra." alt="" coords="5,5,180,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="14,93,65,119"/>
-<area shape="rect" id="node3" title=" " alt="" coords="89,93,203,119"/>
+<area shape="rect" id="Node000001" title="Utilities for compile&#45;time matrix algebra." alt="" coords="5,5,180,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="16,94,65,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="82,48,59,82,55,79,77,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="89,94,203,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="108,45,131,80,127,83,103,48"/>
 </map>

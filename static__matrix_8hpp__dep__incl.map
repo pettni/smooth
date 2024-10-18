@@ -1,8 +1,14 @@
 <map id="include/smooth/polynomial/static_matrix.hpp" name="include/smooth/polynomial/static_matrix.hpp">
-<area shape="rect" id="node1" title="Utilities for compile&#45;time matrix algebra." alt="" coords="68,5,243,45"/>
-<area shape="rect" id="node2" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="131,93,305,133"/>
-<area shape="rect" id="node3" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,181,180,221"/>
-<area shape="rect" id="node4" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="205,181,359,221"/>
-<area shape="rect" id="node5" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="208,269,356,309"/>
-<area shape="rect" id="node6" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="208,357,356,397"/>
+<area shape="rect" id="Node000001" title="Utilities for compile&#45;time matrix algebra." alt="" coords="67,5,241,46"/>
+<area shape="rect" id="Node000002" href="$basis_8hpp.html" title="Compile&#45;time polynomial manipulation." alt="" coords="129,94,304,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="179,57,204,92,200,95,175,60"/>
+<area shape="rect" id="Node000003" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,183,180,223"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="137,61,120,95,106,142,98,183,93,182,101,140,115,93,132,58"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="177,146,122,184,119,180,174,142"/>
+<area shape="rect" id="Node000004" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="204,183,357,223"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="242,146,268,181,264,184,238,149"/>
+<area shape="rect" id="Node000005" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="207,271,354,312"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="283,239,283,271,278,271,278,239"/>
+<area shape="rect" id="Node000006" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="207,360,354,401"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="283,328,283,360,278,360,278,328"/>
 </map>

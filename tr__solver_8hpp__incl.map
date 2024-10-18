@@ -1,9 +1,15 @@
 <map id="include/smooth/optim/tr_solver.hpp" name="include/smooth/optim/tr_solver.hpp">
-<area shape="rect" id="node1" title="Trust region algorithms for determining step size." alt="" coords="219,5,365,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,93,72,119"/>
-<area shape="rect" id="node3" title=" " alt="" coords="97,93,149,119"/>
-<area shape="rect" id="node4" title=" " alt="" coords="173,93,283,119"/>
-<area shape="rect" id="node5" title=" " alt="" coords="308,93,407,119"/>
-<area shape="rect" id="node6" title=" " alt="" coords="431,93,583,119"/>
-<area shape="rect" id="node7" title=" " alt="" coords="607,93,742,119"/>
+<area shape="rect" id="Node000001" title="Trust region algorithms for determining step size." alt="" coords="218,5,363,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,72,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="228,49,87,93,86,88,227,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="96,94,147,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="249,49,162,90,160,85,247,44"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="171,94,282,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="277,48,248,83,244,80,273,45"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="305,94,404,120"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="308,45,337,80,333,83,304,48"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="428,94,580,120"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="345,44,458,86,456,91,343,49"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="603,94,738,120"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="364,40,598,88,597,93,363,45"/>
 </map>

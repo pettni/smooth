@@ -1,8 +1,13 @@
 <map id="include/smooth/manifolds.hpp" name="include/smooth/manifolds.hpp">
-<area shape="rect" id="node1" title="Meta header to include all Manifold concept model specifications." alt="" coords="259,5,453,31"/>
-<area shape="rect" id="node2" href="$autodiff_8hpp.html" title="autodiff compatability header." alt="" coords="5,79,163,119"/>
-<area shape="rect" id="node3" href="$ceres_8hpp.html" title="ceres compatability header." alt="" coords="187,79,344,119"/>
-<area shape="rect" id="node4" href="$odeint_8hpp.html" title="boost::odeint compatability header." alt="" coords="368,79,525,119"/>
-<area shape="rect" id="node5" href="$diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="549,86,704,111"/>
-<area shape="rect" id="node6" href="$optim_8hpp_source.html" title=" " alt="" coords="541,167,712,192"/>
+<area shape="rect" id="Node000001" title="Meta header to include all Manifold concept model specifications." alt="" coords="256,5,450,31"/>
+<area shape="rect" id="Node000002" href="$autodiff_8hpp.html" title="autodiff compatability header." alt="" coords="5,79,162,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="298,38,151,81,150,76,296,33"/>
+<area shape="rect" id="Node000003" href="$ceres_8hpp.html" title="ceres compatability header." alt="" coords="185,79,342,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="330,43,287,81,284,77,326,39"/>
+<area shape="rect" id="Node000004" href="$odeint_8hpp.html" title="boost::odeint compatability header." alt="" coords="365,79,522,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="380,39,423,77,419,81,376,43"/>
+<area shape="rect" id="Node000005" href="$diff_8hpp.html" title="Differentiation on Manifolds." alt="" coords="546,87,701,112"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="410,33,582,83,581,88,408,38"/>
+<area shape="rect" id="Node000006" href="$optim_8hpp_source.html" title=" " alt="" coords="539,168,708,193"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="626,128,626,167,621,167,621,128"/>
 </map>

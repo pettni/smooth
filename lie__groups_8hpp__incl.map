@@ -1,14 +1,29 @@
 <map id="include/smooth/lie_groups.hpp" name="include/smooth/lie_groups.hpp">
-<area shape="rect" id="node1" title="Meta header to include all LieGroup concept model specifications." alt="" coords="113,5,240,45"/>
-<area shape="rect" id="node2" href="$lie__group_8hpp.html" title=" " alt="" coords="18,167,173,192"/>
-<area shape="rect" id="node7" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="27,93,171,119"/>
-<area shape="rect" id="node8" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="195,93,315,119"/>
-<area shape="rect" id="node10" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="339,93,483,119"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,240,57,265"/>
-<area shape="rect" id="node4" title=" " alt="" coords="53,313,138,339"/>
-<area shape="rect" id="node5" href="$manifold_8hpp.html" title=" " alt="" coords="133,240,228,265"/>
-<area shape="rect" id="node6" title=" " alt="" coords="163,313,297,339"/>
-<area shape="rect" id="node9" title=" " alt="" coords="197,167,354,192"/>
-<area shape="rect" id="node11" title=" " alt="" coords="379,167,444,192"/>
-<area shape="rect" id="node12" title=" " alt="" coords="469,167,589,192"/>
+<area shape="rect" id="Node000001" title="Meta header to include all LieGroup concept model specifications." alt="" coords="111,5,237,46"/>
+<area shape="rect" id="Node000002" href="$lie__group_8hpp.html" title=" " alt="" coords="17,168,171,193"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,39,84,47,57,58,34,74,15,95,10,112,18,129,34,144,55,158,52,162,31,148,14,132,5,113,10,93,30,70,55,54,82,42,109,34"/>
+<area shape="rect" id="Node000007" href="$native_8hpp.html" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="25,94,168,120"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="156,48,121,84,117,81,153,45"/>
+<area shape="rect" id="Node000008" href="$rn_8hpp.html" title="Trait specialization to make Eigen vectors LieGroups." alt="" coords="193,94,312,120"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="195,45,232,81,228,85,191,48"/>
+<area shape="rect" id="Node000010" href="$scalar_8hpp.html" title="Trait specialization to make scalars LieGroups." alt="" coords="337,94,480,120"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="233,44,358,86,357,91,231,49"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,241,57,267"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="85,195,54,231,50,228,81,192"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="52,315,136,341"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="96,194,96,300,91,300,91,194"/>
+<area shape="rect" id="Node000005" href="$manifold_8hpp.html" title=" " alt="" coords="131,241,225,267"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="110,192,154,229,150,233,106,196"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="165,270,121,307,118,303,162,266"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="160,315,294,341"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="188,266,212,301,208,304,184,269"/>
+<area shape="poly" id="edge8_Node000007_Node000002" title=" " alt="" coords="99,120,97,152,92,152,93,120"/>
+<area shape="poly" id="edge10_Node000008_Node000002" title=" " alt="" coords="227,123,135,163,133,159,224,118"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="196,168,352,193"/>
+<area shape="poly" id="edge11_Node000008_Node000009" title=" " alt="" coords="258,119,268,152,263,153,253,121"/>
+<area shape="poly" id="edge14_Node000010_Node000002" title=" " alt="" coords="355,123,163,166,161,161,354,118"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="376,168,441,193"/>
+<area shape="poly" id="edge13_Node000010_Node000011" title=" " alt="" coords="411,120,411,152,406,152,406,120"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="465,168,584,193"/>
+<area shape="poly" id="edge15_Node000010_Node000012" title=" " alt="" coords="429,118,493,157,491,162,427,122"/>
 </map>

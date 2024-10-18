@@ -1,4 +1,5 @@
 <map id="include/smooth/spline/bspline.hpp" name="include/smooth/spline/bspline.hpp">
-<area shape="rect" id="node1" title="B&#45;splines on Lie groups." alt="" coords="5,5,153,45"/>
-<area shape="rect" id="node2" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="5,93,153,133"/>
+<area shape="rect" id="Node000001" title="B&#45;splines on Lie groups." alt="" coords="5,5,153,46"/>
+<area shape="rect" id="Node000002" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="5,94,153,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="82,62,82,94,76,94,76,62"/>
 </map>

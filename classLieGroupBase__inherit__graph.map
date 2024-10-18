@@ -1,51 +1,99 @@
 <map id="LieGroupBase&lt; Derived &gt;" name="LieGroupBase&lt; Derived &gt;">
-<area shape="rect" id="node1" title="Base class for Lie group types." alt="" coords="5,726,176,751"/>
-<area shape="rect" id="node2" href="$classBundleBase.html" title=" " alt="" coords="249,5,391,45"/>
-<area shape="rect" id="node4" href="$classBundleBase.html" title=" " alt="" coords="231,69,409,109"/>
-<area shape="rect" id="node6" href="$classBundleBase.html" title=" " alt="" coords="235,133,405,173"/>
-<area shape="rect" id="node8" href="$classC1Base.html" title=" " alt="" coords="234,198,406,223"/>
-<area shape="rect" id="node10" href="$classC1Base.html" title=" " alt="" coords="227,248,413,288"/>
-<area shape="rect" id="node12" href="$classC1Base.html" title=" " alt="" coords="247,312,393,352"/>
-<area shape="rect" id="node14" href="$classGalileiBase.html" title=" " alt="" coords="253,376,387,416"/>
-<area shape="rect" id="node16" href="$classGalileiBase.html" title=" " alt="" coords="235,440,405,480"/>
-<area shape="rect" id="node18" href="$classGalileiBase.html" title=" " alt="" coords="237,504,403,544"/>
-<area shape="rect" id="node20" href="$classSE2Base.html" title=" " alt="" coords="243,568,397,608"/>
-<area shape="rect" id="node22" href="$classSE2Base.html" title=" " alt="" coords="243,632,397,672"/>
-<area shape="rect" id="node24" href="$classSE2Base.html" title=" " alt="" coords="226,697,414,722"/>
-<area shape="rect" id="node26" href="$classSE3Base.html" title=" " alt="" coords="243,747,397,787"/>
-<area shape="rect" id="node28" href="$classSE3Base.html" title=" " alt="" coords="243,811,397,851"/>
-<area shape="rect" id="node30" href="$classSE3Base.html" title=" " alt="" coords="226,875,414,901"/>
-<area shape="rect" id="node32" href="$classSE__K__3Base.html" title=" " alt="" coords="239,925,401,965"/>
-<area shape="rect" id="node34" href="$classSE__K__3Base.html" title=" " alt="" coords="229,989,411,1029"/>
-<area shape="rect" id="node36" href="$classSE__K__3Base.html" title=" " alt="" coords="241,1053,399,1093"/>
-<area shape="rect" id="node38" href="$classSO2Base.html" title=" " alt="" coords="241,1117,399,1157"/>
-<area shape="rect" id="node40" href="$classSO2Base.html" title=" " alt="" coords="241,1181,399,1221"/>
-<area shape="rect" id="node42" href="$classSO2Base.html" title=" " alt="" coords="224,1246,416,1271"/>
-<area shape="rect" id="node44" href="$classSO3Base.html" title=" " alt="" coords="241,1296,399,1336"/>
-<area shape="rect" id="node46" href="$classSO3Base.html" title=" " alt="" coords="241,1360,399,1400"/>
-<area shape="rect" id="node48" href="$classSO3Base.html" title=" " alt="" coords="224,1425,416,1450"/>
-<area shape="rect" id="node3" href="$classBundle.html" title="Storage implementation of Bundle lie group." alt="" coords="508,13,616,38"/>
-<area shape="rect" id="node5" href="$classMap_3_01Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Memory mapping of Bundle Lie group." alt="" coords="480,77,644,102"/>
-<area shape="rect" id="node7" href="$classMap_3_01const_01Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Const memory mapping of Bundle Lie group." alt="" coords="491,133,633,173"/>
-<area shape="rect" id="node9" href="$classC1.html" title="Storage implementation of C1 Lie group." alt="" coords="510,198,614,223"/>
-<area shape="rect" id="node11" href="$classMap_3_01C1_3_01__Scalar_01_4_01_4.html" title="Memory mapping of C1 Lie group." alt="" coords="487,255,637,281"/>
-<area shape="rect" id="node13" href="$classMap_3_01const_01C1_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of C1 Lie group." alt="" coords="469,319,655,345"/>
-<area shape="rect" id="node15" href="$classGalilei.html" title="Storage implementation of Galilei Lie group." alt="" coords="500,383,624,409"/>
-<area shape="rect" id="node17" href="$classMap_3_01Galilei_3_01__Scalar_01_4_01_4.html" title="Memory mapping of Galilei Lie group." alt="" coords="477,447,647,473"/>
-<area shape="rect" id="node19" href="$classMap_3_01const_01Galilei_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of Galilei Lie group." alt="" coords="497,504,627,544"/>
-<area shape="rect" id="node21" href="$classMap_3_01SE2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE2 Lie group." alt="" coords="483,575,641,601"/>
-<area shape="rect" id="node23" href="$classMap_3_01const_01SE2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE2 Lie group." alt="" coords="465,639,659,665"/>
-<area shape="rect" id="node25" href="$classSE2.html" title="Storage implementation of SE2 Lie group." alt="" coords="506,697,618,722"/>
-<area shape="rect" id="node27" href="$classMap_3_01SE3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE3 Lie group." alt="" coords="483,754,641,779"/>
-<area shape="rect" id="node29" href="$classMap_3_01const_01SE3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE3 Lie group." alt="" coords="465,818,659,843"/>
-<area shape="rect" id="node31" href="$classSE3.html" title="Storage implementation of SE3 Lie group." alt="" coords="506,875,618,901"/>
-<area shape="rect" id="node33" href="$classMap_3_01SE__K__3_3_01__Scalar_00_01__K_01_4_01_4.html" title="Memory mapping of SE_K_3 Lie group." alt="" coords="480,925,644,965"/>
-<area shape="rect" id="node35" href="$classMap_3_01const_01SE__K__3_3_01__Scalar_00_01__K_01_4_01_4.html" title="Const memory mapping of SE_K_3 Lie group." alt="" coords="488,989,636,1029"/>
-<area shape="rect" id="node37" href="$classSE__K__3.html" title="Storage implementation of &#160;Lie group." alt="" coords="487,1061,637,1086"/>
-<area shape="rect" id="node39" href="$classMap_3_01SO2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO2 Lie group." alt="" coords="481,1125,643,1150"/>
-<area shape="rect" id="node41" href="$classMap_3_01const_01SO2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO2 Lie group." alt="" coords="464,1189,660,1214"/>
-<area shape="rect" id="node43" href="$classSO2.html" title="Storage implementation of SO2 Lie group." alt="" coords="505,1246,619,1271"/>
-<area shape="rect" id="node45" href="$classMap_3_01SO3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO3 Lie group." alt="" coords="481,1303,643,1329"/>
-<area shape="rect" id="node47" href="$classMap_3_01const_01SO3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO3 Lie group." alt="" coords="464,1367,660,1393"/>
-<area shape="rect" id="node49" href="$classSO3.html" title="Storage implementation of SO3 Lie group." alt="" coords="505,1425,619,1450"/>
+<area shape="rect" id="Node000001" title="Base class for Lie group types." alt="" coords="5,737,176,763"/>
+<area shape="rect" id="Node000002" href="$classBundleBase.html" title=" " alt="" coords="248,5,391,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="91,721,102,583,126,385,143,283,165,189,191,111,205,81,222,57,246,39,249,43,226,61,210,83,196,113,170,190,148,284,131,385,107,584,96,722"/>
+<area shape="rect" id="Node000004" href="$classBundleBase.html" title=" " alt="" coords="230,71,409,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="92,721,105,594,130,415,147,324,168,240,193,171,207,144,222,123,237,110,240,114,226,126,211,146,198,173,173,242,153,325,135,416,110,595,97,721"/>
+<area shape="rect" id="Node000006" href="$classBundleBase.html" title=" " alt="" coords="234,136,405,177"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="92,721,107,606,133,446,151,365,172,290,195,229,222,187,235,175,238,179,226,190,200,231,177,292,156,366,139,447,112,607,97,722"/>
+<area shape="rect" id="Node000008" href="$classC1Base.html" title=" " alt="" coords="234,201,405,227"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="93,721,108,615,136,470,153,396,174,330,196,275,222,237,238,225,242,229,226,241,201,277,179,331,158,398,141,471,114,615,98,722"/>
+<area shape="rect" id="Node000010" href="$classC1Base.html" title=" " alt="" coords="227,251,412,291"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="89,721,94,640,112,529,129,468,152,409,183,352,222,302,238,290,241,294,226,306,187,355,157,411,134,470,118,530,100,641,94,721"/>
+<area shape="rect" id="Node000012" href="$classC1Base.html" title=" " alt="" coords="246,316,393,357"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="91,721,100,651,121,556,137,506,159,456,187,409,222,368,244,352,247,356,225,372,192,412,164,459,142,508,126,558,105,652,96,722"/>
+<area shape="rect" id="Node000014" href="$classGalileiBase.html" title=" " alt="" coords="252,381,387,422"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="93,721,105,662,129,585,146,544,167,504,192,466,222,433,250,415,253,419,225,437,196,470,171,507,151,546,134,587,111,663,98,722"/>
+<area shape="rect" id="Node000016" href="$classGalileiBase.html" title=" " alt="" coords="234,447,405,487"/>
+<area shape="poly" id="edge15_Node000001_Node000016" title=" " alt="" coords="97,722,112,674,138,614,174,552,196,524,222,498,241,486,244,490,225,502,200,527,178,555,143,617,117,676,102,723"/>
+<area shape="rect" id="Node000018" href="$classGalileiBase.html" title=" " alt="" coords="236,512,403,553"/>
+<area shape="poly" id="edge17_Node000001_Node000018" title=" " alt="" coords="102,722,121,686,148,644,182,601,222,564,243,551,246,555,225,568,186,605,152,647,126,689,107,724"/>
+<area shape="rect" id="Node000020" href="$classSE2Base.html" title=" " alt="" coords="242,577,397,618"/>
+<area shape="poly" id="edge19_Node000001_Node000020" title=" " alt="" coords="112,723,160,676,190,651,222,629,247,616,250,621,225,633,193,655,163,680,115,727"/>
+<area shape="rect" id="Node000022" href="$classSE2Base.html" title=" " alt="" coords="242,643,397,683"/>
+<area shape="poly" id="edge21_Node000001_Node000022" title=" " alt="" coords="136,728,223,693,253,681,255,686,225,697,138,733"/>
+<area shape="rect" id="Node000024" href="$classSE2Base.html" title=" " alt="" coords="226,708,413,733"/>
+<area shape="poly" id="edge23_Node000001_Node000024" title=" " alt="" coords="191,734,225,730,226,735,191,739"/>
+<area shape="rect" id="Node000026" href="$classSE3Base.html" title=" " alt="" coords="242,757,397,798"/>
+<area shape="poly" id="edge25_Node000001_Node000026" title=" " alt="" coords="191,759,242,766,241,771,191,765"/>
+<area shape="rect" id="Node000028" href="$classSE3Base.html" title=" " alt="" coords="242,823,397,863"/>
+<area shape="poly" id="edge27_Node000001_Node000028" title=" " alt="" coords="134,767,225,807,257,820,255,825,223,812,132,772"/>
+<area shape="rect" id="Node000030" href="$classSE3Base.html" title=" " alt="" coords="226,888,413,913"/>
+<area shape="poly" id="edge29_Node000001_Node000030" title=" " alt="" coords="113,773,161,824,192,850,225,873,252,884,250,889,222,877,188,854,157,828,109,776"/>
+<area shape="rect" id="Node000032" href="$classSE__K__3Base.html" title=" " alt="" coords="238,937,401,978"/>
+<area shape="poly" id="edge31_Node000001_Node000032" title=" " alt="" coords="107,775,153,849,186,889,225,924,244,934,241,939,222,928,183,893,149,852,103,778"/>
+<area shape="rect" id="Node000034" href="$classSE__K__3Base.html" title=" " alt="" coords="228,1003,411,1043"/>
+<area shape="poly" id="edge33_Node000001_Node000034" title=" " alt="" coords="102,776,118,822,144,879,180,937,201,964,225,988,244,1000,241,1004,222,992,197,968,175,940,139,881,114,824,97,778"/>
+<area shape="rect" id="Node000036" href="$classSE__K__3Base.html" title=" " alt="" coords="241,1068,398,1109"/>
+<area shape="poly" id="edge35_Node000001_Node000036" title=" " alt="" coords="99,777,112,834,135,908,152,947,172,986,197,1021,225,1053,243,1065,240,1070,222,1057,193,1025,168,988,147,950,130,910,106,836,94,778"/>
+<area shape="rect" id="Node000038" href="$classSO2Base.html" title=" " alt="" coords="240,1133,399,1174"/>
+<area shape="poly" id="edge37_Node000001_Node000038" title=" " alt="" coords="96,778,106,846,127,937,144,986,165,1034,192,1079,226,1118,242,1131,238,1135,222,1122,188,1082,160,1036,139,988,122,939,100,847,91,778"/>
+<area shape="rect" id="Node000040" href="$classSO2Base.html" title=" " alt="" coords="241,1199,398,1239"/>
+<area shape="poly" id="edge39_Node000001_Node000040" title=" " alt="" coords="95,778,100,857,119,965,135,1024,158,1082,188,1136,226,1184,242,1197,239,1201,222,1188,183,1139,153,1084,130,1026,114,967,95,858,89,778"/>
+<area shape="rect" id="Node000042" href="$classSO2Base.html" title=" " alt="" coords="224,1264,415,1289"/>
+<area shape="poly" id="edge41_Node000001_Node000042" title=" " alt="" coords="98,777,114,881,141,1023,159,1095,179,1160,201,1213,226,1249,242,1261,239,1265,222,1253,197,1216,174,1162,154,1097,136,1025,109,882,93,778"/>
+<area shape="rect" id="Node000044" href="$classSO3Base.html" title=" " alt="" coords="240,1313,399,1354"/>
+<area shape="poly" id="edge43_Node000001_Node000044" title=" " alt="" coords="98,778,113,891,139,1048,157,1127,177,1200,200,1259,226,1300,241,1313,238,1317,222,1303,196,1262,172,1202,152,1129,134,1049,107,892,92,778"/>
+<area shape="rect" id="Node000046" href="$classSO3Base.html" title=" " alt="" coords="241,1379,398,1419"/>
+<area shape="poly" id="edge45_Node000001_Node000046" title=" " alt="" coords="97,778,110,903,136,1078,153,1168,174,1250,198,1318,212,1344,226,1364,242,1377,239,1382,222,1367,207,1347,193,1320,169,1252,148,1169,130,1079,105,904,92,778"/>
+<area shape="rect" id="Node000048" href="$classSO3Base.html" title=" " alt="" coords="224,1444,415,1469"/>
+<area shape="poly" id="edge47_Node000001_Node000048" title=" " alt="" coords="96,778,107,915,130,1111,147,1212,168,1303,195,1379,210,1407,226,1429,241,1441,238,1445,222,1433,205,1410,190,1381,163,1305,142,1213,124,1112,101,916,91,778"/>
+<area shape="rect" id="Node000003" href="$classBundle.html" title="Storage implementation of Bundle lie group." alt="" coords="507,13,614,39"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="406,23,507,23,507,28,406,28"/>
+<area shape="rect" id="Node000005" href="$classMap_3_01Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Memory mapping of Bundle Lie group." alt="" coords="479,78,642,104"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="424,88,479,88,479,94,424,94"/>
+<area shape="rect" id="Node000007" href="$classMap_3_01const_01Bundle_3_01__Gs_8_8_8_01_4_01_4.html" title="Const memory mapping of Bundle Lie group." alt="" coords="491,136,631,177"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="420,154,490,154,490,159,420,159"/>
+<area shape="rect" id="Node000009" href="$classC1.html" title="Storage implementation of C1 Lie group." alt="" coords="509,201,612,227"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="421,211,508,211,508,216,421,216"/>
+<area shape="rect" id="Node000011" href="$classMap_3_01C1_3_01__Scalar_01_4_01_4.html" title="Memory mapping of C1 Lie group." alt="" coords="486,258,636,284"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="427,268,485,268,485,274,427,274"/>
+<area shape="rect" id="Node000013" href="$classMap_3_01const_01C1_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of C1 Lie group." alt="" coords="468,324,653,349"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="408,334,467,334,467,339,408,339"/>
+<area shape="rect" id="Node000015" href="$classGalilei.html" title="Storage implementation of Galilei Lie group." alt="" coords="499,389,622,415"/>
+<area shape="poly" id="edge14_Node000014_Node000015" title=" " alt="" coords="402,399,499,399,499,404,402,404"/>
+<area shape="rect" id="Node000017" href="$classMap_3_01Galilei_3_01__Scalar_01_4_01_4.html" title="Memory mapping of Galilei Lie group." alt="" coords="476,454,646,480"/>
+<area shape="poly" id="edge16_Node000016_Node000017" title=" " alt="" coords="420,464,475,464,475,470,420,470"/>
+<area shape="rect" id="Node000019" href="$classMap_3_01const_01Galilei_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of Galilei Lie group." alt="" coords="497,512,625,553"/>
+<area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="418,530,496,530,496,535,418,535"/>
+<area shape="rect" id="Node000021" href="$classMap_3_01SE2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE2 Lie group." alt="" coords="482,585,640,611"/>
+<area shape="poly" id="edge20_Node000020_Node000021" title=" " alt="" coords="412,595,481,595,481,600,412,600"/>
+<area shape="rect" id="Node000023" href="$classMap_3_01const_01SE2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE2 Lie group." alt="" coords="464,650,657,676"/>
+<area shape="poly" id="edge22_Node000022_Node000023" title=" " alt="" coords="412,660,463,660,463,666,412,666"/>
+<area shape="rect" id="Node000025" href="$classSE2.html" title="Storage implementation of SE2 Lie group." alt="" coords="505,708,616,733"/>
+<area shape="poly" id="edge24_Node000024_Node000025" title=" " alt="" coords="429,718,505,718,505,723,429,723"/>
+<area shape="rect" id="Node000027" href="$classMap_3_01SE3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SE3 Lie group." alt="" coords="482,765,640,791"/>
+<area shape="poly" id="edge26_Node000026_Node000027" title=" " alt="" coords="412,775,481,775,481,780,412,780"/>
+<area shape="rect" id="Node000029" href="$classMap_3_01const_01SE3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SE3 Lie group." alt="" coords="464,830,657,856"/>
+<area shape="poly" id="edge28_Node000028_Node000029" title=" " alt="" coords="412,840,463,840,463,846,412,846"/>
+<area shape="rect" id="Node000031" href="$classSE3.html" title="Storage implementation of SE3 Lie group." alt="" coords="505,888,616,913"/>
+<area shape="poly" id="edge30_Node000030_Node000031" title=" " alt="" coords="429,898,505,898,505,903,429,903"/>
+<area shape="rect" id="Node000033" href="$classMap_3_01SE__K__3_3_01__Scalar_00_01__K_01_4_01_4.html" title="Memory mapping of SE_K_3 Lie group." alt="" coords="479,937,642,978"/>
+<area shape="poly" id="edge32_Node000032_Node000033" title=" " alt="" coords="416,955,479,955,479,960,416,960"/>
+<area shape="rect" id="Node000035" href="$classMap_3_01const_01SE__K__3_3_01__Scalar_00_01__K_01_4_01_4.html" title="Const memory mapping of SE_K_3 Lie group." alt="" coords="487,1003,634,1043"/>
+<area shape="poly" id="edge34_Node000034_Node000035" title=" " alt="" coords="426,1020,486,1020,486,1026,426,1026"/>
+<area shape="rect" id="Node000037" href="$classSE__K__3.html" title="Storage implementation of &#160;Lie group." alt="" coords="486,1076,636,1101"/>
+<area shape="poly" id="edge36_Node000036_Node000037" title=" " alt="" coords="413,1086,485,1086,485,1091,413,1091"/>
+<area shape="rect" id="Node000039" href="$classMap_3_01SO2_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO2 Lie group." alt="" coords="481,1141,641,1167"/>
+<area shape="poly" id="edge38_Node000038_Node000039" title=" " alt="" coords="414,1151,480,1151,480,1156,414,1156"/>
+<area shape="rect" id="Node000041" href="$classMap_3_01const_01SO2_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO2 Lie group." alt="" coords="463,1206,658,1232"/>
+<area shape="poly" id="edge40_Node000040_Node000041" title=" " alt="" coords="413,1216,463,1216,463,1222,413,1222"/>
+<area shape="rect" id="Node000043" href="$classSO2.html" title="Storage implementation of SO2 Lie group." alt="" coords="504,1264,617,1289"/>
+<area shape="poly" id="edge42_Node000042_Node000043" title=" " alt="" coords="431,1274,504,1274,504,1279,431,1279"/>
+<area shape="rect" id="Node000045" href="$classMap_3_01SO3_3_01__Scalar_01_4_01_4.html" title="Memory mapping of SO3 Lie group." alt="" coords="481,1321,641,1347"/>
+<area shape="poly" id="edge44_Node000044_Node000045" title=" " alt="" coords="414,1331,480,1331,480,1336,414,1336"/>
+<area shape="rect" id="Node000047" href="$classMap_3_01const_01SO3_3_01__Scalar_01_4_01_4.html" title="Const memory mapping of SO3 Lie group." alt="" coords="463,1386,658,1412"/>
+<area shape="poly" id="edge46_Node000046_Node000047" title=" " alt="" coords="413,1396,463,1396,463,1402,413,1402"/>
+<area shape="rect" id="Node000049" href="$classSO3.html" title="Storage implementation of SO3 Lie group." alt="" coords="504,1444,617,1469"/>
+<area shape="poly" id="edge48_Node000048_Node000049" title=" " alt="" coords="431,1454,504,1454,504,1459,431,1459"/>
 </map>

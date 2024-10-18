@@ -1,14 +1,30 @@
 <map id="include/smooth/compat/ros.hpp" name="include/smooth/compat/ros.hpp">
-<area shape="rect" id="node1" title="ROS message compatablity header." alt="" coords="263,5,421,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,93,204,119"/>
-<area shape="rect" id="node3" title=" " alt="" coords="229,93,455,119"/>
-<area shape="rect" id="node4" href="$se3_8hpp_source.html" title=" " alt="" coords="479,93,594,119"/>
-<area shape="rect" id="node5" title=" " alt="" coords="335,313,421,339"/>
-<area shape="rect" id="node6" title=" " alt="" coords="578,240,693,265"/>
-<area shape="rect" id="node7" title=" " alt="" coords="717,240,834,265"/>
-<area shape="rect" id="node8" title=" " alt="" coords="661,167,764,192"/>
-<area shape="rect" id="node9" href="$lie__group__base_8hpp_source.html" title=" " alt="" coords="191,240,325,265"/>
-<area shape="rect" id="node11" href="$so3_8hpp_source.html" title=" " alt="" coords="469,167,535,192"/>
-<area shape="rect" id="node10" title=" " alt="" coords="176,313,311,339"/>
-<area shape="rect" id="node12" title=" " alt="" coords="451,240,553,265"/>
+<area shape="rect" id="Node000001" title="ROS message compatablity header." alt="" coords="262,5,419,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,204,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="282,49,156,91,155,86,281,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="228,94,453,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="343,46,343,78,338,78,338,46"/>
+<area shape="rect" id="Node000004" href="$se3_8hpp_source.html" title=" " alt="" coords="477,94,591,120"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="390,44,491,85,489,90,388,49"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="333,315,417,341"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="514,122,485,143,456,169,432,202,412,238,386,301,381,299,407,235,427,199,452,166,482,139,511,118"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="575,241,688,267"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="544,119,617,227,613,230,540,121"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="712,241,828,267"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="549,118,592,153,647,191,728,232,725,237,644,196,589,157,546,122"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="658,168,759,193"/>
+<area shape="poly" id="edge7_Node000004_Node000008" title=" " alt="" coords="564,118,666,159,664,164,562,123"/>
+<area shape="rect" id="Node000009" href="$lie__group__base_8hpp_source.html" title=" " alt="" coords="190,241,323,267"/>
+<area shape="poly" id="edge8_Node000004_Node000009" title=" " alt="" coords="477,121,411,139,376,153,343,170,306,199,277,231,273,227,302,195,340,165,374,148,409,134,476,116"/>
+<area shape="rect" id="Node000011" href="$so3_8hpp_source.html" title=" " alt="" coords="466,168,532,193"/>
+<area shape="poly" id="edge11_Node000004_Node000011" title=" " alt="" coords="531,121,514,155,509,152,526,119"/>
+<area shape="poly" id="edge9_Node000009_Node000005" title=" " alt="" coords="278,265,343,304,341,309,275,270"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="175,315,309,341"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="257,268,250,300,245,299,251,267"/>
+<area shape="poly" id="edge12_Node000011_Node000005" title=" " alt="" coords="487,196,439,243,393,303,389,300,434,240,483,192"/>
+<area shape="poly" id="edge13_Node000011_Node000006" title=" " alt="" coords="523,192,597,231,594,236,520,196"/>
+<area shape="poly" id="edge14_Node000011_Node000007" title=" " alt="" coords="534,188,710,234,709,240,532,193"/>
+<area shape="poly" id="edge16_Node000011_Node000009" title=" " alt="" coords="466,194,313,239,312,234,465,189"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="449,241,550,267"/>
+<area shape="poly" id="edge15_Node000011_Node000012" title=" " alt="" coords="502,194,502,226,497,226,497,194"/>
 </map>

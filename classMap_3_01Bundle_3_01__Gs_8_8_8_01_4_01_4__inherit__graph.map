@@ -1,5 +1,7 @@
 <map id="Map&lt; Bundle&lt; _Gs... &gt; &gt;" name="Map&lt; Bundle&lt; _Gs... &gt; &gt;">
-<area shape="rect" id="node1" title="Memory mapping of Bundle Lie group." alt="" coords="13,167,177,192"/>
-<area shape="rect" id="node2" href="$classBundleBase.html" title=" " alt="" coords="5,79,184,119"/>
-<area shape="rect" id="node3" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="9,5,180,31"/>
+<area shape="rect" id="Node000001" title="Memory mapping of Bundle Lie group." alt="" coords="13,168,176,193"/>
+<area shape="rect" id="Node000002" href="$classBundleBase.html" title=" " alt="" coords="5,79,184,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,135,97,167,92,167,92,135"/>
+<area shape="rect" id="Node000003" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="9,5,180,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="97,46,97,79,92,79,92,46"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="TrustRegionStrategy" name="TrustRegionStrategy">
-<area shape="rect" id="node1" title=" " alt="" coords="53,5,193,31"/>
-<area shape="rect" id="node2" href="$classCeresStrategy.html" title="Trust region strategy used in the Ceres solver." alt="" coords="5,79,109,104"/>
-<area shape="rect" id="node3" href="$classDisneyStrategy.html" title="Trust region strategy used in:" alt="" coords="133,79,243,104"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="51,5,191,31"/>
+<area shape="rect" id="Node000002" href="$classCeresStrategy.html" title="Trust region strategy used in the Ceres solver." alt="" coords="5,79,109,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="102,44,70,80,66,77,98,40"/>
+<area shape="rect" id="Node000003" href="$classDisneyStrategy.html" title="Trust region strategy used in:" alt="" coords="132,79,241,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="144,40,177,77,173,80,140,44"/>
 </map>

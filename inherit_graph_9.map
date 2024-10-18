@@ -1,11 +1,19 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classLieGroupBase.html" title=" " alt="" coords="5,179,184,204"/>
-<area shape="rect" id="node2" href="$classBundleBase.html" title="Base class for Bundle lie groups." alt="" coords="235,5,401,31"/>
-<area shape="rect" id="node3" href="$classC1Base.html" title="Base class for C1 Lie group types." alt="" coords="247,55,389,80"/>
-<area shape="rect" id="node4" href="$classGalileiBase.html" title="Base class for Galielei Lie group types." alt="" coords="237,104,399,129"/>
-<area shape="rect" id="node5" href="$classSE2Base.html" title="Base class for SE2 Lie group types." alt="" coords="243,153,393,179"/>
-<area shape="rect" id="node6" href="$classSE3Base.html" title="Base class for SE3 Lie group types." alt="" coords="243,203,393,228"/>
-<area shape="rect" id="node7" href="$classSE__K__3Base.html" title="Base class for SE_k(3) Lie group types." alt="" coords="232,252,404,277"/>
-<area shape="rect" id="node8" href="$classSO2Base.html" title="Base class for SO2 Lie group types." alt="" coords="243,301,393,327"/>
-<area shape="rect" id="node9" href="$classSO3Base.html" title="Base class for SO3 Lie group types." alt="" coords="243,351,393,376"/>
+<area shape="rect" id="Node000000" href="$classLieGroupBase.html" title=" " alt="" coords="5,179,183,204"/>
+<area shape="rect" id="Node000001" href="$classBundleBase.html" title="Base class for Bundle lie groups." alt="" coords="234,5,399,31"/>
+<area shape="poly" id="edge7_Node000000_Node000001" title=" " alt="" coords="110,164,159,101,192,68,229,40,251,29,254,34,232,44,195,72,163,105,114,167"/>
+<area shape="rect" id="Node000002" href="$classC1Base.html" title="Base class for C1 Lie group types." alt="" coords="246,55,387,80"/>
+<area shape="poly" id="edge8_Node000000_Node000002" title=" " alt="" coords="119,166,168,127,229,89,256,78,258,83,232,94,171,131,123,170"/>
+<area shape="rect" id="Node000003" href="$classGalileiBase.html" title="Base class for Galielei Lie group types." alt="" coords="236,104,397,130"/>
+<area shape="poly" id="edge9_Node000000_Node000003" title=" " alt="" coords="142,170,230,138,265,128,266,133,232,143,144,175"/>
+<area shape="rect" id="Node000004" href="$classSE2Base.html" title="Base class for SE2 Lie group types." alt="" coords="242,153,391,179"/>
+<area shape="poly" id="edge10_Node000000_Node000004" title=" " alt="" coords="198,177,241,172,242,177,198,182"/>
+<area shape="rect" id="Node000005" href="$classSE3Base.html" title="Base class for SE3 Lie group types." alt="" coords="242,203,391,228"/>
+<area shape="poly" id="edge11_Node000000_Node000005" title=" " alt="" coords="198,200,242,205,241,210,198,205"/>
+<area shape="rect" id="Node000006" href="$classSE__K__3Base.html" title="Base class for SE_k(3) Lie group types." alt="" coords="231,252,402,278"/>
+<area shape="poly" id="edge12_Node000000_Node000006" title=" " alt="" coords="145,208,231,238,266,249,265,254,230,243,144,213"/>
+<area shape="rect" id="Node000007" href="$classSO2Base.html" title="Base class for SO2 Lie group types." alt="" coords="241,301,392,327"/>
+<area shape="poly" id="edge13_Node000000_Node000007" title=" " alt="" coords="123,213,172,251,232,288,258,298,256,303,229,293,169,255,120,217"/>
+<area shape="rect" id="Node000008" href="$classSO3Base.html" title="Base class for SO3 Lie group types." alt="" coords="241,351,392,376"/>
+<area shape="poly" id="edge14_Node000000_Node000008" title=" " alt="" coords="114,216,163,277,195,310,232,337,254,348,252,353,229,342,192,314,159,281,110,219"/>
 </map>

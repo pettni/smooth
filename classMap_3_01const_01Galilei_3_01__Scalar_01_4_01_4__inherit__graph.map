@@ -1,5 +1,7 @@
 <map id="Map&lt; const Galilei&lt; _Scalar &gt; &gt;" name="Map&lt; const Galilei&lt; _Scalar &gt; &gt;">
-<area shape="rect" id="node1" title="Const memory mapping of Galilei Lie group." alt="" coords="26,167,155,207"/>
-<area shape="rect" id="node2" href="$classGalileiBase.html" title=" " alt="" coords="7,79,174,119"/>
-<area shape="rect" id="node3" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="5,5,176,31"/>
+<area shape="rect" id="Node000001" title="Const memory mapping of Galilei Lie group." alt="" coords="26,168,155,208"/>
+<area shape="rect" id="Node000002" href="$classGalileiBase.html" title=" " alt="" coords="7,79,174,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,135,93,167,88,167,88,135"/>
+<area shape="rect" id="Node000003" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="5,5,176,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="93,46,93,79,88,79,88,46"/>
 </map>

@@ -1,8 +1,14 @@
 <map id="include/smooth/lie_groups/native.hpp" name="include/smooth/lie_groups/native.hpp">
-<area shape="rect" id="node1" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="30,5,161,45"/>
-<area shape="rect" id="node2" href="$lie__group_8hpp.html" title=" " alt="" coords="26,93,165,133"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,181,57,207"/>
-<area shape="rect" id="node4" title=" " alt="" coords="53,255,138,280"/>
-<area shape="rect" id="node5" href="$manifold_8hpp.html" title=" " alt="" coords="133,181,228,207"/>
-<area shape="rect" id="node6" title=" " alt="" coords="163,255,297,280"/>
+<area shape="rect" id="Node000001" title="Trait specialization to make native Lie groups LieGroups." alt="" coords="29,5,159,46"/>
+<area shape="rect" id="Node000002" href="$lie__group_8hpp.html" title=" " alt="" coords="25,94,163,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="96,47,96,78,91,78,91,47"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,183,57,208"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="80,137,52,172,48,169,76,133"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="52,256,136,282"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="96,135,96,241,91,241,91,135"/>
+<area shape="rect" id="Node000005" href="$manifold_8hpp.html" title=" " alt="" coords="131,183,225,208"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="116,133,156,170,152,174,113,137"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="165,211,121,248,118,244,162,207"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="160,256,294,282"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="188,207,212,242,208,245,184,210"/>
 </map>

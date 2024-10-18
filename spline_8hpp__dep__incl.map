@@ -1,6 +1,9 @@
 <map id="include/smooth/spline/spline.hpp" name="include/smooth/spline/spline.hpp">
-<area shape="rect" id="node1" title="Piecewise polynomial splines on lie groups." alt="" coords="177,5,325,45"/>
-<area shape="rect" id="node2" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="5,93,153,133"/>
-<area shape="rect" id="node3" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="177,93,325,133"/>
-<area shape="rect" id="node4" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="349,93,497,133"/>
+<area shape="rect" id="Node000001" title="Piecewise polynomial splines on lie groups." alt="" coords="177,5,325,46"/>
+<area shape="rect" id="Node000002" href="$dubins_8hpp.html" title="Generate Dubins curves as Spline." alt="" coords="5,94,153,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="200,56,119,96,117,91,197,51"/>
+<area shape="rect" id="Node000003" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="177,94,325,135"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="254,62,254,94,248,94,248,62"/>
+<area shape="rect" id="Node000004" href="$reparameterize_8hpp.html" title="Reparamterize a Spline to satisfy derivative constraints." alt="" coords="349,94,497,135"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="305,51,385,91,383,96,302,56"/>
 </map>

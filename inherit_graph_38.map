@@ -1,7 +1,11 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,135,131,160"/>
-<area shape="rect" id="node2" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="189,5,337,60"/>
-<area shape="rect" id="node3" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="189,84,337,139"/>
-<area shape="rect" id="node4" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="183,163,343,203"/>
-<area shape="rect" id="node5" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="179,227,347,267"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,136,130,162"/>
+<area shape="rect" id="Node000001" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="188,5,335,61"/>
+<area shape="poly" id="edge63_Node000000_Node000001" title=" " alt="" coords="97,125,176,71,197,59,200,64,179,75,100,129"/>
+<area shape="rect" id="Node000002" href="$classsmooth_1_1Map_3_01const_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Const memory mapping of ROS message as Lie group type." alt="" coords="188,85,335,141"/>
+<area shape="poly" id="edge64_Node000000_Node000002" title=" " alt="" coords="144,132,187,124,188,129,145,137"/>
+<area shape="rect" id="Node000003" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Pose_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="182,165,341,206"/>
+<area shape="poly" id="edge65_Node000000_Node000003" title=" " alt="" coords="145,161,182,168,181,173,144,166"/>
+<area shape="rect" id="Node000004" href="$classsmooth_1_1Map_3_01geometry__msgs_1_1msg_1_1Transform_01_4.html" title="Memory mapping of ROS message as Lie group type." alt="" coords="178,230,345,271"/>
+<area shape="poly" id="edge66_Node000000_Node000004" title=" " alt="" coords="101,168,179,215,206,227,203,232,176,220,99,173"/>
 </map>

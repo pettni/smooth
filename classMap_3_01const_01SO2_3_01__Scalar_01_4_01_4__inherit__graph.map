@@ -1,5 +1,7 @@
 <map id="Map&lt; const SO2&lt; _Scalar &gt; &gt;" name="Map&lt; const SO2&lt; _Scalar &gt; &gt;">
-<area shape="rect" id="node1" title="Const memory mapping of SO2 Lie group." alt="" coords="5,167,201,192"/>
-<area shape="rect" id="node2" href="$classSO2Base.html" title=" " alt="" coords="25,79,182,119"/>
-<area shape="rect" id="node3" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="18,5,189,31"/>
+<area shape="rect" id="Node000001" title="Const memory mapping of SO2 Lie group." alt="" coords="5,168,201,193"/>
+<area shape="rect" id="Node000002" href="$classSO2Base.html" title=" " alt="" coords="25,79,181,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="106,135,106,167,100,167,100,135"/>
+<area shape="rect" id="Node000003" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="18,5,188,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="106,46,106,79,100,79,100,46"/>
 </map>

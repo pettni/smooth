@@ -1,7 +1,11 @@
 <map id="include/smooth/polynomial/basis.hpp" name="include/smooth/polynomial/basis.hpp">
-<area shape="rect" id="node1" title="Compile&#45;time polynomial manipulation." alt="" coords="100,5,275,45"/>
-<area shape="rect" id="node2" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,93,180,133"/>
-<area shape="rect" id="node3" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="205,93,359,133"/>
-<area shape="rect" id="node4" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="208,181,356,221"/>
-<area shape="rect" id="node5" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="208,269,356,309"/>
+<area shape="rect" id="Node000001" title="Compile&#45;time polynomial manipulation." alt="" coords="99,5,273,46"/>
+<area shape="rect" id="Node000002" href="$quadrature_8hpp.html" title="Compile&#45;time quadrature scheme generation." alt="" coords="5,94,180,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="155,59,115,96,112,92,152,55"/>
+<area shape="rect" id="Node000003" href="$cumulative__spline_8hpp.html" title="Evaluation of cumulative Lie group splines." alt="" coords="204,94,357,135"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="220,55,261,92,257,96,217,59"/>
+<area shape="rect" id="Node000004" href="$bspline_8hpp.html" title="B&#45;splines on Lie groups." alt="" coords="207,183,354,223"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="283,150,283,182,278,182,278,150"/>
+<area shape="rect" id="Node000005" href="$fit_8hpp.html" title="Fit Spline and Bspline from data." alt="" coords="207,271,354,312"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="283,239,283,271,278,271,278,239"/>
 </map>

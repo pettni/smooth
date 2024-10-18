@@ -1,5 +1,7 @@
 <map id="Map&lt; SE2&lt; _Scalar &gt; &gt;" name="Map&lt; SE2&lt; _Scalar &gt; &gt;">
-<area shape="rect" id="node1" title="Memory mapping of SE2 Lie group." alt="" coords="11,167,170,192"/>
-<area shape="rect" id="node2" href="$classSE2Base.html" title=" " alt="" coords="13,79,168,119"/>
-<area shape="rect" id="node3" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="5,5,176,31"/>
+<area shape="rect" id="Node000001" title="Memory mapping of SE2 Lie group." alt="" coords="11,168,170,193"/>
+<area shape="rect" id="Node000002" href="$classSE2Base.html" title=" " alt="" coords="13,79,168,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="93,135,93,167,88,167,88,135"/>
+<area shape="rect" id="Node000003" href="$classLieGroupBase.html" title="Base class for Lie group types." alt="" coords="5,5,176,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="93,46,93,79,88,79,88,46"/>
 </map>

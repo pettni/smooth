@@ -1,10 +1,18 @@
 <map id="include/smooth/lie_groups/scalar.hpp" name="include/smooth/lie_groups/scalar.hpp">
-<area shape="rect" id="node1" title="Trait specialization to make scalars LieGroups." alt="" coords="113,5,243,45"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,93,71,119"/>
-<area shape="rect" id="node3" href="$lie__group_8hpp.html" title=" " alt="" coords="95,93,261,119"/>
-<area shape="rect" id="node8" title=" " alt="" coords="285,93,405,119"/>
-<area shape="rect" id="node4" title=" " alt="" coords="88,167,140,192"/>
-<area shape="rect" id="node5" title=" " alt="" coords="135,240,221,265"/>
-<area shape="rect" id="node6" href="$manifold_8hpp.html" title=" " alt="" coords="216,167,311,192"/>
-<area shape="rect" id="node7" title=" " alt="" coords="245,240,380,265"/>
+<area shape="rect" id="Node000001" title="Trait specialization to make scalars LieGroups." alt="" coords="111,5,241,46"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,94,70,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="143,49,73,88,70,84,140,44"/>
+<area shape="rect" id="Node000003" href="$lie__group_8hpp.html" title=" " alt="" coords="94,94,258,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="179,46,179,78,174,78,174,46"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="282,94,401,120"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="219,44,304,85,301,89,216,49"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="88,168,139,193"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="168,122,136,157,132,154,164,118"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="134,241,218,267"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="179,120,179,226,174,226,174,120"/>
+<area shape="rect" id="Node000006" href="$manifold_8hpp.html" title=" " alt="" coords="213,168,307,193"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="192,118,236,155,233,159,189,122"/>
+<area shape="poly" id="edge6_Node000006_Node000005" title=" " alt="" coords="248,196,204,233,200,229,244,192"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="242,241,377,267"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="271,192,295,227,290,230,266,195"/>
 </map>
